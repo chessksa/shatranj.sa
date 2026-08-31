@@ -3,415 +3,260 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
-<meta name="theme-color" content="#0f3b2e">
 <title>شطرنج السعودية</title>
 
 <style>
-:root{
-  --g1:#0d3b2e;
-  --g2:#155a43;
-  --g3:#1f7a5b;
-  --gold:#c5a34d;
-  --bg:#f5f3ec;
-  --card:#fff;
-  --text:#14221c;
-  --muted:#6b756f;
-  --line:#e6e1d7;
-  --danger:#9b3434;
-  --ok:#17633f;
-  --shadow:0 12px 34px rgba(13,59,46,.08)
-}
 *{box-sizing:border-box}
 html{scroll-behavior:smooth}
 body{
   margin:0;
   font-family:Tahoma,Arial,sans-serif;
-  background:var(--bg);
-  color:var(--text);
-  line-height:1.65
+  background:#f5f3ed;
+  color:#14221c
 }
-a{text-decoration:none;color:inherit}
-.wrap{width:min(1160px,calc(100% - 28px));margin:auto}
-
+.wrap{width:min(1100px,calc(100% - 24px));margin:auto}
 header{
-  position:sticky;
-  top:0;
-  z-index:20;
-  background:rgba(245,243,236,.95);
-  backdrop-filter:blur(10px);
-  border-bottom:1px solid var(--line)
+  background:#0d3b2e;
+  color:white;
+  padding:10px 0
 }
-.nav{
-  height:68px;
+nav{
   display:flex;
-  align-items:center;
   justify-content:space-between;
-  gap:18px
+  align-items:center
 }
-.brand{
-  display:flex;
-  align-items:center;
-  gap:10px;
-  font-weight:800
-}
-.logo{
-  width:42px;
-  height:42px;
-  border-radius:12px;
-  display:grid;
-  place-items:center;
-  background:linear-gradient(180deg,var(--g3),var(--g1));
-  color:#fff;
-  font-size:23px
-}
-.brand small{
-  display:block;
-  font-size:11px;
-  color:var(--muted);
-  font-weight:400
-}
-.links{
-  display:flex;
-  gap:20px;
-  font-size:14px;
-  font-weight:700;
-  color:var(--muted)
-}
+.brand{font-size:20px;font-weight:bold}
+.links{display:flex;gap:18px}
+.links a{color:white;text-decoration:none;font-size:14px}
 
 .hero{
-  background:
-    radial-gradient(circle at 20% 10%,rgba(197,163,77,.16),transparent 26%),
-    linear-gradient(180deg,#faf8f2,#f0ede5);
-  border-bottom:1px solid var(--line)
+  padding:22px 0;
+  background:#eeeae0
 }
 .hero-grid{
   display:grid;
-  grid-template-columns:1.15fr .85fr;
-  gap:24px;
-  align-items:center;
-  padding:30px 0 24px
-}
-.tag{
-  display:inline-block;
-  padding:6px 10px;
-  border-radius:999px;
-  background:#f3e7c4;
-  color:#765b16;
-  font-size:12px;
-  font-weight:800
+  grid-template-columns:1.4fr .6fr;
+  gap:16px;
+  align-items:center
 }
 .hero h1{
-  font-size:42px;
-  line-height:1.2;
-  margin:11px 0 9px
+  margin:5px 0;
+  font-size:35px
 }
 .hero p{
-  font-size:17px;
-  color:var(--muted);
-  margin:0;
-  max-width:730px
+  margin:5px 0 12px;
+  color:#66716c
 }
-.actions{
-  display:flex;
-  gap:10px;
-  flex-wrap:wrap;
-  margin-top:14px
+.tag{
+  font-size:12px;
+  background:#efe0b8;
+  padding:5px 9px;
+  border-radius:20px
 }
 .btn{
+  display:inline-block;
+  padding:10px 16px;
+  background:#176148;
+  color:white;
+  border-radius:9px;
+  text-decoration:none;
+  font-weight:bold;
   border:0;
-  border-radius:12px;
-  min-height:46px;
-  padding:0 18px;
-  font-weight:800;
-  cursor:pointer;
-  display:inline-flex;
-  align-items:center;
-  justify-content:center
+  cursor:pointer
 }
-.primary{
-  background:linear-gradient(180deg,var(--g3),var(--g1));
+.hero-box{
+  background:#0d3b2e;
   color:white;
-  box-shadow:0 10px 22px rgba(13,59,46,.18)
+  padding:18px;
+  border-radius:15px
 }
-.secondary{
-  background:white;
-  color:var(--g1);
-  border:1px solid var(--line)
-}
-.visual{
-  background:linear-gradient(160deg,var(--g1),#174737);
-  color:white;
-  border-radius:22px;
-  padding:24px;
-  box-shadow:0 20px 45px rgba(13,59,46,.18)
-}
-.visual .king{
-  font-size:42px;
-  color:#f1d782
-}
-.visual h3{
-  font-size:24px;
-  margin:6px 0
-}
-.visual p{
-  font-size:14px;
-  color:#d7e3dd
-}
-.visual ul{
-  padding-right:18px;
-  margin:10px 0 0
-}
+.hero-box h3{margin:4px 0}
+.hero-box p{color:#d6e1dc}
 
 .stats{
   display:grid;
   grid-template-columns:repeat(4,1fr);
-  gap:10px;
-  margin-top:15px
+  gap:8px;
+  margin-top:12px
 }
 .stat{
-  background:rgba(255,255,255,.86);
-  border:1px solid var(--line);
-  border-radius:15px;
-  padding:13px;
-  box-shadow:var(--shadow)
+  background:white;
+  border:1px solid #dedbd2;
+  padding:10px;
+  border-radius:10px
 }
 .stat strong{
+  font-size:22px;
   display:block;
-  font-size:24px;
-  color:var(--g1)
+  color:#0d3b2e
 }
-.stat span{
-  font-size:12px;
-  color:var(--muted)
-}
+.stat span{font-size:12px;color:#777}
 
-section{padding:28px 0}
+section{padding:20px 0}
 
-.section-title{
+.head{
   display:flex;
   justify-content:space-between;
   align-items:end;
-  gap:16px;
-  margin-bottom:12px
+  margin-bottom:10px;
+  gap:12px
 }
-.eyebrow{
-  color:var(--g3);
-  font-weight:800;
-  font-size:12px
-}
-.section-title h2{
-  font-size:29px;
-  margin:3px 0
-}
-.section-title p{
-  margin:0;
-  color:var(--muted)
-}
+.head h2{margin:0;font-size:25px}
+.head p{margin:2px 0;color:#777}
+
 .filters{
   display:flex;
-  gap:8px;
-  min-width:340px
+  gap:7px;
+  min-width:350px
 }
 input,select{
   width:100%;
-  height:46px;
-  border:1px solid #d5d0c6;
-  border-radius:12px;
+  height:42px;
+  border:1px solid #ccc7bc;
+  border-radius:8px;
   background:white;
-  padding:0 12px;
-  font-size:14px;
-  color:var(--text)
-}
-input:focus,select:focus{
-  outline:none;
-  border-color:var(--g3);
-  box-shadow:0 0 0 4px rgba(31,122,91,.1)
+  padding:0 10px;
+  font-size:14px
 }
 
 .top3{
   display:grid;
   grid-template-columns:repeat(3,1fr);
-  gap:10px;
-  margin-bottom:10px
+  gap:8px;
+  margin-bottom:8px
 }
 .podium{
   background:white;
-  border:1px solid var(--line);
-  border-radius:17px;
-  padding:16px;
-  box-shadow:var(--shadow)
+  padding:12px;
+  border-radius:11px;
+  border:1px solid #e2ddd3
 }
-.podium.first{
-  background:linear-gradient(180deg,#fff7df,#fff);
-  border-color:#ecd698
-}
-.podium h3{margin:5px 0 2px;font-size:20px}
-.podium p{
-  margin:0;
-  color:var(--muted);
-  font-size:13px
-}
+.podium h3{margin:3px 0}
+.podium p{margin:0;color:#777;font-size:12px}
 .podium strong{
   display:block;
-  margin-top:7px;
-  font-size:22px;
-  color:var(--g1)
+  margin-top:5px;
+  font-size:21px;
+  color:#0d3b2e
 }
 
-.table-card,.form-card,.tour-card{
+.table-card{
   background:white;
-  border:1px solid var(--line);
-  border-radius:18px;
-  box-shadow:var(--shadow)
+  border:1px solid #e2ddd3;
+  border-radius:11px;
+  overflow:hidden
 }
 .table-head{
-  padding:14px 16px;
-  border-bottom:1px solid var(--line);
   display:flex;
-  justify-content:space-between
+  justify-content:space-between;
+  padding:10px 13px;
+  border-bottom:1px solid #eee
 }
 .table-wrap{overflow:auto}
 table{
   width:100%;
   border-collapse:collapse;
-  min-width:760px
+  min-width:700px
 }
 th,td{
+  padding:10px 12px;
   text-align:right;
-  padding:12px 15px;
-  border-bottom:1px solid #f0ece3
+  border-bottom:1px solid #eee
 }
 th{
-  background:#faf8f4;
-  color:var(--muted);
+  background:#faf9f6;
+  color:#777;
   font-size:12px
 }
-tbody tr:hover{background:#fcfbf7}
-.rating{
-  font-weight:900;
-  color:var(--g1)
-}
+.rating{font-weight:bold;color:#0d3b2e}
 .badge{
-  display:inline-block;
-  padding:4px 8px;
-  border-radius:999px;
-  font-size:11px;
-  font-weight:800;
-  background:#eee
-}
-.badge.ok{
-  background:#e2f1e9;
-  color:var(--ok)
-}
-.badge.cat{
-  background:#f6edd2;
-  color:#725914
+  background:#eee;
+  padding:4px 7px;
+  border-radius:12px;
+  font-size:11px
 }
 .empty{
+  display:none;
   text-align:center;
-  padding:24px;
-  color:var(--muted);
-  display:none
+  padding:18px;
+  color:#777
 }
 
-.alt{
-  background:rgba(255,255,255,.48);
-  border-top:1px solid var(--line);
-  border-bottom:1px solid var(--line)
+.register{
+  background:#ece9e1
 }
 .form-grid{
   display:grid;
-  grid-template-columns:.85fr 1.15fr;
-  gap:16px;
-  align-items:start
+  grid-template-columns:.8fr 1.2fr;
+  gap:15px
 }
-.intro h2{
-  font-size:30px;
-  margin:3px 0 7px
-}
-.intro p{color:var(--muted);margin:0}
-.note{
+.form-info h2{margin:0 0 5px}
+.form-info p{margin:0;color:#777}
+.form-card{
   background:white;
-  border:1px solid var(--line);
-  border-radius:16px;
   padding:14px;
-  margin-top:12px
+  border-radius:12px;
+  border:1px solid #ddd8ce
 }
-.form-card{padding:16px}
-.player-form{
+form{
   display:grid;
   grid-template-columns:1fr 1fr;
-  gap:11px
+  gap:9px
 }
-.player-form label{
+label{
   font-size:13px;
-  font-weight:800
+  font-weight:bold
 }
-.player-form label span{
+label span{
   display:block;
-  margin-bottom:5px
+  margin-bottom:3px
 }
 .check{
   grid-column:1/-1;
   display:flex;
+  gap:7px;
   align-items:center;
-  gap:8px;
-  font-weight:400!important;
-  color:var(--muted)
+  font-weight:normal
 }
-.check input{
-  width:auto;
-  height:auto
-}
-.full{
-  width:100%;
-  grid-column:1/-1
-}
-.msg{
-  margin-top:11px;
-  font-weight:800
-}
-.msg.err{color:var(--danger)}
-.msg.ok{color:var(--ok)}
+.check input{width:auto;height:auto}
+.full{grid-column:1/-1;width:100%}
+.msg{margin-top:8px;font-weight:bold}
+.ok{color:#17633f}
+.err{color:#a53a3a}
 
 .tours{
   display:grid;
-  grid-template-columns:1.2fr .8fr;
-  gap:11px
+  grid-template-columns:1fr 1fr;
+  gap:8px
 }
-.tour-card{padding:17px}
-.tour-card.main{
-  background:linear-gradient(160deg,var(--g1),#184c3a);
-  color:white;
-  border:none
+.tour{
+  background:white;
+  border:1px solid #ddd8ce;
+  padding:13px;
+  border-radius:11px
 }
-.tour-card.main p{color:#d9e4de}
-.tour-card h3{margin:8px 0 4px}
-.tour-card p{
-  margin:0;
-  color:var(--muted)
+.tour:first-child{
+  background:#0d3b2e;
+  color:white
 }
+.tour h3{margin:4px 0}
+.tour p{margin:0;color:#777}
+.tour:first-child p{color:#d9e3df}
 
 footer{
-  padding:20px 0;
-  color:var(--muted);
-  border-top:1px solid var(--line)
+  padding:14px 0;
+  border-top:1px solid #ddd8ce;
+  color:#777
 }
 
-@media(max-width:900px){
+@media(max-width:800px){
   .hero-grid,.form-grid,.tours,.top3{grid-template-columns:1fr}
-  .stats{grid-template-columns:repeat(2,1fr)}
-  .section-title{
-    flex-direction:column;
-    align-items:stretch
-  }
-  .filters{
-    min-width:0;
-    flex-direction:column
-  }
+  .stats{grid-template-columns:1fr 1fr}
+  .head{flex-direction:column;align-items:stretch}
+  .filters{min-width:0;flex-direction:column}
   .links{display:none}
-  .hero h1{font-size:32px}
-  .player-form{grid-template-columns:1fr}
+  .hero h1{font-size:28px}
+  form{grid-template-columns:1fr}
   .check,.full{grid-column:auto}
 }
 </style>
@@ -420,606 +265,463 @@ footer{
 <body>
 
 <header>
-  <div class="wrap nav">
-    <div class="brand">
-      <span class="logo">♟</span>
-      <span>
-        شطرنج السعودية
-        <small>Saudi Chess</small>
-      </span>
-    </div>
-
-    <nav class="links">
-      <a href="#ranking">التصنيف</a>
-      <a href="#register">التسجيل</a>
-      <a href="#tournaments">البطولات</a>
-    </nav>
-  </div>
+<div class="wrap">
+<nav>
+<div class="brand">♟ شطرنج السعودية</div>
+<div class="links">
+<a href="#ranking">التصنيف</a>
+<a href="#register">التسجيل</a>
+<a href="#tournaments">البطولات</a>
+</div>
+</nav>
+</div>
 </header>
 
-<main>
+<div class="hero">
+<div class="wrap hero-grid">
 
-<section class="hero">
-  <div class="wrap hero-grid">
+<div>
+<span class="tag">النسخة الجديدة 7</span>
+<h1>شطرنج السعودية</h1>
+<p>تصنيف سعودي مستقل للاعبين والمناطق والمدن والبطولات.</p>
 
-    <div>
-      <span class="tag">منصة سعودية تجريبية</span>
+<a href="#register" class="btn">سجل كلاعب</a>
 
-      <h1>الهوية الرقمية للاعب الشطرنج في السعودية</h1>
+<div class="stats">
+<div class="stat">
+<strong id="playersCount">0</strong>
+<span>لاعب</span>
+</div>
 
-      <p>
-        تصنيف سعودي مستقل، ترتيب المملكة والمناطق والمدن،
-        وواجهة موحدة للاعبين والبطولات.
-      </p>
+<div class="stat">
+<strong id="regionsCount">0</strong>
+<span>منطقة</span>
+</div>
 
-      <div class="actions">
-        <a class="btn primary" href="#register">سجل كلاعب</a>
-        <a class="btn secondary" href="#ranking">شاهد التصنيف</a>
-      </div>
+<div class="stat">
+<strong id="citiesCount">0</strong>
+<span>مدينة</span>
+</div>
 
-      <div class="stats">
-        <div class="stat">
-          <strong id="playersCount">0</strong>
-          <span>لاعب</span>
-        </div>
+<div class="stat">
+<strong>1500</strong>
+<span>تصنيف البداية</span>
+</div>
+</div>
+</div>
 
-        <div class="stat">
-          <strong id="regionsCount">0</strong>
-          <span>منطقة</span>
-        </div>
+<div class="hero-box">
+<div style="font-size:35px">♚</div>
+<h3>تصنيف شطرنج السعودية</h3>
+<p>ترتيب المملكة والمنطقة والمدينة.</p>
+</div>
 
-        <div class="stat">
-          <strong id="citiesCount">0</strong>
-          <span>مدينة</span>
-        </div>
-
-        <div class="stat">
-          <strong>1500</strong>
-          <span>تصنيف البداية</span>
-        </div>
-      </div>
-    </div>
-
-    <div class="visual">
-      <div class="king">♚</div>
-      <h3>تصنيف شطرنج السعودية</h3>
-      <p>تصنيف مستقل يبنى على المباريات والبطولات المعتمدة.</p>
-
-      <ul>
-        <li>ترتيب المملكة</li>
-        <li>ترتيب المنطقة</li>
-        <li>ترتيب المدينة</li>
-      </ul>
-    </div>
-
-  </div>
-</section>
+</div>
+</div>
 
 <section id="ranking">
+<div class="wrap">
 
-  <div class="wrap">
+<div class="head">
+<div>
+<h2>تصنيف اللاعبين</h2>
+<p>اختر المنطقة أو المدينة.</p>
+</div>
 
-    <div class="section-title">
+<div class="filters">
 
-      <div>
-        <span class="eyebrow">التصنيف</span>
-        <h2>تصنيف شطرنج السعودية</h2>
-        <p>الترتيب الحالي للاعبين المسجلين.</p>
-      </div>
+<select id="regionFilter">
+<option value="">كل المناطق</option>
+<option value="الرياض">الرياض</option>
+<option value="مكة المكرمة">مكة المكرمة</option>
+<option value="المدينة المنورة">المدينة المنورة</option>
+<option value="القصيم">القصيم</option>
+<option value="المنطقة الشرقية">المنطقة الشرقية</option>
+<option value="عسير">عسير</option>
+<option value="تبوك">تبوك</option>
+<option value="حائل">حائل</option>
+<option value="الحدود الشمالية">الحدود الشمالية</option>
+<option value="جازان">جازان</option>
+<option value="نجران">نجران</option>
+<option value="الباحة">الباحة</option>
+<option value="الجوف">الجوف</option>
+</select>
 
-      <div class="filters">
-        <select id="regionFilter"></select>
-        <input id="cityFilter" placeholder="فلترة بالمدينة">
-      </div>
+<input id="cityFilter" placeholder="المدينة">
 
-    </div>
+</div>
+</div>
 
-    <div class="top3">
+<div class="top3">
 
-      <div class="podium first">
-        <span>🥇</span>
-        <h3 id="n1">—</h3>
-        <p id="m1">لا توجد بيانات</p>
-        <strong id="r1">—</strong>
-      </div>
+<div class="podium">
+🥇
+<h3 id="n1">—</h3>
+<p id="m1">لا توجد بيانات</p>
+<strong id="r1">—</strong>
+</div>
 
-      <div class="podium">
-        <span>🥈</span>
-        <h3 id="n2">—</h3>
-        <p id="m2">لا توجد بيانات</p>
-        <strong id="r2">—</strong>
-      </div>
+<div class="podium">
+🥈
+<h3 id="n2">—</h3>
+<p id="m2">لا توجد بيانات</p>
+<strong id="r2">—</strong>
+</div>
 
-      <div class="podium">
-        <span>🥉</span>
-        <h3 id="n3">—</h3>
-        <p id="m3">لا توجد بيانات</p>
-        <strong id="r3">—</strong>
-      </div>
+<div class="podium">
+🥉
+<h3 id="n3">—</h3>
+<p id="m3">لا توجد بيانات</p>
+<strong id="r3">—</strong>
+</div>
 
-    </div>
+</div>
 
-    <div class="table-card">
+<div class="table-card">
 
-      <div class="table-head">
-        <strong>جدول الترتيب</strong>
-        <span id="results">0 نتيجة</span>
-      </div>
+<div class="table-head">
+<strong>جدول الترتيب</strong>
+<span id="results">0 لاعب</span>
+</div>
 
-      <div class="table-wrap">
+<div class="table-wrap">
 
-        <table>
-          <thead>
-            <tr>
-              <th>#</th>
-              <th>اللاعب</th>
-              <th>المدينة</th>
-              <th>المنطقة</th>
-              <th>الفئة</th>
-              <th>الحالة</th>
-              <th>التصنيف</th>
-            </tr>
-          </thead>
+<table>
+<thead>
+<tr>
+<th>#</th>
+<th>اللاعب</th>
+<th>المدينة</th>
+<th>المنطقة</th>
+<th>الفئة</th>
+<th>التصنيف</th>
+</tr>
+</thead>
 
-          <tbody id="tbody"></tbody>
-        </table>
+<tbody id="tbody"></tbody>
+</table>
 
-        <div id="empty" class="empty">
-          لا يوجد لاعبون مطابقون للفلتر.
-        </div>
+<div id="empty" class="empty">
+لا يوجد لاعبون في الاختيار الحالي.
+</div>
 
-      </div>
-    </div>
+</div>
+</div>
 
-  </div>
+</div>
 </section>
 
-<section id="register" class="alt">
+<section id="register" class="register">
+<div class="wrap form-grid">
 
-  <div class="wrap form-grid">
+<div class="form-info">
+<h2>تسجيل لاعب</h2>
+<p>يبدأ كل لاعب بتصنيف 1500 نقطة.</p>
+</div>
 
-    <div class="intro">
+<div class="form-card">
 
-      <span class="eyebrow">التسجيل</span>
+<form id="form">
 
-      <h2>أنشئ ملف لاعب</h2>
+<label>
+<span>اسم اللاعب</span>
+<input id="name" required>
+</label>
 
-      <p>
-        رقم الجوال لا يظهر للعامة،
-        ويستخدم لمنع تكرار الحساب والتحقق لاحقًا.
-      </p>
+<label>
+<span>رقم الجوال</span>
+<input id="mobile" required placeholder="05xxxxxxxx">
+</label>
 
-      <div class="note">
+<label>
+<span>المنطقة</span>
 
-        <strong>بعد التسجيل</strong>
+<select id="region" required>
+<option value="">اختر المنطقة</option>
+<option value="الرياض">الرياض</option>
+<option value="مكة المكرمة">مكة المكرمة</option>
+<option value="المدينة المنورة">المدينة المنورة</option>
+<option value="القصيم">القصيم</option>
+<option value="المنطقة الشرقية">المنطقة الشرقية</option>
+<option value="عسير">عسير</option>
+<option value="تبوك">تبوك</option>
+<option value="حائل">حائل</option>
+<option value="الحدود الشمالية">الحدود الشمالية</option>
+<option value="جازان">جازان</option>
+<option value="نجران">نجران</option>
+<option value="الباحة">الباحة</option>
+<option value="الجوف">الجوف</option>
+</select>
 
-        <ul>
-          <li>يبدأ التصنيف من 1500.</li>
-          <li>يظهر اللاعب في ترتيب منطقته ومدينته.</li>
-          <li>يمكن إشراكه لاحقًا في البطولات المعتمدة.</li>
-        </ul>
+</label>
 
-      </div>
-    </div>
+<label>
+<span>المدينة</span>
+<input id="city" required>
+</label>
 
-    <div class="form-card">
+<label>
+<span>الفئة</span>
+<select id="category">
+<option value="open">مفتوح</option>
+<option value="u18">تحت 18</option>
+<option value="u14">تحت 14</option>
+<option value="u10">تحت 10</option>
+</select>
+</label>
 
-      <form id="form" class="player-form">
+<label class="check">
+<input type="checkbox" required>
+أوافق على قواعد المنصة.
+</label>
 
-        <label>
-          <span>اسم اللاعب</span>
-          <input id="name" required minlength="2" maxlength="60"
-          placeholder="الاسم الكامل أو الرياضي">
-        </label>
+<button class="btn full" type="submit">
+إنشاء ملف اللاعب
+</button>
 
-        <label>
-          <span>رقم الجوال</span>
-          <input id="mobile" required inputmode="tel"
-          placeholder="05xxxxxxxx">
-        </label>
+</form>
 
-        <label>
-          <span>المنطقة</span>
-          <select id="region" required></select>
-        </label>
+<div id="msg" class="msg"></div>
 
-        <label>
-          <span>المدينة</span>
-          <input id="city" required minlength="2" maxlength="50"
-          placeholder="مثال: الرياض">
-        </label>
-
-        <label>
-          <span>الفئة</span>
-          <select id="category">
-            <option value="open">مفتوح</option>
-            <option value="u18">تحت 18</option>
-            <option value="u14">تحت 14</option>
-            <option value="u10">تحت 10</option>
-          </select>
-        </label>
-
-        <label class="check">
-          <input type="checkbox" required>
-          <span>أوافق على قواعد المنصة وسياسة اللعب النظيف.</span>
-        </label>
-
-        <button class="btn primary full" type="submit">
-          إنشاء ملف اللاعب
-        </button>
-
-      </form>
-
-      <div id="msg" class="msg"></div>
-
-    </div>
-
-  </div>
+</div>
+</div>
 </section>
 
 <section id="tournaments">
+<div class="wrap">
 
-  <div class="wrap">
+<div class="head">
+<div>
+<h2>البطولات</h2>
+<p>البطولات القادمة في شطرنج السعودية.</p>
+</div>
+</div>
 
-    <div class="section-title">
+<div class="tours">
 
-      <div>
-        <span class="eyebrow">البطولات</span>
-        <h2>البطولات القادمة</h2>
-        <p>
-          تجهيز أول بطولة إلكترونية بعد اكتمال الدفعة الأولى من اللاعبين.
-        </p>
-      </div>
+<div class="tour">
+<strong>قريبًا</strong>
+<h3>بطولة شطرنج السعودية الافتتاحية</h3>
+<p>بطولة Rapid مجانية للمسجلين الأوائل.</p>
+</div>
 
-    </div>
+<div class="tour">
+<strong>لاحقًا</strong>
+<h3>دوري المناطق</h3>
+<p>منافسات بين مناطق المملكة.</p>
+</div>
 
-    <div class="tours">
-
-      <article class="tour-card main">
-        <span class="tag">قريبًا</span>
-        <h3>بطولة شطرنج السعودية الافتتاحية</h3>
-        <p>
-          Rapid — بطولة إلكترونية مجانية للمسجلين الأوائل.
-        </p>
-      </article>
-
-      <article class="tour-card">
-        <span class="tag">لاحقًا</span>
-        <h3>دوري المناطق</h3>
-        <p>
-          منافسات بين مناطق المملكة مع ترتيب مستقل.
-        </p>
-      </article>
-
-    </div>
-
-  </div>
+</div>
+</div>
 </section>
 
-</main>
-
 <footer>
-  <div class="wrap">
-    <strong>شطرنج السعودية</strong>
-    — منصة سعودية تجريبية للشطرنج.
-  </div>
+<div class="wrap">
+شطرنج السعودية
+</div>
 </footer>
 
 <script>
-const SUPABASE_URL =
-'https://zjxkxhsvltihucdacjrv.supabase.co';
 
-const SUPABASE_KEY =
-'sb_publishable_bwFGOiJzT_Xv656pLPR8ww_oJxFzSGJ';
+const URL='https://zjxkxhsvltihucdacjrv.supabase.co';
 
-const REGIONS = [
-'الرياض',
-'مكة المكرمة',
-'المدينة المنورة',
-'القصيم',
-'المنطقة الشرقية',
-'عسير',
-'تبوك',
-'حائل',
-'الحدود الشمالية',
-'جازان',
-'نجران',
-'الباحة',
-'الجوف'
-];
+const KEY='sb_publishable_bwFGOiJzT_Xv656pLPR8ww_oJxFzSGJ';
 
-const CAT = {
+const $=x=>document.querySelector(x);
+
+const CAT={
 open:'مفتوح',
 u18:'تحت 18',
 u14:'تحت 14',
 u10:'تحت 10'
 };
 
-const $ = s => document.querySelector(s);
+let ALL=[];
 
-function esc(s){
-  return String(s ?? '').replace(
-    /[&<>"']/g,
-    c => ({
-      '&':'&amp;',
-      '<':'&lt;',
-      '>':'&gt;',
-      '"':'&quot;',
-      "'":'&#39;'
-    }[c])
-  );
+async function loadPlayers(){
+
+const response=await fetch(
+URL+
+'/rest/v1/public_players?select=id,name,region,city,category,rating,rating_status,created_at&order=rating.desc,created_at.asc',
+{
+headers:{
+apikey:KEY
 }
-
-function api(path,opts={}){
-  return fetch(
-    SUPABASE_URL + '/rest/v1/' + path,
-    {
-      ...opts,
-      headers:{
-        apikey:SUPABASE_KEY,
-        'Content-Type':'application/json',
-        ...(opts.headers || {})
-      }
-    }
-  );
 }
-
-function setup(){
-  $('#region').innerHTML =
-    '<option value="">اختر المنطقة</option>' +
-    REGIONS.map(x => `<option value="${x}">${x}</option>`).join('');
-
-  $('#regionFilter').innerHTML =
-    '<option value="">كل المناطق</option>' +
-    REGIONS.map(x => `<option value="${x}">${x}</option>`).join('');
-}
-
-async function players(){
-  const r = await api(
-    'public_players?select=id,name,region,city,category,rating,rating_status,created_at&order=rating.desc,created_at.asc'
-  );
-
-  if(!r.ok){
-    throw new Error('تعذر تحميل البيانات');
-  }
-
-  return r.json();
-}
-
-function filt(a){
-  const selectedRegion = ($('#regionFilter').value || '').trim();
-
-  const selectedCity =
-    ($('#cityFilter').value || '')
-    .trim()
-    .toLowerCase();
-
-  return a.filter(p => {
-    const playerRegion = (p.region || '').trim();
-
-    const playerCity =
-      (p.city || '')
-      .trim()
-      .toLowerCase();
-
-    const regionOK =
-      !selectedRegion ||
-      playerRegion === selectedRegion;
-
-    const cityOK =
-      !selectedCity ||
-      playerCity.includes(selectedCity);
-
-    return regionOK && cityOK;
-  });
-}
-
-function top(a){
-  [1,2,3].forEach((n,i)=>{
-    const p = a[i];
-
-    $('#n'+n).textContent =
-      p ? p.name : '—';
-
-    $('#m'+n).textContent =
-      p ? `${p.city} — ${p.region}` : 'لا توجد بيانات';
-
-    $('#r'+n).textContent =
-      p ? p.rating : '—';
-  });
-}
-
-function table(a){
-  $('#tbody').innerHTML =
-    a.map(
-      (p,i)=>`
-        <tr>
-          <td>${i+1}</td>
-
-          <td>
-            <strong>${esc(p.name)}</strong>
-          </td>
-
-          <td>${esc(p.city)}</td>
-
-          <td>${esc(p.region)}</td>
-
-          <td>
-            <span class="badge cat">
-              ${CAT[p.category] || 'مفتوح'}
-            </span>
-          </td>
-
-          <td>
-            <span class="badge ${p.rating_status==='verified'?'ok':''}">
-              ${p.rating_status==='verified'?'معتمد':'مبدئي'}
-            </span>
-          </td>
-
-          <td class="rating">
-            ${p.rating}
-          </td>
-        </tr>
-      `
-    ).join('');
-
-  $('#empty').style.display =
-    a.length ? 'none' : 'block';
-
-  $('#results').textContent =
-    a.length + ' نتيجة';
-}
-
-async function render(){
-  try{
-    const all = await players();
-
-    $('#playersCount').textContent =
-      all.length;
-
-    $('#regionsCount').textContent =
-      new Set(
-        all
-        .map(x => (x.region || '').trim())
-        .filter(Boolean)
-      ).size;
-
-    $('#citiesCount').textContent =
-      new Set(
-        all
-        .map(x => (x.city || '').trim())
-        .filter(Boolean)
-      ).size;
-
-    const filtered = filt(all);
-
-    top(filtered);
-
-    table(filtered);
-  }
-  catch(e){
-    console.error(e);
-
-    $('#msg').className =
-      'msg err';
-
-    $('#msg').textContent =
-      'تعذر تحميل البيانات';
-  }
-}
-
-$('#form').addEventListener(
-  'submit',
-  async e => {
-
-    e.preventDefault();
-
-    const m =
-      $('#mobile').value.replace(
-        /[\s-]/g,
-        ''
-      );
-
-    $('#msg').textContent='';
-
-    if(!/^05\d{8}$/.test(m)){
-      $('#msg').className =
-        'msg err';
-
-      $('#msg').textContent =
-        'أدخل رقم جوال بصيغة 05xxxxxxxx';
-
-      return;
-    }
-
-    const body = {
-      p_name:
-        $('#name').value.trim(),
-
-      p_mobile:m,
-
-      p_region:
-        $('#region').value,
-
-      p_city:
-        $('#city').value.trim(),
-
-      p_category:
-        $('#category').value
-    };
-
-    try{
-      const r = await api(
-        'rpc/register_player',
-        {
-          method:'POST',
-          body:JSON.stringify(body)
-        }
-      );
-
-      if(!r.ok){
-        const t =
-          await r.text();
-
-        if(t.includes('duplicate')){
-          throw new Error(
-            'رقم الجوال مسجل مسبقًا'
-          );
-        }
-
-        throw new Error(
-          'تعذر التسجيل'
-        );
-      }
-
-      e.target.reset();
-
-      $('#msg').className =
-        'msg ok';
-
-      $('#msg').textContent =
-        'تم إنشاء ملف اللاعب بنجاح';
-
-      await render();
-    }
-    catch(x){
-      $('#msg').className =
-        'msg err';
-
-      $('#msg').textContent =
-        x.message;
-    }
-  }
 );
 
-$('#regionFilter').addEventListener(
-  'change',
-  render
-);
-
-$('#cityFilter').addEventListener(
-  'input',
-  render
-);
-
-/* إزالة أي Service Worker قديم */
-if('serviceWorker' in navigator){
-  navigator.serviceWorker
-  .getRegistrations()
-  .then(
-    rs => rs.forEach(r => r.unregister())
-  );
+if(!response.ok){
+throw new Error('تعذر تحميل اللاعبين');
 }
 
-if('caches' in window){
-  caches.keys()
-  .then(
-    ks => ks.forEach(k => caches.delete(k))
-  );
+ALL=await response.json();
+
+$('#playersCount').textContent=ALL.length;
+
+$('#regionsCount').textContent=
+new Set(ALL.map(x=>x.region).filter(Boolean)).size;
+
+$('#citiesCount').textContent=
+new Set(ALL.map(x=>x.city).filter(Boolean)).size;
+
+applyFilter();
+
 }
 
-setup();
-render();
+function applyFilter(){
+
+const region=$('#regionFilter').value.trim();
+
+const city=$('#cityFilter').value.trim();
+
+const list=ALL.filter(player=>{
+
+const regionMatch=
+!region ||
+(player.region||'').trim()===region;
+
+const cityMatch=
+!city ||
+(player.city||'').includes(city);
+
+return regionMatch && cityMatch;
+
+});
+
+render(list);
+
+}
+
+function render(list){
+
+[1,2,3].forEach((number,index)=>{
+
+const player=list[index];
+
+$('#n'+number).textContent=
+player ? player.name : '—';
+
+$('#m'+number).textContent=
+player
+? player.city+' — '+player.region
+: 'لا توجد بيانات';
+
+$('#r'+number).textContent=
+player ? player.rating : '—';
+
+});
+
+$('#tbody').innerHTML=list.map((p,i)=>`
+
+<tr>
+
+<td>${i+1}</td>
+
+<td><strong>${p.name}</strong></td>
+
+<td>${p.city}</td>
+
+<td>${p.region}</td>
+
+<td>${CAT[p.category]||'مفتوح'}</td>
+
+<td class="rating">${p.rating}</td>
+
+</tr>
+
+`).join('');
+
+$('#results').textContent=
+list.length+' لاعب';
+
+$('#empty').style.display=
+list.length ? 'none':'block';
+
+}
+
+$('#regionFilter').onchange=applyFilter;
+
+$('#cityFilter').oninput=applyFilter;
+
+$('#form').onsubmit=async function(e){
+
+e.preventDefault();
+
+const mobile=
+$('#mobile').value.replace(/[\s-]/g,'');
+
+if(!/^05\d{8}$/.test(mobile)){
+
+$('#msg').className='msg err';
+
+$('#msg').textContent=
+'رقم الجوال يجب أن يكون 05xxxxxxxx';
+
+return;
+
+}
+
+const body={
+
+p_name:$('#name').value.trim(),
+
+p_mobile:mobile,
+
+p_region:$('#region').value,
+
+p_city:$('#city').value.trim(),
+
+p_category:$('#category').value
+
+};
+
+try{
+
+const response=await fetch(
+URL+'/rest/v1/rpc/register_player',
+{
+method:'POST',
+headers:{
+apikey:KEY,
+'Content-Type':'application/json'
+},
+body:JSON.stringify(body)
+}
+);
+
+if(!response.ok){
+
+const text=await response.text();
+
+if(text.includes('duplicate')){
+throw new Error('رقم الجوال مسجل مسبقًا');
+}
+
+throw new Error('تعذر التسجيل');
+
+}
+
+this.reset();
+
+$('#msg').className='msg ok';
+
+$('#msg').textContent=
+'تم تسجيل اللاعب بنجاح';
+
+await loadPlayers();
+
+}catch(error){
+
+$('#msg').className='msg err';
+
+$('#msg').textContent=error.message;
+
+}
+
+};
+
+loadPlayers();
+
 </script>
 
 </body>
