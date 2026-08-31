@@ -214,7 +214,7 @@ header{
   opacity:.95;
 }
 .quick-icons{
-  display:grid;
+  display:none;
   grid-template-columns:repeat(4,1fr);
   gap:6px;
   margin-top:8px;
@@ -678,6 +678,10 @@ footer{
 @media(max-width:800px){
   body{padding-bottom:61px}
 
+  .quick-icons{
+    display:grid;
+  }
+
   .wrap{
     width:min(100% - 18px,1100px)
   }
@@ -853,15 +857,7 @@ footer{
       <h1>منصة الشطرنج السعودية</h1>
 
       <p>العب، نافس، وارفع تصنيفك بين لاعبي المملكة.</p>
-
-      <div class="actions">
-        <a href="play.html?v=5" class="btn gold protected-play">♟ العب الآن</a>
-        <a href="#register" class="btn" id="heroAccountBtn">إنشاء حساب</a>
-        <a href="#ranking" class="btn light">التصنيف</a>
-      </div>
-
-
-      <div class="quick-icons">
+<div class="quick-icons">
         <a class="quick-icon protected-play" href="play.html?v=5">
           <strong>♟</strong>
           <span>العب</span>
@@ -1388,10 +1384,10 @@ function renderAccount(){
     $('#accountCity').textContent=currentProfile.city||'—';
     $('#accountGames').textContent=currentProfile.games_count??0;
     $('#navAccount').textContent=currentProfile.name;
-    $('#heroAccountBtn').textContent='حسابي';
+    if($('#heroAccountBtn')) $('#heroAccountBtn').textContent='حسابي';
   }else{
     $('#navAccount').textContent='دخول / حساب جديد';
-    $('#heroAccountBtn').textContent='إنشاء حساب';
+    if($('#heroAccountBtn')) $('#heroAccountBtn').textContent='إنشاء حساب';
   }
 }
 
