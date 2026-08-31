@@ -931,7 +931,7 @@ footer{
           <thead>
             <tr>
               <th>#</th>
-              <th>اللاعب</th>
+              <th>اسم المستخدم</th>
               <th>المنطقة</th>
               <th>المدينة</th>
               <th>الفئة</th>
@@ -964,8 +964,10 @@ footer{
 
         <form id="signupForm" class="auth-form">
           <label>
-            <span>اسم اللاعب</span>
-            <input id="signupName" required minlength="2" maxlength="60" autocomplete="name">
+            <span>اسم المستخدم</span>
+            <input id="signupName" required minlength="3" maxlength="20"
+                   autocomplete="username" inputmode="latin"
+                   placeholder="مثال: ahmed_99">
           </label>
 
           <label>
@@ -1199,6 +1201,13 @@ function authErrorMessage(error,context=''){
   }
 
   if(
+    raw.includes('players_name_unique_ci') ||
+    raw.includes('username_taken')
+  ){
+    return 'اسم المستخدم مستخدم بالفعل. اختر اسمًا آخر.';
+  }
+
+  if(
     raw.includes('user already registered') ||
     raw.includes('already been registered') ||
     raw.includes('already exists')
@@ -1398,7 +1407,8 @@ async function ensureProfile(){
   const metadata=currentSession?.user?.user_metadata||{};
 
   const fallback=pendingSignupProfile||{
-    name:metadata.name||'لاعب',
+    name:metadata.username||metadata.name||'player',
+    username:metadata.username||metadata.name||'player',
     mobile:metadata.mobile||'',
     region:metadata.region||'الرياض',
     city:metadata.city||'الرياض',
@@ -1452,10 +1462,33 @@ $('#signupForm').addEventListener('submit',async event=>{
   event.preventDefault();
   setAuthMsg('');
 
+  const username=$('#signupName').value.trim().toLowerCase();
   const email=$('#signupEmail').value.trim().toLowerCase();
   const mobile=normalizeSaudiMobile($('#signupMobile').value);
   const password=$('#signupPassword').value;
   const password2=$('#signupPassword2').value;
+
+  if(!/^[a-z0-9_]{3,20}$/.test(username)){
+    return setAuthMsg(
+      'اسم المستخدم يجب أن يكون من 3 إلى 20 خانة: أحرف إنجليزية أو أرقام أو _ فقط.',
+      'err'
+    );
+  }
+
+  const {data:usernameAvailable,error:usernameCheckError}=await supabase
+    .rpc('is_username_available',{p_username:username});
+
+  if(usernameCheckError){
+    console.error(usernameCheckError);
+    return setAuthMsg(
+      'تعذر التحقق من اسم المستخدم. شغّل ملف SQL الخاص بأسماء المستخدمين في Supabase أولًا.',
+      'err'
+    );
+  }
+
+  if(!usernameAvailable){
+    return setAuthMsg('اسم المستخدم مستخدم بالفعل. اختر اسمًا آخر.','err');
+  }
 
   if(!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)){
     return setAuthMsg('أدخل بريدًا إلكترونيًا صحيحًا.','err');
@@ -1482,7 +1515,8 @@ $('#signupForm').addEventListener('submit',async event=>{
   }
 
   const profileData={
-    name:$('#signupName').value.trim(),
+    name:username,
+    username:username,
     mobile:mobile.local,
     region:$('#signupRegion').value,
     city:$('#signupCity').value,
