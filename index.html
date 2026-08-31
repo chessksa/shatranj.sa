@@ -8,7 +8,6 @@
 
 <style>
 *{box-sizing:border-box}
-
 html{scroll-behavior:smooth}
 
 :root{
@@ -199,7 +198,6 @@ header{
   font-size:12px
 }
 
-
 .nav-soon{
   display:inline-flex;
   align-items:center;
@@ -213,12 +211,14 @@ header{
   cursor:default;
   opacity:.95;
 }
+
 .quick-icons{
   display:none;
   grid-template-columns:repeat(4,1fr);
   gap:6px;
   margin-top:8px;
 }
+
 .quick-icon{
   min-height:58px;
   border:1px solid #ded8cd;
@@ -233,25 +233,30 @@ header{
   font-weight:900;
   color:var(--green);
 }
+
 .quick-icon strong{
   font-size:20px;
   line-height:1;
 }
+
 .quick-icon.soon{
   color:#79621f;
   background:#fff9e9;
   border-color:#e4d39d;
 }
+
 @media(max-width:520px){
   .quick-icons{
     grid-template-columns:repeat(4,1fr);
     gap:4px;
   }
+
   .quick-icon{
     min-height:54px;
     font-size:10px;
     padding:4px;
   }
+
   .quick-icon strong{font-size:18px}
 }
 
@@ -417,7 +422,6 @@ th{
 }
 
 td{font-size:12px}
-
 tbody tr:hover{background:#fcfbf8}
 
 .rating{
@@ -445,13 +449,6 @@ tbody tr:hover{background:#fcfbf8}
   background:#ebe8df;
   border-top:1px solid #ddd7cc;
   border-bottom:1px solid #ddd7cc
-}
-
-.form-grid{
-  display:grid;
-  grid-template-columns:.62fr 1.38fr;
-  gap:10px;
-  align-items:start
 }
 
 .form-info{
@@ -520,50 +517,6 @@ label span{
 .ok{color:#17633f}
 .err{color:#a53a3a}
 
-/* TOURNAMENTS */
-.tours{
-  display:grid;
-  grid-template-columns:1fr 1fr;
-  gap:6px
-}
-
-.tour{
-  background:#fff;
-  border:1px solid #ddd7cc;
-  padding:9px 10px;
-  border-radius:9px
-}
-
-.tour:first-child{
-  background:var(--green);
-  color:#fff
-}
-
-.tour strong{
-  font-size:10px
-}
-
-.tour h3{
-  margin:2px 0;
-  font-size:15px
-}
-
-.tour p{
-  margin:0;
-  color:#777;
-  font-size:11px
-}
-
-.tour:first-child p{color:#d7e2dd}
-
-footer{
-  padding:10px 0;
-  border-top:1px solid #ddd7cc;
-  color:#777;
-  font-size:11px
-}
-
-
 /* AUTH */
 .auth-tabs{
   display:grid;
@@ -571,6 +524,7 @@ footer{
   gap:6px;
   margin-bottom:10px;
 }
+
 .auth-tab{
   height:39px;
   border:1px solid #d6d0c4;
@@ -580,26 +534,33 @@ footer{
   font-weight:900;
   cursor:pointer;
 }
+
 .auth-tab.active{
   background:var(--green);
   color:#fff;
   border-color:var(--green);
 }
+
 .auth-form[hidden],
 .account-panel[hidden],
 .otp-box[hidden]{
   display:none!important;
 }
+
 .auth-form{
   display:grid;
   grid-template-columns:1fr 1fr;
   gap:7px;
 }
+
 .auth-form .full{grid-column:1/-1}
+
 .password-wrap{
   position:relative;
 }
+
 .password-wrap input{padding-left:64px}
+
 .show-pass{
   position:absolute;
   left:5px;
@@ -614,60 +575,64 @@ footer{
   font-weight:900;
   cursor:pointer;
 }
+
 .account-panel{
   display:grid;
   grid-template-columns:1fr auto;
   gap:10px;
   align-items:center;
 }
+
 .account-card{
   display:grid;
   grid-template-columns:repeat(4,1fr);
   gap:6px;
   margin-top:9px;
 }
+
 .account-stat{
   padding:8px 9px;
   border:1px solid #e4ded2;
   background:#faf8f3;
   border-radius:8px;
 }
+
 .account-stat small{
   display:block;
   color:#777;
   font-size:10px;
 }
+
 .account-stat strong{
   display:block;
   color:var(--green);
   font-size:15px;
 }
+
 .account-actions{
   display:flex;
   gap:6px;
   flex-wrap:wrap;
   margin-top:9px;
 }
+
 .account-actions .btn{min-height:37px}
+
 .auth-note{
   margin-top:7px;
   font-size:10px;
   color:#777;
 }
-.otp-box{
-  margin-top:9px;
-  padding:10px;
-  border:1px dashed #c8b16c;
-  background:#fff9e7;
-  border-radius:9px;
-}
-.otp-box p{
-  margin:0 0 7px;
-  font-size:12px;
-  color:#6d5a24;
-}
+
 .nav-account{
   color:#f0d77c!important;
+}
+
+footer{
+  padding:10px 0;
+  border-top:1px solid #ddd7cc;
+  color:#777;
+  font-size:11px
 }
 
 /* MOBILE PLAY BAR */
@@ -687,9 +652,7 @@ footer{
   }
 
   .nav{min-height:54px}
-
   .brand{font-size:18px}
-
   .links{display:none}
 
   .hero{
@@ -761,13 +724,6 @@ footer{
   .podium p{font-size:9px}
   .podium strong{font-size:16px}
 
-  .form-grid{
-    grid-template-columns:1fr;
-    gap:7px
-  }
-
-  .form-info{padding-top:0}
-
   form,
   .auth-form{
     grid-template-columns:1fr 1fr
@@ -779,10 +735,6 @@ footer{
 
   .account-card{
     grid-template-columns:1fr 1fr;
-  }
-
-  .tours{
-    grid-template-columns:1fr
   }
 
   .mobile-play{
@@ -807,10 +759,6 @@ footer{
   .filters{
     display:grid;
     grid-template-columns:1fr 1fr
-  }
-
-  .actions .btn{
-    flex:1
   }
 
   form,
@@ -853,23 +801,25 @@ footer{
 
     <div class="hero-main">
       <span class="tag">شطرنج السعودية</span>
-
       <h1>منصة الشطرنج السعودية</h1>
-
       <p>العب، نافس، وارفع تصنيفك بين لاعبي المملكة.</p>
-<div class="quick-icons">
+
+      <div class="quick-icons">
         <a class="quick-icon protected-play" href="play.html?v=5">
           <strong>♟</strong>
           <span>العب</span>
         </a>
+
         <a class="quick-icon" href="#ranking">
           <strong>🏅</strong>
           <span>التصنيف</span>
         </a>
+
         <a class="quick-icon" href="#register">
           <strong>👤</strong>
           <span>الحساب</span>
         </a>
+
         <div class="quick-icon soon" title="قريبًا">
           <strong>🏆</strong>
           <span>البطولات</span>
@@ -998,12 +948,7 @@ footer{
 
 <!-- ACCOUNT -->
 <section id="register" class="register">
-  <div class="wrap form-grid">
-
-    <div class="form-info">
-      <h2>حساب اللاعب</h2>
-      <p>أنشئ حسابًا بالبريد الإلكتروني وكلمة المرور، ثم فعّل الحساب من رسالة التأكيد. يبدأ اللاعب الجديد بتصنيف 1500 نقطة.</p>
-    </div>
+  <div class="wrap">
 
     <div class="form-card">
 
@@ -1108,12 +1053,29 @@ footer{
       <div id="accountPanel" class="account-panel" hidden>
         <div>
           <strong id="accountWelcome">مرحبًا</strong>
+
           <div class="account-card">
-            <div class="account-stat"><small>التصنيف</small><strong id="accountRating">1500</strong></div>
-            <div class="account-stat"><small>المنطقة</small><strong id="accountRegion">—</strong></div>
-            <div class="account-stat"><small>المدينة</small><strong id="accountCity">—</strong></div>
-            <div class="account-stat"><small>المباريات</small><strong id="accountGames">0</strong></div>
+            <div class="account-stat">
+              <small>التصنيف</small>
+              <strong id="accountRating">1500</strong>
+            </div>
+
+            <div class="account-stat">
+              <small>المنطقة</small>
+              <strong id="accountRegion">—</strong>
+            </div>
+
+            <div class="account-stat">
+              <small>المدينة</small>
+              <strong id="accountCity">—</strong>
+            </div>
+
+            <div class="account-stat">
+              <small>المباريات</small>
+              <strong id="accountGames">0</strong>
+            </div>
           </div>
+
           <div class="account-actions">
             <a class="btn gold" href="play.html?v=5">♟ العب الآن</a>
             <button id="logoutBtn" class="btn light" type="button">تسجيل الخروج</button>
@@ -1124,6 +1086,7 @@ footer{
     </div>
   </div>
 </section>
+
 <footer>
   <div class="wrap">
     <strong>شطرنج السعودية</strong>
@@ -1157,7 +1120,13 @@ const CITIES={
   'الجوف':['سكاكا','دومة الجندل','القريات','طبرجل']
 };
 
-const CATEGORY={open:'مفتوح',u18:'تحت 18',u14:'تحت 14',u10:'تحت 10'};
+const CATEGORY={
+  open:'مفتوح',
+  u18:'تحت 18',
+  u14:'تحت 14',
+  u10:'تحت 10'
+};
+
 let ALL_PLAYERS=[];
 let currentSession=null;
 let currentProfile=null;
@@ -1165,16 +1134,22 @@ let pendingSignupProfile=JSON.parse(sessionStorage.getItem('pending_signup_profi
 
 function escapeHTML(text){
   return String(text??'').replace(/[&<>"']/g,c=>({
-    '&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'
+    '&':'&amp;',
+    '<':'&lt;',
+    '>':'&gt;',
+    '"':'&quot;',
+    "'":'&#39;'
   }[c]));
 }
 
 function fillCities(selectElement,cities,firstOption){
   selectElement.innerHTML='';
+
   const first=document.createElement('option');
   first.value='';
   first.textContent=firstOption;
   selectElement.appendChild(first);
+
   cities.forEach(city=>{
     const option=document.createElement('option');
     option.value=city;
@@ -1184,20 +1159,25 @@ function fillCities(selectElement,cities,firstOption){
 }
 
 function allCities(){
-  return [...new Set(Object.values(CITIES).flat())].sort((a,b)=>a.localeCompare(b,'ar'));
+  return [...new Set(Object.values(CITIES).flat())]
+    .sort((a,b)=>a.localeCompare(b,'ar'));
 }
 
 function normalizeSaudiMobile(value){
   const digits=String(value||'').replace(/\D/g,'');
+
   if(/^05\d{8}$/.test(digits)){
     return {local:digits,e164:'+966'+digits.slice(1)};
   }
+
   if(/^5\d{8}$/.test(digits)){
     return {local:'0'+digits,e164:'+966'+digits};
   }
+
   if(/^9665\d{8}$/.test(digits)){
     return {local:'0'+digits.slice(3),e164:'+'+digits};
   }
+
   return null;
 }
 
@@ -1213,36 +1193,50 @@ function authErrorMessage(error,context=''){
   if(raw.includes('invalid login credentials')){
     return 'البريد الإلكتروني أو كلمة المرور غير صحيحة.';
   }
-  if(raw.includes('user already registered') || raw.includes('already been registered') || raw.includes('already exists')){
+
+  if(
+    raw.includes('user already registered') ||
+    raw.includes('already been registered') ||
+    raw.includes('already exists')
+  ){
     return 'يوجد حساب بهذا الرقم بالفعل. استخدم تسجيل الدخول.';
   }
+
   if(raw.includes('email not confirmed')){
     return 'يجب تأكيد البريد الإلكتروني أولًا من الرسالة المرسلة إليك.';
   }
+
   if(raw.includes('email') && raw.includes('already')){
     return 'يوجد حساب بهذا البريد الإلكتروني بالفعل. استخدم تسجيل الدخول.';
   }
+
   if(raw.includes('password') && raw.includes('characters')){
     return 'كلمة المرور يجب أن تكون 8 أحرف على الأقل.';
   }
+
   if(raw.includes('rate limit')){
     return 'محاولات كثيرة خلال وقت قصير. انتظر قليلًا ثم أعد المحاولة.';
   }
+
   if(raw.includes('otp') || raw.includes('token')){
     return 'رمز التحقق غير صحيح أو انتهت صلاحيته.';
   }
+
   if(context==='profile'){
     return 'تم الدخول، لكن تعذر ربط الحساب بملف اللاعب. شغّل ملف SQL الجديد في Supabase.';
   }
+
   return error?.message || 'حدث خطأ غير متوقع.';
 }
 
 function switchAuthTab(tab){
   const signup=tab==='signup';
+
   $('#signupTab').classList.toggle('active',signup);
   $('#loginTab').classList.toggle('active',!signup);
   $('#signupForm').hidden=!signup;
   $('#loginForm').hidden=signup;
+
   setAuthMsg('');
 }
 
@@ -1253,6 +1247,7 @@ document.querySelectorAll('.show-pass').forEach(button=>{
   button.addEventListener('click',()=>{
     const input=document.getElementById(button.dataset.target);
     const hidden=input.type==='password';
+
     input.type=hidden?'text':'password';
     button.textContent=hidden?'إخفاء':'إظهار';
   });
@@ -1261,11 +1256,13 @@ document.querySelectorAll('.show-pass').forEach(button=>{
 /* مدن إنشاء الحساب */
 $('#signupRegion').addEventListener('change',function(){
   const region=this.value;
+
   if(!region){
     $('#signupCity').disabled=true;
     fillCities($('#signupCity'),[],'اختر المنطقة أولًا');
     return;
   }
+
   $('#signupCity').disabled=false;
   fillCities($('#signupCity'),CITIES[region]||[],'اختر المدينة');
 });
@@ -1273,9 +1270,16 @@ $('#signupRegion').addEventListener('change',function(){
 /* مدن الفلتر */
 $('#regionFilter').addEventListener('change',function(){
   const region=this.value;
-  fillCities($('#cityFilter'),region?(CITIES[region]||[]):allCities(),'كل المدن');
+
+  fillCities(
+    $('#cityFilter'),
+    region?(CITIES[region]||[]):allCities(),
+    'كل المدن'
+  );
+
   applyFilter();
 });
+
 $('#cityFilter').addEventListener('change',applyFilter);
 
 async function loadPlayers(){
@@ -1288,9 +1292,13 @@ async function loadPlayers(){
   if(error) throw error;
 
   ALL_PLAYERS=data||[];
+
   $('#playersCount').textContent=ALL_PLAYERS.length;
-  $('#regionsCount').textContent=new Set(ALL_PLAYERS.map(p=>p.region).filter(Boolean)).size;
-  $('#citiesCount').textContent=new Set(ALL_PLAYERS.map(p=>p.city).filter(Boolean)).size;
+  $('#regionsCount').textContent=
+    new Set(ALL_PLAYERS.map(p=>p.region).filter(Boolean)).size;
+  $('#citiesCount').textContent=
+    new Set(ALL_PLAYERS.map(p=>p.city).filter(Boolean)).size;
+
   applyFilter();
 }
 
@@ -1298,18 +1306,26 @@ function applyFilter(){
   const region=$('#regionFilter').value.trim();
   const city=$('#cityFilter').value.trim();
 
-  renderPlayers(ALL_PLAYERS.filter(player=>{
-    const playerRegion=(player.region||'').trim();
-    const playerCity=(player.city||'').trim();
-    return (!region||playerRegion===region) && (!city||playerCity===city);
-  }));
+  renderPlayers(
+    ALL_PLAYERS.filter(player=>{
+      const playerRegion=(player.region||'').trim();
+      const playerCity=(player.city||'').trim();
+
+      return (
+        (!region || playerRegion===region) &&
+        (!city || playerCity===city)
+      );
+    })
+  );
 }
 
 function renderPlayers(players){
   [1,2,3].forEach((number,index)=>{
     const player=players[index];
+
     $('#n'+number).textContent=player?player.name:'—';
-    $('#m'+number).textContent=player?`${player.city} — ${player.region}`:'لا توجد بيانات';
+    $('#m'+number).textContent=
+      player?`${player.city} — ${player.region}`:'لا توجد بيانات';
     $('#r'+number).textContent=player?player.rating:'—';
   });
 
@@ -1319,8 +1335,16 @@ function renderPlayers(players){
       <td><strong>${escapeHTML(player.name)}</strong></td>
       <td>${escapeHTML(player.city)}</td>
       <td>${escapeHTML(player.region)}</td>
-      <td><span class="badge">${CATEGORY[player.category]||'مفتوح'}</span></td>
-      <td><span class="badge">${player.rating_status==='verified'?'معتمد':'مبدئي'}</span></td>
+      <td>
+        <span class="badge">
+          ${CATEGORY[player.category]||'مفتوح'}
+        </span>
+      </td>
+      <td>
+        <span class="badge">
+          ${player.rating_status==='verified'?'معتمد':'مبدئي'}
+        </span>
+      </td>
       <td class="rating">${player.rating}</td>
     </tr>
   `).join('');
@@ -1337,13 +1361,17 @@ async function claimOrCreateProfile(profileData){
     p_city:profileData.city,
     p_category:profileData.category||'open'
   });
+
   if(error) throw error;
+
   return Array.isArray(data)?data[0]:data;
 }
 
 async function loadMyProfile(){
   const {data,error}=await supabase.rpc('get_my_player_profile');
+
   if(error) throw error;
+
   currentProfile=Array.isArray(data)?data[0]:data;
   return currentProfile;
 }
@@ -1357,6 +1385,7 @@ async function ensureProfile(){
   }
 
   const metadata=currentSession?.user?.user_metadata||{};
+
   const fallback=pendingSignupProfile||{
     name:metadata.name||'لاعب',
     mobile:metadata.mobile||'',
@@ -1366,8 +1395,10 @@ async function ensureProfile(){
   };
 
   await claimOrCreateProfile(fallback);
+
   sessionStorage.removeItem('pending_signup_profile');
   pendingSignupProfile=null;
+
   return loadMyProfile();
 }
 
@@ -1384,10 +1415,8 @@ function renderAccount(){
     $('#accountCity').textContent=currentProfile.city||'—';
     $('#accountGames').textContent=currentProfile.games_count??0;
     $('#navAccount').textContent=currentProfile.name;
-    if($('#heroAccountBtn')) $('#heroAccountBtn').textContent='حسابي';
   }else{
     $('#navAccount').textContent='دخول / حساب جديد';
-    if($('#heroAccountBtn')) $('#heroAccountBtn').textContent='إنشاء حساب';
   }
 }
 
@@ -1420,11 +1449,26 @@ $('#signupForm').addEventListener('submit',async event=>{
   if(!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)){
     return setAuthMsg('أدخل بريدًا إلكترونيًا صحيحًا.','err');
   }
-  if(!mobile) return setAuthMsg('رقم الجوال يجب أن يكون بصيغة 05xxxxxxxx.','err');
-  if(password.length<8) return setAuthMsg('كلمة المرور يجب أن تكون 8 أحرف على الأقل.','err');
-  if(password!==password2) return setAuthMsg('كلمتا المرور غير متطابقتين.','err');
-  if(!$('#signupRegion').value) return setAuthMsg('اختر المنطقة.','err');
-  if(!$('#signupCity').value) return setAuthMsg('اختر المدينة.','err');
+
+  if(!mobile){
+    return setAuthMsg('رقم الجوال يجب أن يكون بصيغة 05xxxxxxxx.','err');
+  }
+
+  if(password.length<8){
+    return setAuthMsg('كلمة المرور يجب أن تكون 8 أحرف على الأقل.','err');
+  }
+
+  if(password!==password2){
+    return setAuthMsg('كلمتا المرور غير متطابقتين.','err');
+  }
+
+  if(!$('#signupRegion').value){
+    return setAuthMsg('اختر المنطقة.','err');
+  }
+
+  if(!$('#signupCity').value){
+    return setAuthMsg('اختر المدينة.','err');
+  }
 
   const profileData={
     name:$('#signupName').value.trim(),
@@ -1435,7 +1479,10 @@ $('#signupForm').addEventListener('submit',async event=>{
   };
 
   pendingSignupProfile=profileData;
-  sessionStorage.setItem('pending_signup_profile',JSON.stringify(profileData));
+  sessionStorage.setItem(
+    'pending_signup_profile',
+    JSON.stringify(profileData)
+  );
 
   const button=$('#signupBtn');
   button.disabled=true;
@@ -1457,17 +1504,29 @@ $('#signupForm').addEventListener('submit',async event=>{
 
     if(data.session){
       currentSession=data.session;
+
       await claimOrCreateProfile(profileData);
+
       sessionStorage.removeItem('pending_signup_profile');
       pendingSignupProfile=null;
+
       await refreshAuthUI(data.session);
       await loadPlayers();
-      setAuthMsg('تم إنشاء الحساب وتسجيل الدخول بنجاح.','ok');
+
+      setAuthMsg(
+        'تم إنشاء الحساب وتسجيل الدخول بنجاح.',
+        'ok'
+      );
     }else{
-      setAuthMsg('تم إنشاء الحساب. افتح بريدك الإلكتروني واضغط رابط التأكيد، ثم عد للموقع وسجّل الدخول.','ok');
+      setAuthMsg(
+        'تم إنشاء الحساب. افتح بريدك الإلكتروني واضغط رابط التأكيد، ثم عد للموقع وسجّل الدخول.',
+        'ok'
+      );
+
       $('#signupForm').reset();
       $('#signupCity').disabled=true;
       fillCities($('#signupCity'),[],'اختر المنطقة أولًا');
+
       switchAuthTab('login');
     }
   }catch(error){
@@ -1490,7 +1549,10 @@ $('#loginForm').addEventListener('submit',async event=>{
   if(!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)){
     return setAuthMsg('أدخل بريدًا إلكترونيًا صحيحًا.','err');
   }
-  if(password.length<8) return setAuthMsg('أدخل كلمة المرور.','err');
+
+  if(password.length<8){
+    return setAuthMsg('أدخل كلمة المرور.','err');
+  }
 
   const button=$('#loginBtn');
   button.disabled=true;
@@ -1501,10 +1563,12 @@ $('#loginForm').addEventListener('submit',async event=>{
       email,
       password
     });
+
     if(error) throw error;
 
     currentSession=data.session;
     await refreshAuthUI(data.session);
+
     setAuthMsg('تم تسجيل الدخول.','ok');
   }catch(error){
     console.error(error);
@@ -1518,10 +1582,13 @@ $('#loginForm').addEventListener('submit',async event=>{
 /* تسجيل الخروج */
 $('#logoutBtn').addEventListener('click',async()=>{
   await supabase.auth.signOut();
+
   currentSession=null;
   currentProfile=null;
+
   renderAccount();
   switchAuthTab('login');
+
   setAuthMsg('تم تسجيل الخروج.','ok');
 });
 
@@ -1529,10 +1596,18 @@ $('#logoutBtn').addEventListener('click',async()=>{
 document.querySelectorAll('.protected-play').forEach(link=>{
   link.addEventListener('click',event=>{
     if(currentSession) return;
+
     event.preventDefault();
+
     switchAuthTab('login');
-    setAuthMsg('سجّل الدخول أولًا ثم اضغط «العب الآن».','err');
-    document.querySelector('#register').scrollIntoView({behavior:'smooth'});
+    setAuthMsg(
+      'سجّل الدخول أولًا ثم اضغط «العب الآن».',
+      'err'
+    );
+
+    document
+      .querySelector('#register')
+      .scrollIntoView({behavior:'smooth'});
   });
 });
 
@@ -1543,7 +1618,11 @@ const {data:{session}}=await supabase.auth.getSession();
 await refreshAuthUI(session);
 
 supabase.auth.onAuthStateChange((event,session)=>{
-  if(event==='SIGNED_IN' || event==='SIGNED_OUT' || event==='TOKEN_REFRESHED'){
+  if(
+    event==='SIGNED_IN' ||
+    event==='SIGNED_OUT' ||
+    event==='TOKEN_REFRESHED'
+  ){
     setTimeout(()=>refreshAuthUI(session),0);
   }
 });
