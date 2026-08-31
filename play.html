@@ -22,9 +22,7 @@ main{padding:14px 0 24px}
 .lobby{display:grid;grid-template-columns:1fr;gap:10px}
 .card{background:#fff;border:1px solid var(--line);border-radius:14px;padding:13px;max-width:560px;margin:auto;width:100%}
 .card h2{margin:0 0 7px}.card p{margin:0 0 9px;color:var(--muted);font-size:14px}
-input,button{width:100%;height:43px;border-radius:9px;font-size:14px}
-input{border:1px solid #cfc8ba;padding:0 10px;background:#fff}
-button{border:0;background:var(--green2);color:#fff;font-weight:900;cursor:pointer}
+button{width:100%;height:43px;border-radius:9px;font-size:14px;border:0;background:var(--green2);color:#fff;font-weight:900;cursor:pointer}
 button.secondary{background:#eeeae0;color:var(--green)}
 button.danger{background:#8e3434}
 button:disabled{opacity:.55;cursor:not-allowed}
@@ -92,17 +90,11 @@ button:disabled{opacity:.55;cursor:not-allowed}
 </header>
 
 <main class="wrap">
-  <div class="notice">
-    البحث عن الخصم تلقائي بالكامل، بدون رمز مباراة.
-  </div>
-
   <section id="lobby" class="lobby">
     <div class="card">
       <h2>ابحث عن خصم</h2>
-      <p>اكتب اسمك واضغط الزر. سنوصلك تلقائيًا بأول لاعب جاهز.</p>
-      <input id="matchName" maxlength="60" placeholder="اسمك">
-      <div style="height:8px"></div>
-      <button id="matchBtn">♟ ابحث عن خصم</button>
+      <p id="playerInfo">جاري تحميل حساب اللاعب...</p>
+      <button id="matchBtn" disabled>♟ ابحث عن خصم</button>
       <div id="matchMsg" class="msg"></div>
     </div>
   </section>
@@ -156,6 +148,7 @@ const PIECE_IMAGES={
 };
 
 let session=JSON.parse(localStorage.getItem('shatranj_live_session')||'null');
+let playerProfile=null;
 let gameData=null;
 let chess=new Chess();
 let selected=null;
@@ -167,9 +160,44 @@ function clearSession(){localStorage.removeItem('shatranj_live_session');session
 function setMsg(el,text,type=''){el.textContent=text;el.className='msg '+type}
 function resultArabic(r){return r==='1-0'?'فوز الأبيض':r==='0-1'?'فوز الأسود':r==='1/2-1/2'?'تعادل':''}
 
+async function loadPlayerProfile(){
+  const {data:{session:authSession}}=await supabase.auth.getSession();
+
+  if(!authSession){
+    $('#playerInfo').textContent='يجب تسجيل الدخول أولًا.';
+    setMsg($('#matchMsg'),'ارجع للرئيسية وسجّل الدخول.','err');
+    return false;
+  }
+
+  const {data,error}=await supabase.rpc('get_my_player_profile');
+
+  if(error){
+    console.error(error);
+    $('#playerInfo').textContent='تعذر تحميل حساب اللاعب.';
+    setMsg($('#matchMsg'),'تعذر تحميل حسابك الآن.','err');
+    return false;
+  }
+
+  playerProfile=Array.isArray(data)?data[0]:data;
+
+  if(!playerProfile?.name){
+    $('#playerInfo').textContent='لم يتم العثور على ملف اللاعب.';
+    setMsg($('#matchMsg'),'أكمل إنشاء حساب اللاعب من الصفحة الرئيسية.','err');
+    return false;
+  }
+
+  const rating=playerProfile.rating??1500;
+  $('#playerInfo').textContent=`${playerProfile.name} — ${rating} نقطة`;
+  $('#matchBtn').disabled=false;
+  return true;
+}
+
 async function findOpponent(){
-  const name=$('#matchName').value.trim();
-  if(name.length<2) return setMsg($('#matchMsg'),'اكتب اسمًا من حرفين على الأقل','err');
+  if(!playerProfile?.name){
+    return setMsg($('#matchMsg'),'تعذر تحميل اسم اللاعب.','err');
+  }
+
+  const name=playerProfile.name;
 
   $('#matchBtn').disabled=true;
   $('#matchBtn').textContent='جاري البحث...';
@@ -444,11 +472,13 @@ function leave(){
 }
 
 $('#matchBtn').addEventListener('click',findOpponent);
-$('#matchName').addEventListener('keydown',e=>{if(e.key==='Enter') findOpponent()});
 $('#resignBtn').addEventListener('click',resign);
 $('#leaveBtn').addEventListener('click',leave);
 
-if(session?.gameId && session?.seatKey) openGame();
+(async()=>{
+  const ok=await loadPlayerProfile();
+  if(ok && session?.gameId && session?.seatKey) await openGame();
+})();
 </script>
 </body>
 </html>
