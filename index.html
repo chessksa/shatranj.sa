@@ -1,310 +1,49 @@
 <!doctype html>
 <html lang="ar" dir="rtl">
 <head>
-  <meta charset="utf-8">
-  <meta name="viewport" content="width=device-width,initial-scale=1">
-  <meta name="theme-color" content="#0f3b2e">
-  <meta name="description" content="شطرنج السعودية — منصة سعودية للتصنيف والبطولات واللاعبين.">
-  <link rel="manifest" href="manifest.webmanifest">
-  <link rel="stylesheet" href="styles.css">
-  <title>شطرنج السعودية</title>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="theme-color" content="#0f3b2e">
+<title>شطرنج السعودية</title>
+<style>
+:root{--g1:#0d3b2e;--g2:#155a43;--g3:#1f7a5b;--gold:#c5a34d;--bg:#f5f3ec;--card:#fff;--text:#14221c;--muted:#6b756f;--line:#e6e1d7;--danger:#9b3434;--ok:#17633f;--shadow:0 18px 50px rgba(13,59,46,.09)}
+*{box-sizing:border-box}html{scroll-behavior:smooth}body{margin:0;font-family:Tahoma,Arial,sans-serif;background:var(--bg);color:var(--text);line-height:1.75}a{text-decoration:none;color:inherit}.wrap{width:min(1160px,calc(100% - 28px));margin:auto}
+header{position:sticky;top:0;z-index:20;background:rgba(245,243,236,.93);backdrop-filter:blur(12px);border-bottom:1px solid var(--line)}.nav{height:72px;display:flex;align-items:center;justify-content:space-between;gap:18px}.brand{display:flex;align-items:center;gap:11px;font-weight:800}.logo{width:44px;height:44px;border-radius:13px;display:grid;place-items:center;background:linear-gradient(180deg,var(--g3),var(--g1));color:#fff;font-size:24px}.brand small{display:block;font-size:11px;color:var(--muted);font-weight:400}.links{display:flex;gap:22px;font-size:14px;font-weight:700;color:var(--muted)}
+.hero{background:radial-gradient(circle at 20% 10%,rgba(197,163,77,.2),transparent 28%),linear-gradient(180deg,#faf8f2,#f0ede5);border-bottom:1px solid var(--line)}.hero-grid{display:grid;grid-template-columns:1.15fr .85fr;gap:26px;align-items:center;padding:58px 0 42px}.tag{display:inline-block;padding:7px 11px;border-radius:999px;background:#f3e7c4;color:#765b16;font-size:12px;font-weight:800}.hero h1{font-size:48px;line-height:1.2;margin:13px 0 10px}.hero p{font-size:18px;color:var(--muted);margin:0;max-width:730px}.actions{display:flex;gap:10px;flex-wrap:wrap;margin-top:23px}.btn{border:0;border-radius:13px;min-height:49px;padding:0 19px;font-weight:800;cursor:pointer;display:inline-flex;align-items:center;justify-content:center}.primary{background:linear-gradient(180deg,var(--g3),var(--g1));color:white;box-shadow:0 13px 26px rgba(13,59,46,.2)}.secondary{background:white;color:var(--g1);border:1px solid var(--line)}.visual{background:linear-gradient(160deg,var(--g1),#174737);color:white;border-radius:28px;padding:29px;box-shadow:0 28px 60px rgba(13,59,46,.22)}.visual .king{font-size:46px;color:#f1d782}.visual h3{font-size:27px;margin:8px 0}.visual p{font-size:15px;color:#d7e3dd}.visual ul{padding-right:19px;margin-bottom:0}
+.stats{display:grid;grid-template-columns:repeat(4,1fr);gap:13px;margin-top:24px}.stat{background:rgba(255,255,255,.83);border:1px solid var(--line);border-radius:17px;padding:15px;box-shadow:var(--shadow)}.stat strong{display:block;font-size:27px;color:var(--g1)}.stat span{font-size:12px;color:var(--muted)}
+section{padding:52px 0}.section-title{display:flex;justify-content:space-between;align-items:end;gap:18px;margin-bottom:19px}.eyebrow{color:var(--g3);font-weight:800;font-size:12px}.section-title h2{font-size:32px;margin:5px 0}.section-title p{margin:0;color:var(--muted)}.filters{display:flex;gap:9px;min-width:350px}input,select{width:100%;height:49px;border:1px solid #d5d0c6;border-radius:13px;background:white;padding:0 13px;font-size:14px;color:var(--text)}input:focus,select:focus{outline:none;border-color:var(--g3);box-shadow:0 0 0 4px rgba(31,122,91,.1)}
+.top3{display:grid;grid-template-columns:repeat(3,1fr);gap:13px;margin-bottom:16px}.podium{background:white;border:1px solid var(--line);border-radius:20px;padding:20px;box-shadow:var(--shadow)}.podium.first{background:linear-gradient(180deg,#fff7df,#fff);border-color:#ecd698}.podium h3{margin:7px 0 2px}.podium p{margin:0;color:var(--muted);font-size:13px}.podium strong{display:block;margin-top:10px;font-size:25px;color:var(--g1)}
+.table-card,.form-card,.tour-card{background:white;border:1px solid var(--line);border-radius:22px;box-shadow:var(--shadow)}.table-head{padding:17px 19px;border-bottom:1px solid var(--line);display:flex;justify-content:space-between}.table-wrap{overflow:auto}table{width:100%;border-collapse:collapse;min-width:760px}th,td{text-align:right;padding:14px 17px;border-bottom:1px solid #f0ece3}th{background:#faf8f4;color:var(--muted);font-size:12px}tbody tr:hover{background:#fcfbf7}.rating{font-weight:900;color:var(--g1)}.badge{display:inline-block;padding:5px 9px;border-radius:999px;font-size:11px;font-weight:800;background:#eee}.badge.ok{background:#e2f1e9;color:var(--ok)}.badge.cat{background:#f6edd2;color:#725914}.empty{text-align:center;padding:30px;color:var(--muted);display:none}
+.alt{background:rgba(255,255,255,.48);border-top:1px solid var(--line);border-bottom:1px solid var(--line)}.form-grid{display:grid;grid-template-columns:.85fr 1.15fr;gap:18px;align-items:start}.intro h2{font-size:34px;margin:5px 0 9px}.intro p{color:var(--muted)}.note{background:white;border:1px solid var(--line);border-radius:18px;padding:17px;margin-top:17px}.form-card{padding:20px}.player-form{display:grid;grid-template-columns:1fr 1fr;gap:13px}.player-form label{font-size:13px;font-weight:800}.player-form label span{display:block;margin-bottom:6px}.check{grid-column:1/-1;display:flex;align-items:center;gap:8px;font-weight:400!important;color:var(--muted)}.check input{width:auto;height:auto}.full{width:100%;grid-column:1/-1}.msg{margin-top:13px;font-weight:800}.msg.err{color:var(--danger)}.msg.ok{color:var(--ok)}
+.tours{display:grid;grid-template-columns:1.2fr .8fr;gap:14px}.tour-card{padding:21px}.tour-card.main{background:linear-gradient(160deg,var(--g1),#184c3a);color:white;border:none}.tour-card.main p{color:#d9e4de}.tour-card h3{margin:10px 0 5px}.tour-card p{margin:0;color:var(--muted)}footer{padding:26px 0;color:var(--muted);border-top:1px solid var(--line)}
+@media(max-width:900px){.hero-grid,.form-grid,.tours,.top3{grid-template-columns:1fr}.stats{grid-template-columns:repeat(2,1fr)}.section-title{flex-direction:column;align-items:stretch}.filters{min-width:0;flex-direction:column}.links{display:none}.hero h1{font-size:36px}.player-form{grid-template-columns:1fr}.check,.full{grid-column:auto}}
+</style>
 </head>
 <body>
-<header class="site-header">
-  <div class="container nav">
-    <a class="brand" href="#">
-      <span class="brand-mark">♟</span>
-      <span>
-        <strong>شطرنج السعودية</strong>
-        <small>Saudi Chess</small>
-      </span>
-    </a>
-
-    <button id="menuBtn" class="menu-btn" aria-label="القائمة">☰</button>
-
-    <nav id="mainNav" class="main-nav">
-      <a href="#ranking">التصنيف</a>
-      <a href="#register">التسجيل</a>
-      <a href="#tournaments">البطولات</a>
-      <a href="#about">عن المنصة</a>
-    </nav>
-  </div>
-</header>
-
+<header><div class="wrap nav"><div class="brand"><span class="logo">♟</span><span>شطرنج السعودية<small>Saudi Chess</small></span></div><nav class="links"><a href="#ranking">التصنيف</a><a href="#register">التسجيل</a><a href="#tournaments">البطولات</a></nav></div></header>
 <main>
-  <section class="hero">
-    <div class="container hero-grid">
-      <div class="hero-copy">
-        <span class="pill">منصة سعودية تجريبية</span>
-        <h1>الهوية الرقمية للاعب الشطرنج في السعودية</h1>
-        <p>
-          تصنيف مستقل، ترتيب المملكة والمناطق والمدن، صفحات للاعبين، وبطولات
-          إلكترونية قادمة — في واجهة عربية حديثة وسهلة.
-        </p>
-        <div class="hero-actions">
-          <a class="btn btn-primary" href="#register">سجل كلاعب</a>
-          <a class="btn btn-secondary" href="#ranking">استعرض التصنيف</a>
-        </div>
-
-        <div class="hero-metrics">
-          <div class="metric">
-            <strong id="playersCount">0</strong>
-            <span>لاعب</span>
-          </div>
-          <div class="metric">
-            <strong id="regionsCount">0</strong>
-            <span>منطقة</span>
-          </div>
-          <div class="metric">
-            <strong id="citiesCount">0</strong>
-            <span>مدينة</span>
-          </div>
-          <div class="metric">
-            <strong>1500</strong>
-            <span>تصنيف البداية</span>
-          </div>
-        </div>
-      </div>
-
-      <div class="hero-visual">
-        <div class="board-card">
-          <div class="chess-badge">♚</div>
-          <h3>تصنيف شطرنج السعودية</h3>
-          <p>نظام سعودي مستقل يبدأ من 1500 ويُبنى على المباريات المعتمدة.</p>
-          <ul>
-            <li>ترتيب المملكة</li>
-            <li>ترتيب المناطق</li>
-            <li>ترتيب المدن</li>
-          </ul>
-        </div>
-      </div>
-    </div>
-  </section>
-
-  <section class="overview">
-    <div class="container overview-grid">
-      <article class="feature-card">
-        <div class="icon">🏆</div>
-        <h3>بطولات سعودية</h3>
-        <p>إطلاق بطولات إلكترونية من داخل المنصة مع نتائج وجدولة وتصنيف.</p>
-      </article>
-      <article class="feature-card">
-        <div class="icon">📍</div>
-        <h3>ترتيب جغرافي</h3>
-        <p>اللاعب يظهر على مستوى المملكة والمنطقة والمدينة.</p>
-      </article>
-      <article class="feature-card">
-        <div class="icon">🛡️</div>
-        <h3>هوية موحدة</h3>
-        <p>رقم جوال واحد لكل لاعب، مع حماية البيانات وعدم عرض الجوال للعامة.</p>
-      </article>
-    </div>
-  </section>
-
-  <section id="ranking" class="section">
-    <div class="container">
-      <div class="section-head">
-        <div>
-          <span class="section-kicker">التصنيف</span>
-          <h2>تصنيف شطرنج السعودية</h2>
-          <p>التصنيف الرئيسي الحالي هو Rapid، مع فلترة حسب المنطقة والمدينة.</p>
-        </div>
-        <div class="filters">
-          <select id="regionFilter"></select>
-          <input id="cityFilter" placeholder="ابحث أو فلتر بالمدينة">
-        </div>
-      </div>
-
-      <div class="champions-grid">
-        <div class="champion-card first">
-          <span class="medal">🥇</span>
-          <h3 id="top1Name">—</h3>
-          <p id="top1Meta">لا يوجد بيانات بعد</p>
-          <strong id="top1Rating">—</strong>
-        </div>
-        <div class="champion-card second">
-          <span class="medal">🥈</span>
-          <h3 id="top2Name">—</h3>
-          <p id="top2Meta">لا يوجد بيانات بعد</p>
-          <strong id="top2Rating">—</strong>
-        </div>
-        <div class="champion-card third">
-          <span class="medal">🥉</span>
-          <h3 id="top3Name">—</h3>
-          <p id="top3Meta">لا يوجد بيانات بعد</p>
-          <strong id="top3Rating">—</strong>
-        </div>
-      </div>
-
-      <div class="table-card">
-        <div class="table-header">
-          <h3>جدول الترتيب</h3>
-          <span id="resultsCount" class="results-count">0 نتيجة</span>
-        </div>
-
-        <div class="table-wrap">
-          <table>
-            <thead>
-              <tr>
-                <th>#</th>
-                <th>اللاعب</th>
-                <th>المدينة</th>
-                <th>المنطقة</th>
-                <th>الفئة</th>
-                <th>الحالة</th>
-                <th>التصنيف</th>
-              </tr>
-            </thead>
-            <tbody id="rankingBody"></tbody>
-          </table>
-          <div id="emptyRanking" class="empty-state">لا يوجد لاعبون مطابقون لهذا الفلتر.</div>
-        </div>
-      </div>
-    </div>
-  </section>
-
-  <section id="register" class="section alt">
-    <div class="container form-layout">
-      <div class="form-intro">
-        <span class="section-kicker">التسجيل</span>
-        <h2>أنشئ ملف اللاعب</h2>
-        <p>
-          التسجيل سريع. رقم الجوال يستخدم فقط لمنع تكرار الحساب والتحقق لاحقًا،
-          ولا يظهر للعامة داخل جدول التصنيف.
-        </p>
-
-        <div class="info-box">
-          <h4>ماذا يحصل بعد التسجيل؟</h4>
-          <ul>
-            <li>إنشاء ملف لاعب بتصنيف بداية 1500.</li>
-            <li>إدراجه في ترتيب المملكة والمنطقة والمدينة.</li>
-            <li>الاستعداد لدخول البطولات المعتمدة لاحقًا.</li>
-          </ul>
-        </div>
-      </div>
-
-      <div class="form-card">
-        <form id="playerForm" class="player-form">
-          <label>
-            <span>اسم اللاعب</span>
-            <input id="name" minlength="2" maxlength="60" required placeholder="الاسم الكامل أو الاسم الرياضي">
-          </label>
-          <label>
-            <span>رقم الجوال</span>
-            <input id="mobile" inputmode="tel" required placeholder="05xxxxxxxx">
-          </label>
-          <label>
-            <span>المنطقة</span>
-            <select id="region" required></select>
-          </label>
-          <label>
-            <span>المدينة</span>
-            <input id="city" minlength="2" maxlength="50" required placeholder="مثال: الرياض">
-          </label>
-          <label>
-            <span>الفئة</span>
-            <select id="category">
-              <option value="open">مفتوح</option>
-              <option value="u18">تحت 18</option>
-              <option value="u14">تحت 14</option>
-              <option value="u10">تحت 10</option>
-            </select>
-          </label>
-          <label class="checkbox-row">
-            <input id="agree" type="checkbox" required>
-            <span>أوافق على سياسة اللعب النظيف وقواعد المنصة.</span>
-          </label>
-          <button type="submit" class="btn btn-primary full">إنشاء ملف اللاعب</button>
-        </form>
-
-        <div id="formMessage" class="message" aria-live="polite"></div>
-      </div>
-    </div>
-  </section>
-
-  <section id="tournaments" class="section">
-    <div class="container">
-      <div class="section-head">
-        <div>
-          <span class="section-kicker">البطولات</span>
-          <h2>البطولات القادمة</h2>
-          <p>هذه واجهة أولية، وسيتم لاحقًا ربط البطولات بنتائج اللاعبين وتصنيفهم.</p>
-        </div>
-      </div>
-
-      <div class="tournaments-grid">
-        <article class="tournament-card highlight">
-          <div class="card-top">
-            <span class="status-pill">قريبًا</span>
-            <span class="mode-pill">Rapid</span>
-          </div>
-          <h3>بطولة شطرنج السعودية الافتتاحية</h3>
-          <p>بطولة إلكترونية تجريبية مجانية للمسجلين الأوائل في المنصة.</p>
-          <div class="card-meta">
-            <span>📅 يحدد لاحقًا</span>
-            <span>👥 أول 64 لاعبًا</span>
-          </div>
-        </article>
-
-        <article class="tournament-card">
-          <div class="card-top">
-            <span class="status-pill">لاحقًا</span>
-            <span class="mode-pill">مدن</span>
-          </div>
-          <h3>دوري المناطق</h3>
-          <p>فكرة بطولة بين المناطق لتوليد مجتمع تنافسي على مستوى المملكة.</p>
-          <div class="card-meta">
-            <span>📍 مناطق السعودية</span>
-            <span>🏁 قريبًا</span>
-          </div>
-        </article>
-      </div>
-    </div>
-  </section>
-
-  <section id="about" class="section about-section alt">
-    <div class="container about-grid">
-      <div>
-        <span class="section-kicker">عن المنصة</span>
-        <h2>لماذا شطرنج السعودية؟</h2>
-        <p>
-          لأن الشطرنج في المملكة يحتاج إلى مكان موحّد يجمع اللاعب، ترتيبه،
-          منطقته، بطولاته، وإنجازاته في واجهة سعودية بسيطة وواضحة.
-        </p>
-      </div>
-      <div class="timeline">
-        <div class="timeline-item">
-          <strong>المرحلة 1</strong>
-          <span>اللاعبون + التصنيف + المدن</span>
-        </div>
-        <div class="timeline-item">
-          <strong>المرحلة 2</strong>
-          <span>البطولات + النتائج + الإدارة</span>
-        </div>
-        <div class="timeline-item">
-          <strong>المرحلة 3</strong>
-          <span>الملفات الشخصية + المدربون + التطبيق</span>
-        </div>
-      </div>
-    </div>
-  </section>
-</main>
-
-<footer class="site-footer">
-  <div class="container footer-content">
-    <div>
-      <strong>شطرنج السعودية</strong>
-      <p>منصة سعودية تجريبية للتصنيف والبطولات واللاعبين.</p>
-    </div>
-    <div class="footer-links">
-      <a href="#ranking">التصنيف</a>
-      <a href="#register">التسجيل</a>
-      <a href="#tournaments">البطولات</a>
-    </div>
-  </div>
-</footer>
-
-<script src="config.js"></script>
-<script type="module" src="app.js"></script>
-</body>
-</html>
+<section class="hero"><div class="wrap hero-grid"><div><span class="tag">منصة سعودية تجريبية</span><h1>الهوية الرقمية للاعب الشطرنج في السعودية</h1><p>تصنيف سعودي مستقل، ترتيب المملكة والمناطق والمدن، وواجهة موحدة للاعبين والبطولات.</p><div class="actions"><a class="btn primary" href="#register">سجل كلاعب</a><a class="btn secondary" href="#ranking">شاهد التصنيف</a></div><div class="stats"><div class="stat"><strong id="playersCount">0</strong><span>لاعب</span></div><div class="stat"><strong id="regionsCount">0</strong><span>منطقة</span></div><div class="stat"><strong id="citiesCount">0</strong><span>مدينة</span></div><div class="stat"><strong>1500</strong><span>تصنيف البداية</span></div></div></div><div class="visual"><div class="king">♚</div><h3>تصنيف شطرنج السعودية</h3><p>تصنيف مستقل يبنى على المباريات والبطولات المعتمدة.</p><ul><li>ترتيب المملكة</li><li>ترتيب المنطقة</li><li>ترتيب المدينة</li></ul></div></div></section>
+<section id="ranking"><div class="wrap"><div class="section-title"><div><span class="eyebrow">التصنيف</span><h2>تصنيف شطرنج السعودية</h2><p>الترتيب الحالي للاعبين المسجلين.</p></div><div class="filters"><select id="regionFilter"></select><input id="cityFilter" placeholder="فلترة بالمدينة"></div></div><div class="top3"><div class="podium first"><span>🥇</span><h3 id="n1">—</h3><p id="m1">لا توجد بيانات</p><strong id="r1">—</strong></div><div class="podium"><span>🥈</span><h3 id="n2">—</h3><p id="m2">لا توجد بيانات</p><strong id="r2">—</strong></div><div class="podium"><span>🥉</span><h3 id="n3">—</h3><p id="m3">لا توجد بيانات</p><strong id="r3">—</strong></div></div><div class="table-card"><div class="table-head"><strong>جدول الترتيب</strong><span id="results">0 نتيجة</span></div><div class="table-wrap"><table><thead><tr><th>#</th><th>اللاعب</th><th>المدينة</th><th>المنطقة</th><th>الفئة</th><th>الحالة</th><th>التصنيف</th></tr></thead><tbody id="tbody"></tbody></table><div id="empty" class="empty">لا يوجد لاعبون حتى الآن.</div></div></div></div></section>
+<section id="register" class="alt"><div class="wrap form-grid"><div class="intro"><span class="eyebrow">التسجيل</span><h2>أنشئ ملف لاعب</h2><p>رقم الجوال لا يظهر للعامة، ويستخدم لمنع تكرار الحساب والتحقق لاحقًا.</p><div class="note"><strong>بعد التسجيل</strong><ul><li>يبدأ التصنيف من 1500.</li><li>يظهر اللاعب في ترتيب منطقته ومدينته.</li><li>يمكن إشراكه لاحقًا في البطولات المعتمدة.</li></ul></div></div><div class="form-card"><form id="form" class="player-form"><label><span>اسم اللاعب</span><input id="name" required minlength="2" maxlength="60" placeholder="الاسم الكامل أو الرياضي"></label><label><span>رقم الجوال</span><input id="mobile" required inputmode="tel" placeholder="05xxxxxxxx"></label><label><span>المنطقة</span><select id="region" required></select></label><label><span>المدينة</span><input id="city" required minlength="2" maxlength="50" placeholder="مثال: الرياض"></label><label><span>الفئة</span><select id="category"><option value="open">مفتوح</option><option value="u18">تحت 18</option><option value="u14">تحت 14</option><option value="u10">تحت 10</option></select></label><label class="check"><input type="checkbox" required><span>أوافق على قواعد المنصة وسياسة اللعب النظيف.</span></label><button class="btn primary full" type="submit">إنشاء ملف اللاعب</button></form><div id="msg" class="msg"></div></div></div></section>
+<section id="tournaments"><div class="wrap"><div class="section-title"><div><span class="eyebrow">البطولات</span><h2>البطولات القادمة</h2><p>تجهيز أول بطولة إلكترونية بعد اكتمال الدفعة الأولى من اللاعبين.</p></div></div><div class="tours"><article class="tour-card main"><span class="tag">قريبًا</span><h3>بطولة شطرنج السعودية الافتتاحية</h3><p>Rapid — بطولة إلكترونية مجانية للمسجلين الأوائل.</p></article><article class="tour-card"><span class="tag">لاحقًا</span><h3>دوري المناطق</h3><p>منافسات بين مناطق المملكة مع ترتيب مستقل.</p></article></div></div></section>
+</main><footer><div class="wrap"><strong>شطرنج السعودية</strong> — منصة سعودية تجريبية للشطرنج.</div></footer>
+<script>
+const SUPABASE_URL='https://zjxkxhsvltihucdacjrv.supabase.co';
+const SUPABASE_KEY='sb_publishable_bwFGOiJzT_Xv656pLPR8ww_oJxFzSGJ';
+const REGIONS=['الرياض','مكة المكرمة','المدينة المنورة','القصيم','المنطقة الشرقية','عسير','تبوك','حائل','الحدود الشمالية','جازان','نجران','الباحة','الجوف'];
+const CAT={open:'مفتوح',u18:'تحت 18',u14:'تحت 14',u10:'تحت 10'};
+const $=s=>document.querySelector(s);
+function esc(s){return String(s??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));}
+function api(path,opts={}){return fetch(SUPABASE_URL+'/rest/v1/'+path,{...opts,headers:{apikey:SUPABASE_KEY,'Content-Type':'application/json',...(opts.headers||{})}})}
+function setup(){ $('#region').innerHTML='<option value="">اختر المنطقة</option>'+REGIONS.map(x=>`<option>${x}</option>`).join(''); $('#regionFilter').innerHTML='<option value="">كل المناطق</option>'+REGIONS.map(x=>`<option>${x}</option>`).join(''); }
+async function players(){const r=await api('public_players?select=id,name,region,city,category,rating,rating_status,created_at&order=rating.desc,created_at.asc');if(!r.ok)throw new Error('تعذر تحميل البيانات');return r.json();}
+function filt(a){const r=$('#regionFilter').value,c=$('#cityFilter').value.trim();return a.filter(p=>(!r||p.region===r)&&(!c||(p.city||'').includes(c)));}
+function top(a){[1,2,3].forEach((n,i)=>{const p=a[i];$('#n'+n).textContent=p?p.name:'—';$('#m'+n).textContent=p?`${p.city} — ${p.region}`:'لا توجد بيانات';$('#r'+n).textContent=p?p.rating:'—';});}
+function table(a){$('#tbody').innerHTML=a.map((p,i)=>`<tr><td>${i+1}</td><td><strong>${esc(p.name)}</strong></td><td>${esc(p.city)}</td><td>${esc(p.region)}</td><td><span class="badge cat">${CAT[p.category]||'مفتوح'}</span></td><td><span class="badge ${p.rating_status==='verified'?'ok':''}">${p.rating_status==='verified'?'معتمد':'مبدئي'}</span></td><td class="rating">${p.rating}</td></tr>`).join('');$('#empty').style.display=a.length?'none':'block';$('#results').textContent=a.length+' نتيجة';}
+async function render(){try{const a=await players();$('#playersCount').textContent=a.length;$('#regionsCount').textContent=new Set(a.map(x=>x.region)).size;$('#citiesCount').textContent=new Set(a.map(x=>x.city)).size;top(a);table(filt(a));}catch(e){$('#msg').className='msg err';$('#msg').textContent=e.message;}}
+$('#form').addEventListener('submit',async e=>{e.preventDefault();const m=$('#mobile').value.replace(/[\s-]/g,'');$('#msg').textContent='';if(!/^05\d{8}$/.test(m)){ $('#msg').className='msg err';$('#msg').textContent='أدخل رقم جوال بصيغة 05xxxxxxxx';return;}const body={p_name:$('#name').value.trim(),p_mobile:m,p_region:$('#region').value,p_city:$('#city').value.trim(),p_category:$('#category').value};try{const r=await api('rpc/register_player',{method:'POST',body:JSON.stringify(body)});if(!r.ok){const t=await r.text();if(t.includes('duplicate'))throw new Error('رقم الجوال مسجل مسبقًا');throw new Error('تعذر التسجيل');}e.target.reset();$('#msg').className='msg ok';$('#msg').textContent='تم إنشاء ملف اللاعب بنجاح';await render();}catch(x){$('#msg').className='msg err';$('#msg').textContent=x.message;}});
+$('#regionFilter').addEventListener('change',render);$('#cityFilter').addEventListener('input',render);
+if('serviceWorker'in navigator){navigator.serviceWorker.getRegistrations().then(rs=>rs.forEach(r=>r.unregister()));}if('caches'in window){caches.keys().then(ks=>ks.forEach(k=>caches.delete(k)));}
+setup();render();
+</script>
+</body></html>
