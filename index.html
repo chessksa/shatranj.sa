@@ -868,8 +868,7 @@ footer{
               <th>المدينة</th>
               <th>المنطقة</th>
               <th>الفئة</th>
-              <th>الحالة</th>
-              <th>التصنيف</th>
+              <th>النقاط</th>
             </tr>
           </thead>
           <tbody id="tbody"></tbody>
@@ -1276,11 +1275,6 @@ function renderPlayers(players){
       <td>
         <span class="badge">
           ${CATEGORY[player.category]||'مفتوح'}
-        </span>
-      </td>
-      <td>
-        <span class="badge">
-          ${player.rating_status==='verified'?'معتمد':'مبدئي'}
         </span>
       </td>
       <td class="rating">${player.rating}</td>
