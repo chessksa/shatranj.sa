@@ -865,8 +865,8 @@ footer{
             <tr>
               <th>#</th>
               <th>اللاعب</th>
-              <th>المدينة</th>
               <th>المنطقة</th>
+              <th>المدينة</th>
               <th>الفئة</th>
               <th>النقاط</th>
             </tr>
@@ -1270,8 +1270,8 @@ function renderPlayers(players){
     <tr>
       <td>${index+1}</td>
       <td><strong>${escapeHTML(player.name)}</strong></td>
-      <td>${escapeHTML(player.city)}</td>
       <td>${escapeHTML(player.region)}</td>
+      <td>${escapeHTML(player.city)}</td>
       <td>
         <span class="badge">
           ${CATEGORY[player.category]||'مفتوح'}
