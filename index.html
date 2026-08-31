@@ -19,7 +19,7 @@
   --line:#e6e1d7;
   --danger:#9b3434;
   --ok:#17633f;
-  --shadow:0 18px 50px rgba(13,59,46,.09)
+  --shadow:0 12px 34px rgba(13,59,46,.08)
 }
 *{box-sizing:border-box}
 html{scroll-behavior:smooth}
@@ -28,7 +28,7 @@ body{
   font-family:Tahoma,Arial,sans-serif;
   background:var(--bg);
   color:var(--text);
-  line-height:1.75
+  line-height:1.65
 }
 a{text-decoration:none;color:inherit}
 .wrap{width:min(1160px,calc(100% - 28px));margin:auto}
@@ -37,12 +37,12 @@ header{
   position:sticky;
   top:0;
   z-index:20;
-  background:rgba(245,243,236,.93);
-  backdrop-filter:blur(12px);
+  background:rgba(245,243,236,.95);
+  backdrop-filter:blur(10px);
   border-bottom:1px solid var(--line)
 }
 .nav{
-  height:72px;
+  height:68px;
   display:flex;
   align-items:center;
   justify-content:space-between;
@@ -51,18 +51,18 @@ header{
 .brand{
   display:flex;
   align-items:center;
-  gap:11px;
+  gap:10px;
   font-weight:800
 }
 .logo{
-  width:44px;
-  height:44px;
-  border-radius:13px;
+  width:42px;
+  height:42px;
+  border-radius:12px;
   display:grid;
   place-items:center;
   background:linear-gradient(180deg,var(--g3),var(--g1));
   color:#fff;
-  font-size:24px
+  font-size:23px
 }
 .brand small{
   display:block;
@@ -72,7 +72,7 @@ header{
 }
 .links{
   display:flex;
-  gap:22px;
+  gap:20px;
   font-size:14px;
   font-weight:700;
   color:var(--muted)
@@ -80,20 +80,20 @@ header{
 
 .hero{
   background:
-    radial-gradient(circle at 20% 10%,rgba(197,163,77,.2),transparent 28%),
+    radial-gradient(circle at 20% 10%,rgba(197,163,77,.16),transparent 26%),
     linear-gradient(180deg,#faf8f2,#f0ede5);
   border-bottom:1px solid var(--line)
 }
 .hero-grid{
   display:grid;
   grid-template-columns:1.15fr .85fr;
-  gap:26px;
+  gap:24px;
   align-items:center;
-  padding:58px 0 42px
+  padding:30px 0 24px
 }
 .tag{
   display:inline-block;
-  padding:7px 11px;
+  padding:6px 10px;
   border-radius:999px;
   background:#f3e7c4;
   color:#765b16;
@@ -101,12 +101,12 @@ header{
   font-weight:800
 }
 .hero h1{
-  font-size:48px;
+  font-size:42px;
   line-height:1.2;
-  margin:13px 0 10px
+  margin:11px 0 9px
 }
 .hero p{
-  font-size:18px;
+  font-size:17px;
   color:var(--muted);
   margin:0;
   max-width:730px
@@ -115,13 +115,13 @@ header{
   display:flex;
   gap:10px;
   flex-wrap:wrap;
-  margin-top:23px
+  margin-top:14px
 }
 .btn{
   border:0;
-  border-radius:13px;
-  min-height:49px;
-  padding:0 19px;
+  border-radius:12px;
+  min-height:46px;
+  padding:0 18px;
   font-weight:800;
   cursor:pointer;
   display:inline-flex;
@@ -131,7 +131,7 @@ header{
 .primary{
   background:linear-gradient(180deg,var(--g3),var(--g1));
   color:white;
-  box-shadow:0 13px 26px rgba(13,59,46,.2)
+  box-shadow:0 10px 22px rgba(13,59,46,.18)
 }
 .secondary{
   background:white;
@@ -141,43 +141,43 @@ header{
 .visual{
   background:linear-gradient(160deg,var(--g1),#174737);
   color:white;
-  border-radius:28px;
-  padding:29px;
-  box-shadow:0 28px 60px rgba(13,59,46,.22)
+  border-radius:22px;
+  padding:24px;
+  box-shadow:0 20px 45px rgba(13,59,46,.18)
 }
 .visual .king{
-  font-size:46px;
+  font-size:42px;
   color:#f1d782
 }
 .visual h3{
-  font-size:27px;
-  margin:8px 0
+  font-size:24px;
+  margin:6px 0
 }
 .visual p{
-  font-size:15px;
+  font-size:14px;
   color:#d7e3dd
 }
 .visual ul{
-  padding-right:19px;
-  margin-bottom:0
+  padding-right:18px;
+  margin:10px 0 0
 }
 
 .stats{
   display:grid;
   grid-template-columns:repeat(4,1fr);
-  gap:13px;
-  margin-top:24px
+  gap:10px;
+  margin-top:15px
 }
 .stat{
-  background:rgba(255,255,255,.83);
+  background:rgba(255,255,255,.86);
   border:1px solid var(--line);
-  border-radius:17px;
-  padding:15px;
+  border-radius:15px;
+  padding:13px;
   box-shadow:var(--shadow)
 }
 .stat strong{
   display:block;
-  font-size:27px;
+  font-size:24px;
   color:var(--g1)
 }
 .stat span{
@@ -185,13 +185,14 @@ header{
   color:var(--muted)
 }
 
-section{padding:52px 0}
+section{padding:28px 0}
+
 .section-title{
   display:flex;
   justify-content:space-between;
   align-items:end;
-  gap:18px;
-  margin-bottom:19px
+  gap:16px;
+  margin-bottom:12px
 }
 .eyebrow{
   color:var(--g3);
@@ -199,8 +200,8 @@ section{padding:52px 0}
   font-size:12px
 }
 .section-title h2{
-  font-size:32px;
-  margin:5px 0
+  font-size:29px;
+  margin:3px 0
 }
 .section-title p{
   margin:0;
@@ -208,16 +209,16 @@ section{padding:52px 0}
 }
 .filters{
   display:flex;
-  gap:9px;
-  min-width:350px
+  gap:8px;
+  min-width:340px
 }
 input,select{
   width:100%;
-  height:49px;
+  height:46px;
   border:1px solid #d5d0c6;
-  border-radius:13px;
+  border-radius:12px;
   background:white;
-  padding:0 13px;
+  padding:0 12px;
   font-size:14px;
   color:var(--text)
 }
@@ -230,21 +231,21 @@ input:focus,select:focus{
 .top3{
   display:grid;
   grid-template-columns:repeat(3,1fr);
-  gap:13px;
-  margin-bottom:16px
+  gap:10px;
+  margin-bottom:10px
 }
 .podium{
   background:white;
   border:1px solid var(--line);
-  border-radius:20px;
-  padding:20px;
+  border-radius:17px;
+  padding:16px;
   box-shadow:var(--shadow)
 }
 .podium.first{
   background:linear-gradient(180deg,#fff7df,#fff);
   border-color:#ecd698
 }
-.podium h3{margin:7px 0 2px}
+.podium h3{margin:5px 0 2px;font-size:20px}
 .podium p{
   margin:0;
   color:var(--muted);
@@ -252,19 +253,19 @@ input:focus,select:focus{
 }
 .podium strong{
   display:block;
-  margin-top:10px;
-  font-size:25px;
+  margin-top:7px;
+  font-size:22px;
   color:var(--g1)
 }
 
 .table-card,.form-card,.tour-card{
   background:white;
   border:1px solid var(--line);
-  border-radius:22px;
+  border-radius:18px;
   box-shadow:var(--shadow)
 }
 .table-head{
-  padding:17px 19px;
+  padding:14px 16px;
   border-bottom:1px solid var(--line);
   display:flex;
   justify-content:space-between
@@ -277,7 +278,7 @@ table{
 }
 th,td{
   text-align:right;
-  padding:14px 17px;
+  padding:12px 15px;
   border-bottom:1px solid #f0ece3
 }
 th{
@@ -292,7 +293,7 @@ tbody tr:hover{background:#fcfbf7}
 }
 .badge{
   display:inline-block;
-  padding:5px 9px;
+  padding:4px 8px;
   border-radius:999px;
   font-size:11px;
   font-weight:800;
@@ -308,7 +309,7 @@ tbody tr:hover{background:#fcfbf7}
 }
 .empty{
   text-align:center;
-  padding:30px;
+  padding:24px;
   color:var(--muted);
   display:none
 }
@@ -321,26 +322,26 @@ tbody tr:hover{background:#fcfbf7}
 .form-grid{
   display:grid;
   grid-template-columns:.85fr 1.15fr;
-  gap:18px;
+  gap:16px;
   align-items:start
 }
 .intro h2{
-  font-size:34px;
-  margin:5px 0 9px
+  font-size:30px;
+  margin:3px 0 7px
 }
-.intro p{color:var(--muted)}
+.intro p{color:var(--muted);margin:0}
 .note{
   background:white;
   border:1px solid var(--line);
-  border-radius:18px;
-  padding:17px;
-  margin-top:17px
+  border-radius:16px;
+  padding:14px;
+  margin-top:12px
 }
-.form-card{padding:20px}
+.form-card{padding:16px}
 .player-form{
   display:grid;
   grid-template-columns:1fr 1fr;
-  gap:13px
+  gap:11px
 }
 .player-form label{
   font-size:13px;
@@ -348,7 +349,7 @@ tbody tr:hover{background:#fcfbf7}
 }
 .player-form label span{
   display:block;
-  margin-bottom:6px
+  margin-bottom:5px
 }
 .check{
   grid-column:1/-1;
@@ -367,7 +368,7 @@ tbody tr:hover{background:#fcfbf7}
   grid-column:1/-1
 }
 .msg{
-  margin-top:13px;
+  margin-top:11px;
   font-weight:800
 }
 .msg.err{color:var(--danger)}
@@ -376,23 +377,23 @@ tbody tr:hover{background:#fcfbf7}
 .tours{
   display:grid;
   grid-template-columns:1.2fr .8fr;
-  gap:14px
+  gap:11px
 }
-.tour-card{padding:21px}
+.tour-card{padding:17px}
 .tour-card.main{
   background:linear-gradient(160deg,var(--g1),#184c3a);
   color:white;
   border:none
 }
 .tour-card.main p{color:#d9e4de}
-.tour-card h3{margin:10px 0 5px}
+.tour-card h3{margin:8px 0 4px}
 .tour-card p{
   margin:0;
   color:var(--muted)
 }
 
 footer{
-  padding:26px 0;
+  padding:20px 0;
   color:var(--muted);
   border-top:1px solid var(--line)
 }
@@ -409,7 +410,7 @@ footer{
     flex-direction:column
   }
   .links{display:none}
-  .hero h1{font-size:36px}
+  .hero h1{font-size:32px}
   .player-form{grid-template-columns:1fr}
   .check,.full{grid-column:auto}
 }
@@ -457,7 +458,6 @@ footer{
       </div>
 
       <div class="stats">
-
         <div class="stat">
           <strong id="playersCount">0</strong>
           <span>لاعب</span>
@@ -477,7 +477,6 @@ footer{
           <strong>1500</strong>
           <span>تصنيف البداية</span>
         </div>
-
       </div>
     </div>
 
@@ -566,7 +565,7 @@ footer{
         </table>
 
         <div id="empty" class="empty">
-          لا يوجد لاعبون حتى الآن.
+          لا يوجد لاعبون مطابقون للفلتر.
         </div>
 
       </div>
@@ -677,27 +676,19 @@ footer{
     <div class="tours">
 
       <article class="tour-card main">
-
         <span class="tag">قريبًا</span>
-
         <h3>بطولة شطرنج السعودية الافتتاحية</h3>
-
         <p>
           Rapid — بطولة إلكترونية مجانية للمسجلين الأوائل.
         </p>
-
       </article>
 
       <article class="tour-card">
-
         <span class="tag">لاحقًا</span>
-
         <h3>دوري المناطق</h3>
-
         <p>
           منافسات بين مناطق المملكة مع ترتيب مستقل.
         </p>
-
       </article>
 
     </div>
@@ -715,7 +706,6 @@ footer{
 </footer>
 
 <script>
-
 const SUPABASE_URL =
 'https://zjxkxhsvltihucdacjrv.supabase.co';
 
@@ -748,324 +738,288 @@ u10:'تحت 10'
 const $ = s => document.querySelector(s);
 
 function esc(s){
-
-return String(s ?? '').replace(
-/[&<>"']/g,
-c => ({
-'&':'&amp;',
-'<':'&lt;',
-'>':'&gt;',
-'"':'&quot;',
-"'":'&#39;'
-}[c])
-);
-
+  return String(s ?? '').replace(
+    /[&<>"']/g,
+    c => ({
+      '&':'&amp;',
+      '<':'&lt;',
+      '>':'&gt;',
+      '"':'&quot;',
+      "'":'&#39;'
+    }[c])
+  );
 }
 
 function api(path,opts={}){
-
-return fetch(
-SUPABASE_URL + '/rest/v1/' + path,
-{
-...opts,
-headers:{
-apikey:SUPABASE_KEY,
-'Content-Type':'application/json',
-...(opts.headers || {})
-}
-}
-);
-
+  return fetch(
+    SUPABASE_URL + '/rest/v1/' + path,
+    {
+      ...opts,
+      headers:{
+        apikey:SUPABASE_KEY,
+        'Content-Type':'application/json',
+        ...(opts.headers || {})
+      }
+    }
+  );
 }
 
 function setup(){
+  $('#region').innerHTML =
+    '<option value="">اختر المنطقة</option>' +
+    REGIONS.map(x => `<option value="${x}">${x}</option>`).join('');
 
-$('#region').innerHTML =
-'<option value="">اختر المنطقة</option>' +
-REGIONS.map(
-x => `<option>${x}</option>`
-).join('');
-
-$('#regionFilter').innerHTML =
-'<option value="">كل المناطق</option>' +
-REGIONS.map(
-x => `<option>${x}</option>`
-).join('');
-
+  $('#regionFilter').innerHTML =
+    '<option value="">كل المناطق</option>' +
+    REGIONS.map(x => `<option value="${x}">${x}</option>`).join('');
 }
 
 async function players(){
+  const r = await api(
+    'public_players?select=id,name,region,city,category,rating,rating_status,created_at&order=rating.desc,created_at.asc'
+  );
 
-const r = await api(
-'public_players?select=id,name,region,city,category,rating,rating_status,created_at&order=rating.desc,created_at.asc'
-);
+  if(!r.ok){
+    throw new Error('تعذر تحميل البيانات');
+  }
 
-if(!r.ok)
-throw new Error('تعذر تحميل البيانات');
-
-return r.json();
-
+  return r.json();
 }
 
 function filt(a){
+  const selectedRegion = ($('#regionFilter').value || '').trim();
 
-const r = $('#regionFilter').value;
+  const selectedCity =
+    ($('#cityFilter').value || '')
+    .trim()
+    .toLowerCase();
 
-const c =
-$('#cityFilter').value.trim();
+  return a.filter(p => {
+    const playerRegion = (p.region || '').trim();
 
-return a.filter(
-p =>
-(!r || p.region === r) &&
-(!c || (p.city || '').includes(c))
-);
+    const playerCity =
+      (p.city || '')
+      .trim()
+      .toLowerCase();
 
+    const regionOK =
+      !selectedRegion ||
+      playerRegion === selectedRegion;
+
+    const cityOK =
+      !selectedCity ||
+      playerCity.includes(selectedCity);
+
+    return regionOK && cityOK;
+  });
 }
 
 function top(a){
+  [1,2,3].forEach((n,i)=>{
+    const p = a[i];
 
-[1,2,3].forEach(
-(n,i)=>{
+    $('#n'+n).textContent =
+      p ? p.name : '—';
 
-const p = a[i];
+    $('#m'+n).textContent =
+      p ? `${p.city} — ${p.region}` : 'لا توجد بيانات';
 
-$('#n'+n).textContent =
-p ? p.name : '—';
-
-$('#m'+n).textContent =
-p
-? `${p.city} — ${p.region}`
-: 'لا توجد بيانات';
-
-$('#r'+n).textContent =
-p ? p.rating : '—';
-
-}
-);
-
+    $('#r'+n).textContent =
+      p ? p.rating : '—';
+  });
 }
 
 function table(a){
+  $('#tbody').innerHTML =
+    a.map(
+      (p,i)=>`
+        <tr>
+          <td>${i+1}</td>
 
-$('#tbody').innerHTML =
-a.map(
-(p,i)=>`
+          <td>
+            <strong>${esc(p.name)}</strong>
+          </td>
 
-<tr>
+          <td>${esc(p.city)}</td>
 
-<td>${i+1}</td>
+          <td>${esc(p.region)}</td>
 
-<td>
-<strong>${esc(p.name)}</strong>
-</td>
+          <td>
+            <span class="badge cat">
+              ${CAT[p.category] || 'مفتوح'}
+            </span>
+          </td>
 
-<td>${esc(p.city)}</td>
+          <td>
+            <span class="badge ${p.rating_status==='verified'?'ok':''}">
+              ${p.rating_status==='verified'?'معتمد':'مبدئي'}
+            </span>
+          </td>
 
-<td>${esc(p.region)}</td>
+          <td class="rating">
+            ${p.rating}
+          </td>
+        </tr>
+      `
+    ).join('');
 
-<td>
-<span class="badge cat">
-${CAT[p.category] || 'مفتوح'}
-</span>
-</td>
+  $('#empty').style.display =
+    a.length ? 'none' : 'block';
 
-<td>
-<span class="badge ${p.rating_status==='verified'?'ok':''}">
-${p.rating_status==='verified'?'معتمد':'مبدئي'}
-</span>
-</td>
-
-<td class="rating">
-${p.rating}
-</td>
-
-</tr>
-
-`
-).join('');
-
-$('#empty').style.display =
-a.length ? 'none' : 'block';
-
-$('#results').textContent =
-a.length + ' نتيجة';
-
+  $('#results').textContent =
+    a.length + ' نتيجة';
 }
 
 async function render(){
+  try{
+    const all = await players();
 
-try{
+    $('#playersCount').textContent =
+      all.length;
 
-const a = await players();
+    $('#regionsCount').textContent =
+      new Set(
+        all
+        .map(x => (x.region || '').trim())
+        .filter(Boolean)
+      ).size;
 
-$('#playersCount').textContent =
-a.length;
+    $('#citiesCount').textContent =
+      new Set(
+        all
+        .map(x => (x.city || '').trim())
+        .filter(Boolean)
+      ).size;
 
-$('#regionsCount').textContent =
-new Set(
-a.map(x=>x.region)
-).size;
+    const filtered = filt(all);
 
-$('#citiesCount').textContent =
-new Set(
-a.map(x=>x.city)
-).size;
+    top(filtered);
 
-top(a);
+    table(filtered);
+  }
+  catch(e){
+    console.error(e);
 
-table(
-filt(a)
-);
+    $('#msg').className =
+      'msg err';
 
-}
-catch(e){
-
-$('#msg').className =
-'msg err';
-
-$('#msg').textContent =
-e.message;
-
-}
-
+    $('#msg').textContent =
+      'تعذر تحميل البيانات';
+  }
 }
 
 $('#form').addEventListener(
-'submit',
-async e => {
+  'submit',
+  async e => {
 
-e.preventDefault();
+    e.preventDefault();
 
-const m =
-$('#mobile').value.replace(
-/[\s-]/g,
-''
+    const m =
+      $('#mobile').value.replace(
+        /[\s-]/g,
+        ''
+      );
+
+    $('#msg').textContent='';
+
+    if(!/^05\d{8}$/.test(m)){
+      $('#msg').className =
+        'msg err';
+
+      $('#msg').textContent =
+        'أدخل رقم جوال بصيغة 05xxxxxxxx';
+
+      return;
+    }
+
+    const body = {
+      p_name:
+        $('#name').value.trim(),
+
+      p_mobile:m,
+
+      p_region:
+        $('#region').value,
+
+      p_city:
+        $('#city').value.trim(),
+
+      p_category:
+        $('#category').value
+    };
+
+    try{
+      const r = await api(
+        'rpc/register_player',
+        {
+          method:'POST',
+          body:JSON.stringify(body)
+        }
+      );
+
+      if(!r.ok){
+        const t =
+          await r.text();
+
+        if(t.includes('duplicate')){
+          throw new Error(
+            'رقم الجوال مسجل مسبقًا'
+          );
+        }
+
+        throw new Error(
+          'تعذر التسجيل'
+        );
+      }
+
+      e.target.reset();
+
+      $('#msg').className =
+        'msg ok';
+
+      $('#msg').textContent =
+        'تم إنشاء ملف اللاعب بنجاح';
+
+      await render();
+    }
+    catch(x){
+      $('#msg').className =
+        'msg err';
+
+      $('#msg').textContent =
+        x.message;
+    }
+  }
 );
 
-$('#msg').textContent='';
-
-if(!/^05\d{8}$/.test(m)){
-
-$('#msg').className =
-'msg err';
-
-$('#msg').textContent =
-'أدخل رقم جوال بصيغة 05xxxxxxxx';
-
-return;
-
-}
-
-const body = {
-
-p_name:
-$('#name').value.trim(),
-
-p_mobile:m,
-
-p_region:
-$('#region').value,
-
-p_city:
-$('#city').value.trim(),
-
-p_category:
-$('#category').value
-
-};
-
-try{
-
-const r = await api(
-'rpc/register_player',
-{
-method:'POST',
-body:JSON.stringify(body)
-}
+$('#regionFilter').addEventListener(
+  'change',
+  render
 );
 
-if(!r.ok){
-
-const t =
-await r.text();
-
-if(t.includes('duplicate'))
-throw new Error(
-'رقم الجوال مسجل مسبقًا'
+$('#cityFilter').addEventListener(
+  'input',
+  render
 );
 
-throw new Error(
-'تعذر التسجيل'
-);
-
-}
-
-e.target.reset();
-
-$('#msg').className =
-'msg ok';
-
-$('#msg').textContent =
-'تم إنشاء ملف اللاعب بنجاح';
-
-await render();
-
-}
-catch(x){
-
-$('#msg').className =
-'msg err';
-
-$('#msg').textContent =
-x.message;
-
-}
-
-}
-);
-
-$('#regionFilter')
-.addEventListener(
-'change',
-render
-);
-
-$('#cityFilter')
-.addEventListener(
-'input',
-render
-);
-
-/* حذف الكاش القديم */
+/* إزالة أي Service Worker قديم */
 if('serviceWorker' in navigator){
-
-navigator.serviceWorker
-.getRegistrations()
-.then(
-rs =>
-rs.forEach(
-r=>r.unregister()
-)
-);
-
+  navigator.serviceWorker
+  .getRegistrations()
+  .then(
+    rs => rs.forEach(r => r.unregister())
+  );
 }
 
 if('caches' in window){
-
-caches.keys()
-.then(
-ks =>
-ks.forEach(
-k=>caches.delete(k)
-)
-);
-
+  caches.keys()
+  .then(
+    ks => ks.forEach(k => caches.delete(k))
+  );
 }
 
 setup();
-
 render();
-
 </script>
 
 </body>
