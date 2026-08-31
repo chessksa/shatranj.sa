@@ -199,6 +199,62 @@ header{
   font-size:12px
 }
 
+
+.nav-soon{
+  display:inline-flex;
+  align-items:center;
+  justify-content:center;
+  padding:8px 10px;
+  border-radius:8px;
+  background:rgba(255,255,255,.07);
+  color:#fff;
+  font-size:13px;
+  font-weight:800;
+  cursor:default;
+  opacity:.95;
+}
+.quick-icons{
+  display:grid;
+  grid-template-columns:repeat(4,1fr);
+  gap:6px;
+  margin-top:8px;
+}
+.quick-icon{
+  min-height:58px;
+  border:1px solid #ded8cd;
+  background:#fff;
+  border-radius:9px;
+  display:flex;
+  flex-direction:column;
+  align-items:center;
+  justify-content:center;
+  gap:2px;
+  font-size:11px;
+  font-weight:900;
+  color:var(--green);
+}
+.quick-icon strong{
+  font-size:20px;
+  line-height:1;
+}
+.quick-icon.soon{
+  color:#79621f;
+  background:#fff9e9;
+  border-color:#e4d39d;
+}
+@media(max-width:520px){
+  .quick-icons{
+    grid-template-columns:repeat(4,1fr);
+    gap:4px;
+  }
+  .quick-icon{
+    min-height:54px;
+    font-size:10px;
+    padding:4px;
+  }
+  .quick-icon strong{font-size:18px}
+}
+
 /* STATS */
 .stats{
   display:grid;
@@ -780,10 +836,10 @@ footer{
     <div class="brand">♟ شطرنج السعودية</div>
 
     <div class="links">
-      <a href="play.html?v=5" class="play-link protected-play">♟ العب الآن</a>
-      <a href="#ranking">التصنيف</a>
-      <a href="#register" id="navAccount" class="nav-account">دخول / حساب جديد</a>
-      <a href="#tournaments">البطولات</a>
+      <a href="play.html?v=5" class="play-link protected-play">♟ العب</a>
+      <a href="#ranking">🏅 التصنيف</a>
+      <a href="#register" id="navAccount" class="nav-account">👤 الحساب</a>
+      <span class="nav-soon" title="قريبًا">🏆 البطولات</span>
     </div>
   </div>
 </header>
@@ -802,6 +858,26 @@ footer{
         <a href="play.html?v=5" class="btn gold protected-play">♟ العب الآن</a>
         <a href="#register" class="btn" id="heroAccountBtn">إنشاء حساب</a>
         <a href="#ranking" class="btn light">التصنيف</a>
+      </div>
+
+
+      <div class="quick-icons">
+        <a class="quick-icon protected-play" href="play.html?v=5">
+          <strong>♟</strong>
+          <span>العب</span>
+        </a>
+        <a class="quick-icon" href="#ranking">
+          <strong>🏅</strong>
+          <span>التصنيف</span>
+        </a>
+        <a class="quick-icon" href="#register">
+          <strong>👤</strong>
+          <span>الحساب</span>
+        </a>
+        <div class="quick-icon soon" title="قريبًا">
+          <strong>🏆</strong>
+          <span>البطولات</span>
+        </div>
       </div>
 
       <div class="stats">
@@ -1052,35 +1128,6 @@ footer{
     </div>
   </div>
 </section>
-
-<!-- TOURNAMENTS -->
-<section id="tournaments">
-  <div class="wrap">
-
-    <div class="head">
-      <div>
-        <h2>البطولات</h2>
-        <p>البطولات القادمة في شطرنج السعودية.</p>
-      </div>
-    </div>
-
-    <div class="tours">
-      <div class="tour">
-        <strong>قريبًا</strong>
-        <h3>بطولة شطرنج السعودية الافتتاحية</h3>
-        <p>بطولة Rapid مجانية للمسجلين الأوائل.</p>
-      </div>
-
-      <div class="tour">
-        <strong>لاحقًا</strong>
-        <h3>دوري المناطق</h3>
-        <p>منافسات بين مناطق المملكة.</p>
-      </div>
-    </div>
-
-  </div>
-</section>
-
 <footer>
   <div class="wrap">
     <strong>شطرنج السعودية</strong>
