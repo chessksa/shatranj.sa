@@ -61,6 +61,55 @@ header{
   white-space:nowrap
 }
 
+.nav-start{
+  display:flex;
+  align-items:center;
+  gap:12px;
+  min-width:0
+}
+
+.header-live{
+  display:flex;
+  align-items:center;
+  gap:6px
+}
+
+.header-box{
+  min-width:74px;
+  height:42px;
+  padding:4px 9px;
+  border:1px solid rgba(255,255,255,.14);
+  border-radius:8px;
+  background:rgba(255,255,255,.07);
+  display:flex;
+  flex-direction:column;
+  align-items:center;
+  justify-content:center;
+  line-height:1.05;
+  color:#fff
+}
+
+.header-box strong{
+  font-size:14px;
+  color:#f0d77c
+}
+
+.header-box span{
+  margin-top:3px;
+  font-size:9px;
+  font-weight:800;
+  white-space:nowrap
+}
+
+.watch-box{
+  min-width:64px;
+  cursor:pointer
+}
+
+.watch-box:hover{
+  background:rgba(255,255,255,.12)
+}
+
 .links{
   display:flex;
   align-items:center;
@@ -651,8 +700,30 @@ footer{
     width:min(100% - 18px,1100px)
   }
 
-  .nav{min-height:54px}
-  .brand{font-size:18px}
+  .nav{
+    min-height:58px;
+    gap:6px
+  }
+
+  .nav-start{
+    width:100%;
+    justify-content:space-between;
+    gap:6px
+  }
+
+  .brand{font-size:16px}
+
+  .header-live{gap:4px}
+
+  .header-box{
+    min-width:58px;
+    height:38px;
+    padding:3px 6px
+  }
+
+  .header-box strong{font-size:12px}
+  .header-box span{font-size:8px}
+  .watch-box{min-width:48px}
   .links{display:none}
 
   .hero{
@@ -785,7 +856,26 @@ footer{
 
 <header>
   <div class="wrap nav">
-    <div class="brand">♟ شطرنج السعودية</div>
+    <div class="nav-start">
+      <div class="brand">♟ شطرنج السعودية</div>
+
+      <div class="header-live">
+        <div class="header-box">
+          <strong id="headerPlayersCount">0</strong>
+          <span>اللاعبون</span>
+        </div>
+
+        <div class="header-box">
+          <strong id="headerMatchesCount">0</strong>
+          <span>المباريات الحالية</span>
+        </div>
+
+        <a class="header-box watch-box" href="watch.html">
+          <strong>◉</strong>
+          <span>شاهد</span>
+        </a>
+      </div>
+    </div>
 
     <div class="links">
       <a href="play.html?v=5" class="play-link protected-play">♟ العب</a>
@@ -1207,13 +1297,34 @@ async function loadPlayers(){
 
   ALL_PLAYERS=data||[];
 
-  $('#playersCount').textContent=ALL_PLAYERS.length;
-  $('#regionsCount').textContent=
-    new Set(ALL_PLAYERS.map(p=>p.region).filter(Boolean)).size;
-  $('#citiesCount').textContent=
-    new Set(ALL_PLAYERS.map(p=>p.city).filter(Boolean)).size;
+  const headerPlayers=document.querySelector('#headerPlayersCount');
+  if(headerPlayers) headerPlayers.textContent=ALL_PLAYERS.length;
 
   applyFilter();
+}
+
+async function loadCurrentMatchesCount(){
+  const el=document.querySelector('#headerMatchesCount');
+  if(!el) return;
+
+  const attempts=['matches','games'];
+  const liveStatuses=['playing','active','in_progress','started'];
+
+  for(const table of attempts){
+    try{
+      const {count,error}=await supabase
+        .from(table)
+        .select('*',{count:'exact',head:true})
+        .in('status',liveStatuses);
+
+      if(!error && typeof count==='number'){
+        el.textContent=count;
+        return;
+      }
+    }catch(e){}
+  }
+
+  el.textContent='0';
 }
 
 function applyFilter(){
@@ -1531,6 +1642,9 @@ loadPlayers().catch(error=>{
   console.error(error);
   setAuthMsg('تعذر الاتصال بقاعدة البيانات.','err');
 });
+
+loadCurrentMatchesCount();
+setInterval(loadCurrentMatchesCount,30000);
 </script>
 
 </body>
