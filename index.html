@@ -1,0 +1,129 @@
+<!doctype html>
+<html lang="ar" dir="rtl">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <meta name="theme-color" content="#111111">
+  <meta name="description" content="شطرنج السعودية — منصة سعودية للتصنيف والبطولات واللاعبين.">
+  <link rel="manifest" href="manifest.webmanifest">
+  <link rel="stylesheet" href="styles.css">
+  <title>شطرنج السعودية</title>
+</head>
+<body>
+<header class="topbar">
+  <div class="container topbar-inner">
+    <div class="brand">♟ شطرنج السعودية</div>
+    <nav>
+      <a href="#ranking">التصنيف</a>
+      <a href="#register">تسجيل لاعب</a>
+      <a href="#tournaments">البطولات</a>
+    </nav>
+  </div>
+</header>
+
+<main class="container">
+  <section class="hero">
+    <div>
+      <span class="badge">النسخة التجريبية الأولى</span>
+      <h1>منصة الشطرنج السعودية</h1>
+      <p>تصنيف مستقل للاعبين، ترتيب المملكة والمناطق والمدن، وبطولات سعودية في مكان واحد.</p>
+      <div class="hero-actions">
+        <a class="btn" href="#register">سجّل كلاعب</a>
+        <a class="btn btn-light" href="#ranking">شاهد التصنيف</a>
+      </div>
+    </div>
+    <div class="king">♚</div>
+  </section>
+
+  <section class="stats">
+    <div class="stat"><strong id="playersCount">0</strong><span>لاعب</span></div>
+    <div class="stat"><strong id="regionsCount">0</strong><span>منطقة</span></div>
+    <div class="stat"><strong id="citiesCount">0</strong><span>مدينة</span></div>
+    <div class="stat"><strong>1500</strong><span>تصنيف البداية</span></div>
+  </section>
+
+  <section id="register" class="panel">
+    <div class="section-head">
+      <div>
+        <h2>تسجيل لاعب جديد</h2>
+        <p>رقم الجوال يستخدم للتحقق ومنع تكرار الحساب، ولا يظهر في التصنيف العام.</p>
+      </div>
+    </div>
+    <form id="playerForm" class="form-grid">
+      <label>اسم اللاعب
+        <input id="name" minlength="2" maxlength="60" required placeholder="الاسم الكامل أو الاسم الرياضي">
+      </label>
+      <label>رقم الجوال
+        <input id="mobile" inputmode="tel" required placeholder="05xxxxxxxx">
+      </label>
+      <label>المنطقة
+        <select id="region" required></select>
+      </label>
+      <label>المدينة
+        <input id="city" minlength="2" maxlength="50" required placeholder="مثال: الرياض">
+      </label>
+      <label>الفئة
+        <select id="category">
+          <option value="open">مفتوح</option>
+          <option value="u18">تحت 18</option>
+          <option value="u14">تحت 14</option>
+          <option value="u10">تحت 10</option>
+        </select>
+      </label>
+      <label class="check">
+        <input id="agree" type="checkbox" required>
+        <span>أوافق على قواعد المنصة وسياسة اللعب النظيف.</span>
+      </label>
+      <button class="btn form-submit" type="submit">إنشاء ملف اللاعب</button>
+    </form>
+    <div id="formMessage" class="message" aria-live="polite"></div>
+  </section>
+
+  <section id="ranking" class="panel">
+    <div class="section-head">
+      <div>
+        <h2>تصنيف شطرنج السعودية</h2>
+        <p>التصنيف الرئيسي حاليًا Rapid، ويبدأ اللاعب من 1500 نقطة.</p>
+      </div>
+      <div class="filters">
+        <select id="regionFilter"></select>
+        <input id="cityFilter" placeholder="فلترة بالمدينة">
+      </div>
+    </div>
+    <div class="table-wrap">
+      <table>
+        <thead>
+          <tr><th>#</th><th>اللاعب</th><th>المدينة</th><th>المنطقة</th><th>التصنيف</th><th>الحالة</th></tr>
+        </thead>
+        <tbody id="rankingBody"></tbody>
+      </table>
+      <div id="emptyRanking" class="empty">لا يوجد لاعبون مسجلون بعد.</div>
+    </div>
+  </section>
+
+  <section id="tournaments" class="panel">
+    <div class="section-head">
+      <div>
+        <h2>البطولات</h2>
+        <p>سيتم فتح أول بطولة تجريبية بعد اكتمال أول مجموعة من اللاعبين.</p>
+      </div>
+    </div>
+    <div class="tournament-card">
+      <div>
+        <span class="badge">قريبًا</span>
+        <h3>بطولة شطرنج السعودية الافتتاحية</h3>
+        <p>Rapid — بطولة إلكترونية مجانية — التفاصيل بعد اكتمال التسجيل الأولي.</p>
+      </div>
+      <div class="rook">♜</div>
+    </div>
+  </section>
+</main>
+
+<footer>
+  <div class="container">شطرنج السعودية — نسخة تجريبية قابلة للتطوير.</div>
+</footer>
+
+<script src="config.js"></script>
+<script type="module" src="app.js"></script>
+</body>
+</html>
