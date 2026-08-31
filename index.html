@@ -478,6 +478,21 @@ tbody tr:hover{background:#fcfbf8}
   font-weight:900
 }
 
+.player-name{
+  display:block;
+  font-weight:900;
+}
+
+.player-username{
+  display:block;
+  margin-top:2px;
+  direction:ltr;
+  text-align:right;
+  color:#7a817d;
+  font-size:10px;
+  font-weight:700;
+}
+
 .badge{
   display:inline-block;
   background:#eee;
@@ -537,6 +552,19 @@ label span{
   display:block;
   margin-bottom:2px
 }
+
+.username-status{
+  display:block;
+  min-height:16px;
+  margin-top:4px;
+  font-size:10px;
+  font-weight:800;
+  color:#777;
+}
+
+.username-status.checking{color:#79621f}
+.username-status.available{color:#17633f}
+.username-status.taken{color:#a53a3a}
 
 .check{
   grid-column:1/-1;
@@ -931,7 +959,7 @@ footer{
           <thead>
             <tr>
               <th>#</th>
-              <th>اسم المستخدم</th>
+              <th>اللاعب</th>
               <th>المنطقة</th>
               <th>المدينة</th>
               <th>الفئة</th>
@@ -964,10 +992,18 @@ footer{
 
         <form id="signupForm" class="auth-form">
           <label>
+            <span>الاسم الظاهر</span>
+            <input id="signupName" required minlength="2" maxlength="60"
+                   autocomplete="name"
+                   placeholder="مثال: أحمد الرويلي">
+          </label>
+
+          <label>
             <span>اسم المستخدم</span>
-            <input id="signupName" required minlength="3" maxlength="20"
+            <input id="signupUsername" required minlength="3" maxlength="20"
                    autocomplete="username" inputmode="latin"
-                   placeholder="مثال: ahmed_99">
+                   dir="ltr" placeholder="مثال: ahmed_99">
+            <small id="usernameStatus" class="username-status">اكتب اسم المستخدم للتحقق من توفره.</small>
           </label>
 
           <label>
@@ -1137,6 +1173,8 @@ let ALL_PLAYERS=[];
 let currentSession=null;
 let currentProfile=null;
 let pendingSignupProfile=JSON.parse(sessionStorage.getItem('pending_signup_profile')||'null');
+let usernameAvailability=null;
+let usernameCheckTimer=null;
 
 function escapeHTML(text){
   return String(text??'').replace(/[&<>"']/g,c=>({
@@ -1201,10 +1239,11 @@ function authErrorMessage(error,context=''){
   }
 
   if(
-    raw.includes('players_name_unique_ci') ||
-    raw.includes('username_taken')
+    raw.includes('username_registry') ||
+    raw.includes('username_taken') ||
+    raw.includes('duplicate key') && raw.includes('username')
   ){
-    return 'اسم المستخدم مستخدم بالفعل. اختر اسمًا آخر.';
+    return 'اسم المستخدم محجوز. اختر اسمًا آخر.';
   }
 
   if(
@@ -1256,6 +1295,67 @@ function switchAuthTab(tab){
 $('#signupTab').addEventListener('click',()=>switchAuthTab('signup'));
 $('#loginTab').addEventListener('click',()=>switchAuthTab('login'));
 
+function setUsernameStatus(text,state=''){
+  const el=$('#usernameStatus');
+  if(!el) return;
+  el.textContent=text;
+  el.className='username-status '+state;
+}
+
+async function checkUsernameAvailability(username){
+  const clean=String(username||'').trim().toLowerCase();
+
+  if(!/^[a-z0-9_]{3,20}$/.test(clean)){
+    usernameAvailability=false;
+    setUsernameStatus('3–20 خانة: أحرف إنجليزية أو أرقام أو _ فقط.','taken');
+    return false;
+  }
+
+  setUsernameStatus('جاري التحقق...','checking');
+
+  const {data,error}=await supabase.rpc(
+    'is_username_available',
+    {p_username:clean}
+  );
+
+  if(error){
+    console.error(error);
+    usernameAvailability=null;
+    setUsernameStatus('تعذر التحقق الآن.','taken');
+    return false;
+  }
+
+  usernameAvailability=!!data;
+
+  if(usernameAvailability){
+    setUsernameStatus('✓ متاح للحجز','available');
+  }else{
+    setUsernameStatus('✕ محجوز','taken');
+  }
+
+  return usernameAvailability;
+}
+
+$('#signupUsername').addEventListener('input',function(){
+  const clean=this.value.trim().toLowerCase();
+  if(this.value!==clean) this.value=clean;
+
+  usernameAvailability=null;
+  clearTimeout(usernameCheckTimer);
+
+  if(!clean){
+    setUsernameStatus('اكتب اسم المستخدم للتحقق من توفره.','');
+    return;
+  }
+
+  setUsernameStatus('جاري التحقق...','checking');
+
+  usernameCheckTimer=setTimeout(
+    ()=>checkUsernameAvailability(clean),
+    350
+  );
+});
+
 document.querySelectorAll('.show-pass').forEach(button=>{
   button.addEventListener('click',()=>{
     const input=document.getElementById(button.dataset.target);
@@ -1296,15 +1396,32 @@ $('#regionFilter').addEventListener('change',function(){
 $('#cityFilter').addEventListener('change',applyFilter);
 
 async function loadPlayers(){
-  const {data,error}=await supabase
-    .from('public_players')
-    .select('id,name,region,city,category,rating,rating_status,created_at')
-    .order('rating',{ascending:false})
-    .order('created_at',{ascending:true});
+  const [{data,error},{data:usernameRows,error:usernameError}]=await Promise.all([
+    supabase
+      .from('public_players')
+      .select('id,name,region,city,category,rating,rating_status,created_at')
+      .order('rating',{ascending:false})
+      .order('created_at',{ascending:true}),
+    supabase.rpc('get_public_usernames')
+  ]);
 
   if(error) throw error;
 
-  ALL_PLAYERS=data||[];
+  if(usernameError){
+    console.warn('username mapping unavailable',usernameError);
+  }
+
+  const usernameMap=new Map(
+    (usernameRows||[]).map(row=>[
+      String(row.player_id),
+      row.username
+    ])
+  );
+
+  ALL_PLAYERS=(data||[]).map(player=>({
+    ...player,
+    username:usernameMap.get(String(player.id))||''
+  }));
 
   const headerPlayers=document.querySelector('#headerPlayersCount');
   if(headerPlayers) headerPlayers.textContent=500 + ALL_PLAYERS.length;
@@ -1357,7 +1474,13 @@ function renderPlayers(players){
   $('#tbody').innerHTML=players.map((player,index)=>`
     <tr>
       <td>${index+1}</td>
-      <td><strong>${escapeHTML(player.name)}</strong></td>
+      <td>
+        <span class="player-name">${escapeHTML(player.name)}</span>
+        ${player.username
+          ? `<span class="player-username">@${escapeHTML(player.username)}</span>`
+          : ''
+        }
+      </td>
       <td>${escapeHTML(player.region)}</td>
       <td>${escapeHTML(player.city)}</td>
       <td>
@@ -1407,8 +1530,8 @@ async function ensureProfile(){
   const metadata=currentSession?.user?.user_metadata||{};
 
   const fallback=pendingSignupProfile||{
-    name:metadata.username||metadata.name||'player',
-    username:metadata.username||metadata.name||'player',
+    name:metadata.name||'لاعب',
+    username:metadata.username||'',
     mobile:metadata.mobile||'',
     region:metadata.region||'الرياض',
     city:metadata.city||'الرياض',
@@ -1462,11 +1585,16 @@ $('#signupForm').addEventListener('submit',async event=>{
   event.preventDefault();
   setAuthMsg('');
 
-  const username=$('#signupName').value.trim().toLowerCase();
+  const displayName=$('#signupName').value.trim();
+  const username=$('#signupUsername').value.trim().toLowerCase();
   const email=$('#signupEmail').value.trim().toLowerCase();
   const mobile=normalizeSaudiMobile($('#signupMobile').value);
   const password=$('#signupPassword').value;
   const password2=$('#signupPassword2').value;
+
+  if(displayName.length<2){
+    return setAuthMsg('اكتب الاسم الظاهر للاعب.','err');
+  }
 
   if(!/^[a-z0-9_]{3,20}$/.test(username)){
     return setAuthMsg(
@@ -1475,19 +1603,10 @@ $('#signupForm').addEventListener('submit',async event=>{
     );
   }
 
-  const {data:usernameAvailable,error:usernameCheckError}=await supabase
-    .rpc('is_username_available',{p_username:username});
-
-  if(usernameCheckError){
-    console.error(usernameCheckError);
-    return setAuthMsg(
-      'تعذر التحقق من اسم المستخدم. شغّل ملف SQL الخاص بأسماء المستخدمين في Supabase أولًا.',
-      'err'
-    );
-  }
+  const usernameAvailable=await checkUsernameAvailability(username);
 
   if(!usernameAvailable){
-    return setAuthMsg('اسم المستخدم مستخدم بالفعل. اختر اسمًا آخر.','err');
+    return setAuthMsg('اسم المستخدم محجوز. اختر اسمًا آخر.','err');
   }
 
   if(!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)){
@@ -1515,7 +1634,7 @@ $('#signupForm').addEventListener('submit',async event=>{
   }
 
   const profileData={
-    name:username,
+    name:displayName,
     username:username,
     mobile:mobile.local,
     region:$('#signupRegion').value,
@@ -1569,6 +1688,8 @@ $('#signupForm').addEventListener('submit',async event=>{
       );
 
       $('#signupForm').reset();
+      usernameAvailability=null;
+      setUsernameStatus('اكتب اسم المستخدم للتحقق من توفره.','');
       $('#signupCity').disabled=true;
       fillCities($('#signupCity'),[],'اختر المنطقة أولًا');
 
