@@ -830,26 +830,6 @@ footer{
       </div>
     </div>
 
-    <div class="top3">
-      <div class="podium">
-        <h3 id="n1">—</h3>
-        <p id="m1">لا توجد بيانات</p>
-        <strong id="r1">—</strong>
-      </div>
-
-      <div class="podium">
-        <h3 id="n2">—</h3>
-        <p id="m2">لا توجد بيانات</p>
-        <strong id="r2">—</strong>
-      </div>
-
-      <div class="podium">
-        <h3 id="n3">—</h3>
-        <p id="m3">لا توجد بيانات</p>
-        <strong id="r3">—</strong>
-      </div>
-    </div>
-
     <div class="table-card">
       <div class="table-head">
         <strong>جدول الترتيب</strong>
@@ -1254,15 +1234,6 @@ function applyFilter(){
 }
 
 function renderPlayers(players){
-  [1,2,3].forEach((number,index)=>{
-    const player=players[index];
-
-    $('#n'+number).textContent=player?player.name:'—';
-    $('#m'+number).textContent=
-      player?`${player.city} — ${player.region}`:'لا توجد بيانات';
-    $('#r'+number).textContent=player?player.rating:'—';
-  });
-
   $('#tbody').innerHTML=players.map((player,index)=>`
     <tr>
       <td>${index+1}</td>
