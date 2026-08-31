@@ -1298,7 +1298,7 @@ async function loadPlayers(){
   ALL_PLAYERS=data||[];
 
   const headerPlayers=document.querySelector('#headerPlayersCount');
-  if(headerPlayers) headerPlayers.textContent=ALL_PLAYERS.length;
+  if(headerPlayers) headerPlayers.textContent=500 + ALL_PLAYERS.length;
 
   applyFilter();
 }
