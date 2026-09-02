@@ -1,0 +1,616 @@
+import { createClient } from 'https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/+esm';
+
+const files = ['a','b','c','d','e','f','g','h'];
+const ranks = [8,7,6,5,4,3,2,1];
+const cfg = window.SHATRANJ_CONFIG?.supabase || {};
+const supabase = cfg.enabled && cfg.url && cfg.anonKey
+  ? createClient(cfg.url, cfg.anonKey)
+  : null;
+
+const $ = (id) => document.getElementById(id);
+const matchmakingScreen = $('matchmakingScreen');
+const matchmakingSetup = $('matchmakingSetup');
+const matchmakingWaiting = $('matchmakingWaiting');
+const matchmakingFound = $('matchmakingFound');
+const matchmakingProfile = $('matchmakingProfile');
+const matchmakingError = $('matchmakingError');
+const matchmakingWaitingError = $('matchmakingWaitingError');
+const matchmakingRange = $('matchmakingRange');
+const matchmakingElapsed = $('matchmakingElapsed');
+const matchmakingOpponent = $('matchmakingOpponent');
+const cancelMatchmakingBtn = $('cancelMatchmaking');
+const gamePage = $('gamePage');
+const leaveBtn = $('leaveBtn');
+const leaveText = $('leaveText');
+const reportBtn = $('reportBtn');
+const gameToast = $('gameToast');
+
+const boardEl = $('board');
+const leftEl = $('coordsLeft');
+const bottomEl = $('coordsBottom');
+const topClockEl = $('topClock');
+const bottomClockEl = $('bottomClock');
+const topNameEl = $('topName');
+const bottomNameEl = $('bottomName');
+const topLocationEl = $('topLocation');
+const bottomLocationEl = $('bottomLocation');
+const topRatingEl = $('topRating');
+const bottomRatingEl = $('bottomRating');
+const topAvatarEl = $('topAvatar');
+const bottomAvatarEl = $('bottomAvatar');
+const resignBtn = $('resignBtn');
+const flipBoardEl = $('flipBoard');
+const drawOfferBtn = $('drawOffer');
+
+let matchmakingTimer = null;
+let matchmakingPolling = false;
+let matchmakingStartedAt = 0;
+
+let liveGameId = null;
+let seatKey = null;
+let myColor = null;
+let game = null;
+let serverState = null;
+let lastServerUpdate = '';
+let selected = null;
+let legalTargets = [];
+let flipped = false;
+let orientationInitialized = false;
+let moveBusy = false;
+let refreshBusy = false;
+let timeoutClaimBusy = false;
+let drawPromptKey = '';
+let finishedAlerted = false;
+let gamePollTimer = null;
+
+function firstRow(data){
+  return Array.isArray(data) ? (data[0] || null) : data;
+}
+
+function toast(message, ms=2200){
+  gameToast.textContent = message;
+  gameToast.hidden = false;
+  clearTimeout(toast._timer);
+  toast._timer = setTimeout(()=>{ gameToast.hidden=true; }, ms);
+}
+
+function showMatchmakingState(state){
+  matchmakingScreen.hidden = false;
+  gamePage.hidden = true;
+  matchmakingSetup.hidden = state !== 'setup';
+  matchmakingWaiting.hidden = state !== 'waiting';
+  matchmakingFound.hidden = state !== 'found';
+  leaveText.textContent = 'رجوع';
+}
+
+function showGamePage(){
+  matchmakingScreen.hidden = true;
+  gamePage.hidden = false;
+  leaveText.textContent = 'مغادرة المباراة';
+}
+
+function formatElapsed(seconds){
+  const s = Math.max(0, Number(seconds) || 0);
+  return String(Math.floor(s/60)).padStart(2,'0') + ':' + String(Math.floor(s%60)).padStart(2,'0');
+}
+
+async function loadMyProfile(){
+  const { data, error } = await supabase.rpc('get_my_player_profile');
+  const profile = firstRow(data);
+  if(error || !profile){
+    matchmakingProfile.textContent = 'أكمل ملف اللاعب أولًا من الصفحة الرئيسية.';
+    return null;
+  }
+  matchmakingProfile.textContent = `${profile.name} — تصنيف ${profile.rating}`;
+  return profile;
+}
+
+async function enterMatchedGame(row){
+  if(!row?.game_id || !row?.seat_key || !row?.color) return;
+  sessionStorage.setItem('shatranj_live_game_id', row.game_id);
+  sessionStorage.setItem('shatranj_live_game_code', row.game_code || '');
+  sessionStorage.setItem('shatranj_live_seat_key', row.seat_key);
+  sessionStorage.setItem('shatranj_live_color', row.color);
+  sessionStorage.removeItem('shatranj_matchmaking_active');
+  sessionStorage.removeItem('shatranj_matchmaking_started_at');
+  clearInterval(matchmakingTimer);
+  showMatchmakingState('found');
+  matchmakingOpponent.textContent = row.opponent_name
+    ? `خصمك: ${row.opponent_name}`
+    : 'الخصم جاهز — جارٍ فتح المباراة...';
+  setTimeout(()=>{
+    location.href = `play.html?game=${encodeURIComponent(row.game_id)}`;
+  }, 850);
+}
+
+function updateWaitingUI(row){
+  const fallback = Math.max(0,(Date.now()-matchmakingStartedAt)/1000);
+  const seconds = Number(row?.waited_seconds ?? fallback);
+  matchmakingElapsed.textContent = formatElapsed(seconds);
+  matchmakingRange.textContent = `±${Number(row?.rating_window || 150)}`;
+}
+
+async function pollMatchmaking(){
+  if(matchmakingPolling || !supabase) return;
+  matchmakingPolling = true;
+  try{
+    const { data, error } = await supabase.rpc('poll_matchmaking');
+    if(error) throw error;
+    const row = firstRow(data);
+    if(!row) return;
+    if(row.state === 'matched'){
+      await enterMatchedGame(row);
+      return;
+    }
+    if(row.state === 'waiting'){
+      updateWaitingUI(row);
+      return;
+    }
+    sessionStorage.removeItem('shatranj_matchmaking_active');
+    clearInterval(matchmakingTimer);
+    showMatchmakingState('setup');
+  }catch(err){
+    console.error(err);
+    matchmakingWaitingError.textContent = 'تعذر متابعة البحث. سنحاول من جديد تلقائيًا.';
+  }finally{
+    matchmakingPolling = false;
+  }
+}
+
+function beginPolling(){
+  clearInterval(matchmakingTimer);
+  matchmakingTimer = setInterval(pollMatchmaking, 1500);
+}
+
+async function startMatchmaking(minutes){
+  matchmakingError.textContent = '';
+  matchmakingWaitingError.textContent = '';
+  showMatchmakingState('waiting');
+  matchmakingStartedAt = Date.now();
+  sessionStorage.setItem('shatranj_matchmaking_active','1');
+  sessionStorage.setItem('shatranj_matchmaking_started_at', String(matchmakingStartedAt));
+  updateWaitingUI({waited_seconds:0,rating_window:150});
+
+  try{
+    const { data, error } = await supabase.rpc('start_matchmaking',{p_minutes:Number(minutes)});
+    if(error) throw error;
+    const row = firstRow(data);
+    if(row?.state === 'matched'){
+      await enterMatchedGame(row);
+      return;
+    }
+    if(row?.state !== 'waiting') throw new Error('unexpected matchmaking state');
+    updateWaitingUI(row);
+    beginPolling();
+  }catch(err){
+    console.error(err);
+    sessionStorage.removeItem('shatranj_matchmaking_active');
+    clearInterval(matchmakingTimer);
+    showMatchmakingState('setup');
+    matchmakingError.textContent = String(err?.message || '').includes('active game exists')
+      ? 'لديك مباراة نشطة بالفعل.'
+      : 'تعذر بدء البحث عن خصم. حاول مرة أخرى.';
+  }
+}
+
+async function cancelMatchmaking(){
+  clearInterval(matchmakingTimer);
+  sessionStorage.removeItem('shatranj_matchmaking_active');
+  sessionStorage.removeItem('shatranj_matchmaking_started_at');
+  try{
+    await supabase.rpc('cancel_matchmaking');
+  }catch(err){
+    console.error(err);
+  }
+  showMatchmakingState('setup');
+  matchmakingWaitingError.textContent = '';
+}
+
+function pieceSVG(type,color){
+  const cls = color === 'w' ? 'white' : 'black';
+  const base = (inner) => `<div class="piece ${cls}"><svg viewBox="0 0 100 100" aria-hidden="true">${inner}</svg></div>`;
+  const sharedBase = `
+    <ellipse class="fill-accent" cx="50" cy="88" rx="26" ry="7"></ellipse>
+    <rect class="fill-main" x="26" y="80" width="48" height="8" rx="4"></rect>
+    <path class="stroke-main" d="M25 80h50M30 88h40" stroke-width="2.6" fill="none" stroke-linecap="round"></path>`;
+  if(type==='p') return base(`<circle class="fill-main" cx="50" cy="27" r="12"></circle><path class="fill-main" d="M50 39c10 0 18 8 18 18v2H32v-2c0-10 8-18 18-18z"></path><path class="fill-accent" d="M39 58h22c5 0 9 4 9 9v5H30v-5c0-5 4-9 9-9z"></path><path class="stroke-main" d="M38 58h24M35 71h30" stroke-width="2.4" fill="none" stroke-linecap="round"></path>${sharedBase}`);
+  if(type==='r') return base(`<path class="fill-main" d="M30 22h8v8h6v-8h12v8h6v-8h8v15H30z"></path><path class="fill-main" d="M35 37h30v30H35z"></path><path class="fill-accent" d="M30 66h40v12H30z"></path><path class="stroke-main" d="M30 37h40M37 46h26M34 66h32" stroke-width="2.4" fill="none" stroke-linecap="round"></path>${sharedBase}`);
+  if(type==='n') return base(`<path class="fill-main" d="M68 25c-7 0-13 3-18 8l-8 9-8 3 6 8-2 18h28c2-5 4-11 4-18 0-6-2-11-6-14l6-6c4-4 4-8-2-8z"></path><path class="fill-accent" d="M40 71h25c5 0 8 3 8 7H36c0-4 1-7 4-7z"></path><circle class="fill-accent" cx="59" cy="36" r="2.8"></circle><path class="stroke-main" d="M52 31c4 1 8 4 10 8M45 48c7 1 13 6 17 14M39 71h30" stroke-width="2.4" fill="none" stroke-linecap="round"></path>${sharedBase}`);
+  if(type==='b') return base(`<path class="fill-main" d="M50 18c9 0 15 7 15 16 0 7-5 11-10 15 5 4 9 10 9 18v2H36v-2c0-8 4-14 9-18-5-4-10-8-10-15 0-9 6-16 15-16z"></path><path class="stroke-main" d="M56 27l-10 14M40 69h20" stroke-width="2.6" fill="none" stroke-linecap="round"></path><path class="fill-accent" d="M34 69h32c5 0 8 4 8 9H26c0-5 3-9 8-9z"></path>${sharedBase}`);
+  if(type==='q') return base(`<circle class="fill-main" cx="28" cy="22" r="5"></circle><circle class="fill-main" cx="42" cy="16" r="5"></circle><circle class="fill-main" cx="58" cy="16" r="5"></circle><circle class="fill-main" cx="72" cy="22" r="5"></circle><path class="fill-main" d="M28 28l8 14 10-14 8 14 10-14 8 14-4 4H32l-4-4z"></path><path class="fill-accent" d="M35 46h30l4 23H31z"></path><path class="fill-accent" d="M31 69h38c5 0 8 4 8 9H23c0-5 3-9 8-9z"></path><path class="stroke-main" d="M35 46h30M38 57h24M38 69h24" stroke-width="2.3" fill="none" stroke-linecap="round"></path>${sharedBase}`);
+  if(type==='k') return base(`<path class="fill-main" d="M35 26l8-8 7 10 7-10 8 8-4 6H39z"></path><path class="fill-accent" d="M38 32h24l5 15-6 5H39l-6-5z"></path><path class="fill-main" d="M42 52h16c7 0 13 7 13 16v1H29v-1c0-9 6-16 13-16z"></path><path class="fill-accent" d="M31 69h38c5 0 8 4 8 9H23c0-5 3-9 8-9z"></path><path class="stroke-main" d="M38 32h24M42 52h16M38 69h24" stroke-width="2.4" fill="none" stroke-linecap="round"></path>${sharedBase}`);
+  return '';
+}
+
+
+function renderCoords(){
+  leftEl.innerHTML='';
+  bottomEl.innerHTML='';
+  const shownRanks = flipped ? [...ranks].reverse() : ranks;
+  const shownFiles = flipped ? [...files].reverse() : files;
+  shownRanks.forEach(n=>{ const div=document.createElement('div'); div.textContent=n; leftEl.appendChild(div); });
+  shownFiles.forEach(f=>{ const div=document.createElement('div'); div.textContent=f; bottomEl.appendChild(div); });
+}
+
+function formatClock(ms){
+  const safe = Math.max(0, Math.ceil((Number(ms)||0)/1000));
+  return String(Math.floor(safe/60)).padStart(2,'0') + ':' + String(safe%60).padStart(2,'0');
+}
+
+function calculatedClocks(){
+  if(!serverState || !game) return {w:0,b:0};
+  let w = Number(serverState.white_time_ms || 0);
+  let b = Number(serverState.black_time_ms || 0);
+  if(serverState.status === 'active' && serverState.turn_started_at){
+    const elapsed = Math.max(0, Date.now() - new Date(serverState.turn_started_at).getTime());
+    if(game.turn()==='w') w=Math.max(0,w-elapsed);
+    else b=Math.max(0,b-elapsed);
+  }
+  return {w,b};
+}
+
+function colorInfo(color){
+  if(color==='w'){
+    return {
+      name: serverState.white_name,
+      rating: serverState.white_rating,
+      location: [serverState.white_city,serverState.white_region].filter(Boolean).join(' — ')
+    };
+  }
+  return {
+    name: serverState.black_name,
+    rating: serverState.black_rating,
+    location: [serverState.black_city,serverState.black_region].filter(Boolean).join(' — ')
+  };
+}
+
+function renderPlayers(){
+  const topColor = myColor === 'w' ? 'b' : 'w';
+  const bottomColor = myColor;
+  const top = colorInfo(topColor);
+  const bottom = colorInfo(bottomColor);
+
+  topNameEl.textContent = top.name || 'الخصم';
+  topRatingEl.textContent = top.rating ?? '—';
+  topLocationEl.textContent = top.location || '—';
+  bottomNameEl.textContent = bottom.name || 'أنت';
+  bottomRatingEl.textContent = bottom.rating ?? '—';
+  bottomLocationEl.textContent = bottom.location || '—';
+
+  topAvatarEl.classList.toggle('light', topColor==='w');
+  bottomAvatarEl.classList.toggle('light', bottomColor==='w');
+}
+
+function updateClockUI(){
+  if(!serverState || !game) return;
+  const clocks = calculatedClocks();
+  const topColor = myColor === 'w' ? 'b' : 'w';
+  const bottomColor = myColor;
+  const topMs = clocks[topColor];
+  const bottomMs = clocks[bottomColor];
+
+  topClockEl.textContent = formatClock(topMs);
+  bottomClockEl.textContent = formatClock(bottomMs);
+  topClockEl.classList.toggle('danger',topMs<=60000);
+  bottomClockEl.classList.toggle('danger',bottomMs<=60000);
+  topClockEl.style.outline = serverState.status==='active' && game.turn()===topColor
+    ? '2px solid rgba(64,207,103,.65)' : 'none';
+  bottomClockEl.style.outline = serverState.status==='active' && game.turn()===bottomColor
+    ? '2px solid rgba(64,207,103,.65)' : 'none';
+
+  const activeMs = clocks[game.turn()];
+  if(serverState.status==='active' && activeMs<=0 && !timeoutClaimBusy) claimTimeout();
+}
+
+function renderBoard(){
+  if(!game) return;
+  boardEl.innerHTML='';
+  const data=game.board();
+  const rowOrder=flipped?[7,6,5,4,3,2,1,0]:[0,1,2,3,4,5,6,7];
+  const colOrder=flipped?[7,6,5,4,3,2,1,0]:[0,1,2,3,4,5,6,7];
+
+  for(const row of rowOrder){
+    for(const col of colOrder){
+      const sq=document.createElement('div');
+      const square=files[col]+ranks[row];
+      sq.dataset.square=square;
+      sq.className='square '+(((row+col)%2===0)?'light':'dark');
+      if(selected===square) sq.classList.add('selected');
+      const target=legalTargets.find(m=>m.to===square);
+      if(target) sq.classList.add(target.flags.includes('c')||target.flags.includes('e')?'capture':'target');
+      const piece=data[row][col];
+      if(piece) sq.innerHTML=pieceSVG(piece.type,piece.color);
+      sq.addEventListener('click',()=>handleSquare(square));
+      boardEl.appendChild(sq);
+    }
+  }
+  updateClockUI();
+}
+
+function localResult(){
+  if(game.in_checkmate()) return game.turn()==='w' ? '0-1' : '1-0';
+  if(game.in_draw()) return '1/2-1/2';
+  return null;
+}
+
+async function handleSquare(square){
+  if(moveBusy || !game || !serverState || serverState.status!=='active') return;
+  if(game.turn() !== myColor) return;
+
+  if(selected){
+    const candidate=legalTargets.find(m=>m.to===square);
+    if(candidate){
+      const move=game.move({from:selected,to:square,promotion:'q'});
+      selected=null;
+      legalTargets=[];
+      if(move){
+        renderBoard();
+        moveBusy=true;
+        try{
+          const { error } = await supabase.rpc('submit_live_move',{
+            p_game_id:liveGameId,
+            p_seat_key:seatKey,
+            p_from:move.from,
+            p_to:move.to,
+            p_promotion:move.promotion || null,
+            p_new_fen:game.fen(),
+            p_san:move.san,
+            p_result:localResult()
+          });
+          if(error) throw error;
+        }catch(err){
+          console.error(err);
+          toast('تعذر اعتماد الحركة. أُعيدت الرقعة إلى حالة الخادم.');
+        }finally{
+          moveBusy=false;
+          await refreshLiveGame(true);
+        }
+        return;
+      }
+    }
+  }
+
+  const piece=game.get(square);
+  if(piece && piece.color===myColor && piece.color===game.turn()){
+    selected=square;
+    legalTargets=game.moves({square,verbose:true});
+  }else{
+    selected=null;
+    legalTargets=[];
+  }
+  renderBoard();
+}
+
+async function claimTimeout(){
+  if(timeoutClaimBusy || !liveGameId || !seatKey) return;
+  timeoutClaimBusy=true;
+  try{
+    const { error } = await supabase.rpc('claim_live_timeout',{p_game_id:liveGameId,p_seat_key:seatKey});
+    if(error) throw error;
+    await refreshLiveGame(true);
+  }catch(err){
+    console.error(err);
+  }finally{
+    timeoutClaimBusy=false;
+  }
+}
+
+async function maybeHandleDrawOffer(){
+  if(!serverState?.draw_offer_by || serverState.status!=='active') return;
+  if(serverState.draw_offer_by===myColor) return;
+  const key=`${serverState.draw_offer_by}|${serverState.updated_at}`;
+  if(drawPromptKey===key) return;
+  drawPromptKey=key;
+
+  setTimeout(async()=>{
+    const accept=confirm('الخصم يعرض التعادل. هل توافق؟');
+    try{
+      const { error }=await supabase.rpc('respond_live_draw',{
+        p_game_id:liveGameId,
+        p_seat_key:seatKey,
+        p_accept:accept
+      });
+      if(error) throw error;
+      await refreshLiveGame(true);
+    }catch(err){
+      console.error(err);
+      toast('تعذر إرسال رد التعادل.');
+    }
+  },80);
+}
+
+function finishedMessage(result){
+  if(result==='1/2-1/2') return 'انتهت المباراة بالتعادل.';
+  const won = (result==='1-0' && myColor==='w') || (result==='0-1' && myColor==='b');
+  return won ? 'انتهت المباراة — فزت.' : 'انتهت المباراة — فاز الخصم.';
+}
+
+function applyServerState(row, force=false){
+  if(!row) return;
+  const changed = force || row.updated_at !== lastServerUpdate;
+  serverState=row;
+
+  if(!orientationInitialized){
+    flipped = myColor==='b';
+    orientationInitialized=true;
+    renderCoords();
+  }
+
+  renderPlayers();
+
+  if(changed){
+    try{
+      game = new Chess(row.fen);
+    }catch(err){
+      console.error(err);
+      toast('تعذر تحميل وضع الرقعة.');
+      return;
+    }
+    selected=null;
+    legalTargets=[];
+    lastServerUpdate=row.updated_at || '';
+    renderBoard();
+  }else{
+    updateClockUI();
+  }
+
+  maybeHandleDrawOffer();
+
+  if(row.status==='finished' && !finishedAlerted){
+    finishedAlerted=true;
+    clearInterval(gamePollTimer);
+    setTimeout(()=>alert(finishedMessage(row.result)),120);
+  }
+}
+
+async function refreshLiveGame(force=false){
+  if(refreshBusy || !liveGameId) return;
+  refreshBusy=true;
+  try{
+    const { data, error } = await supabase.rpc('get_live_game_state',{p_game_id:liveGameId});
+    if(error) throw error;
+    const row=firstRow(data);
+    if(!row) throw new Error('game not found');
+    applyServerState(row,force);
+  }catch(err){
+    console.error(err);
+    toast('تعذر تحديث المباراة.');
+  }finally{
+    refreshBusy=false;
+  }
+}
+
+async function recoverSeatIfNeeded(){
+  seatKey=sessionStorage.getItem('shatranj_live_seat_key');
+  myColor=sessionStorage.getItem('shatranj_live_color');
+  const storedGame=sessionStorage.getItem('shatranj_live_game_id');
+
+  if(seatKey && ['w','b'].includes(myColor) && (!storedGame || storedGame===liveGameId)) return true;
+
+  const { data, error }=await supabase.rpc('poll_matchmaking');
+  if(error) return false;
+  const row=firstRow(data);
+
+  if(row?.state!=='matched' || row.game_id!==liveGameId || !row.seat_key) return false;
+
+  seatKey=row.seat_key;
+  myColor=row.color;
+  sessionStorage.setItem('shatranj_live_game_id',row.game_id);
+  sessionStorage.setItem('shatranj_live_game_code',row.game_code || '');
+  sessionStorage.setItem('shatranj_live_seat_key',row.seat_key);
+  sessionStorage.setItem('shatranj_live_color',row.color);
+  return true;
+}
+
+async function openLiveGame(){
+  const recovered=await recoverSeatIfNeeded();
+  if(!recovered){
+    toast('تعذر التحقق من مقعدك في المباراة.');
+    setTimeout(()=>{ location.href='play.html'; },1300);
+    return;
+  }
+
+  showGamePage();
+  await refreshLiveGame(true);
+  gamePollTimer=setInterval(()=>{
+    if(!document.hidden && serverState?.status!=='finished') refreshLiveGame(false);
+  },1200);
+}
+
+resignBtn.addEventListener('click',async()=>{
+  if(!serverState || serverState.status!=='active') return;
+  if(!confirm('هل تريد الاستسلام؟')) return;
+  try{
+    const { error }=await supabase.rpc('resign_live_game',{p_game_id:liveGameId,p_seat_key:seatKey});
+    if(error) throw error;
+    await refreshLiveGame(true);
+  }catch(err){
+    console.error(err);
+    toast('تعذر تنفيذ الاستسلام.');
+  }
+});
+
+drawOfferBtn.addEventListener('click',async()=>{
+  if(!serverState || serverState.status!=='active') return;
+  if(serverState.draw_offer_by){
+    toast(serverState.draw_offer_by===myColor ? 'عرض التعادل مرسل بالفعل.' : 'لديك عرض تعادل من الخصم.');
+    return;
+  }
+  try{
+    const { error }=await supabase.rpc('offer_live_draw',{p_game_id:liveGameId,p_seat_key:seatKey});
+    if(error) throw error;
+    toast('تم إرسال عرض التعادل.');
+    await refreshLiveGame(true);
+  }catch(err){
+    console.error(err);
+    toast('تعذر إرسال عرض التعادل.');
+  }
+});
+
+flipBoardEl.addEventListener('click',()=>{
+  flipped=!flipped;
+  selected=null;
+  legalTargets=[];
+  renderCoords();
+  renderBoard();
+});
+
+document.querySelectorAll('[data-minutes]').forEach(btn=>{
+  btn.addEventListener('click',()=>startMatchmaking(btn.dataset.minutes));
+});
+
+cancelMatchmakingBtn.addEventListener('click',cancelMatchmaking);
+
+leaveBtn.addEventListener('click',async()=>{
+  if(!matchmakingScreen.hidden && !matchmakingWaiting.hidden){
+    await cancelMatchmaking();
+    return;
+  }
+  if(!matchmakingScreen.hidden){
+    location.href='index.html';
+    return;
+  }
+  if(confirm('هل تريد مغادرة المباراة؟')) location.href='index.html';
+});
+
+reportBtn.addEventListener('click',()=>toast('سيتم إضافة نموذج الإبلاغ قريبًا.'));
+
+setInterval(()=>{
+  if(!gamePage.hidden) updateClockUI();
+  if(!matchmakingWaiting.hidden && matchmakingStartedAt){
+    matchmakingElapsed.textContent=formatElapsed((Date.now()-matchmakingStartedAt)/1000);
+  }
+},250);
+
+async function init(){
+  if(!supabase){
+    alert('تعذر الاتصال بخدمة اللعب.');
+    return;
+  }
+
+  const { data:{session} }=await supabase.auth.getSession();
+  if(!session){
+    location.href='index.html#register';
+    return;
+  }
+
+  const params = new URLSearchParams(location.search);
+  liveGameId = params.get('game');
+
+  if(liveGameId){
+    await openLiveGame();
+    return;
+  }
+
+  showMatchmakingState('setup');
+  await loadMyProfile();
+
+  if(sessionStorage.getItem('shatranj_matchmaking_active')==='1'){
+    matchmakingStartedAt=Number(sessionStorage.getItem('shatranj_matchmaking_started_at')) || Date.now();
+    showMatchmakingState('waiting');
+    await pollMatchmaking();
+    if(!matchmakingWaiting.hidden) beginPolling();
+  }
+}
+
+init();
