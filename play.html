@@ -73,9 +73,10 @@
       .brand{gap:7px}.brand-mark{width:42px;height:42px}.brand-copy h1{font-size:16px}.brand-copy .en{display:none}
       .ghost-btn{width:auto;min-width:0;height:42px;padding:0 9px;border-radius:10px;gap:5px;font-size:12px}.ghost-btn.small{min-width:62px}.ghost-btn .icon{font-size:17px}
       .page{height:auto;min-height:calc(100dvh - var(--header-h));padding:8px 7px 12px}
-      .layout{height:auto;display:grid;grid-template-columns:1fr;gap:9px;direction:rtl;align-items:start}
-      .board-panel,.side-panel{height:auto;width:100%;direction:rtl}.board-frame{width:100%;max-width:none;padding:8px 8px 17px;border-radius:13px}.coords-left{left:-4px;bottom:17px;width:12px;font-size:10px}.coords-bottom{left:8px;right:8px;bottom:3px;height:11px;font-size:10px}
-      .side-panel{max-width:none;margin:0}.panel-stack{grid-template-rows:auto auto auto;gap:7px}
+      .layout{height:auto;display:flex;flex-direction:column;gap:7px;direction:rtl;align-items:stretch}
+      .board-panel{order:2;height:auto;width:100%;direction:rtl}.board-frame{width:100%;max-width:none;padding:8px 8px 17px;border-radius:13px}.coords-left{left:-4px;bottom:17px;width:12px;font-size:10px}.coords-bottom{left:8px;right:8px;bottom:3px;height:11px;font-size:10px}
+      .side-panel,.panel-stack{display:contents}
+      .panel-stack>.player-card:first-child{order:1}.actions-card{order:3}.panel-stack>.player-card:last-child{order:4}
       .player-card{grid-template-columns:50px minmax(0,1fr) 96px;padding:8px 9px;gap:8px;min-height:82px;border-radius:13px}.avatar{width:50px;height:50px}.avatar::before{top:11px;width:19px;height:19px}.avatar::after{bottom:7px;width:30px;height:21px}
       .status{font-size:10px;margin-bottom:2px;gap:4px}.status::before{width:7px;height:7px}.name{font-size:14px;margin-bottom:3px}.location{font-size:10px;margin-bottom:3px}.rating{font-size:11px;gap:4px}.rating .trend{font-size:12px}
       .clock{font-size:20px;padding:8px 5px;border-radius:9px}.clock-progress{margin-top:5px;height:4px}
@@ -148,7 +149,7 @@
           </section>
 
           <section class="actions-card">
-            <button class="action-item" id="blackResign" type="button">
+            <button class="action-item" id="whiteResign" type="button">
               <span class="action-icon">🏳</span>
               <span class="action-label">استسلام</span>
             </button>
@@ -156,9 +157,9 @@
               <span class="action-icon">🤝</span>
               <span class="action-label">عرض تعادل</span>
             </button>
-            <button class="action-item" id="whiteResign" type="button">
-              <span class="action-icon">🏳</span>
-              <span class="action-label">استسلام</span>
+            <button class="action-item" id="flipBoard" type="button">
+              <span class="action-icon">↻</span>
+              <span class="action-label">قلب الرقعة</span>
             </button>
           </section>
 
@@ -190,11 +191,17 @@
     const whiteClockEl = document.getElementById('whiteClock');
     const blackClockEl = document.getElementById('blackClock');
     const whiteResign = document.getElementById('whiteResign');
-    const blackResign = document.getElementById('blackResign');
+    const flipBoardEl = document.getElementById('flipBoard');
     const drawOffer = document.getElementById('drawOffer');
 
-    ranks.forEach(n=>{ const div=document.createElement('div'); div.textContent=n; leftEl.appendChild(div); });
-    files.forEach(f=>{ const div=document.createElement('div'); div.textContent=f; bottomEl.appendChild(div); });
+    let flipped=false;
+    function renderCoords(){
+      leftEl.innerHTML=''; bottomEl.innerHTML='';
+      const shownRanks=flipped?[...ranks].reverse():ranks;
+      const shownFiles=flipped?[...files].reverse():files;
+      shownRanks.forEach(n=>{ const div=document.createElement('div'); div.textContent=n; leftEl.appendChild(div); });
+      shownFiles.forEach(f=>{ const div=document.createElement('div'); div.textContent=f; bottomEl.appendChild(div); });
+    }
 
     function pieceSVG(type,color){
       const cls = color === 'w' ? 'white' : 'black';
@@ -227,8 +234,10 @@
     function renderBoard(){
       boardEl.innerHTML='';
       const data=game.board();
-      for(let row=0;row<8;row++){
-        for(let col=0;col<8;col++){
+      const rowOrder=flipped?[7,6,5,4,3,2,1,0]:[0,1,2,3,4,5,6,7];
+      const colOrder=flipped?[7,6,5,4,3,2,1,0]:[0,1,2,3,4,5,6,7];
+      for(const row of rowOrder){
+        for(const col of colOrder){
           const sq=document.createElement('div');
           const square=files[col]+ranks[row];
           sq.dataset.square=square;
@@ -297,16 +306,22 @@
     },1000);
 
     whiteResign.addEventListener('click',()=>{ if(!finished && confirm('هل تريد استسلام الأبيض؟')) finish('استسلم الأبيض — فاز الأسود'); });
-    blackResign.addEventListener('click',()=>{ if(!finished && confirm('هل تريد استسلام الأسود؟')) finish('استسلم الأسود — فاز الأبيض'); });
     drawOffer.addEventListener('click',()=>{
       if(finished) return;
       if(confirm('عرض تعادل: هل يوافق اللاعب الآخر؟')) finish('اتفق اللاعبان على التعادل');
+    });
+    flipBoardEl.addEventListener('click',()=>{
+      flipped=!flipped;
+      selected=null; legalTargets=[];
+      renderCoords();
+      renderBoard();
     });
 
     document.querySelector('.ghost-btn').addEventListener('click',()=>{
       if(confirm('هل تريد مغادرة المباراة؟')) location.href='index.html';
     });
 
+    renderCoords();
     renderBoard();
   </script>
 </body>
