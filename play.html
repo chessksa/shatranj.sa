@@ -63,11 +63,11 @@
       .topbar-inner{padding:5px 18px}
       .brand{gap:12px}.brand-mark{width:50px;height:50px}.brand-copy h1{font-size:19px}.brand-copy .en{font-size:11px;letter-spacing:3px}
       .ghost-btn{height:40px;min-width:152px;padding:0 13px;font-size:14px}.ghost-btn.small{min-width:92px}
-      .page{width:100%;height:auto;min-height:calc(100dvh - var(--header-h));padding:6px 14px 14px}
-      .layout{height:auto;min-height:calc(100dvh - var(--header-h) - 20px);grid-template-columns:minmax(0,1fr) clamp(330px,26vw,410px);gap:14px;align-items:start}
-      .board-panel{height:auto;place-items:start start}
-      .board-frame{width:min(100%,1250px);padding:12px 12px 20px;border-radius:17px}
-      .side-panel{height:calc(100dvh - var(--header-h) - 18px);min-height:620px;position:sticky;top:8px;align-self:start;align-items:stretch}
+      .page{width:100%;height:calc(100dvh - var(--header-h));min-height:0;padding:8px 14px 10px;overflow:hidden}
+      .layout{height:100%;min-height:0;grid-template-columns:minmax(0,1fr) clamp(340px,26vw,410px);gap:14px;align-items:center}
+      .board-panel{height:100%;min-height:0;place-items:center}
+      .board-frame{width:min(100%,calc(100dvh - var(--header-h) - 30px),982px);padding:12px 12px 20px;border-radius:17px}
+      .side-panel{height:min(100%,calc(100dvh - var(--header-h) - 18px),990px);min-height:0;position:static;align-self:center;align-items:stretch}
       .panel-stack{height:100%;max-height:none;grid-template-rows:auto auto auto;align-content:space-between;gap:14px}
       .player-card{min-height:clamp(132px,18vh,190px);padding:17px;grid-template-columns:clamp(72px,5vw,86px) minmax(0,1fr) clamp(122px,9vw,142px);gap:14px}
       .avatar{width:clamp(72px,5vw,86px);height:clamp(72px,5vw,86px)}
