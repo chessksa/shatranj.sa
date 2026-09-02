@@ -1,432 +1,145 @@
-(() => {
-  'use strict';
-
-  const cfg = window.SHATRANJ_CONFIG?.supabase;
-  const loading = document.getElementById('loadingState');
-  const dashboard = document.getElementById('dashboard');
-  const toastEl = document.getElementById('toast');
-  let toastTimer;
-
-  if (!cfg?.enabled || !cfg.url || !cfg.anonKey || !window.supabase) {
-    loading.textContent = 'تعذر تهيئة الاتصال بالموقع.';
-    return;
-  }
-
-  const client = window.supabase.createClient(cfg.url, cfg.anonKey);
-  let session;
-  let myProfile;
-  let publicProfile;
-  let challengeTargetId = null;
-  let challengePolling = false;
-
-  const $ = (id) => document.getElementById(id);
-  const ACHIEVEMENTS = [
-    ['first_win','♟','أول فوز','تحقيق أول انتصار'],
-    ['wins_10','♜','10 انتصارات','الوصول إلى 10 انتصارات'],
-    ['games_50','♞','50 مباراة','إكمال 50 مباراة'],
-    ['streak_5','♛','سلسلة 5 انتصارات','خمسة انتصارات متتالية'],
-    ['rating_1600','★','1600','الوصول إلى تصنيف 1600'],
-    ['rating_1800','★★','1800','الوصول إلى تصنيف 1800'],
-    ['rating_2000','♚','2000','الوصول إلى تصنيف 2000']
-  ];
-
-  const esc = (value) => String(value ?? '')
-    .replaceAll('&', '&amp;').replaceAll('<', '&lt;')
-    .replaceAll('>', '&gt;').replaceAll('"', '&quot;').replaceAll("'", '&#039;');
-
-  function toast(message, isError = false) {
-    clearTimeout(toastTimer);
-    toastEl.textContent = message;
-    toastEl.className = `toast show${isError ? ' error' : ''}`;
-    toastTimer = setTimeout(() => { toastEl.className = 'toast'; }, 3200);
-  }
-
-  function initial(name) {
-    return (String(name || 'ل').trim().charAt(0) || 'ل').toUpperCase();
-  }
-
-  function showAvatar(url, fallbackName, legacyUrl) {
-    const img = $('avatarImage');
-    const fallback = $('avatarFallback');
-    fallback.textContent = initial(fallbackName);
-    let triedLegacy = false;
-    img.onerror = () => {
-      if (!triedLegacy && legacyUrl) {
-        triedLegacy = true;
-        img.src = legacyUrl;
-        return;
-      }
-      img.hidden = true;
-      fallback.hidden = false;
-    };
-    img.onload = () => {
-      fallback.hidden = true;
-      img.hidden = false;
-    };
-    img.src = url;
-  }
-
-  function publicAvatarUrl(path) {
-    return client.storage.from('avatars').getPublicUrl(path).data.publicUrl;
-  }
-
-  async function loadBaseProfile() {
-    const { data, error } = await client.rpc('get_my_player_profile');
-    if (error) throw error;
-    const row = Array.isArray(data) ? data[0] : data;
-    if (!row?.id) throw new Error('لم يتم العثور على ملف اللاعب.');
-    myProfile = row;
-
-    const { data: pub, error: pubError } = await client.rpc('get_public_player_profile', { p_player_id: row.id });
-    if (pubError) throw pubError;
-    publicProfile = Array.isArray(pub) ? pub[0] : pub;
-
-    $('playerName').textContent = row.name;
-    const username = publicProfile?.username ? `@${publicProfile.username}` : '';
-    $('playerMeta').textContent = [username, row.city, row.region].filter(Boolean).join(' • ');
-    $('heroRating').textContent = row.rating;
-    $('statRating').textContent = row.rating;
-    $('statGames').textContent = row.games_count;
-    $('statWins').textContent = row.wins;
-    $('statDraws').textContent = row.draws;
-    $('statLosses').textContent = row.losses;
-    $('friendsCount').textContent = publicProfile?.friend_count ?? 0;
-    $('publicProfileLink').href = `player.html?id=${encodeURIComponent(row.id)}`;
-
-    const newPath = publicProfile?.avatar_path || `${row.id}/avatar.webp`;
-    const legacyPath = `${session.user.id}/avatar.webp`;
-    showAvatar(publicAvatarUrl(newPath), row.name, publicAvatarUrl(legacyPath));
-  }
-
-  function renderChart(history) {
-    const box = $('ratingChart');
-    const current = Number(myProfile.rating || 1500);
-    if (!history?.length) {
-      box.innerHTML = `<div class="chart-empty">لا توجد تغيّرات في التصنيف بعد.<br>تصنيفك الحالي: <strong>${current}</strong></div>`;
-      $('ratingDeltaBadge').textContent = '0';
-      return;
+<!doctype html>
+<html lang="ar" dir="rtl">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover" />
+  <title>لوحة اللاعب | شطرنج السعودية</title>
+  <meta name="theme-color" content="#0c3435" />
+  <style>
+    :root{
+      --bg:#082d2f;--bg2:#0c3b3c;--panel:#103f40;--panel2:#16494a;
+      --gold:#d4b467;--gold2:#b89545;--cream:#f4eddc;--muted:#adc1bc;
+      --line:rgba(212,180,103,.22);--danger:#d96c6c;--good:#74b38b;
+      --shadow:0 18px 45px rgba(0,0,0,.2);--radius:18px
     }
-
-    const values = [Number(history[0].old_rating), ...history.map(h => Number(h.new_rating))];
-    const min = Math.min(...values);
-    const max = Math.max(...values);
-    const pad = Math.max(10, Math.ceil((max - min) * .15));
-    const lo = min - pad;
-    const hi = max + pad;
-    const w = 600, h = 180, px = 38, py = 22;
-    const x = (i) => values.length === 1 ? w / 2 : px + i * ((w - px * 2) / (values.length - 1));
-    const y = (v) => h - py - ((v - lo) / Math.max(1, hi - lo)) * (h - py * 2);
-    const points = values.map((v, i) => `${x(i)},${y(v)}`).join(' ');
-    const grid = [0, .5, 1].map(t => {
-      const yy = py + t * (h - py * 2);
-      const val = Math.round(hi - t * (hi - lo));
-      return `<line class="chart-grid" x1="${px}" y1="${yy}" x2="${w-px}" y2="${yy}"/><text class="chart-label" x="${px-8}" y="${yy+4}" text-anchor="end">${val}</text>`;
-    }).join('');
-    const dots = values.map((v,i) => `<circle class="chart-dot" cx="${x(i)}" cy="${y(v)}" r="3.8"/>`).join('');
-    box.innerHTML = `<svg viewBox="0 0 ${w} ${h}" aria-label="منحنى التصنيف">${grid}<polyline class="chart-line" points="${points}"/>${dots}</svg>`;
-    const delta = values.at(-1) - values[0];
-    $('ratingDeltaBadge').textContent = `${delta > 0 ? '+' : ''}${delta}`;
-  }
-
-  async function loadRatingHistory() {
-    const { data, error } = await client.rpc('get_public_player_rating_history', { p_player_id: myProfile.id });
-    if (error) throw error;
-    renderChart(data || []);
-  }
-
-  function friendRow(friend) {
-    const online = friend.is_online;
-    return `<div class="row" data-friend="${esc(friend.friend_id)}">
-      <div><div class="row-title">${esc(friend.name)}</div>
-        <div class="row-meta"><span class="presence"><span class="dot ${online ? 'online' : ''}"></span>${online ? 'متصل الآن' : 'غير متصل'}</span> • ${esc(friend.city)} • ${esc(friend.rating)} نقطة</div>
+    *{box-sizing:border-box}html,body{margin:0;min-height:100%;font-family:Tahoma,"Segoe UI",Arial,sans-serif;background:linear-gradient(145deg,var(--bg),#0a3839 55%,#08292b);color:var(--cream)}
+    a{color:inherit;text-decoration:none}button,input{font:inherit}button{cursor:pointer}
+    .shell{width:min(1180px,calc(100% - 28px));margin:auto;padding:18px 0 40px}
+    .topbar{display:flex;align-items:center;justify-content:space-between;gap:12px;padding:10px 2px 18px}
+    .brand{display:flex;align-items:center;gap:10px;font-weight:800}.brand-mark{width:38px;height:38px;border:1px solid var(--line);border-radius:12px;display:grid;place-items:center;color:var(--gold);background:rgba(255,255,255,.03);font-size:22px}
+    .top-actions{display:flex;gap:8px;flex-wrap:wrap}.btn{border:1px solid var(--line);background:rgba(255,255,255,.04);color:var(--cream);padding:10px 14px;border-radius:12px;transition:.18s;min-height:40px}.btn:hover{background:rgba(255,255,255,.08)}.btn.gold{background:var(--gold);border-color:var(--gold);color:#173536;font-weight:800}.btn.danger{color:#ffdada;border-color:rgba(217,108,108,.35)}
+    .hero{background:linear-gradient(135deg,rgba(255,255,255,.065),rgba(255,255,255,.025));border:1px solid var(--line);border-radius:24px;padding:22px;box-shadow:var(--shadow);display:grid;grid-template-columns:auto 1fr auto;gap:20px;align-items:center}
+    .avatar-wrap{position:relative;width:104px;height:104px}.avatar,.avatar-fallback{width:104px;height:104px;border-radius:50%;border:2px solid var(--gold);object-fit:cover;background:#0a3031}.avatar-fallback{display:grid;place-items:center;font-size:34px;font-weight:800;color:var(--gold)}.avatar-edit{position:absolute;bottom:0;left:0;width:34px;height:34px;border-radius:50%;display:grid;place-items:center;border:1px solid var(--gold);background:#173f40;color:var(--cream)}.avatar-input{display:none}
+    .identity h1{margin:0 0 6px;font-size:clamp(23px,4vw,34px)}.identity .sub{color:var(--muted);font-size:14px}.identity .rating{display:inline-flex;align-items:center;gap:6px;margin-top:10px;color:var(--gold);font-size:18px;font-weight:800}.hero-actions{display:flex;gap:8px;flex-direction:column;min-width:150px}
+    .stats{display:grid;grid-template-columns:repeat(5,minmax(0,1fr));gap:10px;margin:14px 0}.stat{background:rgba(255,255,255,.035);border:1px solid var(--line);border-radius:16px;padding:15px}.stat small{display:block;color:var(--muted);margin-bottom:7px}.stat strong{font-size:24px;color:var(--cream)}
+    .grid{display:grid;grid-template-columns:minmax(0,1.15fr) minmax(320px,.85fr);gap:14px}.card{background:rgba(13,56,57,.88);border:1px solid var(--line);border-radius:var(--radius);padding:18px;box-shadow:0 12px 34px rgba(0,0,0,.12)}.card h2{margin:0;font-size:18px}.card-head{display:flex;align-items:center;justify-content:space-between;gap:10px;margin-bottom:14px}.badge{min-width:24px;height:24px;padding:0 7px;border-radius:20px;background:rgba(212,180,103,.15);color:var(--gold);display:grid;place-items:center;font-size:12px;font-weight:800}
+    .chart-box{height:220px;display:grid;align-items:center}.chart-box svg{width:100%;height:190px;overflow:visible}.chart-empty,.empty{color:var(--muted);text-align:center;padding:28px 10px}.chart-line{fill:none;stroke:var(--gold);stroke-width:3;stroke-linecap:round;stroke-linejoin:round}.chart-grid{stroke:rgba(255,255,255,.08);stroke-width:1}.chart-dot{fill:var(--cream);stroke:var(--gold);stroke-width:2}.chart-label{fill:var(--muted);font-size:12px}
+    .list{display:grid;gap:9px}.row{display:grid;grid-template-columns:1fr auto;gap:10px;align-items:center;padding:12px;border:1px solid rgba(255,255,255,.08);border-radius:14px;background:rgba(255,255,255,.025)}.row-title{font-weight:800}.row-meta{font-size:12px;color:var(--muted);margin-top:4px}.row-actions{display:flex;gap:6px;flex-wrap:wrap}.mini{border:1px solid var(--line);background:transparent;color:var(--cream);padding:7px 9px;border-radius:9px;font-size:12px;min-height:40px}.mini.ok{color:#d7ffe4;border-color:rgba(116,179,139,.4)}.mini.no{color:#ffd6d6;border-color:rgba(217,108,108,.35)}.presence{display:inline-flex;align-items:center;gap:5px}.dot{width:8px;height:8px;border-radius:50%;background:#6c7f7c}.dot.online{background:#66c58a;box-shadow:0 0 0 3px rgba(102,197,138,.12)}
+    .game-result{font-weight:800}.win{color:#8ed2a5}.loss{color:#ef9b9b}.draw{color:#e8dba9}.game-kind{font-size:11px;padding:3px 7px;border-radius:12px;background:rgba(212,180,103,.1);color:var(--gold)}
+    .achievement-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:9px}.achievement{display:flex;align-items:center;gap:10px;padding:12px;border:1px solid rgba(255,255,255,.08);border-radius:14px;background:rgba(255,255,255,.025)}.achievement .ico{font-size:24px;color:var(--gold)}.achievement .name{font-weight:800}.achievement .hint{font-size:11px;color:var(--muted);margin-top:3px}.achievement.locked{opacity:.4;filter:saturate(.5)}.achievement.earned{border-color:rgba(212,180,103,.35);background:rgba(212,180,103,.07)}@media(max-width:520px){.achievement-grid{grid-template-columns:1fr}}
+    .toast{position:fixed;left:20px;bottom:20px;max-width:min(380px,calc(100% - 40px));padding:12px 15px;border-radius:12px;background:#153e3f;border:1px solid var(--line);box-shadow:var(--shadow);opacity:0;transform:translateY(10px);pointer-events:none;transition:.2s;z-index:20}.toast.show{opacity:1;transform:none}.toast.error{border-color:rgba(217,108,108,.55)}
+    .loading{min-height:55vh;display:grid;place-items:center;color:var(--muted)}.loading[hidden]{display:none}
+    .modal{position:fixed;inset:0;background:rgba(0,0,0,.58);display:grid;place-items:center;padding:18px;z-index:50}.modal[hidden]{display:none}.modal-card{width:min(420px,100%);background:#103f40;border:1px solid var(--line);border-radius:18px;padding:18px;box-shadow:var(--shadow)}.modal-card h3{margin:0 0 8px}.modal-card p{color:var(--muted);margin:0 0 14px}.modal-actions{display:flex;gap:8px;margin-top:14px}.modal-actions .btn{flex:1}.select{width:100%;background:#0b3435;color:var(--cream);border:1px solid var(--line);border-radius:11px;padding:11px}
+    @media(max-width:820px){.hero{grid-template-columns:auto 1fr}.hero-actions{grid-column:1/-1;flex-direction:row}.hero-actions .btn{flex:1}.stats{grid-template-columns:repeat(2,1fr)}.stat:first-child{grid-column:1/-1}.grid{grid-template-columns:1fr}.topbar{align-items:flex-start}.top-actions{justify-content:flex-end}}
+    @media(max-width:520px){.shell{width:min(100% - 18px,1180px);padding-top:8px}.brand span:last-child{display:none}.hero{padding:16px;gap:13px}.avatar-wrap,.avatar,.avatar-fallback{width:82px;height:82px}.avatar-fallback{font-size:28px}.identity h1{font-size:22px}.stats{gap:8px}.stat{padding:12px}.stat strong{font-size:21px}.card{padding:14px}.row{grid-template-columns:1fr}.row-actions{justify-content:flex-start}.top-actions .btn{padding:8px 10px;font-size:12px}}
+  </style>
+</head>
+<body>
+  <div class="shell" id="profileApp">
+    <header class="topbar">
+      <a class="brand" href="index.html"><span class="brand-mark">♞</span><span>شطرنج السعودية</span></a>
+      <div class="top-actions">
+        <a class="btn" href="index.html">الرئيسية</a>
+        <a class="btn" href="index.html#ranking">التصنيف</a>
+        <div id="siteNotificationHost"></div>
+        <button class="btn danger" id="logoutBtn" type="button">تسجيل الخروج</button>
       </div>
-      <div class="row-actions">
-        <a class="mini" href="player.html?id=${encodeURIComponent(friend.friend_id)}">الملف العام</a>
-        <button class="mini ok" data-action="challenge-friend" data-id="${esc(friend.friend_id)}" data-name="${esc(friend.name)}" type="button">تحدي</button>
-        <button class="mini no" data-action="remove-friend" data-id="${esc(friend.friend_id)}" type="button">إزالة</button>
+    </header>
+
+    <div class="loading" id="loadingState">جاري تحميل لوحة اللاعب...</div>
+
+    <main id="dashboard" hidden>
+      <section class="hero" id="profileHero">
+        <div class="avatar-wrap">
+          <img class="avatar" id="avatarImage" alt="صورة اللاعب" hidden />
+          <div class="avatar-fallback" id="avatarFallback">♟</div>
+          <label class="avatar-edit" for="avatarInput" title="تغيير الصورة">✎</label>
+          <input class="avatar-input" id="avatarInput" type="file" accept="image/jpeg,image/png,image/webp" />
+        </div>
+        <div class="identity">
+          <h1 id="playerName">—</h1>
+          <div class="sub" id="playerMeta">—</div>
+          <div class="rating">♛ <span id="heroRating">1500</span> نقطة</div>
+        </div>
+        <div class="hero-actions">
+          <a class="btn gold" href="play.html">العب الآن</a>
+          <a class="btn" id="publicProfileLink" href="#">صفحتي العامة</a>
+        </div>
+      </section>
+
+      <section class="stats" aria-label="إحصائيات اللاعب">
+        <div class="stat"><small>التصنيف</small><strong id="statRating">—</strong></div>
+        <div class="stat"><small>المباريات</small><strong id="statGames">—</strong></div>
+        <div class="stat"><small>فوز</small><strong id="statWins">—</strong></div>
+        <div class="stat"><small>تعادل</small><strong id="statDraws">—</strong></div>
+        <div class="stat"><small>خسارة</small><strong id="statLosses">—</strong></div>
+      </section>
+
+      <section class="grid">
+        <div class="card">
+          <div class="card-head"><h2>تطور التصنيف</h2><span class="badge" id="ratingDeltaBadge">—</span></div>
+          <div class="chart-box" id="ratingChart"></div>
+        </div>
+
+        <div class="card">
+          <div class="card-head"><h2>الأصدقاء</h2><span class="badge" id="friendsCount">0</span></div>
+          <div class="list" id="friendsList"></div>
+        </div>
+
+        <div class="card">
+          <div class="card-head"><h2>طلبات الصداقة الواردة</h2><span class="badge" id="incomingCount">0</span></div>
+          <div class="list" id="incomingRequests"></div>
+        </div>
+
+        <div class="card">
+          <div class="card-head"><h2>الطلبات المرسلة</h2><span class="badge" id="outgoingCount">0</span></div>
+          <div class="list" id="outgoingRequests"></div>
+        </div>
+
+        <div class="card" id="challengesSection">
+          <div class="card-head"><h2>التحديات الواردة</h2><span class="badge" id="incomingChallengesCount">0</span></div>
+          <div class="list" id="incomingChallenges"></div>
+        </div>
+
+        <div class="card">
+          <div class="card-head"><h2>التحديات المرسلة</h2><span class="badge" id="outgoingChallengesCount">0</span></div>
+          <div class="list" id="outgoingChallenges"></div>
+        </div>
+
+        <div class="card" style="grid-column:1/-1">
+          <div class="card-head"><h2>آخر المباريات</h2><span class="badge">10</span></div>
+          <div class="list" id="recentGames"></div>
+        </div>
+
+        <div class="card" id="achievementsSection" style="grid-column:1/-1">
+          <div class="card-head"><h2>الإنجازات</h2></div>
+          <div class="achievement-grid" id="achievementsList"></div>
+        </div>
+      </section>
+    </main>
+  </div>
+
+
+  <div class="modal" id="challengeModal" hidden>
+    <div class="modal-card" role="dialog" aria-modal="true" aria-labelledby="challengeModalTitle">
+      <h3 id="challengeModalTitle">تحدي صديق</h3>
+      <p id="challengeTargetName">اختر زمن المباراة.</p>
+      <select class="select" id="challengeMinutes" aria-label="زمن التحدي">
+        <option value="3">3 دقائق</option>
+        <option value="5">5 دقائق</option>
+        <option value="10">10 دقائق</option>
+      </select>
+      <div class="modal-actions">
+        <button class="btn gold" id="sendChallengeBtn" type="button">إرسال التحدي</button>
+        <button class="btn" id="cancelChallengeModalBtn" type="button">إلغاء</button>
       </div>
-    </div>`;
-  }
+    </div>
+  </div>
 
-  function requestRow(req) {
-    const incoming = req.direction === 'incoming';
-    return `<div class="row">
-      <div><div class="row-title">${esc(req.other_name)}</div><div class="row-meta">${esc(req.other_city)} • ${esc(req.other_rating)} نقطة</div></div>
-      <div class="row-actions">
-        <a class="mini" href="player.html?id=${encodeURIComponent(req.other_player_id)}">الملف</a>
-        ${incoming
-          ? `<button class="mini ok" data-action="accept-request" data-id="${esc(req.request_id)}" type="button">قبول</button><button class="mini no" data-action="reject-request" data-id="${esc(req.request_id)}" type="button">رفض</button>`
-          : `<button class="mini no" data-action="cancel-request" data-id="${esc(req.request_id)}" type="button">إلغاء الطلب</button>`}
-      </div>
-    </div>`;
-  }
-
-  async function loadFriendsAndRequests() {
-    const [{ data: friends, error: fErr }, { data: requests, error: rErr }] = await Promise.all([
-      client.rpc('get_my_friends'), client.rpc('get_my_friend_requests')
-    ]);
-    if (fErr) throw fErr;
-    if (rErr) throw rErr;
-
-    $('friendsList').innerHTML = friends?.length ? friends.map(friendRow).join('') : '<div class="empty">لا يوجد أصدقاء حتى الآن.</div>';
-    $('friendsCount').textContent = friends?.length || 0;
-    const incoming = (requests || []).filter(r => r.direction === 'incoming');
-    const outgoing = (requests || []).filter(r => r.direction === 'outgoing');
-    $('incomingRequests').innerHTML = incoming.length ? incoming.map(requestRow).join('') : '<div class="empty">لا توجد طلبات واردة.</div>';
-    $('outgoingRequests').innerHTML = outgoing.length ? outgoing.map(requestRow).join('') : '<div class="empty">لا توجد طلبات مرسلة.</div>';
-    $('incomingCount').textContent = incoming.length;
-    $('outgoingCount').textContent = outgoing.length;
-  }
-
-  function storeChallengeAccess(row, challengeId) {
-    if (!row?.game_id || !row?.seat_key || !row?.color) throw new Error('تعذر فتح مباراة التحدي.');
-    sessionStorage.setItem('shatranj_live_game_id', row.game_id);
-    sessionStorage.setItem('shatranj_live_game_code', row.game_code || '');
-    sessionStorage.setItem('shatranj_live_seat_key', row.seat_key);
-    sessionStorage.setItem('shatranj_live_color', row.color);
-    sessionStorage.setItem('shatranj_friend_challenge_id', challengeId);
-    location.href = `play.html?game=${encodeURIComponent(row.game_id)}&challenge=${encodeURIComponent(challengeId)}`;
-  }
-
-  async function enterChallenge(challengeId) {
-    const { data, error } = await client.rpc('get_my_challenge_game_access', { p_challenge_id: challengeId });
-    if (error) throw error;
-    const row = Array.isArray(data) ? data[0] : data;
-    if (row?.state !== 'accepted') return false;
-    storeChallengeAccess(row, challengeId);
-    return true;
-  }
-
-  function challengeRow(ch) {
-    const incoming = ch.direction === 'incoming';
-    const pending = ch.status === 'pending';
-    const seconds = Math.max(0, Number(ch.seconds_remaining || 0));
-    const mins = Math.floor(seconds / 60);
-    const secs = String(seconds % 60).padStart(2, '0');
-    return `<div class="row" data-challenge="${esc(ch.challenge_id)}">
-      <div><div class="row-title">${esc(ch.other_name)}</div>
-        <div class="row-meta">${esc(ch.minutes)} دقائق • ${pending ? `ينتهي خلال ${mins}:${secs}` : esc(ch.status)}</div>
-      </div>
-      <div class="row-actions">
-        <a class="mini" href="player.html?id=${encodeURIComponent(ch.other_player_id)}">الملف</a>
-        ${pending && incoming ? `<button class="mini ok" data-action="accept-challenge" data-id="${esc(ch.challenge_id)}" type="button">قبول</button><button class="mini no" data-action="reject-challenge" data-id="${esc(ch.challenge_id)}" type="button">رفض</button>` : ''}
-        ${pending && !incoming ? `<button class="mini no" data-action="cancel-challenge" data-id="${esc(ch.challenge_id)}" type="button">إلغاء</button>` : ''}
-        ${ch.status === 'accepted' && ch.game_id ? `<button class="mini ok" data-action="open-challenge" data-id="${esc(ch.challenge_id)}" type="button">فتح المباراة</button>` : ''}
-      </div>
-    </div>`;
-  }
-
-  async function loadChallenges({ autoEnter = true } = {}) {
-    if (challengePolling) return;
-    challengePolling = true;
-    try {
-      const { data, error } = await client.rpc('get_my_friend_challenges');
-      if (error) throw error;
-      const rows = data || [];
-      const incoming = rows.filter(r => r.direction === 'incoming' && r.status === 'pending');
-      const outgoing = rows.filter(r => r.direction === 'outgoing' && r.status === 'pending');
-      $('incomingChallenges').innerHTML = incoming.length ? incoming.map(challengeRow).join('') : '<div class="empty">لا توجد تحديات واردة.</div>';
-      $('outgoingChallenges').innerHTML = outgoing.length ? outgoing.map(challengeRow).join('') : '<div class="empty">لا توجد تحديات مرسلة.</div>';
-      $('incomingChallengesCount').textContent = incoming.length;
-      $('outgoingChallengesCount').textContent = outgoing.length;
-
-      if (autoEnter) {
-        const acceptedOutgoing = rows.find(r => r.direction === 'outgoing' && r.status === 'accepted' && r.game_id);
-        if (acceptedOutgoing && sessionStorage.getItem('shatranj_last_opened_friend_challenge') !== acceptedOutgoing.challenge_id) {
-          sessionStorage.setItem('shatranj_last_opened_friend_challenge', acceptedOutgoing.challenge_id);
-          await enterChallenge(acceptedOutgoing.challenge_id);
-        }
-      }
-    } finally {
-      challengePolling = false;
-    }
-  }
-
-  function openChallengeModal(id, name) {
-    challengeTargetId = id;
-    $('challengeTargetName').textContent = `تحدي ${name || 'الصديق'} — اختر زمن المباراة.`;
-    $('challengeMinutes').value = '3';
-    $('challengeModal').hidden = false;
-  }
-
-  function closeChallengeModal() {
-    challengeTargetId = null;
-    $('challengeModal').hidden = true;
-  }
-
-  function outcomeArabic(outcome) {
-    return outcome === 'win' ? ['فوز','win'] : outcome === 'loss' ? ['خسارة','loss'] : ['تعادل','draw'];
-  }
-
-  async function loadAchievements() {
-    const { data, error } = await client.rpc('get_my_achievements');
-    if (error) throw error;
-    const earned = new Map((data || []).map(x => [x.achievement_code, x.earned_at]));
-    $('achievementsList').innerHTML = ACHIEVEMENTS.map(([code,icon,name,hint]) => {
-      const at = earned.get(code);
-      const date = at ? new Date(at).toLocaleDateString('ar-SA') : 'غير مكتسبة بعد';
-      return `<div class="achievement ${at ? 'earned' : 'locked'}"><div class="ico">${icon}</div><div><div class="name">${name}</div><div class="hint">${at ? `مكتسبة • ${date}` : hint}</div></div></div>`;
-    }).join('');
-  }
-
-  async function loadRecentGames() {
-    const { data, error } = await client.rpc('get_public_player_recent_games', { p_player_id: myProfile.id, p_limit: 10 });
-    if (error) throw error;
-    if (!data?.length) {
-      $('recentGames').innerHTML = '<div class="empty">لا توجد مباريات منتهية حتى الآن.</div>';
-      return;
-    }
-    $('recentGames').innerHTML = data.map(game => {
-      const [label, cls] = outcomeArabic(game.outcome);
-      const kind = Number(game.rating_step) === 1 ? 'تحدي صديق' : 'بحث عشوائي';
-      return `<div class="row"><div><div class="row-title">${esc(game.opponent_name || 'خصم')}</div><div class="row-meta">${esc(game.time_control_minutes)} دقائق • ${new Date(game.played_at).toLocaleDateString('ar-SA')}</div></div><div class="row-actions"><span class="game-kind">${kind}</span><span class="game-result ${cls}">${label}</span></div></div>`;
-    }).join('');
-  }
-
-  async function heartbeatAndRefreshFriends() {
-    if (document.hidden || !myProfile) return;
-    try {
-      await client.rpc('heartbeat_player_presence');
-      await Promise.all([loadFriendsAndRequests(), loadChallenges({ autoEnter: false })]);
-    } catch (err) {
-      console.warn('presence refresh failed', err);
-    }
-  }
-
-  async function handleAction(button) {
-    const action = button.dataset.action;
-    const id = button.dataset.id;
-    button.disabled = true;
-    try {
-      if (action === 'challenge-friend') {
-        openChallengeModal(id, button.dataset.name);
-        return;
-      } else if (action === 'accept-challenge') {
-        const { data, error } = await client.rpc('respond_friend_challenge', { p_challenge_id: id, p_accept: true });
-        if (error) throw error;
-        const row = Array.isArray(data) ? data[0] : data;
-        toast('تم قبول التحدي.');
-        storeChallengeAccess(row, id);
-        return;
-      } else if (action === 'reject-challenge') {
-        const { error } = await client.rpc('respond_friend_challenge', { p_challenge_id: id, p_accept: false });
-        if (error) throw error;
-        toast('تم رفض التحدي.');
-      } else if (action === 'cancel-challenge') {
-        const { error } = await client.rpc('cancel_friend_challenge', { p_challenge_id: id });
-        if (error) throw error;
-        toast('تم إلغاء التحدي.');
-      } else if (action === 'open-challenge') {
-        await enterChallenge(id);
-        return;
-      } else if (action === 'accept-request') {
-        const { error } = await client.rpc('respond_friend_request', { p_request_id: id, p_accept: true });
-        if (error) throw error;
-        toast('تم قبول طلب الصداقة.');
-      } else if (action === 'reject-request') {
-        const { error } = await client.rpc('respond_friend_request', { p_request_id: id, p_accept: false });
-        if (error) throw error;
-        toast('تم رفض الطلب.');
-      } else if (action === 'cancel-request') {
-        const { error } = await client.rpc('cancel_friend_request', { p_request_id: id });
-        if (error) throw error;
-        toast('تم إلغاء الطلب.');
-      } else if (action === 'remove-friend') {
-        if (!confirm('إزالة هذا اللاعب من قائمة الأصدقاء؟')) return;
-        const { error } = await client.rpc('remove_friend', { p_player_id: id });
-        if (error) throw error;
-        toast('تمت إزالة الصديق.');
-      }
-      await Promise.all([loadFriendsAndRequests(), loadBaseProfile(), loadChallenges({ autoEnter: false })]);
-    } catch (err) {
-      toast(err.message || 'تعذر تنفيذ العملية.', true);
-    } finally {
-      button.disabled = false;
-    }
-  }
-
-  async function resizeToWebp(file) {
-    if (file.size > 8 * 1024 * 1024) throw new Error('حجم الصورة يجب ألا يتجاوز 8 ميجابايت.');
-    if (!['image/jpeg','image/png','image/webp'].includes(file.type)) throw new Error('اختر صورة JPG أو PNG أو WebP.');
-    const bitmap = await createImageBitmap(file);
-    const max = 512;
-    const scale = Math.min(1, max / Math.max(bitmap.width, bitmap.height));
-    const w = Math.max(1, Math.round(bitmap.width * scale));
-    const h = Math.max(1, Math.round(bitmap.height * scale));
-    const canvas = document.createElement('canvas');
-    canvas.width = w; canvas.height = h;
-    canvas.getContext('2d').drawImage(bitmap,0,0,w,h);
-    bitmap.close?.();
-    return await new Promise((resolve,reject) => canvas.toBlob(blob => blob ? resolve(blob) : reject(new Error('تعذر معالجة الصورة.')), 'image/webp', .86));
-  }
-
-  async function uploadAvatar(file) {
-    const blob = await resizeToWebp(file);
-    const path = `${myProfile.id}/avatar.webp`;
-    const { error } = await client.storage.from('avatars').upload(path, blob, { upsert: true, contentType: 'image/webp', cacheControl: '3600' });
-    if (error) throw error;
-    showAvatar(`${publicAvatarUrl(path)}?v=${Date.now()}`, myProfile.name, null);
-  }
-
-  document.addEventListener('click', (event) => {
-    const button = event.target.closest('[data-action]');
-    if (button) handleAction(button);
-  });
-
-  $('avatarInput').addEventListener('change', async (event) => {
-    const file = event.target.files?.[0];
-    if (!file) return;
-    try { await uploadAvatar(file); toast('تم تحديث الصورة.'); }
-    catch (err) { toast(err.message || 'تعذر رفع الصورة.', true); }
-    event.target.value = '';
-  });
-
-  $('sendChallengeBtn').addEventListener('click', async () => {
-    if (!challengeTargetId) return;
-    const button = $('sendChallengeBtn');
-    button.disabled = true;
-    try {
-      const minutes = Number($('challengeMinutes').value);
-      const { error } = await client.rpc('send_friend_challenge', { p_player_id: challengeTargetId, p_minutes: minutes });
-      if (error) throw error;
-      closeChallengeModal();
-      toast('تم إرسال التحدي. صلاحيته 5 دقائق.');
-      await loadChallenges({ autoEnter: false });
-    } catch (err) {
-      toast(err.message || 'تعذر إرسال التحدي.', true);
-    } finally {
-      button.disabled = false;
-    }
-  });
-
-  $('cancelChallengeModalBtn').addEventListener('click', closeChallengeModal);
-  $('challengeModal').addEventListener('click', (event) => { if (event.target === $('challengeModal')) closeChallengeModal(); });
-
-  $('logoutBtn').addEventListener('click', async () => {
-    await client.auth.signOut();
-    location.href = 'index.html';
-  });
-
-  document.addEventListener('visibilitychange', () => { if (!document.hidden) heartbeatAndRefreshFriends(); });
-
-  (async () => {
-    try {
-      const { data: authData } = await client.auth.getSession();
-      session = authData.session;
-      if (!session) {
-        location.href = 'index.html#register';
-        return;
-      }
-      await loadBaseProfile();
-      await client.rpc('heartbeat_player_presence');
-      await Promise.all([loadRatingHistory(), loadFriendsAndRequests(), loadRecentGames(), loadAchievements(), loadChallenges({ autoEnter: false })]);
-      loading.hidden = true;
-      dashboard.hidden = false;
-      setInterval(heartbeatAndRefreshFriends, 30000);
-      setInterval(() => { if (!document.hidden) loadChallenges().catch(err => console.warn('challenge refresh failed', err)); }, 3000);
-    } catch (err) {
-      console.error(err);
-      loading.textContent = err.message || 'تعذر تحميل لوحة اللاعب.';
-    }
-  })();
-})();
+  <div class="toast" id="toast" role="status"></div>
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  <script src="config.js"></script>
+  <script src="site-notifications.js"></script>
+  <script src="profile.js"></script>
+</body>
+</html>
