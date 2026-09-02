@@ -1,0 +1,113 @@
+<!doctype html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="theme-color" content="#062f34">
+<title>إدارة الموقع | شطرنج السعودية</title>
+<style>
+*{box-sizing:border-box}
+:root{
+  --bg:#042f34;--bg2:#073b42;--panel:#0a4148;--panel2:#0b4a52;
+  --gold:#d8b56a;--gold2:#f0cc7d;--text:#f5f1e7;--muted:#bfcac6;
+  --line:rgba(216,181,106,.27);--danger:#e46b6b;--ok:#60d386;--shadow:0 15px 36px rgba(0,0,0,.24);
+}
+html,body{min-height:100%}
+body{margin:0;font-family:Tahoma,"Segoe UI",Arial,sans-serif;background:radial-gradient(circle at 20% 10%,rgba(10,105,115,.28),transparent 28%),linear-gradient(135deg,#022a2f,var(--bg) 48%,#06464d);color:var(--text)}
+button,input,select,textarea{font:inherit}button{cursor:pointer}a{color:inherit;text-decoration:none}[hidden]{display:none!important}
+.access-gate{min-height:100dvh;display:grid;place-items:center;padding:20px}.access-card{width:min(100%,460px);padding:28px;border:1px solid var(--line);border-radius:20px;background:rgba(6,51,57,.94);box-shadow:var(--shadow);text-align:center}.access-card h1{margin:0 0 10px;font-size:25px}.access-card p{margin:0;color:var(--muted);line-height:1.8}.spinner{width:38px;height:38px;margin:0 auto 18px;border:3px solid rgba(255,255,255,.15);border-top-color:var(--gold);border-radius:50%;animation:spin .8s linear infinite}@keyframes spin{to{transform:rotate(360deg)}}
+.admin-shell{min-height:100dvh;display:grid;grid-template-columns:270px minmax(0,1fr)}
+.sidebar{position:sticky;top:0;height:100dvh;padding:20px 14px;border-left:1px solid var(--line);background:rgba(3,38,43,.92);backdrop-filter:blur(12px);display:flex;flex-direction:column;gap:14px}.brand{padding:10px 12px 18px;border-bottom:1px solid var(--line)}.brand strong{display:block;font-size:19px}.brand span{display:block;margin-top:5px;color:var(--gold);font-size:12px;letter-spacing:2px}.nav-list{display:grid;gap:7px}.nav-btn{border:1px solid transparent;background:transparent;color:var(--text);border-radius:12px;padding:12px 13px;text-align:right;font-weight:800;display:flex;align-items:center;gap:10px}.nav-btn:hover,.nav-btn.active{background:rgba(216,181,106,.11);border-color:var(--line);color:var(--gold2)}.sidebar-foot{margin-top:auto;display:grid;gap:8px}.back-site{border:1px solid var(--line);border-radius:12px;padding:11px 12px;text-align:center;color:var(--gold2);font-weight:800}.admin-name{padding:10px 12px;color:var(--muted);font-size:12px;overflow:hidden;text-overflow:ellipsis}
+.mobile-top{display:none}.content{min-width:0;padding:22px}.topline{display:flex;align-items:center;justify-content:space-between;gap:16px;margin-bottom:18px}.topline h1{margin:0;font-size:27px}.topline p{margin:5px 0 0;color:var(--muted);font-size:13px}.refresh-btn{border:1px solid var(--line);background:rgba(8,66,73,.55);color:var(--text);border-radius:11px;min-height:42px;padding:0 14px;font-weight:800}
+.view{display:none}.view.active{display:block}.stats-grid{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:12px}.stat-card{border:1px solid var(--line);border-radius:16px;padding:17px;background:linear-gradient(180deg,rgba(11,74,82,.85),rgba(6,54,60,.88));box-shadow:var(--shadow)}.stat-card small{color:var(--muted);font-weight:700}.stat-card strong{display:block;margin-top:8px;font-size:30px;color:var(--gold2)}
+.grid-two{display:grid;grid-template-columns:1fr 1fr;gap:14px;margin-top:14px}.panel{border:1px solid var(--line);border-radius:16px;background:rgba(7,58,64,.84);box-shadow:var(--shadow);overflow:hidden}.panel-head{padding:14px 16px;border-bottom:1px solid var(--line);display:flex;align-items:center;justify-content:space-between;gap:10px}.panel-head h2{margin:0;font-size:17px}.panel-body{padding:14px 16px}.recent-list{display:grid;gap:8px}.recent-row{border:1px solid rgba(216,181,106,.15);border-radius:11px;padding:10px 11px;background:rgba(3,38,43,.35);display:flex;justify-content:space-between;gap:12px}.recent-row span{color:var(--muted);font-size:12px}
+.toolbar{display:flex;gap:9px;flex-wrap:wrap;margin-bottom:12px}.field{min-height:42px;border:1px solid var(--line);border-radius:11px;background:rgba(3,38,43,.7);color:var(--text);padding:0 12px;outline:none}.field::placeholder{color:#90a09c}.field:focus{border-color:var(--gold)}input.field{min-width:230px}select.field{min-width:145px}.table-wrap{overflow:auto;border:1px solid var(--line);border-radius:15px;background:rgba(6,51,57,.82);box-shadow:var(--shadow)}table{width:100%;border-collapse:collapse;min-width:760px}th,td{padding:12px 13px;border-bottom:1px solid rgba(216,181,106,.13);text-align:right;font-size:13px}th{position:sticky;top:0;background:#093e45;color:var(--gold2);font-size:12px;z-index:1}tr:last-child td{border-bottom:0}tbody tr:hover{background:rgba(216,181,106,.045)}.link-btn{border:0;background:transparent;color:var(--gold2);font-weight:900;padding:4px 0}.status-pill{display:inline-flex;align-items:center;border-radius:999px;padding:5px 9px;font-size:11px;font-weight:900}.status-active,.status-open{background:rgba(96,211,134,.12);color:#83e6a2}.status-banned{background:rgba(228,107,107,.14);color:#ff9e9e}.status-finished,.status-closed{background:rgba(255,255,255,.08);color:#d0d7d4}.status-waiting{background:rgba(216,181,106,.12);color:var(--gold2)}.empty{padding:30px;text-align:center;color:var(--muted)}
+.modal{position:fixed;inset:0;z-index:100;display:grid;place-items:center;padding:18px;background:rgba(0,19,23,.76);backdrop-filter:blur(7px)}.modal-card{width:min(100%,720px);max-height:88dvh;overflow:auto;border:1px solid var(--line);border-radius:18px;background:#073a41;box-shadow:0 22px 60px rgba(0,0,0,.45)}.modal-card.narrow{width:min(100%,500px)}.modal-head{position:sticky;top:0;z-index:2;background:#073a41;padding:15px 17px;border-bottom:1px solid var(--line);display:flex;align-items:center;justify-content:space-between;gap:12px}.modal-head h2{margin:0;font-size:20px}.close-btn{width:38px;height:38px;border:1px solid var(--line);border-radius:10px;background:transparent;color:#fff;font-size:21px}.modal-body{padding:17px}.detail-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:9px}.detail-item{border:1px solid rgba(216,181,106,.17);border-radius:12px;padding:10px;background:rgba(3,38,43,.38)}.detail-item small{display:block;color:var(--muted);font-size:11px}.detail-item strong{display:block;margin-top:5px;font-size:14px}.action-row{display:flex;gap:8px;flex-wrap:wrap;margin-top:15px}.action-btn{min-height:41px;border-radius:10px;padding:0 13px;font-weight:900;border:1px solid var(--line);background:rgba(216,181,106,.09);color:var(--gold2)}.action-btn.danger{border-color:rgba(228,107,107,.4);background:rgba(228,107,107,.12);color:#ffaaaa}.action-btn.ok{border-color:rgba(96,211,134,.38);background:rgba(96,211,134,.1);color:#92e8ab}.reason{width:100%;min-height:110px;resize:vertical;border:1px solid var(--line);border-radius:11px;background:#032d32;color:#fff;padding:11px;outline:none}.reason:focus{border-color:var(--gold)}.modal-msg{min-height:20px;margin:10px 0 0;color:#ff9b9b;font-size:12px}.modal-msg.ok{color:#8be5a7}.move-list{margin-top:12px;display:flex;gap:6px;flex-wrap:wrap}.move-chip{border:1px solid rgba(216,181,106,.18);border-radius:8px;padding:5px 7px;background:rgba(3,38,43,.4);font-size:12px}.section-title{margin:18px 0 8px;font-size:15px;color:var(--gold2)}
+@media(max-width:1050px){.stats-grid{grid-template-columns:1fr 1fr}.grid-two{grid-template-columns:1fr}.admin-shell{grid-template-columns:230px minmax(0,1fr)}}
+@media(max-width:760px){.admin-shell{display:block}.sidebar{position:fixed;right:0;top:0;z-index:120;width:min(82vw,310px);transform:translateX(105%);transition:.2s ease;border-left:1px solid var(--line);box-shadow:var(--shadow)}.sidebar.open{transform:translateX(0)}.mobile-top{display:flex;position:sticky;top:0;z-index:90;align-items:center;justify-content:space-between;padding:10px 12px;background:rgba(3,38,43,.96);border-bottom:1px solid var(--line)}.menu-btn{width:42px;height:42px;border:1px solid var(--line);border-radius:10px;background:transparent;color:#fff;font-size:21px}.content{padding:14px 10px 24px}.topline{align-items:flex-start}.topline h1{font-size:22px}.refresh-btn{min-height:39px;padding:0 10px;font-size:12px}.stats-grid{grid-template-columns:1fr 1fr;gap:8px}.stat-card{padding:13px}.stat-card strong{font-size:25px}.toolbar{display:grid;grid-template-columns:1fr 1fr}.toolbar input{grid-column:1/-1}.field,input.field,select.field{width:100%;min-width:0}.detail-grid{grid-template-columns:1fr 1fr}.modal{padding:9px}.modal-card{max-height:94dvh;border-radius:14px}.action-row{display:grid;grid-template-columns:1fr 1fr}.action-btn{width:100%}}
+@media(max-width:420px){.stats-grid{grid-template-columns:1fr 1fr}.detail-grid{grid-template-columns:1fr}.action-row{grid-template-columns:1fr}}
+</style>
+</head>
+<body>
+<div id="accessGate" class="access-gate">
+  <div class="access-card"><div class="spinner"></div><h1>لوحة إدارة شطرنج السعودية</h1><p id="accessMessage">جارٍ التحقق من صلاحية الإدارة...</p></div>
+</div>
+
+<div id="adminApp" class="admin-shell" hidden>
+  <aside id="adminSidebar" class="sidebar">
+    <div class="brand"><strong>شطرنج السعودية</strong><span>ADMIN PANEL</span></div>
+    <nav class="nav-list">
+      <button class="nav-btn active" data-view="dashboardView">⌂ الرئيسية</button>
+      <button class="nav-btn" data-view="playersView">♟ اللاعبون</button>
+      <button class="nav-btn" data-view="gamesView">▦ المباريات</button>
+      <button class="nav-btn" data-view="reportsView">⚑ البلاغات</button>
+      <button class="nav-btn" data-view="actionsView">≡ سجل الإدارة</button>
+    </nav>
+    <div class="sidebar-foot"><div id="adminIdentity" class="admin-name"></div><a class="back-site" href="index.html">العودة للموقع</a></div>
+  </aside>
+
+  <div>
+    <div class="mobile-top"><strong>لوحة الإدارة</strong><button id="mobileMenuBtn" class="menu-btn" type="button">☰</button></div>
+    <main class="content">
+      <div class="topline"><div><h1 id="viewTitle">الرئيسية</h1><p id="viewSubtitle">نظرة سريعة على نشاط الموقع.</p></div><button id="refreshBtn" class="refresh-btn" type="button">↻ تحديث</button></div>
+
+      <section id="dashboardView" class="view active">
+        <div class="stats-grid">
+          <article class="stat-card"><small>إجمالي اللاعبين</small><strong id="totalPlayers">—</strong></article>
+          <article class="stat-card"><small>المباريات النشطة</small><strong id="activeGames">—</strong></article>
+          <article class="stat-card"><small>المباريات المنتهية</small><strong id="finishedGames">—</strong></article>
+          <article class="stat-card"><small>البلاغات المفتوحة</small><strong id="openReports">—</strong></article>
+        </div>
+        <div class="grid-two">
+          <section class="panel"><div class="panel-head"><h2>أحدث اللاعبين</h2></div><div class="panel-body"><div id="recentPlayers" class="recent-list"></div></div></section>
+          <section class="panel"><div class="panel-head"><h2>أحدث المباريات</h2></div><div class="panel-body"><div id="recentGames" class="recent-list"></div></div></section>
+        </div>
+        <section class="panel" style="margin-top:14px"><div class="panel-head"><h2>البلاغات المفتوحة</h2></div><div class="panel-body"><div id="recentReports" class="recent-list"></div></div></section>
+      </section>
+
+      <section id="playersView" class="view">
+        <div class="toolbar">
+          <input id="playerSearch" class="field" type="search" placeholder="بحث باسم اللاعب">
+          <select id="playerStatusFilter" class="field"><option value="">كل الحالات</option><option value="active">نشط</option><option value="banned">محظور</option></select>
+          <select id="playerCityFilter" class="field"><option value="">كل المدن</option></select>
+        </div>
+        <div class="table-wrap"><table><thead><tr><th>الاسم</th><th>التصنيف</th><th>المدينة</th><th>المباريات</th><th>الحالة</th><th>التسجيل</th><th></th></tr></thead><tbody id="playersTableBody"></tbody></table></div>
+      </section>
+
+      <section id="gamesView" class="view">
+        <div class="toolbar"><select id="gameStatusFilter" class="field"><option value="">كل المباريات</option><option value="active">نشطة</option><option value="finished">منتهية</option><option value="waiting">بانتظار لاعب</option></select></div>
+        <div class="table-wrap"><table><thead><tr><th>الرمز</th><th>الأبيض</th><th>الأسود</th><th>الزمن</th><th>الحالة</th><th>النتيجة</th><th>البداية</th><th></th></tr></thead><tbody id="gamesTableBody"></tbody></table></div>
+      </section>
+
+      <section id="reportsView" class="view">
+        <div class="toolbar"><select id="reportStatusFilter" class="field"><option value="">كل البلاغات</option><option value="open">مفتوح</option><option value="closed">مغلق</option></select></div>
+        <div class="table-wrap"><table><thead><tr><th>المبلّغ</th><th>المبلّغ عنه</th><th>المباراة</th><th>السبب</th><th>الحالة</th><th>التاريخ</th><th></th></tr></thead><tbody id="reportsTableBody"></tbody></table></div>
+      </section>
+
+      <section id="actionsView" class="view">
+        <div class="table-wrap"><table><thead><tr><th>الإجراء</th><th>اللاعب</th><th>السبب</th><th>قبل</th><th>التغيير</th><th>بعد</th><th>المدير</th><th>الوقت</th></tr></thead><tbody id="actionsTableBody"></tbody></table></div>
+      </section>
+    </main>
+  </div>
+</div>
+
+<div id="playerModal" class="modal" hidden><div class="modal-card"><div class="modal-head"><h2>بيانات اللاعب</h2><button class="close-btn" data-close="playerModal">×</button></div><div id="playerModalBody" class="modal-body"></div></div></div>
+<div id="gameModal" class="modal" hidden><div class="modal-card"><div class="modal-head"><h2>تفاصيل المباراة</h2><button class="close-btn" data-close="gameModal">×</button></div><div id="gameModalBody" class="modal-body"></div></div></div>
+<div id="reportDetailModal" class="modal" hidden><div class="modal-card"><div class="modal-head"><h2>تفاصيل البلاغ</h2><button class="close-btn" data-close="reportDetailModal">×</button></div><div id="reportDetailBody" class="modal-body"></div></div></div>
+
+<div id="adminActionModal" class="modal" hidden>
+  <div class="modal-card narrow">
+    <div class="modal-head"><h2 id="adminActionTitle">تأكيد الإجراء</h2><button class="close-btn" data-close="adminActionModal">×</button></div>
+    <div class="modal-body">
+      <p id="adminActionDescription" style="color:var(--muted);line-height:1.8;margin-top:0"></p>
+      <textarea id="adminActionReason" class="reason" maxlength="500" placeholder="اكتب سبب الإجراء..."></textarea>
+      <div class="action-row"><button id="confirmAdminAction" class="action-btn ok" type="button">تأكيد</button><button class="action-btn" type="button" data-close="adminActionModal">إلغاء</button></div>
+      <p id="adminActionMessage" class="modal-msg"></p>
+    </div>
+  </div>
+</div>
+
+<script src="config.js"></script>
+<script type="module" src="admin.js"></script>
+</body>
+</html>

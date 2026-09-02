@@ -125,6 +125,15 @@
     .game-toast{position:fixed;left:50%;bottom:24px;transform:translateX(-50%);z-index:50;background:rgba(5,31,36,.96);border:1px solid var(--line);border-radius:12px;padding:10px 16px;box-shadow:var(--shadow);font-size:13px}
     @media(max-width:600px){.matchmaking-screen{padding:12px 9px}.matchmaking-card{padding:22px 14px;border-radius:18px}.matchmaking-piece{font-size:48px}.matchmaking-card h2{font-size:22px}.time-options{gap:7px}.time-option{min-height:88px;border-radius:13px}.time-option strong{font-size:27px}.time-option span{font-size:11px}.search-meta{gap:6px}}
 
+    .report-modal{position:fixed;inset:0;z-index:80;display:grid;place-items:center;padding:18px;background:rgba(0,18,22,.74);backdrop-filter:blur(6px)}
+    .report-card{width:min(100%,480px);background:linear-gradient(180deg,rgba(8,61,68,.98),rgba(4,39,44,.98));border:1px solid var(--line);border-radius:18px;box-shadow:var(--shadow);padding:22px}
+    .report-card h2{margin:0 0 7px;font-size:22px}.report-card p{margin:0 0 14px;color:var(--muted);font-size:13px}
+    .report-card textarea{width:100%;min-height:130px;resize:vertical;border:1px solid rgba(224,181,103,.35);border-radius:12px;background:rgba(2,28,33,.72);color:#fff;padding:12px;font:14px/1.7 inherit;outline:none}
+    .report-card textarea:focus{border-color:var(--gold)}.report-actions{display:grid;grid-template-columns:1fr 1fr;gap:9px;margin-top:12px}
+    .report-actions button{min-height:43px;border-radius:11px;font:800 14px inherit;cursor:pointer}.report-submit{border:0;background:var(--gold);color:#1c2b27}.report-cancel{border:1px solid rgba(255,255,255,.2);background:transparent;color:#fff}
+    .report-message{min-height:20px;margin-top:10px!important;color:#ff9b9b!important}.report-message.ok{color:#78df94!important}
+    @media(max-width:600px){.report-modal{padding:10px}.report-card{padding:17px;border-radius:15px}.report-actions{grid-template-columns:1fr}}
+
   </style>
 </head>
 <body>
@@ -252,6 +261,20 @@
       </aside>
     </div>
   </main>
+
+
+  <div class="report-modal" id="reportModal" hidden>
+    <div class="report-card" role="dialog" aria-modal="true" aria-labelledby="reportTitle">
+      <h2 id="reportTitle">إبلاغ عن اللاعب</h2>
+      <p>اكتب سبب البلاغ بوضوح. سيرتبط البلاغ بهذه المباراة والخصم تلقائيًا.</p>
+      <textarea id="reportReason" maxlength="1000" placeholder="سبب البلاغ..."></textarea>
+      <div class="report-actions">
+        <button class="report-submit" id="submitReport" type="button">إرسال البلاغ</button>
+        <button class="report-cancel" id="cancelReport" type="button">إلغاء</button>
+      </div>
+      <p class="report-message" id="reportMessage"></p>
+    </div>
+  </div>
 
   <div class="game-toast" id="gameToast" hidden></div>
   <script src="config.js"></script>

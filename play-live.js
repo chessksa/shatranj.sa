@@ -24,6 +24,11 @@ const leaveBtn = $('leaveBtn');
 const leaveText = $('leaveText');
 const reportBtn = $('reportBtn');
 const gameToast = $('gameToast');
+const reportModal = $('reportModal');
+const reportReason = $('reportReason');
+const submitReportBtn = $('submitReport');
+const cancelReportBtn = $('cancelReport');
+const reportMessage = $('reportMessage');
 
 const boardEl = $('board');
 const leftEl = $('coordsLeft');
@@ -573,7 +578,49 @@ leaveBtn.addEventListener('click',async()=>{
   if(confirm('هل تريد مغادرة المباراة؟')) location.href='index.html';
 });
 
-reportBtn.addEventListener('click',()=>toast('سيتم إضافة نموذج الإبلاغ قريبًا.'));
+reportBtn.addEventListener('click',()=>{
+  if(!liveGameId || gamePage.hidden){
+    toast('يمكن إرسال البلاغ أثناء المباراة فقط.');
+    return;
+  }
+  reportReason.value='';
+  reportMessage.textContent='';
+  reportMessage.className='report-message';
+  reportModal.hidden=false;
+  setTimeout(()=>reportReason.focus(),0);
+});
+
+cancelReportBtn.addEventListener('click',()=>{
+  reportModal.hidden=true;
+  reportMessage.textContent='';
+});
+
+submitReportBtn.addEventListener('click',async()=>{
+  if(!liveGameId){
+    reportMessage.textContent='لا توجد مباراة مرتبطة بالبلاغ.';
+    return;
+  }
+  const reason=reportReason.value.trim();
+  if(reason.length<3){
+    reportMessage.textContent='اكتب سبب البلاغ بوضوح.';
+    return;
+  }
+  submitReportBtn.disabled=true;
+  reportMessage.textContent='جارٍ إرسال البلاغ...';
+  reportMessage.className='report-message';
+  try{
+    const { error }=await supabase.rpc('create_game_report',{p_game_id:liveGameId,p_reason:reason});
+    if(error) throw error;
+    reportMessage.textContent='تم إرسال البلاغ للإدارة.';
+    reportMessage.className='report-message ok';
+    setTimeout(()=>{ reportModal.hidden=true; },900);
+  }catch(err){
+    console.error(err);
+    reportMessage.textContent='تعذر إرسال البلاغ. حاول مرة أخرى.';
+  }finally{
+    submitReportBtn.disabled=false;
+  }
+});
 
 setInterval(()=>{
   if(!gamePage.hidden) updateClockUI();
