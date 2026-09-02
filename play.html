@@ -59,18 +59,23 @@
     .actions-card{display:grid;grid-template-columns:repeat(3,1fr);overflow:hidden;min-height:82px}.action-item{background:transparent;border:0;color:var(--text);font:inherit;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:7px;min-height:82px;cursor:pointer;padding:8px 4px}.action-item+.action-item{border-right:1px solid rgba(224,181,103,.24)}.action-icon{font-size:25px;color:var(--gold);line-height:1}.action-label{font-size:14px;font-weight:700;white-space:nowrap}
 
     @media (min-width:1221px){
-      .page{padding:12px 24px 14px}
-      .layout{grid-template-columns:minmax(0,1fr) clamp(380px,30vw,460px);gap:18px}
-      .board-panel{place-items:center end}
-      .side-panel{height:min(calc(100dvh - var(--header-h) - 28px),928px);align-self:center;align-items:stretch}
-      .panel-stack{height:100%;max-height:none;grid-template-rows:auto auto auto;align-content:space-between;gap:16px}
-      .player-card{min-height:clamp(140px,19vh,198px);padding:18px;grid-template-columns:clamp(76px,5vw,88px) minmax(0,1fr) clamp(126px,9vw,146px);gap:15px}
-      .avatar{width:clamp(76px,5vw,88px);height:clamp(76px,5vw,88px)}
-      .avatar::before{top:18px;width:30px;height:30px}.avatar::after{bottom:11px;width:47px;height:33px}
-      .status{font-size:14px;margin-bottom:7px}.status::before{width:10px;height:10px}
-      .name{font-size:clamp(19px,1.35vw,22px);margin-bottom:8px}.location{font-size:13px;margin-bottom:10px}.rating{font-size:14px}.rating .trend{font-size:18px}
-      .clock{font-size:clamp(28px,2.1vw,34px);padding:16px 10px;border-radius:13px}.clock-progress{margin-top:11px;height:7px}
-      .actions-card{min-height:clamp(92px,11vh,118px)}.action-item{min-height:clamp(92px,11vh,118px);gap:9px;padding:10px 6px}.action-icon{font-size:28px}.action-label{font-size:15px}
+      :root{--header-h:70px}
+      .topbar-inner{padding:5px 18px}
+      .brand{gap:12px}.brand-mark{width:50px;height:50px}.brand-copy h1{font-size:19px}.brand-copy .en{font-size:11px;letter-spacing:3px}
+      .ghost-btn{height:40px;min-width:152px;padding:0 13px;font-size:14px}.ghost-btn.small{min-width:92px}
+      .page{width:100%;height:calc(100dvh - var(--header-h));padding:6px 14px 8px}
+      .layout{height:100%;grid-template-columns:minmax(0,1fr) clamp(360px,28vw,455px);gap:14px;align-items:center}
+      .board-panel{place-items:center start}
+      .board-frame{width:min(calc(100dvh - var(--header-h) - 16px),calc(100vw - clamp(360px,28vw,455px) - 42px),1020px);padding:12px 12px 20px;border-radius:17px}
+      .side-panel{height:min(calc(100dvh - var(--header-h) - 16px),1028px);align-self:center;align-items:stretch}
+      .panel-stack{height:100%;max-height:none;grid-template-rows:auto auto auto;align-content:space-between;gap:14px}
+      .player-card{min-height:clamp(132px,18vh,190px);padding:17px;grid-template-columns:clamp(72px,5vw,86px) minmax(0,1fr) clamp(122px,9vw,142px);gap:14px}
+      .avatar{width:clamp(72px,5vw,86px);height:clamp(72px,5vw,86px)}
+      .avatar::before{top:17px;width:29px;height:29px}.avatar::after{bottom:11px;width:45px;height:32px}
+      .status{font-size:14px;margin-bottom:6px}.status::before{width:10px;height:10px}
+      .name{font-size:clamp(19px,1.3vw,22px);margin-bottom:7px}.location{font-size:13px;margin-bottom:9px}.rating{font-size:14px}.rating .trend{font-size:18px}
+      .clock{font-size:clamp(28px,2vw,34px);padding:15px 9px;border-radius:13px}.clock-progress{margin-top:10px;height:7px}
+      .actions-card{min-height:clamp(88px,10vh,112px)}.action-item{min-height:clamp(88px,10vh,112px);gap:8px;padding:9px 5px}.action-icon{font-size:27px}.action-label{font-size:15px}
     }
 
     @media (max-width:1220px) and (min-width:901px){
