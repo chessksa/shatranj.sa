@@ -91,6 +91,25 @@
       </div>`;
   }
 
+  async function ensureAdminLink() {
+    if (!document.getElementById('profileApp')) return;
+    const { data, error } = await client.rpc('is_admin');
+    if (error || data !== true) return;
+    if (document.getElementById('siteAdminLink')) return;
+
+    const topActions = document.querySelector('#profileApp .top-actions');
+    if (!topActions) return;
+
+    const link = document.createElement('a');
+    link.id = 'siteAdminLink';
+    link.className = 'btn';
+    link.href = 'admin.html';
+    link.textContent = '🛡 الإدارة';
+
+    const logout = document.getElementById('logoutBtn');
+    topActions.insertBefore(link, logout || null);
+  }
+
   async function refreshCount() {
     if (!session) return;
     const { data, error } = await client.rpc('get_unread_notification_count');
@@ -164,6 +183,7 @@
     if (!host) return;
     buildUI(host);
     bindUI();
+    await ensureAdminLink();
     await refreshCount();
     pollingTimer = setInterval(refreshCount, 30000);
     document.addEventListener('visibilitychange', () => {
