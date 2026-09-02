@@ -1,4 +1,4 @@
--- شطرنج السعودية - Supabase schema v2
+-- شطرنج السعودية - Supabase schema v3
 create extension if not exists pgcrypto;
 
 create table if not exists public.players (
@@ -9,6 +9,7 @@ create table if not exists public.players (
   city text not null,
   category text not null default 'open'
     check (category in ('open','u18','u14','u10')),
+  gender text check (gender is null or gender in ('male','female')),
   rating integer not null default 1500,
   rating_status text not null default 'provisional'
     check (rating_status in ('provisional','verified')),
@@ -53,13 +54,13 @@ create table if not exists public.rating_history (
   created_at timestamptz not null default now()
 );
 
--- واجهة عامة لا تكشف رقم الجوال.
+-- واجهة عامة لا تكشف رقم الجوال أو الجنس الخام.
 create or replace view public.public_players as
 select id,name,region,city,category,rating,rating_status,games_count,wins,draws,losses,created_at
 from public.players
 where status='active';
 
--- التسجيل يتم عبر RPC حتى لا نمنح الزائر صلاحية قراءة أرقام الجوال.
+-- التسجيل القديم يبقى متاحًا للتوافق مع الإصدارات السابقة.
 create or replace function public.register_player(
   p_name text,
   p_mobile text,
@@ -103,3 +104,17 @@ create policy "public matches read"
 on public.matches for select
 to anon
 using (true);
+
+-- إضافات الإنتاج الخاصة بتصنيف الجنس والمطابقة:
+-- public.players.gender: nullable للحسابات القديمة، والقيم male/female فقط.
+-- private.matchmaking_queue.gender_scope: all أو same_gender، والقيمة الافتراضية all.
+-- الدوال الإضافية، مع بقاء الدوال القديمة للتوافق:
+-- claim_player_profile_v2(text,text,text,text,text,text)
+-- get_my_player_profile_v2()
+-- set_my_gender_once(text)
+-- get_public_ranked_players(text)
+-- start_matchmaking_v2(integer,text)
+-- admin_list_players_v2(text,text,text,text)
+-- admin_get_player_v2(uuid)
+-- admin_set_player_gender(uuid,text,text)
+-- تم تطبيقها في ترحيل Supabase: add_gender_segmentation_and_matchmaking.
