@@ -276,6 +276,111 @@ footer{
   border-top:1px solid var(--line);
 }
 
+/* Compact desktop layout: ranking on the left, member/account on the right */
+@media(min-width:901px){
+  body{
+    display:grid;
+    grid-template-columns:minmax(12px,1fr) minmax(0,720px) minmax(330px,368px) minmax(12px,1fr);
+    column-gap:12px;
+    align-items:start;
+    direction:ltr;
+  }
+
+  body > *{
+    direction:rtl;
+  }
+
+  header,
+  footer{
+    grid-column:1/-1;
+  }
+
+  #ranking{
+    grid-column:2;
+    grid-row:2;
+    padding:8px 0 10px;
+    align-self:start;
+  }
+
+  #register{
+    grid-column:3;
+    grid-row:2;
+    padding:8px 0 10px;
+    align-self:start;
+    background:transparent;
+    border:0;
+  }
+
+  #ranking > .wrap,
+  #register > .wrap{
+    width:100%;
+    margin:0;
+  }
+
+  #ranking .head{
+    margin-bottom:6px;
+  }
+
+  #ranking .filters{
+    width:360px;
+  }
+
+  .table-head{
+    padding:7px 10px;
+  }
+
+  th,
+  td{
+    padding:7px 9px;
+  }
+
+  .form-card{
+    padding:12px;
+    border-radius:16px;
+  }
+
+  .auth-tabs{
+    gap:5px;
+    margin-bottom:8px;
+  }
+
+  .auth-form,
+  form{
+    gap:6px;
+  }
+
+  .account-card{
+    gap:5px;
+    margin-top:7px;
+  }
+
+  .account-actions{
+    margin-top:7px;
+  }
+
+  footer{
+    margin-top:0;
+  }
+}
+
+@media(max-width:900px){
+  body{
+    display:block;
+    direction:rtl;
+  }
+
+  #ranking,
+  #register{
+    padding:8px 0;
+  }
+
+  #ranking > .wrap,
+  #register > .wrap{
+    width:min(100% - 18px,1100px);
+    margin:auto;
+  }
+}
+
 @media(max-width:800px){
   .mobile-play{
     box-shadow:0 12px 30px rgba(0,0,0,.28);
