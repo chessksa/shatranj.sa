@@ -1,0 +1,283 @@
+:root{
+  --green:#082d2f;
+  --green2:#16494a;
+  --gold:#d4b467;
+  --cream:#f4eddc;
+  --cream2:#103f40;
+  --text:#f4eddc;
+  --muted:#adc1bc;
+  --line:rgba(212,180,103,.22);
+  --white:#103f40;
+}
+
+html{
+  background:#082d2f;
+  color-scheme:dark;
+}
+
+body{
+  min-height:100vh;
+  background:linear-gradient(145deg,#082d2f,#0a3839 55%,#08292b);
+  color:var(--cream);
+}
+
+header{
+  background:rgba(8,45,47,.95);
+  border-bottom:1px solid var(--line);
+  box-shadow:0 12px 30px rgba(0,0,0,.14);
+  backdrop-filter:blur(12px);
+}
+
+.header-box,
+.nav-soon{
+  border-color:var(--line);
+  background:rgba(255,255,255,.04);
+}
+
+.header-box strong,
+.nav-account,
+.hero-box .piece{
+  color:var(--gold)!important;
+}
+
+.links a:hover,
+.watch-box:hover{
+  color:var(--gold);
+  background:rgba(255,255,255,.07);
+}
+
+.links .play-link,
+.btn.gold,
+.mobile-play{
+  background:var(--gold);
+  color:#173536;
+}
+
+.links .play-link:hover,
+.btn.gold:hover{
+  background:#dfc27a;
+  color:#173536;
+}
+
+.hero{
+  background:linear-gradient(135deg,rgba(255,255,255,.055),rgba(255,255,255,.018));
+  border-bottom:1px solid var(--line);
+}
+
+.hero h1,
+.head h2,
+.form-info h2,
+.table-head,
+label,
+.account-panel{
+  color:var(--cream);
+}
+
+.hero p,
+.head p,
+.form-info p,
+.auth-note,
+.username-status,
+.player-username,
+.empty,
+footer,
+.podium p,
+.stat span,
+.account-stat small{
+  color:var(--muted);
+}
+
+.tag{
+  background:rgba(212,180,103,.15);
+  border:1px solid rgba(212,180,103,.22);
+  color:#ead596;
+}
+
+.btn{
+  background:var(--panel,#103f40);
+  border:1px solid var(--line);
+  border-radius:12px;
+  color:var(--cream);
+  box-shadow:0 8px 20px rgba(0,0,0,.08);
+}
+
+.btn:hover{
+  background:#195051;
+}
+
+.btn.light{
+  background:rgba(255,255,255,.04);
+  border:1px solid var(--line);
+  color:var(--cream);
+}
+
+.hero-box{
+  background:linear-gradient(135deg,#103f40,#0b3435);
+  border:1px solid var(--line);
+  border-radius:18px;
+  box-shadow:0 18px 45px rgba(0,0,0,.16);
+}
+
+.hero-box p{
+  color:var(--muted);
+}
+
+.quick-icon,
+.stat,
+.podium,
+.table-card,
+.form-card,
+.account-stat{
+  background:rgba(13,56,57,.88);
+  border:1px solid var(--line);
+  color:var(--cream);
+  box-shadow:0 12px 34px rgba(0,0,0,.10);
+}
+
+.quick-icon{
+  border-radius:13px;
+  color:var(--cream);
+}
+
+.quick-icon strong,
+.stat strong,
+.podium strong,
+.rating,
+.account-stat strong{
+  color:var(--gold);
+}
+
+.quick-icon.soon,
+.podium:first-child{
+  background:rgba(212,180,103,.08);
+  border-color:rgba(212,180,103,.32);
+  color:#ead596;
+}
+
+.stat{
+  border-radius:14px;
+}
+
+.podium{
+  border-radius:14px;
+}
+
+.table-card{
+  border-radius:16px;
+  overflow:hidden;
+}
+
+.table-head{
+  border-bottom:1px solid var(--line);
+  background:rgba(255,255,255,.025);
+}
+
+th,
+td{
+  border-bottom:1px solid rgba(255,255,255,.07);
+}
+
+th{
+  background:rgba(255,255,255,.04);
+  color:var(--muted);
+}
+
+tbody tr:hover{
+  background:rgba(255,255,255,.035);
+}
+
+.badge{
+  background:rgba(212,180,103,.12);
+  color:#ead596;
+  border:1px solid rgba(212,180,103,.16);
+}
+
+.register{
+  background:rgba(5,31,32,.20);
+  border-top:1px solid var(--line);
+  border-bottom:1px solid var(--line);
+}
+
+.form-card{
+  border-radius:18px;
+  padding:16px;
+}
+
+input,
+select{
+  background:#0b3435;
+  border:1px solid var(--line);
+  color:var(--cream);
+  border-radius:11px;
+}
+
+input::placeholder{
+  color:#879d98;
+}
+
+input:focus,
+select:focus{
+  border-color:var(--gold);
+  box-shadow:0 0 0 3px rgba(212,180,103,.10);
+}
+
+select:disabled{
+  background:#0a3031;
+  color:#788c87;
+}
+
+select option{
+  background:#103f40;
+  color:var(--cream);
+}
+
+.check{
+  color:var(--muted);
+}
+
+.auth-tab{
+  border:1px solid var(--line);
+  background:rgba(255,255,255,.035);
+  color:var(--cream);
+  border-radius:11px;
+}
+
+.auth-tab.active{
+  background:var(--gold);
+  border-color:var(--gold);
+  color:#173536;
+}
+
+.show-pass{
+  background:#16494a;
+  border:1px solid var(--line);
+  color:var(--cream);
+}
+
+.account-stat{
+  border-radius:12px;
+}
+
+.username-status.checking{
+  color:#e3c979;
+}
+
+.username-status.available,
+.ok{
+  color:#8ed2a5;
+}
+
+.username-status.taken,
+.err{
+  color:#ef9b9b;
+}
+
+footer{
+  border-top:1px solid var(--line);
+}
+
+@media(max-width:800px){
+  .mobile-play{
+    box-shadow:0 12px 30px rgba(0,0,0,.28);
+  }
+}
