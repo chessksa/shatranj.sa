@@ -492,6 +492,22 @@ async function recoverSeatIfNeeded(){
 
   if(seatKey && ['w','b'].includes(myColor) && (!storedGame || storedGame===liveGameId)) return true;
 
+  const challengeId = new URLSearchParams(location.search).get('challenge') || sessionStorage.getItem('shatranj_friend_challenge_id');
+  if(challengeId){
+    const { data: challengeData, error: challengeError } = await supabase.rpc('get_my_challenge_game_access',{p_challenge_id:challengeId});
+    const challengeRow = firstRow(challengeData);
+    if(!challengeError && challengeRow?.state==='accepted' && challengeRow.game_id===liveGameId && challengeRow.seat_key && ['w','b'].includes(challengeRow.color)){
+      seatKey=challengeRow.seat_key;
+      myColor=challengeRow.color;
+      sessionStorage.setItem('shatranj_live_game_id',challengeRow.game_id);
+      sessionStorage.setItem('shatranj_live_game_code',challengeRow.game_code || '');
+      sessionStorage.setItem('shatranj_live_seat_key',challengeRow.seat_key);
+      sessionStorage.setItem('shatranj_live_color',challengeRow.color);
+      sessionStorage.removeItem('shatranj_friend_challenge_id');
+      return true;
+    }
+  }
+
   const { data, error }=await supabase.rpc('poll_matchmaking');
   if(error) return false;
   const row=firstRow(data);
