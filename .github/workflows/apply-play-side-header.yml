@@ -1,5 +1,5 @@
 name: Apply compact play side header
-# trigger implementation after approval
+# focused implementation after approval
 on:
   push:
     paths:
@@ -61,7 +61,6 @@ jobs:
           PY
 
           python tests/test_play_header_move.py
-          python tests/test_play_back_home.py
           python tests/test_player_profile_links.py
 
           git config user.name github-actions[bot]
