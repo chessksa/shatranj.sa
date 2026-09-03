@@ -58,6 +58,8 @@
     .clock-box{justify-self:end;text-align:center;width:100%}.clock{border:1px solid rgba(224,181,103,.26);background:rgba(6,27,31,.58);border-radius:12px;padding:12px 8px;font-size:26px;font-weight:700;letter-spacing:1px;box-shadow:inset 0 1px 0 rgba(255,255,255,.03)}.clock-progress{margin-top:8px;height:6px;border-radius:999px;background:rgba(255,255,255,.08);overflow:hidden}.clock.danger{color:#ff5151;border-color:rgba(255,81,81,.65);box-shadow:0 0 18px rgba(255,81,81,.12) inset}.clock-progress span{display:block;width:74%;height:100%;border-radius:999px;background:linear-gradient(90deg,#46bb6d,#69d786)}
     .actions-card{display:grid;grid-template-columns:repeat(3,1fr);overflow:hidden;min-height:82px}.action-item{background:transparent;border:0;color:var(--text);font:inherit;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:7px;min-height:82px;cursor:pointer;padding:8px 4px}.action-item+.action-item{border-right:1px solid rgba(224,181,103,.24)}.action-icon{font-size:25px;color:var(--gold);line-height:1}.action-label{font-size:14px;font-weight:700;white-space:nowrap}
 
+    .player-profile-link{display:block;color:inherit;text-decoration:none;cursor:pointer}.player-profile-link:hover{color:var(--gold)}.player-profile-link[aria-disabled="true"]{cursor:default}
+
     @media (min-width:1221px){
       .page{padding:12px 24px 14px}
       .layout{grid-template-columns:minmax(0,1fr) clamp(380px,30vw,460px);gap:18px}
@@ -220,7 +222,7 @@
             <div class="avatar" id="topAvatar"></div>
             <div class="player-info">
               <div class="status">متصل</div>
-              <h2 class="name" id="topName">—</h2>
+              <a class="name player-profile-link" id="topName" aria-label="فتح ملف اللاعب">—</a>
               <div class="location">📍 <span id="topLocation">—</span></div>
               <div class="rating"><span id="topRating">—</span> <span class="trend">📈</span></div>
             </div>
@@ -249,7 +251,7 @@
             <div class="avatar light" id="bottomAvatar"></div>
             <div class="player-info">
               <div class="status">متصل</div>
-              <h2 class="name" id="bottomName">—</h2>
+              <a class="name player-profile-link" id="bottomName" aria-label="فتح ملف اللاعب">—</a>
               <div class="location">📍 <span id="bottomLocation">—</span></div>
               <div class="rating"><span id="bottomRating">—</span> <span class="trend">📈</span></div>
             </div>
@@ -281,6 +283,6 @@
   <script src="config.js"></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/chess.js/0.10.3/chess.min.js"></script>
   <script src="site-notifications.js"></script>
-  <script type="module" src="play-live.js?v=20260903-2"></script>
+  <script type="module" src="play-live.js?v=20260903-3"></script>
 </body>
 </html>

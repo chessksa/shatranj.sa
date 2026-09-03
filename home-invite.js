@@ -46,9 +46,9 @@
       .home-invite-result:last-child{border-bottom:0}
       .home-invite-result:hover{background:#f8f5ee}
       .home-invite-result:disabled{opacity:.58;cursor:wait}
-      .home-invite-name{font-size:13px;font-weight:900}
+      .home-invite-name{font-size:13px;font-weight:900}.home-invite-name-link{color:inherit;text-decoration:none}.home-invite-name-link:hover{text-decoration:underline}
       .home-invite-meta{margin-top:2px;color:#78807b;font-size:10px}
-      .home-invite-send{flex:0 0 auto;color:#176148;font-size:11px;font-weight:900}
+      .home-invite-send{flex:0 0 auto;border:0;background:transparent;color:#176148;font-size:11px;font-weight:900;cursor:pointer;padding:6px 8px;border-radius:8px}.home-invite-send:hover{background:#eef6f1}
       .home-invite-empty{padding:14px 8px;text-align:center;color:#7d837f;font-size:11px}
       .home-invite-msg{min-height:17px;margin-top:6px;font-size:10px;font-weight:800;color:#176148}
       .home-invite-msg.error{color:#a53a3a}
@@ -157,13 +157,13 @@
     }
 
     results.innerHTML = matches.map(player => `
-      <button class="home-invite-result" type="button" data-invite-player="${esc(player.id)}" data-invite-name="${esc(player.name)}">
+      <div class="home-invite-result">
         <span>
-          <span class="home-invite-name">${esc(player.name)}${player.username ? ` <small>@${esc(player.username)}</small>` : ''}</span>
+          <a class="home-invite-name home-invite-name-link" href="player.html?id=${encodeURIComponent(player.id)}">${esc(player.name)}${player.username ? ` <small>@${esc(player.username)}</small>` : ''}</a>
           <span class="home-invite-meta">${esc(player.city || '—')} • ${Number(player.rating || 1500)} نقطة</span>
         </span>
-        <span class="home-invite-send">دعوة</span>
-      </button>`).join('');
+        <button class="home-invite-send" type="button" data-invite-player="${esc(player.id)}" data-invite-name="${esc(player.name)}">دعوة</button>
+      </div>`).join('');
   }
 
   async function sendInvite(playerId, playerName) {

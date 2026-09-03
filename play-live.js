@@ -257,16 +257,28 @@ function calculatedClocks(){
 function colorInfo(color){
   if(color==='w'){
     return {
+      id: serverState.white_player_id,
       name: serverState.white_name,
       rating: serverState.white_rating,
       location: [serverState.white_city,serverState.white_region].filter(Boolean).join(' — ')
     };
   }
   return {
+    id: serverState.black_player_id,
     name: serverState.black_name,
     rating: serverState.black_rating,
     location: [serverState.black_city,serverState.black_region].filter(Boolean).join(' — ')
   };
+}
+
+function setPlayerProfileLink(el, info){
+  if(info?.id){
+    el.href=`player.html?id=${encodeURIComponent(info.id)}`;
+    el.removeAttribute('aria-disabled');
+  }else{
+    el.removeAttribute('href');
+    el.setAttribute('aria-disabled','true');
+  }
 }
 
 function renderPlayers(){
@@ -276,9 +288,11 @@ function renderPlayers(){
   const bottom = colorInfo(bottomColor);
 
   topNameEl.textContent = top.name || 'الخصم';
+  setPlayerProfileLink(topNameEl, top);
   topRatingEl.textContent = top.rating ?? '—';
   topLocationEl.textContent = top.location || '—';
   bottomNameEl.textContent = bottom.name || 'أنت';
+  setPlayerProfileLink(bottomNameEl, bottom);
   bottomRatingEl.textContent = bottom.rating ?? '—';
   bottomLocationEl.textContent = bottom.location || '—';
 

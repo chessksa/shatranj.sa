@@ -1479,7 +1479,7 @@ function renderPlayers(players){
     <tr>
       <td>${index+1}</td>
       <td>
-        <span class="player-name">${escapeHTML(player.name)}</span>
+        <a class="player-name player-profile-link" href="player.html?id=${encodeURIComponent(player.id)}">${escapeHTML(player.name)}</a>
         ${player.username
           ? `<span class="player-username">@${escapeHTML(player.username)}</span>`
           : ''
@@ -1807,6 +1807,6 @@ setInterval(loadCurrentMatchesCount,30000);
 </script>
 
 <script src="site-notifications.js?v=20260903-2"></script>
-<script src="home-invite.js?v=20260903-2"></script>
+<script src="home-invite.js?v=20260903-3"></script>
 </body>
 </html>
