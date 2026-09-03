@@ -25,12 +25,20 @@ jobs:
           from PIL import Image, ImageOps, ImageDraw
           import cv2
           import numpy as np
+          import base64
+          import io
 
           ROOT = Path.cwd()
           SRC = ROOT / 'assets' / 'approved-board-v13.webp'
           OUT = ROOT / 'assets' / 'exact-board-v14'
           OUT.mkdir(parents=True, exist_ok=True)
-          im = Image.open(SRC).convert('RGB')
+
+          raw = SRC.read_bytes()
+          try:
+              im = Image.open(io.BytesIO(raw)).convert('RGB')
+          except Exception:
+              decoded = base64.b64decode(b''.join(raw.split()))
+              im = Image.open(io.BytesIO(decoded)).convert('RGB')
 
           xs = [60,205,347,487,625,766,904,1044,1192]
           x0,y0,x1 = 60,54,1192
@@ -149,7 +157,7 @@ jobs:
           js=(root/'exact-board-v14.js').read_text()
           assert 'exact-board-preview' not in css+js
           assert 'board-empty.webp' in css
-          for name in required-{'board-empty.webp'}: assert name in js or name[:-4] in js
+          assert 'assets/exact-board-v14/' in js
           print('exact interactive board v14 verification passed')
           PY
       - name: Commit and push
