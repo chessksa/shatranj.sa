@@ -1,0 +1,41 @@
+name: Fix play prematch side header
+on:
+  push:
+    paths:
+      - '.github/workflows/fix-play-prematch-side-header.yml'
+permissions:
+  contents: write
+jobs:
+  fix:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Restore inline prematch board after side header move
+        run: |
+          python - <<'PY'
+          from pathlib import Path
+
+          config = Path('config.js')
+          text = config.read_text(encoding='utf-8')
+          old = "const topCard = document.querySelector('.panel-stack > .player-card:first-child');"
+          new = "const topCard = document.querySelector('.panel-stack > .player-card');"
+          if old not in text:
+              raise SystemExit('old topCard selector not found')
+          config.write_text(text.replace(old, new, 1), encoding='utf-8')
+
+          play = Path('play.html')
+          html = play.read_text(encoding='utf-8')
+          if '<script src="config.js"></script>' not in html:
+              raise SystemExit('config script tag not found')
+          html = html.replace('<script src="config.js"></script>', '<script src="config.js?v=20260903-2"></script>', 1)
+          play.write_text(html, encoding='utf-8')
+          PY
+
+          python tests/test_play_prematch_side_header.py
+          python tests/test_play_header_move.py
+
+          git config user.name github-actions[bot]
+          git config user.email 41898282+github-actions[bot]@users.noreply.github.com
+          git add config.js play.html
+          git commit -m "Keep prematch board visible with side header"
+          git push
