@@ -3,34 +3,18 @@ name: Test homepage region full name
 on:
   push:
     branches:
+      - main
       - fix/home-region-full-name
     paths:
       - 'index.html'
       - 'home-theme.css'
-      - 'tools/apply_home_region_full_name.py'
       - 'tests/test_home_region_full_name.py'
       - '.github/workflows/test-home-region-full-name.yml'
-
-permissions:
-  contents: write
 
 jobs:
   test:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
-      - name: Apply requested UI fix
-        run: python tools/apply_home_region_full_name.py
       - name: Run focused test
         run: python tests/test_home_region_full_name.py
-      - name: Commit implementation if needed
-        run: |
-          if git diff --quiet -- index.html home-theme.css; then
-            echo "No implementation changes to commit."
-            exit 0
-          fi
-          git config user.name "chessksa"
-          git config user.email "gmel1199@gmail.com"
-          git add index.html home-theme.css
-          git commit -m "fix: show full homepage region name"
-          git push origin HEAD:fix/home-region-full-name
