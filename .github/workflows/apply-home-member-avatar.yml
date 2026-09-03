@@ -1,4 +1,4 @@
-name: Apply home member square avatar
+name: Apply member avatar beside name
 on:
   push:
     paths:
@@ -10,46 +10,70 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
-      - name: Add square member avatar
+      - name: Move avatar beside member name
         run: |
           python - <<'PY'
           from pathlib import Path
-          import base64
           import re
 
-          decode=lambda value: base64.b64decode(value).decode('utf-8')
-          avatar_markup=decode('ICAgICAgICAgIDxkaXYgY2xhc3M9ImFjY291bnQtYXZhdGFyLXdyYXAiIGFyaWEtbGFiZWw9Iti12YjYsdipINin2YTYudi22YgiPgogICAgICAgICAgICA8aW1nIGNsYXNzPSJhY2NvdW50LWF2YXRhciIgaWQ9ImFjY291bnRBdmF0YXJJbWFnZSIgYWx0PSLYtdmI2LHYqSDYp9mE2LnYttmIIiBoaWRkZW4gLz4KICAgICAgICAgICAgPGRpdiBjbGFzcz0iYWNjb3VudC1hdmF0YXIgYWNjb3VudC1hdmF0YXItZmFsbGJhY2siIGlkPSJhY2NvdW50QXZhdGFyRmFsbGJhY2siPuKZnzwvZGl2PgogICAgICAgICAgPC9kaXY+Cg==')
-          avatar_js=decode('ZnVuY3Rpb24gYWNjb3VudEluaXRpYWwobmFtZSl7CiAgcmV0dXJuIChTdHJpbmcobmFtZXx8J9mEJykudHJpbSgpLmNoYXJBdCgwKXx8J9mEJykudG9VcHBlckNhc2UoKTsKfQoKZnVuY3Rpb24gYWNjb3VudEF2YXRhclB1YmxpY1VybChwYXRoKXsKICByZXR1cm4gc3VwYWJhc2Uuc3RvcmFnZS5mcm9tKCdhdmF0YXJzJykuZ2V0UHVibGljVXJsKHBhdGgpLmRhdGEucHVibGljVXJsOwp9CgpmdW5jdGlvbiBzaG93QWNjb3VudEF2YXRhcigpewogIGNvbnN0IGltZz0kKCcjYWNjb3VudEF2YXRhckltYWdlJyk7CiAgY29uc3QgZmFsbGJhY2s9JCgnI2FjY291bnRBdmF0YXJGYWxsYmFjaycpOwogIGlmKCFpbWd8fCFmYWxsYmFja3x8IWN1cnJlbnRQcm9maWxlfHwhY3VycmVudFNlc3Npb24pIHJldHVybjsKCiAgZmFsbGJhY2sudGV4dENvbnRlbnQ9YWNjb3VudEluaXRpYWwoY3VycmVudFByb2ZpbGUubmFtZSk7CiAgZmFsbGJhY2suaGlkZGVuPWZhbHNlOwogIGltZy5oaWRkZW49dHJ1ZTsKCiAgY29uc3QgY3VycmVudFBhdGg9YCR7Y3VycmVudFByb2ZpbGUuaWR9L2F2YXRhci53ZWJwYDsKICBjb25zdCBsZWdhY3lQYXRoPWAke2N1cnJlbnRTZXNzaW9uLnVzZXIuaWR9L2F2YXRhci53ZWJwYDsKICBsZXQgdHJpZWRMZWdhY3k9ZmFsc2U7CgogIGltZy5vbmVycm9yPSgpPT57CiAgICBpZighdHJpZWRMZWdhY3kgJiYgbGVnYWN5UGF0aCE9PWN1cnJlbnRQYXRoKXsKICAgICAgdHJpZWRMZWdhY3k9dHJ1ZTsKICAgICAgaW1nLnNyYz1hY2NvdW50QXZhdGFyUHVibGljVXJsKGxlZ2FjeVBhdGgpOwogICAgICByZXR1cm47CiAgICB9CiAgICBpbWcuaGlkZGVuPXRydWU7CiAgICBmYWxsYmFjay5oaWRkZW49ZmFsc2U7CiAgfTsKCiAgaW1nLm9ubG9hZD0oKT0+ewogICAgZmFsbGJhY2suaGlkZGVuPXRydWU7CiAgICBpbWcuaGlkZGVuPWZhbHNlOwogIH07CgogIGltZy5zcmM9YWNjb3VudEF2YXRhclB1YmxpY1VybChjdXJyZW50UGF0aCk7Cn0KCg==')
-          avatar_css=decode('Ci8qIFNxdWFyZSBtZW1iZXIgYXZhdGFyIDIwMjYwOTAzICovCi5hY2NvdW50LWF2YXRhci13cmFwewogIHdpZHRoOjc2cHg7CiAgaGVpZ2h0Ojc2cHg7CiAgbWFyZ2luOjAgYXV0byAxMHB4OwogIHBvc2l0aW9uOnJlbGF0aXZlOwp9Ci5hY2NvdW50LWF2YXRhcnsKICB3aWR0aDo3NnB4OwogIGhlaWdodDo3NnB4OwogIGJvcmRlci1yYWRpdXM6MTJweDsKICBib3JkZXI6MXB4IHNvbGlkIHJnYmEoMjEyLDE4MCwxMDMsLjQ4KTsKICBiYWNrZ3JvdW5kOiMwYjM0MzU7CiAgb2JqZWN0LWZpdDpjb3ZlcjsKICBvdmVyZmxvdzpoaWRkZW47CiAgYm94LXNoYWRvdzowIDhweCAyMHB4IHJnYmEoMCwwLDAsLjE2KTsKfQouYWNjb3VudC1hdmF0YXItZmFsbGJhY2t7CiAgZGlzcGxheTpncmlkOwogIHBsYWNlLWl0ZW1zOmNlbnRlcjsKICBjb2xvcjp2YXIoLS1nb2xkKTsKICBmb250LXNpemU6MjdweDsKICBmb250LXdlaWdodDo5MDA7Cn0KLmFjY291bnQtYXZhdGFyW2hpZGRlbl17ZGlzcGxheTpub25lIWltcG9ydGFudH0K')
+          index = Path('index.html')
+          html = index.read_text(encoding='utf-8')
 
-          index=Path('index.html')
-          html=index.read_text(encoding='utf-8')
-          if 'id="accountAvatarImage"' not in html:
-            pattern=r'(<div id="accountPanel" class="account-panel" hidden>\s*\n\s*<div>\s*\n)(\s*<strong id="accountWelcome">مرحبًا</strong>)'
-            html,count=re.subn(pattern,lambda m:m.group(1)+avatar_markup+m.group(2),html,count=1)
-            if count!=1:
-              raise SystemExit('account panel insertion point not found')
-          if 'function showAccountAvatar()' not in html:
-            marker='function renderAccount(){'
-            if marker not in html:
-              raise SystemExit('renderAccount marker not found')
-            html=html.replace(marker,avatar_js+marker,1)
-          if 'showAccountAvatar();' not in html:
-            html=html.replace("if(loggedIn && currentProfile){\n    $('#accountWelcome')", "if(loggedIn && currentProfile){\n    showAccountAvatar();\n    $('#accountWelcome')",1)
-          if 'home-theme.css?v=20260903-9' not in html:
-            raise SystemExit('stylesheet version marker not found')
-          html=html.replace('home-theme.css?v=20260903-9','home-theme.css?v=20260903-10',1)
-          index.write_text(html,encoding='utf-8')
+          if 'class="account-identity-row"' not in html:
+            pattern = re.compile(
+              r'(?P<indent>\s*)<div class="account-avatar-wrap" aria-label="صورة العضو">\s*'
+              r'<img class="account-avatar" id="accountAvatarImage" alt="صورة العضو" hidden />\s*'
+              r'<div class="account-avatar account-avatar-fallback" id="accountAvatarFallback">♟</div>\s*'
+              r'</div>\s*'
+              r'<strong id="accountWelcome">مرحبًا</strong>'
+            )
+            match = pattern.search(html)
+            if not match:
+              raise SystemExit('member avatar/name markup not found')
+            indent = match.group('indent')
+            replacement = (
+              f'{indent}<div class="account-identity-row">\n'
+              f'{indent}  <div class="account-avatar-wrap" aria-label="صورة العضو">\n'
+              f'{indent}    <img class="account-avatar" id="accountAvatarImage" alt="صورة العضو" hidden />\n'
+              f'{indent}    <div class="account-avatar account-avatar-fallback" id="accountAvatarFallback">♟</div>\n'
+              f'{indent}  </div>\n'
+              f'{indent}  <strong id="accountWelcome">مرحبًا</strong>\n'
+              f'{indent}</div>'
+            )
+            html = html[:match.start()] + replacement + html[match.end():]
 
-          css_path=Path('home-theme.css')
-          css=css_path.read_text(encoding='utf-8')
-          if '/* Square member avatar 20260903 */' not in css:
-            css+=avatar_css
-          css_path.write_text(css,encoding='utf-8')
+          if 'home-theme.css?v=20260903-10' not in html:
+            raise SystemExit('current stylesheet version marker not found')
+          html = html.replace('home-theme.css?v=20260903-10', 'home-theme.css?v=20260903-11', 1)
+          index.write_text(html, encoding='utf-8')
 
-          polish=Path('tests/test_home_member_polish.py')
-          text=polish.read_text(encoding='utf-8').replace('home-theme.css?v=20260903-9','home-theme.css?v=20260903-10')
-          polish.write_text(text,encoding='utf-8')
+          css_path = Path('home-theme.css')
+          css = css_path.read_text(encoding='utf-8')
+          marker = '/* Member avatar beside name 20260903 */'
+          if marker not in css:
+            css += '''\n\n/* Member avatar beside name 20260903 */
+.account-identity-row{
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  gap:12px;
+  margin:0 0 10px;
+  direction:rtl;
+}
+.account-identity-row .account-avatar-wrap{
+  margin:0;
+  flex:0 0 76px;
+}
+.account-identity-row #accountWelcome{
+  margin:0;
+  text-align:right;
+}
+'''
+          css_path.write_text(css, encoding='utf-8')
+
+          polish = Path('tests/test_home_member_polish.py')
+          text = polish.read_text(encoding='utf-8').replace('home-theme.css?v=20260903-10', 'home-theme.css?v=20260903-11')
+          polish.write_text(text, encoding='utf-8')
           PY
 
           python tests/test_home_member_avatar.py
@@ -61,5 +85,5 @@ jobs:
           git config user.name github-actions[bot]
           git config user.email 41898282+github-actions[bot]@users.noreply.github.com
           git add index.html home-theme.css tests/test_home_member_polish.py
-          git commit -m "Restore square member avatar on homepage"
+          git commit -m "Place member avatar beside name"
           git push
