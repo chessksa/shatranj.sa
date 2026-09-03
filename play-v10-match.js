@@ -47,7 +47,7 @@ function ensureCmStyles(){
   if(!document.querySelector('link[data-cm-chessboard-shatranj]')){
     const theme = document.createElement('link');
     theme.rel = 'stylesheet';
-    theme.href = 'cm-chessboard-shatranj.css?v=20260903-2';
+    theme.href = 'cm-chessboard-shatranj.css?v=20260903-3';
     theme.dataset.cmChessboardShatranj = '1';
     document.head.appendChild(theme);
   }
@@ -61,12 +61,12 @@ function ensurePreviewBoard(){
     position: START_FEN,
     orientation: flipped ? COLOR.black : COLOR.white,
     responsive: true,
-    assetsUrl: 'https://cdn.jsdelivr.net/npm/cm-chessboard@8/assets/',
+    assetsUrl:'assets/',
     style: {
       cssClass: 'shatranj',
       showCoordinates: false,
       borderType: BORDER_TYPE.none,
-      pieces: {file:'pieces/staunty.svg',tileSize:40},
+      pieces:{file:'pieces/shatranj-approved.svg',tileSize:40},
       animationDuration: 180
     }
   });
