@@ -29,24 +29,7 @@ jobs:
             marker = 'function applyFilter(){'
             if marker not in html:
               raise SystemExit('applyFilter marker not found')
-            fn = """function updateRankingTitle(region,city){
-  const title=$('#rankingTitle');
-  if(!title) return;
-
-  if(city){
-    title.textContent=`ترتيب اللاعبين في مدينة ${city}`;
-    return;
-  }
-
-  if(region){
-    title.textContent=`ترتيب اللاعبين في منطقة ${region}`;
-    return;
-  }
-
-  title.textContent='ترتيب اللاعبين على مستوى السعودية';
-}
-
-"""
+            fn = "function updateRankingTitle(region,city){\n  const title=$('#rankingTitle');\n  if(!title) return;\n\n  if(city){\n    title.textContent=`ترتيب اللاعبين في مدينة ${city}`;\n    return;\n  }\n\n  if(region){\n    title.textContent=`ترتيب اللاعبين في منطقة ${region}`;\n    return;\n  }\n\n  title.textContent='ترتيب اللاعبين على مستوى السعودية';\n}\n\n"
             html = html.replace(marker, fn + marker, 1)
 
           call_marker = "  const city=$('#cityFilter').value.trim();\n"
