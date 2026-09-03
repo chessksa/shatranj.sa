@@ -9,6 +9,6 @@ assert 'grid-template-columns:repeat(4,minmax(0,1fr))' in css, 'member stat boxe
 assert 'min-height:64px' in css, 'member stat boxes do not have a consistent height'
 assert 'grid-template-columns:repeat(2,minmax(0,1fr))' in css, 'play and invite actions are not equal columns'
 assert 'height:42px' in css, 'play and invite buttons are not equal height'
-assert 'home-theme.css?v=20260903-7' in index, 'homepage must load the fresh header/member stylesheet'
+assert 'home-theme.css?v=20260903-8' in index, 'homepage must load the fresh header/member stylesheet'
 
 print('home member polish: PASS')
