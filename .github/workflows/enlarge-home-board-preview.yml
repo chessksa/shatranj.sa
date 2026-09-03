@@ -1,0 +1,37 @@
+name: Enlarge home board preview
+on:
+  push:
+    paths:
+      - '.github/workflows/enlarge-home-board-preview.yml'
+permissions:
+  contents: write
+jobs:
+  apply:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Enlarge and sharpen preview
+        run: |
+          python - <<'PY'
+          from pathlib import Path
+          p=Path('home-theme.css')
+          s=p.read_text()
+          s=s.replace('width:216px;\n    height:216px;', 'width:280px;\n    height:280px;')
+          s=s.replace('width:min(72vw,270px);', 'width:min(82vw,330px);')
+          s=s.replace('filter:none;', 'filter:contrast(1.08) saturate(1.03);') if 'filter:none;' in s else s
+          if '.mobile-play{\n    display:block;' in s and 'filter:contrast(1.08)' not in s:
+              s=s.replace('overflow:hidden;\n  }', 'overflow:hidden;\n    filter:contrast(1.08) saturate(1.03);\n  }', 1)
+          s=s.replace('padding-top:234px;', 'padding-top:298px;')
+          p.write_text(s)
+
+          i=Path('index.html')
+          t=i.read_text()
+          import re
+          t=re.sub(r'home-theme\.css\?v=20260903-\d+', 'home-theme.css?v=20260903-4', t)
+          i.write_text(t)
+          PY
+          git config user.name github-actions[bot]
+          git config user.email 41898282+github-actions[bot]@users.noreply.github.com
+          git add home-theme.css index.html
+          git commit -m "Enlarge homepage board preview" || exit 0
+          git push
