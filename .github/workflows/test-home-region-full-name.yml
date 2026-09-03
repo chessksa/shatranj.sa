@@ -1,0 +1,19 @@
+name: Test homepage region full name
+
+on:
+  push:
+    branches:
+      - fix/home-region-full-name
+    paths:
+      - 'index.html'
+      - 'home-theme.css'
+      - 'tests/test_home_region_full_name.py'
+      - '.github/workflows/test-home-region-full-name.yml'
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Run focused test
+        run: python tests/test_home_region_full_name.py
