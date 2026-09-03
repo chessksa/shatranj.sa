@@ -1,0 +1,258 @@
+name: Apply home header account layout
+on:
+  push:
+    paths:
+      - '.github/workflows/apply-home-header-account.yml'
+permissions:
+  contents: write
+jobs:
+  apply:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Reformat header and move logout
+        run: |
+          python - <<'PY'
+          from pathlib import Path
+          import re
+
+          index = Path('index.html')
+          html = index.read_text(encoding='utf-8')
+
+          old_header = '''<header>
+  <div class="wrap nav">
+    <div class="nav-start">
+      <div class="brand">♟ شطرنج السعودية</div>
+
+      <div class="header-live">
+        <div class="header-box">
+          <strong id="headerPlayersCount">0</strong>
+          <span>اللاعبون</span>
+        </div>
+
+        <div class="header-box">
+          <strong id="headerMatchesCount">0</strong>
+          <span>المباريات الحالية</span>
+        </div>
+
+        <a class="header-box watch-box" href="watch.html">
+          <strong>◉</strong>
+          <span>شاهد</span>
+        </a>
+      </div>
+    </div>
+
+    <div class="links">
+      <a href="play.html?v=5" class="play-link protected-play">♟ العب</a>
+      <a href="#register" id="navAccount" class="nav-account">👤 الحساب</a>
+      <span class="nav-soon" title="قريبًا">🏆 البطولات</span>
+    </div>
+  </div>
+</header>'''
+
+          new_header = '''<header>
+  <div class="wrap nav">
+    <div class="brand">♟ شطرنج السعودية</div>
+
+    <div class="header-live">
+      <div class="header-box">
+        <strong id="headerPlayersCount">0</strong>
+        <span>اللاعبون</span>
+      </div>
+
+      <div class="header-box">
+        <strong id="headerMatchesCount">0</strong>
+        <span>المباريات الحالية</span>
+      </div>
+
+      <a class="header-box watch-box" href="watch.html">
+        <strong>◉</strong>
+        <span>شاهد</span>
+      </a>
+    </div>
+
+    <div class="links">
+      <a href="play.html?v=5" class="play-link protected-play">♟ العب</a>
+      <a href="#register" id="navAccount" class="nav-account">👤 تسجيل الدخول</a>
+      <button id="navLogout" class="nav-logout" type="button" hidden>تسجيل الخروج</button>
+      <span class="nav-soon" title="قريبًا">🏆 البطولات</span>
+    </div>
+  </div>
+</header>'''
+
+          if old_header not in html:
+              raise SystemExit('current header block not found')
+          html = html.replace(old_header, new_header, 1)
+
+          actions_pattern = re.compile(r'\n\s*<div class="account-actions">\s*<a class="btn light" href="profile\.html">👤 لوحة التحكم</a>\s*<button id="logoutBtn" class="btn light" type="button">تسجيل الخروج</button>\s*</div>', re.S)
+          html, count = actions_pattern.subn('', html, count=1)
+          if count != 1:
+              raise SystemExit('member account actions block not found')
+
+          render_pattern = re.compile(r'function renderAccount\(\)\{.*?\n\}\n\nasync function refreshAuthUI', re.S)
+          render_replacement = '''function renderAccount(){
+  const loggedIn=!!currentSession;
+
+  $('#guestAuth').hidden=loggedIn;
+  $('#accountPanel').hidden=!loggedIn;
+
+  if(loggedIn && currentProfile){
+    $('#accountWelcome').textContent='مرحبًا، '+currentProfile.name;
+    $('#accountRating').textContent=currentProfile.rating??1500;
+    $('#accountRegion').textContent=currentProfile.region||'—';
+    $('#accountCity').textContent=currentProfile.city||'—';
+    $('#accountGames').textContent=currentProfile.games_count??0;
+  }
+
+  if(loggedIn){
+    $('#navAccount').textContent='👤 لوحة التحكم';
+    $('#navAccount').href='profile.html';
+    $('#navLogout').hidden=false;
+  }else{
+    $('#navAccount').textContent='👤 تسجيل الدخول';
+    $('#navAccount').href='#register';
+    $('#navLogout').hidden=true;
+  }
+}
+
+async function refreshAuthUI'''
+          html, count = render_pattern.subn(render_replacement, html, count=1)
+          if count != 1:
+              raise SystemExit('renderAccount function not found')
+
+          old_logout = "$('#logoutBtn').addEventListener('click',async()=>{"
+          if old_logout not in html:
+              raise SystemExit('logout handler not found')
+          html = html.replace(old_logout, "$('#navLogout').addEventListener('click',async()=>{", 1)
+
+          html = html.replace('home-theme.css?v=20260903-6', 'home-theme.css?v=20260903-7', 1)
+          index.write_text(html, encoding='utf-8')
+
+          css_path = Path('home-theme.css')
+          css = css_path.read_text(encoding='utf-8')
+          marker = '/* Balanced homepage header 20260903 */'
+          if marker not in css:
+              css += r'''
+
+/* Balanced homepage header 20260903 */
+.nav{
+  min-height:68px;
+  display:grid;
+  grid-template-columns:minmax(0,1fr) auto minmax(0,1fr);
+  align-items:center;
+  gap:18px;
+}
+.brand{
+  justify-self:start;
+  font-size:20px;
+  letter-spacing:.1px;
+}
+.header-live{
+  justify-self:center;
+  gap:7px;
+}
+.header-box{
+  min-width:82px;
+  height:44px;
+  border-radius:11px;
+}
+.watch-box{min-width:68px}
+.links{
+  justify-self:end;
+  display:flex;
+  align-items:center;
+  gap:7px;
+  min-width:0;
+}
+.links a,
+.nav-logout,
+.nav-soon{
+  min-height:38px;
+  padding:0 11px;
+  border-radius:10px;
+  display:inline-flex;
+  align-items:center;
+  justify-content:center;
+  white-space:nowrap;
+  font:800 12px inherit;
+}
+.nav-account{
+  border:1px solid rgba(212,180,103,.32);
+  background:rgba(212,180,103,.08);
+}
+.nav-logout{
+  border:1px solid rgba(255,255,255,.14);
+  background:rgba(255,255,255,.04);
+  color:var(--cream);
+  cursor:pointer;
+}
+.nav-logout:hover{
+  border-color:rgba(212,180,103,.38);
+  color:var(--gold);
+  background:rgba(255,255,255,.07);
+}
+.nav-logout[hidden]{display:none!important}
+
+@media(max-width:800px){
+  header{position:sticky}
+  .nav{
+    min-height:0;
+    padding:8px 0;
+    grid-template-columns:1fr auto;
+    grid-template-areas:
+      "brand account"
+      "live live";
+    gap:7px 8px;
+  }
+  .brand{
+    grid-area:brand;
+    justify-self:start;
+    font-size:16px;
+  }
+  .header-live{
+    grid-area:live;
+    justify-self:stretch;
+    display:grid;
+    grid-template-columns:repeat(3,minmax(0,1fr));
+    gap:5px;
+  }
+  .header-box,
+  .watch-box{
+    min-width:0;
+    width:100%;
+    height:36px;
+    border-radius:9px;
+    padding:3px 5px;
+  }
+  .header-box strong{font-size:12px}
+  .header-box span{font-size:8px}
+  .links{
+    grid-area:account;
+    justify-self:end;
+    display:flex!important;
+    gap:4px;
+  }
+  .links .play-link,
+  .links .nav-soon{display:none!important}
+  .links a,
+  .nav-logout{
+    min-height:34px;
+    padding:0 8px;
+    font-size:10px;
+    border-radius:9px;
+  }
+}
+'''
+          css_path.write_text(css, encoding='utf-8')
+          PY
+
+          python tests/test_home_header_account.py
+          python tests/test_home_member_layout.py
+          python tests/test_home_member_polish.py
+          python tests/test_global_arial_font.py
+
+          git config user.name github-actions[bot]
+          git config user.email 41898282+github-actions[bot]@users.noreply.github.com
+          git add index.html home-theme.css
+          git commit -m "Reformat homepage header and move logout"
+          git push
