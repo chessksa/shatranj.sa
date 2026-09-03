@@ -1,0 +1,39 @@
+name: Apply realistic piece CSS cache
+on:
+  push:
+    paths:
+      - '.github/workflows/apply-realistic-piece-css-cache-live.yml'
+permissions:
+  contents: write
+jobs:
+  apply:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Force fresh realistic chess stylesheet
+        run: |
+          python - <<'PY'
+          from pathlib import Path
+          import re
+
+          path = Path('play.html')
+          html = path.read_text(encoding='utf-8')
+          html, count = re.subn(
+              r'realistic-pieces\.css(?:\?v=[^"\']*)?',
+              'realistic-pieces.css?v=20260903-3',
+              html,
+              count=1,
+          )
+          if count != 1:
+              raise SystemExit('realistic stylesheet link not found')
+          path.write_text(html, encoding='utf-8')
+          PY
+
+          python tests/test_realistic_piece_css_cache_live.py
+
+          git config user.name github-actions[bot]
+          git config user.email 41898282+github-actions[bot]@users.noreply.github.com
+          git add play.html
+          git diff --cached --quiet && exit 0
+          git commit -m "Force fresh realistic chess piece stylesheet"
+          git push
