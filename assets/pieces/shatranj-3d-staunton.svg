@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg xmlns="http://www.w3.org/2000/svg" width="40" height="40" viewBox="0 0 40 40">
+  <title>Shatranj Saudi Arabia 3D Staunton pieces</title>
+  <defs><clipPath id="cell"><rect x="0" y="0" width="40" height="40"/></clipPath></defs>
+  <g id="bk" clip-path="url(#cell)"><image href="assets/pieces/3d-staunton-dark.webp" x="0" y="0" width="240" height="40" preserveAspectRatio="none"/></g>
+  <g id="bq" clip-path="url(#cell)"><image href="assets/pieces/3d-staunton-dark.webp" x="-40" y="0" width="240" height="40" preserveAspectRatio="none"/></g>
+  <g id="br" clip-path="url(#cell)"><image href="assets/pieces/3d-staunton-dark.webp" x="-80" y="0" width="240" height="40" preserveAspectRatio="none"/></g>
+  <g id="bb" clip-path="url(#cell)"><image href="assets/pieces/3d-staunton-dark.webp" x="-120" y="0" width="240" height="40" preserveAspectRatio="none"/></g>
+  <g id="bn" clip-path="url(#cell)"><image href="assets/pieces/3d-staunton-dark.webp" x="-160" y="0" width="240" height="40" preserveAspectRatio="none"/></g>
+  <g id="bp" clip-path="url(#cell)"><image href="assets/pieces/3d-staunton-dark.webp" x="-200" y="0" width="240" height="40" preserveAspectRatio="none"/></g>
+  <g id="wk" clip-path="url(#cell)"><image href="assets/pieces/3d-staunton-light.webp" x="0" y="0" width="240" height="40" preserveAspectRatio="none"/></g>
+  <g id="wq" clip-path="url(#cell)"><image href="assets/pieces/3d-staunton-light.webp" x="-40" y="0" width="240" height="40" preserveAspectRatio="none"/></g>
+  <g id="wr" clip-path="url(#cell)"><image href="assets/pieces/3d-staunton-light.webp" x="-80" y="0" width="240" height="40" preserveAspectRatio="none"/></g>
+  <g id="wb" clip-path="url(#cell)"><image href="assets/pieces/3d-staunton-light.webp" x="-120" y="0" width="240" height="40" preserveAspectRatio="none"/></g>
+  <g id="wn" clip-path="url(#cell)"><image href="assets/pieces/3d-staunton-light.webp" x="-160" y="0" width="240" height="40" preserveAspectRatio="none"/></g>
+  <g id="wp" clip-path="url(#cell)"><image href="assets/pieces/3d-staunton-light.webp" x="-200" y="0" width="240" height="40" preserveAspectRatio="none"/></g>
+</svg>
