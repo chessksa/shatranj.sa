@@ -11,12 +11,14 @@ def test_cm_chessboard_uses_3d_staunton_sprite_everywhere():
     assert expected in prematch
 
 
-def test_3d_staunton_sprite_maps_all_twelve_webp_pieces():
+def test_3d_staunton_sprite_maps_all_twelve_pieces_to_two_sheets():
     sprite = (ROOT / "assets" / "pieces" / "shatranj-3d-staunton.svg").read_text(encoding="utf-8")
     for code in ("wk", "wq", "wr", "wb", "wn", "wp", "bk", "bq", "br", "bb", "bn", "bp"):
         assert f'id="{code}"' in sprite
-        assert f'href="assets/pieces/3d-staunton/{code}.webp"' in sprite
-        assert (ROOT / "assets" / "pieces" / "3d-staunton" / f"{code}.webp").exists()
+    assert 'assets/pieces/3d-staunton-dark.webp' in sprite
+    assert 'assets/pieces/3d-staunton-light.webp' in sprite
+    assert (ROOT / "assets" / "pieces" / "3d-staunton-dark.webp").exists()
+    assert (ROOT / "assets" / "pieces" / "3d-staunton-light.webp").exists()
 
 
 def test_board_theme_keeps_approved_cream_and_petrol_colors():
