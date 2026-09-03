@@ -1,0 +1,21 @@
+name: Test username login recovery
+
+on:
+  push:
+    branches:
+      - feat/username-login-recovery
+    paths:
+      - 'index.html'
+      - 'supabase/functions/username-login/**'
+      - 'tests/test_username_login_recovery.py'
+      - '.github/workflows/test-username-login-recovery.yml'
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: feat/username-login-recovery
+      - name: Run focused test
+        run: python tests/test_username_login_recovery.py
