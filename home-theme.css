@@ -379,7 +379,7 @@ footer{
     padding:0;
     border:1px solid rgba(212,180,103,.48);
     border-radius:16px;
-    background:url("home-board-preview.svg?v=20260903-1") center/contain no-repeat;
+    background:url("home-board-preview.svg?v=20260903-2") center/contain no-repeat;
     box-shadow:0 16px 36px rgba(0,0,0,.22);
     font-size:0;
     overflow:hidden;
@@ -420,7 +420,7 @@ footer{
     margin:2px auto 12px;
     border:1px solid rgba(212,180,103,.42);
     border-radius:15px;
-    background:url("home-board-preview.svg?v=20260903-1") center/contain no-repeat;
+    background:url("home-board-preview.svg?v=20260903-2") center/contain no-repeat;
     box-shadow:0 14px 32px rgba(0,0,0,.20);
   }
 }
