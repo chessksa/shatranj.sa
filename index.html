@@ -915,7 +915,7 @@ footer{
 
     <div class="head">
       <div>
-        <h2>النقاط</h2>
+        <h2 id="rankingTitle">ترتيب اللاعبين على مستوى السعودية</h2>
         <p>اختر المنطقة ثم المدينة.</p>
       </div>
 
@@ -1460,9 +1460,28 @@ async function loadCurrentMatchesCount(){
   el.textContent='0';
 }
 
+function updateRankingTitle(region,city){
+  const title=$('#rankingTitle');
+  if(!title) return;
+
+  if(city){
+    title.textContent=`ترتيب اللاعبين في مدينة ${city}`;
+    return;
+  }
+
+  if(region){
+    title.textContent=`ترتيب اللاعبين في منطقة ${region}`;
+    return;
+  }
+
+  title.textContent='ترتيب اللاعبين على مستوى السعودية';
+}
+
 function applyFilter(){
   const region=$('#regionFilter').value.trim();
   const city=$('#cityFilter').value.trim();
+
+  updateRankingTitle(region,city);
 
   renderPlayers(
     ALL_PLAYERS.filter(player=>{
