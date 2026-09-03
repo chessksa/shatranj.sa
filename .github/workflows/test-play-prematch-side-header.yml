@@ -1,0 +1,15 @@
+name: Test play prematch side header
+on:
+  push:
+    paths:
+      - 'config.js'
+      - 'play.html'
+      - 'tests/test_play_prematch_side_header.py'
+      - '.github/workflows/test-play-prematch-side-header.yml'
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Verify prematch remains on board
+        run: python tests/test_play_prematch_side_header.py
