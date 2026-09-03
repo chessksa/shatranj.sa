@@ -213,7 +213,7 @@ async function cancelMatchmaking(){
 
 function pieceSVG(type,color){
   const cls = color === 'w' ? 'white' : 'black';
-  const base = (inner) => `<div class="piece ${cls}"><svg viewBox="0 0 100 100" aria-hidden="true">${inner}</svg></div>`;
+  const base = (inner) => `<div class="piece ${cls} piece-${type}"><svg viewBox="0 0 100 100" aria-hidden="true">${inner}</svg></div>`;
   const sharedBase = `
     <ellipse class="fill-accent" cx="50" cy="88" rx="26" ry="7"></ellipse>
     <rect class="fill-main" x="26" y="80" width="48" height="8" rx="4"></rect>
