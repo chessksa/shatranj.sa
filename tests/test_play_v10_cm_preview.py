@@ -12,7 +12,9 @@ def test_play_v10_prematch_board_uses_cm_chessboard():
     assert "assets/pieces/${color}${type}.png" not in js
 
 
-def test_play_v10_does_not_overlay_legacy_board_image():
-    html = (ROOT / "play-v10.html").read_text(encoding="utf-8")
-    assert "exact-board-v13.css" not in html
-    assert "exact-board-v13.js" not in html
+def test_legacy_exact_board_overlay_is_disabled():
+    css = (ROOT / "exact-board-v13.css").read_text(encoding="utf-8")
+    js = (ROOT / "exact-board-v13.js").read_text(encoding="utf-8")
+    assert "approved-board-v13.webp" not in css
+    assert "board-reference-v12.css" not in css
+    assert "exact-board-preview" not in js
