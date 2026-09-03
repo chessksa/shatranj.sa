@@ -2,6 +2,7 @@ name: Test member dashboard icon navigation
 on:
   push:
     branches:
+      - main
       - feature/member-dashboard-icon-navigation
     paths:
       - '**.html'
