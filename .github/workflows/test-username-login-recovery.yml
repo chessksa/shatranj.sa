@@ -3,35 +3,19 @@ name: Test username login recovery
 on:
   push:
     branches:
+      - main
       - feat/username-login-recovery
     paths:
       - 'index.html'
       - 'sw.js'
       - 'supabase/functions/username-login/**'
       - 'tests/test_username_login_recovery.py'
-      - 'tools/apply_username_login_recovery.py'
       - '.github/workflows/test-username-login-recovery.yml'
-
-permissions:
-  contents: write
 
 jobs:
   test:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
-        with:
-          ref: feat/username-login-recovery
-      - name: Apply username login and recovery
-        run: python tools/apply_username_login_recovery.py
       - name: Run focused test
         run: python tests/test_username_login_recovery.py
-      - name: Commit implementation
-        run: |
-          git config user.name "chessksa"
-          git config user.email "gmel1199@gmail.com"
-          git add index.html sw.js
-          if ! git diff --cached --quiet; then
-            git commit -m "feat: login by username with email recovery"
-            git push origin HEAD:feat/username-login-recovery
-          fi
