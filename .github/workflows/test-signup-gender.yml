@@ -21,8 +21,8 @@ jobs:
         with:
           ref: feat/signup-gender-work
       - name: Apply signup gender
-        shell: python
         run: |
+          python - <<'PY'
           from pathlib import Path
 
           path = Path('index.html')
@@ -80,6 +80,7 @@ jobs:
           sw = sw_path.read_text(encoding='utf-8')
           sw = sw.replace('shatranj-saudi-v2', 'shatranj-saudi-v3')
           sw_path.write_text(sw, encoding='utf-8')
+          PY
       - name: Run focused test
         run: python tests/test_signup_gender.py
       - name: Commit implementation
