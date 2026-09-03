@@ -35,7 +35,7 @@ jobs:
           pawn_heights = []
 
           for code in codes:
-              m = re.search(rf'<g id="{code}"><image href="data:image/webp;base64,([^"]+)"[^>]*/></g>', src)
+              m = re.search(rf'<g id="{code}">.*?base64,([^"]+).*?</g>', src, re.S)
               if not m:
                   raise SystemExit(f'missing piece {code}')
               raw = base64.b64decode(m.group(1))
