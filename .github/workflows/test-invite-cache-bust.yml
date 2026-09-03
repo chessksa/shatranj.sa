@@ -15,3 +15,4 @@ jobs:
           s=Path('index.html').read_text(encoding='utf-8')
           assert 'home-invite.js?v=20260903-2' in s, 'homepage still references cached home-invite.js version'
           PY
+# rerun after cache-bust fix
