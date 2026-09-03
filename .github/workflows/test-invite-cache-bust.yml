@@ -1,0 +1,17 @@
+name: Test invite cache bust
+on:
+  push:
+    paths:
+      - '.github/workflows/test-invite-cache-bust.yml'
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Verify fresh invite script version
+        run: |
+          python - <<'PY'
+          from pathlib import Path
+          s=Path('index.html').read_text(encoding='utf-8')
+          assert 'home-invite.js?v=20260903-2' in s, 'homepage still references cached home-invite.js version'
+          PY
