@@ -35,3 +35,4 @@ jobs:
           grep -Fq '.piece.white::before' realistic-pieces.css
           grep -Fq '.piece.black::before' realistic-pieces.css
           test -s assets/realistic-pieces.png
+          echo 'Realistic chessboard integration verified.'
