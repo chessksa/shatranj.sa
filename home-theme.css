@@ -412,18 +412,6 @@ footer{
     width:min(100% - 18px,1100px);
     margin:auto;
   }
-
-  #ranking::before{
-    content:"";
-    display:block;
-    width:min(82vw,330px);
-    aspect-ratio:1/1;
-    margin:2px auto 12px;
-    border:1px solid rgba(212,180,103,.42);
-    border-radius:15px;
-    background:url("home-board-preview.svg?v=20260903-2") center/contain no-repeat;
-    box-shadow:0 14px 32px rgba(0,0,0,.20);
-  }
 }
 
 @media(max-width:800px){
@@ -431,3 +419,34 @@ footer{
     box-shadow:0 12px 30px rgba(0,0,0,.28);
   }
 }
+
+/* Member column order: member box, board, then play/invite actions */
+.home-board-preview{
+  display:block;
+  width:280px;
+  height:280px;
+  margin:10px auto 0;
+  border:1px solid rgba(212,180,103,.48);
+  border-radius:16px;
+  background:url("home-board-preview.svg?v=20260903-2") center/contain no-repeat;
+  box-shadow:0 16px 36px rgba(0,0,0,.22);
+  overflow:hidden;
+  filter:contrast(1.08) saturate(1.03);
+}
+.home-board-preview:hover{transform:translateY(-2px);box-shadow:0 20px 42px rgba(0,0,0,.28)}
+.home-board-actions{width:280px;margin:8px auto 0;display:flex;align-items:stretch;gap:8px}
+.home-board-actions > .btn,.home-board-actions > .home-invite-wrap{flex:1 1 0;min-width:0}
+.home-board-actions > .home-invite-wrap > .btn{width:100%;height:100%}
+@media(min-width:901px){
+  #register{padding:8px 0 10px!important}
+  #register > .wrap{display:flex;flex-direction:column;align-items:stretch}
+  #register .form-card{order:1}
+  #homeBoardPreview{order:2}
+  #homeBoardActions{order:3}
+}
+@media(max-width:900px){
+  #register > .wrap{display:flex;flex-direction:column}
+  .home-board-preview{width:min(82vw,330px);height:auto;aspect-ratio:1/1;margin-top:10px}
+  .home-board-actions{width:min(82vw,330px)}
+}
+@media(max-width:800px){body{padding-bottom:0!important}}

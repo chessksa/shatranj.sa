@@ -877,7 +877,7 @@ footer{
   }
 }
 </style>
-<link rel="stylesheet" href="home-theme.css?v=20260903-4">
+<link rel="stylesheet" href="home-theme.css?v=20260903-5">
 </head>
 
 <body>
@@ -1118,13 +1118,18 @@ footer{
           </div>
 
           <div class="account-actions">
-            <a class="btn gold" href="play.html?v=5">♟ العب الآن</a>
             <a class="btn light" href="profile.html">👤 لوحة التحكم</a>
             <button id="logoutBtn" class="btn light" type="button">تسجيل الخروج</button>
           </div>
         </div>
       </div>
 
+    </div>
+
+
+    <a id="homeBoardPreview" class="home-board-preview protected-play" href="play.html?v=6" aria-label="العب الآن"></a>
+    <div id="homeBoardActions" class="home-board-actions">
+      <a class="btn gold protected-play" href="play.html?v=6">♟ العب الآن</a>
     </div>
   </div>
 </section>
@@ -1135,7 +1140,6 @@ footer{
   </div>
 </footer>
 
-<a class="mobile-play protected-play" href="play.html?v=5">♟ العب الآن</a>
 
 <script type="module">
 import { createClient } from 'https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/+esm';

@@ -62,7 +62,7 @@
   }
 
   function ensureUI() {
-    const actions = document.querySelector('#accountPanel .account-actions');
+    const actions = document.querySelector('#homeBoardActions') || document.querySelector('#accountPanel .account-actions');
     if (!actions || document.getElementById('homeInviteToggle')) return false;
     ensureStyles();
 
