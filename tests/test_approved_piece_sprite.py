@@ -3,21 +3,21 @@ from pathlib import Path
 ROOT = Path(__file__).resolve().parents[1]
 
 
-def test_cm_chessboard_uses_approved_piece_sprite_everywhere():
+def test_cm_chessboard_uses_3d_staunton_piece_sprite_everywhere():
     live = (ROOT / "play-v8.js").read_text(encoding="utf-8")
     prematch = (ROOT / "play-v10-match.js").read_text(encoding="utf-8")
-    expected = "pieces/shatranj-approved.svg"
+    expected = "pieces/shatranj-3d-staunton.svg"
     assert expected in live
     assert expected in prematch
-    assert "pieces/staunty.svg" not in live
-    assert "pieces/staunty.svg" not in prematch
+    assert "pieces/shatranj-approved.svg" not in live
+    assert "pieces/shatranj-approved.svg" not in prematch
 
 
-def test_approved_sprite_maps_all_twelve_existing_png_pieces_from_page_root():
-    sprite = (ROOT / "assets" / "pieces" / "shatranj-approved.svg").read_text(encoding="utf-8")
+def test_3d_staunton_sprite_maps_all_twelve_embedded_webp_pieces():
+    sprite = (ROOT / "assets" / "pieces" / "shatranj-3d-staunton.svg").read_text(encoding="utf-8")
     for code in ("wk", "wq", "wr", "wb", "wn", "wp", "bk", "bq", "br", "bb", "bn", "bp"):
         assert f'id="{code}"' in sprite
-        assert f'href="assets/pieces/{code}.png"' in sprite
+    assert sprite.count("data:image/webp;base64,") == 12
 
 
 def test_board_theme_keeps_approved_cream_and_petrol_colors():
