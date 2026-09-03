@@ -22,41 +22,41 @@ jobs:
           python - <<'PY'
           from pathlib import Path
 
-          helper = '''
-function forceBoardSquareColors(){
-  boardEl.querySelectorAll('.cm-chessboard .square.white').forEach((square)=>{
-    square.style.setProperty('fill','#d6cfbf','important');
-  });
-  boardEl.querySelectorAll('.cm-chessboard .square.black').forEach((square)=>{
-    square.style.setProperty('fill','#0b4850','important');
-  });
-}
+          helper = "\n".join([
+              "function forceBoardSquareColors(){",
+              "  boardEl.querySelectorAll('.cm-chessboard .square.white').forEach((square)=>{",
+              "    square.style.setProperty('fill','#d6cfbf','important');",
+              "  });",
+              "  boardEl.querySelectorAll('.cm-chessboard .square.black').forEach((square)=>{",
+              "    square.style.setProperty('fill','#0b4850','important');",
+              "  });",
+              "}",
+              "",
+              "function watchBoardSquareColors(){",
+              "  if(boardEl._shatranjColorObserver) return;",
+              "  const observer=new MutationObserver(()=>forceBoardSquareColors());",
+              "  observer.observe(boardEl,{childList:true,subtree:true});",
+              "  boardEl._shatranjColorObserver=observer;",
+              "}",
+          ])
 
-function watchBoardSquareColors(){
-  if(boardEl._shatranjColorObserver) return;
-  const observer=new MutationObserver(()=>forceBoardSquareColors());
-  observer.observe(boardEl,{childList:true,subtree:true});
-  boardEl._shatranjColorObserver=observer;
-}
-'''.strip()
-
-          for filename, anchor, board_created, render_anchor in [
-              ('play-v8.js', 'function ensureBoard(){', "  cmBoard.enableMoveInput(handleBoardInput,myColor==='b' ? COLOR.black : COLOR.white);", "  board.setPosition(game.fen(),false);"),
-              ('play-v10-match.js', 'function ensurePreviewBoard(){', '  return previewBoard;', '  if(board.getOrientation() !== orientation) board.setOrientation(orientation, false);'),
+          for filename, anchor in [
+              ('play-v8.js', 'function ensureBoard(){'),
+              ('play-v10-match.js', 'function ensurePreviewBoard(){'),
           ]:
               p=Path(filename)
               text=p.read_text(encoding='utf-8')
               if 'function forceBoardSquareColors' not in text:
                   text=text.replace(anchor, helper + '\n\n' + anchor, 1)
               if filename == 'play-v8.js':
-                  replacement = board_created + "\n  forceBoardSquareColors();\n  watchBoardSquareColors();"
-                  text=text.replace(board_created, replacement, 1)
-                  text=text.replace(render_anchor, render_anchor + "\n  forceBoardSquareColors();", 1)
+                  created="  cmBoard.enableMoveInput(handleBoardInput,myColor==='b' ? COLOR.black : COLOR.white);"
+                  text=text.replace(created, created + "\n  forceBoardSquareColors();\n  watchBoardSquareColors();", 1)
+                  render="  board.setPosition(game.fen(),false);"
+                  text=text.replace(render, render + "\n  forceBoardSquareColors();", 1)
               else:
-                  create_anchor = "  previewBoard = new Chessboard(boardEl, {"
-                  # Apply immediately after the constructor block, before return.
                   text=text.replace('  });\n  return previewBoard;', '  });\n  forceBoardSquareColors();\n  watchBoardSquareColors();\n  return previewBoard;', 1)
-                  text=text.replace(render_anchor, render_anchor + "\n  forceBoardSquareColors();", 1)
+                  orient="  if(board.getOrientation() !== orientation) board.setOrientation(orientation, false);"
+                  text=text.replace(orient, orient + "\n  forceBoardSquareColors();", 1)
               p.write_text(text, encoding='utf-8')
 
           p=Path('play-v10.html')
