@@ -450,3 +450,106 @@ footer{
   .home-board-actions{width:min(82vw,330px)}
 }
 @media(max-width:800px){body{padding-bottom:0!important}}
+
+/* Member data alignment and board action polish */
+#accountPanel{
+  display:block;
+  width:100%;
+  text-align:center;
+}
+
+#accountPanel > div{
+  width:100%;
+}
+
+#accountWelcome{
+  display:block;
+  margin:0 0 10px;
+  text-align:center;
+  font-size:16px;
+}
+
+#accountPanel .account-card{
+  grid-template-columns:repeat(4,minmax(0,1fr));
+  gap:8px;
+  margin:0;
+}
+
+#accountPanel .account-stat{
+  min-height:64px;
+  padding:9px 5px;
+  display:flex;
+  flex-direction:column;
+  align-items:center;
+  justify-content:center;
+  text-align:center;
+}
+
+#accountPanel .account-stat small{
+  margin-bottom:4px;
+  line-height:1.2;
+}
+
+#accountPanel .account-stat strong{
+  max-width:100%;
+  line-height:1.2;
+  overflow:hidden;
+  text-overflow:ellipsis;
+  white-space:nowrap;
+}
+
+#accountPanel .account-actions{
+  justify-content:center;
+  gap:8px;
+  margin-top:10px;
+}
+
+#accountPanel .account-actions .btn{
+  min-width:112px;
+  min-height:38px;
+}
+
+.home-board-actions{
+  display:grid;
+  grid-template-columns:repeat(2,minmax(0,1fr));
+  gap:8px;
+  align-items:stretch;
+}
+
+.home-board-actions > .btn,
+.home-board-actions > .home-invite-wrap,
+.home-board-actions > .home-invite-wrap > .btn{
+  width:100%;
+  min-width:0;
+}
+
+.home-board-actions > .btn,
+.home-board-actions > .home-invite-wrap > .btn{
+  height:42px;
+  min-height:42px;
+  padding:0 8px;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  text-align:center;
+  border-radius:12px;
+}
+
+.home-board-actions > .home-invite-wrap{
+  display:flex;
+}
+
+.home-board-actions > .btn:only-child{
+  grid-column:1/-1;
+}
+
+@media(max-width:520px){
+  #accountPanel .account-card{
+    grid-template-columns:repeat(2,minmax(0,1fr));
+    gap:7px;
+  }
+
+  #accountPanel .account-stat{
+    min-height:58px;
+  }
+}
