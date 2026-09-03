@@ -1,0 +1,145 @@
+name: Apply home member polish
+on:
+  push:
+    paths:
+      - '.github/workflows/apply-home-member-polish.yml'
+permissions:
+  contents: write
+jobs:
+  apply:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Center member data and equalize board actions
+        run: |
+          python - <<'PY'
+          from pathlib import Path
+          import re
+
+          css_path = Path('home-theme.css')
+          css = css_path.read_text(encoding='utf-8')
+          marker = '/* Member data alignment and board action polish */'
+          block = r'''
+
+/* Member data alignment and board action polish */
+#accountPanel{
+  display:block;
+  width:100%;
+  text-align:center;
+}
+
+#accountPanel > div{
+  width:100%;
+}
+
+#accountWelcome{
+  display:block;
+  margin:0 0 10px;
+  text-align:center;
+  font-size:16px;
+}
+
+#accountPanel .account-card{
+  grid-template-columns:repeat(4,minmax(0,1fr));
+  gap:8px;
+  margin:0;
+}
+
+#accountPanel .account-stat{
+  min-height:64px;
+  padding:9px 5px;
+  display:flex;
+  flex-direction:column;
+  align-items:center;
+  justify-content:center;
+  text-align:center;
+}
+
+#accountPanel .account-stat small{
+  margin-bottom:4px;
+  line-height:1.2;
+}
+
+#accountPanel .account-stat strong{
+  max-width:100%;
+  line-height:1.2;
+  overflow:hidden;
+  text-overflow:ellipsis;
+  white-space:nowrap;
+}
+
+#accountPanel .account-actions{
+  justify-content:center;
+  gap:8px;
+  margin-top:10px;
+}
+
+#accountPanel .account-actions .btn{
+  min-width:112px;
+  min-height:38px;
+}
+
+.home-board-actions{
+  display:grid;
+  grid-template-columns:repeat(2,minmax(0,1fr));
+  gap:8px;
+  align-items:stretch;
+}
+
+.home-board-actions > .btn,
+.home-board-actions > .home-invite-wrap,
+.home-board-actions > .home-invite-wrap > .btn{
+  width:100%;
+  min-width:0;
+}
+
+.home-board-actions > .btn,
+.home-board-actions > .home-invite-wrap > .btn{
+  height:42px;
+  min-height:42px;
+  padding:0 8px;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  text-align:center;
+  border-radius:12px;
+}
+
+.home-board-actions > .home-invite-wrap{
+  display:flex;
+}
+
+.home-board-actions > .btn:only-child{
+  grid-column:1/-1;
+}
+
+@media(max-width:520px){
+  #accountPanel .account-card{
+    grid-template-columns:repeat(2,minmax(0,1fr));
+    gap:7px;
+  }
+
+  #accountPanel .account-stat{
+    min-height:58px;
+  }
+}
+'''
+          if marker not in css:
+              css += block
+          css_path.write_text(css, encoding='utf-8')
+
+          index_path = Path('index.html')
+          index = index_path.read_text(encoding='utf-8')
+          index, count = re.subn(r'home-theme\.css\?v=[^"\']+', 'home-theme.css?v=20260903-6', index, count=1)
+          if count != 1:
+              raise SystemExit('home-theme.css version reference not found')
+          index_path.write_text(index, encoding='utf-8')
+          PY
+
+          python tests/test_home_member_polish.py
+
+          git config user.name github-actions[bot]
+          git config user.email 41898282+github-actions[bot]@users.noreply.github.com
+          git add home-theme.css index.html
+          git commit -m "Center member data and align play actions" || exit 0
+          git push
