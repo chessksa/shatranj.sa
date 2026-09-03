@@ -1,0 +1,25 @@
+name: Test exact board v14
+
+on:
+  push:
+    branches:
+      - exact-board-assets-v14
+  pull_request:
+    paths:
+      - 'assets/exact-board/**'
+      - 'exact-board-v14.css'
+      - 'play-v10.html'
+      - 'play-v10-match.js'
+      - 'play-v8.js'
+      - 'tests/test_exact_board_assets_v14.py'
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - name: Run exact board asset regression test
+        run: python tests/test_exact_board_assets_v14.py
