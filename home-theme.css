@@ -908,3 +908,22 @@ footer{
   font-weight:900;
 }
 .account-avatar[hidden]{display:none!important}
+
+
+/* Member avatar beside name 20260903 */
+.account-identity-row{
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  gap:12px;
+  margin:0 0 10px;
+  direction:rtl;
+}
+.account-identity-row .account-avatar-wrap{
+  margin:0;
+  flex:0 0 76px;
+}
+.account-identity-row #accountWelcome{
+  margin:0;
+  text-align:right;
+}
