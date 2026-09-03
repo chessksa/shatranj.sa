@@ -877,7 +877,7 @@ footer{
   }
 }
 </style>
-<link rel="stylesheet" href="home-theme.css?v=20260903-9">
+<link rel="stylesheet" href="home-theme.css?v=20260903-10">
 </head>
 
 <body>
@@ -1089,6 +1089,10 @@ footer{
 
       <div id="accountPanel" class="account-panel" hidden>
         <div>
+          <div class="account-avatar-wrap" aria-label="صورة العضو">
+            <img class="account-avatar" id="accountAvatarImage" alt="صورة العضو" hidden />
+            <div class="account-avatar account-avatar-fallback" id="accountAvatarFallback">♟</div>
+          </div>
           <strong id="accountWelcome">مرحبًا</strong>
 
           <div class="account-card">
@@ -1541,6 +1545,45 @@ async function ensureProfile(){
   return loadMyProfile();
 }
 
+function accountInitial(name){
+  return (String(name||'ل').trim().charAt(0)||'ل').toUpperCase();
+}
+
+function accountAvatarPublicUrl(path){
+  return supabase.storage.from('avatars').getPublicUrl(path).data.publicUrl;
+}
+
+function showAccountAvatar(){
+  const img=$('#accountAvatarImage');
+  const fallback=$('#accountAvatarFallback');
+  if(!img||!fallback||!currentProfile||!currentSession) return;
+
+  fallback.textContent=accountInitial(currentProfile.name);
+  fallback.hidden=false;
+  img.hidden=true;
+
+  const currentPath=`${currentProfile.id}/avatar.webp`;
+  const legacyPath=`${currentSession.user.id}/avatar.webp`;
+  let triedLegacy=false;
+
+  img.onerror=()=>{
+    if(!triedLegacy && legacyPath!==currentPath){
+      triedLegacy=true;
+      img.src=accountAvatarPublicUrl(legacyPath);
+      return;
+    }
+    img.hidden=true;
+    fallback.hidden=false;
+  };
+
+  img.onload=()=>{
+    fallback.hidden=true;
+    img.hidden=false;
+  };
+
+  img.src=accountAvatarPublicUrl(currentPath);
+}
+
 function renderAccount(){
   const loggedIn=!!currentSession;
 
@@ -1548,6 +1591,7 @@ function renderAccount(){
   $('#accountPanel').hidden=!loggedIn;
 
   if(loggedIn && currentProfile){
+    showAccountAvatar();
     $('#accountWelcome').textContent='مرحبًا، '+currentProfile.name;
     $('#accountRating').textContent=currentProfile.rating??1500;
     $('#accountRegion').textContent=currentProfile.region||'—';

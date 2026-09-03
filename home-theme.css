@@ -882,3 +882,29 @@ footer{
   .header-box.header-action strong{font-size:12px}
   .header-box.header-action span{font-size:8px}
 }
+
+/* Square member avatar 20260903 */
+.account-avatar-wrap{
+  width:76px;
+  height:76px;
+  margin:0 auto 10px;
+  position:relative;
+}
+.account-avatar{
+  width:76px;
+  height:76px;
+  border-radius:12px;
+  border:1px solid rgba(212,180,103,.48);
+  background:#0b3435;
+  object-fit:cover;
+  overflow:hidden;
+  box-shadow:0 8px 20px rgba(0,0,0,.16);
+}
+.account-avatar-fallback{
+  display:grid;
+  place-items:center;
+  color:var(--gold);
+  font-size:27px;
+  font-weight:900;
+}
+.account-avatar[hidden]{display:none!important}
