@@ -1,0 +1,14 @@
+name: Test compact profile layout
+on:
+  push:
+    paths:
+      - 'tests/test_profile_compact_layout.py'
+      - 'profile.html'
+      - '.github/workflows/test-profile-compact-layout.yml'
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Verify compact profile layout
+        run: python tests/test_profile_compact_layout.py
