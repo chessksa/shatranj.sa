@@ -1,0 +1,17 @@
+name: Test home header account layout
+on:
+  push:
+    paths:
+      - 'index.html'
+      - 'home-theme.css'
+      - 'tests/test_home_header_account.py'
+      - '.github/workflows/test-home-header-account.yml'
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Inspect account/header markers
+        run: grep -n -E 'navAccount|logout|تسجيل الخروج|accountPanel|account-actions' index.html || true
+      - name: Verify home header account layout
+        run: python tests/test_home_header_account.py
