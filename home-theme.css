@@ -776,3 +776,109 @@ footer{
   .header-box strong{font-size:12px}
   .header-box span{font-size:8px}
 }
+
+/* Unified right header controls 20260903 */
+.nav{
+  min-height:66px;
+  display:flex;
+  align-items:center;
+  justify-content:flex-start;
+  gap:0;
+}
+.nav-main{
+  display:flex;
+  align-items:center;
+  justify-content:flex-start;
+  gap:6px;
+  min-width:0;
+  width:100%;
+}
+.nav-main .brand{
+  flex:0 0 auto;
+  margin-inline-end:6px;
+  font-size:20px;
+  white-space:nowrap;
+}
+.header-live{
+  display:flex;
+  align-items:center;
+  gap:6px;
+}
+.header-action{
+  width:92px;
+  min-width:92px;
+  height:42px;
+  flex:0 0 92px;
+  padding:0 8px;
+  border:1px solid rgba(255,255,255,.14);
+  border-radius:10px;
+  background:rgba(255,255,255,.07);
+  color:var(--cream);
+  display:inline-flex;
+  align-items:center;
+  justify-content:center;
+  box-sizing:border-box;
+  text-align:center;
+  white-space:nowrap;
+  font:800 11px Arial,sans-serif;
+}
+.header-box.header-action{
+  flex-direction:column;
+  padding:3px 6px;
+  line-height:1.05;
+}
+.header-box.header-action strong{
+  font-size:14px;
+  color:#f0d77c;
+}
+.header-box.header-action span{
+  margin-top:3px;
+  font-size:9px;
+  font-weight:800;
+}
+.nav-account.header-action{
+  color:#f0d77c!important;
+}
+.nav-logout.header-action{
+  cursor:pointer;
+}
+.header-action:hover,
+.nav-logout.header-action:hover{
+  border-color:rgba(212,180,103,.38);
+  background:rgba(255,255,255,.12);
+}
+.nav-logout.header-action[hidden]{display:none!important}
+
+@media(max-width:800px){
+  .nav{
+    min-height:0;
+    padding:8px 0;
+    display:block;
+  }
+  .nav-main{
+    display:grid;
+    grid-template-columns:repeat(5,minmax(0,1fr));
+    gap:4px;
+    width:100%;
+  }
+  .nav-main .brand{
+    grid-column:1/-1;
+    justify-self:start;
+    margin:0 0 2px;
+    font-size:16px;
+  }
+  .header-live{
+    display:contents;
+  }
+  .header-action{
+    width:100%;
+    min-width:0;
+    height:38px;
+    flex:none;
+    padding:0 4px;
+    border-radius:9px;
+    font-size:9px;
+  }
+  .header-box.header-action strong{font-size:12px}
+  .header-box.header-action span{font-size:8px}
+}
