@@ -1,4 +1,4 @@
-name: Test dashboard layout and public rank
+name: Apply dashboard layout and public rank
 
 on:
   push:
@@ -7,18 +7,41 @@ on:
       - 'profile.html'
       - 'player.html'
       - 'player.js'
+      - 'tools/apply_dashboard_stat_layout_public_rank.py'
       - 'tests/test_profile_stat_tiles_layout.py'
       - 'tests/test_public_player_rank_badge.py'
+      - 'tests/test_profile_icon_navigation.py'
+      - 'tests/test_profile_unified_icon_row.py'
       - '.github/workflows/test-dashboard-layout-public-rank.yml'
   workflow_dispatch:
 
+permissions:
+  contents: write
+
 jobs:
-  test:
+  apply-and-test:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
-      - name: Run focused tests
+      - name: Apply approved UI change
+        run: python tools/apply_dashboard_stat_layout_public_rank.py
+      - name: Run focused regression tests
         run: |
           python tests/test_profile_stat_tiles_layout.py
           python tests/test_public_player_rank_badge.py
+          python tests/test_profile_icon_navigation.py
+          python tests/test_profile_unified_icon_row.py
+          python tests/test_profile_rank_badge.py
           node --check player.js
+          node --check profile.js
+      - name: Commit implementation if needed
+        run: |
+          if git diff --quiet -- profile.html player.html player.js; then
+            echo "No production changes to commit."
+            exit 0
+          fi
+          git config user.name "chessksa"
+          git config user.email "gmel1199@gmail.com"
+          git add profile.html player.html player.js
+          git commit -m "feat: simplify dashboard stats and show public rank"
+          git push origin HEAD:main
