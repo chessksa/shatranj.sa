@@ -1,0 +1,32 @@
+name: Verify player invite
+on:
+  push:
+    paths:
+      - '.github/workflows/verify-player-invite.yml'
+permissions:
+  contents: read
+jobs:
+  verify:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Check JavaScript syntax
+        run: |
+          node --check home-invite.js
+          node --check site-notifications.js
+      - name: Check homepage integration
+        run: |
+          python - <<'PY'
+          from pathlib import Path
+          s=Path('index.html').read_text(encoding='utf-8')
+          assert 'home-invite.js?v=20260903-1' in s
+          assert 'site-notifications.js?v=20260903-2' in s
+          assert '<script src="site-notifications.js"></script>\nbody{' not in s
+          h=Path('home-invite.js').read_text(encoding='utf-8')
+          assert 'invitePlayerSearch' in h
+          assert "send_player_challenge" in h
+          n=Path('site-notifications.js').read_text(encoding='utf-8')
+          assert 'data-challenge-action="accept"' in n
+          assert "respond_friend_challenge" in n
+          print('player invite verification passed')
+          PY
