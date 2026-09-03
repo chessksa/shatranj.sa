@@ -1,0 +1,18 @@
+name: Inspect realistic piece asset
+
+on:
+  push:
+    branches:
+      - fix/realistic-piece-asset
+    paths:
+      - assets/realistic-pieces.png
+      - tests/inspect_realistic_piece_asset.py
+      - .github/workflows/inspect-realistic-piece-asset.yml
+
+jobs:
+  inspect:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Inspect PNG
+        run: python tests/inspect_realistic_piece_asset.py
