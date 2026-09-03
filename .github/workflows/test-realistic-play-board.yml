@@ -1,0 +1,34 @@
+name: Test realistic play board
+
+on:
+  push:
+    branches:
+      - feature/realistic-chessboard
+  pull_request:
+    paths:
+      - play.html
+      - play-live.js
+      - realistic-pieces.css
+      - assets/pieces/**
+      - .github/workflows/test-realistic-play-board.yml
+
+jobs:
+  verify-realistic-board:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Verify realistic board integration
+        shell: bash
+        run: |
+          set -euo pipefail
+          grep -Fq 'realistic-pieces.css?v=20260903-1' play.html
+          grep -Fq 'piece ${cls} piece-${type}' play-live.js
+          grep -Fq -- '--real-board-dark:#0b4850' realistic-pieces.css
+          grep -Fq -- '--real-board-light:#d6cfbf' realistic-pieces.css
+          grep -Fq 'background-image:url("assets/pieces/white-k.png")' realistic-pieces.css
+          grep -Fq 'background-image:url("assets/pieces/black-k.png")' realistic-pieces.css
+          for color in white black; do
+            for piece in k q b n r p; do
+              test -s "assets/pieces/${color}-${piece}.png"
+            done
+          done
