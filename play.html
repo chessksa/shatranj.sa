@@ -11,7 +11,7 @@
       --line:rgba(224,181,103,.55);--board-dark:#7f9560;--board-light:#dacba5;
       --wood-1:#554125;--wood-2:#2a2118;--text:#f4efe6;--muted:#d6cfbf;
       --success:#40cf67;--danger:#db4343;--shadow:0 12px 30px rgba(0,0,0,.28);
-      --header-h:92px;
+      --header-h:0px;
     }
     *{box-sizing:border-box}
     html,body{min-height:100%;width:100%}
@@ -49,7 +49,9 @@
     .piece{width:76%;height:76%;display:flex;align-items:center;justify-content:center;filter:drop-shadow(0 3px 2px rgba(0,0,0,.25))}.piece svg{width:100%;height:100%;overflow:visible}.piece.black .fill-main{fill:#101010}.piece.black .fill-accent{fill:#212121}.piece.black .stroke-main{stroke:#080808}.piece.white .fill-main{fill:#f2e7cc}.piece.white .fill-accent{fill:#dbc28b}.piece.white .stroke-main{stroke:#7f6b46}
     .coords-left,.coords-bottom{position:absolute;z-index:5;color:#f4cd67;text-shadow:0 1px 1px rgba(0,0,0,.45);font-size:14px;line-height:1}.coords-left{left:-6px;top:0;bottom:22px;width:18px;display:grid;grid-template-rows:repeat(8,1fr);place-items:center}.coords-bottom{left:14px;right:14px;bottom:4px;height:16px;display:grid;grid-template-columns:repeat(8,1fr);place-items:center;direction:ltr}
 
-    .panel-stack{width:100%;max-height:100%;display:grid;grid-template-rows:minmax(0,1fr) auto minmax(0,1fr);gap:12px}
+    .panel-stack{width:100%;max-height:100%;display:grid;grid-template-rows:auto minmax(0,1fr) auto minmax(0,1fr);gap:12px}
+    .side-header{min-height:58px;padding:8px 10px;border:1px solid var(--line);border-radius:15px;background:var(--panel-soft);box-shadow:var(--shadow),inset 0 1px 0 rgba(255,255,255,.03);display:flex;align-items:center;justify-content:space-between;gap:10px}
+    .side-brand{display:flex;align-items:center;gap:7px;min-width:0;font-size:14px;font-weight:800;white-space:nowrap}.side-brand-mark{display:grid;place-items:center;width:30px;height:30px;border-radius:9px;border:1px solid rgba(224,181,103,.45);color:var(--gold);font-size:19px}.side-header-actions{display:flex;align-items:center;justify-content:flex-end;gap:6px;min-width:0}.side-header-actions #siteNotificationHost{display:flex;align-items:center}.side-icon-btn{height:36px;padding:0 9px;border:1px solid rgba(224,181,103,.34);border-radius:10px;background:rgba(6,27,31,.46);color:var(--text);display:inline-flex;align-items:center;justify-content:center;gap:5px;font:700 12px inherit;cursor:pointer;white-space:nowrap}.side-icon-btn .icon{color:var(--gold);font-size:15px}
     .player-card,.actions-card{background:var(--panel-soft);border:1px solid var(--line);border-radius:18px;box-shadow:var(--shadow),inset 0 1px 0 rgba(255,255,255,.03)}
     .player-card{padding:14px;display:grid;grid-template-columns:66px minmax(0,1fr) 126px;align-items:center;gap:12px;min-height:0}
     .avatar{width:66px;height:66px;border-radius:50%;border:2px solid rgba(224,181,103,.8);background:radial-gradient(circle at 38% 30%,#434a4f,#1a2126 62%,#12181c);position:relative;overflow:hidden}.avatar.light{background:radial-gradient(circle at 38% 30%,#fff,#f4f4f4 48%,#dadada 70%,#cbcbcb)}.avatar::before{content:"";position:absolute;left:50%;top:15px;width:25px;height:25px;border-radius:50%;transform:translateX(-50%);background:rgba(0,0,0,.45)}.avatar::after{content:"";position:absolute;left:50%;bottom:9px;width:39px;height:28px;border-radius:50% 50% 42% 42%;transform:translateX(-50%);background:rgba(0,0,0,.45)}.avatar.light::before,.avatar.light::after{background:rgba(255,255,255,.92)}
@@ -65,7 +67,7 @@
       .layout{grid-template-columns:minmax(0,1fr) clamp(380px,30vw,460px);gap:18px}
       .board-panel{place-items:center end}
       .side-panel{height:min(calc(100dvh - var(--header-h) - 28px),928px);align-self:center;align-items:stretch}
-      .panel-stack{height:100%;max-height:none;grid-template-rows:auto auto auto;align-content:space-between;gap:16px}
+      .panel-stack{height:100%;max-height:none;grid-template-rows:auto minmax(0,1fr) auto minmax(0,1fr);align-content:space-between;gap:12px}
       .player-card{min-height:clamp(140px,19vh,198px);padding:18px;grid-template-columns:clamp(76px,5vw,88px) minmax(0,1fr) clamp(126px,9vw,146px);gap:15px}
       .avatar{width:clamp(76px,5vw,88px);height:clamp(76px,5vw,88px)}
       .avatar::before{top:18px;width:30px;height:30px}.avatar::after{bottom:11px;width:47px;height:33px}
@@ -76,14 +78,14 @@
     }
 
     @media (max-width:1220px) and (min-width:901px){
-      :root{--header-h:82px}
+      :root{--header-h:0px}
       .topbar-inner{padding:7px 20px}.brand-mark{width:54px;height:54px}.brand-copy h1{font-size:19px}.brand-copy .en{font-size:11px}.ghost-btn{height:42px;min-width:150px;font-size:14px}.ghost-btn.small{min-width:96px}
       .page{padding:10px 18px 12px}.layout{grid-template-columns:minmax(0,1fr) 360px;gap:14px}.board-frame{width:min(100%,calc(100dvh - var(--header-h) - 28px),820px)}
       .player-card{grid-template-columns:58px minmax(0,1fr) 112px;padding:11px;gap:9px}.avatar{width:58px;height:58px}.clock{font-size:23px;padding:10px 7px}.actions-card,.action-item{min-height:72px}.panel-stack{gap:10px}
     }
 
     @media (max-width:900px){
-      :root{--header-h:72px}
+      :root{--header-h:0px}
       body{background-attachment:scroll}
       .topbar{height:var(--header-h)}
       .topbar-inner{padding:7px 9px;grid-template-columns:1fr auto 1fr;gap:6px}
@@ -93,6 +95,7 @@
       .layout{height:auto;display:flex;flex-direction:column;gap:7px;direction:rtl;align-items:stretch}
       .board-panel{order:2;height:auto;width:100%;direction:rtl}.board-frame{width:100%;max-width:none;padding:8px 8px 17px;border-radius:13px}.coords-left{left:-4px;bottom:17px;width:12px;font-size:10px}.coords-bottom{left:8px;right:8px;bottom:3px;height:11px;font-size:10px}
       .side-panel,.panel-stack{display:contents}
+      .side-header{order:0;margin:0 2px}.side-brand{font-size:12px}.side-brand-mark{width:28px;height:28px}.side-icon-btn{height:34px;padding:0 7px;font-size:11px}
       .panel-stack>.player-card:first-child{order:1}.actions-card{order:3}.panel-stack>.player-card:last-child{order:4}
       .player-card{grid-template-columns:50px minmax(0,1fr) 96px;padding:8px 9px;gap:8px;min-height:82px;border-radius:13px}.avatar{width:50px;height:50px}.avatar::before{top:11px;width:19px;height:19px}.avatar::after{bottom:7px;width:30px;height:21px}
       .status{font-size:10px;margin-bottom:2px;gap:4px}.status::before{width:7px;height:7px}.name{font-size:14px;margin-bottom:3px}.location{font-size:10px;margin-bottom:3px}.rating{font-size:11px;gap:4px}.rating .trend{font-size:12px}
@@ -139,37 +142,6 @@
   </style>
 </head>
 <body>
-  <header class="topbar">
-    <div class="topbar-inner">
-      <div class="header-actions start">
-        <button class="ghost-btn" id="leaveBtn"><span class="icon">⎋</span><span id="leaveText">رجوع</span></button>
-      </div>
-
-      <div class="brand" aria-label="شعار شطرنج السعودية">
-        <div class="brand-copy">
-          <h1>شطرنج السعودية</h1>
-          <div class="en">SAUDI CHESS</div>
-        </div>
-        <div class="brand-mark" aria-hidden="true">
-          <svg viewBox="0 0 100 100" role="img">
-            <path class="mark-fill" d="M50 8c6 0 11 5 11 11 0 4-2 7-4 9l6 14H37l6-14c-3-2-4-5-4-9 0-6 5-11 11-11z"/>
-            <path class="mark-fill" d="M48 42h4v23h-4z"/>
-            <path class="mark-stroke" d="M25 71c11 0 19-4 25-11 6 7 14 11 25 11"/>
-            <path class="mark-stroke" d="M22 84l22-15"/>
-            <path class="mark-stroke" d="M78 84L56 69"/>
-            <path class="mark-stroke" d="M31 89l19-13"/>
-            <path class="mark-stroke" d="M69 89L50 76"/>
-          </svg>
-        </div>
-      </div>
-
-      <div class="header-actions end">
-        <div id="siteNotificationHost"></div>
-        <button class="ghost-btn small" id="reportBtn"><span class="icon">⚑</span><span>إبلاغ</span></button>
-      </div>
-    </div>
-  </header>
-
 
   <section class="matchmaking-screen" id="matchmakingScreen" hidden>
     <div class="matchmaking-card">
@@ -218,6 +190,14 @@
 
       <aside class="side-panel">
         <div class="panel-stack">
+          <div class="side-header">
+            <div class="side-brand" aria-label="شطرنج السعودية"><span class="side-brand-mark">♟</span><span>شطرنج السعودية</span></div>
+            <div class="side-header-actions">
+              <button class="side-icon-btn" id="leaveBtn" type="button"><span class="icon">↩</span><span id="leaveText">رجوع</span></button>
+              <div id="siteNotificationHost"></div>
+              <button class="side-icon-btn" id="reportBtn" type="button"><span class="icon">⚑</span><span>إبلاغ</span></button>
+            </div>
+          </div>
           <section class="player-card">
             <div class="avatar" id="topAvatar"></div>
             <div class="player-info">
