@@ -20,34 +20,35 @@ jobs:
           marker = '/* Compact member dashboard 20260903 */'
 
           if marker not in html:
-              block = '''
-    /* Compact member dashboard 20260903 */
-    .shell{padding:10px 0 24px}
-    .topbar{padding:6px 2px 10px}
-    .hero{padding:16px;gap:14px;border-radius:18px}
-    .identity .rating{margin-top:7px}
-    .stats{gap:8px;margin:10px 0}
-    .stat{padding:10px 12px}
-    .stat small{margin-bottom:4px}
-    .stat strong{font-size:22px}
-    .grid{gap:10px}
-    .card{padding:13px}
-    .card-head{margin-bottom:10px}
-    .chart-box{height:180px}
-    .chart-box svg{height:160px}
-    .chart-empty,.empty{padding:18px 8px}
-    .list{gap:7px}
-    .row{padding:9px}
-    .row-meta{margin-top:2px}
-    .achievement{padding:9px}
-    @media(max-width:520px){
-      .shell{padding-top:6px;padding-bottom:18px}
-      .hero{padding:13px;gap:10px}
-      .stats{gap:6px;margin:8px 0}
-      .stat{padding:9px 10px}
-      .card{padding:12px}
-    }
-'''
+              lines = [
+                  '    /* Compact member dashboard 20260903 */',
+                  '    .shell{padding:10px 0 24px}',
+                  '    .topbar{padding:6px 2px 10px}',
+                  '    .hero{padding:16px;gap:14px;border-radius:18px}',
+                  '    .identity .rating{margin-top:7px}',
+                  '    .stats{gap:8px;margin:10px 0}',
+                  '    .stat{padding:10px 12px}',
+                  '    .stat small{margin-bottom:4px}',
+                  '    .stat strong{font-size:22px}',
+                  '    .grid{gap:10px}',
+                  '    .card{padding:13px}',
+                  '    .card-head{margin-bottom:10px}',
+                  '    .chart-box{height:180px}',
+                  '    .chart-box svg{height:160px}',
+                  '    .chart-empty,.empty{padding:18px 8px}',
+                  '    .list{gap:7px}',
+                  '    .row{padding:9px}',
+                  '    .row-meta{margin-top:2px}',
+                  '    .achievement{padding:9px}',
+                  '    @media(max-width:520px){',
+                  '      .shell{padding-top:6px;padding-bottom:18px}',
+                  '      .hero{padding:13px;gap:10px}',
+                  '      .stats{gap:6px;margin:8px 0}',
+                  '      .stat{padding:9px 10px}',
+                  '      .card{padding:12px}',
+                  '    }',
+              ]
+              block = '\n' + '\n'.join(lines) + '\n'
               if '</style>' not in html:
                   raise SystemExit('style closing marker not found')
               html = html.replace('</style>', block + '  </style>', 1)
