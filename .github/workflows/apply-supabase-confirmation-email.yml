@@ -1,4 +1,4 @@
-name: Apply Supabase confirmation email
+name: Apply Supabase auth emails
 
 on:
   workflow_dispatch:
@@ -12,7 +12,7 @@ permissions:
   contents: read
 
 jobs:
-  update-confirmation-email:
+  update-auth-emails:
     runs-on: ubuntu-latest
     env:
       PROJECT_REF: zjxkxhsvltihucdacjrv
@@ -56,7 +56,7 @@ jobs:
           echo "AUTH_TOKEN=$TOKEN" >> "$GITHUB_ENV"
           echo "Supabase Personal Access Token format accepted."
 
-      - name: Apply approved Arabic confirmation email template
+      - name: Apply approved Arabic auth email templates
         shell: bash
         run: |
           set -euo pipefail
@@ -64,7 +64,9 @@ jobs:
           cat > /tmp/auth-email.json <<'JSON'
           {
             "mailer_subjects_confirmation": "فعّل حسابك في شطرنج السعودية",
-            "mailer_templates_confirmation_content": "<div dir=\"rtl\" style=\"font-family:Arial,Tahoma,sans-serif;text-align:right;line-height:1.9;color:#17211f;max-width:560px;margin:0 auto;padding:24px\"><h2 style=\"margin:0 0 18px\">مرحبًا بك في شطرنج السعودية</h2><p>تم إنشاء حسابك بنجاح، وبقيت خطوة واحدة فقط لتفعيله.</p><p>اضغط على الزر أدناه لتأكيد بريدك الإلكتروني وبدء اللعب:</p><p style=\"text-align:center;margin:28px 0\"><a href=\"{{ .ConfirmationURL }}\" style=\"display:inline-block;padding:12px 28px;border-radius:8px;background:#174f46;color:#ffffff;text-decoration:none;font-weight:700\">تفعيل الحساب</a></p><p>بعد التفعيل يمكنك تسجيل الدخول باسم المستخدم وكلمة المرور.</p><p>نتمنى لك مباريات ممتعة ومنافسة قوية.</p><p style=\"margin-top:28px\"><strong>شطرنج السعودية</strong><br>منصة الشطرنج السعودية</p></div>"
+            "mailer_templates_confirmation_content": "<div dir=\"rtl\" style=\"font-family:Arial,Tahoma,sans-serif;text-align:right;line-height:1.9;color:#17211f;max-width:560px;margin:0 auto;padding:24px\"><h2 style=\"margin:0 0 18px\">مرحبًا بك في شطرنج السعودية</h2><p>تم إنشاء حسابك بنجاح، وبقيت خطوة واحدة فقط لتفعيله.</p><p>اضغط على الزر أدناه لتأكيد بريدك الإلكتروني وبدء اللعب:</p><p style=\"text-align:center;margin:28px 0\"><a href=\"{{ .ConfirmationURL }}\" style=\"display:inline-block;padding:12px 28px;border-radius:8px;background:#174f46;color:#ffffff;text-decoration:none;font-weight:700\">تفعيل الحساب</a></p><p>بعد التفعيل يمكنك تسجيل الدخول باسم المستخدم وكلمة المرور.</p><p>نتمنى لك مباريات ممتعة ومنافسة قوية.</p><p style=\"margin-top:28px\"><strong>شطرنج السعودية</strong><br>منصة الشطرنج السعودية</p></div>",
+            "mailer_subjects_recovery": "استعادة كلمة المرور | شطرنج السعودية",
+            "mailer_templates_recovery_content": "<div dir=\"rtl\" style=\"font-family:Arial,Tahoma,sans-serif;text-align:right;line-height:1.9;color:#17211f;max-width:560px;margin:0 auto;padding:24px\"><h2 style=\"margin:0 0 18px\">استعادة كلمة المرور</h2><p>تلقينا طلبًا لتعيين كلمة مرور جديدة لحسابك في شطرنج السعودية.</p><p>اضغط على الزر أدناه للمتابعة:</p><p style=\"text-align:center;margin:28px 0\"><a href=\"{{ .ConfirmationURL }}\" style=\"display:inline-block;padding:12px 28px;border-radius:8px;background:#174f46;color:#ffffff;text-decoration:none;font-weight:700\">تعيين كلمة مرور جديدة</a></p><p>إذا لم تطلب استعادة كلمة المرور، تجاهل هذه الرسالة ولن يتغير شيء في حسابك.</p><p style=\"margin-top:28px\"><strong>شطرنج السعودية</strong></p></div>"
           }
           JSON
 
@@ -89,7 +91,7 @@ jobs:
             exit 1
           fi
 
-      - name: Verify approved template was applied
+      - name: Verify auth email templates were applied
         shell: bash
         run: |
           set -euo pipefail
@@ -104,20 +106,28 @@ jobs:
           from pathlib import Path
 
           data = json.loads(Path('/tmp/auth-config.json').read_text(encoding='utf-8'))
-          subject = data.get('mailer_subjects_confirmation', '')
-          content = data.get('mailer_templates_confirmation_content', '')
 
-          assert subject == 'فعّل حسابك في شطرنج السعودية', subject
+          confirmation_subject = data.get('mailer_subjects_confirmation', '')
+          confirmation_content = data.get('mailer_templates_confirmation_content', '')
+          recovery_subject = data.get('mailer_subjects_recovery', '')
+          recovery_content = data.get('mailer_templates_recovery_content', '')
+
+          assert confirmation_subject == 'فعّل حسابك في شطرنج السعودية', confirmation_subject
           for phrase in [
               'مرحبًا بك في شطرنج السعودية',
-              'تم إنشاء حسابك بنجاح',
               'تفعيل الحساب',
               '{{ .ConfirmationURL }}',
-              'بعد التفعيل يمكنك تسجيل الدخول باسم المستخدم وكلمة المرور',
-              'نتمنى لك مباريات ممتعة ومنافسة قوية',
-              'منصة الشطرنج السعودية',
           ]:
-              assert phrase in content, phrase
+              assert phrase in confirmation_content, phrase
 
-          print('Verified approved Arabic signup confirmation email template.')
+          assert recovery_subject == 'استعادة كلمة المرور | شطرنج السعودية', recovery_subject
+          for phrase in [
+              'استعادة كلمة المرور',
+              'تعيين كلمة مرور جديدة',
+              '{{ .ConfirmationURL }}',
+              'إذا لم تطلب استعادة كلمة المرور',
+          ]:
+              assert phrase in recovery_content, phrase
+
+          print('Verified Arabic confirmation and password recovery email templates.')
           PY
