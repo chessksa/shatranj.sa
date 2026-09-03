@@ -4,8 +4,8 @@ import re
 html = Path('profile.html').read_text(encoding='utf-8')
 js = Path('profile.js').read_text(encoding='utf-8')
 
-links = re.findall(r'<a\b[^>]*class="[^"]*profile-nav-item[^"]*"[^>]*href="([^"]+)"[^>]*>(.*?)</a>', html, re.S)
-assert len(links) == 5, f'expected 5 profile navigation icons, found {len(links)}'
+links = re.findall(r'<a\b[^>]*class="[^"]*dashboard-icon-item[^"]*"[^>]*href="([^"]+)"[^>]*>(.*?)</a>', html, re.S)
+assert len(links) == 5, f'expected 5 linked member navigation icons, found {len(links)}'
 
 expected = {
     'profile-section.html?section=friends': 'friendsCount',
@@ -19,11 +19,11 @@ for href, count_id in expected.items():
     matching = [body for link_href, body in links if link_href == href]
     assert matching, f'missing profile navigation destination {href}'
     assert f'id="{count_id}"' in matching[0], f'{count_id} must appear inside {href}'
-    assert 'profile-nav-icon' in matching[0], f'{href} must contain an icon'
+    assert 'dashboard-icon-glyph' in matching[0], f'{href} must contain a consistent icon glyph'
 
 compact = re.sub(r'\s+', '', html)
-assert '.profile-nav-grid{display:grid;grid-template-columns:repeat(5,minmax(0,1fr))' in compact, 'navigation grid must have five equal columns'
-assert '.profile-nav-item{min-height:86px' in compact, 'desktop icon tiles must share equal minimum height'
+assert '.dashboard-icon-row{display:grid;grid-template-columns:repeat(10,minmax(0,1fr))' in compact, 'member dashboard must use one ten-column icon row'
+assert '.dashboard-icon-item{' in compact, 'unified member icon styling must exist'
 assert 'data-collapse-target=' not in html, 'dashboard must not contain collapsible section controls'
 
 assert 'id="recentGames"' in html and 'id="recentGames" hidden' not in html, 'recent games must remain visible'
