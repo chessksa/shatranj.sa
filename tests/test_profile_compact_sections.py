@@ -35,8 +35,9 @@ assert 'function setupProfileSectionToggles()' in js, 'collapse setup function m
 assert "button.setAttribute('aria-expanded'" in js, 'toggle must update accessibility state'
 assert 'setupProfileSectionToggles();' in js, 'collapse setup must run'
 
-startup = re.search(r'await Promise\.all\(\[(.*?)\]\);', js, re.S)
-assert startup, 'startup Promise.all not found'
-assert 'loadRatingHistory' not in startup.group(1), 'rating history must not load after chart removal'
+old_startup = 'await Promise.all([loadRatingHistory(), loadFriendsAndRequests(), loadRecentGames(), loadAchievements(), loadChallenges({ autoEnter: false })]);'
+new_startup = 'await Promise.all([loadFriendsAndRequests(), loadRecentGames(), loadAchievements(), loadChallenges({ autoEnter: false })]);'
+assert old_startup not in js, 'rating history must not load after chart removal'
+assert new_startup in js, 'startup loaders must remain intact after removing rating history'
 
 print('profile compact collapsible sections: PASS')
