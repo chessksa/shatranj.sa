@@ -1,0 +1,15 @@
+name: Test home member square avatar
+on:
+  push:
+    paths:
+      - 'index.html'
+      - 'home-theme.css'
+      - 'tests/test_home_member_avatar.py'
+      - '.github/workflows/test-home-member-avatar.yml'
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Verify square member avatar
+        run: python tests/test_home_member_avatar.py
