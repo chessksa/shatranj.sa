@@ -1,0 +1,73 @@
+name: Apply direct realistic pieces
+on:
+  push:
+    paths:
+      - '.github/workflows/apply-direct-realistic-pieces.yml'
+permissions:
+  contents: write
+jobs:
+  apply:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Install Pillow
+        run: python -m pip install pillow
+      - name: Split sprite and switch board to direct images
+        run: |
+          python - <<'PY'
+          from pathlib import Path
+          import re
+          from PIL import Image
+
+          src = Image.open('assets/realistic-pieces.png').convert('RGBA')
+          if src.size != (768,256):
+              raise SystemExit(f'unexpected sprite size {src.size}')
+
+          outdir = Path('assets/pieces')
+          outdir.mkdir(parents=True, exist_ok=True)
+          names = ['k','q','b','n','r','p']
+          for row,color in enumerate(['w','b']):
+              for col,name in enumerate(names):
+                  tile = src.crop((col*128,row*128,(col+1)*128,(row+1)*128))
+                  alpha = tile.getchannel('A')
+                  bbox = alpha.getbbox()
+                  if not bbox:
+                      raise SystemExit(f'empty sprite tile {color}{name}')
+                  piece = tile.crop(bbox)
+                  w,h = piece.size
+                  scale = min(100/w, 118/h)
+                  nw,nh = max(1,round(w*scale)), max(1,round(h*scale))
+                  piece = piece.resize((nw,nh), Image.Resampling.LANCZOS)
+                  canvas = Image.new('RGBA',(128,128),(0,0,0,0))
+                  x = (128-nw)//2
+                  y = 124-nh
+                  canvas.alpha_composite(piece,(x,y))
+                  canvas.save(outdir/f'{color}{name}.png', optimize=True)
+
+          js_path=Path('play-live.js')
+          js=js_path.read_text(encoding='utf-8')
+          start=js.index('function pieceSVG(type,color){')
+          end=js.index('\n\nfunction renderCoords(){', start)
+          new_func='''function pieceSVG(type,color){\n  const cls = color === 'w' ? 'white' : 'black';\n  return `<div class="piece ${cls} piece-${type}"><img class="piece-image" src="assets/pieces/${color}${type}.png?v=20260903-4" alt="" aria-hidden="true" draggable="false"></div>`;\n}'''
+          js=js[:start]+new_func+js[end:]
+          js_path.write_text(js,encoding='utf-8')
+
+          css='''/* Approved realistic chess board: direct piece images for reliable rendering. */\n:root{\n  --real-board-dark:#0b4850;\n  --real-board-light:#d6cfbf;\n  --real-board-edge:#063a40;\n  --real-board-gold:#e0b567;\n}\n.board-frame{\n  padding:10px 10px 18px !important;\n  border-radius:14px !important;\n  background:linear-gradient(145deg,#07363d,#022f33) !important;\n  border:1px solid rgba(224,181,103,.72) !important;\n  box-shadow:0 14px 34px rgba(0,0,0,.30),inset 0 1px 0 rgba(255,255,255,.05) !important;\n}\n.board-shell{\n  border-radius:2px !important;\n  background:var(--real-board-edge) !important;\n  box-shadow:inset 0 0 0 1px rgba(0,0,0,.55),0 1px 0 rgba(255,255,255,.04) !important;\n}\n.square{\n  border-right:1px solid rgba(2,47,51,.34) !important;\n  border-bottom:1px solid rgba(2,47,51,.34) !important;\n}\n.square.light{background:var(--real-board-light) !important;}\n.square.dark{background:var(--real-board-dark) !important;}\n.piece{\n  position:relative !important;\n  width:96% !important;\n  height:96% !important;\n  display:flex !important;\n  align-items:center !important;\n  justify-content:center !important;\n  filter:none !important;\n  isolation:isolate;\n}\n.piece > svg,.piece::before,.piece::after{display:none !important;}\n.piece-image{\n  display:block !important;\n  width:100% !important;\n  height:100% !important;\n  object-fit:contain !important;\n  opacity:1 !important;\n  visibility:visible !important;\n  filter:drop-shadow(0 4px 3px rgba(0,0,0,.30));\n  pointer-events:none;\n  user-select:none;\n}\n@media (max-width:900px){\n  .board-frame{padding:7px 7px 15px !important;border-radius:11px !important;}\n  .piece{width:98% !important;height:98% !important;}\n}\n'''
+          Path('realistic-pieces.css').write_text(css,encoding='utf-8')
+
+          html_path=Path('play.html')
+          html=html_path.read_text(encoding='utf-8')
+          html,n1=re.subn(r'realistic-pieces\.css\?v=[^"\']+', 'realistic-pieces.css?v=20260903-4', html, count=1)
+          html,n2=re.subn(r'play-live\.js\?v=[^"\']+', 'play-live.js?v=20260903-5', html, count=1)
+          if n1!=1 or n2!=1:
+              raise SystemExit(f'cache refs not updated: css={n1} js={n2}')
+          html_path.write_text(html,encoding='utf-8')
+          PY
+
+          python tests/test_direct_realistic_pieces.py
+
+          git config user.name github-actions[bot]
+          git config user.email 41898282+github-actions[bot]@users.noreply.github.com
+          git add assets/pieces play-live.js realistic-pieces.css play.html
+          git commit -m "Render approved realistic pieces as direct images"
+          git push
