@@ -8,29 +8,12 @@ on:
       - 'index.html'
       - 'sw.js'
       - 'tests/test_signup_gender.py'
-      - 'tools/apply_signup_gender.py'
       - '.github/workflows/test-signup-gender.yml'
-
-permissions:
-  contents: write
 
 jobs:
   test:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
-        with:
-          ref: feat/signup-gender-work
-      - name: Apply signup gender
-        run: python tools/apply_signup_gender.py
       - name: Run focused test
         run: python tests/test_signup_gender.py
-      - name: Commit implementation
-        run: |
-          git config user.name "chessksa"
-          git config user.email "gmel1199@gmail.com"
-          git add index.html sw.js
-          if ! git diff --cached --quiet; then
-            git commit -m "feat: add gender to signup"
-            git push origin HEAD:feat/signup-gender-work
-          fi
