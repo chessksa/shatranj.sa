@@ -1,0 +1,23 @@
+name: Test realistic piece mask isolation
+
+on:
+  push:
+    branches:
+      - fix/realistic-piece-mask
+    paths:
+      - realistic-pieces.css
+      - tests/test_realistic_piece_mask.py
+      - .github/workflows/test-realistic-piece-mask.yml
+  pull_request:
+    paths:
+      - realistic-pieces.css
+      - tests/test_realistic_piece_mask.py
+      - .github/workflows/test-realistic-piece-mask.yml
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Verify legacy masks cannot clip realistic sprites
+        run: python tests/test_realistic_piece_mask.py
