@@ -21,6 +21,7 @@
     .hero{background:linear-gradient(135deg,rgba(255,255,255,.065),rgba(255,255,255,.025));border:1px solid var(--line);border-radius:24px;padding:22px;box-shadow:var(--shadow);display:grid;grid-template-columns:auto 1fr auto;gap:20px;align-items:center}
     .avatar-wrap{position:relative;width:104px;height:104px}.avatar,.avatar-fallback{width:104px;height:104px;border-radius:50%;border:2px solid var(--gold);object-fit:cover;background:#0a3031}.avatar-fallback{display:grid;place-items:center;font-size:34px;font-weight:800;color:var(--gold)}.avatar-fallback[hidden]{display:none!important}.avatar-edit{position:absolute;bottom:0;left:0;width:34px;height:34px;border-radius:50%;display:grid;place-items:center;border:1px solid var(--gold);background:#173f40;color:var(--cream)}.avatar-input{display:none}
     .identity h1{margin:0 0 6px;font-size:clamp(23px,4vw,34px)}.identity .sub{color:var(--muted);font-size:14px}.identity .rating{display:inline-flex;align-items:center;gap:6px;margin-top:10px;color:var(--gold);font-size:18px;font-weight:800}.hero-actions{display:flex;gap:8px;flex-direction:column;min-width:150px}
+    .identity-name-row{display:flex;align-items:center;gap:10px;flex-wrap:wrap}.identity-name-row h1{margin:0}.player-rank-badge{display:inline-flex;align-items:center;gap:6px;color:var(--gold);font-size:13px;font-weight:800;padding:4px 8px;border:1px solid rgba(212,180,103,.38);border-radius:999px;background:rgba(212,180,103,.08);white-space:nowrap}.rank-icon{width:22px;height:22px;display:block;color:var(--gold);fill:currentColor;stroke:currentColor}.rank-svg-defs{position:absolute;width:0;height:0;overflow:hidden}.player-rank-badge[data-rank=champion]{box-shadow:0 0 18px rgba(212,180,103,.15)}
     .stats{display:grid;grid-template-columns:repeat(5,minmax(0,1fr));gap:10px;margin:14px 0}.stat{background:rgba(255,255,255,.035);border:1px solid var(--line);border-radius:16px;padding:15px}.stat small{display:block;color:var(--muted);margin-bottom:7px}.stat strong{font-size:24px;color:var(--cream)}
     .grid{display:grid;grid-template-columns:minmax(0,1.15fr) minmax(320px,.85fr);gap:14px}.card{background:rgba(13,56,57,.88);border:1px solid var(--line);border-radius:var(--radius);padding:18px;box-shadow:0 12px 34px rgba(0,0,0,.12)}.card h2{margin:0;font-size:18px}.card-head{display:flex;align-items:center;justify-content:space-between;gap:10px;margin-bottom:14px}.badge{min-width:24px;height:24px;padding:0 7px;border-radius:20px;background:rgba(212,180,103,.15);color:var(--gold);display:grid;place-items:center;font-size:12px;font-weight:800}
     .chart-box{height:220px;display:grid;align-items:center}.chart-box svg{width:100%;height:190px;overflow:visible}.chart-empty,.empty{color:var(--muted);text-align:center;padding:28px 10px}.chart-line{fill:none;stroke:var(--gold);stroke-width:3;stroke-linecap:round;stroke-linejoin:round}.chart-grid{stroke:rgba(255,255,255,.08);stroke-width:1}.chart-dot{fill:var(--cream);stroke:var(--gold);stroke-width:2}.chart-label{fill:var(--muted);font-size:12px}
@@ -107,6 +108,14 @@
   </style>
 </head>
 <body>
+  <svg class="rank-svg-defs" aria-hidden="true" focusable="false">
+    <symbol id="rank-pawn" viewBox="0 0 64 64"><circle cx="32" cy="15" r="9" fill="currentColor"/><path d="M22 27h20l5 12H17l5-12Zm-7 16h34l5 10H10l5-10Z" fill="currentColor"/></symbol>
+    <symbol id="rank-knight" viewBox="0 0 64 64"><path d="M17 52h36v-8H25c1-8 8-12 16-16 5-3 7-8 5-14l-8 5-8-8-3 11-9 8 6 5-7 17Zm17-31 5-3 1 5-6-2Z" fill="currentColor"/></symbol>
+    <symbol id="rank-rook" viewBox="0 0 64 64"><path d="M14 10h9v8h7v-8h8v8h7v-8h9v17l-7 7v14h7v7H10v-7h7V34l-7-7V10h4Zm10 25h16v13H24V35Z" fill="currentColor"/></symbol>
+    <symbol id="rank-queen" viewBox="0 0 64 64"><circle cx="13" cy="14" r="4" fill="currentColor"/><circle cx="32" cy="9" r="4" fill="currentColor"/><circle cx="51" cy="14" r="4" fill="currentColor"/><path d="M14 20l10 9 8-14 8 14 10-9-6 25H20l-6-25Zm5 31h26v6H19v-6Z" fill="currentColor"/></symbol>
+    <symbol id="rank-crown" viewBox="0 0 64 64"><path d="M9 18l13 12 10-20 10 20 13-12-6 29H15L9 18Zm8 35h30v6H17v-6Z" fill="currentColor"/></symbol>
+    <symbol id="rank-trophy" viewBox="0 0 64 64"><path d="M20 9h24v8h10v10c0 9-6 15-15 16-1 5-3 8-5 10h10v7H20v-7h10c-2-2-4-5-5-10-9-1-15-7-15-16V17h10V9Zm-4 14v4c0 5 3 8 8 9V23h-8Zm24 13c5-1 8-4 8-9v-4h-8v13Z" fill="currentColor"/></symbol>
+  </svg>
   <div class="shell" id="profileApp">
     <header class="topbar">
       <a class="brand" href="index.html"><span class="brand-mark">♞</span><span>شطرنج السعودية</span></a>
@@ -129,7 +138,13 @@
           <input class="avatar-input" id="avatarInput" type="file" accept="image/jpeg,image/png,image/webp" />
         </div>
         <div class="identity">
-          <h1 id="playerName">—</h1>
+          <div class="identity-name-row">
+            <h1 id="playerName">—</h1>
+            <span class="player-rank-badge" id="playerRankBadge" data-rank="beginner">
+              <svg class="rank-icon" viewBox="0 0 64 64" aria-hidden="true"><use id="playerRankUse" href="#rank-pawn"></use></svg>
+              <span id="playerRankLabel">مبتدئ</span>
+            </span>
+          </div>
           <div class="sub" id="playerMeta">—</div>
           <div class="rating">♛ <span id="heroRating">1500</span> نقطة</div>
         </div>
@@ -189,10 +204,6 @@
           <div class="list" id="recentGames"></div>
         </div>
 
-        <div class="card always-visible" id="achievementsSection" style="grid-column:1/-1">
-          <div class="card-head"><h2>الإنجازات</h2></div>
-          <div class="achievement-grid" id="achievementsList"></div>
-        </div>
       </section>
     </main>
   </div>
@@ -218,6 +229,6 @@
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
   <script src="config.js"></script>
   <script src="site-notifications.js"></script>
-  <script src="profile.js?v=20260903-icon-nav"></script>
+  <script src="profile.js?v=20260903-rank-badge"></script>
 </body>
 </html>

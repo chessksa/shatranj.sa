@@ -20,15 +20,23 @@
   let challengePolling = false;
 
   const $ = (id) => document.getElementById(id);
-  const ACHIEVEMENTS = [
-    ['first_win','♟','أول فوز','تحقيق أول انتصار'],
-    ['wins_10','♜','10 انتصارات','الوصول إلى 10 انتصارات'],
-    ['games_50','♞','50 مباراة','إكمال 50 مباراة'],
-    ['streak_5','♛','سلسلة 5 انتصارات','خمسة انتصارات متتالية'],
-    ['rating_1600','★','1600','الوصول إلى تصنيف 1600'],
-    ['rating_1800','★★','1800','الوصول إلى تصنيف 1800'],
-    ['rating_2000','♚','2000','الوصول إلى تصنيف 2000']
-  ];
+  function rankForRating(rating) {
+    const points = Number(rating) || 0;
+    if (points >= 3000) return { key: 'champion', label: 'بطل', icon: 'rank-trophy' };
+    if (points >= 2700) return { key: 'elite', label: 'نخبة', icon: 'rank-crown' };
+    if (points >= 2400) return { key: 'professional', label: 'محترف', icon: 'rank-queen' };
+    if (points >= 2100) return { key: 'advanced', label: 'متقدم', icon: 'rank-rook' };
+    if (points >= 1800) return { key: 'competitor', label: 'منافس', icon: 'rank-knight' };
+    return { key: 'beginner', label: 'مبتدئ', icon: 'rank-pawn' };
+  }
+
+  function renderPlayerRank(rating) {
+    const rank = rankForRating(rating);
+    const badge = $('playerRankBadge');
+    badge.dataset.rank = rank.key;
+    $('playerRankLabel').textContent = rank.label;
+    $('playerRankUse').setAttribute('href', `#${rank.icon}`);
+  }
 
   const esc = (value) => String(value ?? '')
     .replaceAll('&', '&amp;').replaceAll('<', '&lt;')
@@ -85,6 +93,7 @@
     const username = publicProfile?.username ? `@${publicProfile.username}` : '';
     $('playerMeta').textContent = [username, row.city, row.region].filter(Boolean).join(' • ');
     $('heroRating').textContent = row.rating;
+    renderPlayerRank(row.rating);
     $('statRating').textContent = row.rating;
     $('statGames').textContent = row.games_count;
     $('statWins').textContent = row.wins;
@@ -250,17 +259,6 @@
     return outcome === 'win' ? ['فوز','win'] : outcome === 'loss' ? ['خسارة','loss'] : ['تعادل','draw'];
   }
 
-  async function loadAchievements() {
-    const { data, error } = await client.rpc('get_my_achievements');
-    if (error) throw error;
-    const earned = new Map((data || []).map(x => [x.achievement_code, x.earned_at]));
-    $('achievementsList').innerHTML = ACHIEVEMENTS.map(([code,icon,name,hint]) => {
-      const at = earned.get(code);
-      const date = at ? new Date(at).toLocaleDateString('ar-SA') : 'غير مكتسبة بعد';
-      return `<div class="achievement ${at ? 'earned' : 'locked'}"><div class="ico">${icon}</div><div><div class="name">${name}</div><div class="hint">${at ? `مكتسبة • ${date}` : hint}</div></div></div>`;
-    }).join('');
-  }
-
   async function loadRecentGames() {
     const { data, error } = await client.rpc('get_public_player_recent_games', { p_player_id: myProfile.id, p_limit: 10 });
     if (error) throw error;
@@ -411,7 +409,7 @@
       }
       await loadBaseProfile();
       await client.rpc('heartbeat_player_presence');
-      await Promise.all([loadProfileNavigationCounts(), loadRecentGames(), loadAchievements()]);
+      await Promise.all([loadProfileNavigationCounts(), loadRecentGames()]);
       loading.hidden = true;
       dashboard.hidden = false;
       setInterval(heartbeatAndRefreshFriends, 30000);
