@@ -1,0 +1,22 @@
+name: Test homepage rank and dashboard labels
+
+on:
+  push:
+    paths:
+      - 'index.html'
+      - 'home-theme.css'
+      - 'profile.html'
+      - 'tests/test_home_member_rank.py'
+      - 'tests/test_profile_dashboard_label_size.py'
+      - '.github/workflows/test-home-rank-dashboard-labels.yml'
+  workflow_dispatch:
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Run focused tests
+        run: |
+          python tests/test_home_member_rank.py
+          python tests/test_profile_dashboard_label_size.py
