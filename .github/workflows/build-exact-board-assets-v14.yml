@@ -6,6 +6,7 @@ on:
       - exact-board-assets-v14
     paths:
       - '.github/workflows/build-exact-board-assets-v14.yml'
+      - 'assets/approved-board-v13.webp'
       - 'tools/build_exact_board_assets_v14.py'
       - 'tools/apply_exact_board_v14.py'
       - 'exact-board-v14.css'
