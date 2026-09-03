@@ -41,7 +41,7 @@ jobs:
         run: |
           set -euo pipefail
           status=$(curl -sS -o /tmp/usernames.json -w '%{http_code}' \
-            "$SUPABASE_URL/rest/v1/rpc/get_public_usernames" \
+            "$SUPABASE_URL/rest/v1/rpc/get_public_ranked_players" \
             -H "apikey: $SUPABASE_PUBLISHABLE_KEY" \
             -H "Authorization: Bearer $SUPABASE_PUBLISHABLE_KEY" \
             -H "Content-Type: application/json" \
