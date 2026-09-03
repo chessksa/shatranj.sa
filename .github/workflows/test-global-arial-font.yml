@@ -1,0 +1,16 @@
+name: Test global Arial font
+on:
+  push:
+    paths:
+      - '*.html'
+      - '*.css'
+      - '*.js'
+      - 'tests/test_global_arial_font.py'
+      - '.github/workflows/test-global-arial-font.yml'
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Verify Arial is the only site font
+        run: python tests/test_global_arial_font.py
