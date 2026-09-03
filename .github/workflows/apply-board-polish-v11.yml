@@ -1,0 +1,33 @@
+name: Apply board polish v11
+on:
+  push:
+    paths:
+      - '.github/workflows/apply-board-polish-v11.yml'
+permissions:
+  contents: write
+jobs:
+  apply:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Attach final board palette
+        run: |
+          python - <<'PY'
+          from pathlib import Path
+          p=Path('play-v10.html')
+          s=p.read_text(encoding='utf-8')
+          link='  <link rel="stylesheet" href="board-polish-v11.css?v=20260903-11" />\n'
+          if 'board-polish-v11.css' not in s:
+              if '</head>' not in s:
+                  raise SystemExit('head closing tag not found')
+              s=s.replace('</head>', link+'</head>', 1)
+          p.write_text(s,encoding='utf-8')
+          assert 'board-polish-v11.css?v=20260903-11' in s
+          print('board polish attached: PASS')
+          PY
+          git config user.name github-actions[bot]
+          git config user.email 41898282+github-actions[bot]@users.noreply.github.com
+          git add play-v10.html
+          if git diff --cached --quiet; then exit 0; fi
+          git commit -m "Apply final interface board palette"
+          git push
