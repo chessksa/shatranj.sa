@@ -1,0 +1,18 @@
+name: Test profile rank badge
+on:
+  push:
+    branches:
+      - feature/profile-rank-badge
+    paths:
+      - 'profile.html'
+      - 'profile.js'
+      - 'tests/test_profile_rank_badge.py'
+      - '.github/workflows/test-profile-rank-badge.yml'
+  workflow_dispatch:
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Run rank badge test
+        run: python tests/test_profile_rank_badge.py
