@@ -115,7 +115,7 @@
     sessionStorage.setItem('shatranj_live_seat_key', row.seat_key);
     sessionStorage.setItem('shatranj_live_color', row.color);
     sessionStorage.setItem('shatranj_friend_challenge_id', challengeId);
-    location.href = `play.html?game=${encodeURIComponent(row.game_id)}&challenge=${encodeURIComponent(challengeId)}`;
+    location.href = `play-v8.html?game=${encodeURIComponent(row.game_id)}&challenge=${encodeURIComponent(challengeId)}`;
   }
 
   async function enterChallenge(challengeId) {

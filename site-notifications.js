@@ -36,7 +36,7 @@
 
   function targetFor(n) {
     if (n.type === 'challenge_accepted' && n.game_id && n.challenge_id) {
-      return `play.html?game=${encodeURIComponent(n.game_id)}&challenge=${encodeURIComponent(n.challenge_id)}`;
+      return `play-v8.html?game=${encodeURIComponent(n.game_id)}&challenge=${encodeURIComponent(n.challenge_id)}`;
     }
     if (n.type === 'challenge_received') return 'profile.html#challengesSection';
     if (n.type === 'friend_request') return 'profile.html#incomingRequests';
@@ -189,7 +189,7 @@
       sessionStorage.setItem('shatranj_live_seat_key', game.seat_key);
       sessionStorage.setItem('shatranj_live_color', game.color);
       sessionStorage.setItem('shatranj_friend_challenge_id', challengeId);
-      location.href = `play.html?game=${encodeURIComponent(game.game_id)}&challenge=${encodeURIComponent(challengeId)}`;
+      location.href = `play-v8.html?game=${encodeURIComponent(game.game_id)}&challenge=${encodeURIComponent(challengeId)}`;
     } catch (error) {
       console.warn('challenge response failed', error);
       button.textContent = 'تعذر التنفيذ';
