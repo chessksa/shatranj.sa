@@ -22,3 +22,4 @@ jobs:
           python tests/test_profile_compact_sections.py
           python tests/test_global_arial_font.py
           node --check profile.js
+# verification trigger after implementation
