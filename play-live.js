@@ -583,15 +583,8 @@ document.querySelectorAll('[data-minutes]').forEach(btn=>{
 cancelMatchmakingBtn.addEventListener('click',cancelMatchmaking);
 
 leaveBtn.addEventListener('click',async()=>{
-  if(!matchmakingScreen.hidden && !matchmakingWaiting.hidden){
-    await cancelMatchmaking();
-    return;
-  }
-  if(!matchmakingScreen.hidden){
-    location.href='index.html';
-    return;
-  }
-  if(confirm('هل تريد مغادرة المباراة؟')) location.href='index.html';
+  if(!matchmakingWaiting.hidden) await cancelMatchmaking();
+  location.href='index.html';
 });
 
 reportBtn.addEventListener('click',()=>{
