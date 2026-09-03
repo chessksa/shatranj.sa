@@ -1,4 +1,4 @@
-name: Apply home header account layout
+name: Apply home header requested order
 on:
   push:
     paths:
@@ -10,7 +10,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
-      - name: Reformat header and move logout
+      - name: Reorder homepage header
         run: |
           python - <<'PY'
           from pathlib import Path
@@ -18,44 +18,26 @@ jobs:
           import re
 
           decode = lambda value: base64.b64decode(value).decode('utf-8')
-          old_header = decode('PGhlYWRlcj4KICA8ZGl2IGNsYXNzPSJ3cmFwIG5hdiI+CiAgICA8ZGl2IGNsYXNzPSJuYXYtc3RhcnQiPgogICAgICA8ZGl2IGNsYXNzPSJicmFuZCI+4pmfINi02LfYsdmG2Kwg2KfZhNiz2LnZiNiv2YrYqTwvZGl2PgoKICAgICAgPGRpdiBjbGFzcz0iaGVhZGVyLWxpdmUiPgogICAgICAgIDxkaXYgY2xhc3M9ImhlYWRlci1ib3giPgogICAgICAgICAgPHN0cm9uZyBpZD0iaGVhZGVyUGxheWVyc0NvdW50Ij4wPC9zdHJvbmc+CiAgICAgICAgICA8c3Bhbj7Yp9mE2YTYp9i52KjZiNmGPC9zcGFuPgogICAgICAgIDwvZGl2PgoKICAgICAgICA8ZGl2IGNsYXNzPSJoZWFkZXItYm94Ij4KICAgICAgICAgIDxzdHJvbmcgaWQ9ImhlYWRlck1hdGNoZXNDb3VudCI+MDwvc3Ryb25nPgogICAgICAgICAgPHNwYW4+2KfZhNmF2KjYp9ix2YrYp9iqINin2YTYrdin2YTZitipPC9zcGFuPgogICAgICAgIDwvZGl2PgoKICAgICAgICA8YSBjbGFzcz0iaGVhZGVyLWJveCB3YXRjaC1ib3giIGhyZWY9IndhdGNoLmh0bWwiPgogICAgICAgICAgPHN0cm9uZz7il4k8L3N0cm9uZz4KICAgICAgICAgIDxzcGFuPti02KfZh9ivPC9zcGFuPgogICAgICAgIDwvYT4KICAgICAgPC9kaXY+CiAgICA8L2Rpdj4KCiAgICA8ZGl2IGNsYXNzPSJsaW5rcyI+CiAgICAgIDxhIGhyZWY9InBsYXkuaHRtbD92PTUiIGNsYXNzPSJwbGF5LWxpbmsgcHJvdGVjdGVkLXBsYXkiPuKZnyDYp9mE2LnYqDwvYT4KICAgICAgPGEgaHJlZj0iI3JlZ2lzdGVyIiBpZD0ibmF2QWNjb3VudCIgY2xhc3M9Im5hdi1hY2NvdW50Ij7wn5GkINin2YTYrdiz2KfYqDwvYT4KICAgICAgPHNwYW4gY2xhc3M9Im5hdi1zb29uIiB0aXRsZT0i2YLYsdmK2KjZi9inIj7wn4+GINin2YTYqNi32YjZhNin2Ko8L3NwYW4+CiAgICA8L2Rpdj4KICA8L2Rpdj4KPC9oZWFkZXI+')
-          new_header = decode('PGhlYWRlcj4KICA8ZGl2IGNsYXNzPSJ3cmFwIG5hdiI+CiAgICA8ZGl2IGNsYXNzPSJicmFuZCI+4pmfINi02LfYsdmG2Kwg2KfZhNiz2LnZiNiv2YrYqTwvZGl2PgoKICAgIDxkaXYgY2xhc3M9ImhlYWRlci1saXZlIj4KICAgICAgPGRpdiBjbGFzcz0iaGVhZGVyLWJveCI+CiAgICAgICAgPHN0cm9uZyBpZD0iaGVhZGVyUGxheWVyc0NvdW50Ij4wPC9zdHJvbmc+CiAgICAgICAgPHNwYW4+2KfZhNmE2KfYudio2YjZhjwvc3Bhbj4KICAgICAgPC9kaXY+CgogICAgICA8ZGl2IGNsYXNzPSJoZWFkZXItYm94Ij4KICAgICAgICA8c3Ryb25nIGlkPSJoZWFkZXJNYXRjaGVzQ291bnQiPjA8L3N0cm9uZz4KICAgICAgICA8c3Bhbj7Yp9mE2YXYqNin2LHZitin2Kog2KfZhNit2KfZhNmK2Kk8L3NwYW4+CiAgICAgIDwvZGl2PgoKICAgICAgPGEgY2xhc3M9ImhlYWRlci1ib3ggd2F0Y2gtYm94IiBocmVmPSJ3YXRjaC5odG1sIj4KICAgICAgICA8c3Ryb25nPuKXiTwvc3Ryb25nPgogICAgICAgIDxzcGFuPti02KfZh9ivPC9zcGFuPgogICAgICA8L2E+CiAgICA8L2Rpdj4KCiAgICA8ZGl2IGNsYXNzPSJsaW5rcyI+CiAgICAgIDxhIGhyZWY9InBsYXkuaHRtbD92PTUiIGNsYXNzPSJwbGF5LWxpbmsgcHJvdGVjdGVkLXBsYXkiPuKZnyDYp9mE2LnYqDwvYT4KICAgICAgPGEgaHJlZj0iI3JlZ2lzdGVyIiBpZD0ibmF2QWNjb3VudCIgY2xhc3M9Im5hdi1hY2NvdW50Ij7wn5GkINiq2LPYrNmK2YQg2KfZhNiv2K7ZiNmEPC9hPgogICAgICA8YnV0dG9uIGlkPSJuYXZMb2dvdXQiIGNsYXNzPSJuYXYtbG9nb3V0IiB0eXBlPSJidXR0b24iIGhpZGRlbj7Yqtiz2KzZitmEINin2YTYrtix2YjYrDwvYnV0dG9uPgogICAgICA8c3BhbiBjbGFzcz0ibmF2LXNvb24iIHRpdGxlPSLZgtix2YrYqNmL2KciPvCfj4Yg2KfZhNio2LfZiNmE2KfYqjwvc3Bhbj4KICAgIDwvZGl2PgogIDwvZGl2Pgo8L2hlYWRlcj4=')
-          render_replacement = decode('ZnVuY3Rpb24gcmVuZGVyQWNjb3VudCgpewogIGNvbnN0IGxvZ2dlZEluPSEhY3VycmVudFNlc3Npb247CgogICQoJyNndWVzdEF1dGgnKS5oaWRkZW49bG9nZ2VkSW47CiAgJCgnI2FjY291bnRQYW5lbCcpLmhpZGRlbj0hbG9nZ2VkSW47CgogIGlmKGxvZ2dlZEluICYmIGN1cnJlbnRQcm9maWxlKXsKICAgICQoJyNhY2NvdW50V2VsY29tZScpLnRleHRDb250ZW50PSfZhdix2K3YqNmL2KfYjCAnK2N1cnJlbnRQcm9maWxlLm5hbWU7CiAgICAkKCcjYWNjb3VudFJhdGluZycpLnRleHRDb250ZW50PWN1cnJlbnRQcm9maWxlLnJhdGluZz8/MTUwMDsKICAgICQoJyNhY2NvdW50UmVnaW9uJykudGV4dENvbnRlbnQ9Y3VycmVudFByb2ZpbGUucmVnaW9ufHwn4oCUJzsKICAgICQoJyNhY2NvdW50Q2l0eScpLnRleHRDb250ZW50PWN1cnJlbnRQcm9maWxlLmNpdHl8fCfigJQnOwogICAgJCgnI2FjY291bnRHYW1lcycpLnRleHRDb250ZW50PWN1cnJlbnRQcm9maWxlLmdhbWVzX2NvdW50Pz8wOwogIH0KCiAgaWYobG9nZ2VkSW4pewogICAgJCgnI25hdkFjY291bnQnKS50ZXh0Q29udGVudD0n8J+RpCDZhNmI2K3YqSDYp9mE2KrYrdmD2YUnOwogICAgJCgnI25hdkFjY291bnQnKS5ocmVmPSdwcm9maWxlLmh0bWwnOwogICAgJCgnI25hdkxvZ291dCcpLmhpZGRlbj1mYWxzZTsKICB9ZWxzZXsKICAgICQoJyNuYXZBY2NvdW50JykudGV4dENvbnRlbnQ9J/CfkaQg2KrYs9is2YrZhCDYp9mE2K/YrtmI2YQnOwogICAgJCgnI25hdkFjY291bnQnKS5ocmVmPScjcmVnaXN0ZXInOwogICAgJCgnI25hdkxvZ291dCcpLmhpZGRlbj10cnVlOwogIH0KfQoKYXN5bmMgZnVuY3Rpb24gcmVmcmVzaEF1dGhVSQ==')
-          header_css = decode('Ci8qIEJhbGFuY2VkIGhvbWVwYWdlIGhlYWRlciAyMDI2MDkwMyAqLwoubmF2ewogIG1pbi1oZWlnaHQ6NjhweDsKICBkaXNwbGF5OmdyaWQ7CiAgZ3JpZC10ZW1wbGF0ZS1jb2x1bW5zOm1pbm1heCgwLDFmcikgYXV0byBtaW5tYXgoMCwxZnIpOwogIGFsaWduLWl0ZW1zOmNlbnRlcjsKICBnYXA6MThweDsKfQouYnJhbmR7CiAganVzdGlmeS1zZWxmOnN0YXJ0OwogIGZvbnQtc2l6ZToyMHB4OwogIGxldHRlci1zcGFjaW5nOi4xcHg7Cn0KLmhlYWRlci1saXZlewogIGp1c3RpZnktc2VsZjpjZW50ZXI7CiAgZ2FwOjdweDsKfQouaGVhZGVyLWJveHsKICBtaW4td2lkdGg6ODJweDsKICBoZWlnaHQ6NDRweDsKICBib3JkZXItcmFkaXVzOjExcHg7Cn0KLndhdGNoLWJveHttaW4td2lkdGg6NjhweH0KLmxpbmtzewogIGp1c3RpZnktc2VsZjplbmQ7CiAgZGlzcGxheTpmbGV4OwogIGFsaWduLWl0ZW1zOmNlbnRlcjsKICBnYXA6N3B4OwogIG1pbi13aWR0aDowOwp9Ci5saW5rcyBhLAoubmF2LWxvZ291dCwKLm5hdi1zb29uewogIG1pbi1oZWlnaHQ6MzhweDsKICBwYWRkaW5nOjAgMTFweDsKICBib3JkZXItcmFkaXVzOjEwcHg7CiAgZGlzcGxheTppbmxpbmUtZmxleDsKICBhbGlnbi1pdGVtczpjZW50ZXI7CiAganVzdGlmeS1jb250ZW50OmNlbnRlcjsKICB3aGl0ZS1zcGFjZTpub3dyYXA7CiAgZm9udDo4MDAgMTJweCBpbmhlcml0Owp9Ci5uYXYtYWNjb3VudHsKICBib3JkZXI6MXB4IHNvbGlkIHJnYmEoMjEyLDE4MCwxMDMsLjMyKTsKICBiYWNrZ3JvdW5kOnJnYmEoMjEyLDE4MCwxMDMsLjA4KTsKfQoubmF2LWxvZ291dHsKICBib3JkZXI6MXB4IHNvbGlkIHJnYmEoMjU1LDI1NSwyNTUsLjE0KTsKICBiYWNrZ3JvdW5kOnJnYmEoMjU1LDI1NSwyNTUsLjA0KTsKICBjb2xvcjp2YXIoLS1jcmVhbSk7CiAgY3Vyc29yOnBvaW50ZXI7Cn0KLm5hdi1sb2dvdXQ6aG92ZXJ7CiAgYm9yZGVyLWNvbG9yOnJnYmEoMjEyLDE4MCwxMDMsLjM4KTsKICBjb2xvcjp2YXIoLS1nb2xkKTsKICBiYWNrZ3JvdW5kOnJnYmEoMjU1LDI1NSwyNTUsLjA3KTsKfQoubmF2LWxvZ291dFtoaWRkZW5de2Rpc3BsYXk6bm9uZSFpbXBvcnRhbnR9CgpAbWVkaWEobWF4LXdpZHRoOjgwMHB4KXsKICBoZWFkZXJ7cG9zaXRpb246c3RpY2t5fQogIC5uYXZ7CiAgICBtaW4taGVpZ2h0OjA7CiAgICBwYWRkaW5nOjhweCAwOwogICAgZ3JpZC10ZW1wbGF0ZS1jb2x1bW5zOjFmciBhdXRvOwogICAgZ3JpZC10ZW1wbGF0ZS1hcmVhczoKICAgICAgImJyYW5kIGFjY291bnQiCiAgICAgICJsaXZlIGxpdmUiOwogICAgZ2FwOjdweCA4cHg7CiAgfQogIC5icmFuZHsKICAgIGdyaWQtYXJlYTpicmFuZDsKICAgIGp1c3RpZnktc2VsZjpzdGFydDsKICAgIGZvbnQtc2l6ZToxNnB4OwogIH0KICAuaGVhZGVyLWxpdmV7CiAgICBncmlkLWFyZWE6bGl2ZTsKICAgIGp1c3RpZnktc2VsZjpzdHJldGNoOwogICAgZGlzcGxheTpncmlkOwogICAgZ3JpZC10ZW1wbGF0ZS1jb2x1bW5zOnJlcGVhdCgzLG1pbm1heCgwLDFmcikpOwogICAgZ2FwOjVweDsKICB9CiAgLmhlYWRlci1ib3gsCiAgLndhdGNoLWJveHsKICAgIG1pbi13aWR0aDowOwogICAgd2lkdGg6MTAwJTsKICAgIGhlaWdodDozNnB4OwogICAgYm9yZGVyLXJhZGl1czo5cHg7CiAgICBwYWRkaW5nOjNweCA1cHg7CiAgfQogIC5oZWFkZXItYm94IHN0cm9uZ3tmb250LXNpemU6MTJweH0KICAuaGVhZGVyLWJveCBzcGFue2ZvbnQtc2l6ZTo4cHh9CiAgLmxpbmtzewogICAgZ3JpZC1hcmVhOmFjY291bnQ7CiAgICBqdXN0aWZ5LXNlbGY6ZW5kOwogICAgZGlzcGxheTpmbGV4IWltcG9ydGFudDsKICAgIGdhcDo0cHg7CiAgfQogIC5saW5rcyAucGxheS1saW5rLAogIC5saW5rcyAubmF2LXNvb257ZGlzcGxheTpub25lIWltcG9ydGFudH0KICAubGlua3MgYSwKICAubmF2LWxvZ291dHsKICAgIG1pbi1oZWlnaHQ6MzRweDsKICAgIHBhZGRpbmc6MCA4cHg7CiAgICBmb250LXNpemU6MTBweDsKICAgIGJvcmRlci1yYWRpdXM6OXB4OwogIH0KfQo=')
+          new_header = decode('PGhlYWRlcj4KICA8ZGl2IGNsYXNzPSJ3cmFwIG5hdiI+CiAgICA8ZGl2IGNsYXNzPSJuYXYtbWFpbiI+CiAgICAgIDxkaXYgY2xhc3M9ImJyYW5kIj7imZ8g2LTYt9ix2YbYrCDYp9mE2LPYudmI2K/ZitipPC9kaXY+CiAgICAgIDxhIGhyZWY9IiNyZWdpc3RlciIgaWQ9Im5hdkFjY291bnQiIGNsYXNzPSJuYXYtYWNjb3VudCI+8J+RpCDYqtiz2KzZitmEINin2YTYr9iu2YjZhDwvYT4KICAgICAgPGJ1dHRvbiBpZD0ibmF2TG9nb3V0IiBjbGFzcz0ibmF2LWxvZ291dCIgdHlwZT0iYnV0dG9uIiBoaWRkZW4+2KrYs9is2YrZhCDYp9mE2K7YsdmI2Kw8L2J1dHRvbj4KICAgICAgPGEgaHJlZj0icGxheS5odG1sP3Y9NSIgY2xhc3M9InBsYXktbGluayBwcm90ZWN0ZWQtcGxheSI+4pmfINin2YTYudioPC9hPgogICAgPC9kaXY+CgogICAgPGRpdiBjbGFzcz0iaGVhZGVyLWxpdmUiPgogICAgICA8ZGl2IGNsYXNzPSJoZWFkZXItYm94Ij4KICAgICAgICA8c3Ryb25nIGlkPSJoZWFkZXJQbGF5ZXJzQ291bnQiPjA8L3N0cm9uZz4KICAgICAgICA8c3Bhbj7Yp9mE2YTYp9i52KjZiNmGPC9zcGFuPgogICAgICA8L2Rpdj4KCiAgICAgIDxkaXYgY2xhc3M9ImhlYWRlci1ib3giPgogICAgICAgIDxzdHJvbmcgaWQ9ImhlYWRlck1hdGNoZXNDb3VudCI+MDwvc3Ryb25nPgogICAgICAgIDxzcGFuPtin2YTZhdio2KfYsdmK2KfYqiDYp9mE2K3Yp9mE2YrYqTwvc3Bhbj4KICAgICAgPC9kaXY+CgogICAgICA8YSBjbGFzcz0iaGVhZGVyLWJveCB3YXRjaC1ib3giIGhyZWY9IndhdGNoLmh0bWwiPgogICAgICAgIDxzdHJvbmc+4peJPC9zdHJvbmc+CiAgICAgICAgPHNwYW4+2LTYp9mH2K88L3NwYW4+CiAgICAgIDwvYT4KICAgIDwvZGl2PgogIDwvZGl2Pgo8L2hlYWRlcj4=')
+          header_css = decode('Ci8qIFJpZ2h0LWZpcnN0IGhvbWVwYWdlIGhlYWRlciAyMDI2MDkwMyAqLwoubmF2ewogIG1pbi1oZWlnaHQ6NjZweDsKICBkaXNwbGF5OmdyaWQ7CiAgZ3JpZC10ZW1wbGF0ZS1jb2x1bW5zOm1pbm1heCgwLDFmcikgYXV0bzsKICBhbGlnbi1pdGVtczpjZW50ZXI7CiAgZ2FwOjE4cHg7Cn0KLm5hdi1tYWluewogIGp1c3RpZnktc2VsZjpzdGFydDsKICBkaXNwbGF5OmZsZXg7CiAgYWxpZ24taXRlbXM6Y2VudGVyOwogIGdhcDo3cHg7CiAgbWluLXdpZHRoOjA7Cn0KLm5hdi1tYWluIC5icmFuZHsKICBmb250LXNpemU6MjBweDsKICB3aGl0ZS1zcGFjZTpub3dyYXA7CiAgbWFyZ2luLWlubGluZS1lbmQ6M3B4Owp9Ci5uYXYtbWFpbiAubmF2LWFjY291bnQsCi5uYXYtbWFpbiAubmF2LWxvZ291dCwKLm5hdi1tYWluIC5wbGF5LWxpbmt7CiAgbWluLWhlaWdodDozOHB4OwogIHBhZGRpbmc6MCAxMXB4OwogIGJvcmRlci1yYWRpdXM6MTBweDsKICBkaXNwbGF5OmlubGluZS1mbGV4OwogIGFsaWduLWl0ZW1zOmNlbnRlcjsKICBqdXN0aWZ5LWNvbnRlbnQ6Y2VudGVyOwogIHdoaXRlLXNwYWNlOm5vd3JhcDsKICBmb250OjgwMCAxMnB4IEFyaWFsLHNhbnMtc2VyaWY7Cn0KLm5hdi1tYWluIC5uYXYtYWNjb3VudHsKICBib3JkZXI6MXB4IHNvbGlkIHJnYmEoMjEyLDE4MCwxMDMsLjMyKTsKICBiYWNrZ3JvdW5kOnJnYmEoMjEyLDE4MCwxMDMsLjA4KTsKICBjb2xvcjp2YXIoLS1nb2xkKSFpbXBvcnRhbnQ7Cn0KLm5hdi1tYWluIC5uYXYtbG9nb3V0ewogIGJvcmRlcjoxcHggc29saWQgcmdiYSgyNTUsMjU1LDI1NSwuMTQpOwogIGJhY2tncm91bmQ6cmdiYSgyNTUsMjU1LDI1NSwuMDQpOwogIGNvbG9yOnZhcigtLWNyZWFtKTsKICBjdXJzb3I6cG9pbnRlcjsKfQoubmF2LW1haW4gLm5hdi1sb2dvdXQ6aG92ZXJ7CiAgYm9yZGVyLWNvbG9yOnJnYmEoMjEyLDE4MCwxMDMsLjM4KTsKICBjb2xvcjp2YXIoLS1nb2xkKTsKICBiYWNrZ3JvdW5kOnJnYmEoMjU1LDI1NSwyNTUsLjA3KTsKfQoubmF2LW1haW4gLm5hdi1sb2dvdXRbaGlkZGVuXXtkaXNwbGF5Om5vbmUhaW1wb3J0YW50fQoubmF2LW1haW4gLnBsYXktbGlua3sKICBiYWNrZ3JvdW5kOnZhcigtLWdvbGQpOwogIGNvbG9yOiMxNzM1MzY7Cn0KLm5hdi1tYWluIC5wbGF5LWxpbms6aG92ZXJ7CiAgYmFja2dyb3VuZDojZGZjMjdhOwogIGNvbG9yOiMxNzM1MzY7Cn0KLmhlYWRlci1saXZlewogIGp1c3RpZnktc2VsZjplbmQ7CiAgZGlzcGxheTpmbGV4OwogIGFsaWduLWl0ZW1zOmNlbnRlcjsKICBnYXA6N3B4Owp9Ci5oZWFkZXItYm94ewogIG1pbi13aWR0aDo4MnB4OwogIGhlaWdodDo0NHB4OwogIGJvcmRlci1yYWRpdXM6MTFweDsKfQoud2F0Y2gtYm94e21pbi13aWR0aDo2OHB4fQoKQG1lZGlhKG1heC13aWR0aDo4MDBweCl7CiAgLm5hdnsKICAgIG1pbi1oZWlnaHQ6MDsKICAgIHBhZGRpbmc6OHB4IDA7CiAgICBncmlkLXRlbXBsYXRlLWNvbHVtbnM6MWZyOwogICAgZ2FwOjdweDsKICB9CiAgLm5hdi1tYWluewogICAganVzdGlmeS1zZWxmOnN0cmV0Y2g7CiAgICBkaXNwbGF5OmZsZXg7CiAgICBhbGlnbi1pdGVtczpjZW50ZXI7CiAgICBmbGV4LXdyYXA6d3JhcDsKICAgIGdhcDo0cHg7CiAgfQogIC5uYXYtbWFpbiAuYnJhbmR7CiAgICBmb250LXNpemU6MTZweDsKICAgIG1hcmdpbi1pbmxpbmUtZW5kOjJweDsKICB9CiAgLm5hdi1tYWluIC5uYXYtYWNjb3VudCwKICAubmF2LW1haW4gLm5hdi1sb2dvdXQsCiAgLm5hdi1tYWluIC5wbGF5LWxpbmt7CiAgICBtaW4taGVpZ2h0OjM0cHg7CiAgICBwYWRkaW5nOjAgOHB4OwogICAgZm9udC1zaXplOjEwcHg7CiAgICBib3JkZXItcmFkaXVzOjlweDsKICB9CiAgLmhlYWRlci1saXZlewogICAganVzdGlmeS1zZWxmOnN0cmV0Y2g7CiAgICBkaXNwbGF5OmdyaWQ7CiAgICBncmlkLXRlbXBsYXRlLWNvbHVtbnM6cmVwZWF0KDMsbWlubWF4KDAsMWZyKSk7CiAgICBnYXA6NXB4OwogIH0KICAuaGVhZGVyLWJveCwKICAud2F0Y2gtYm94ewogICAgbWluLXdpZHRoOjA7CiAgICB3aWR0aDoxMDAlOwogICAgaGVpZ2h0OjM2cHg7CiAgICBib3JkZXItcmFkaXVzOjlweDsKICAgIHBhZGRpbmc6M3B4IDVweDsKICB9CiAgLmhlYWRlci1ib3ggc3Ryb25ne2ZvbnQtc2l6ZToxMnB4fQogIC5oZWFkZXItYm94IHNwYW57Zm9udC1zaXplOjhweH0KfQo=')
 
           index = Path('index.html')
           html = index.read_text(encoding='utf-8')
-          if old_header not in html:
-              raise SystemExit('current header block not found')
-          html = html.replace(old_header, new_header, 1)
-
-          actions_pattern = re.compile(r'\n\s*<div class="account-actions">\s*<a class="btn light" href="profile\.html">👤 لوحة التحكم</a>\s*<button id="logoutBtn" class="btn light" type="button">تسجيل الخروج</button>\s*</div>', re.S)
-          html, count = actions_pattern.subn('', html, count=1)
+          html, count = re.subn(r'<header>.*?</header>', new_header, html, count=1, flags=re.S)
           if count != 1:
-              raise SystemExit('member account actions block not found')
+              raise SystemExit('homepage header not found')
 
-          render_pattern = re.compile(r'function renderAccount\(\)\{.*?\n\}\n\nasync function refreshAuthUI', re.S)
-          html, count = render_pattern.subn(render_replacement, html, count=1)
-          if count != 1:
-              raise SystemExit('renderAccount function not found')
-
-          old_logout = "$('#logoutBtn').addEventListener('click',async()=>{"
-          if old_logout not in html:
-              raise SystemExit('logout handler not found')
-          html = html.replace(old_logout, "$('#navLogout').addEventListener('click',async()=>{", 1)
-
-          old_theme = 'home-theme.css?v=20260903-6'
-          if old_theme not in html:
-              raise SystemExit('homepage theme version marker not found')
-          html = html.replace(old_theme, 'home-theme.css?v=20260903-7', 1)
+          if 'home-theme.css?v=20260903-7' not in html:
+              raise SystemExit('current home theme version marker not found')
+          html = html.replace('home-theme.css?v=20260903-7', 'home-theme.css?v=20260903-8', 1)
           index.write_text(html, encoding='utf-8')
 
           css_path = Path('home-theme.css')
-          css = css_path.read_text(encoding='utf-8')
-          marker = '/* Balanced homepage header 20260903 */'
-          if marker not in css:
-              css += header_css
-          css_path.write_text(css, encoding='utf-8')
+          current_css = css_path.read_text(encoding='utf-8')
+          marker = '/* Right-first homepage header 20260903 */'
+          if marker not in current_css:
+              current_css += header_css
+          css_path.write_text(current_css, encoding='utf-8')
           PY
 
           python tests/test_home_header_account.py
@@ -66,5 +48,5 @@ jobs:
           git config user.name github-actions[bot]
           git config user.email 41898282+github-actions[bot]@users.noreply.github.com
           git add index.html home-theme.css
-          git commit -m "Reformat homepage header and move logout"
+          git commit -m "Reorder homepage header and remove tournaments"
           git push
