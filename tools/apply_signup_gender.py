@@ -1,0 +1,61 @@
+from pathlib import Path
+
+path = Path('index.html')
+html = path.read_text(encoding='utf-8')
+
+category_block = '''          <label class="full">
+            <span>الفئة</span>
+            <select id="signupCategory">
+              <option value="open">مفتوح</option>
+              <option value="u18">تحت 18</option>
+              <option value="u14">تحت 14</option>
+              <option value="u10">تحت 10</option>
+            </select>
+          </label>'''
+
+gender_block = '''          <label class="full">
+            <span>الجنس</span>
+            <select id="signupGender" required>
+              <option value="">اختر الجنس</option>
+              <option value="male">ذكر</option>
+              <option value="female">أنثى</option>
+            </select>
+          </label>
+
+'''
+
+if 'id="signupGender"' not in html:
+    if category_block not in html:
+        raise SystemExit('signup category block not found')
+    html = html.replace(category_block, gender_block + category_block, 1)
+
+city_validation = '''  if(!$('#signupCity').value){
+    return setAuthMsg('اختر المدينة.','err');
+  }
+
+'''
+gender_validation = '''  if(!$('#signupGender').value){
+    return setAuthMsg('اختر الجنس.','err');
+  }
+
+'''
+if "if(!$('#signupGender').value)" not in html:
+    if city_validation not in html:
+        raise SystemExit('signup city validation not found')
+    html = html.replace(city_validation, city_validation + gender_validation, 1)
+
+category_value = "    category:$('#signupCategory').value"
+gender_value = "    gender:$('#signupGender').value,\n"
+if "gender:$('#signupGender').value" not in html:
+    if category_value not in html:
+        raise SystemExit('signup category profile data not found')
+    html = html.replace(category_value, gender_value + category_value, 1)
+
+path.write_text(html, encoding='utf-8')
+
+sw_path = Path('sw.js')
+sw = sw_path.read_text(encoding='utf-8')
+sw = sw.replace('shatranj-saudi-v2', 'shatranj-saudi-v3')
+sw_path.write_text(sw, encoding='utf-8')
+
+print('signup gender applied')
