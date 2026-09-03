@@ -1,0 +1,14 @@
+name: Test play cache reset
+on:
+  push:
+    paths:
+      - 'play.html'
+      - 'sw.js'
+      - 'tests/test_play_cache_reset.py'
+      - '.github/workflows/test-play-cache-reset.yml'
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - run: python tests/test_play_cache_reset.py
