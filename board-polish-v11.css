@@ -1,0 +1,28 @@
+/* Final board palette override: keep the realistic pieces; use the site interface palette. */
+.board-frame{
+  background:linear-gradient(145deg,#07363d,#022f33)!important;
+  border:1px solid rgba(224,181,103,.72)!important;
+}
+.board-shell{
+  background:#063a40!important;
+}
+.square.light{
+  background:#d6cfbf!important;
+}
+.square.dark{
+  background:#0b4850!important;
+}
+.square{
+  border-right:1px solid rgba(2,47,51,.34)!important;
+  border-bottom:1px solid rgba(2,47,51,.34)!important;
+}
+.piece{
+  width:96%!important;
+  height:96%!important;
+}
+.piece-image{
+  width:100%!important;
+  height:100%!important;
+  object-fit:contain!important;
+  filter:drop-shadow(0 3px 2px rgba(0,0,0,.28))!important;
+}
