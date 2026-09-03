@@ -1,0 +1,41 @@
+name: Apply play back home
+on:
+  push:
+    paths:
+      - '.github/workflows/apply-play-back-home.yml'
+permissions:
+  contents: write
+jobs:
+  apply:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Make back icon return directly home
+        run: |
+          python - <<'PY'
+          from pathlib import Path
+          import re
+
+          js_path = Path('play-live.js')
+          js = js_path.read_text(encoding='utf-8')
+          old = """leaveBtn.addEventListener('click',async()=>{\n  if(!matchmakingScreen.hidden && !matchmakingWaiting.hidden){\n    await cancelMatchmaking();\n    return;\n  }\n  if(!matchmakingScreen.hidden){\n    location.href='index.html';\n    return;\n  }\n  if(confirm('هل تريد مغادرة المباراة؟')) location.href='index.html';\n});"""
+          new = """leaveBtn.addEventListener('click',async()=>{\n  if(!matchmakingWaiting.hidden) await cancelMatchmaking();\n  location.href='index.html';\n});"""
+          if old not in js:
+              raise SystemExit('expected leave button handler not found')
+          js_path.write_text(js.replace(old, new, 1), encoding='utf-8')
+
+          html_path = Path('play.html')
+          html = html_path.read_text(encoding='utf-8')
+          html, count = re.subn(r'play-live\.js(?:\?v=[^"\']*)?', 'play-live.js?v=20260903-2', html, count=1)
+          if count != 1:
+              raise SystemExit('play-live.js script reference not found')
+          html_path.write_text(html, encoding='utf-8')
+          PY
+
+          python tests/test_play_back_home.py
+
+          git config user.name github-actions[bot]
+          git config user.email 41898282+github-actions[bot]@users.noreply.github.com
+          git add play-live.js play.html
+          git commit -m "Return play back icon directly to homepage"
+          git push
