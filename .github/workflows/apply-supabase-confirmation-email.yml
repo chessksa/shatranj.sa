@@ -18,15 +18,43 @@ jobs:
       PROJECT_REF: zjxkxhsvltihucdacjrv
       SUPABASE_ACCESS_TOKEN: ${{ secrets.SUPABASE_ACCESS_TOKEN }}
     steps:
-      - name: Validate required secret
+      - name: Normalize and validate management token
         shell: bash
         run: |
           set -euo pipefail
-          if [ -z "${SUPABASE_ACCESS_TOKEN:-}" ]; then
+
+          RAW="${SUPABASE_ACCESS_TOKEN:-}"
+          if [ -z "$RAW" ]; then
             echo "SUPABASE_ACCESS_TOKEN is missing"
             exit 1
           fi
-          echo "::add-mask::$SUPABASE_ACCESS_TOKEN"
+
+          TOKEN="$(printf '%s' "$RAW" | tr -d '\r\n')"
+          TOKEN="${TOKEN#SUPABASE_ACCESS_TOKEN=}"
+          TOKEN="${TOKEN#Authorization:}"
+          TOKEN="${TOKEN#authorization:}"
+          TOKEN="${TOKEN# Bearer }"
+          TOKEN="${TOKEN# bearer }"
+          TOKEN="${TOKEN#Bearer }"
+          TOKEN="${TOKEN#bearer }"
+          TOKEN="${TOKEN#\"}"
+          TOKEN="${TOKEN%\"}"
+          TOKEN="${TOKEN#\'}"
+          TOKEN="${TOKEN%\'}"
+
+          while [[ "$TOKEN" == ' '* ]]; do TOKEN="${TOKEN# }"; done
+          while [[ "$TOKEN" == *' ' ]]; do TOKEN="${TOKEN% }"; done
+
+          echo "::add-mask::$RAW"
+          echo "::add-mask::$TOKEN"
+
+          if [[ "$TOKEN" != sbp_* ]]; then
+            echo "The secret is present, but it is not a Supabase Personal Access Token (expected a value beginning with sbp_)."
+            exit 2
+          fi
+
+          echo "AUTH_TOKEN=$TOKEN" >> "$GITHUB_ENV"
+          echo "Supabase Personal Access Token format accepted."
 
       - name: Apply approved Arabic confirmation email template
         shell: bash
@@ -40,12 +68,26 @@ jobs:
           }
           JSON
 
-          curl --fail-with-body --silent --show-error \
+          http_code=$(curl --silent --show-error --output /tmp/update-response.json --write-out "%{http_code}" \
             --request PATCH "https://api.supabase.com/v1/projects/${PROJECT_REF}/config/auth" \
-            --header "Authorization: Bearer ${SUPABASE_ACCESS_TOKEN}" \
+            --header "Authorization: Bearer ${AUTH_TOKEN}" \
             --header "Content-Type: application/json" \
-            --data-binary @/tmp/auth-email.json \
-            > /tmp/update-response.json
+            --data-binary @/tmp/auth-email.json)
+
+          if [ "$http_code" -lt 200 ] || [ "$http_code" -ge 300 ]; then
+            echo "Supabase update failed with HTTP ${http_code}."
+            python3 - <<'PY'
+          import json
+          from pathlib import Path
+          try:
+              data = json.loads(Path('/tmp/update-response.json').read_text(encoding='utf-8'))
+              message = str(data.get('message') or data.get('error') or 'Unknown Supabase error')
+              print('Supabase response:', message)
+          except Exception:
+              print('Supabase returned a non-JSON error response.')
+          PY
+            exit 1
+          fi
 
       - name: Verify approved template was applied
         shell: bash
@@ -54,7 +96,7 @@ jobs:
 
           curl --fail-with-body --silent --show-error \
             "https://api.supabase.com/v1/projects/${PROJECT_REF}/config/auth" \
-            --header "Authorization: Bearer ${SUPABASE_ACCESS_TOKEN}" \
+            --header "Authorization: Bearer ${AUTH_TOKEN}" \
             > /tmp/auth-config.json
 
           python3 - <<'PY'
