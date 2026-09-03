@@ -10,15 +10,16 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
-      - name: Reset stale play caches and service workers
+      - name: Fix one-time cache reset and refresh play assets
         run: |
           python - <<'PY'
           from pathlib import Path
           import re
 
-          version = '20260903-6'
+          version = '20260903-7'
+
           sw_lines = [
-              'const CACHE="shatranj-saudi-v5";',
+              'const CACHE="shatranj-saudi-v6";',
               'const ASSETS=["./","./index.html","./styles.css","./app.js","./config.js","./manifest.webmanifest"];',
               'const PLAY_PATHS=["/play.html","/play-live.js","/realistic-pieces.css","/assets/pieces/"];',
               '',
@@ -50,54 +51,30 @@ jobs:
 
           p = Path('play.html')
           html = p.read_text(encoding='utf-8')
-          marker = '<title>العب الآن | شطرنج السعودية</title>'
-          reset_lines = [
-              marker,
-              '  <script>',
-              f"    const PLAY_CACHE_RESET_VERSION = '{version}';",
-              '    (async()=>{',
-              '      try{',
-              "        const resetKey='shatranj_play_cache_reset_version';",
-              '        const params=new URLSearchParams(location.search);',
-              "        if(sessionStorage.getItem(resetKey)===PLAY_CACHE_RESET_VERSION || params.get('ui')===PLAY_CACHE_RESET_VERSION) return;",
-              "        if('serviceWorker' in navigator){",
-              '          const regs=await navigator.serviceWorker.getRegistrations();',
-              '          await Promise.all(regs.map(reg=>reg.unregister()));',
-              '        }',
-              "        if('caches' in window){",
-              '          const names=await caches.keys();',
-              '          await Promise.all(names.map(name=>caches.delete(name)));',
-              '        }',
-              '        sessionStorage.setItem(resetKey,PLAY_CACHE_RESET_VERSION);',
-              "        params.set('ui',PLAY_CACHE_RESET_VERSION);",
-              '        const query=params.toString();',
-              "        location.replace(location.pathname+(query?'?'+query:'')+location.hash);",
-              "      }catch(err){ console.warn('play cache reset failed',err); }",
-              '    })();',
-              '  </script>'
-          ]
-          reset_script = '\n'.join(reset_lines)
-          if 'PLAY_CACHE_RESET_VERSION' not in html:
-              if marker not in html:
-                  raise SystemExit('play title marker not found')
-              html = html.replace(marker, reset_script, 1)
+          html, n = re.subn(
+              r"const PLAY_CACHE_RESET_VERSION = '[^']+';",
+              f"const PLAY_CACHE_RESET_VERSION = '{version}';",
+              html,
+              count=1
+          )
+          if n != 1:
+              raise SystemExit('cache reset version marker not found')
+
+          bad = "if(sessionStorage.getItem(resetKey)===PLAY_CACHE_RESET_VERSION || params.get('ui')===PLAY_CACHE_RESET_VERSION) return;"
+          good = "if(sessionStorage.getItem(resetKey)===PLAY_CACHE_RESET_VERSION) return;"
+          if bad in html:
+              html = html.replace(bad, good, 1)
+          elif good not in html:
+              raise SystemExit('cache reset guard not found')
+
           html = re.sub(r'realistic-pieces\.css\?v=[^"\']+', f'realistic-pieces.css?v={version}', html, count=1)
           html = re.sub(r'play-live\.js\?v=[^"\']+', f'play-live.js?v={version}', html, count=1)
           p.write_text(html, encoding='utf-8')
 
-          test_lines = [
-              'from pathlib import Path',
-              'sw=Path("sw.js").read_text(encoding="utf-8")',
-              'html=Path("play.html").read_text(encoding="utf-8")',
-              'assert "PLAY_CACHE_RESET_VERSION" in html',
-              'assert "getRegistrations" in html and "caches.keys" in html',
-              'assert "activate" in sw and "caches.delete" in sw',
-              'assert "play-live.js" in sw and "realistic-pieces.css" in sw and "/assets/pieces/" in sw',
-              'assert "no-store" in sw',
-              'print("play cache reset: PASS")',
-              ''
-          ]
-          Path('tests/test_play_cache_reset.py').write_text('\n'.join(test_lines), encoding='utf-8')
+          test = Path('tests/test_play_cache_reset.py').read_text(encoding='utf-8')
+          if "params.get('ui')===PLAY_CACHE_RESET_VERSION" not in test:
+              test += "\nassert \"params.get('ui')===PLAY_CACHE_RESET_VERSION\" not in html, \"ui query must not bypass the one-time cache cleanup\"\n"
+              Path('tests/test_play_cache_reset.py').write_text(test, encoding='utf-8')
           PY
 
           python tests/test_play_cache_reset.py
@@ -105,5 +82,5 @@ jobs:
           git config user.name github-actions[bot]
           git config user.email 41898282+github-actions[bot]@users.noreply.github.com
           git add sw.js play.html tests/test_play_cache_reset.py
-          git commit -m "Clear stale play caches before loading chess assets"
+          git commit -m "Fix cache reset guard so fresh chess assets can load"
           git push
