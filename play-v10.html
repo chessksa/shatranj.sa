@@ -1,0 +1,119 @@
+<!doctype html>
+<html lang="ar" dir="rtl">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate" />
+  <title>العب الآن | شطرنج السعودية</title>
+  <style>
+    :root{--bg1:#022f33;--bg2:#063a40;--bg3:#0b4850;--panel:rgba(7,54,61,.82);--gold:#e0b567;--line:rgba(224,181,103,.55);--text:#f4efe6;--muted:#d6cfbf;--success:#40cf67;--shadow:0 12px 30px rgba(0,0,0,.28)}
+    *{box-sizing:border-box}html,body{margin:0;min-height:100%;width:100%}body{min-height:100dvh;font-family:Arial,sans-serif;color:var(--text);background:radial-gradient(circle at 15% 18%,rgba(12,110,120,.26),transparent 26%),linear-gradient(135deg,var(--bg1),var(--bg2) 50%,var(--bg3));overflow-x:hidden}
+    [hidden]{display:none!important}
+    .page{width:min(100%,1600px);height:100dvh;margin:0 auto;padding:12px 24px 14px}.layout{height:100%;display:grid;grid-template-columns:minmax(0,1fr) clamp(360px,30vw,460px);gap:18px;align-items:center;direction:ltr}.board-panel{height:100%;min-width:0;display:grid;place-items:center end}.side-panel{direction:rtl;height:min(calc(100dvh - 28px),928px);align-self:center}.panel-stack{height:100%;display:grid;grid-template-rows:auto minmax(0,1fr) auto minmax(0,1fr);gap:12px;align-content:space-between}
+    .board-frame{position:relative;width:min(100%,calc(100dvh - 34px),920px);padding:10px 10px 18px;border-radius:14px;background:linear-gradient(145deg,#07363d,#022f33);border:1px solid rgba(224,181,103,.72);box-shadow:0 14px 34px rgba(0,0,0,.30),inset 0 1px 0 rgba(255,255,255,.05)}.board-shell{position:relative;width:100%;aspect-ratio:1/1;border-radius:2px;overflow:hidden;background:#063a40;box-shadow:inset 0 0 0 1px rgba(0,0,0,.55)}.board{position:absolute;inset:0;display:grid;grid-template-columns:repeat(8,1fr);grid-template-rows:repeat(8,1fr)}.square{position:relative;display:flex;align-items:center;justify-content:center;border-right:1px solid rgba(2,47,51,.34);border-bottom:1px solid rgba(2,47,51,.34);user-select:none}.square.light{background:#d6cfbf}.square.dark{background:#0b4850}.square.selected{box-shadow:inset 0 0 0 5px rgba(238,190,74,.95)}.square.target::after{content:"";width:22%;height:22%;border-radius:50%;background:rgba(20,62,48,.55);position:absolute}.square.capture::after{content:"";position:absolute;inset:8px;border:4px solid rgba(117,45,36,.55);border-radius:50%}
+    .piece{position:relative;width:96%;height:96%;display:flex;align-items:center;justify-content:center}.piece-image{display:block;width:100%;height:100%;object-fit:contain;filter:drop-shadow(0 4px 3px rgba(0,0,0,.30));pointer-events:none;user-select:none}.coords-left,.coords-bottom{position:absolute;z-index:5;color:#f4cd67;text-shadow:0 1px 1px rgba(0,0,0,.45);font-size:14px;line-height:1}.coords-left{left:-7px;top:0;bottom:18px;width:18px;display:grid;grid-template-rows:repeat(8,1fr);place-items:center}.coords-bottom{left:10px;right:10px;bottom:2px;height:15px;display:grid;grid-template-columns:repeat(8,1fr);place-items:center;direction:ltr}
+    .side-header,.player-card,.actions-card{background:var(--panel);border:1px solid var(--line);box-shadow:var(--shadow),inset 0 1px 0 rgba(255,255,255,.03)}.side-header{min-height:58px;padding:8px 10px;border-radius:15px;display:flex;align-items:center;justify-content:space-between;gap:10px}.side-brand{display:flex;align-items:center;gap:8px;font-size:14px;font-weight:800}.side-brand-mark{display:grid;place-items:center;width:30px;height:30px;border-radius:9px;border:1px solid rgba(224,181,103,.45);color:var(--gold);font-size:19px}.side-header-actions{display:flex;align-items:center;gap:6px}.side-icon-btn{height:36px;padding:0 9px;border:1px solid rgba(224,181,103,.34);border-radius:10px;background:rgba(6,27,31,.46);color:var(--text);font:700 12px inherit;cursor:pointer}.side-icon-btn:disabled{opacity:.35;cursor:default}
+    .player-card{padding:18px;border-radius:18px;display:grid;grid-template-columns:88px minmax(0,1fr) 140px;align-items:center;gap:15px;min-height:150px}.avatar{width:82px;height:82px;border-radius:50%;border:2px solid rgba(224,181,103,.8);background:radial-gradient(circle at 38% 30%,#434a4f,#1a2126 62%,#12181c)}.avatar.light{background:radial-gradient(circle at 38% 30%,#fff,#f4f4f4 48%,#dadada 70%,#cbcbcb)}.status{display:flex;align-items:center;gap:6px;color:var(--success);font-size:13px;margin-bottom:6px}.status::before{content:"";width:9px;height:9px;border-radius:50%;background:var(--success)}.name{display:block;color:inherit;text-decoration:none;font-size:20px;font-weight:800;margin:0 0 7px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}.location{color:#efbd64;font-size:12px;margin-bottom:8px}.rating{font-size:13px}.clock-box{text-align:center}.clock{border:1px solid rgba(224,181,103,.26);background:rgba(6,27,31,.58);border-radius:12px;padding:14px 8px;font-size:28px;font-weight:700;letter-spacing:1px}.clock.danger{color:#ff5151;border-color:rgba(255,81,81,.65)}.clock-progress{margin-top:8px;height:6px;border-radius:999px;background:rgba(255,255,255,.08);overflow:hidden}.clock-progress span{display:block;width:74%;height:100%;background:linear-gradient(90deg,#46bb6d,#69d786)}
+    .actions-card{border-radius:18px;display:grid;grid-template-columns:repeat(3,1fr);overflow:hidden;min-height:94px}.action-item{background:transparent;border:0;color:var(--text);font:inherit;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:7px;cursor:pointer}.action-item+.action-item{border-right:1px solid rgba(224,181,103,.24)}.action-item:disabled{opacity:.32;cursor:default}.action-icon{font-size:26px;color:var(--gold)}.action-label{font-size:14px;font-weight:700}
+    .opponent-slot{position:relative;overflow:hidden}.opponent-search-panel{grid-column:1/-1;width:100%;text-align:center}.opponent-search-title{font-size:16px;font-weight:800;margin-bottom:12px}.opponent-time-options{display:grid;grid-template-columns:repeat(3,1fr);gap:8px}.opponent-time-option{min-height:76px;border:1px solid rgba(224,181,103,.4);border-radius:12px;background:rgba(2,28,33,.44);color:var(--text);font:700 12px inherit;cursor:pointer;display:flex;flex-direction:column;align-items:center;justify-content:center}.opponent-time-option strong{font-size:25px;color:var(--gold)}.opponent-time-option span{font-size:11px;color:var(--muted)}.opponent-time-option:hover{border-color:var(--gold);background:rgba(224,181,103,.08)}.opponent-waiting-line{display:flex;align-items:center;justify-content:center;gap:11px;font-size:15px}.search-dots{display:inline-flex;gap:5px;direction:ltr}.search-dots i{width:7px;height:7px;border-radius:50%;background:var(--gold);opacity:.25;animation:searchDot 1.05s infinite ease-in-out}.search-dots i:nth-child(2){animation-delay:.16s}.search-dots i:nth-child(3){animation-delay:.32s}@keyframes searchDot{0%,65%,100%{opacity:.25;transform:translateY(0)}30%{opacity:1;transform:translateY(-3px)}}.opponent-waiting-meta{display:flex;justify-content:center;gap:18px;margin-top:12px;font-size:11px;color:var(--muted)}.opponent-waiting-meta b{color:var(--gold)}.inline-cancel-search{margin-top:12px;height:34px;padding:0 15px;border:1px solid rgba(255,255,255,.2);border-radius:9px;background:transparent;color:var(--text);font:700 11px inherit;cursor:pointer}.opponent-search-error{min-height:16px;margin:7px 0 0;color:#ff8d8d;font-size:11px}.top-player-live{display:contents}
+    .game-toast{position:fixed;left:50%;bottom:24px;transform:translateX(-50%);z-index:50;background:rgba(5,31,36,.96);border:1px solid var(--line);border-radius:12px;padding:10px 16px;box-shadow:var(--shadow);font-size:13px}.report-modal{position:fixed;inset:0;z-index:80;display:grid;place-items:center;padding:18px;background:rgba(0,18,22,.74)}.report-card{width:min(100%,480px);background:#07363d;border:1px solid var(--line);border-radius:18px;padding:22px}.report-card textarea{width:100%;min-height:130px;border:1px solid rgba(224,181,103,.35);border-radius:12px;background:#022f33;color:#fff;padding:12px}.report-actions{display:grid;grid-template-columns:1fr 1fr;gap:9px;margin-top:12px}.report-actions button{min-height:42px;border-radius:10px}.report-submit{background:var(--gold);border:0}.report-cancel{background:transparent;color:#fff;border:1px solid rgba(255,255,255,.2)}.report-message{min-height:20px;color:#ff9b9b}
+    .legacy-matchmaking{display:none!important}
+    @media(max-width:900px){body{overflow:auto}.page{height:auto;min-height:100dvh;padding:8px}.layout{display:flex;flex-direction:column;gap:10px}.board-panel{width:100%;height:auto;order:1}.board-frame{width:min(100%,calc(100vw - 16px));}.side-panel{width:100%;height:auto;order:2}.panel-stack{height:auto;display:grid;grid-template-rows:auto auto auto auto;gap:9px}.player-card{min-height:110px;padding:11px;grid-template-columns:60px minmax(0,1fr) 104px;gap:9px}.avatar{width:58px;height:58px}.clock{font-size:22px;padding:10px 6px}.actions-card{min-height:70px}.opponent-time-option{min-height:58px}.coords-left{font-size:11px}.coords-bottom{font-size:11px}}
+  </style>
+</head>
+<body>
+  <section class="legacy-matchmaking" id="matchmakingScreen" hidden>
+    <div id="matchmakingSetup"><div id="matchmakingProfile"></div><div id="matchmakingError"></div></div>
+    <div id="matchmakingWaiting" hidden><span id="matchmakingRange"></span><span id="matchmakingElapsed"></span><button id="cancelMatchmaking" type="button">إلغاء</button><div id="matchmakingWaitingError"></div></div>
+    <div id="matchmakingFound" hidden><span id="matchmakingOpponent"></span></div>
+  </section>
+
+  <main class="page" id="gamePage">
+    <div class="layout">
+      <section class="board-panel">
+        <div class="board-frame">
+          <div class="coords-left" id="coordsLeft"></div>
+          <div class="board-shell"><div id="board" class="board" aria-label="رقعة الشطرنج"></div></div>
+          <div class="coords-bottom" id="coordsBottom"></div>
+        </div>
+      </section>
+
+      <aside class="side-panel">
+        <div class="panel-stack">
+          <div class="side-header">
+            <div class="side-brand"><span class="side-brand-mark">♟</span><span>شطرنج السعودية</span></div>
+            <div class="side-header-actions">
+              <button class="side-icon-btn" id="leaveBtn" type="button">↩ <span id="leaveText">رجوع</span></button>
+              <div id="siteNotificationHost"></div>
+              <button class="side-icon-btn" id="reportBtn" type="button">⚑ إبلاغ</button>
+            </div>
+          </div>
+
+          <section class="player-card opponent-slot" id="topPlayerCard">
+            <div class="opponent-search-panel" id="opponentSearchPanel">
+              <div id="opponentSearchSetup">
+                <div class="opponent-search-title">اختر زمن المباراة</div>
+                <div class="opponent-time-options">
+                  <button class="opponent-time-option" type="button" data-minutes="3"><strong>3</strong><span>دقائق</span></button>
+                  <button class="opponent-time-option" type="button" data-minutes="5"><strong>5</strong><span>دقائق</span></button>
+                  <button class="opponent-time-option" type="button" data-minutes="10"><strong>10</strong><span>دقائق</span></button>
+                </div>
+                <p class="opponent-search-error" id="opponentSearchError"></p>
+              </div>
+              <div id="opponentSearchWaiting" hidden>
+                <div class="opponent-waiting-line"><span class="search-dots" aria-hidden="true"><i></i><i></i><i></i></span><strong>جارٍ البحث عن خصم</strong></div>
+                <div class="opponent-waiting-meta"><span>النطاق <b id="inlineMatchmakingRange">±150</b></span><span>الانتظار <b id="inlineMatchmakingElapsed">00:00</b></span></div>
+                <button class="inline-cancel-search" id="cancelInlineMatchmaking" type="button">إلغاء البحث</button>
+                <p class="opponent-search-error" id="opponentSearchWaitingError"></p>
+              </div>
+            </div>
+            <div class="top-player-live" id="topPlayerLive" hidden>
+              <div class="avatar" id="topAvatar"></div>
+              <div class="player-info"><div class="status">متصل</div><a class="name" id="topName">—</a><div class="location">📍 <span id="topLocation">—</span></div><div class="rating"><span id="topRating">—</span></div></div>
+              <div class="clock-box"><div class="clock" id="topClock">--:--</div><div class="clock-progress"><span></span></div></div>
+            </div>
+          </section>
+
+          <section class="actions-card">
+            <button class="action-item" id="resignBtn" type="button"><span class="action-icon">🏳</span><span class="action-label">استسلام</span></button>
+            <button class="action-item" id="drawOffer" type="button"><span class="action-icon">🤝</span><span class="action-label">عرض تعادل</span></button>
+            <button class="action-item" id="flipBoard" type="button"><span class="action-icon">↻</span><span class="action-label">قلب الرقعة</span></button>
+          </section>
+
+          <section class="player-card">
+            <div class="avatar light" id="bottomAvatar"></div>
+            <div class="player-info"><div class="status">متصل</div><a class="name" id="bottomName">أنت</a><div class="location">📍 <span id="bottomLocation">—</span></div><div class="rating"><span id="bottomRating">—</span></div></div>
+            <div class="clock-box"><div class="clock" id="bottomClock">--:--</div><div class="clock-progress"><span></span></div></div>
+          </section>
+        </div>
+      </aside>
+    </div>
+  </main>
+
+  <div class="report-modal" id="reportModal" hidden>
+    <div class="report-card"><h2 id="reportTitle">إبلاغ عن اللاعب</h2><p>اكتب سبب البلاغ بوضوح.</p><textarea id="reportReason" maxlength="1000"></textarea><div class="report-actions"><button class="report-submit" id="submitReport" type="button">إرسال البلاغ</button><button class="report-cancel" id="cancelReport" type="button">إلغاء</button></div><p class="report-message" id="reportMessage"></p></div>
+  </div>
+  <div class="game-toast" id="gameToast" hidden></div>
+
+  <script src="config.js?v=20260903-2"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/chess.js/0.10.3/chess.min.js"></script>
+  <script src="site-notifications.js"></script>
+  <script type="module">
+    const params = new URLSearchParams(location.search);
+    const hasGame = Boolean(params.get('game'));
+    if(hasGame){
+      document.getElementById('opponentSearchPanel').hidden = true;
+      document.getElementById('topPlayerLive').hidden = false;
+      const s=document.createElement('script');
+      s.type='module';
+      s.src='play-v8.js?v=20260903-10';
+      document.body.appendChild(s);
+    }else{
+      const s=document.createElement('script');
+      s.type='module';
+      s.src='play-v10-match.js?v=20260903-10';
+      document.body.appendChild(s);
+    }
+  </script>
+</body>
+</html>
