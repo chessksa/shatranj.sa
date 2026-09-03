@@ -59,6 +59,29 @@
       .stat{padding:9px 10px}
       .card{padding:12px}
     }
+  
+    /* Unified compact profile sections 20260903 */
+    .topbar{background:rgba(8,45,47,.95);border:1px solid var(--line);border-radius:14px;padding:7px 10px;margin-bottom:7px}
+    .hero,.stat,.card{background:rgba(13,56,57,.88);border-color:var(--line);box-shadow:0 10px 26px rgba(0,0,0,.10)}
+    .hero{padding:13px 15px}
+    .stats{margin:7px 0;gap:6px}
+    .stat{padding:8px 10px;border-radius:12px}
+    .grid{grid-template-columns:1fr;gap:6px}
+    .compact-section{grid-column:1/-1;padding:0;overflow:hidden;border-radius:12px;background:rgba(13,56,57,.88)}
+    .section-toggle{width:100%;min-height:43px;border:0;background:transparent;color:var(--cream);display:flex;align-items:center;justify-content:flex-start;gap:7px;padding:7px 11px;text-align:right;font-weight:800}
+    .section-toggle:hover{background:rgba(255,255,255,.035)}
+    .section-toggle .section-title{font-size:15px}
+    .section-toggle .badge{flex:0 0 auto}
+    .toggle-chevron{margin-inline-start:auto;color:var(--muted);font-size:18px;transition:transform .18s}
+    .compact-section.open .toggle-chevron{transform:rotate(180deg)}
+    .compact-section>.list{padding:7px 9px 9px;border-top:1px solid rgba(255,255,255,.07)}
+    .compact-section>.list[hidden]{display:none!important}
+    .always-visible{padding:11px 12px;border-radius:12px}
+    .always-visible .card-head{margin-bottom:7px}
+    .empty{padding:12px 7px}
+    .row{padding:8px;border-radius:10px}
+    .achievement{padding:8px;border-radius:10px}
+    @media(max-width:520px){.topbar{padding:6px 8px}.hero{padding:11px}.section-toggle{min-height:41px;padding:6px 9px}.always-visible{padding:10px}}
   </style>
 </head>
 <body>
@@ -103,42 +126,37 @@
       </section>
 
       <section class="grid">
-        <div class="card">
-          <div class="card-head"><h2>تطور التصنيف</h2><span class="badge" id="ratingDeltaBadge">—</span></div>
-          <div class="chart-box" id="ratingChart"></div>
+        <div class="card compact-section">
+          <button class="section-toggle" data-collapse-target="friendsList" type="button" aria-expanded="false" aria-controls="friendsList"><span class="section-title">الأصدقاء</span><span class="badge" id="friendsCount">0</span><span class="toggle-chevron">⌄</span></button>
+          <div class="list" id="friendsList" hidden></div>
         </div>
 
-        <div class="card">
-          <div class="card-head"><h2>الأصدقاء</h2><span class="badge" id="friendsCount">0</span></div>
-          <div class="list" id="friendsList"></div>
+        <div class="card compact-section">
+          <button class="section-toggle" data-collapse-target="incomingRequests" type="button" aria-expanded="false" aria-controls="incomingRequests"><span class="section-title">طلبات الصداقة</span><span class="badge" id="incomingCount">0</span><span class="toggle-chevron">⌄</span></button>
+          <div class="list" id="incomingRequests" hidden></div>
         </div>
 
-        <div class="card">
-          <div class="card-head"><h2>طلبات الصداقة الواردة</h2><span class="badge" id="incomingCount">0</span></div>
-          <div class="list" id="incomingRequests"></div>
+        <div class="card compact-section">
+          <button class="section-toggle" data-collapse-target="outgoingRequests" type="button" aria-expanded="false" aria-controls="outgoingRequests"><span class="section-title">الطلبات المرسلة</span><span class="badge" id="outgoingCount">0</span><span class="toggle-chevron">⌄</span></button>
+          <div class="list" id="outgoingRequests" hidden></div>
         </div>
 
-        <div class="card">
-          <div class="card-head"><h2>الطلبات المرسلة</h2><span class="badge" id="outgoingCount">0</span></div>
-          <div class="list" id="outgoingRequests"></div>
+        <div class="card compact-section" id="challengesSection">
+          <button class="section-toggle" data-collapse-target="incomingChallenges" type="button" aria-expanded="false" aria-controls="incomingChallenges"><span class="section-title">التحديات</span><span class="badge" id="incomingChallengesCount">0</span><span class="toggle-chevron">⌄</span></button>
+          <div class="list" id="incomingChallenges" hidden></div>
         </div>
 
-        <div class="card" id="challengesSection">
-          <div class="card-head"><h2>التحديات الواردة</h2><span class="badge" id="incomingChallengesCount">0</span></div>
-          <div class="list" id="incomingChallenges"></div>
+        <div class="card compact-section">
+          <button class="section-toggle" data-collapse-target="outgoingChallenges" type="button" aria-expanded="false" aria-controls="outgoingChallenges"><span class="section-title">التحديات المرسلة</span><span class="badge" id="outgoingChallengesCount">0</span><span class="toggle-chevron">⌄</span></button>
+          <div class="list" id="outgoingChallenges" hidden></div>
         </div>
 
-        <div class="card">
-          <div class="card-head"><h2>التحديات المرسلة</h2><span class="badge" id="outgoingChallengesCount">0</span></div>
-          <div class="list" id="outgoingChallenges"></div>
-        </div>
-
-        <div class="card" style="grid-column:1/-1">
+        <div class="card always-visible" style="grid-column:1/-1">
           <div class="card-head"><h2>آخر المباريات</h2><span class="badge">10</span></div>
           <div class="list" id="recentGames"></div>
         </div>
 
-        <div class="card" id="achievementsSection" style="grid-column:1/-1">
+        <div class="card always-visible" id="achievementsSection" style="grid-column:1/-1">
           <div class="card-head"><h2>الإنجازات</h2></div>
           <div class="achievement-grid" id="achievementsList"></div>
         </div>
@@ -167,6 +185,6 @@
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
   <script src="config.js"></script>
   <script src="site-notifications.js"></script>
-  <script src="profile.js?v=20260902-fix2"></script>
+  <script src="profile.js?v=20260903-compact-sections"></script>
 </body>
 </html>

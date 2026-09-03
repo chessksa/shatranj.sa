@@ -98,42 +98,6 @@
     showAvatar(publicAvatarUrl(newPath), row.name, publicAvatarUrl(legacyPath));
   }
 
-  function renderChart(history) {
-    const box = $('ratingChart');
-    const current = Number(myProfile.rating || 1500);
-    if (!history?.length) {
-      box.innerHTML = `<div class="chart-empty">لا توجد تغيّرات في التصنيف بعد.<br>تصنيفك الحالي: <strong>${current}</strong></div>`;
-      $('ratingDeltaBadge').textContent = '0';
-      return;
-    }
-
-    const values = [Number(history[0].old_rating), ...history.map(h => Number(h.new_rating))];
-    const min = Math.min(...values);
-    const max = Math.max(...values);
-    const pad = Math.max(10, Math.ceil((max - min) * .15));
-    const lo = min - pad;
-    const hi = max + pad;
-    const w = 600, h = 180, px = 38, py = 22;
-    const x = (i) => values.length === 1 ? w / 2 : px + i * ((w - px * 2) / (values.length - 1));
-    const y = (v) => h - py - ((v - lo) / Math.max(1, hi - lo)) * (h - py * 2);
-    const points = values.map((v, i) => `${x(i)},${y(v)}`).join(' ');
-    const grid = [0, .5, 1].map(t => {
-      const yy = py + t * (h - py * 2);
-      const val = Math.round(hi - t * (hi - lo));
-      return `<line class="chart-grid" x1="${px}" y1="${yy}" x2="${w-px}" y2="${yy}"/><text class="chart-label" x="${px-8}" y="${yy+4}" text-anchor="end">${val}</text>`;
-    }).join('');
-    const dots = values.map((v,i) => `<circle class="chart-dot" cx="${x(i)}" cy="${y(v)}" r="3.8"/>`).join('');
-    box.innerHTML = `<svg viewBox="0 0 ${w} ${h}" aria-label="منحنى التصنيف">${grid}<polyline class="chart-line" points="${points}"/>${dots}</svg>`;
-    const delta = values.at(-1) - values[0];
-    $('ratingDeltaBadge').textContent = `${delta > 0 ? '+' : ''}${delta}`;
-  }
-
-  async function loadRatingHistory() {
-    const { data, error } = await client.rpc('get_public_player_rating_history', { p_player_id: myProfile.id });
-    if (error) throw error;
-    renderChart(data || []);
-  }
-
   function friendRow(friend) {
     const online = friend.is_online;
     return `<div class="row" data-friend="${esc(friend.friend_id)}">
@@ -368,6 +332,18 @@
     showAvatar(`${publicAvatarUrl(path)}?v=${Date.now()}`, myProfile.name, null);
   }
 
+  function setupProfileSectionToggles() {
+    document.querySelectorAll('.section-toggle[data-collapse-target]').forEach((button) => {
+      button.addEventListener('click', () => {
+        const target = $(button.dataset.collapseTarget);
+        if (!target) return;
+        const opening = target.hidden;
+        target.hidden = !opening;
+        button.setAttribute('aria-expanded', String(opening));
+        button.closest('.compact-section')?.classList.toggle('open', opening);
+      });
+    });
+  }
   document.addEventListener('click', (event) => {
     const button = event.target.closest('[data-action]');
     if (button) handleAction(button);
@@ -409,6 +385,8 @@
 
   document.addEventListener('visibilitychange', () => { if (!document.hidden) heartbeatAndRefreshFriends(); });
 
+  setupProfileSectionToggles();
+
   (async () => {
     try {
       const { data: authData } = await client.auth.getSession();
@@ -419,7 +397,7 @@
       }
       await loadBaseProfile();
       await client.rpc('heartbeat_player_presence');
-      await Promise.all([loadRatingHistory(), loadFriendsAndRequests(), loadRecentGames(), loadAchievements(), loadChallenges({ autoEnter: false })]);
+      await Promise.all([loadFriendsAndRequests(), loadRecentGames(), loadAchievements(), loadChallenges({ autoEnter: false })]);
       loading.hidden = true;
       dashboard.hidden = false;
       setInterval(heartbeatAndRefreshFriends, 30000);
