@@ -1,0 +1,25 @@
+name: Diagnose realistic sprite
+on:
+  push:
+    paths:
+      - '.github/workflows/diagnose-realistic-sprite.yml'
+permissions:
+  contents: read
+jobs:
+  diagnose:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Inspect sprite tiles
+        run: |
+          python - <<'PY'
+          from PIL import Image
+          im=Image.open('assets/realistic-pieces.png').convert('RGBA')
+          print('size',im.size)
+          names=['k','q','b','n','r','p']
+          for row,color in enumerate(['white','black']):
+              for col,name in enumerate(names):
+                  tile=im.crop((col*128,row*128,(col+1)*128,(row+1)*128))
+                  a=tile.getchannel('A')
+                  print(color,name,'alpha_extrema',a.getextrema(),'alpha_bbox',a.getbbox(),'rgba_bbox',tile.getbbox())
+          PY
