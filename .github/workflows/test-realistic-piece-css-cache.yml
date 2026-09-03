@@ -1,0 +1,19 @@
+name: Test realistic piece CSS cache
+
+on:
+  push:
+    branches:
+      - fix/realistic-piece-asset
+    paths:
+      - play.html
+      - realistic-pieces.css
+      - tests/test_realistic_piece_css_cache.py
+      - .github/workflows/test-realistic-piece-css-cache.yml
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Verify repaired realistic CSS is cache-busted
+        run: python tests/test_realistic_piece_css_cache.py
