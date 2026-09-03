@@ -28,10 +28,10 @@
   const labels = {
     friend_request: (n) => `${n.actor_name || 'لاعب'} أرسل لك طلب صداقة`,
     friend_accepted: (n) => `${n.actor_name || 'لاعب'} قبل طلب الصداقة`,
-    challenge_received: (n) => `${n.actor_name || 'صديق'} أرسل لك تحديًا`,
-    challenge_accepted: (n) => `${n.actor_name || 'صديق'} قبل التحدي`,
-    challenge_rejected: (n) => `${n.actor_name || 'صديق'} رفض التحدي`,
-    challenge_expired: (n) => `انتهت مهلة التحدي مع ${n.actor_name || 'الصديق'}`
+    challenge_received: (n) => `${n.actor_name || 'لاعب'} يدعوك للعب`,
+    challenge_accepted: (n) => `${n.actor_name || 'لاعب'} قبل دعوتك للعب`,
+    challenge_rejected: (n) => `${n.actor_name || 'لاعب'} رفض دعوتك للعب`,
+    challenge_expired: (n) => `انتهت مهلة الدعوة مع ${n.actor_name || 'اللاعب'}`
   };
 
   function targetFor(n) {
@@ -58,10 +58,16 @@
       .site-notification-menu{position:absolute;top:50px;left:0;width:min(360px,calc(100vw - 28px));max-height:420px;overflow:auto;background:#103f40;border:1px solid rgba(212,180,103,.28);border-radius:16px;box-shadow:0 18px 45px rgba(0,0,0,.28);z-index:200;padding:8px}
       .site-notification-menu[hidden]{display:none}
       .site-notification-title{padding:8px 9px 10px;color:#d4b467;font-weight:800;border-bottom:1px solid rgba(255,255,255,.08)}
-      .site-notification-item{width:100%;text-align:right;border:0;border-bottom:1px solid rgba(255,255,255,.07);background:transparent;color:#f4eddc;padding:11px 9px;cursor:pointer;font:inherit}
-      .site-notification-item:hover{background:rgba(255,255,255,.04)}
+      .site-notification-item{width:100%;text-align:right;border:0;border-bottom:1px solid rgba(255,255,255,.07);background:transparent;color:#f4eddc;padding:11px 9px;font:inherit}
+      button.site-notification-item{cursor:pointer}
+      button.site-notification-item:hover{background:rgba(255,255,255,.04)}
       .site-notification-item.unread{background:rgba(212,180,103,.08)}
       .site-notification-item small{display:block;color:#adc1bc;margin-top:4px}
+      .site-challenge-actions{display:flex;gap:7px;margin-top:9px}
+      .site-challenge-action{flex:1;height:32px;border-radius:8px;font:800 12px inherit;cursor:pointer}
+      .site-challenge-action.accept{border:0;background:#d4b467;color:#173536}
+      .site-challenge-action.reject{border:1px solid rgba(255,255,255,.2);background:transparent;color:#f4eddc}
+      .site-challenge-action:disabled{opacity:.55;cursor:wait}
       .site-notification-empty{color:#adc1bc;text-align:center;padding:22px 10px}
       @media(max-width:520px){.site-notification-bell{width:38px;height:38px}.site-notification-menu{position:fixed;top:68px;left:9px;right:9px;width:auto;max-height:70vh}}
     `;
@@ -131,6 +137,9 @@
     list.innerHTML = rows.map(n => {
       const label = (labels[n.type] || (() => 'إشعار جديد'))(n);
       const time = new Date(n.created_at).toLocaleString('ar-SA', { dateStyle: 'short', timeStyle: 'short' });
+      if (n.type === 'challenge_received' && n.challenge_id) {
+        return `<div class="site-notification-item ${n.is_read ? '' : 'unread'}">${label}<small>${time}</small><div class="site-challenge-actions"><button class="site-challenge-action accept" type="button" data-challenge-action="accept" data-challenge-id="${n.challenge_id}" data-notification-id="${n.notification_id}">قبول</button><button class="site-challenge-action reject" type="button" data-challenge-action="reject" data-challenge-id="${n.challenge_id}" data-notification-id="${n.notification_id}">رفض</button></div></div>`;
+      }
       return `<button class="site-notification-item ${n.is_read ? '' : 'unread'}" type="button" data-notification-id="${n.notification_id}" data-target="${targetFor(n)}">${label}<small>${time}</small></button>`;
     }).join('');
   }
@@ -148,6 +157,49 @@
     location.href = target;
   }
 
+  async function respondToChallenge(button) {
+    const challengeId = button.dataset.challengeId;
+    const notificationId = button.dataset.notificationId;
+    const accept = button.dataset.challengeAction === 'accept';
+    if (!challengeId) return;
+
+    const row = button.closest('.site-notification-item');
+    const buttons = row?.querySelectorAll('[data-challenge-action]') || [];
+    buttons.forEach(item => { item.disabled = true; });
+    const original = button.textContent;
+    button.textContent = accept ? 'جارٍ القبول...' : 'جارٍ الرفض...';
+
+    try {
+      const { data, error } = await client.rpc('respond_friend_challenge', {
+        p_challenge_id: challengeId,
+        p_accept: accept
+      });
+      if (error) throw error;
+      if (notificationId) await client.rpc('mark_notification_read', { p_notification_id: notificationId });
+
+      if (!accept) {
+        await Promise.all([loadNotifications(), refreshCount()]);
+        return;
+      }
+
+      const game = Array.isArray(data) ? data[0] : data;
+      if (!game?.game_id || !game?.seat_key || !game?.color) throw new Error('game access missing');
+      sessionStorage.setItem('shatranj_live_game_id', game.game_id);
+      sessionStorage.setItem('shatranj_live_game_code', game.game_code || '');
+      sessionStorage.setItem('shatranj_live_seat_key', game.seat_key);
+      sessionStorage.setItem('shatranj_live_color', game.color);
+      sessionStorage.setItem('shatranj_friend_challenge_id', challengeId);
+      location.href = `play.html?game=${encodeURIComponent(game.game_id)}&challenge=${encodeURIComponent(challengeId)}`;
+    } catch (error) {
+      console.warn('challenge response failed', error);
+      button.textContent = 'تعذر التنفيذ';
+      setTimeout(() => {
+        button.textContent = original;
+        buttons.forEach(item => { item.disabled = false; });
+      }, 1400);
+    }
+  }
+
   function bindUI() {
     const bell = document.getElementById('siteNotificationBell');
     const menu = document.getElementById('siteNotificationMenu');
@@ -161,7 +213,13 @@
     });
 
     menu.addEventListener('click', (event) => {
-      const item = event.target.closest('[data-notification-id]');
+      const challengeAction = event.target.closest('[data-challenge-action]');
+      if (challengeAction) {
+        event.stopPropagation();
+        respondToChallenge(challengeAction);
+        return;
+      }
+      const item = event.target.closest('[data-notification-id][data-target]');
       if (item) openNotification(item);
     });
 
@@ -185,7 +243,7 @@
     bindUI();
     await ensureAdminLink();
     await refreshCount();
-    pollingTimer = setInterval(refreshCount, 30000);
+    pollingTimer = setInterval(refreshCount, 5000);
     document.addEventListener('visibilitychange', () => {
       if (!document.hidden) refreshCount();
     });
