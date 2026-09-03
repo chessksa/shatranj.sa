@@ -1,0 +1,45 @@
+name: Apply global Arial font
+on:
+  push:
+    paths:
+      - '.github/workflows/apply-global-arial-font.yml'
+permissions:
+  contents: write
+jobs:
+  apply:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Set Arial across production web files
+        run: |
+          python - <<'PY'
+          from pathlib import Path
+          import re
+
+          changed = []
+          for path in Path('.').iterdir():
+              if not path.is_file() or path.suffix not in {'.html', '.css', '.js'}:
+                  continue
+              text = path.read_text(encoding='utf-8')
+              updated = re.sub(
+                  r'font-family\s*:\s*[^;}]+',
+                  'font-family:Arial,sans-serif',
+                  text,
+                  flags=re.I,
+              )
+              if updated != text:
+                  path.write_text(updated, encoding='utf-8')
+                  changed.append(path.name)
+
+          if not changed:
+              raise SystemExit('No font-family declarations changed')
+          print('Updated:', ', '.join(changed))
+          PY
+
+          python tests/test_global_arial_font.py
+
+          git config user.name github-actions[bot]
+          git config user.email 41898282+github-actions[bot]@users.noreply.github.com
+          git add -- '*.html' '*.css' '*.js'
+          git commit -m "Use Arial across the site"
+          git push
