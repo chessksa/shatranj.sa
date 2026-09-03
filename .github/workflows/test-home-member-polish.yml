@@ -1,0 +1,15 @@
+name: Test home member polish
+on:
+  push:
+    paths:
+      - '.github/workflows/test-home-member-polish.yml'
+      - 'tests/test_home_member_polish.py'
+      - 'home-theme.css'
+      - 'index.html'
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Verify member alignment and action sizing
+        run: python tests/test_home_member_polish.py
