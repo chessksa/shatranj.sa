@@ -21,13 +21,6 @@ assert 'class="profile-nav-grid"' not in html, 'old second navigation row must b
 
 assert '.dashboard-icon-row{display:grid;grid-template-columns:repeat(10,minmax(0,1fr))' in html.replace('\n', ''), 'desktop dashboard icons must stay in one 10-column row'
 assert '.dashboard-icon-glyph{' in html and 'width:26px' in html and 'height:26px' in html, 'dashboard glyphs must use a consistent icon box'
-
-achievement_rule = re.search(r'\.achievement-grid\{([^}]*)\}', html)
-assert achievement_rule, 'achievement grid rule missing'
-rule = achievement_rule.group(1).replace(' ', '')
-assert 'display:flex' in rule, 'achievements must use a horizontal flex row'
-assert 'flex-wrap:nowrap' in rule, 'achievements must stay on one row'
-assert 'overflow-x:auto' in rule, 'achievement row must remain usable on narrow screens'
-assert re.search(r'\.achievement\{[^}]*flex:0 0 ', html), 'achievement cards need a fixed horizontal footprint'
+assert 'id="achievementsSection"' not in html, 'removed achievements panel must not return'
 
 print('profile unified icon row: PASS')
