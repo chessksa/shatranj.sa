@@ -3,20 +3,21 @@ from pathlib import Path
 ROOT = Path(__file__).resolve().parents[1]
 
 
-def test_cm_chessboard_uses_3d_staunton_sprite_everywhere():
+def test_cm_chessboard_keeps_single_approved_sprite_path_everywhere():
     live = (ROOT / "play-v8.js").read_text(encoding="utf-8")
     prematch = (ROOT / "play-v10-match.js").read_text(encoding="utf-8")
-    expected = "pieces/shatranj-3d-staunton.svg"
+    expected = "pieces/shatranj-approved.svg"
     assert expected in live
     assert expected in prematch
 
 
-def test_3d_staunton_sprite_maps_all_twelve_pieces_to_two_sheets():
-    sprite = (ROOT / "assets" / "pieces" / "shatranj-3d-staunton.svg").read_text(encoding="utf-8")
+def test_approved_sprite_is_3d_staunton_and_maps_all_twelve_pieces():
+    sprite = (ROOT / "assets" / "pieces" / "shatranj-approved.svg").read_text(encoding="utf-8")
+    assert "3D Staunton" in sprite
     for code in ("wk", "wq", "wr", "wb", "wn", "wp", "bk", "bq", "br", "bb", "bn", "bp"):
         assert f'id="{code}"' in sprite
-    assert 'assets/pieces/3d-staunton-dark.webp' in sprite
-    assert 'assets/pieces/3d-staunton-light.webp' in sprite
+    assert 'assets/pieces/3d-staunton-dark.webp?v=20260904' in sprite
+    assert 'assets/pieces/3d-staunton-light.webp?v=20260904' in sprite
     assert (ROOT / "assets" / "pieces" / "3d-staunton-dark.webp").exists()
     assert (ROOT / "assets" / "pieces" / "3d-staunton-light.webp").exists()
 
