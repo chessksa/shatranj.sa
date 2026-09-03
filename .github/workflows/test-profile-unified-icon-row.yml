@@ -2,11 +2,14 @@ name: Test unified profile icon row
 on:
   push:
     branches:
+      - main
       - feature/profile-unified-icon-row
     paths:
       - 'profile.html'
       - 'profile.js'
-      - 'tests/test_profile_unified_icon_row.py'
+      - 'profile-section.html'
+      - 'profile-section.js'
+      - 'tests/**'
       - '.github/workflows/test-profile-unified-icon-row.yml'
   workflow_dispatch:
 jobs:
@@ -14,12 +17,14 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
-      - name: Run profile icon row tests
+      - name: Run full regression suite
         run: |
-          python tests/test_profile_unified_icon_row.py
-          python tests/test_profile_icon_navigation.py
-          python tests/test_profile_compact_layout.py
-          python tests/test_profile_compact_sections.py
-          python tests/test_global_arial_font.py
-          node --check profile.js
-# verification trigger after implementation
+          set -e
+          for test in tests/test_*.py; do
+            echo "==> $test"
+            python "$test"
+          done
+          for script in *.js; do
+            echo "==> node --check $script"
+            node --check "$script"
+          done
