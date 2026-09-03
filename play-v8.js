@@ -1,3 +1,4 @@
+import {Chessboard, COLOR, INPUT_EVENT_TYPE, BORDER_TYPE} from 'https://cdn.jsdelivr.net/npm/cm-chessboard@8/src/Chessboard.js';
 import { createClient } from 'https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/+esm';
 
 const files = ['a','b','c','d','e','f','g','h'];
@@ -55,6 +56,7 @@ let liveGameId = null;
 let seatKey = null;
 let myColor = null;
 let game = null;
+let cmBoard = null;
 let serverState = null;
 let lastServerUpdate = '';
 let selected = null;
@@ -309,28 +311,51 @@ function updateClockUI(){
   if(serverState.status==='active' && activeMs<=0 && !timeoutClaimBusy) claimTimeout();
 }
 
+function ensureCmStyles(){
+  if(!document.querySelector('link[data-cm-chessboard-core]')){
+    const core=document.createElement('link');
+    core.rel='stylesheet';
+    core.href='https://cdn.jsdelivr.net/npm/cm-chessboard@8/assets/chessboard.css';
+    core.dataset.cmChessboardCore='1';
+    document.head.appendChild(core);
+  }
+  if(!document.querySelector('link[data-cm-chessboard-shatranj]')){
+    const theme=document.createElement('link');
+    theme.rel='stylesheet';
+    theme.href='cm-chessboard-shatranj.css?v=20260903-1';
+    theme.dataset.cmChessboardShatranj='1';
+    document.head.appendChild(theme);
+  }
+}
+
+function ensureBoard(){
+  if(cmBoard) return cmBoard;
+  ensureCmStyles();
+  boardEl.className='cm-board-host';
+  const orientation=flipped ? COLOR.black : COLOR.white;
+  cmBoard=new Chessboard(boardEl,{
+    position:game ? game.fen() : '8/8/8/8/8/8/8/8',
+    orientation,
+    responsive:true,
+    assetsUrl:'https://cdn.jsdelivr.net/npm/cm-chessboard@8/assets/',
+    style:{
+      cssClass:'shatranj',
+      showCoordinates:false,
+      borderType:BORDER_TYPE.none,
+      pieces:{file:'pieces/staunty.svg',tileSize:40},
+      animationDuration:180
+    }
+  });
+  cmBoard.enableMoveInput(handleBoardInput,myColor==='b' ? COLOR.black : COLOR.white);
+  return cmBoard;
+}
+
 function renderBoard(){
   if(!game) return;
-  boardEl.innerHTML='';
-  const data=game.board();
-  const rowOrder=flipped?[7,6,5,4,3,2,1,0]:[0,1,2,3,4,5,6,7];
-  const colOrder=flipped?[7,6,5,4,3,2,1,0]:[0,1,2,3,4,5,6,7];
-
-  for(const row of rowOrder){
-    for(const col of colOrder){
-      const sq=document.createElement('div');
-      const square=files[col]+ranks[row];
-      sq.dataset.square=square;
-      sq.className='square '+(((row+col)%2===0)?'light':'dark');
-      if(selected===square) sq.classList.add('selected');
-      const target=legalTargets.find(m=>m.to===square);
-      if(target) sq.classList.add(target.flags.includes('c')||target.flags.includes('e')?'capture':'target');
-      const piece=data[row][col];
-      if(piece) sq.innerHTML=pieceSVG(piece.type,piece.color);
-      sq.addEventListener('click',()=>handleSquare(square));
-      boardEl.appendChild(sq);
-    }
-  }
+  const board=ensureBoard();
+  const orientation=flipped ? COLOR.black : COLOR.white;
+  if(board.getOrientation()!==orientation) board.setOrientation(orientation,false);
+  board.setPosition(game.fen(),false);
   updateClockUI();
 }
 
@@ -340,52 +365,50 @@ function localResult(){
   return null;
 }
 
-async function handleSquare(square){
-  if(moveBusy || !game || !serverState || serverState.status!=='active') return;
-  if(game.turn() !== myColor) return;
+function handleBoardInput(event){
+  if(event.type===INPUT_EVENT_TYPE.moveInputStarted){
+    if(moveBusy || !game || !serverState || serverState.status!=='active') return false;
+    if(game.turn()!==myColor) return false;
+    const piece=game.get(event.squareFrom);
+    return Boolean(piece && piece.color===myColor && piece.color===game.turn());
+  }
 
-  if(selected){
-    const candidate=legalTargets.find(m=>m.to===square);
-    if(candidate){
-      const move=game.move({from:selected,to:square,promotion:'q'});
-      selected=null;
-      legalTargets=[];
-      if(move){
-        renderBoard();
-        moveBusy=true;
-        try{
-          const { error } = await supabase.rpc('submit_live_move',{
-            p_game_id:liveGameId,
-            p_seat_key:seatKey,
-            p_from:move.from,
-            p_to:move.to,
-            p_promotion:move.promotion || null,
-            p_new_fen:game.fen(),
-            p_san:move.san,
-            p_result:localResult()
-          });
-          if(error) throw error;
-        }catch(err){
-          console.error(err);
-          toast('تعذر اعتماد الحركة. أُعيدت الرقعة إلى حالة الخادم.');
-        }finally{
-          moveBusy=false;
-          await refreshLiveGame(true);
-        }
-        return;
+  if(event.type===INPUT_EVENT_TYPE.validateMoveInput){
+    if(moveBusy || !game || !serverState || serverState.status!=='active') return false;
+    if(game.turn()!==myColor) return false;
+    const legal=game.moves({square:event.squareFrom,verbose:true});
+    const candidate=legal.find(move=>move.to===event.squareTo);
+    if(!candidate) return false;
+
+    const move=game.move({from:event.squareFrom,to:event.squareTo,promotion:'q'});
+    if(!move) return false;
+    moveBusy=true;
+
+    Promise.resolve().then(async()=>{
+      try{
+        const { error }=await supabase.rpc('submit_live_move',{
+          p_game_id:liveGameId,
+          p_seat_key:seatKey,
+          p_from:move.from,
+          p_to:move.to,
+          p_promotion:move.promotion || null,
+          p_new_fen:game.fen(),
+          p_san:move.san,
+          p_result:localResult()
+        });
+        if(error) throw error;
+      }catch(err){
+        console.error(err);
+        toast('تعذر اعتماد الحركة. أُعيدت الرقعة إلى حالة الخادم.');
+      }finally{
+        moveBusy=false;
+        await refreshLiveGame(true);
       }
-    }
+    });
+    return true;
   }
 
-  const piece=game.get(square);
-  if(piece && piece.color===myColor && piece.color===game.turn()){
-    selected=square;
-    legalTargets=game.moves({square,verbose:true});
-  }else{
-    selected=null;
-    legalTargets=[];
-  }
-  renderBoard();
+  return true;
 }
 
 async function claimTimeout(){
