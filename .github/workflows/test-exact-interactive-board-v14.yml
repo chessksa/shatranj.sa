@@ -1,0 +1,22 @@
+name: Test exact interactive board v14
+on:
+  push:
+    branches:
+      - exact-interactive-board-v14-tests
+      - exact-interactive-board-v14
+  pull_request:
+    paths:
+      - 'play-v10.html'
+      - 'exact-board-v14.css'
+      - 'exact-board-v14.js'
+      - 'assets/exact-board-v14/**'
+      - 'tests/test_exact_interactive_board_v14.py'
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - run: python -m pytest -q tests/test_exact_interactive_board_v14.py
