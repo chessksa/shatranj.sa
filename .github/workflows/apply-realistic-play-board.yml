@@ -27,7 +27,7 @@ jobs:
           import base64
 
           parts_dir = Path('.tmp-realistic-sprite')
-          parts = [parts_dir / f'part{i:02d}.txt' for i in range(10)]
+          parts = [parts_dir / f'part{i:02d}.txt' for i in range(4)]
           missing = [str(p) for p in parts if not p.exists()]
           if missing:
               print('Waiting for sprite chunks:', ', '.join(missing))
