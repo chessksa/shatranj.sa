@@ -372,8 +372,8 @@ footer{
     grid-row:2;
     justify-self:center;
     align-self:start;
-    width:216px;
-    height:216px;
+    width:280px;
+    height:280px;
     min-height:0;
     margin:8px auto 0;
     padding:0;
@@ -383,6 +383,7 @@ footer{
     box-shadow:0 16px 36px rgba(0,0,0,.22);
     font-size:0;
     overflow:hidden;
+    filter:contrast(1.08) saturate(1.03);
   }
 
   .mobile-play:hover{
@@ -391,7 +392,7 @@ footer{
   }
 
   #register{
-    padding-top:234px;
+    padding-top:298px;
   }
 }
 
@@ -415,7 +416,7 @@ footer{
   #ranking::before{
     content:"";
     display:block;
-    width:min(72vw,270px);
+    width:min(82vw,330px);
     aspect-ratio:1/1;
     margin:2px auto 12px;
     border:1px solid rgba(212,180,103,.42);
