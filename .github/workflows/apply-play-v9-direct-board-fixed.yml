@@ -24,3 +24,4 @@ jobs:
           git add assets/pieces/shatranj-3d-staunton.svg play-v8.js play-v10-match.js play-v10.html play-v8.html tests/test_approved_piece_sprite.py tests/test_play_v10_cm_preview.py
           git commit -m 'feat: use 3D Staunton chess pieces'
           git push origin HEAD:feature/3d-staunton-pieces
+# rerun after verified bundle repair
