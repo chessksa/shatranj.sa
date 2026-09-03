@@ -16,7 +16,6 @@ jobs:
           from pathlib import Path
           import re
 
-          # Main ranking
           p = Path('index.html')
           text = p.read_text(encoding='utf-8')
           old = '<span class="player-name">${escapeHTML(player.name)}</span>'
@@ -27,41 +26,26 @@ jobs:
           text = re.sub(r'home-invite\.js\?v=[^"\s]+', 'home-invite.js?v=20260903-3', text, count=1)
           p.write_text(text, encoding='utf-8')
 
-          # Invite search: name opens profile, invite remains separate action
           p = Path('home-invite.js')
           text = p.read_text(encoding='utf-8')
-          text = text.replace(
-              '.home-invite-name{font-size:13px;font-weight:900}',
-              '.home-invite-name{font-size:13px;font-weight:900}.home-invite-name-link{color:inherit;text-decoration:none}.home-invite-name-link:hover{text-decoration:underline}',
-              1
-          )
-          text = text.replace(
-              '.home-invite-send{flex:0 0 auto;color:#176148;font-size:11px;font-weight:900}',
-              '.home-invite-send{flex:0 0 auto;border:0;background:transparent;color:#176148;font-size:11px;font-weight:900;cursor:pointer;padding:6px 8px;border-radius:8px}.home-invite-send:hover{background:#eef6f1}',
-              1
-          )
-          old = '''results.innerHTML = matches.map(player => `
-      <button class="home-invite-result" type="button" data-invite-player="${esc(player.id)}" data-invite-name="${esc(player.name)}">
-        <span>
-          <span class="home-invite-name">${esc(player.name)}${player.username ? ` <small>@${esc(player.username)}</small>` : ''}</span>
-          <span class="home-invite-meta">${esc(player.city || '—')} • ${Number(player.rating || 1500)} نقطة</span>
-        </span>
-        <span class="home-invite-send">دعوة</span>
-      </button>`).join('');'''
-          new = '''results.innerHTML = matches.map(player => `
-      <div class="home-invite-result">
-        <span>
-          <a class="home-invite-name home-invite-name-link" href="player.html?id=${encodeURIComponent(player.id)}">${esc(player.name)}${player.username ? ` <small>@${esc(player.username)}</small>` : ''}</a>
-          <span class="home-invite-meta">${esc(player.city || '—')} • ${Number(player.rating || 1500)} نقطة</span>
-        </span>
-        <button class="home-invite-send" type="button" data-invite-player="${esc(player.id)}" data-invite-name="${esc(player.name)}">دعوة</button>
-      </div>`).join('');'''
-          if old not in text:
+          text = text.replace('.home-invite-name{font-size:13px;font-weight:900}', '.home-invite-name{font-size:13px;font-weight:900}.home-invite-name-link{color:inherit;text-decoration:none}.home-invite-name-link:hover{text-decoration:underline}', 1)
+          text = text.replace('.home-invite-send{flex:0 0 auto;color:#176148;font-size:11px;font-weight:900}', '.home-invite-send{flex:0 0 auto;border:0;background:transparent;color:#176148;font-size:11px;font-weight:900;cursor:pointer;padding:6px 8px;border-radius:8px}.home-invite-send:hover{background:#eef6f1}', 1)
+          pattern = r'''results\.innerHTML = matches\.map\(player => `\n\s*<button class="home-invite-result" type="button" data-invite-player="\$\{esc\(player\.id\)\}" data-invite-name="\$\{esc\(player\.name\)\}">.*?</button>`\)\.join\(''\);'''
+          replacement = "\n".join([
+              "results.innerHTML = matches.map(player => `",
+              "      <div class=\"home-invite-result\">",
+              "        <span>",
+              "          <a class=\"home-invite-name home-invite-name-link\" href=\"player.html?id=${encodeURIComponent(player.id)}\">${esc(player.name)}${player.username ? ` <small>@${esc(player.username)}</small>` : ''}</a>",
+              "          <span class=\"home-invite-meta\">${esc(player.city || '—')} • ${Number(player.rating || 1500)} نقطة</span>",
+              "        </span>",
+              "        <button class=\"home-invite-send\" type=\"button\" data-invite-player=\"${esc(player.id)}\" data-invite-name=\"${esc(player.name)}\">دعوة</button>",
+              "      </div>`).join('');"
+          ])
+          text, count = re.subn(pattern, replacement, text, count=1, flags=re.S)
+          if count != 1:
               raise SystemExit('invite result pattern not found')
-          text = text.replace(old, new, 1)
           p.write_text(text, encoding='utf-8')
 
-          # Play page anchors and cache-bust
           p = Path('play.html')
           text = p.read_text(encoding='utf-8')
           if '<h2 class="name" id="topName">—</h2>' not in text or '<h2 class="name" id="bottomName">—</h2>' not in text:
@@ -76,71 +60,43 @@ jobs:
           text = re.sub(r'play-live\.js\?v=[^"\s]+', 'play-live.js?v=20260903-3', text, count=1)
           p.write_text(text, encoding='utf-8')
 
-          # Live game: use server-provided IDs to link both names
           p = Path('play-live.js')
           text = p.read_text(encoding='utf-8')
-          old_white = '''    return {
-      name: serverState.white_name,
-      rating: serverState.white_rating,
-      location: [serverState.white_city,serverState.white_region].filter(Boolean).join(' — ')
-    };'''
-          new_white = '''    return {
-      id: serverState.white_player_id,
-      name: serverState.white_name,
-      rating: serverState.white_rating,
-      location: [serverState.white_city,serverState.white_region].filter(Boolean).join(' — ')
-    };'''
-          old_black = '''  return {
-    name: serverState.black_name,
-    rating: serverState.black_rating,
-    location: [serverState.black_city,serverState.black_region].filter(Boolean).join(' — ')
-  };'''
-          new_black = '''  return {
-    id: serverState.black_player_id,
-    name: serverState.black_name,
-    rating: serverState.black_rating,
-    location: [serverState.black_city,serverState.black_region].filter(Boolean).join(' — ')
-  };'''
-          if old_white not in text or old_black not in text:
+          white_old = "      name: serverState.white_name,\n      rating: serverState.white_rating,"
+          white_new = "      id: serverState.white_player_id,\n      name: serverState.white_name,\n      rating: serverState.white_rating,"
+          black_old = "    name: serverState.black_name,\n    rating: serverState.black_rating,"
+          black_new = "    id: serverState.black_player_id,\n    name: serverState.black_name,\n    rating: serverState.black_rating,"
+          if white_old not in text or black_old not in text:
               raise SystemExit('live colorInfo patterns not found')
-          text = text.replace(old_white, new_white, 1).replace(old_black, new_black, 1)
+          text = text.replace(white_old, white_new, 1).replace(black_old, black_new, 1)
           marker = 'function renderPlayers(){'
-          helper = '''function setPlayerProfileLink(el, info){
-  if(info?.id){
-    el.href=`player.html?id=${encodeURIComponent(info.id)}`;
-    el.removeAttribute('aria-disabled');
-  }else{
-    el.removeAttribute('href');
-    el.setAttribute('aria-disabled','true');
-  }
-}
-
-'''
+          helper = "\n".join([
+              "function setPlayerProfileLink(el, info){",
+              "  if(info?.id){",
+              "    el.href=`player.html?id=${encodeURIComponent(info.id)}`;",
+              "    el.removeAttribute('aria-disabled');",
+              "  }else{",
+              "    el.removeAttribute('href');",
+              "    el.setAttribute('aria-disabled','true');",
+              "  }",
+              "}",
+              "",
+              ""
+          ])
           if marker not in text:
               raise SystemExit('renderPlayers marker not found')
           text = text.replace(marker, helper + marker, 1)
-          old_names = '''  topNameEl.textContent = top.name || 'الخصم';
-  topRatingEl.textContent = top.rating ?? '—';
-  topLocationEl.textContent = top.location || '—';
-  bottomNameEl.textContent = bottom.name || 'أنت';
-  bottomRatingEl.textContent = bottom.rating ?? '—';
-  bottomLocationEl.textContent = bottom.location || '—';'''
-          new_names = '''  topNameEl.textContent = top.name || 'الخصم';
-  setPlayerProfileLink(topNameEl, top);
-  topRatingEl.textContent = top.rating ?? '—';
-  topLocationEl.textContent = top.location || '—';
-  bottomNameEl.textContent = bottom.name || 'أنت';
-  setPlayerProfileLink(bottomNameEl, bottom);
-  bottomRatingEl.textContent = bottom.rating ?? '—';
-  bottomLocationEl.textContent = bottom.location || '—';'''
-          if old_names not in text:
+          top_old = "  topNameEl.textContent = top.name || 'الخصم';\n  topRatingEl.textContent = top.rating ?? '—';"
+          top_new = "  topNameEl.textContent = top.name || 'الخصم';\n  setPlayerProfileLink(topNameEl, top);\n  topRatingEl.textContent = top.rating ?? '—';"
+          bottom_old = "  bottomNameEl.textContent = bottom.name || 'أنت';\n  bottomRatingEl.textContent = bottom.rating ?? '—';"
+          bottom_new = "  bottomNameEl.textContent = bottom.name || 'أنت';\n  setPlayerProfileLink(bottomNameEl, bottom);\n  bottomRatingEl.textContent = bottom.rating ?? '—';"
+          if top_old not in text or bottom_old not in text:
               raise SystemExit('renderPlayers name assignments not found')
-          text = text.replace(old_names, new_names, 1)
+          text = text.replace(top_old, top_new, 1).replace(bottom_old, bottom_new, 1)
           p.write_text(text, encoding='utf-8')
           PY
 
           python tests/test_player_profile_links.py
-
           git config user.name github-actions[bot]
           git config user.email 41898282+github-actions[bot]@users.noreply.github.com
           git add index.html home-invite.js play.html play-live.js
