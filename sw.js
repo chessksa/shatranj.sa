@@ -1,4 +1,4 @@
-const CACHE="shatranj-saudi-v5";
+const CACHE="shatranj-saudi-v6";
 const ASSETS=["./","./index.html","./styles.css","./app.js","./config.js","./manifest.webmanifest"];
 const PLAY_PATHS=["/play.html","/play-live.js","/realistic-pieces.css","/assets/pieces/"];
 
