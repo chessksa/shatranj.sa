@@ -877,37 +877,36 @@ footer{
   }
 }
 </style>
-<link rel="stylesheet" href="home-theme.css?v=20260903-6">
+<link rel="stylesheet" href="home-theme.css?v=20260903-7">
 </head>
 
 <body>
 
 <header>
   <div class="wrap nav">
-    <div class="nav-start">
-      <div class="brand">♟ شطرنج السعودية</div>
+    <div class="brand">♟ شطرنج السعودية</div>
 
-      <div class="header-live">
-        <div class="header-box">
-          <strong id="headerPlayersCount">0</strong>
-          <span>اللاعبون</span>
-        </div>
-
-        <div class="header-box">
-          <strong id="headerMatchesCount">0</strong>
-          <span>المباريات الحالية</span>
-        </div>
-
-        <a class="header-box watch-box" href="watch.html">
-          <strong>◉</strong>
-          <span>شاهد</span>
-        </a>
+    <div class="header-live">
+      <div class="header-box">
+        <strong id="headerPlayersCount">0</strong>
+        <span>اللاعبون</span>
       </div>
+
+      <div class="header-box">
+        <strong id="headerMatchesCount">0</strong>
+        <span>المباريات الحالية</span>
+      </div>
+
+      <a class="header-box watch-box" href="watch.html">
+        <strong>◉</strong>
+        <span>شاهد</span>
+      </a>
     </div>
 
     <div class="links">
       <a href="play.html?v=5" class="play-link protected-play">♟ العب</a>
-      <a href="#register" id="navAccount" class="nav-account">👤 الحساب</a>
+      <a href="#register" id="navAccount" class="nav-account">👤 تسجيل الدخول</a>
+      <button id="navLogout" class="nav-logout" type="button" hidden>تسجيل الخروج</button>
       <span class="nav-soon" title="قريبًا">🏆 البطولات</span>
     </div>
   </div>
@@ -1115,11 +1114,6 @@ footer{
               <small>المباريات</small>
               <strong id="accountGames">0</strong>
             </div>
-          </div>
-
-          <div class="account-actions">
-            <a class="btn light" href="profile.html">👤 لوحة التحكم</a>
-            <button id="logoutBtn" class="btn light" type="button">تسجيل الخروج</button>
           </div>
         </div>
       </div>
@@ -1562,9 +1556,16 @@ function renderAccount(){
     $('#accountRegion').textContent=currentProfile.region||'—';
     $('#accountCity').textContent=currentProfile.city||'—';
     $('#accountGames').textContent=currentProfile.games_count??0;
-    $('#navAccount').textContent=currentProfile.name;
+  }
+
+  if(loggedIn){
+    $('#navAccount').textContent='👤 لوحة التحكم';
+    $('#navAccount').href='profile.html';
+    $('#navLogout').hidden=false;
   }else{
-    $('#navAccount').textContent='دخول / حساب جديد';
+    $('#navAccount').textContent='👤 تسجيل الدخول';
+    $('#navAccount').href='#register';
+    $('#navLogout').hidden=true;
   }
 }
 
@@ -1750,7 +1751,7 @@ $('#loginForm').addEventListener('submit',async event=>{
 });
 
 /* تسجيل الخروج */
-$('#logoutBtn').addEventListener('click',async()=>{
+$('#navLogout').addEventListener('click',async()=>{
   await supabase.auth.signOut();
 
   currentSession=null;
