@@ -1,0 +1,14 @@
+name: Test dynamic ranking title
+on:
+  push:
+    paths:
+      - 'index.html'
+      - 'tests/test_dynamic_ranking_title.py'
+      - '.github/workflows/test-dynamic-ranking-title.yml'
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Verify dynamic ranking title
+        run: python tests/test_dynamic_ranking_title.py
