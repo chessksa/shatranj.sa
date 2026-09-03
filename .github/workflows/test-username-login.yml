@@ -1,0 +1,78 @@
+name: Test username login
+
+on:
+  workflow_dispatch:
+  push:
+    branches:
+      - main
+    paths:
+      - .github/workflows/test-username-login.yml
+
+permissions:
+  contents: read
+
+jobs:
+  username-login-tests:
+    runs-on: ubuntu-latest
+    env:
+      SUPABASE_URL: https://zjxkxhsvltihucdacjrv.supabase.co
+      SUPABASE_PUBLISHABLE_KEY: sb_publishable_bwFGOiJzT_Xv656pLPR8ww_oJxFzSGJ
+    steps:
+      - name: Test missing username returns generic 401
+        shell: bash
+        run: |
+          set -euo pipefail
+          body='{"username":"missing_user_987654","password":"WrongPass123!"}'
+          status=$(curl -sS -o /tmp/missing.json -w '%{http_code}' \
+            "$SUPABASE_URL/functions/v1/username-login" \
+            -H "apikey: $SUPABASE_PUBLISHABLE_KEY" \
+            -H "Content-Type: application/json" \
+            --data "$body")
+          test "$status" = "401"
+          python3 - <<'PY'
+          import json
+          data=json.load(open('/tmp/missing.json',encoding='utf-8'))
+          assert data == {'error':'Invalid username or password'}, data
+          print('Missing username: generic 401 OK')
+          PY
+
+      - name: Get one existing public username
+        shell: bash
+        run: |
+          set -euo pipefail
+          status=$(curl -sS -o /tmp/usernames.json -w '%{http_code}' \
+            "$SUPABASE_URL/rest/v1/rpc/get_public_usernames" \
+            -H "apikey: $SUPABASE_PUBLISHABLE_KEY" \
+            -H "Content-Type: application/json" \
+            --data '{}')
+          test "$status" = "200"
+          username=$(python3 - <<'PY'
+          import json
+          rows=json.load(open('/tmp/usernames.json',encoding='utf-8'))
+          names=[str(r.get('username','')).strip() for r in rows if str(r.get('username','')).strip()]
+          assert names, 'No public usernames available for test'
+          print(names[0])
+          PY
+          )
+          echo "TEST_USERNAME=$username" >> "$GITHUB_ENV"
+
+      - name: Test wrong password returns same generic 401
+        shell: bash
+        run: |
+          set -euo pipefail
+          python3 - <<'PY' > /tmp/body.json
+          import json,os
+          print(json.dumps({'username':os.environ['TEST_USERNAME'],'password':'DefinitelyWrong123!'}))
+          PY
+          status=$(curl -sS -o /tmp/wrong.json -w '%{http_code}' \
+            "$SUPABASE_URL/functions/v1/username-login" \
+            -H "apikey: $SUPABASE_PUBLISHABLE_KEY" \
+            -H "Content-Type: application/json" \
+            --data-binary @/tmp/body.json)
+          test "$status" = "401"
+          python3 - <<'PY'
+          import json
+          data=json.load(open('/tmp/wrong.json',encoding='utf-8'))
+          assert data == {'error':'Invalid username or password'}, data
+          print('Wrong password: generic 401 OK')
+          PY
