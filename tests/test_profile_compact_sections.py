@@ -1,43 +1,27 @@
 from pathlib import Path
-import re
 
 html = Path('profile.html').read_text(encoding='utf-8')
 js = Path('profile.js').read_text(encoding='utf-8')
 
-assert 'تطور التصنيف' not in html, 'rating development section must be removed'
-assert 'id="ratingChart"' not in html, 'rating chart container must be removed'
-assert 'id="ratingDeltaBadge"' not in html, 'rating delta badge must be removed'
+assert 'تطور التصنيف' not in html, 'rating development section must stay removed'
+assert 'id="ratingChart"' not in html, 'rating chart container must stay removed'
+assert 'id="ratingDeltaBadge"' not in html, 'rating delta badge must stay removed'
 
-expected = {
-    'friendsList': 'الأصدقاء',
-    'incomingRequests': 'طلبات الصداقة',
-    'outgoingRequests': 'الطلبات المرسلة',
-    'incomingChallenges': 'التحديات',
-    'outgoingChallenges': 'التحديات المرسلة',
-}
-for target, title in expected.items():
-    pattern = rf'<button[^>]+class="section-toggle"[^>]+data-collapse-target="{target}"[^>]*>.*?{re.escape(title)}.*?</button>\s*<div class="list" id="{target}" hidden>'
-    assert re.search(pattern, html, re.S), f'compact collapsible row missing for {title}'
+assert 'data-collapse-target=' not in html, 'old collapsible profile rows must stay removed'
+assert 'class="section-toggle"' not in html, 'old section toggle controls must stay removed'
+assert 'function setupProfileSectionToggles()' not in js, 'old collapse setup must stay removed'
 
-assert 'طلبات الصداقة الواردة' not in html, 'incoming wording must be removed from friend requests title'
-assert '<h2>التحديات الواردة</h2>' not in html, 'incoming wording must be removed from challenges title'
+for label in ['الأصدقاء', 'طلبات الصداقة', 'الطلبات المرسلة', 'التحديات', 'التحديات المرسلة']:
+    assert label in html, f'profile navigation label missing: {label}'
+
+assert 'class="profile-nav-grid"' in html, 'member icon navigation grid must exist'
+assert html.count('class="profile-nav-item"') == 5, 'member icon navigation must contain five items'
+assert 'background:rgba(13,56,57,.88)' in html, 'profile navigation must retain homepage panel color'
 
 assert 'id="recentGames"' in html and 'id="recentGames" hidden' not in html, 'recent games must stay visible'
 assert 'id="achievementsList"' in html and 'id="achievementsList" hidden' not in html, 'achievements must stay visible'
-assert 'data-collapse-target="recentGames"' not in html, 'recent games must not be collapsible'
-assert 'data-collapse-target="achievementsList"' not in html, 'achievements must not be collapsible'
 
-assert '/* Unified compact profile sections 20260903 */' in html, 'compact profile styling marker missing'
-assert '.compact-section{grid-column:1/-1' in html.replace('\n',''), 'compact sections must span the profile width'
-assert 'background:rgba(13,56,57,.88)' in html, 'profile cards must use the homepage panel color'
+assert 'async function loadProfileNavigationCounts()' in js, 'profile navigation counts loader must exist'
+assert 'loadRatingHistory' not in js, 'rating history must not return after chart removal'
 
-assert 'function setupProfileSectionToggles()' in js, 'collapse setup function missing'
-assert "button.setAttribute('aria-expanded'" in js, 'toggle must update accessibility state'
-assert 'setupProfileSectionToggles();' in js, 'collapse setup must run'
-
-old_startup = 'await Promise.all([loadRatingHistory(), loadFriendsAndRequests(), loadRecentGames(), loadAchievements(), loadChallenges({ autoEnter: false })]);'
-new_startup = 'await Promise.all([loadFriendsAndRequests(), loadRecentGames(), loadAchievements(), loadChallenges({ autoEnter: false })]);'
-assert old_startup not in js, 'rating history must not load after chart removal'
-assert new_startup in js, 'startup loaders must remain intact after removing rating history'
-
-print('profile compact collapsible sections: PASS')
+print('profile compact icon sections: PASS')

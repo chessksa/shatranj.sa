@@ -98,6 +98,34 @@
     showAvatar(publicAvatarUrl(newPath), row.name, publicAvatarUrl(legacyPath));
   }
 
+  async function loadProfileNavigationCounts() {
+    if (challengePolling) return;
+    challengePolling = true;
+    try {
+      const [{ data: friends, error: fErr }, { data: requests, error: rErr }, { data: challenges, error: cErr }] = await Promise.all([
+        client.rpc('get_my_friends'),
+        client.rpc('get_my_friend_requests'),
+        client.rpc('get_my_friend_challenges')
+      ]);
+      if (fErr) throw fErr;
+      if (rErr) throw rErr;
+      if (cErr) throw cErr;
+      const friendRequests = requests || [];
+      const challengeRows = challenges || [];
+      $('friendsCount').textContent = (friends || []).length;
+      $('incomingCount').textContent = friendRequests.filter(r => r.direction === 'incoming').length;
+      $('outgoingCount').textContent = friendRequests.filter(r => r.direction === 'outgoing').length;
+      $('incomingChallengesCount').textContent = challengeRows.filter(r => r.direction === 'incoming' && r.status === 'pending').length;
+      $('outgoingChallengesCount').textContent = challengeRows.filter(r => r.direction === 'outgoing' && r.status === 'pending').length;
+      const acceptedOutgoing = challengeRows.find(r => r.direction === 'outgoing' && r.status === 'accepted' && r.game_id);
+      if (acceptedOutgoing && sessionStorage.getItem('shatranj_last_opened_friend_challenge') !== acceptedOutgoing.challenge_id) {
+        sessionStorage.setItem('shatranj_last_opened_friend_challenge', acceptedOutgoing.challenge_id);
+        await enterChallenge(acceptedOutgoing.challenge_id);
+      }
+    } finally {
+      challengePolling = false;
+    }
+  }
   function friendRow(friend) {
     const online = friend.is_online;
     return `<div class="row" data-friend="${esc(friend.friend_id)}">
@@ -251,7 +279,7 @@
     if (document.hidden || !myProfile) return;
     try {
       await client.rpc('heartbeat_player_presence');
-      await Promise.all([loadFriendsAndRequests(), loadChallenges({ autoEnter: false })]);
+      await loadProfileNavigationCounts();
     } catch (err) {
       console.warn('presence refresh failed', err);
     }
@@ -332,18 +360,6 @@
     showAvatar(`${publicAvatarUrl(path)}?v=${Date.now()}`, myProfile.name, null);
   }
 
-  function setupProfileSectionToggles() {
-    document.querySelectorAll('.section-toggle[data-collapse-target]').forEach((button) => {
-      button.addEventListener('click', () => {
-        const target = $(button.dataset.collapseTarget);
-        if (!target) return;
-        const opening = target.hidden;
-        target.hidden = !opening;
-        button.setAttribute('aria-expanded', String(opening));
-        button.closest('.compact-section')?.classList.toggle('open', opening);
-      });
-    });
-  }
   document.addEventListener('click', (event) => {
     const button = event.target.closest('[data-action]');
     if (button) handleAction(button);
@@ -385,8 +401,6 @@
 
   document.addEventListener('visibilitychange', () => { if (!document.hidden) heartbeatAndRefreshFriends(); });
 
-  setupProfileSectionToggles();
-
   (async () => {
     try {
       const { data: authData } = await client.auth.getSession();
@@ -397,11 +411,11 @@
       }
       await loadBaseProfile();
       await client.rpc('heartbeat_player_presence');
-      await Promise.all([loadFriendsAndRequests(), loadRecentGames(), loadAchievements(), loadChallenges({ autoEnter: false })]);
+      await Promise.all([loadProfileNavigationCounts(), loadRecentGames(), loadAchievements()]);
       loading.hidden = true;
       dashboard.hidden = false;
       setInterval(heartbeatAndRefreshFriends, 30000);
-      setInterval(() => { if (!document.hidden) loadChallenges().catch(err => console.warn('challenge refresh failed', err)); }, 3000);
+      setInterval(() => { if (!document.hidden) loadProfileNavigationCounts().catch(err => console.warn('profile counters refresh failed', err)); }, 3000);
     } catch (err) {
       console.error(err);
       loading.textContent = err.message || 'تعذر تحميل لوحة اللاعب.';

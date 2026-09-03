@@ -1,0 +1,28 @@
+name: Test member dashboard icon navigation
+on:
+  push:
+    branches:
+      - main
+      - feature/member-dashboard-icon-navigation
+    paths:
+      - '**.html'
+      - '**.js'
+      - 'tests/**'
+      - '.github/workflows/test-profile-icon-navigation.yml'
+  workflow_dispatch:
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Run full regression suite
+        run: |
+          set -e
+          for test in tests/test_*.py; do
+            echo "==> $test"
+            python "$test"
+          done
+          for script in *.js; do
+            echo "==> node --check $script"
+            node --check "$script"
+          done
