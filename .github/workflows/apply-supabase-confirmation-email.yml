@@ -14,73 +14,68 @@ permissions:
 jobs:
   update-confirmation-email:
     runs-on: ubuntu-latest
+    env:
+      PROJECT_REF: zjxkxhsvltihucdacjrv
+      SUPABASE_ACCESS_TOKEN: ${{ secrets.SUPABASE_ACCESS_TOKEN }}
     steps:
       - name: Validate required secret
         shell: bash
-        env:
-          SUPABASE_ACCESS_TOKEN: ${{ secrets.SUPABASE_ACCESS_TOKEN }}
         run: |
           set -euo pipefail
           if [ -z "${SUPABASE_ACCESS_TOKEN:-}" ]; then
             echo "SUPABASE_ACCESS_TOKEN is missing"
             exit 1
           fi
+          echo "::add-mask::$SUPABASE_ACCESS_TOKEN"
 
-      - name: Update confirmation email template
+      - name: Apply approved Arabic confirmation email template
         shell: bash
-        env:
-          SUPABASE_ACCESS_TOKEN: ${{ secrets.SUPABASE_ACCESS_TOKEN }}
-          PROJECT_REF: zjxkxhsvltihucdacjrv
         run: |
           set -euo pipefail
 
           cat > /tmp/auth-email.json <<'JSON'
           {
             "mailer_subjects_confirmation": "فعّل حسابك في شطرنج السعودية",
-            "mailer_templates_confirmation_content": "<div dir=\"rtl\" style=\"font-family:Arial,sans-serif;background:#f5f3ed;padding:32px 16px;color:#14221c;text-align:right\"><div style=\"max-width:560px;margin:0 auto;background:#ffffff;border:1px solid #ddd7ca;border-radius:14px;overflow:hidden\"><div style=\"background:#0d3b2e;color:#ffffff;padding:22px;text-align:center;font-size:24px;font-weight:700\">شطرنج السعودية</div><div style=\"padding:30px 26px\"><h2 style=\"margin:0 0 14px;color:#0d3b2e;font-size:22px\">مرحبًا بك في شطرنج السعودية</h2><p style=\"margin:0 0 22px;line-height:1.9;font-size:15px\">بقيت خطوة واحدة لتفعيل حسابك والانضمام إلى منصة الشطرنج السعودية.</p><div style=\"text-align:center;margin:28px 0\"><a href=\"{{ .ConfirmationURL }}\" style=\"display:inline-block;background:#c5a34d;color:#17231e;text-decoration:none;padding:13px 30px;border-radius:9px;font-weight:700;font-size:16px\">تفعيل الحساب</a></div><p style=\"margin:20px 0 0;color:#6f7773;line-height:1.8;font-size:13px\">إذا لم تقم بإنشاء هذا الحساب، يمكنك تجاهل هذه الرسالة.</p></div><div style=\"background:#f5f3ed;border-top:1px solid #ddd7ca;padding:16px;text-align:center;color:#6f7773;font-size:12px\">شطرنج السعودية<br>منصة الشطرنج السعودية</div></div></div>"
+            "mailer_templates_confirmation_content": "<div dir=\"rtl\" style=\"font-family:Arial,Tahoma,sans-serif;text-align:right;line-height:1.9;color:#17211f;max-width:560px;margin:0 auto;padding:24px\"><h2 style=\"margin:0 0 18px\">مرحبًا بك في شطرنج السعودية</h2><p>تم إنشاء حسابك بنجاح، وبقيت خطوة واحدة فقط لتفعيله.</p><p>اضغط على الزر أدناه لتأكيد بريدك الإلكتروني وبدء اللعب:</p><p style=\"text-align:center;margin:28px 0\"><a href=\"{{ .ConfirmationURL }}\" style=\"display:inline-block;padding:12px 28px;border-radius:8px;background:#174f46;color:#ffffff;text-decoration:none;font-weight:700\">تفعيل الحساب</a></p><p>بعد التفعيل يمكنك تسجيل الدخول باسم المستخدم وكلمة المرور.</p><p>نتمنى لك مباريات ممتعة ومنافسة قوية.</p><p style=\"margin-top:28px\"><strong>شطرنج السعودية</strong><br>منصة الشطرنج السعودية</p></div>"
           }
           JSON
 
-          http_code=$(curl --silent --show-error --output /tmp/update-response.json --write-out "%{http_code}" \
+          curl --fail-with-body --silent --show-error \
             --request PATCH "https://api.supabase.com/v1/projects/${PROJECT_REF}/config/auth" \
             --header "Authorization: Bearer ${SUPABASE_ACCESS_TOKEN}" \
             --header "Content-Type: application/json" \
-            --data-binary @/tmp/auth-email.json)
+            --data-binary @/tmp/auth-email.json \
+            > /tmp/update-response.json
 
-          if [ "$http_code" -lt 200 ] || [ "$http_code" -ge 300 ]; then
-            echo "Supabase update failed with HTTP ${http_code}"
-            cat /tmp/update-response.json
-            exit 1
-          fi
-
-      - name: Verify confirmation email template
+      - name: Verify approved template was applied
         shell: bash
-        env:
-          SUPABASE_ACCESS_TOKEN: ${{ secrets.SUPABASE_ACCESS_TOKEN }}
-          PROJECT_REF: zjxkxhsvltihucdacjrv
         run: |
           set -euo pipefail
 
-          http_code=$(curl --silent --show-error --output /tmp/auth-config.json --write-out "%{http_code}" \
+          curl --fail-with-body --silent --show-error \
             "https://api.supabase.com/v1/projects/${PROJECT_REF}/config/auth" \
-            --header "Authorization: Bearer ${SUPABASE_ACCESS_TOKEN}")
-
-          if [ "$http_code" -ne 200 ]; then
-            echo "Supabase verification failed with HTTP ${http_code}"
-            exit 1
-          fi
+            --header "Authorization: Bearer ${SUPABASE_ACCESS_TOKEN}" \
+            > /tmp/auth-config.json
 
           python3 - <<'PY'
           import json
           from pathlib import Path
 
-          config = json.loads(Path('/tmp/auth-config.json').read_text())
-          subject = config.get('mailer_subjects_confirmation')
-          content = config.get('mailer_templates_confirmation_content', '')
+          data = json.loads(Path('/tmp/auth-config.json').read_text(encoding='utf-8'))
+          subject = data.get('mailer_subjects_confirmation', '')
+          content = data.get('mailer_templates_confirmation_content', '')
 
-          assert subject == 'فعّل حسابك في شطرنج السعودية', f'Unexpected subject: {subject!r}'
-          assert '{{ .ConfirmationURL }}' in content, 'ConfirmationURL is missing from template'
-          assert 'شطرنج السعودية' in content, 'Brand name is missing from template'
-          assert 'تفعيل الحساب' in content, 'Activation CTA is missing from template'
-          print('Supabase confirmation email template verified successfully.')
+          assert subject == 'فعّل حسابك في شطرنج السعودية', subject
+          for phrase in [
+              'مرحبًا بك في شطرنج السعودية',
+              'تم إنشاء حسابك بنجاح',
+              'تفعيل الحساب',
+              '{{ .ConfirmationURL }}',
+              'بعد التفعيل يمكنك تسجيل الدخول باسم المستخدم وكلمة المرور',
+              'نتمنى لك مباريات ممتعة ومنافسة قوية',
+              'منصة الشطرنج السعودية',
+          ]:
+              assert phrase in content, phrase
+
+          print('Verified approved Arabic signup confirmation email template.')
           PY
