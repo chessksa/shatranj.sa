@@ -6,36 +6,17 @@ on:
       - 'index.html'
       - 'home-theme.css'
       - 'profile.html'
-      - 'tools/apply_home_rank_dashboard_labels.py'
       - 'tests/test_home_member_rank.py'
       - 'tests/test_profile_dashboard_label_size.py'
       - '.github/workflows/test-home-rank-dashboard-labels.yml'
   workflow_dispatch:
-
-permissions:
-  contents: write
 
 jobs:
   test:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
-        with:
-          ref: feature/home-rank-larger-dashboard-labels
-      - name: Apply requested UI change
-        run: python tools/apply_home_rank_dashboard_labels.py
       - name: Run focused tests
         run: |
           python tests/test_home_member_rank.py
           python tests/test_profile_dashboard_label_size.py
-      - name: Commit implementation if needed
-        run: |
-          if git diff --quiet -- index.html home-theme.css profile.html; then
-            echo "No implementation changes to commit."
-            exit 0
-          fi
-          git config user.name "chessksa"
-          git config user.email "gmel1199@gmail.com"
-          git add index.html home-theme.css profile.html
-          git commit -m "feat: show homepage rank and enlarge dashboard labels"
-          git push origin HEAD:feature/home-rank-larger-dashboard-labels
