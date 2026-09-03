@@ -14,8 +14,8 @@ assert 'function setupProfileSectionToggles()' not in js, 'old collapse setup mu
 for label in ['الأصدقاء', 'طلبات الصداقة', 'الطلبات المرسلة', 'التحديات', 'التحديات المرسلة']:
     assert label in html, f'profile navigation label missing: {label}'
 
-assert 'class="profile-nav-grid"' in html, 'member icon navigation grid must exist'
-assert html.count('class="profile-nav-item"') == 5, 'member icon navigation must contain five items'
+assert '<section class="dashboard-icon-row"' in html, 'unified member icon row must exist'
+assert html.count('class="dashboard-icon-item') == 10, 'member dashboard must contain ten unified icon items'
 assert 'background:rgba(13,56,57,.88)' in html, 'profile navigation must retain homepage panel color'
 
 assert 'id="recentGames"' in html and 'id="recentGames" hidden' not in html, 'recent games must stay visible'
