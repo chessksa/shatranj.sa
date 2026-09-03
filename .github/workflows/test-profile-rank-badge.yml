@@ -6,13 +6,34 @@ on:
     paths:
       - 'profile.html'
       - 'profile.js'
+      - 'tools/apply_profile_rank_badge.py'
       - 'tests/test_profile_rank_badge.py'
       - '.github/workflows/test-profile-rank-badge.yml'
   workflow_dispatch:
+permissions:
+  contents: write
 jobs:
   test:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
-      - name: Run rank badge test
-        run: python tests/test_profile_rank_badge.py
+        with:
+          ref: feature/profile-rank-badge
+      - name: Apply rank badge change
+        run: python tools/apply_profile_rank_badge.py
+      - name: Run focused tests
+        run: |
+          python tests/test_profile_rank_badge.py
+          python tests/test_profile_unified_icon_row.py
+          node --check profile.js
+      - name: Commit implementation if needed
+        run: |
+          if git diff --quiet -- profile.html profile.js; then
+            echo "No implementation changes to commit."
+            exit 0
+          fi
+          git config user.name "chessksa"
+          git config user.email "gmel1199@gmail.com"
+          git add profile.html profile.js
+          git commit -m "feat: replace achievements panel with gold rank badge"
+          git push origin HEAD:feature/profile-rank-badge
