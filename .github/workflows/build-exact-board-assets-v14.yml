@@ -1,0 +1,45 @@
+name: Build exact board assets v14
+
+on:
+  push:
+    branches:
+      - exact-board-assets-v14
+    paths:
+      - '.github/workflows/build-exact-board-assets-v14.yml'
+      - 'tools/build_exact_board_assets_v14.py'
+      - 'tools/apply_exact_board_v14.py'
+      - 'exact-board-v14.css'
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: exact-board-assets-v14
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - name: Install image tooling
+        run: python -m pip install --disable-pip-version-check pillow opencv-python-headless numpy
+      - name: Extract exact board assets from approved image
+        run: python tools/build_exact_board_assets_v14.py
+      - name: Apply exact board assets to play page
+        run: python tools/apply_exact_board_v14.py
+      - name: Run regression test before commit
+        run: python tests/test_exact_board_assets_v14.py
+      - name: Commit generated assets and wiring
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add assets/exact-board exact-board-v14.css play-v10.html play-v10-match.js play-v8.js
+          if git diff --cached --quiet; then
+            echo "No generated changes"
+          else
+            git commit -m "Apply exact interactive board assets v14"
+            git push origin HEAD:exact-board-assets-v14
+          fi
