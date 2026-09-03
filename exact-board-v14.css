@@ -1,0 +1,92 @@
+/* Interactive board skin extracted from the user's approved reference image. */
+
+.board-frame{
+  position:relative!important;
+  aspect-ratio:1/1!important;
+  padding:0!important;
+  border:0!important;
+  border-radius:0!important;
+  overflow:hidden!important;
+  background:url("assets/approved-board-v13.webp") center center / 100% 100% no-repeat!important;
+  box-shadow:0 16px 34px rgba(0,0,0,.34)!important;
+}
+
+.board-shell{
+  position:absolute!important;
+  left:4.7%!important;
+  top:4.45%!important;
+  width:90.6%!important;
+  height:auto!important;
+  aspect-ratio:1/1!important;
+  border-radius:0!important;
+  overflow:hidden!important;
+  background:#0b4b4a!important;
+  box-shadow:0 0 0 1px rgba(25,20,10,.62)!important;
+}
+
+.board{
+  position:absolute!important;
+  inset:0!important;
+  display:grid!important;
+  grid-template-columns:repeat(8,1fr)!important;
+  grid-template-rows:repeat(8,1fr)!important;
+}
+
+.square{
+  border-right:1px solid rgba(15,35,31,.50)!important;
+  border-bottom:1px solid rgba(15,35,31,.50)!important;
+  background-position:center!important;
+  background-size:cover!important;
+  background-repeat:no-repeat!important;
+}
+
+.square.light{
+  background-image:url("assets/exact-board/light.png?v=20260903-14")!important;
+  background-color:#eee5c8!important;
+}
+
+.square.dark{
+  background-image:url("assets/exact-board/dark.png?v=20260903-14")!important;
+  background-color:#0a4a4a!important;
+}
+
+.piece{
+  width:100%!important;
+  height:100%!important;
+  display:flex!important;
+  align-items:center!important;
+  justify-content:center!important;
+}
+
+.piece-image{
+  display:block!important;
+  width:100%!important;
+  height:100%!important;
+  object-fit:contain!important;
+  filter:none!important;
+  pointer-events:none!important;
+  user-select:none!important;
+}
+
+.coords-left,
+.coords-bottom{
+  display:none!important;
+}
+
+.square.selected{
+  box-shadow:inset 0 0 0 4px rgba(231,181,80,.92)!important;
+}
+
+.square.target::after{
+  background:rgba(224,181,103,.48)!important;
+}
+
+.square.capture::after{
+  border-color:rgba(224,181,103,.72)!important;
+}
+
+@media(max-width:900px){
+  .board-frame{
+    width:min(100%,calc(100vw - 16px))!important;
+  }
+}
