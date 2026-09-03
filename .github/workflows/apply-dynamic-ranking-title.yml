@@ -1,0 +1,73 @@
+name: Apply dynamic ranking title
+on:
+  push:
+    paths:
+      - '.github/workflows/apply-dynamic-ranking-title.yml'
+permissions:
+  contents: write
+jobs:
+  apply:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Make ranking title follow filters
+        run: |
+          python - <<'PY'
+          from pathlib import Path
+
+          path = Path('index.html')
+          html = path.read_text(encoding='utf-8')
+
+          old_heading = '<h2>النقاط</h2>'
+          new_heading = '<h2 id="rankingTitle">ترتيب اللاعبين على مستوى السعودية</h2>'
+          if old_heading not in html and new_heading not in html:
+            raise SystemExit('ranking heading marker not found')
+          if old_heading in html:
+            html = html.replace(old_heading, new_heading, 1)
+
+          if 'function updateRankingTitle(region,city)' not in html:
+            marker = 'function applyFilter(){'
+            if marker not in html:
+              raise SystemExit('applyFilter marker not found')
+            fn = """function updateRankingTitle(region,city){
+  const title=$('#rankingTitle');
+  if(!title) return;
+
+  if(city){
+    title.textContent=`ترتيب اللاعبين في مدينة ${city}`;
+    return;
+  }
+
+  if(region){
+    title.textContent=`ترتيب اللاعبين في منطقة ${region}`;
+    return;
+  }
+
+  title.textContent='ترتيب اللاعبين على مستوى السعودية';
+}
+
+"""
+            html = html.replace(marker, fn + marker, 1)
+
+          call_marker = "  const city=$('#cityFilter').value.trim();\n"
+          call_line = "\n  updateRankingTitle(region,city);\n"
+          if 'updateRankingTitle(region,city);' not in html:
+            if call_marker not in html:
+              raise SystemExit('applyFilter variables marker not found')
+            html = html.replace(call_marker, call_marker + call_line, 1)
+
+          path.write_text(html, encoding='utf-8')
+          PY
+
+          python tests/test_dynamic_ranking_title.py
+          python tests/test_home_member_avatar.py
+          python tests/test_home_header_account.py
+          python tests/test_home_member_layout.py
+          python tests/test_home_member_polish.py
+          python tests/test_global_arial_font.py
+
+          git config user.name github-actions[bot]
+          git config user.email 41898282+github-actions[bot]@users.noreply.github.com
+          git add index.html
+          git commit -m "Make ranking title follow filters"
+          git push
