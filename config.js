@@ -24,7 +24,7 @@ if (typeof document !== 'undefined' && typeof location !== 'undefined' && /(?:^|
     const board = document.getElementById('board');
     const coordsLeft = document.getElementById('coordsLeft');
     const coordsBottom = document.getElementById('coordsBottom');
-    const topCard = document.querySelector('.panel-stack > .player-card:first-child');
+    const topCard = document.querySelector('.panel-stack > .player-card');
     const bottomCard = document.querySelector('.panel-stack > .player-card:last-child');
     const actionsCard = document.querySelector('.actions-card');
     const bottomName = document.getElementById('bottomName');
