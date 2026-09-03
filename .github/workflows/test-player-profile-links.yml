@@ -1,0 +1,17 @@
+name: Test player profile links
+on:
+  push:
+    paths:
+      - 'index.html'
+      - 'home-invite.js'
+      - 'play.html'
+      - 'play-live.js'
+      - 'tests/test_player_profile_links.py'
+      - '.github/workflows/test-player-profile-links.yml'
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Verify player profile links
+        run: python tests/test_player_profile_links.py
