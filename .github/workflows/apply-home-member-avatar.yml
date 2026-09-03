@@ -15,24 +15,27 @@ jobs:
           python - <<'PY'
           from pathlib import Path
           import base64
+          import re
 
           decode=lambda value: base64.b64decode(value).decode('utf-8')
-          old_markup=decode('ICAgICAgICA8ZGl2IGlkPSJhY2NvdW50UGFuZWwiIGNsYXNzPSJhY2NvdW50LXBhbmVsIiBoaWRkZW4+CiAgICAgICAgPGRpdj4KICAgICAgICAgIDxzdHJvbmcgaWQ9ImFjY291bnRXZWxjb21lIj7Zhdix2K3YqNmL2Kc8L3N0cm9uZz4=')
-          new_markup=decode('ICAgICAgICA8ZGl2IGlkPSJhY2NvdW50UGFuZWwiIGNsYXNzPSJhY2NvdW50LXBhbmVsIiBoaWRkZW4+CiAgICAgICAgPGRpdj4KICAgICAgICAgIDxkaXYgY2xhc3M9ImFjY291bnQtYXZhdGFyLXdyYXAiIGFyaWEtbGFiZWw9Iti12YjYsdipINin2YTYudi22YgiPgogICAgICAgICAgICA8aW1nIGNsYXNzPSJhY2NvdW50LWF2YXRhciIgaWQ9ImFjY291bnRBdmF0YXJJbWFnZSIgYWx0PSLYtdmI2LHYqSDYp9mE2LnYttmIIiBoaWRkZW4gLz4KICAgICAgICAgICAgPGRpdiBjbGFzcz0iYWNjb3VudC1hdmF0YXIgYWNjb3VudC1hdmF0YXItZmFsbGJhY2siIGlkPSJhY2NvdW50QXZhdGFyRmFsbGJhY2siPuKZnzwvZGl2PgogICAgICAgICAgPC9kaXY+CiAgICAgICAgICA8c3Ryb25nIGlkPSJhY2NvdW50V2VsY29tZSI+2YXYsdit2KjZi9inPC9zdHJvbmc+')
+          avatar_markup=decode('ICAgICAgICAgIDxkaXYgY2xhc3M9ImFjY291bnQtYXZhdGFyLXdyYXAiIGFyaWEtbGFiZWw9Iti12YjYsdipINin2YTYudi22YgiPgogICAgICAgICAgICA8aW1nIGNsYXNzPSJhY2NvdW50LWF2YXRhciIgaWQ9ImFjY291bnRBdmF0YXJJbWFnZSIgYWx0PSLYtdmI2LHYqSDYp9mE2LnYttmIIiBoaWRkZW4gLz4KICAgICAgICAgICAgPGRpdiBjbGFzcz0iYWNjb3VudC1hdmF0YXIgYWNjb3VudC1hdmF0YXItZmFsbGJhY2siIGlkPSJhY2NvdW50QXZhdGFyRmFsbGJhY2siPuKZnzwvZGl2PgogICAgICAgICAgPC9kaXY+Cg==')
           avatar_js=decode('ZnVuY3Rpb24gYWNjb3VudEluaXRpYWwobmFtZSl7CiAgcmV0dXJuIChTdHJpbmcobmFtZXx8J9mEJykudHJpbSgpLmNoYXJBdCgwKXx8J9mEJykudG9VcHBlckNhc2UoKTsKfQoKZnVuY3Rpb24gYWNjb3VudEF2YXRhclB1YmxpY1VybChwYXRoKXsKICByZXR1cm4gc3VwYWJhc2Uuc3RvcmFnZS5mcm9tKCdhdmF0YXJzJykuZ2V0UHVibGljVXJsKHBhdGgpLmRhdGEucHVibGljVXJsOwp9CgpmdW5jdGlvbiBzaG93QWNjb3VudEF2YXRhcigpewogIGNvbnN0IGltZz0kKCcjYWNjb3VudEF2YXRhckltYWdlJyk7CiAgY29uc3QgZmFsbGJhY2s9JCgnI2FjY291bnRBdmF0YXJGYWxsYmFjaycpOwogIGlmKCFpbWd8fCFmYWxsYmFja3x8IWN1cnJlbnRQcm9maWxlfHwhY3VycmVudFNlc3Npb24pIHJldHVybjsKCiAgZmFsbGJhY2sudGV4dENvbnRlbnQ9YWNjb3VudEluaXRpYWwoY3VycmVudFByb2ZpbGUubmFtZSk7CiAgZmFsbGJhY2suaGlkZGVuPWZhbHNlOwogIGltZy5oaWRkZW49dHJ1ZTsKCiAgY29uc3QgY3VycmVudFBhdGg9YCR7Y3VycmVudFByb2ZpbGUuaWR9L2F2YXRhci53ZWJwYDsKICBjb25zdCBsZWdhY3lQYXRoPWAke2N1cnJlbnRTZXNzaW9uLnVzZXIuaWR9L2F2YXRhci53ZWJwYDsKICBsZXQgdHJpZWRMZWdhY3k9ZmFsc2U7CgogIGltZy5vbmVycm9yPSgpPT57CiAgICBpZighdHJpZWRMZWdhY3kgJiYgbGVnYWN5UGF0aCE9PWN1cnJlbnRQYXRoKXsKICAgICAgdHJpZWRMZWdhY3k9dHJ1ZTsKICAgICAgaW1nLnNyYz1hY2NvdW50QXZhdGFyUHVibGljVXJsKGxlZ2FjeVBhdGgpOwogICAgICByZXR1cm47CiAgICB9CiAgICBpbWcuaGlkZGVuPXRydWU7CiAgICBmYWxsYmFjay5oaWRkZW49ZmFsc2U7CiAgfTsKCiAgaW1nLm9ubG9hZD0oKT0+ewogICAgZmFsbGJhY2suaGlkZGVuPXRydWU7CiAgICBpbWcuaGlkZGVuPWZhbHNlOwogIH07CgogIGltZy5zcmM9YWNjb3VudEF2YXRhclB1YmxpY1VybChjdXJyZW50UGF0aCk7Cn0KCg==')
-          avatar_css=decode('Ci8qIFNxdWFyZSBtZW1iZXIgYXZhdGFyIDIwMjYwOTAzICovCi5hY2NvdW50LWF2YXRhci13cmFwewogIHdpZHRoOjc2cHg7CiAgaGVpZ2h0Ojc2cHg7CiAgbWFyZ2luOjAgYXV0byAxMHB4OwogIHBvc2l0aW9uOnJlbGF0aXZlOwp9Ci5hY2NvdW50LWF2YXRhcntcbiAgd2lkdGg6NzZweDsKICBoZWlnaHQ6NzZweDsKICBib3JkZXItcmFkaXVzOjEycHg7CiAgYm9yZGVyOjFweCBzb2xpZCByZ2JhKDIxMiwxODAsMTAzLC40OCk7CiAgYmFja2dyb3VuZDojMGIzNDM1OwogIG9iamVjdC1maXQ6Y292ZXI7CiAgb3ZlcmZsb3c6aGlkZGVuOwogIGJveC1zaGFkb3c6MCA4cHggMjBweCByZ2JhKDAsMCwwLC4xNik7Cn0KLmFjY291bnQtYXZhdGFyLWZhbGxiYWNrewogIGRpc3BsYXk6Z3JpZDsKICBwbGFjZS1pdGVtczpjZW50ZXI7CiAgY29sb3I6dmFyKC0tZ29sZCk7CiAgZm9udC1zaXplOjI3cHg7CiAgZm9udC13ZWlnaHQ6OTAwOwp9Ci5hY2NvdW50LWF2YXRhcltoaWRkZW5de2Rpc3BsYXk6bm9uZSFpbXBvcnRhbnR9Cg==')
+          avatar_css=decode('Ci8qIFNxdWFyZSBtZW1iZXIgYXZhdGFyIDIwMjYwOTAzICovCi5hY2NvdW50LWF2YXRhci13cmFwewogIHdpZHRoOjc2cHg7CiAgaGVpZ2h0Ojc2cHg7CiAgbWFyZ2luOjAgYXV0byAxMHB4OwogIHBvc2l0aW9uOnJlbGF0aXZlOwp9Ci5hY2NvdW50LWF2YXRhcmsKICB3aWR0aDo3NnB4OwogIGhlaWdodDo3NnB4OwogIGJvcmRlci1yYWRpdXM6MTJweDsKICBib3JkZXI6MXB4IHNvbGlkIHJnYmEoMjEyLDE4MCwxMDMsLjQ4KTsKICBiYWNrZ3JvdW5kOiMwYjM0MzU7CiAgb2JqZWN0LWZpdDpjb3ZlcjsKICBvdmVyZmxvdzpoaWRkZW47CiAgYm94LXNoYWRvdzowIDhweCAyMHB4IHJnYmEoMCwwLDAsLjE2KTsKfQouYWNjb3VudC1hdmF0YXItZmFsbGJhY2t7CiAgZGlzcGxheTpncmlkOwogIHBsYWNlLWl0ZW1zOmNlbnRlcjsKICBjb2xvcjp2YXIoLS1nb2xkKTsKICBmb250LXNpemU6MjdweDsKICBmb250LXdlaWdodDo5MDA7Cn0KLmFjY291bnQtYXZhdGFyW2hpZGRlbl17ZGlzcGxheTpub25lIWltcG9ydGFudH0K')
 
           index=Path('index.html')
           html=index.read_text(encoding='utf-8')
-          if old_markup not in html:
-            raise SystemExit('account panel insertion point not found')
-          html=html.replace(old_markup,new_markup,1)
+          if 'id="accountAvatarImage"' not in html:
+            pattern=r'(<div id="accountPanel" class="account-panel" hidden>\s*\n\s*<div>\s*\n)(\s*<strong id="accountWelcome">مرحبًا</strong>)'
+            html,count=re.subn(pattern,lambda m:m.group(1)+avatar_markup+m.group(2),html,count=1)
+            if count!=1:
+              raise SystemExit('account panel insertion point not found')
           if 'function showAccountAvatar()' not in html:
             marker='function renderAccount(){'
             if marker not in html:
               raise SystemExit('renderAccount marker not found')
             html=html.replace(marker,avatar_js+marker,1)
-          html=html.replace("if(loggedIn && currentProfile){\n    $('#accountWelcome')", "if(loggedIn && currentProfile){\n    showAccountAvatar();\n    $('#accountWelcome')",1)
+          if 'showAccountAvatar();' not in html:
+            html=html.replace("if(loggedIn && currentProfile){\n    $('#accountWelcome')", "if(loggedIn && currentProfile){\n    showAccountAvatar();\n    $('#accountWelcome')",1)
           if 'home-theme.css?v=20260903-9' not in html:
             raise SystemExit('stylesheet version marker not found')
           html=html.replace('home-theme.css?v=20260903-9','home-theme.css?v=20260903-10',1)
