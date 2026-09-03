@@ -1,0 +1,29 @@
+name: Apply exact approved board v13
+on:
+  push:
+    paths:
+      - '.github/workflows/apply-exact-board-v13.yml'
+permissions:
+  contents: write
+jobs:
+  apply:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Attach exact approved board skin
+        run: |
+          python - <<'PY'
+          from pathlib import Path
+          p=Path('play-v10.html')
+          s=p.read_text(encoding='utf-8')
+          s=s.replace('<link rel="stylesheet" href="board-reference-v12.css?v=20260903-12" />','<link rel="stylesheet" href="exact-board-v13.css?v=20260903-13" />')
+          marker='  <script src="site-notifications.js"></script>'
+          if 'exact-board-v13.js' not in s:
+              s=s.replace(marker, marker+'\n  <script src="exact-board-v13.js?v=20260903-13"></script>')
+          p.write_text(s,encoding='utf-8')
+          PY
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add play-v10.html
+          git diff --cached --quiet || git commit -m "Apply exact approved board image"
+          git push
