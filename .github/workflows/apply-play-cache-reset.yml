@@ -1,0 +1,106 @@
+name: Apply play cache reset
+on:
+  push:
+    paths:
+      - '.github/workflows/apply-play-cache-reset.yml'
+permissions:
+  contents: write
+jobs:
+  apply:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Reset stale play caches and service workers
+        run: |
+          python - <<'PY'
+          from pathlib import Path
+          import re
+
+          version = '20260903-6'
+
+          sw = '''const CACHE="shatranj-saudi-v5";
+const ASSETS=["./","./index.html","./styles.css","./app.js","./config.js","./manifest.webmanifest"];
+const PLAY_PATHS=["/play.html","/play-live.js","/realistic-pieces.css","/assets/pieces/"];
+
+self.addEventListener("install",e=>{
+  self.skipWaiting();
+  e.waitUntil(caches.open(CACHE).then(c=>c.addAll(ASSETS)));
+});
+
+self.addEventListener("activate",e=>{
+  e.waitUntil(
+    caches.keys()
+      .then(keys=>Promise.all(keys.filter(k=>k!==CACHE).map(k=>caches.delete(k))))
+      .then(()=>self.clients.claim())
+  );
+});
+
+self.addEventListener("fetch",e=>{
+  const url=new URL(e.request.url);
+  const isPlayAsset=PLAY_PATHS.some(path=>url.pathname.endsWith(path)||url.pathname.includes(path));
+  if(isPlayAsset){
+    e.respondWith(
+      fetch(new Request(e.request,{cache:"no-store"}))
+        .catch(()=>caches.match(e.request))
+    );
+    return;
+  }
+  e.respondWith(caches.match(e.request).then(r=>r||fetch(e.request)));
+});
+'''
+          Path('sw.js').write_text(sw, encoding='utf-8')
+
+          p = Path('play.html')
+          html = p.read_text(encoding='utf-8')
+          marker = '<title>العب الآن | شطرنج السعودية</title>'
+          reset_script = f'''{marker}
+  <script>
+    const PLAY_CACHE_RESET_VERSION = '{version}';
+    (async()=>{{
+      try{{
+        const resetKey='shatranj_play_cache_reset_version';
+        const params=new URLSearchParams(location.search);
+        if(sessionStorage.getItem(resetKey)===PLAY_CACHE_RESET_VERSION || params.get('ui')===PLAY_CACHE_RESET_VERSION) return;
+        if('serviceWorker' in navigator){{
+          const regs=await navigator.serviceWorker.getRegistrations();
+          await Promise.all(regs.map(reg=>reg.unregister()));
+        }}
+        if('caches' in window){{
+          const names=await caches.keys();
+          await Promise.all(names.map(name=>caches.delete(name)));
+        }}
+        sessionStorage.setItem(resetKey,PLAY_CACHE_RESET_VERSION);
+        params.set('ui',PLAY_CACHE_RESET_VERSION);
+        const query=params.toString();
+        location.replace(location.pathname+(query?'?'+query:'')+location.hash);
+      }}catch(err){{ console.warn('play cache reset failed',err); }}
+    }})();
+  </script>'''
+          if 'PLAY_CACHE_RESET_VERSION' not in html:
+              if marker not in html:
+                  raise SystemExit('play title marker not found')
+              html = html.replace(marker, reset_script, 1)
+          html = re.sub(r'realistic-pieces\.css\?v=[^"\']+', f'realistic-pieces.css?v={version}', html, count=1)
+          html = re.sub(r'play-live\.js\?v=[^"\']+', f'play-live.js?v={version}', html, count=1)
+          p.write_text(html, encoding='utf-8')
+
+          test = '''from pathlib import Path
+sw=Path("sw.js").read_text(encoding="utf-8")
+html=Path("play.html").read_text(encoding="utf-8")
+assert "PLAY_CACHE_RESET_VERSION" in html
+assert "getRegistrations" in html and "caches.keys" in html
+assert "activate" in sw and "caches.delete" in sw
+assert "play-live.js" in sw and "realistic-pieces.css" in sw and "/assets/pieces/" in sw
+assert 'cache:"no-store"' in sw
+print("play cache reset: PASS")
+'''
+          Path('tests/test_play_cache_reset.py').write_text(test, encoding='utf-8')
+          PY
+
+          python tests/test_play_cache_reset.py
+
+          git config user.name github-actions[bot]
+          git config user.email 41898282+github-actions[bot]@users.noreply.github.com
+          git add sw.js play.html tests/test_play_cache_reset.py
+          git commit -m "Clear stale play caches before loading chess assets"
+          git push
