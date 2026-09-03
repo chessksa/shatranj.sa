@@ -6,4 +6,5 @@ assert "getRegistrations" in html and "caches.keys" in html
 assert "activate" in sw and "caches.delete" in sw
 assert "play-live.js" in sw and "realistic-pieces.css" in sw and "/assets/pieces/" in sw
 assert "no-store" in sw
+assert "params.get('ui')===PLAY_CACHE_RESET_VERSION" not in html, "ui query must not bypass the one-time cache cleanup"
 print("play cache reset: PASS")
