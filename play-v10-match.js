@@ -1,3 +1,4 @@
+import {Chessboard, COLOR, BORDER_TYPE} from 'https://cdn.jsdelivr.net/npm/cm-chessboard@8/src/Chessboard.js';
 import { createClient } from 'https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/+esm';
 
 const cfg = window.SHATRANJ_CONFIG?.supabase || {};
@@ -24,32 +25,52 @@ const flipBtn = $('flipBoard');
 
 const files = ['a','b','c','d','e','f','g','h'];
 const ranks = [8,7,6,5,4,3,2,1];
+const START_FEN = 'rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1';
 let flipped = false;
 let pollTimer = null;
 let startedAt = 0;
 let polling = false;
-
-const startingBoard = [
-  ['br','bn','bb','bq','bk','bb','bn','br'],
-  ['bp','bp','bp','bp','bp','bp','bp','bp'],
-  [null,null,null,null,null,null,null,null],
-  [null,null,null,null,null,null,null,null],
-  [null,null,null,null,null,null,null,null],
-  [null,null,null,null,null,null,null,null],
-  ['wp','wp','wp','wp','wp','wp','wp','wp'],
-  ['wr','wn','wb','wq','wk','wb','wn','wr']
-];
+let previewBoard = null;
 
 function firstRow(data){
   return Array.isArray(data) ? (data[0] || null) : data;
 }
 
-function pieceMarkup(code){
-  if(!code) return '';
-  const color = code[0];
-  const type = code[1];
-  const cls = color === 'w' ? 'white' : 'black';
-  return `<div class="piece ${cls} piece-${type}"><img class="piece-image" src="assets/pieces/${color}${type}.png?v=20260903-4" alt="" aria-hidden="true" draggable="false"></div>`;
+function ensureCmStyles(){
+  if(!document.querySelector('link[data-cm-chessboard-core]')){
+    const core = document.createElement('link');
+    core.rel = 'stylesheet';
+    core.href = 'https://cdn.jsdelivr.net/npm/cm-chessboard@8/assets/chessboard.css';
+    core.dataset.cmChessboardCore = '1';
+    document.head.appendChild(core);
+  }
+  if(!document.querySelector('link[data-cm-chessboard-shatranj]')){
+    const theme = document.createElement('link');
+    theme.rel = 'stylesheet';
+    theme.href = 'cm-chessboard-shatranj.css?v=20260903-2';
+    theme.dataset.cmChessboardShatranj = '1';
+    document.head.appendChild(theme);
+  }
+}
+
+function ensurePreviewBoard(){
+  if(previewBoard) return previewBoard;
+  ensureCmStyles();
+  boardEl.className = 'cm-board-host';
+  previewBoard = new Chessboard(boardEl, {
+    position: START_FEN,
+    orientation: flipped ? COLOR.black : COLOR.white,
+    responsive: true,
+    assetsUrl: 'https://cdn.jsdelivr.net/npm/cm-chessboard@8/assets/',
+    style: {
+      cssClass: 'shatranj',
+      showCoordinates: false,
+      borderType: BORDER_TYPE.none,
+      pieces: {file:'pieces/staunty.svg',tileSize:40},
+      animationDuration: 180
+    }
+  });
+  return previewBoard;
 }
 
 function renderCoords(){
@@ -61,18 +82,10 @@ function renderCoords(){
   shownFiles.forEach((f)=>{ const d=document.createElement('div'); d.textContent=f; bottomEl.appendChild(d); });
 }
 
-function renderPreviewBoard(){
-  boardEl.innerHTML = '';
-  const rows = flipped ? [7,6,5,4,3,2,1,0] : [0,1,2,3,4,5,6,7];
-  const cols = flipped ? [7,6,5,4,3,2,1,0] : [0,1,2,3,4,5,6,7];
-  for(const row of rows){
-    for(const col of cols){
-      const square = document.createElement('div');
-      square.className = 'square ' + (((row+col)%2===0) ? 'light' : 'dark');
-      square.innerHTML = pieceMarkup(startingBoard[row][col]);
-      boardEl.appendChild(square);
-    }
-  }
+function orientPreviewBoard(){
+  const board = ensurePreviewBoard();
+  const orientation = flipped ? COLOR.black : COLOR.white;
+  if(board.getOrientation() !== orientation) board.setOrientation(orientation, false);
 }
 
 function formatElapsed(seconds){
@@ -203,7 +216,7 @@ async function cancelMatchmaking(){
 
 async function init(){
   renderCoords();
-  renderPreviewBoard();
+  ensurePreviewBoard();
   showSetup();
 
   $('resignBtn').disabled = true;
@@ -240,7 +253,7 @@ leaveBtn.addEventListener('click', async()=>{
 flipBtn.addEventListener('click',()=>{
   flipped = !flipped;
   renderCoords();
-  renderPreviewBoard();
+  orientPreviewBoard();
 });
 
 setInterval(()=>{

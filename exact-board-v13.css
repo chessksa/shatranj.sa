@@ -1,18 +1,1 @@
-@import url("board-reference-v12.css?v=20260903-12");
-
-/* Exact user-approved board image. No reinterpretation. */
-.board-frame.exact-board-preview{
-  overflow:hidden!important;
-}
-.board-frame.exact-board-preview::after{
-  content:"";
-  position:absolute;
-  inset:0;
-  z-index:40;
-  pointer-events:none;
-  background:url("assets/approved-board-v13.webp") center center / 100% 100% no-repeat;
-}
-.board-frame.exact-board-preview .coords-left,
-.board-frame.exact-board-preview .coords-bottom{
-  opacity:0!important;
-}
+/* Legacy exact-board overlay disabled. The board is rendered by cm-chessboard. */
