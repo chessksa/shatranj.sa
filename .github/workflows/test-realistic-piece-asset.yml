@@ -1,0 +1,25 @@
+name: Test realistic piece asset
+
+on:
+  push:
+    branches:
+      - fix/realistic-piece-final
+    paths:
+      - assets/realistic-pieces.png
+      - realistic-pieces.css
+      - tests/test_realistic_piece_asset.py
+      - .github/workflows/test-realistic-piece-asset.yml
+  pull_request:
+    paths:
+      - assets/realistic-pieces.png
+      - realistic-pieces.css
+      - tests/test_realistic_piece_asset.py
+      - .github/workflows/test-realistic-piece-asset.yml
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Validate realistic PNG sprite
+        run: python tests/test_realistic_piece_asset.py
