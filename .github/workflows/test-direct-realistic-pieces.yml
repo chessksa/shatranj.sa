@@ -1,0 +1,16 @@
+name: Test direct realistic pieces
+on:
+  push:
+    paths:
+      - 'tests/test_direct_realistic_pieces.py'
+      - '.github/workflows/test-direct-realistic-pieces.yml'
+      - 'assets/pieces/**'
+      - 'play-live.js'
+      - 'realistic-pieces.css'
+      - 'play.html'
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - run: python tests/test_direct_realistic_pieces.py
