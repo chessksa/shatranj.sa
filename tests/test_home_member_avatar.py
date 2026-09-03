@@ -4,13 +4,15 @@ import re
 html = Path('index.html').read_text(encoding='utf-8')
 css = Path('home-theme.css').read_text(encoding='utf-8')
 
-panel = re.search(r'<div[^>]+id="accountPanel".*?</div>\s*</div>', html, re.S)
-assert panel, 'member account panel not found'
-panel_html = panel.group(0)
+panel_start = html.find('id="accountPanel"')
+welcome_pos = html.find('id="accountWelcome"', panel_start)
+assert panel_start >= 0 and welcome_pos > panel_start, 'member account panel not found'
 
-assert 'id="accountAvatarImage"' in panel_html, 'member photo image must exist in account box'
-assert 'id="accountAvatarFallback"' in panel_html, 'member photo fallback must exist in account box'
-assert panel_html.index('accountAvatarImage') < panel_html.index('accountWelcome'), 'member photo must appear above member data'
+avatar_pos = html.find('id="accountAvatarImage"', panel_start, welcome_pos)
+fallback_pos = html.find('id="accountAvatarFallback"', panel_start, welcome_pos)
+assert avatar_pos >= 0, 'member photo image must exist in account box'
+assert fallback_pos >= 0, 'member photo fallback must exist in account box'
+assert avatar_pos < welcome_pos, 'member photo must appear above member data'
 assert 'showAccountAvatar' in html, 'homepage must load the member avatar from profile storage'
 assert "currentProfile.id" in html and "currentSession.user.id" in html, 'avatar loading must support current and legacy storage paths'
 
