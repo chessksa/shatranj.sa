@@ -4,12 +4,9 @@ on:
     branches:
       - feature/member-dashboard-icon-navigation
     paths:
-      - 'profile.html'
-      - 'profile.js'
-      - 'profile-section.html'
-      - 'profile-section.js'
-      - 'tests/test_profile_icon_navigation.py'
-      - 'tests/test_profile_section_page.py'
+      - '**.html'
+      - '**.js'
+      - 'tests/**'
       - '.github/workflows/test-profile-icon-navigation.yml'
   workflow_dispatch:
 jobs:
@@ -17,11 +14,14 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
-      - name: Run profile navigation tests
+      - name: Run full regression suite
         run: |
-          python tests/test_profile_icon_navigation.py
-          if [ -f tests/test_profile_section_page.py ]; then python tests/test_profile_section_page.py; fi
-          python tests/test_profile_compact_layout.py
-          python tests/test_global_arial_font.py
-          node --check profile.js
-          if [ -f profile-section.js ]; then node --check profile-section.js; fi
+          set -e
+          for test in tests/test_*.py; do
+            echo "==> $test"
+            python "$test"
+          done
+          for script in *.js; do
+            echo "==> node --check $script"
+            node --check "$script"
+          done
