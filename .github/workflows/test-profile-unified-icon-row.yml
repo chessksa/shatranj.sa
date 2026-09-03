@@ -1,0 +1,24 @@
+name: Test unified profile icon row
+on:
+  push:
+    branches:
+      - feature/profile-unified-icon-row
+    paths:
+      - 'profile.html'
+      - 'profile.js'
+      - 'tests/test_profile_unified_icon_row.py'
+      - '.github/workflows/test-profile-unified-icon-row.yml'
+  workflow_dispatch:
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Run profile icon row tests
+        run: |
+          python tests/test_profile_unified_icon_row.py
+          python tests/test_profile_icon_navigation.py
+          python tests/test_profile_compact_layout.py
+          python tests/test_profile_compact_sections.py
+          python tests/test_global_arial_font.py
+          node --check profile.js
