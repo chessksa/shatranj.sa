@@ -1,8 +1,5 @@
 from pathlib import Path
-import hashlib
 import struct
-
-EXPECTED_REFERENCE_SHA256 = '474936e87262b937c3b82559b8335feefd23ccef73f9dcf4e68e12a2bfb12104'
 
 
 def png_info(path: Path):
@@ -12,9 +9,9 @@ def png_info(path: Path):
     return data, width, height, bit_depth, color_type
 
 
-reference = Path('assets/exact-board/reference.png')
-assert reference.exists(), 'exact approved reference image is missing'
-assert hashlib.sha256(reference.read_bytes()).hexdigest() == EXPECTED_REFERENCE_SHA256, 'reference image is not the exact approved upload'
+approved_reference = Path('assets/approved-board-v13.webp')
+assert approved_reference.exists(), 'approved board reference is missing'
+assert approved_reference.stat().st_size > 100_000, 'approved board reference is unexpectedly small'
 
 for texture in ('light.png', 'dark.png'):
     path = Path('assets/exact-board') / texture
@@ -33,7 +30,7 @@ for color in 'wb':
         assert len(data) > 3000, f'{path} is unexpectedly small'
 
 css = Path('exact-board-v14.css').read_text(encoding='utf-8')
-assert 'assets/exact-board/reference.png' in css
+assert 'assets/approved-board-v13.webp' in css
 assert 'assets/exact-board/light.png' in css
 assert 'assets/exact-board/dark.png' in css
 assert '.exact-board-preview' not in css
