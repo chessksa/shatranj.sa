@@ -877,14 +877,19 @@ footer{
   }
 }
 </style>
-<link rel="stylesheet" href="home-theme.css?v=20260903-7">
+<link rel="stylesheet" href="home-theme.css?v=20260903-8">
 </head>
 
 <body>
 
 <header>
   <div class="wrap nav">
-    <div class="brand">♟ شطرنج السعودية</div>
+    <div class="nav-main">
+      <div class="brand">♟ شطرنج السعودية</div>
+      <a href="#register" id="navAccount" class="nav-account">👤 تسجيل الدخول</a>
+      <button id="navLogout" class="nav-logout" type="button" hidden>تسجيل الخروج</button>
+      <a href="play.html?v=5" class="play-link protected-play">♟ العب</a>
+    </div>
 
     <div class="header-live">
       <div class="header-box">
@@ -901,13 +906,6 @@ footer{
         <strong>◉</strong>
         <span>شاهد</span>
       </a>
-    </div>
-
-    <div class="links">
-      <a href="play.html?v=5" class="play-link protected-play">♟ العب</a>
-      <a href="#register" id="navAccount" class="nav-account">👤 تسجيل الدخول</a>
-      <button id="navLogout" class="nav-logout" type="button" hidden>تسجيل الخروج</button>
-      <span class="nav-soon" title="قريبًا">🏆 البطولات</span>
     </div>
   </div>
 </header>
