@@ -98,12 +98,10 @@
     .dashboard-icon-row{display:grid;grid-template-columns:repeat(10,minmax(0,1fr));gap:6px;margin:7px 0;overflow-x:auto;padding-bottom:2px}
     .dashboard-icon-item{min-width:0;min-height:74px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:6px;padding:8px 5px;border:1px solid var(--line);border-radius:11px;background:rgba(13,56,57,.88);box-shadow:0 10px 26px rgba(0,0,0,.10);text-align:center}
     .dashboard-icon-link{transition:.16s}.dashboard-icon-link:hover{background:rgba(22,73,74,.96);transform:translateY(-1px)}
-    .dashboard-icon-main{display:flex;align-items:center;justify-content:center;gap:5px;direction:rtl}
-    .dashboard-icon-glyph{width:26px;height:26px;display:grid;place-items:center;font-size:20px;line-height:1;color:var(--gold)}
-    .dashboard-icon-item strong{font-size:15px;color:var(--gold);line-height:1}
-    .dashboard-icon-label{max-width:100%;font-size:10.5px;line-height:1.25;color:var(--cream);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+    .dashboard-icon-item strong{font-size:18px;color:var(--gold);line-height:1.1}
+    .dashboard-icon-label{max-width:100%;font-size:10.5px;line-height:1.25;color:var(--muted);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
     @media(max-width:820px){.dashboard-icon-row{grid-template-columns:repeat(10,82px)}.dashboard-icon-item{min-height:70px}.dashboard-icon-label{font-size:10px}}
-    @media(max-width:520px){.dashboard-icon-row{margin:6px 0;gap:5px;grid-template-columns:repeat(10,78px)}.dashboard-icon-item{min-height:66px;padding:7px 4px}.dashboard-icon-glyph{width:26px;height:26px;font-size:19px}}
+    @media(max-width:520px){.dashboard-icon-row{margin:6px 0;gap:5px;grid-template-columns:repeat(10,78px)}.dashboard-icon-item{min-height:66px;padding:7px 4px}}
     
   </style>
 </head>
@@ -156,44 +154,54 @@
 
       <section class="dashboard-icon-row" aria-label="إحصائيات وأقسام اللاعب">
   <div class="dashboard-icon-item">
-    <span class="dashboard-icon-main"><span class="dashboard-icon-glyph" aria-hidden="true">♛</span><strong id="statRating">—</strong></span>
     <span class="dashboard-icon-label">النقاط</span>
+
+    <strong id="statRating">—</strong>
   </div>
   <div class="dashboard-icon-item">
-    <span class="dashboard-icon-main"><span class="dashboard-icon-glyph" aria-hidden="true">▦</span><strong id="statGames">—</strong></span>
     <span class="dashboard-icon-label">المباريات</span>
+
+    <strong id="statGames">—</strong>
   </div>
   <div class="dashboard-icon-item">
-    <span class="dashboard-icon-main"><span class="dashboard-icon-glyph" aria-hidden="true">✓</span><strong id="statWins">—</strong></span>
     <span class="dashboard-icon-label">فوز</span>
+
+    <strong id="statWins">—</strong>
   </div>
   <div class="dashboard-icon-item">
-    <span class="dashboard-icon-main"><span class="dashboard-icon-glyph" aria-hidden="true">＝</span><strong id="statDraws">—</strong></span>
     <span class="dashboard-icon-label">تعادل</span>
+
+    <strong id="statDraws">—</strong>
   </div>
   <div class="dashboard-icon-item">
-    <span class="dashboard-icon-main"><span class="dashboard-icon-glyph" aria-hidden="true">×</span><strong id="statLosses">—</strong></span>
     <span class="dashboard-icon-label">خسارة</span>
+
+    <strong id="statLosses">—</strong>
   </div>
   <a class="dashboard-icon-item dashboard-icon-link" href="profile-section.html?section=friends">
-    <span class="dashboard-icon-main"><span class="dashboard-icon-glyph" aria-hidden="true">♟</span><strong id="friendsCount">0</strong></span>
     <span class="dashboard-icon-label">الأصدقاء</span>
+
+    <strong id="friendsCount">0</strong>
   </a>
   <a class="dashboard-icon-item dashboard-icon-link" href="profile-section.html?section=friend-requests">
-    <span class="dashboard-icon-main"><span class="dashboard-icon-glyph" aria-hidden="true">✉</span><strong id="incomingCount">0</strong></span>
     <span class="dashboard-icon-label">طلبات الصداقة</span>
+
+    <strong id="incomingCount">0</strong>
   </a>
   <a class="dashboard-icon-item dashboard-icon-link" href="profile-section.html?section=sent-requests">
-    <span class="dashboard-icon-main"><span class="dashboard-icon-glyph" aria-hidden="true">↗</span><strong id="outgoingCount">0</strong></span>
     <span class="dashboard-icon-label">الطلبات المرسلة</span>
+
+    <strong id="outgoingCount">0</strong>
   </a>
   <a class="dashboard-icon-item dashboard-icon-link" href="profile-section.html?section=challenges">
-    <span class="dashboard-icon-main"><span class="dashboard-icon-glyph" aria-hidden="true">♞</span><strong id="incomingChallengesCount">0</strong></span>
     <span class="dashboard-icon-label">التحديات</span>
+
+    <strong id="incomingChallengesCount">0</strong>
   </a>
   <a class="dashboard-icon-item dashboard-icon-link" href="profile-section.html?section=sent-challenges">
-    <span class="dashboard-icon-main"><span class="dashboard-icon-glyph" aria-hidden="true">⚑</span><strong id="outgoingChallengesCount">0</strong></span>
     <span class="dashboard-icon-label">التحديات المرسلة</span>
+
+    <strong id="outgoingChallengesCount">0</strong>
   </a>
 </section>
 

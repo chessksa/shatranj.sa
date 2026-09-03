@@ -29,6 +29,25 @@
   const esc = (value) => String(value ?? '').replaceAll('&','&amp;').replaceAll('<','&lt;').replaceAll('>','&gt;').replaceAll('"','&quot;').replaceAll("'",'&#039;');
   const initial = (name) => (String(name || 'ل').trim().charAt(0) || 'ل').toUpperCase();
 
+  function rankForRating(rating) {
+    const points = Number(rating) || 0;
+    if (points >= 3000) return { key: 'champion', label: 'بطل', icon: 'rank-trophy' };
+    if (points >= 2700) return { key: 'elite', label: 'نخبة', icon: 'rank-crown' };
+    if (points >= 2400) return { key: 'professional', label: 'محترف', icon: 'rank-queen' };
+    if (points >= 2100) return { key: 'advanced', label: 'متقدم', icon: 'rank-rook' };
+    if (points >= 1800) return { key: 'competitor', label: 'منافس', icon: 'rank-knight' };
+    return { key: 'beginner', label: 'مبتدئ', icon: 'rank-pawn' };
+  }
+
+  function renderPublicRank(rating) {
+    const rank = rankForRating(rating);
+    const badge = $('publicRankBadge');
+    if (!badge) return;
+    badge.dataset.rank = rank.key;
+    $('publicRankLabel').textContent = rank.label;
+    $('publicRankUse').setAttribute('href', `#${rank.icon}`);
+  }
+
   function toast(text, error=false) {
     clearTimeout(toastTimer);
     toastEl.textContent = text;
@@ -155,6 +174,7 @@
       profile=Array.isArray(pData)?pData[0]:pData;
       if (!profile) { message.textContent='الملف غير متاح حاليًا.'; return; }
       $('publicName').textContent=profile.name;
+      renderPublicRank(profile.rating);
       $('publicMeta').textContent=[profile.username?`@${profile.username}`:'',profile.city,profile.region].filter(Boolean).join(' • ');
       $('publicRating').textContent=profile.rating;$('sRating').textContent=profile.rating;$('sGames').textContent=profile.games_count;$('sWins').textContent=profile.wins;$('sDraws').textContent=profile.draws;$('sLosses').textContent=profile.losses;$('sFriends').textContent=profile.friend_count;
       showAvatar(profile.avatar_path || `${profile.id}/avatar.webp`,profile.name);
