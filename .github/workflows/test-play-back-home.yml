@@ -1,0 +1,15 @@
+name: Test play back home
+on:
+  push:
+    paths:
+      - 'play-live.js'
+      - 'play.html'
+      - 'tests/test_play_back_home.py'
+      - '.github/workflows/test-play-back-home.yml'
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Verify direct back navigation
+        run: python tests/test_play_back_home.py
