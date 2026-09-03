@@ -1,0 +1,159 @@
+name: Apply cm-chessboard integration
+
+on:
+  push:
+    branches:
+      - 'feature/cm-chessboard'
+    paths:
+      - '.github/workflows/apply-cm-chessboard.yml'
+
+permissions:
+  contents: write
+
+jobs:
+  apply:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: feature/cm-chessboard
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - name: Replace manual board with cm-chessboard
+        run: |
+          python - <<'PY'
+          from pathlib import Path
+          import re
+
+          root = Path('.')
+          cm_css = 'https://cdn.jsdelivr.net/npm/cm-chessboard@8/assets/chessboard.css'
+
+          def update_v8_html():
+              p = root / 'play-v8.html'
+              text = p.read_text(encoding='utf-8')
+              text = text.replace('<div id="board" class="board" aria-label="رقعة الشطرنج"></div>', '<div id="board" class="cm-board-host" aria-label="رقعة الشطرنج"></div>')
+              old = '<link rel="stylesheet" href="play-v8.css?v=20260903-8" />'
+              new = f'<link rel="stylesheet" href="{cm_css}" />\n  {old}\n  <link rel="stylesheet" href="cm-chessboard-shatranj.css?v=20260903-1" />'
+              if 'cm-chessboard@8/assets/chessboard.css' not in text:
+                  text = text.replace(old, new)
+              text = text.replace('play-v8.js?v=20260903-8', 'play-v8.js?v=20260903-cm1')
+              p.write_text(text, encoding='utf-8')
+
+          def update_v10_html():
+              p = root / 'play-v10.html'
+              text = p.read_text(encoding='utf-8')
+              text = text.replace('<div id="board" class="board" aria-label="رقعة الشطرنج"></div>', '<div id="board" class="cm-board-host" aria-label="رقعة الشطرنج"></div>')
+              old = '<link rel="stylesheet" href="exact-board-v13.css?v=20260903-13" />'
+              new = f'<link rel="stylesheet" href="{cm_css}" />\n  <link rel="stylesheet" href="cm-chessboard-shatranj.css?v=20260903-1" />'
+              text = text.replace(old, new)
+              text = text.replace('  <script src="exact-board-v13.js?v=20260903-13"></script>\n', '')
+              text = text.replace("s.src='play-v8.js?v=20260903-10';", "s.src='play-v8.js?v=20260903-cm1';")
+              p.write_text(text, encoding='utf-8')
+
+          def update_live_js():
+              p = root / 'play-v8.js'
+              text = p.read_text(encoding='utf-8')
+              cm_import = "import {Chessboard, COLOR, INPUT_EVENT_TYPE, BORDER_TYPE} from 'https://cdn.jsdelivr.net/npm/cm-chessboard@8/src/Chessboard.js';\n"
+              if 'cm-chessboard@8/src/Chessboard.js' not in text:
+                  text = cm_import + text
+              text = text.replace('let game = null;\n', 'let game = null;\nlet cmBoard = null;\n', 1)
+
+              new_render = r'''function ensureBoard(){
+  if(cmBoard) return cmBoard;
+  const orientation = flipped ? COLOR.black : COLOR.white;
+  cmBoard = new Chessboard(boardEl, {
+    position: game ? game.fen() : '8/8/8/8/8/8/8/8',
+    orientation,
+    responsive: true,
+    assetsUrl: 'https://cdn.jsdelivr.net/npm/cm-chessboard@8/assets/',
+    style: {
+      cssClass: 'shatranj',
+      showCoordinates: false,
+      borderType: BORDER_TYPE.none,
+      pieces: { file: 'pieces/staunty.svg', tileSize: 40 },
+      animationDuration: 180
+    }
+  });
+  cmBoard.enableMoveInput(handleBoardInput, myColor === 'b' ? COLOR.black : COLOR.white);
+  return cmBoard;
+}
+
+function renderBoard(){
+  if(!game) return;
+  const board = ensureBoard();
+  const orientation = flipped ? COLOR.black : COLOR.white;
+  if(board.getOrientation() !== orientation) board.setOrientation(orientation, false);
+  board.setPosition(game.fen(), false);
+  updateClockUI();
+}'''
+              text, n = re.subn(r'function renderBoard\(\)\{.*?\n\}\n\nfunction localResult', new_render + '\n\nfunction localResult', text, count=1, flags=re.S)
+              if n != 1:
+                  raise SystemExit('renderBoard block not found')
+
+              new_input = r'''function handleBoardInput(event){
+  if(event.type === INPUT_EVENT_TYPE.moveInputStarted){
+    if(moveBusy || !game || !serverState || serverState.status !== 'active') return false;
+    if(game.turn() !== myColor) return false;
+    const piece = game.get(event.squareFrom);
+    return Boolean(piece && piece.color === myColor && piece.color === game.turn());
+  }
+
+  if(event.type === INPUT_EVENT_TYPE.validateMoveInput){
+    if(moveBusy || !game || !serverState || serverState.status !== 'active') return false;
+    if(game.turn() !== myColor) return false;
+    const legal = game.moves({square:event.squareFrom, verbose:true});
+    const candidate = legal.find(move => move.to === event.squareTo);
+    if(!candidate) return false;
+
+    const move = game.move({from:event.squareFrom, to:event.squareTo, promotion:'q'});
+    if(!move) return false;
+    moveBusy = true;
+
+    Promise.resolve().then(async()=>{
+      try{
+        const { error } = await supabase.rpc('submit_live_move',{
+          p_game_id:liveGameId,
+          p_seat_key:seatKey,
+          p_from:move.from,
+          p_to:move.to,
+          p_promotion:move.promotion || null,
+          p_new_fen:game.fen(),
+          p_san:move.san,
+          p_result:localResult()
+        });
+        if(error) throw error;
+      }catch(err){
+        console.error(err);
+        toast('تعذر اعتماد الحركة. أُعيدت الرقعة إلى حالة الخادم.');
+      }finally{
+        moveBusy = false;
+        await refreshLiveGame(true);
+      }
+    });
+    return true;
+  }
+
+  return true;
+}'''
+              text, n = re.subn(r'async function handleSquare\(square\)\{.*?\n\}\n\nasync function claimTimeout', new_input + '\n\nasync function claimTimeout', text, count=1, flags=re.S)
+              if n != 1:
+                  raise SystemExit('handleSquare block not found')
+
+              if "boardEl.innerHTML=''" in text:
+                  raise SystemExit('manual board renderer still present')
+              p.write_text(text, encoding='utf-8')
+
+          update_v8_html()
+          update_v10_html()
+          update_live_js()
+          PY
+      - name: Run integration test
+        run: python -m pytest -q tests/test_cm_chessboard_integration.py
+      - name: Commit integration
+        run: |
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git add play-v8.html play-v10.html play-v8.js
+          git commit -m 'feat: use cm-chessboard on live play pages'
+          git push origin HEAD:feature/cm-chessboard
