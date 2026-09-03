@@ -322,7 +322,7 @@ function ensureCmStyles(){
   if(!document.querySelector('link[data-cm-chessboard-shatranj]')){
     const theme=document.createElement('link');
     theme.rel='stylesheet';
-    theme.href='cm-chessboard-shatranj.css?v=20260903-3';
+    theme.href='cm-chessboard-shatranj.css?v=20260904-2';
     theme.dataset.cmChessboardShatranj='1';
     document.head.appendChild(theme);
   }
@@ -333,7 +333,7 @@ function forceBoardSquareColors(){
     square.style.setProperty('fill','#d6cfbf','important');
   });
   boardEl.querySelectorAll('.cm-chessboard .square.black').forEach((square)=>{
-    square.style.setProperty('fill','#0b4850','important');
+    square.style.setProperty('fill','#155b63','important');
   });
 }
 
@@ -358,7 +358,7 @@ function ensureBoard(){
       cssClass:'shatranj',
       showCoordinates:false,
       borderType:BORDER_TYPE.none,
-      pieces:{file:'pieces/shatranj-3d-staunton.svg',tileSize:40},
+      pieces:{file:'pieces/shatranj-3d-staunton-v2.svg',tileSize:40},
       animationDuration:180
     }
   });
