@@ -34,7 +34,10 @@ if (typeof document !== 'undefined' && typeof location !== 'undefined' && /(?:^|
 
     if (matchmakingScreen && setup && waiting && found && gamePage && topCard) {
       const inlineStyle = document.createElement('style');
+      if (document.body?.classList) document.body.classList.add('prematch-inline');
       inlineStyle.textContent = `
+        body.prematch-inline #matchmakingScreen{display:none!important}
+        body.prematch-inline #gamePage{display:block!important}
         .prematch-card{display:block!important;text-align:center;padding:18px!important;overflow:hidden}
         .prematch-card>.avatar,.prematch-card>.player-info,.prematch-card>.clock-box{display:none!important}
         .prematch-card #matchmakingSetup,.prematch-card #matchmakingWaiting,.prematch-card #matchmakingFound{width:100%;min-height:100%;display:flex;flex-direction:column;align-items:center;justify-content:center}
