@@ -25,6 +25,8 @@ jobs:
           if old_heading in html:
             html = html.replace(old_heading, new_heading, 1)
 
+          html = html.replace('        <p>اختر المنطقة ثم المدينة.</p>\n', '', 1)
+
           if 'function updateRankingTitle(region,city)' not in html:
             marker = 'function applyFilter(){'
             if marker not in html:
@@ -52,5 +54,5 @@ jobs:
           git config user.name github-actions[bot]
           git config user.email 41898282+github-actions[bot]@users.noreply.github.com
           git add index.html
-          git commit -m "Make ranking title follow filters"
+          git commit -m "Remove redundant ranking instruction"
           git push
