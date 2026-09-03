@@ -24,4 +24,4 @@ def test_play_v10_busts_cached_board_assets():
     html = (ROOT / "play-v10.html").read_text(encoding="utf-8")
     assert "exact-board-v13.css?v=20260903-14" in html
     assert "exact-board-v13.js?v=20260903-14" in html
-    assert "play-v10-match.js?v=20260903-12" in html
+    assert "play-v10-match.js?v=20260903-14" in html

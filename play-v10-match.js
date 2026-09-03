@@ -53,6 +53,22 @@ function ensureCmStyles(){
   }
 }
 
+function forceBoardSquareColors(){
+  boardEl.querySelectorAll('.cm-chessboard .square.white').forEach((square)=>{
+    square.style.setProperty('fill','#d6cfbf','important');
+  });
+  boardEl.querySelectorAll('.cm-chessboard .square.black').forEach((square)=>{
+    square.style.setProperty('fill','#0b4850','important');
+  });
+}
+
+function watchBoardSquareColors(){
+  if(boardEl._shatranjColorObserver) return;
+  const observer=new MutationObserver(()=>forceBoardSquareColors());
+  observer.observe(boardEl,{childList:true,subtree:true});
+  boardEl._shatranjColorObserver=observer;
+}
+
 function ensurePreviewBoard(){
   if(previewBoard) return previewBoard;
   ensureCmStyles();
@@ -70,6 +86,8 @@ function ensurePreviewBoard(){
       animationDuration: 180
     }
   });
+  forceBoardSquareColors();
+  watchBoardSquareColors();
   return previewBoard;
 }
 
@@ -86,6 +104,7 @@ function orientPreviewBoard(){
   const board = ensurePreviewBoard();
   const orientation = flipped ? COLOR.black : COLOR.white;
   if(board.getOrientation() !== orientation) board.setOrientation(orientation, false);
+  forceBoardSquareColors();
 }
 
 function formatElapsed(seconds){
