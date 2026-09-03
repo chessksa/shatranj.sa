@@ -20,128 +20,113 @@ jobs:
 
           html_path = Path('profile.html')
           html = html_path.read_text(encoding='utf-8')
-
           grid_start = html.find('      <section class="grid">')
           grid_end_marker = '      </section>\n    </main>'
           grid_end = html.find(grid_end_marker, grid_start)
           if grid_start < 0 or grid_end < 0:
               raise SystemExit('profile grid markers not found')
 
-          new_grid = '''      <section class="grid">
-        <nav class="profile-nav-grid" aria-label="أقسام العضو">
-          <a class="profile-nav-item" href="profile-section.html?section=friends">
-            <span class="profile-nav-main"><span class="profile-nav-icon" aria-hidden="true">👥</span><strong id="friendsCount">0</strong></span>
-            <span class="profile-nav-label">الأصدقاء</span>
-          </a>
-          <a class="profile-nav-item" href="profile-section.html?section=friend-requests">
-            <span class="profile-nav-main"><span class="profile-nav-icon" aria-hidden="true">✉</span><strong id="incomingCount">0</strong></span>
-            <span class="profile-nav-label">طلبات الصداقة</span>
-          </a>
-          <a class="profile-nav-item" href="profile-section.html?section=sent-requests">
-            <span class="profile-nav-main"><span class="profile-nav-icon" aria-hidden="true">↗</span><strong id="outgoingCount">0</strong></span>
-            <span class="profile-nav-label">الطلبات المرسلة</span>
-          </a>
-          <a class="profile-nav-item" href="profile-section.html?section=challenges">
-            <span class="profile-nav-main"><span class="profile-nav-icon" aria-hidden="true">♞</span><strong id="incomingChallengesCount">0</strong></span>
-            <span class="profile-nav-label">التحديات</span>
-          </a>
-          <a class="profile-nav-item" href="profile-section.html?section=sent-challenges">
-            <span class="profile-nav-main"><span class="profile-nav-icon" aria-hidden="true">⚑</span><strong id="outgoingChallengesCount">0</strong></span>
-            <span class="profile-nav-label">التحديات المرسلة</span>
-          </a>
-        </nav>
-
-        <div class="card always-visible" style="grid-column:1/-1">
-          <div class="card-head"><h2>آخر المباريات</h2><span class="badge">10</span></div>
-          <div class="list" id="recentGames"></div>
-        </div>
-
-        <div class="card always-visible" id="achievementsSection" style="grid-column:1/-1">
-          <div class="card-head"><h2>الإنجازات</h2></div>
-          <div class="achievement-grid" id="achievementsList"></div>
-        </div>
-      </section>
-'''
+          grid_lines = [
+              '      <section class="grid">',
+              '        <nav class="profile-nav-grid" aria-label="أقسام العضو">',
+              '          <a class="profile-nav-item" href="profile-section.html?section=friends">',
+              '            <span class="profile-nav-main"><span class="profile-nav-icon" aria-hidden="true">👥</span><strong id="friendsCount">0</strong></span>',
+              '            <span class="profile-nav-label">الأصدقاء</span>',
+              '          </a>',
+              '          <a class="profile-nav-item" href="profile-section.html?section=friend-requests">',
+              '            <span class="profile-nav-main"><span class="profile-nav-icon" aria-hidden="true">✉</span><strong id="incomingCount">0</strong></span>',
+              '            <span class="profile-nav-label">طلبات الصداقة</span>',
+              '          </a>',
+              '          <a class="profile-nav-item" href="profile-section.html?section=sent-requests">',
+              '            <span class="profile-nav-main"><span class="profile-nav-icon" aria-hidden="true">↗</span><strong id="outgoingCount">0</strong></span>',
+              '            <span class="profile-nav-label">الطلبات المرسلة</span>',
+              '          </a>',
+              '          <a class="profile-nav-item" href="profile-section.html?section=challenges">',
+              '            <span class="profile-nav-main"><span class="profile-nav-icon" aria-hidden="true">♞</span><strong id="incomingChallengesCount">0</strong></span>',
+              '            <span class="profile-nav-label">التحديات</span>',
+              '          </a>',
+              '          <a class="profile-nav-item" href="profile-section.html?section=sent-challenges">',
+              '            <span class="profile-nav-main"><span class="profile-nav-icon" aria-hidden="true">⚑</span><strong id="outgoingChallengesCount">0</strong></span>',
+              '            <span class="profile-nav-label">التحديات المرسلة</span>',
+              '          </a>',
+              '        </nav>',
+              '',
+              '        <div class="card always-visible" style="grid-column:1/-1">',
+              '          <div class="card-head"><h2>آخر المباريات</h2><span class="badge">10</span></div>',
+              '          <div class="list" id="recentGames"></div>',
+              '        </div>',
+              '',
+              '        <div class="card always-visible" id="achievementsSection" style="grid-column:1/-1">',
+              '          <div class="card-head"><h2>الإنجازات</h2></div>',
+              '          <div class="achievement-grid" id="achievementsList"></div>',
+              '        </div>',
+              '      </section>',
+          ]
+          new_grid = '\n'.join(grid_lines) + '\n'
           html = html[:grid_start] + new_grid + html[grid_end + len('      </section>\n'):]
 
           marker = '/* Member dashboard icon navigation 20260903 */'
           if marker not in html:
-              css = '''
-    /* Member dashboard icon navigation 20260903 */
-    .profile-nav-grid{display:grid;grid-template-columns:repeat(5,minmax(0,1fr));gap:7px;margin:7px 0}
-    .profile-nav-item{min-height:86px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:7px;padding:10px 8px;border:1px solid var(--line);border-radius:12px;background:rgba(13,56,57,.88);text-align:center;box-shadow:0 10px 26px rgba(0,0,0,.10);transition:.16s}
-    .profile-nav-item:hover{background:rgba(22,73,74,.96);transform:translateY(-1px)}
-    .profile-nav-main{display:flex;align-items:center;justify-content:center;gap:7px;direction:rtl}
-    .profile-nav-icon{font-size:24px;line-height:1;color:var(--gold)}
-    .profile-nav-main strong{font-size:16px;color:var(--gold);line-height:1}
-    .profile-nav-label{font-size:12px;color:var(--cream);white-space:nowrap}
-    @media(max-width:620px){.profile-nav-grid{grid-template-columns:repeat(5,minmax(72px,1fr));overflow-x:auto;padding-bottom:2px}.profile-nav-item{min-height:78px;padding:8px 6px}.profile-nav-icon{font-size:22px}.profile-nav-label{font-size:11px}}
-'''
-              html = html.replace('</style>', css + '  </style>', 1)
+              css_lines = [
+                  '    /* Member dashboard icon navigation 20260903 */',
+                  '    .profile-nav-grid{display:grid;grid-template-columns:repeat(5,minmax(0,1fr));gap:7px;margin:7px 0}',
+                  '    .profile-nav-item{min-height:86px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:7px;padding:10px 8px;border:1px solid var(--line);border-radius:12px;background:rgba(13,56,57,.88);text-align:center;box-shadow:0 10px 26px rgba(0,0,0,.10);transition:.16s}',
+                  '    .profile-nav-item:hover{background:rgba(22,73,74,.96);transform:translateY(-1px)}',
+                  '    .profile-nav-main{display:flex;align-items:center;justify-content:center;gap:7px;direction:rtl}',
+                  '    .profile-nav-icon{font-size:24px;line-height:1;color:var(--gold)}',
+                  '    .profile-nav-main strong{font-size:16px;color:var(--gold);line-height:1}',
+                  '    .profile-nav-label{font-size:12px;color:var(--cream);white-space:nowrap}',
+                  '    @media(max-width:620px){.profile-nav-grid{grid-template-columns:repeat(5,minmax(72px,1fr));overflow-x:auto;padding-bottom:2px}.profile-nav-item{min-height:78px;padding:8px 6px}.profile-nav-icon{font-size:22px}.profile-nav-label{font-size:11px}}',
+              ]
+              html = html.replace('</style>', '\n' + '\n'.join(css_lines) + '\n  </style>', 1)
 
           html = html.replace('profile.js?v=20260903-compact-sections', 'profile.js?v=20260903-icon-nav')
           html_path.write_text(html, encoding='utf-8')
 
           js_path = Path('profile.js')
           js = js_path.read_text(encoding='utf-8')
-
           if 'async function loadProfileNavigationCounts()' not in js:
               anchor = '  function friendRow(friend) {'
               if anchor not in js:
                   raise SystemExit('friendRow anchor not found')
-              fn = '''  async function loadProfileNavigationCounts({ autoEnter = true } = {}) {
-    if (challengePolling) return;
-    challengePolling = true;
-    try {
-      const [{ data: friends, error: fErr }, { data: requests, error: rErr }, { data: challenges, error: cErr }] = await Promise.all([
-        client.rpc('get_my_friends'),
-        client.rpc('get_my_friend_requests'),
-        client.rpc('get_my_friend_challenges')
-      ]);
-      if (fErr) throw fErr;
-      if (rErr) throw rErr;
-      if (cErr) throw cErr;
-
-      const friendRequests = requests || [];
-      const challengeRows = challenges || [];
-      $('friendsCount').textContent = (friends || []).length;
-      $('incomingCount').textContent = friendRequests.filter(r => r.direction === 'incoming').length;
-      $('outgoingCount').textContent = friendRequests.filter(r => r.direction === 'outgoing').length;
-      $('incomingChallengesCount').textContent = challengeRows.filter(r => r.direction === 'incoming' && r.status === 'pending').length;
-      $('outgoingChallengesCount').textContent = challengeRows.filter(r => r.direction === 'outgoing' && r.status === 'pending').length;
-
-      if (autoEnter) {
-        const acceptedOutgoing = challengeRows.find(r => r.direction === 'outgoing' && r.status === 'accepted' && r.game_id);
-        if (acceptedOutgoing && sessionStorage.getItem('shatranj_last_opened_friend_challenge') !== acceptedOutgoing.challenge_id) {
-          sessionStorage.setItem('shatranj_last_opened_friend_challenge', acceptedOutgoing.challenge_id);
-          await enterChallenge(acceptedOutgoing.challenge_id);
-        }
-      }
-    } finally {
-      challengePolling = false;
-    }
-  }
-
-'''
-              js = js.replace(anchor, fn + anchor, 1)
+              fn_lines = [
+                  '  async function loadProfileNavigationCounts() {',
+                  '    if (challengePolling) return;',
+                  '    challengePolling = true;',
+                  '    try {',
+                  "      const [{ data: friends, error: fErr }, { data: requests, error: rErr }, { data: challenges, error: cErr }] = await Promise.all([",
+                  "        client.rpc('get_my_friends'),",
+                  "        client.rpc('get_my_friend_requests'),",
+                  "        client.rpc('get_my_friend_challenges')",
+                  '      ]);',
+                  '      if (fErr) throw fErr;',
+                  '      if (rErr) throw rErr;',
+                  '      if (cErr) throw cErr;',
+                  '      const friendRequests = requests || [];',
+                  '      const challengeRows = challenges || [];',
+                  "      $('friendsCount').textContent = (friends || []).length;",
+                  "      $('incomingCount').textContent = friendRequests.filter(r => r.direction === 'incoming').length;",
+                  "      $('outgoingCount').textContent = friendRequests.filter(r => r.direction === 'outgoing').length;",
+                  "      $('incomingChallengesCount').textContent = challengeRows.filter(r => r.direction === 'incoming' && r.status === 'pending').length;",
+                  "      $('outgoingChallengesCount').textContent = challengeRows.filter(r => r.direction === 'outgoing' && r.status === 'pending').length;",
+                  "      const acceptedOutgoing = challengeRows.find(r => r.direction === 'outgoing' && r.status === 'accepted' && r.game_id);",
+                  "      if (acceptedOutgoing && sessionStorage.getItem('shatranj_last_opened_friend_challenge') !== acceptedOutgoing.challenge_id) {",
+                  "        sessionStorage.setItem('shatranj_last_opened_friend_challenge', acceptedOutgoing.challenge_id);",
+                  '        await enterChallenge(acceptedOutgoing.challenge_id);',
+                  '      }',
+                  '    } finally {',
+                  '      challengePolling = false;',
+                  '    }',
+                  '  }',
+                  '',
+              ]
+              js = js.replace(anchor, '\n'.join(fn_lines) + anchor, 1)
 
           js = re.sub(r"\n  function setupProfileSectionToggles\(\) \{.*?\n  \}\n(?=\n?  document\.addEventListener\('click')", '\n', js, count=1, flags=re.S)
           js = js.replace('  setupProfileSectionToggles();\n\n', '', 1)
-
-          js = js.replace(
-              'await Promise.all([loadFriendsAndRequests(), loadChallenges({ autoEnter: false })]);',
-              'await loadProfileNavigationCounts({ autoEnter: false });'
-          )
-          js = js.replace(
-              'await Promise.all([loadFriendsAndRequests(), loadRecentGames(), loadAchievements(), loadChallenges({ autoEnter: false })]);',
-              'await Promise.all([loadProfileNavigationCounts({ autoEnter: false }), loadRecentGames(), loadAchievements()]);'
-          )
-          js = re.sub(
-              r"setInterval\(\(\) => \{ if \(!document\.hidden\) loadChallenges\(\)\.catch\(err => console\.warn\('challenge refresh failed', err\)\); \}, 3000\);",
-              "setInterval(() => { if (!document.hidden) loadProfileNavigationCounts().catch(err => console.warn('profile counters refresh failed', err)); }, 3000);",
-              js,
-              count=1
-          )
+          js = js.replace('await Promise.all([loadFriendsAndRequests(), loadChallenges({ autoEnter: false })]);', 'await loadProfileNavigationCounts();')
+          js = js.replace('await Promise.all([loadFriendsAndRequests(), loadRecentGames(), loadAchievements(), loadChallenges({ autoEnter: false })]);', 'await Promise.all([loadProfileNavigationCounts(), loadRecentGames(), loadAchievements()]);')
+          js = re.sub(r"setInterval\(\(\) => \{ if \(!document\.hidden\) loadChallenges\(\)\.catch\(err => console\.warn\('challenge refresh failed', err\)\); \}, 3000\);", "setInterval(() => { if (!document.hidden) loadProfileNavigationCounts().catch(err => console.warn('profile counters refresh failed', err)); }, 3000);", js, count=1)
           js_path.write_text(js, encoding='utf-8')
           PY
 
