@@ -1,4 +1,4 @@
-/* Realistic chess pieces extracted from the approved reference image. */
+/* Approved realistic chess board: direct piece images for reliable rendering. */
 :root{
   --real-board-dark:#0b4850;
   --real-board-light:#d6cfbf;
@@ -25,41 +25,27 @@
 .square.dark{background:var(--real-board-dark) !important;}
 .piece{
   position:relative !important;
-  width:94% !important;
-  height:94% !important;
-  display:block !important;
+  width:96% !important;
+  height:96% !important;
+  display:flex !important;
+  align-items:center !important;
+  justify-content:center !important;
+  filter:none !important;
   isolation:isolate;
-  filter:drop-shadow(0 4px 3px rgba(0,0,0,.28)) !important;
 }
-.piece > svg{opacity:0 !important;pointer-events:none !important;}
-.piece::before{
-  content:"";
-  position:absolute;
-  inset:-3%;
-  z-index:2;
-  background-color:transparent !important;
-  background-image:url("assets/realistic-pieces.png?v=20260903-2");
-  background-repeat:no-repeat;
-  background-position-y:0;
-  background-size:600% 200%;
-  -webkit-mask:none !important;
-  mask:none !important;
-  -webkit-mask-image:none !important;
-  mask-image:none !important;
+.piece > svg,.piece::before,.piece::after{display:none !important;}
+.piece-image{
+  display:block !important;
+  width:100% !important;
+  height:100% !important;
+  object-fit:contain !important;
   opacity:1 !important;
+  visibility:visible !important;
+  filter:drop-shadow(0 4px 3px rgba(0,0,0,.30));
   pointer-events:none;
+  user-select:none;
 }
-.piece::after{display:none !important;}
-.piece.white::before{background-position-y:0%;}
-.piece.black::before{background-position-y:100%;}
-.piece-k::before{background-position-x:0%;}
-.piece-q::before{background-position-x:20%;}
-.piece-b::before{background-position-x:40%;}
-.piece-n::before{background-position-x:60%;}
-.piece-r::before{background-position-x:80%;}
-.piece-p::before{background-position-x:100%;}
 @media (max-width:900px){
   .board-frame{padding:7px 7px 15px !important;border-radius:11px !important;}
-  .piece{width:96% !important;height:96% !important;}
-  .piece::before{inset:-4%;}
+  .piece{width:98% !important;height:98% !important;}
 }

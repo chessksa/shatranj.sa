@@ -213,20 +213,8 @@ async function cancelMatchmaking(){
 
 function pieceSVG(type,color){
   const cls = color === 'w' ? 'white' : 'black';
-  const base = (inner) => `<div class="piece ${cls} piece-${type}"><svg viewBox="0 0 100 100" aria-hidden="true">${inner}</svg></div>`;
-  const sharedBase = `
-    <ellipse class="fill-accent" cx="50" cy="88" rx="26" ry="7"></ellipse>
-    <rect class="fill-main" x="26" y="80" width="48" height="8" rx="4"></rect>
-    <path class="stroke-main" d="M25 80h50M30 88h40" stroke-width="2.6" fill="none" stroke-linecap="round"></path>`;
-  if(type==='p') return base(`<circle class="fill-main" cx="50" cy="27" r="12"></circle><path class="fill-main" d="M50 39c10 0 18 8 18 18v2H32v-2c0-10 8-18 18-18z"></path><path class="fill-accent" d="M39 58h22c5 0 9 4 9 9v5H30v-5c0-5 4-9 9-9z"></path><path class="stroke-main" d="M38 58h24M35 71h30" stroke-width="2.4" fill="none" stroke-linecap="round"></path>${sharedBase}`);
-  if(type==='r') return base(`<path class="fill-main" d="M30 22h8v8h6v-8h12v8h6v-8h8v15H30z"></path><path class="fill-main" d="M35 37h30v30H35z"></path><path class="fill-accent" d="M30 66h40v12H30z"></path><path class="stroke-main" d="M30 37h40M37 46h26M34 66h32" stroke-width="2.4" fill="none" stroke-linecap="round"></path>${sharedBase}`);
-  if(type==='n') return base(`<path class="fill-main" d="M68 25c-7 0-13 3-18 8l-8 9-8 3 6 8-2 18h28c2-5 4-11 4-18 0-6-2-11-6-14l6-6c4-4 4-8-2-8z"></path><path class="fill-accent" d="M40 71h25c5 0 8 3 8 7H36c0-4 1-7 4-7z"></path><circle class="fill-accent" cx="59" cy="36" r="2.8"></circle><path class="stroke-main" d="M52 31c4 1 8 4 10 8M45 48c7 1 13 6 17 14M39 71h30" stroke-width="2.4" fill="none" stroke-linecap="round"></path>${sharedBase}`);
-  if(type==='b') return base(`<path class="fill-main" d="M50 18c9 0 15 7 15 16 0 7-5 11-10 15 5 4 9 10 9 18v2H36v-2c0-8 4-14 9-18-5-4-10-8-10-15 0-9 6-16 15-16z"></path><path class="stroke-main" d="M56 27l-10 14M40 69h20" stroke-width="2.6" fill="none" stroke-linecap="round"></path><path class="fill-accent" d="M34 69h32c5 0 8 4 8 9H26c0-5 3-9 8-9z"></path>${sharedBase}`);
-  if(type==='q') return base(`<circle class="fill-main" cx="28" cy="22" r="5"></circle><circle class="fill-main" cx="42" cy="16" r="5"></circle><circle class="fill-main" cx="58" cy="16" r="5"></circle><circle class="fill-main" cx="72" cy="22" r="5"></circle><path class="fill-main" d="M28 28l8 14 10-14 8 14 10-14 8 14-4 4H32l-4-4z"></path><path class="fill-accent" d="M35 46h30l4 23H31z"></path><path class="fill-accent" d="M31 69h38c5 0 8 4 8 9H23c0-5 3-9 8-9z"></path><path class="stroke-main" d="M35 46h30M38 57h24M38 69h24" stroke-width="2.3" fill="none" stroke-linecap="round"></path>${sharedBase}`);
-  if(type==='k') return base(`<path class="fill-main" d="M35 26l8-8 7 10 7-10 8 8-4 6H39z"></path><path class="fill-accent" d="M38 32h24l5 15-6 5H39l-6-5z"></path><path class="fill-main" d="M42 52h16c7 0 13 7 13 16v1H29v-1c0-9 6-16 13-16z"></path><path class="fill-accent" d="M31 69h38c5 0 8 4 8 9H23c0-5 3-9 8-9z"></path><path class="stroke-main" d="M38 32h24M42 52h16M38 69h24" stroke-width="2.4" fill="none" stroke-linecap="round"></path>${sharedBase}`);
-  return '';
+  return `<div class="piece ${cls} piece-${type}"><img class="piece-image" src="assets/pieces/${color}${type}.png?v=20260903-4" alt="" aria-hidden="true" draggable="false"></div>`;
 }
-
 
 function renderCoords(){
   leftEl.innerHTML='';
