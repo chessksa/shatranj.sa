@@ -19,29 +19,21 @@ jobs:
           index_path = Path('index.html')
           index = index_path.read_text(encoding='utf-8')
 
-          # Remove play from the member box.
           index = re.sub(
               r'\n\s*<a class="btn gold" href="play\.html\?v=\d+">♟ العب الآن</a>',
-              '',
-              index,
-              count=1,
+              '', index, count=1
           )
-
-          # Remove the legacy floating/preview play anchor.
           index = re.sub(
               r'\n<a class="mobile-play protected-play" href="play\.html\?v=\d+">♟ العب الآن</a>\n',
-              '\n',
-              index,
-              count=1,
+              '\n', index, count=1
           )
 
-          board_markup = '''
-
-    <a id="homeBoardPreview" class="home-board-preview protected-play" href="play.html?v=6" aria-label="العب الآن"></a>
-    <div id="homeBoardActions" class="home-board-actions">
-      <a class="btn gold protected-play" href="play.html?v=6">♟ العب الآن</a>
-    </div>
-'''
+          board_markup = (
+              '\n\n    <a id="homeBoardPreview" class="home-board-preview protected-play" href="play.html?v=6" aria-label="العب الآن"></a>\n'
+              '    <div id="homeBoardActions" class="home-board-actions">\n'
+              '      <a class="btn gold protected-play" href="play.html?v=6">♟ العب الآن</a>\n'
+              '    </div>\n'
+          )
           if 'id="homeBoardPreview"' not in index:
               marker = '  </div>\n</section>\n\n<footer>'
               if marker not in index:
@@ -53,96 +45,43 @@ jobs:
 
           theme_path = Path('home-theme.css')
           theme = theme_path.read_text(encoding='utf-8')
-
-          # Remove the duplicate mobile pseudo-board.
           theme = re.sub(r'\n\s*#ranking::before\{.*?\n\s*\}\n', '\n', theme, count=1, flags=re.S)
 
-          additions = r'''
-
-/* Member column order: member box, board, then play/invite actions */
-.home-board-preview{
-  display:block;
-  width:280px;
-  height:280px;
-  margin:10px auto 0;
-  border:1px solid rgba(212,180,103,.48);
-  border-radius:16px;
-  background:url("home-board-preview.svg?v=20260903-2") center/contain no-repeat;
-  box-shadow:0 16px 36px rgba(0,0,0,.22);
-  overflow:hidden;
-  filter:contrast(1.08) saturate(1.03);
-}
-
-.home-board-preview:hover{
-  transform:translateY(-2px);
-  box-shadow:0 20px 42px rgba(0,0,0,.28);
-}
-
-.home-board-actions{
-  width:280px;
-  margin:8px auto 0;
-  display:flex;
-  align-items:stretch;
-  gap:8px;
-}
-
-.home-board-actions > .btn,
-.home-board-actions > .home-invite-wrap{
-  flex:1 1 0;
-  min-width:0;
-}
-
-.home-board-actions > .home-invite-wrap > .btn{
-  width:100%;
-  height:100%;
-}
-
-@media(min-width:901px){
-  #register{
-    padding:8px 0 10px!important;
-  }
-
-  #register > .wrap{
-    display:flex;
-    flex-direction:column;
-    align-items:stretch;
-  }
-
-  #register .form-card{
-    order:1;
-  }
-
-  #homeBoardPreview{
-    order:2;
-  }
-
-  #homeBoardActions{
-    order:3;
-  }
-}
-
-@media(max-width:900px){
-  #register > .wrap{
-    display:flex;
-    flex-direction:column;
-  }
-
-  .home-board-preview{
-    width:min(82vw,330px);
-    height:auto;
-    aspect-ratio:1/1;
-    margin-top:10px;
-  }
-
-  .home-board-actions{
-    width:min(82vw,330px);
-  }
-}
-
-@media(max-width:800px){
-  body{padding-bottom:0!important}
-}
-'''
+          css_lines = [
+              '',
+              '/* Member column order: member box, board, then play/invite actions */',
+              '.home-board-preview{',
+              '  display:block;',
+              '  width:280px;',
+              '  height:280px;',
+              '  margin:10px auto 0;',
+              '  border:1px solid rgba(212,180,103,.48);',
+              '  border-radius:16px;',
+              '  background:url("home-board-preview.svg?v=20260903-2") center/contain no-repeat;',
+              '  box-shadow:0 16px 36px rgba(0,0,0,.22);',
+              '  overflow:hidden;',
+              '  filter:contrast(1.08) saturate(1.03);',
+              '}',
+              '.home-board-preview:hover{transform:translateY(-2px);box-shadow:0 20px 42px rgba(0,0,0,.28)}',
+              '.home-board-actions{width:280px;margin:8px auto 0;display:flex;align-items:stretch;gap:8px}',
+              '.home-board-actions > .btn,.home-board-actions > .home-invite-wrap{flex:1 1 0;min-width:0}',
+              '.home-board-actions > .home-invite-wrap > .btn{width:100%;height:100%}',
+              '@media(min-width:901px){',
+              '  #register{padding:8px 0 10px!important}',
+              '  #register > .wrap{display:flex;flex-direction:column;align-items:stretch}',
+              '  #register .form-card{order:1}',
+              '  #homeBoardPreview{order:2}',
+              '  #homeBoardActions{order:3}',
+              '}',
+              '@media(max-width:900px){',
+              '  #register > .wrap{display:flex;flex-direction:column}',
+              '  .home-board-preview{width:min(82vw,330px);height:auto;aspect-ratio:1/1;margin-top:10px}',
+              '  .home-board-actions{width:min(82vw,330px)}',
+              '}',
+              '@media(max-width:800px){body{padding-bottom:0!important}}',
+              ''
+          ]
+          additions = '\n'.join(css_lines)
           if '/* Member column order: member box, board, then play/invite actions */' not in theme:
               theme += additions
           theme_path.write_text(theme, encoding='utf-8')
