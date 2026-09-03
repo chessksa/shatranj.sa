@@ -38,28 +38,43 @@ if (typeof document !== 'undefined' && typeof location !== 'undefined' && /(?:^|
       inlineStyle.textContent = `
         body.prematch-inline #matchmakingScreen{display:none!important}
         body.prematch-inline #gamePage{display:block!important}
-        .prematch-card{display:block!important;text-align:center;padding:18px!important;overflow:hidden}
+        .prematch-card{display:block!important;text-align:center;padding:14px!important;overflow:hidden;height:clamp(170px,20vh,198px)!important;min-height:clamp(170px,20vh,198px)!important;max-height:clamp(170px,20vh,198px)!important}
         .prematch-card>.avatar,.prematch-card>.player-info,.prematch-card>.clock-box{display:none!important}
-        .prematch-card #matchmakingSetup,.prematch-card #matchmakingWaiting,.prematch-card #matchmakingFound{width:100%;min-height:100%;display:flex;flex-direction:column;align-items:center;justify-content:center}
+        .prematch-card #matchmakingSetup,.prematch-card #matchmakingWaiting,.prematch-card #matchmakingFound{width:100%;height:100%;min-height:0;display:flex;flex-direction:column;align-items:center;justify-content:center;overflow:hidden}
         .prematch-card #matchmakingSetup[hidden],.prematch-card #matchmakingWaiting[hidden],.prematch-card #matchmakingFound[hidden]{display:none!important}
-        .prematch-card h2{margin:0 0 7px;font-size:22px}
-        .prematch-card p{margin:0;color:var(--muted);line-height:1.65;font-size:13px}
+        .prematch-card h2{margin:0 0 5px;font-size:20px;line-height:1.25}
+        .prematch-card p{margin:0;color:var(--muted);line-height:1.45;font-size:12px}
         .prematch-card .matchmaking-profile{display:none}
-        .prematch-card .time-options{width:100%;margin-top:16px;gap:8px}
-        .prematch-card .time-option{min-height:78px;border-radius:13px}
-        .prematch-card .time-option strong{font-size:26px}
-        .prematch-card .time-option span{font-size:12px}
-        .prematch-card .search-spinner{width:54px;height:54px;margin-bottom:13px;border-width:4px}
-        .prematch-card .search-meta{width:100%;margin-top:14px}
-        .prematch-card .cancel-search{margin-top:13px;height:40px;min-width:135px}
-        .prematch-card .match-found-icon{width:58px;height:58px;margin-bottom:12px;font-size:28px}
+        .prematch-card .time-options{width:100%;margin-top:11px;gap:7px}
+        .prematch-card .time-option{min-height:68px;border-radius:12px}
+        .prematch-card .time-option strong{font-size:24px}
+        .prematch-card .time-option span{font-size:11px}
+        .prematch-card #matchmakingWaiting{gap:6px}
+        .prematch-card #matchmakingWaiting>p:not(.matchmaking-error){display:none!important}
+        .prematch-card .search-dots{height:18px;display:flex;align-items:center;justify-content:center;gap:7px;margin:0 0 2px}
+        .prematch-card .search-dots span{width:8px;height:8px;border-radius:50%;background:var(--gold);opacity:.28;animation:prematchDotPulse 1.05s ease-in-out infinite}
+        .prematch-card .search-dots span:nth-child(2){animation-delay:.14s}
+        .prematch-card .search-dots span:nth-child(3){animation-delay:.28s}
+        @keyframes prematchDotPulse{0%,70%,100%{opacity:.28;transform:translateY(0)}35%{opacity:1;transform:translateY(-3px)}}
+        .prematch-card .search-meta{width:100%;margin:0;gap:6px}
+        .prematch-card .search-meta div{padding:5px 7px;border-radius:9px;font-size:10px;line-height:1.25}
+        .prematch-card .search-meta strong{display:inline;margin:0 4px 0 0;font-size:14px}
+        .prematch-card .cancel-search{margin:0;height:32px;min-width:122px;border-radius:9px;font-size:12px}
+        .prematch-card .matchmaking-error{min-height:0;margin:0!important;font-size:10px;line-height:1.2}
+        .prematch-card .match-found-icon{width:50px;height:50px;margin-bottom:8px;font-size:25px}
         .prematch-own-card{position:relative}
         .prematch-own-card .status{visibility:visible}
+        @media(max-width:1220px) and (min-width:901px){
+          .prematch-card{height:150px!important;min-height:150px!important;max-height:150px!important;padding:10px!important}
+          .prematch-card h2{font-size:17px}.prematch-card p{font-size:10px}.prematch-card .time-options{margin-top:8px}.prematch-card .time-option{min-height:56px}.prematch-card .time-option strong{font-size:20px}
+        }
         @media(max-width:900px){
-          .prematch-card{padding:10px!important;min-height:118px!important}
-          .prematch-card h2{font-size:17px}.prematch-card p{font-size:11px}
-          .prematch-card .time-options{margin-top:9px}.prematch-card .time-option{min-height:58px}.prematch-card .time-option strong{font-size:20px}.prematch-card .time-option span{font-size:10px}
-          .prematch-card .search-meta{margin-top:8px}.prematch-card .search-spinner{width:42px;height:42px;margin-bottom:8px}
+          .prematch-card{padding:7px!important;height:118px!important;min-height:118px!important;max-height:118px!important}
+          .prematch-card h2{font-size:15px;margin-bottom:2px}.prematch-card p{font-size:9px}
+          .prematch-card .time-options{margin-top:5px;gap:5px}.prematch-card .time-option{min-height:48px}.prematch-card .time-option strong{font-size:17px}.prematch-card .time-option span{font-size:9px}
+          .prematch-card #matchmakingWaiting{gap:3px}.prematch-card .search-dots{height:12px;gap:5px;margin:0}.prematch-card .search-dots span{width:6px;height:6px}
+          .prematch-card .search-meta{gap:4px}.prematch-card .search-meta div{padding:3px 4px;font-size:8px}.prematch-card .search-meta strong{font-size:10px}
+          .prematch-card .cancel-search{height:26px;min-width:100px;font-size:9px}.prematch-card .matchmaking-error{font-size:8px}
         }
       `;
       document.head.appendChild(inlineStyle);
@@ -78,6 +93,15 @@ if (typeof document !== 'undefined' && typeof location !== 'undefined' && /(?:^|
         </div>
         <p class="matchmaking-error" id="matchmakingError"></p>
       `;
+
+      const waitingSpinner = waiting.querySelector('.search-spinner');
+      if (waitingSpinner) {
+        waitingSpinner.className = 'search-dots';
+        waitingSpinner.setAttribute('aria-label', 'جاري البحث');
+        waitingSpinner.innerHTML = '<span></span><span></span><span></span>';
+      }
+      const waitingTitle = waiting.querySelector('h2');
+      if (waitingTitle) waitingTitle.textContent = 'جارٍ البحث عن خصم';
 
       topCard.appendChild(setup);
       topCard.appendChild(waiting);
