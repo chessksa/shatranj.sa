@@ -1,0 +1,19 @@
+name: Test realistic piece live cache
+
+on:
+  push:
+    branches:
+      - main
+    paths:
+      - play.html
+      - realistic-pieces.css
+      - tests/test_realistic_piece_css_cache_live.py
+      - .github/workflows/test-realistic-piece-css-cache-live.yml
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Verify live realistic stylesheet cache key
+        run: python tests/test_realistic_piece_css_cache_live.py
