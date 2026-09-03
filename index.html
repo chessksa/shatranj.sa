@@ -877,7 +877,7 @@ footer{
   }
 }
 </style>
-<link rel="stylesheet" href="home-theme.css?v=20260903-11">
+<link rel="stylesheet" href="home-theme.css?v=20260903-12">
 </head>
 
 <body>
@@ -1098,7 +1098,13 @@ footer{
 
             </div>
 
-            <strong id="accountWelcome">مرحبًا</strong>
+            <div class="account-identity-text">
+              <strong id="accountWelcome">مرحبًا</strong>
+              <span class="account-rank-badge" id="accountRankBadge" data-rank="beginner">
+                <span class="account-rank-icon" id="accountRankIcon" aria-hidden="true">♟</span>
+                <span id="accountRankLabel">مبتدئ</span>
+              </span>
+            </div>
 
           </div>
 
@@ -1575,6 +1581,25 @@ function accountInitial(name){
   return (String(name||'ل').trim().charAt(0)||'ل').toUpperCase();
 }
 
+function rankForRating(rating){
+  const points=Number(rating)||0;
+  if(points>=3000) return {key:'champion',label:'بطل',icon:'🏆'};
+  if(points>=2700) return {key:'elite',label:'نخبة',icon:'♚'};
+  if(points>=2400) return {key:'professional',label:'محترف',icon:'♛'};
+  if(points>=2100) return {key:'advanced',label:'متقدم',icon:'♜'};
+  if(points>=1800) return {key:'competitor',label:'منافس',icon:'♞'};
+  return {key:'beginner',label:'مبتدئ',icon:'♟'};
+}
+
+function renderAccountRank(rating){
+  const badge=$('#accountRankBadge');
+  if(!badge) return;
+  const rank=rankForRating(rating);
+  badge.dataset.rank=rank.key;
+  $('#accountRankLabel').textContent=rank.label;
+  $('#accountRankIcon').textContent=rank.icon;
+}
+
 function accountAvatarPublicUrl(path){
   return supabase.storage.from('avatars').getPublicUrl(path).data.publicUrl;
 }
@@ -1619,6 +1644,7 @@ function renderAccount(){
   if(loggedIn && currentProfile){
     showAccountAvatar();
     $('#accountWelcome').textContent='مرحبًا، '+currentProfile.name;
+    renderAccountRank(currentProfile.rating);
     $('#accountRating').textContent=currentProfile.rating??1500;
     $('#accountRegion').textContent=currentProfile.region||'—';
     $('#accountCity').textContent=currentProfile.city||'—';

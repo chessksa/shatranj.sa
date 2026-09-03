@@ -927,3 +927,40 @@ footer{
   margin:0;
   text-align:right;
 }
+
+
+/* Homepage member rank 20260903 */
+.account-identity-text{
+  min-width:0;
+  display:flex;
+  flex-direction:column;
+  align-items:flex-start;
+  gap:5px;
+}
+.account-identity-text #accountWelcome{
+  margin:0;
+  text-align:right;
+}
+.account-rank-badge{
+  display:inline-flex;
+  align-items:center;
+  gap:5px;
+  width:max-content;
+  max-width:100%;
+  padding:4px 8px;
+  border:1px solid rgba(212,180,103,.38);
+  border-radius:999px;
+  background:rgba(212,180,103,.08);
+  color:var(--gold);
+  font-size:12px;
+  font-weight:900;
+  line-height:1;
+  white-space:nowrap;
+}
+.account-rank-icon{
+  font-size:15px;
+  line-height:1;
+}
+.account-rank-badge[data-rank="champion"]{
+  box-shadow:0 0 16px rgba(212,180,103,.15);
+}
