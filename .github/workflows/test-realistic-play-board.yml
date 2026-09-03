@@ -9,6 +9,7 @@ on:
       - play.html
       - play-live.js
       - realistic-pieces.css
+      - assets/realistic-pieces.png
       - .github/workflows/test-realistic-play-board.yml
 
 jobs:
@@ -24,7 +25,7 @@ jobs:
           grep -Fq 'piece ${cls} piece-${type}' play-live.js
           grep -Fq -- '--real-board-dark:#0b4850' realistic-pieces.css
           grep -Fq -- '--real-board-light:#d6cfbf' realistic-pieces.css
-          grep -Fq 'data:image/png;base64,' realistic-pieces.css
+          grep -Fq 'background-image:url("assets/realistic-pieces.png")' realistic-pieces.css
           grep -Fq '.piece-k::before' realistic-pieces.css
           grep -Fq '.piece-q::before' realistic-pieces.css
           grep -Fq '.piece-b::before' realistic-pieces.css
@@ -33,3 +34,4 @@ jobs:
           grep -Fq '.piece-p::before' realistic-pieces.css
           grep -Fq '.piece.white::before' realistic-pieces.css
           grep -Fq '.piece.black::before' realistic-pieces.css
+          test -s assets/realistic-pieces.png
