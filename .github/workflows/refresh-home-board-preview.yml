@@ -1,0 +1,36 @@
+name: Refresh home board preview cache
+
+on:
+  push:
+    paths:
+      - 'home-board-preview.svg'
+
+permissions:
+  contents: write
+
+jobs:
+  refresh:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Bump preview and theme versions
+        run: |
+          python - <<'PY'
+          from pathlib import Path
+          css = Path('home-theme.css')
+          text = css.read_text(encoding='utf-8')
+          text = text.replace('home-board-preview.svg?v=20260903-1','home-board-preview.svg?v=20260903-2')
+          css.write_text(text, encoding='utf-8')
+
+          index = Path('index.html')
+          text = index.read_text(encoding='utf-8')
+          text = text.replace('home-theme.css?v=20260903-2','home-theme.css?v=20260903-3')
+          index.write_text(text, encoding='utf-8')
+          PY
+      - name: Commit cache refresh
+        run: |
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git add home-theme.css index.html
+          git diff --cached --quiet || git commit -m 'Refresh approved board preview cache'
+          git push
