@@ -1,0 +1,27 @@
+name: Test cm-chessboard integration
+
+on:
+  pull_request:
+    paths:
+      - 'play-v10.html'
+      - 'play-v8.js'
+      - 'tests/test_cm_chessboard_integration.py'
+      - '.github/workflows/test-cm-chessboard-integration.yml'
+  push:
+    branches:
+      - 'feature/cm-chessboard'
+    paths:
+      - 'play-v10.html'
+      - 'play-v8.js'
+      - 'tests/test_cm_chessboard_integration.py'
+      - '.github/workflows/test-cm-chessboard-integration.yml'
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - run: python -m pytest -q tests/test_cm_chessboard_integration.py
