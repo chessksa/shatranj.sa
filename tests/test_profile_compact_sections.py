@@ -19,7 +19,8 @@ assert html.count('class="dashboard-icon-item') == 10, 'member dashboard must co
 assert 'background:rgba(13,56,57,.88)' in html, 'profile navigation must retain homepage panel color'
 
 assert 'id="recentGames"' in html and 'id="recentGames" hidden' not in html, 'recent games must stay visible'
-assert 'id="achievementsList"' in html and 'id="achievementsList" hidden' not in html, 'achievements must stay visible'
+assert 'id="achievementsList"' not in html, 'old achievements panel must stay removed'
+assert 'id="playerRankBadge"' in html, 'player rank badge must replace the old achievements panel'
 
 assert 'async function loadProfileNavigationCounts()' in js, 'profile navigation counts loader must exist'
 assert 'loadRatingHistory' not in js, 'rating history must not return after chart removal'
