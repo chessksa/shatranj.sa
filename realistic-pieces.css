@@ -37,11 +37,19 @@
   position:absolute;
   inset:-3%;
   z-index:2;
+  background-color:transparent !important;
   background-image:url("assets/realistic-pieces.png");
   background-repeat:no-repeat;
+  background-position-y:0;
   background-size:600% 200%;
+  -webkit-mask:none !important;
+  mask:none !important;
+  -webkit-mask-image:none !important;
+  mask-image:none !important;
+  opacity:1 !important;
   pointer-events:none;
 }
+.piece::after{display:none !important;}
 .piece.white::before{background-position-y:0%;}
 .piece.black::before{background-position-y:100%;}
 .piece-k::before{background-position-x:0%;}
