@@ -5,7 +5,7 @@ html = Path('profile.html').read_text(encoding='utf-8')
 js = Path('profile.js').read_text(encoding='utf-8')
 
 links = re.findall(r'<a\b[^>]*class="[^"]*dashboard-icon-item[^"]*"[^>]*href="([^"]+)"[^>]*>(.*?)</a>', html, re.S)
-assert len(links) == 5, f'expected 5 linked member navigation icons, found {len(links)}'
+assert len(links) == 5, f'expected 5 linked member navigation cards, found {len(links)}'
 
 expected = {
     'profile-section.html?section=friends': 'friendsCount',
@@ -19,11 +19,11 @@ for href, count_id in expected.items():
     matching = [body for link_href, body in links if link_href == href]
     assert matching, f'missing profile navigation destination {href}'
     assert f'id="{count_id}"' in matching[0], f'{count_id} must appear inside {href}'
-    assert 'dashboard-icon-glyph' in matching[0], f'{href} must contain a consistent icon glyph'
+    assert 'dashboard-icon-glyph' not in matching[0], f'{href} must not show an icon beside its number'
 
 compact = re.sub(r'\s+', '', html)
-assert '.dashboard-icon-row{display:grid;grid-template-columns:repeat(10,minmax(0,1fr))' in compact, 'member dashboard must use one ten-column icon row'
-assert '.dashboard-icon-item{' in compact, 'unified member icon styling must exist'
+assert '.dashboard-icon-row{display:grid;grid-template-columns:repeat(10,minmax(0,1fr))' in compact, 'member dashboard must use one ten-column row'
+assert '.dashboard-icon-item{' in compact, 'unified member card styling must exist'
 assert 'data-collapse-target=' not in html, 'dashboard must not contain collapsible section controls'
 
 assert 'id="recentGames"' in html and 'id="recentGames" hidden' not in html, 'recent games must remain visible'
@@ -37,4 +37,4 @@ assert 'function setupProfileSectionToggles()' not in js, 'old collapse setup mu
 for rpc in ['get_my_friends', 'get_my_friend_requests', 'get_my_friend_challenges']:
     assert rpc in js, f'count loader must use {rpc}'
 
-print('profile icon navigation: PASS')
+print('profile card navigation: PASS')
