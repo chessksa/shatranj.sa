@@ -21,6 +21,7 @@ jobs:
         run: |
           python - <<'PY'
           from pathlib import Path
+          import re
 
           sprite = '''<?xml version="1.0" encoding="UTF-8"?>
           <svg xmlns="http://www.w3.org/2000/svg" width="40" height="40" viewBox="0 0 40 40">
@@ -44,8 +45,8 @@ jobs:
           for name, old_theme in [('play-v8.js','20260903-1'), ('play-v10-match.js','20260903-2')]:
               p = Path(name)
               text = p.read_text(encoding='utf-8')
-              text = text.replace("assetsUrl:'https://cdn.jsdelivr.net/npm/cm-chessboard@8/assets/',", "assetsUrl:'assets/',")
-              text = text.replace("pieces:{file:'pieces/staunty.svg',tileSize:40}", "pieces:{file:'pieces/shatranj-approved.svg',tileSize:40}")
+              text = re.sub(r"assetsUrl\s*:\s*'https://cdn\.jsdelivr\.net/npm/cm-chessboard@8/assets/'\s*,", "assetsUrl:'assets/',", text)
+              text = re.sub(r"pieces\s*:\s*\{\s*file\s*:\s*'pieces/staunty\.svg'\s*,\s*tileSize\s*:\s*40\s*\}", "pieces:{file:'pieces/shatranj-approved.svg',tileSize:40}", text)
               text = text.replace(f"cm-chessboard-shatranj.css?v={old_theme}", "cm-chessboard-shatranj.css?v=20260903-3")
               if "pieces/shatranj-approved.svg" not in text:
                   raise SystemExit(f'approved sprite not applied to {name}')
