@@ -43,9 +43,14 @@ jobs:
           status=$(curl -sS -o /tmp/usernames.json -w '%{http_code}' \
             "$SUPABASE_URL/rest/v1/rpc/get_public_usernames" \
             -H "apikey: $SUPABASE_PUBLISHABLE_KEY" \
+            -H "Authorization: Bearer $SUPABASE_PUBLISHABLE_KEY" \
             -H "Content-Type: application/json" \
             --data '{}')
-          test "$status" = "200"
+          if [ "$status" != "200" ]; then
+            echo "Username lookup returned HTTP $status"
+            cat /tmp/usernames.json
+            exit 1
+          fi
           username=$(python3 - <<'PY'
           import json
           rows=json.load(open('/tmp/usernames.json',encoding='utf-8'))
