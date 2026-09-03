@@ -1,16 +1,17 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <svg xmlns="http://www.w3.org/2000/svg" width="40" height="40" viewBox="0 0 40 40">
-  <title>Shatranj Saudi Arabia approved brown and ivory pieces</title>
-  <g id="wk"><image href="assets/pieces/wk.png" x="0" y="0" width="40" height="40" preserveAspectRatio="xMidYMid meet"/></g>
-  <g id="wq"><image href="assets/pieces/wq.png" x="0" y="0" width="40" height="40" preserveAspectRatio="xMidYMid meet"/></g>
-  <g id="wr"><image href="assets/pieces/wr.png" x="0" y="0" width="40" height="40" preserveAspectRatio="xMidYMid meet"/></g>
-  <g id="wb"><image href="assets/pieces/wb.png" x="0" y="0" width="40" height="40" preserveAspectRatio="xMidYMid meet"/></g>
-  <g id="wn"><image href="assets/pieces/wn.png" x="0" y="0" width="40" height="40" preserveAspectRatio="xMidYMid meet"/></g>
-  <g id="wp"><image href="assets/pieces/wp.png" x="0" y="0" width="40" height="40" preserveAspectRatio="xMidYMid meet"/></g>
-  <g id="bk"><image href="assets/pieces/bk.png" x="0" y="0" width="40" height="40" preserveAspectRatio="xMidYMid meet"/></g>
-  <g id="bq"><image href="assets/pieces/bq.png" x="0" y="0" width="40" height="40" preserveAspectRatio="xMidYMid meet"/></g>
-  <g id="br"><image href="assets/pieces/br.png" x="0" y="0" width="40" height="40" preserveAspectRatio="xMidYMid meet"/></g>
-  <g id="bb"><image href="assets/pieces/bb.png" x="0" y="0" width="40" height="40" preserveAspectRatio="xMidYMid meet"/></g>
-  <g id="bn"><image href="assets/pieces/bn.png" x="0" y="0" width="40" height="40" preserveAspectRatio="xMidYMid meet"/></g>
-  <g id="bp"><image href="assets/pieces/bp.png" x="0" y="0" width="40" height="40" preserveAspectRatio="xMidYMid meet"/></g>
+  <title>Shatranj Saudi Arabia 3D Staunton pieces</title>
+  <defs><clipPath id="cell"><rect x="0" y="0" width="40" height="40"/></clipPath></defs>
+  <g id="bk" clip-path="url(#cell)"><image href="assets/pieces/3d-staunton-dark.webp?v=20260904" x="0" y="0" width="240" height="40" preserveAspectRatio="none"/></g>
+  <g id="bq" clip-path="url(#cell)"><image href="assets/pieces/3d-staunton-dark.webp?v=20260904" x="-40" y="0" width="240" height="40" preserveAspectRatio="none"/></g>
+  <g id="br" clip-path="url(#cell)"><image href="assets/pieces/3d-staunton-dark.webp?v=20260904" x="-80" y="0" width="240" height="40" preserveAspectRatio="none"/></g>
+  <g id="bb" clip-path="url(#cell)"><image href="assets/pieces/3d-staunton-dark.webp?v=20260904" x="-120" y="0" width="240" height="40" preserveAspectRatio="none"/></g>
+  <g id="bn" clip-path="url(#cell)"><image href="assets/pieces/3d-staunton-dark.webp?v=20260904" x="-160" y="0" width="240" height="40" preserveAspectRatio="none"/></g>
+  <g id="bp" clip-path="url(#cell)"><image href="assets/pieces/3d-staunton-dark.webp?v=20260904" x="-200" y="0" width="240" height="40" preserveAspectRatio="none"/></g>
+  <g id="wk" clip-path="url(#cell)"><image href="assets/pieces/3d-staunton-light.webp?v=20260904" x="0" y="0" width="240" height="40" preserveAspectRatio="none"/></g>
+  <g id="wq" clip-path="url(#cell)"><image href="assets/pieces/3d-staunton-light.webp?v=20260904" x="-40" y="0" width="240" height="40" preserveAspectRatio="none"/></g>
+  <g id="wr" clip-path="url(#cell)"><image href="assets/pieces/3d-staunton-light.webp?v=20260904" x="-80" y="0" width="240" height="40" preserveAspectRatio="none"/></g>
+  <g id="wb" clip-path="url(#cell)"><image href="assets/pieces/3d-staunton-light.webp?v=20260904" x="-120" y="0" width="240" height="40" preserveAspectRatio="none"/></g>
+  <g id="wn" clip-path="url(#cell)"><image href="assets/pieces/3d-staunton-light.webp?v=20260904" x="-160" y="0" width="240" height="40" preserveAspectRatio="none"/></g>
+  <g id="wp" clip-path="url(#cell)"><image href="assets/pieces/3d-staunton-light.webp?v=20260904" x="-200" y="0" width="240" height="40" preserveAspectRatio="none"/></g>
 </svg>
