@@ -1,0 +1,15 @@
+name: Test realistic play board
+on:
+  push:
+    paths:
+      - 'play.html'
+      - 'realistic-board.css'
+      - 'tests/test_play_realistic_board.py'
+      - '.github/workflows/test-play-realistic-board.yml'
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Verify realistic board styling
+        run: python tests/test_play_realistic_board.py
