@@ -4,6 +4,28 @@
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <title>العب الآن | شطرنج السعودية</title>
+  <script>
+    const PLAY_CACHE_RESET_VERSION = '20260903-6';
+    (async()=>{
+      try{
+        const resetKey='shatranj_play_cache_reset_version';
+        const params=new URLSearchParams(location.search);
+        if(sessionStorage.getItem(resetKey)===PLAY_CACHE_RESET_VERSION || params.get('ui')===PLAY_CACHE_RESET_VERSION) return;
+        if('serviceWorker' in navigator){
+          const regs=await navigator.serviceWorker.getRegistrations();
+          await Promise.all(regs.map(reg=>reg.unregister()));
+        }
+        if('caches' in window){
+          const names=await caches.keys();
+          await Promise.all(names.map(name=>caches.delete(name)));
+        }
+        sessionStorage.setItem(resetKey,PLAY_CACHE_RESET_VERSION);
+        params.set('ui',PLAY_CACHE_RESET_VERSION);
+        const query=params.toString();
+        location.replace(location.pathname+(query?'?'+query:'')+location.hash);
+      }catch(err){ console.warn('play cache reset failed',err); }
+    })();
+  </script>
   <style>
     :root{
       --bg1:#022f33;--bg2:#063a40;--bg3:#0b4850;--panel:#07363d;
@@ -140,7 +162,7 @@
     @media(max-width:600px){.report-modal{padding:10px}.report-card{padding:17px;border-radius:15px}.report-actions{grid-template-columns:1fr}}
 
   </style>
-  <link rel="stylesheet" href="realistic-pieces.css?v=20260903-4" />
+  <link rel="stylesheet" href="realistic-pieces.css?v=20260903-6" />
 </head>
 <body>
 
@@ -264,6 +286,6 @@
   <script src="config.js?v=20260903-2"></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/chess.js/0.10.3/chess.min.js"></script>
   <script src="site-notifications.js"></script>
-  <script type="module" src="play-live.js?v=20260903-5"></script>
+  <script type="module" src="play-live.js?v=20260903-6"></script>
 </body>
 </html>
