@@ -1,0 +1,14 @@
+name: Test play side header
+on:
+  push:
+    paths:
+      - 'play.html'
+      - 'tests/test_play_header_move.py'
+      - '.github/workflows/test-play-header-move.yml'
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Verify compact side header
+        run: python tests/test_play_header_move.py
