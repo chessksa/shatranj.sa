@@ -1,0 +1,151 @@
+name: Apply compact profile sections
+on:
+  push:
+    paths:
+      - '.github/workflows/apply-profile-compact-sections.yml'
+permissions:
+  contents: write
+jobs:
+  apply:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Apply compact collapsible member sections
+        run: |
+          python - <<'PY'
+          from pathlib import Path
+
+          html_path = Path('profile.html')
+          html = html_path.read_text(encoding='utf-8')
+
+          grid_start = html.find('      <section class="grid">')
+          grid_end_marker = '      </section>\n    </main>'
+          grid_end = html.find(grid_end_marker, grid_start)
+          if grid_start < 0 or grid_end < 0:
+              raise SystemExit('profile grid markers not found')
+
+          lines = [
+              '      <section class="grid">',
+              '        <div class="card compact-section">',
+              '          <button class="section-toggle" data-collapse-target="friendsList" type="button" aria-expanded="false" aria-controls="friendsList"><span class="section-title">الأصدقاء</span><span class="badge" id="friendsCount">0</span><span class="toggle-chevron">⌄</span></button>',
+              '          <div class="list" id="friendsList" hidden></div>',
+              '        </div>',
+              '',
+              '        <div class="card compact-section">',
+              '          <button class="section-toggle" data-collapse-target="incomingRequests" type="button" aria-expanded="false" aria-controls="incomingRequests"><span class="section-title">طلبات الصداقة</span><span class="badge" id="incomingCount">0</span><span class="toggle-chevron">⌄</span></button>',
+              '          <div class="list" id="incomingRequests" hidden></div>',
+              '        </div>',
+              '',
+              '        <div class="card compact-section">',
+              '          <button class="section-toggle" data-collapse-target="outgoingRequests" type="button" aria-expanded="false" aria-controls="outgoingRequests"><span class="section-title">الطلبات المرسلة</span><span class="badge" id="outgoingCount">0</span><span class="toggle-chevron">⌄</span></button>',
+              '          <div class="list" id="outgoingRequests" hidden></div>',
+              '        </div>',
+              '',
+              '        <div class="card compact-section" id="challengesSection">',
+              '          <button class="section-toggle" data-collapse-target="incomingChallenges" type="button" aria-expanded="false" aria-controls="incomingChallenges"><span class="section-title">التحديات</span><span class="badge" id="incomingChallengesCount">0</span><span class="toggle-chevron">⌄</span></button>',
+              '          <div class="list" id="incomingChallenges" hidden></div>',
+              '        </div>',
+              '',
+              '        <div class="card compact-section">',
+              '          <button class="section-toggle" data-collapse-target="outgoingChallenges" type="button" aria-expanded="false" aria-controls="outgoingChallenges"><span class="section-title">التحديات المرسلة</span><span class="badge" id="outgoingChallengesCount">0</span><span class="toggle-chevron">⌄</span></button>',
+              '          <div class="list" id="outgoingChallenges" hidden></div>',
+              '        </div>',
+              '',
+              '        <div class="card always-visible" style="grid-column:1/-1">',
+              '          <div class="card-head"><h2>آخر المباريات</h2><span class="badge">10</span></div>',
+              '          <div class="list" id="recentGames"></div>',
+              '        </div>',
+              '',
+              '        <div class="card always-visible" id="achievementsSection" style="grid-column:1/-1">',
+              '          <div class="card-head"><h2>الإنجازات</h2></div>',
+              '          <div class="achievement-grid" id="achievementsList"></div>',
+              '        </div>',
+              '      </section>',
+          ]
+          new_grid = '\n'.join(lines) + '\n'
+          html = html[:grid_start] + new_grid + html[grid_end + len('      </section>\n'):]
+
+          marker = '/* Unified compact profile sections 20260903 */'
+          if marker not in html:
+              css_lines = [
+                  '    /* Unified compact profile sections 20260903 */',
+                  '    .topbar{background:rgba(8,45,47,.95);border:1px solid var(--line);border-radius:14px;padding:7px 10px;margin-bottom:7px}',
+                  '    .hero,.stat,.card{background:rgba(13,56,57,.88);border-color:var(--line);box-shadow:0 10px 26px rgba(0,0,0,.10)}',
+                  '    .hero{padding:13px 15px}',
+                  '    .stats{margin:7px 0;gap:6px}',
+                  '    .stat{padding:8px 10px;border-radius:12px}',
+                  '    .grid{grid-template-columns:1fr;gap:6px}',
+                  '    .compact-section{grid-column:1/-1;padding:0;overflow:hidden;border-radius:12px;background:rgba(13,56,57,.88)}',
+                  '    .section-toggle{width:100%;min-height:43px;border:0;background:transparent;color:var(--cream);display:flex;align-items:center;justify-content:flex-start;gap:7px;padding:7px 11px;text-align:right;font-weight:800}',
+                  '    .section-toggle:hover{background:rgba(255,255,255,.035)}',
+                  '    .section-toggle .section-title{font-size:15px}',
+                  '    .section-toggle .badge{flex:0 0 auto}',
+                  '    .toggle-chevron{margin-inline-start:auto;color:var(--muted);font-size:18px;transition:transform .18s}',
+                  '    .compact-section.open .toggle-chevron{transform:rotate(180deg)}',
+                  '    .compact-section>.list{padding:7px 9px 9px;border-top:1px solid rgba(255,255,255,.07)}',
+                  '    .compact-section>.list[hidden]{display:none!important}',
+                  '    .always-visible{padding:11px 12px;border-radius:12px}',
+                  '    .always-visible .card-head{margin-bottom:7px}',
+                  '    .empty{padding:12px 7px}',
+                  '    .row{padding:8px;border-radius:10px}',
+                  '    .achievement{padding:8px;border-radius:10px}',
+                  '    @media(max-width:520px){.topbar{padding:6px 8px}.hero{padding:11px}.section-toggle{min-height:41px;padding:6px 9px}.always-visible{padding:10px}}',
+              ]
+              css_block = '\n' + '\n'.join(css_lines) + '\n'
+              html = html.replace('</style>', css_block + '  </style>', 1)
+
+          html = html.replace('profile.js?v=20260902-fix2', 'profile.js?v=20260903-compact-sections')
+          html_path.write_text(html, encoding='utf-8')
+
+          js_path = Path('profile.js')
+          js = js_path.read_text(encoding='utf-8')
+
+          chart_start = js.find('  function renderChart(history) {')
+          friend_start = js.find('  function friendRow(friend) {', chart_start)
+          if chart_start >= 0 and friend_start >= 0:
+              js = js[:chart_start] + js[friend_start:]
+
+          old_startup = 'await Promise.all([loadRatingHistory(), loadFriendsAndRequests(), loadRecentGames(), loadAchievements(), loadChallenges({ autoEnter: false })]);'
+          new_startup = 'await Promise.all([loadFriendsAndRequests(), loadRecentGames(), loadAchievements(), loadChallenges({ autoEnter: false })]);'
+          js = js.replace(old_startup, new_startup, 1)
+
+          if 'function setupProfileSectionToggles()' not in js:
+              anchor = "  document.addEventListener('click', (event) => {"
+              if anchor not in js:
+                  raise SystemExit('profile click listener marker not found')
+              toggle_lines = [
+                  '  function setupProfileSectionToggles() {',
+                  "    document.querySelectorAll('.section-toggle[data-collapse-target]').forEach((button) => {",
+                  "      button.addEventListener('click', () => {",
+                  "        const target = $(button.dataset.collapseTarget);",
+                  '        if (!target) return;',
+                  '        const opening = target.hidden;',
+                  '        target.hidden = !opening;',
+                  "        button.setAttribute('aria-expanded', String(opening));",
+                  "        button.closest('.compact-section')?.classList.toggle('open', opening);",
+                  '      });',
+                  '    });',
+                  '  }',
+                  '',
+              ]
+              js = js.replace(anchor, '\n'.join(toggle_lines) + anchor, 1)
+
+          if 'setupProfileSectionToggles();' not in js:
+              init_anchor = "  (async () => {"
+              if init_anchor not in js:
+                  raise SystemExit('profile init marker not found')
+              js = js.replace(init_anchor, '  setupProfileSectionToggles();\n\n' + init_anchor, 1)
+
+          js_path.write_text(js, encoding='utf-8')
+          PY
+
+          python tests/test_profile_compact_sections.py
+          python tests/test_profile_compact_layout.py
+          python tests/test_global_arial_font.py
+          node --check profile.js
+
+          git config user.name github-actions[bot]
+          git config user.email 41898282+github-actions[bot]@users.noreply.github.com
+          git add profile.html profile.js
+          git commit -m "Simplify member dashboard sections"
+          git push
