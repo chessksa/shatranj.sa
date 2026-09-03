@@ -19,8 +19,8 @@ expected = [
     ('الأصدقاء', 'friendsCount'),
     ('طلبات الصداقة', 'incomingCount'),
     ('الطلبات المرسلة', 'outgoingCount'),
-    ('تحديات واردة', 'incomingChallengesCount'),
-    ('تحديات مرسلة', 'outgoingChallengesCount'),
+    ('التحديات', 'incomingChallengesCount'),
+    ('التحديات المرسلة', 'outgoingChallengesCount'),
 ]
 
 for label, value_id in expected:
