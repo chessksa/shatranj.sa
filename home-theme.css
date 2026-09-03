@@ -498,6 +498,22 @@ footer{
   white-space:nowrap;
 }
 
+#accountRegion{
+  width:100%;
+  max-width:100%;
+  overflow:visible;
+  text-overflow:clip;
+  white-space:normal;
+  word-break:keep-all;
+  overflow-wrap:normal;
+  text-align:center;
+  line-height:1.15;
+}
+
+#accountRegion.account-region-long{
+  font-size:13px;
+}
+
 #accountPanel .account-actions{
   justify-content:center;
   gap:8px;
@@ -551,6 +567,10 @@ footer{
 
   #accountPanel .account-stat{
     min-height:58px;
+  }
+
+  #accountRegion.account-region-long{
+    font-size:12px;
   }
 }
 

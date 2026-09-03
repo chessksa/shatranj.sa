@@ -877,7 +877,7 @@ footer{
   }
 }
 </style>
-<link rel="stylesheet" href="home-theme.css?v=20260903-12">
+<link rel="stylesheet" href="home-theme.css?v=20260903-13">
 </head>
 
 <body>
@@ -1646,7 +1646,10 @@ function renderAccount(){
     $('#accountWelcome').textContent='مرحبًا، '+currentProfile.name;
     renderAccountRank(currentProfile.rating);
     $('#accountRating').textContent=currentProfile.rating??1500;
-    $('#accountRegion').textContent=currentProfile.region||'—';
+    const accountRegion=$('#accountRegion');
+    const accountRegionValue=String(currentProfile.region||'—').trim()||'—';
+    accountRegion.textContent=accountRegionValue;
+    accountRegion.classList.toggle('account-region-long',accountRegionValue.length>10);
     $('#accountCity').textContent=currentProfile.city||'—';
     $('#accountGames').textContent=currentProfile.games_count??0;
   }
