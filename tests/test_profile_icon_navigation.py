@@ -27,7 +27,8 @@ assert '.dashboard-icon-item{' in compact, 'unified member icon styling must exi
 assert 'data-collapse-target=' not in html, 'dashboard must not contain collapsible section controls'
 
 assert 'id="recentGames"' in html and 'id="recentGames" hidden' not in html, 'recent games must remain visible'
-assert 'id="achievementsList"' in html and 'id="achievementsList" hidden' not in html, 'achievements must remain visible'
+assert 'id="achievementsList"' not in html, 'old achievements panel must remain removed'
+assert 'id="playerRankBadge"' in html, 'rank badge must remain beside the player name'
 
 assert 'async function loadProfileNavigationCounts()' in js, 'dashboard count loader missing'
 assert 'loadProfileNavigationCounts()' in js, 'dashboard count loader must be called'
