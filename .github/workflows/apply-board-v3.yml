@@ -1,0 +1,132 @@
+name: Apply board v3
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - '.github/workflows/apply-board-v3.yml'
+
+permissions:
+  contents: write
+
+jobs:
+  apply:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: main
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - name: Install image tools
+        run: python -m pip install pillow
+      - name: Build real v3 sprite and apply live references
+        run: |
+          python - <<'PY'
+          from pathlib import Path
+          from PIL import Image
+          import base64, io, re
+
+          root = Path('.')
+          src = (root/'assets/pieces/shatranj-3d-staunton-v2.svg').read_text(encoding='utf-8')
+          codes = ['wk','wq','wr','wb','wn','wp','bk','bq','br','bb','bn','bp']
+          groups = []
+          pawn_heights = []
+
+          for code in codes:
+              m = re.search(rf'<g id="{code}"><image href="data:image/webp;base64,([^"]+)"[^>]*/></g>', src)
+              if not m:
+                  raise SystemExit(f'missing piece {code}')
+              raw = base64.b64decode(m.group(1))
+              im = Image.open(io.BytesIO(raw)).convert('RGBA')
+              bbox = im.getchannel('A').getbbox()
+              if not bbox:
+                  raise SystemExit(f'empty piece {code}')
+              crop = im.crop(bbox)
+              w, h = crop.size
+
+              if code.endswith('p'):
+                  target_h = 380
+                  scale = target_h / h
+              else:
+                  scale = min(1.10, 496 / h, 496 / w)
+
+              nw = max(1, round(w * scale))
+              nh = max(1, round(h * scale))
+              crop = crop.resize((nw, nh), Image.Resampling.LANCZOS)
+              canvas = Image.new('RGBA', (512, 512), (0,0,0,0))
+              x = (512 - nw) // 2
+              y = 506 - nh
+              canvas.alpha_composite(crop, (x, y))
+
+              out_bbox = canvas.getchannel('A').getbbox()
+              if code.endswith('p'):
+                  pawn_heights.append(out_bbox[3] - out_bbox[1])
+
+              buf = io.BytesIO()
+              canvas.save(buf, 'WEBP', quality=90, method=6)
+              b64 = base64.b64encode(buf.getvalue()).decode('ascii')
+              groups.append(f'  <g id="{code}"><image href="data:image/webp;base64,{b64}" x="0" y="0" width="40" height="40" preserveAspectRatio="xMidYMid meet"/></g>')
+
+          if pawn_heights != [380, 380]:
+              raise SystemExit(f'pawn height mismatch: {pawn_heights}')
+
+          svg = '\n'.join([
+              '<?xml version="1.0" encoding="UTF-8"?>',
+              '<svg xmlns="http://www.w3.org/2000/svg" width="40" height="40" viewBox="0 0 40 40">',
+              '  <title>Shatranj Saudi Arabia 3D Staunton v3 — enlarged pieces, unified pawns, circular king finial</title>',
+              *groups,
+              '</svg>'
+          ])
+          (root/'assets/pieces/shatranj-3d-staunton-v3.svg').write_text(svg, encoding='utf-8')
+
+          old_css = (root/'cm-chessboard-shatranj.css').read_text(encoding='utf-8')
+          new_css = old_css.replace('#155b63', '#1f6b73')
+          (root/'cm-chessboard-shatranj-v3.css').write_text(new_css, encoding='utf-8')
+
+          def replace(path, old, new):
+              p = root/path
+              s = p.read_text(encoding='utf-8')
+              if old not in s:
+                  raise SystemExit(f'missing expected text in {path}: {old}')
+              p.write_text(s.replace(old, new), encoding='utf-8')
+
+          for path in ('play-v8.js', 'play-v10-match.js'):
+              replace(path, 'pieces/shatranj-3d-staunton-v2.svg', 'pieces/shatranj-3d-staunton-v3.svg')
+              replace(path, "cm-chessboard-shatranj.css?v=20260904-2", "cm-chessboard-shatranj-v3.css?v=20260904-3")
+              replace(path, "style.setProperty('fill','#155b63','important')", "style.setProperty('fill','#1f6b73','important')")
+
+          replace('play-v10.html', '.square.dark{background:#0b4850}', '.square.dark{background:#1f6b73}')
+          replace('play-v10.html', 'play-v8.js?v=20260904-2', 'play-v8.js?v=20260904-3')
+          replace('play-v10.html', 'play-v10-match.js?v=20260904-2', 'play-v10-match.js?v=20260904-3')
+
+          test = root/'tests/test_approved_piece_sprite.py'
+          if test.exists():
+              s = test.read_text(encoding='utf-8')
+              s = s.replace('shatranj-3d-staunton-v2.svg', 'shatranj-3d-staunton-v3.svg')
+              s = s.replace('#155b63', '#1f6b73')
+              s = s.replace('cm-chessboard-shatranj.css', 'cm-chessboard-shatranj-v3.css')
+              test.write_text(s, encoding='utf-8')
+          PY
+      - name: Verify JavaScript syntax
+        run: |
+          node --check play-v8.js
+          node --check play-v10-match.js
+      - name: Verify live board v3
+        run: |
+          grep -q "shatranj-3d-staunton-v3.svg" play-v8.js
+          grep -q "shatranj-3d-staunton-v3.svg" play-v10-match.js
+          grep -q "cm-chessboard-shatranj-v3.css?v=20260904-3" play-v8.js
+          grep -q "#1f6b73" cm-chessboard-shatranj-v3.css
+          grep -q "play-v8.js?v=20260904-3" play-v10.html
+          grep -q "play-v10-match.js?v=20260904-3" play-v10.html
+          test $(grep -o 'id="[wb][kqrbnp]"' assets/pieces/shatranj-3d-staunton-v3.svg | wc -l) -eq 12
+      - name: Commit live board v3
+        run: |
+          git config user.name "chessksa"
+          git config user.email "gmel1199@gmail.com"
+          git rm .github/workflows/apply-board-v3.yml
+          git add play-v8.js play-v10-match.js play-v10.html cm-chessboard-shatranj-v3.css assets/pieces/shatranj-3d-staunton-v3.svg tests/test_approved_piece_sprite.py
+          git commit -m "feat: deploy enlarged 3D board v3"
+          git push origin main
