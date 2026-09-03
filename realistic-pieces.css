@@ -1,0 +1,57 @@
+/* Realistic chess pieces extracted from the approved reference image. */
+:root{
+  --real-board-dark:#0b4850;
+  --real-board-light:#d6cfbf;
+  --real-board-edge:#063a40;
+  --real-board-gold:#e0b567;
+}
+.board-frame{
+  padding:10px 10px 18px !important;
+  border-radius:14px !important;
+  background:linear-gradient(145deg,#07363d,#022f33) !important;
+  border:1px solid rgba(224,181,103,.72) !important;
+  box-shadow:0 14px 34px rgba(0,0,0,.30),inset 0 1px 0 rgba(255,255,255,.05) !important;
+}
+.board-shell{
+  border-radius:2px !important;
+  background:var(--real-board-edge) !important;
+  box-shadow:inset 0 0 0 1px rgba(0,0,0,.55),0 1px 0 rgba(255,255,255,.04) !important;
+}
+.square{
+  border-right:1px solid rgba(2,47,51,.34) !important;
+  border-bottom:1px solid rgba(2,47,51,.34) !important;
+}
+.square.light{background:var(--real-board-light) !important;}
+.square.dark{background:var(--real-board-dark) !important;}
+.piece{
+  position:relative !important;
+  width:94% !important;
+  height:94% !important;
+  display:block !important;
+  isolation:isolate;
+  filter:drop-shadow(0 4px 3px rgba(0,0,0,.28)) !important;
+}
+.piece > svg{opacity:0 !important;pointer-events:none !important;}
+.piece::before{
+  content:"";
+  position:absolute;
+  inset:-3%;
+  z-index:2;
+  background-image:url("assets/realistic-pieces.png");
+  background-repeat:no-repeat;
+  background-size:600% 200%;
+  pointer-events:none;
+}
+.piece.white::before{background-position-y:0%;}
+.piece.black::before{background-position-y:100%;}
+.piece-k::before{background-position-x:0%;}
+.piece-q::before{background-position-x:20%;}
+.piece-b::before{background-position-x:40%;}
+.piece-n::before{background-position-x:60%;}
+.piece-r::before{background-position-x:80%;}
+.piece-p::before{background-position-x:100%;}
+@media (max-width:900px){
+  .board-frame{padding:7px 7px 15px !important;border-radius:11px !important;}
+  .piece{width:96% !important;height:96% !important;}
+  .piece::before{inset:-4%;}
+}
