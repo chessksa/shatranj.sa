@@ -51,24 +51,7 @@ jobs:
           css = css_path.read_text(encoding='utf-8')
           marker = '/* Member avatar beside name 20260903 */'
           if marker not in css:
-            css += '''\n\n/* Member avatar beside name 20260903 */
-.account-identity-row{
-  display:flex;
-  align-items:center;
-  justify-content:center;
-  gap:12px;
-  margin:0 0 10px;
-  direction:rtl;
-}
-.account-identity-row .account-avatar-wrap{
-  margin:0;
-  flex:0 0 76px;
-}
-.account-identity-row #accountWelcome{
-  margin:0;
-  text-align:right;
-}
-'''
+            css += "\n\n/* Member avatar beside name 20260903 */\n.account-identity-row{\n  display:flex;\n  align-items:center;\n  justify-content:center;\n  gap:12px;\n  margin:0 0 10px;\n  direction:rtl;\n}\n.account-identity-row .account-avatar-wrap{\n  margin:0;\n  flex:0 0 76px;\n}\n.account-identity-row #accountWelcome{\n  margin:0;\n  text-align:right;\n}\n"
           css_path.write_text(css, encoding='utf-8')
 
           polish = Path('tests/test_home_member_polish.py')
