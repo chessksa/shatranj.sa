@@ -1050,6 +1050,15 @@ footer{
           </label>
 
           <label class="full">
+            <span>الجنس</span>
+            <select id="signupGender" required>
+              <option value="">اختر الجنس</option>
+              <option value="male">ذكر</option>
+              <option value="female">أنثى</option>
+            </select>
+          </label>
+
+          <label class="full">
             <span>الفئة</span>
             <select id="signupCategory">
               <option value="open">مفتوح</option>
@@ -1734,12 +1743,17 @@ $('#signupForm').addEventListener('submit',async event=>{
     return setAuthMsg('اختر المدينة.','err');
   }
 
+  if(!$('#signupGender').value){
+    return setAuthMsg('اختر الجنس.','err');
+  }
+
   const profileData={
     name:displayName,
     username:username,
     mobile:mobile.local,
     region:$('#signupRegion').value,
     city:$('#signupCity').value,
+    gender:$('#signupGender').value,
     category:$('#signupCategory').value
   };
 
