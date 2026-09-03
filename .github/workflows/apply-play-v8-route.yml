@@ -21,14 +21,10 @@ jobs:
           fresh_css = 'play-v8.css'
           version = '20260903-8'
 
-          # Clone the currently approved play implementation under names that an old
-          # service worker has never cached.
           html = Path('play.html').read_text(encoding='utf-8')
           js = Path('play-live.js').read_text(encoding='utf-8')
           css = Path('realistic-pieces.css').read_text(encoding='utf-8')
 
-          # Remove the old in-page cache-reset block entirely. The new URL itself is
-          # the cache-bypass mechanism and should load without a reload loop.
           html = re.sub(
               r'\n  <script>\n    const PLAY_CACHE_RESET_VERSION = .*?\n  </script>',
               '',
@@ -41,7 +37,6 @@ jobs:
           html = re.sub(r'play-live\.js\?v=[^"\']+', fresh_js + '?v=' + version, html, count=1)
           html = html.replace('href="play.html"', f'href="{fresh_html}"')
 
-          # Keep every internal return / matchmaking redirect on the fresh route.
           js = js.replace('play.html?game=', fresh_html + '?game=')
           js = js.replace("location.href='play.html';", f"location.href='{fresh_html}';")
           js = js.replace('location.href = `play.html?game=', f'location.href = `{fresh_html}?game=')
@@ -50,35 +45,34 @@ jobs:
           Path(fresh_js).write_text(js, encoding='utf-8')
           Path(fresh_css).write_text(css, encoding='utf-8')
 
-          # Make the fresh route canonical for all active entry points.
-          active = ['index.html','profile.html','profile.js','profile-section.js','site-notifications.js']
-          for name in active:
+          for name in ['index.html','profile.html','profile.js','profile-section.js','site-notifications.js']:
               p = Path(name)
               text = p.read_text(encoding='utf-8')
               text = re.sub(r'play\.html(?:\?v=\d+)?', fresh_html, text)
               p.write_text(text, encoding='utf-8')
 
-          # The new service worker must never cache play implementation assets.
           sw = Path('sw.js').read_text(encoding='utf-8')
           sw = sw.replace('/play.html","/play-live.js","/realistic-pieces.css","/assets/pieces/', '/play.html","/play-v8.html","/play-live.js","/play-v8.js","/realistic-pieces.css","/play-v8.css","/assets/pieces/')
           Path('sw.js').write_text(sw, encoding='utf-8')
 
-          test = r'''from pathlib import Path
-fresh_html = Path('play-v8.html').read_text(encoding='utf-8')
-fresh_js = Path('play-v8.js').read_text(encoding='utf-8')
-fresh_css = Path('play-v8.css').read_text(encoding='utf-8')
-assert 'PLAY_CACHE_RESET_VERSION' not in fresh_html
-assert 'play-v8.css?v=20260903-8' in fresh_html
-assert 'play-v8.js?v=20260903-8' in fresh_html
-assert 'piece-image' in fresh_css
-assert 'assets/pieces/${color}${type}.png' in fresh_js
-assert 'play-v8.html?game=' in fresh_js
-for name in ['index.html','profile.html','profile.js','profile-section.js','site-notifications.js']:
-    text = Path(name).read_text(encoding='utf-8')
-    assert 'play-v8.html' in text, name
-print('fresh play route: PASS')
-'''
-          Path('tests/test_play_fresh_route.py').write_text(test, encoding='utf-8')
+          test_lines = [
+              "from pathlib import Path",
+              "fresh_html = Path('play-v8.html').read_text(encoding='utf-8')",
+              "fresh_js = Path('play-v8.js').read_text(encoding='utf-8')",
+              "fresh_css = Path('play-v8.css').read_text(encoding='utf-8')",
+              "assert 'PLAY_CACHE_RESET_VERSION' not in fresh_html",
+              "assert 'play-v8.css?v=20260903-8' in fresh_html",
+              "assert 'play-v8.js?v=20260903-8' in fresh_html",
+              "assert 'piece-image' in fresh_css",
+              "assert 'assets/pieces/${color}${type}.png' in fresh_js",
+              "assert 'play-v8.html?game=' in fresh_js",
+              "for name in ['index.html','profile.html','profile.js','profile-section.js','site-notifications.js']:",
+              "    text = Path(name).read_text(encoding='utf-8')",
+              "    assert 'play-v8.html' in text, name",
+              "print('fresh play route: PASS')",
+              "",
+          ]
+          Path('tests/test_play_fresh_route.py').write_text('\n'.join(test_lines), encoding='utf-8')
           PY
 
           python tests/test_play_fresh_route.py
