@@ -39,3 +39,5 @@ def test_grace_end_database_migration_is_server_enforced_and_unrated():
     assert "result=null" in sql.lower()
     assert "grant execute" in sql.lower()
     assert "to authenticated" in sql.lower()
+
+# Fresh CI verification marker for the approved implementation.
