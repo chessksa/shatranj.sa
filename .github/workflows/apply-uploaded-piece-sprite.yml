@@ -53,7 +53,6 @@ jobs:
           sprite = pieces_dir / 'shatranj-approved-20260904.svg'
           sprite.write_text('\n'.join(parts), encoding='utf-8')
 
-          # Validate the generated sprite before wiring it into the site.
           ET.parse(sprite)
           text = sprite.read_text(encoding='utf-8')
           assert text.count('data:image/png;base64,') == 12
@@ -96,3 +95,5 @@ jobs:
           git add assets/pieces/shatranj-approved-20260904.svg play-v8.js play-v10-match.js play-v10.html tests/test_approved_piece_sprite.py .github/workflows/apply-uploaded-piece-sprite.yml
           git commit -m "fix: restore uploaded 3D chess pieces"
           git push origin main
+
+# trigger after workflow registration
