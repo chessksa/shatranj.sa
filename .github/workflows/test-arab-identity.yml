@@ -22,6 +22,7 @@ on:
       - 'schema.sql'
       - 'supabase/migrations/**'
       - 'tests/test_arab_identity.py'
+      - 'tests/test_arab_cities.py'
       - 'tests/test_arab_profile_country.py'
       - 'tests/test_arab_schema.py'
       - 'tests/test_dynamic_ranking_title.py'
@@ -37,6 +38,7 @@ jobs:
       - name: Run Arab platform tests
         run: |
           python tests/test_arab_identity.py
+          python tests/test_arab_cities.py
           python tests/test_arab_profile_country.py
           python tests/test_arab_schema.py
           python tests/test_dynamic_ranking_title.py
