@@ -1,0 +1,29 @@
+name: Diagnose pawn centering
+
+on:
+  push:
+    paths:
+      - '.github/workflows/diagnose-pawn-centering.yml'
+
+jobs:
+  diagnose:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Measure pawn alpha bounds
+        run: |
+          python -m pip install --quiet pillow
+          python - <<'PY'
+          from PIL import Image
+          for name in ('wp','bp'):
+              im=Image.open(f'assets/pieces/{name}.png').convert('RGBA')
+              alpha=im.getchannel('A')
+              bbox=alpha.getbbox()
+              x0,y0,x1,y1=bbox
+              cx=(x0+x1)/2
+              cy=(y0+y1)/2
+              w,h=im.size
+              x=20-46*(cx/w)
+              y=20-46*(cy/h)
+              print(f'{name}: size={w}x{h} bbox={bbox} center=({cx:.2f},{cy:.2f}) suggested_image_xy=({x:.3f},{y:.3f})')
+          PY
