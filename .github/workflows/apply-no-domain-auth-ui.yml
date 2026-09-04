@@ -37,3 +37,5 @@ jobs:
           git add index.html
           git commit -m "fix: align signup UI with no-domain auth"
           git push
+
+# This workflow keeps the signup messaging aligned with Supabase auto-confirm mode.
