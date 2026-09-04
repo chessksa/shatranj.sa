@@ -1,0 +1,120 @@
+name: Apply self-contained approved pieces
+
+on:
+  push:
+    branches:
+      - 'fix/self-contained-approved-pieces'
+    paths:
+      - '.github/workflows/apply-self-contained-approved-pieces.yml'
+
+permissions:
+  contents: write
+
+jobs:
+  apply:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: fix/self-contained-approved-pieces
+          fetch-depth: 0
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+
+      - name: Install test and image dependencies
+        run: python -m pip install pytest pillow
+
+      - name: Build one self-contained cm-chessboard sprite
+        shell: bash
+        run: |
+          python - <<'PY'
+          from pathlib import Path
+          from PIL import Image
+          from io import BytesIO
+          import base64
+          import xml.etree.ElementTree as ET
+
+          root = Path('.')
+          pieces = root / 'assets' / 'pieces'
+          dark_path = pieces / 'approved-dark-20260904.png'
+          light_path = pieces / 'approved-light-20260904.png'
+          sprite_path = pieces / 'shatranj-approved-20260904.svg'
+
+          strips = {
+              'b': Image.open(dark_path).convert('RGBA'),
+              'w': Image.open(light_path).convert('RGBA'),
+          }
+          for color, strip in strips.items():
+              assert strip.size == (1320, 220), (color, strip.size)
+
+          types = ['r', 'n', 'b', 'q', 'k', 'p']
+          encoded = {}
+          for color, strip in strips.items():
+              for index, ptype in enumerate(types):
+                  tile = strip.crop((index * 220, 0, (index + 1) * 220, 220))
+                  buf = BytesIO()
+                  tile.save(buf, format='PNG', optimize=True)
+                  encoded[color + ptype] = base64.b64encode(buf.getvalue()).decode('ascii')
+
+          parts = [
+              '<?xml version="1.0" encoding="UTF-8"?>',
+              '<svg width="40px" height="40px" viewBox="0 0 40 40" version="1.1" xmlns="http://www.w3.org/2000/svg">',
+              '  <title>Shatranj Saudi Arabia approved pieces 2026-09-04</title>',
+          ]
+          for code in ['wk','wq','wr','wb','wn','wp','bk','bq','br','bb','bn','bp']:
+              data = encoded[code]
+              parts.append(f'  <g id="{code}">')
+              parts.append(f'    <image x="0" y="0" width="40" height="40" preserveAspectRatio="xMidYMid meet" href="data:image/png;base64,{data}"/>')
+              parts.append('  </g>')
+          parts.append('</svg>')
+          sprite_path.write_text('\n'.join(parts) + '\n', encoding='utf-8')
+
+          # The old external PNG strips are no longer needed once embedded.
+          dark_path.unlink()
+          light_path.unlink()
+
+          replacements = {
+              'play-v8.js': ('pieces/shatranj-approved-20260904.svg?v=20260904-5', 'pieces/shatranj-approved-20260904.svg?v=20260904-6'),
+              'play-v10-match.js': ('pieces/shatranj-approved-20260904.svg?v=20260904-5', 'pieces/shatranj-approved-20260904.svg?v=20260904-6'),
+              'play-v10.html': None,
+          }
+          for filename, pair in replacements.items():
+              path = root / filename
+              text = path.read_text(encoding='utf-8')
+              if pair:
+                  old, new = pair
+                  assert old in text, f'missing expected sprite cache reference in {filename}'
+                  text = text.replace(old, new)
+              else:
+                  expected = [
+                      ('play-v8.js?v=20260904-5', 'play-v8.js?v=20260904-6'),
+                      ('play-v10-match.js?v=20260904-5', 'play-v10-match.js?v=20260904-6'),
+                  ]
+                  for old, new in expected:
+                      assert old in text, f'missing expected script cache reference in {filename}: {old}'
+                      text = text.replace(old, new)
+              path.write_text(text, encoding='utf-8')
+
+          # Basic parse check before the test suite.
+          ET.parse(sprite_path)
+          print('self-contained sprite bytes:', sprite_path.stat().st_size)
+          print('embedded images:', sprite_path.read_text(encoding='utf-8').count('data:image/'))
+          PY
+
+      - name: Verify targeted fix
+        run: |
+          python -m pytest -q tests/test_approved_piece_sprite.py
+          node --check play-v8.js
+          node --check play-v10-match.js
+
+      - name: Commit verified fix
+        shell: bash
+        run: |
+          rm -f .github/workflows/apply-self-contained-approved-pieces.yml
+          git config user.name "chessksa"
+          git config user.email "gmel1199@gmail.com"
+          git add -A
+          git commit -m "fix: embed approved chess pieces directly in sprite"
+          git push origin HEAD:fix/self-contained-approved-pieces
