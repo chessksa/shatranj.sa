@@ -901,7 +901,7 @@ footer{
   }
 }
 </style>
-<link rel="stylesheet" href="home-theme.css?v=2026090425">
+<link rel="stylesheet" href="home-theme.css?v=2026090426">
 </head>
 
 <body>
@@ -922,6 +922,10 @@ footer{
         </a>
       </div>
 
+      <a id="headerTournaments" class="header-tournaments header-tile" href="#register">
+        <span class="header-tile-icon" aria-hidden="true">♜</span><span>البطولات</span>
+      </a>
+
       <a id="dashboardNav" class="header-action header-tile dashboard-link" href="#register">
         <span class="header-tile-icon" aria-hidden="true">⚙</span><span>لوحة التحكم</span>
       </a>
@@ -931,9 +935,6 @@ footer{
       <button id="navLogout" class="nav-logout header-action header-tile" type="button" hidden>خروج</button>
       <a href="#register" id="navAccount" class="nav-account header-action header-tile">تسجيل الدخول</a>
     </div>
-    <a id="headerTournaments" class="header-tournaments header-tile" href="#register">
-      <span class="header-tile-icon" aria-hidden="true">♜</span><span>البطولات</span>
-    </a>
   </div>
 </header>
 
@@ -949,15 +950,15 @@ footer{
       <div class="hero-live-stats" aria-label="إحصاءات المنصة">
         <div class="hero-stat">
           <span class="hero-stat-icon" aria-hidden="true">👥</span>
-          <div><strong id="headerPlayersCount">0</strong><small>لاعب مسجل</small></div>
+          <div><small>لاعب مسجل</small><strong id="headerPlayersCount">0</strong></div>
         </div>
         <div class="hero-stat">
           <span class="hero-stat-icon" aria-hidden="true">⚔</span>
-          <div><strong id="headerMatchesCount">0</strong><small>مباراة حالية</small></div>
+          <div><small>مباراة حالية</small><strong id="headerMatchesCount">0</strong></div>
         </div>
         <a class="hero-stat hero-stat-watch" href="watch.html">
           <span class="hero-stat-icon" aria-hidden="true">◉</span>
-          <div><strong>شاهد</strong><small>يشاهد الآن</small></div>
+          <div><small>يشاهد الآن</small><strong>شاهد</strong></div>
         </a>
       </div>
 
@@ -1014,6 +1015,7 @@ footer{
         <table>
           <thead>
             <tr>
+              <th class="rank-number-head">#</th>
               <th>اللاعب</th>
               <th>المنطقة</th>
               <th>المدينة</th>
@@ -1604,8 +1606,9 @@ function applyFilter(){
 
 function renderPlayers(players){
   const topPlayers=players.slice(0,10);
-  $('#tbody').innerHTML=topPlayers.map(player=>`
+  $('#tbody').innerHTML=topPlayers.map((player,index)=>`
     <tr>
+      <td class="rank-number">${index+1}</td>
       <td>
         <a class="player-name player-profile-link" href="player.html?id=${encodeURIComponent(player.id)}">${escapeHTML(player.name)}</a>
         ${player.username
@@ -2180,6 +2183,6 @@ setInterval(loadCurrentMatchesCount,30000);
 </script>
 
 <script src="site-notifications.js?v=20260903-2"></script>
-<script src="home-invite.js?v=20260903-3"></script>
+<script src="home-invite.js?v=20260904-4"></script>
 </body>
 </html>
