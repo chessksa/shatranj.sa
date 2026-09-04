@@ -69,7 +69,7 @@
     const wrap = document.createElement('div');
     wrap.className = 'home-invite-wrap';
     wrap.innerHTML = `
-      <button id="homeInviteToggle" class="btn light" type="button">👥 دعوة لاعب</button>
+      <button id="homeInviteToggle" class="btn light" type="button"><span class="hero-action-icon" aria-hidden="true">＋</span><span>دعوة لاعب</span></button>
       <div id="homeInvitePanel" class="home-invite-panel" hidden>
         <div class="home-invite-title">ابحث عن لاعب وأرسل له دعوة مباشرة</div>
         <input id="invitePlayerSearch" class="home-invite-search" type="search" autocomplete="off" placeholder="اكتب اسم اللاعب أو اسم المستخدم">

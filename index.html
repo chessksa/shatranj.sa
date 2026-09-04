@@ -901,23 +901,13 @@ footer{
   }
 }
 </style>
-<link rel="stylesheet" href="home-theme.css?v=2026090422">
+<link rel="stylesheet" href="home-theme.css?v=2026090423">
 </head>
 
 <body>
 
 <header class="home-header">
-  <div class="wrap nav">
-    <div class="brand"><span class="brand-mark">♟</span><span>شطرنج السعودية</span></div>
-
-    <nav class="main-nav" aria-label="التنقل الرئيسي">
-      <a class="active header-tile" href="index.html"><span class="header-tile-icon" aria-hidden="true">⌂</span><span>الرئيسية</span></a>
-      <a id="dashboardNav" class="header-tile" href="#register"><span class="header-tile-icon" aria-hidden="true">⚙</span><span>لوحة التحكم</span></a>
-      <a class="header-tile" href="#ranking"><span class="header-tile-icon" aria-hidden="true">♟</span><span>اللاعبون</span></a>
-      <a class="header-tile" href="#features"><span class="header-tile-icon" aria-hidden="true">♜</span><span>البطولات</span></a>
-      <a class="header-tile" href="#features"><span class="header-tile-icon" aria-hidden="true">▤</span><span>دليل الموقع</span></a>
-    </nav>
-
+  <div class="wrap nav compact-member-nav">
     <div class="nav-user">
       <div id="headerMember" class="header-member" hidden>
         <a class="header-member-link header-tile" href="profile.html" aria-label="لوحة التحكم">
@@ -930,10 +920,16 @@ footer{
             <small>النقاط <b id="headerMemberRating">1500</b></small>
           </span>
         </a>
-        <div id="siteNotificationHost"></div>
       </div>
-      <a href="#register" id="navAccount" class="nav-account header-action header-tile">👤 تسجيل الدخول</a>
+
+      <a id="dashboardNav" class="header-action header-tile dashboard-link" href="#register">
+        <span class="header-tile-icon" aria-hidden="true">⚙</span><span>لوحة التحكم</span>
+      </a>
+
+      <div id="siteNotificationHost" class="header-notification-host"></div>
+
       <button id="navLogout" class="nav-logout header-action header-tile" type="button" hidden>خروج</button>
+      <a href="#register" id="navAccount" class="nav-account header-action header-tile">تسجيل الدخول</a>
     </div>
   </div>
 </header>
@@ -963,7 +959,7 @@ footer{
       </div>
 
       <div id="homeBoardActions" class="home-board-actions" aria-label="العب الآن ودعوة لاعب">
-        <a class="btn gold protected-play hero-play-btn" href="play-v10.html"><span aria-hidden="true">⚡</span> العب الآن</a>
+        <a class="btn gold protected-play hero-play-btn" href="play-v10.html"><span class="hero-action-icon" aria-hidden="true">♟</span><span>العب الآن</span></a>
       </div>
     </div>
 
@@ -997,7 +993,7 @@ footer{
         <h2 id="rankingTitle">ترتيب اللاعبين على مستوى السعودية</h2>
       </div>
 
-      <div class="filters">
+      <div class="filters ranking-filters">
         <select id="regionFilter">
           <option value="">كل المناطق</option>
           <option value="الرياض">الرياض</option>
@@ -1823,14 +1819,14 @@ function renderAccount(){
 
   const dashboardNav=$('#dashboardNav');
   if(loggedIn){
-    $('#navAccount').textContent='👤 لوحة التحكم';
+    $('#navAccount').textContent='لوحة التحكم';
     $('#navAccount').href='profile.html';
     $('#navAccount').hidden=true;
     $('#navLogout').hidden=false;
     if(dashboardNav) dashboardNav.href='profile.html';
   }else{
     $('#headerMember').hidden=true;
-    $('#navAccount').textContent='👤 تسجيل الدخول';
+    $('#navAccount').textContent='تسجيل الدخول';
     $('#navAccount').href='#register';
     $('#navAccount').hidden=false;
     $('#navLogout').hidden=true;
