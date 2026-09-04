@@ -951,3 +951,10 @@ footer .wrap{display:flex;justify-content:space-between;align-items:center}
 #ranking .ranking-placeholder .rank-number{
   color:var(--hero-gold)!important;
 }
+
+/* Home header duplicate cleanup + icon sizing 20260905 */
+.nav-account[hidden]{display:none!important}
+.compact-member-nav .header-tile-icon,
+.compact-member-nav .site-notification-bell{
+  font-size:16px!important;
+}
