@@ -1,0 +1,59 @@
+name: Apply 20px opponent search typography
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - '.github/workflows/apply-search-card-20px.yml'
+
+permissions:
+  contents: write
+
+jobs:
+  apply:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+
+      - name: Apply approved search-card spacing and typography
+        shell: bash
+        run: |
+          python - <<'PY'
+          from pathlib import Path
+          p = Path('play-v10.html')
+          s = p.read_text(encoding='utf-8')
+
+          old = '#topPlayerCard:has(#opponentSearchPanel:not([hidden])){align-self:center;min-height:0;padding-block:0}'
+          new = '#topPlayerCard:has(#opponentSearchPanel:not([hidden])){align-self:center;min-height:0;padding-top:0;padding-bottom:6px}'
+          assert old in s, 'expected compact search-card rule not found'
+          s = s.replace(old, new, 1)
+
+          anchor = '.opponent-search-error:empty{display:none}'
+          font_rule = '#opponentSearchPanel,#opponentSearchPanel *{font-size:20px}'
+          assert anchor in s, 'empty error rule not found'
+          if font_rule not in s:
+              s = s.replace(anchor, anchor + font_rule, 1)
+
+          p.write_text(s, encoding='utf-8')
+          PY
+
+      - name: Verify targeted regression test
+        run: |
+          python -m pip install pytest
+          python -m pytest -q tests/test_mobile_play_layout.py
+
+      - name: Commit approved change
+        shell: bash
+        run: |
+          rm -f .github/workflows/apply-search-card-20px.yml
+          git config user.name "chessksa"
+          git config user.email "gmel1199@gmail.com"
+          git add -A
+          git commit -m "fix: set opponent search text to 20px and add bottom spacing"
+          git push origin HEAD:main
