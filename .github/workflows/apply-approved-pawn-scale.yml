@@ -15,7 +15,7 @@ jobs:
       - uses: actions/checkout@v4
         with:
           ref: main
-      - name: Enlarge only white and black pawns and refresh asset cache
+      - name: Keep pawn size and visually center white and black pawns
         run: |
           python - <<'PY'
           from pathlib import Path
@@ -23,12 +23,16 @@ jobs:
           svg_path = Path('assets/pieces/shatranj-approved-20260904.svg')
           text = svg_path.read_text(encoding='utf-8')
 
-          for pawn_id in ('wp', 'bp'):
-              old = f'<g id="{pawn_id}"><image x="0" y="0" width="40" height="40"'
-              new = f'<g id="{pawn_id}"><image x="-3" y="-3" width="46" height="46"'
+          replacements = {
+              '<g id="wp"><image x="-3" y="-3" width="46" height="46"':
+              '<g id="wp"><image x="-3" y="-9.828" width="46" height="46"',
+              '<g id="bp"><image x="-3" y="-3" width="46" height="46"':
+              '<g id="bp"><image x="-3" y="-10.457" width="46" height="46"',
+          }
+          for old, new in replacements.items():
               count = text.count(old)
               if count != 1:
-                  raise SystemExit(f'expected exactly one {pawn_id} image, found {count}')
+                  raise SystemExit(f'expected exactly one pawn image marker, found {count}: {old[:20]}')
               text = text.replace(old, new, 1)
 
           svg_path.write_text(text, encoding='utf-8')
@@ -36,8 +40,8 @@ jobs:
           for js_name in ('play-v8.js', 'play-v10-match.js'):
               path = Path(js_name)
               js = path.read_text(encoding='utf-8')
-              old = 'pieces/shatranj-approved-20260904.svg?v=20260904-12'
-              new = 'pieces/shatranj-approved-20260904.svg?v=20260905-1'
+              old = 'pieces/shatranj-approved-20260904.svg?v=20260905-1'
+              new = 'pieces/shatranj-approved-20260904.svg?v=20260905-2'
               if old not in js:
                   raise SystemExit(f'missing expected SVG cache token in {js_name}')
               path.write_text(js.replace(old, new), encoding='utf-8')
@@ -45,8 +49,8 @@ jobs:
           html_path = Path('play-v10.html')
           html = html_path.read_text(encoding='utf-8')
           replacements = {
-              'play-v8.js?v=20260904-16': 'play-v8.js?v=20260905-1',
-              'play-v10-match.js?v=20260904-16': 'play-v10-match.js?v=20260905-1',
+              'play-v8.js?v=20260905-1': 'play-v8.js?v=20260905-2',
+              'play-v10-match.js?v=20260905-1': 'play-v10-match.js?v=20260905-2',
           }
           for old, new in replacements.items():
               if old not in html:
@@ -59,5 +63,5 @@ jobs:
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
           git add assets/pieces/shatranj-approved-20260904.svg play-v8.js play-v10-match.js play-v10.html
           git diff --cached --check
-          git commit -m "fix: enlarge approved pawns 15 percent" || exit 0
+          git commit -m "fix: visually center enlarged pawns" || exit 0
           git push origin main
