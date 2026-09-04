@@ -21,18 +21,25 @@ jobs:
       - uses: actions/checkout@v4
       - name: Run all repository Python tests
         run: |
-          set -e
+          failures=0
           for test_file in tests/test_*.py; do
             echo "==> $test_file"
-            python "$test_file"
+            if ! python "$test_file"; then
+              failures=$((failures + 1))
+              echo "FAILED: $test_file"
+            fi
           done
+          echo "Python test failures: $failures"
+          test "$failures" -eq 0
       - name: Check standalone JavaScript syntax
+        if: always()
         run: |
           for js_file in *.js; do
             echo "==> $js_file"
             node --check "$js_file"
           done
       - name: Check inline module JavaScript syntax
+        if: always()
         run: |
           python - <<'PY'
           import re
