@@ -49,3 +49,5 @@ jobs:
           assert not errors, '; '.join(errors)
           print('approved pawns are 15 percent larger and visually centered')
           PY
+
+# verify after visual-centering production update
