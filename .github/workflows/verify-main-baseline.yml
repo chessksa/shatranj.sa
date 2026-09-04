@@ -1,0 +1,46 @@
+name: Verify main baseline
+
+on:
+  push:
+    branches:
+      - verify/main-baseline-20260905
+
+jobs:
+  verify:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Run all repository Python tests
+        run: |
+          failures=0
+          for test_file in tests/test_*.py; do
+            echo "==> $test_file"
+            if ! python "$test_file"; then
+              failures=$((failures + 1))
+              echo "FAILED: $test_file"
+            fi
+          done
+          echo "Python test failures: $failures"
+          test "$failures" -eq 0
+      - name: Check standalone JavaScript syntax
+        if: always()
+        run: |
+          for js_file in *.js; do
+            node --check "$js_file"
+          done
+      - name: Check inline module JavaScript syntax
+        if: always()
+        run: |
+          python - <<'PY'
+          import re
+          from pathlib import Path
+          for html_path in Path('.').glob('*.html'):
+              html = html_path.read_text(encoding='utf-8')
+              scripts = re.findall(r'<script type="module">(.*?)</script>', html, re.S)
+              for i, script in enumerate(scripts):
+                  (Path('/tmp') / f'{html_path.stem}-module-{i}.mjs').write_text(script, encoding='utf-8')
+          PY
+          for module_file in /tmp/*-module-*.mjs; do
+            [ -e "$module_file" ] || continue
+            node --check "$module_file"
+          done
