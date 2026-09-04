@@ -1,0 +1,106 @@
+name: Apply desktop player card fix
+
+on:
+  push:
+    branches: [main]
+
+permissions:
+  contents: write
+
+jobs:
+  apply:
+    if: github.actor != 'github-actions[bot]'
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      - name: Apply desktop card and avatar fixes
+        shell: bash
+        run: |
+          python - <<'PY'
+          from pathlib import Path
+
+          def replace_once(path, old, new):
+              p = Path(path)
+              text = p.read_text(encoding='utf-8')
+              if old not in text:
+                  raise SystemExit(f'Expected text not found in {path}: {old[:100]!r}')
+              p.write_text(text.replace(old, new, 1), encoding='utf-8')
+
+          html_path = Path('play-v10.html')
+          html = html_path.read_text(encoding='utf-8')
+          marker = "    .legacy-matchmaking{display:none!important}\n    @media(max-width:900px)"
+          desktop_css = "    .legacy-matchmaking{display:none!important}\n    @media(min-width:901px){.player-card{padding:14px;grid-template-columns:82px minmax(0,1fr) 108px;gap:10px}.player-info{min-width:0}.name{display:block;color:inherit;text-decoration:none;font-size:16px;font-weight:800;margin:0 0 5px;white-space:nowrap;overflow:visible;text-overflow:clip;line-height:1.35}.location{color:#efbd64;font-size:11px;margin-bottom:6px;white-space:nowrap;overflow:visible}}\n    @media(max-width:900px)"
+          if marker not in html:
+              raise SystemExit('Desktop CSS insertion marker not found')
+          html = html.replace(marker, desktop_css, 1)
+          html = html.replace("play-v8.js?v=20260904-14", "play-v8.js?v=20260904-15")
+          html = html.replace("play-v10-match.js?v=20260904-14", "play-v10-match.js?v=20260904-15")
+          html_path.write_text(html, encoding='utf-8')
+
+          old_avatar = '''function setPlayerAvatar(box,img,info){
+            if(!box || !img || !info?.id) return;
+            const playerId=String(info.id);
+            if(img.dataset.playerId===playerId && img.getAttribute('src')) return;
+            img.dataset.playerId=playerId;
+            img.hidden=true;
+            const url=supabase.storage.from('avatars').getPublicUrl(`${playerId}/avatar.webp`).data.publicUrl;
+            img.onload=()=>{ img.hidden=false; };
+            img.onerror=()=>{ img.hidden=true; };
+            img.src=url;
+          }'''
+          new_avatar = '''const playerAvatarPathCache = new Map();
+
+          async function getPlayerAvatarPath(playerId){
+            if(playerAvatarPathCache.has(playerId)) return playerAvatarPathCache.get(playerId);
+            const pending=(async()=>{
+              try{
+                const { data, error }=await supabase.rpc('get_public_player_profile',{p_player_id:playerId});
+                if(error) throw error;
+                const profile=firstRow(data);
+                return profile?.avatar_path || `${playerId}/avatar.webp`;
+              }catch(err){
+                console.error(err);
+                return `${playerId}/avatar.webp`;
+              }
+            })();
+            playerAvatarPathCache.set(playerId,pending);
+            return pending;
+          }
+
+          async function setPlayerAvatar(box,img,info){
+            if(!box || !img || !info?.id) return;
+            const playerId=String(info.id);
+            if(img.dataset.playerId===playerId && img.getAttribute('src')) return;
+            img.dataset.playerId=playerId;
+            img.hidden=true;
+            const avatarPath=await getPlayerAvatarPath(playerId);
+            if(img.dataset.playerId!==playerId) return;
+            const url=supabase.storage.from('avatars').getPublicUrl(avatarPath).data.publicUrl;
+            img.onload=()=>{ if(img.dataset.playerId===playerId) img.hidden=false; };
+            img.onerror=()=>{ if(img.dataset.playerId===playerId) img.hidden=true; };
+            img.src=url;
+          }'''
+          replace_once('play-v8.js', old_avatar, new_avatar)
+
+          replace_once(
+              'play-v10-match.js',
+              "    const url=supabase.storage.from('avatars').getPublicUrl(`${p.id}/avatar.webp`).data.publicUrl;",
+              "    const avatarPath=p.avatar_path || `${p.id}/avatar.webp`;\n    const url=supabase.storage.from('avatars').getPublicUrl(avatarPath).data.publicUrl;"
+          )
+          PY
+      - name: Verify player card layout
+        run: python -m pytest -q tests/test_player_card_layout.py
+      - name: Commit approved fix
+        shell: bash
+        run: |
+          if git diff --quiet; then
+            echo "No changes needed"
+            exit 0
+          fi
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add play-v10.html play-v8.js play-v10-match.js
+          git commit -m "fix: keep desktop player card to four lines and load saved avatars"
+          git push
