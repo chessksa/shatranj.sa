@@ -1933,8 +1933,7 @@ $('#signupForm').addEventListener('submit',async event=>{
       $('#signupForm').reset();
       usernameAvailability=null;
       setUsernameStatus('اكتب اسم المستخدم للتحقق من توفره.','');
-      $('#signupCity').disabled=true;
-      fillCities($('#signupCity'),[],'اختر المنطقة أولًا');
+      $('#signupCity').value='';
 
       switchAuthTab('login');
     }
