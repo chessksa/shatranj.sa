@@ -13,6 +13,7 @@ const bottomLocationEl = $('bottomLocation');
 const bottomRatingEl = $('bottomRating');
 const bottomClockEl = $('bottomClock');
 const topClockEl = $('topClock');
+const bottomAvatarImg = $('bottomAvatarImg');
 const setupEl = $('opponentSearchSetup');
 const waitingEl = $('opponentSearchWaiting');
 const errorEl = $('opponentSearchError');
@@ -140,7 +141,13 @@ async function loadProfile(){
   }
   bottomNameEl.textContent = p.name || 'أنت';
   bottomRatingEl.textContent = p.rating ?? '—';
-  bottomLocationEl.textContent = [p.city,p.region].filter(Boolean).join(' — ') || '—';
+  bottomLocationEl.textContent = [p.region,p.city].filter(Boolean).join(' — ') || '—';
+  if(bottomAvatarImg && p.id){
+    const url=supabase.storage.from('avatars').getPublicUrl(`${p.id}/avatar.webp`).data.publicUrl;
+    bottomAvatarImg.onload=()=>{ bottomAvatarImg.hidden=false; };
+    bottomAvatarImg.onerror=()=>{ bottomAvatarImg.hidden=true; };
+    bottomAvatarImg.src=url;
+  }
   return p;
 }
 

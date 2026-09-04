@@ -44,6 +44,8 @@ const topRatingEl = $('topRating');
 const bottomRatingEl = $('bottomRating');
 const topAvatarEl = $('topAvatar');
 const bottomAvatarEl = $('bottomAvatar');
+const topAvatarImgEl = $('topAvatarImg');
+const bottomAvatarImgEl = $('bottomAvatarImg');
 const resignBtn = $('resignBtn');
 const endGraceBtn = $('endGraceBtn');
 const endGraceCountdownEl = $('endGraceCountdown');
@@ -286,14 +288,14 @@ function colorInfo(color){
       id: serverState.white_player_id,
       name: serverState.white_name,
       rating: serverState.white_rating,
-      location: [serverState.white_city,serverState.white_region].filter(Boolean).join(' — ')
+      location: [serverState.white_region,serverState.white_city].filter(Boolean).join(' — ')
     };
   }
   return {
     id: serverState.black_player_id,
     name: serverState.black_name,
     rating: serverState.black_rating,
-    location: [serverState.black_city,serverState.black_region].filter(Boolean).join(' — ')
+    location: [serverState.black_region,serverState.black_city].filter(Boolean).join(' — ')
   };
 }
 
@@ -305,6 +307,18 @@ function setPlayerProfileLink(el, info){
     el.removeAttribute('href');
     el.setAttribute('aria-disabled','true');
   }
+}
+
+function setPlayerAvatar(box,img,info){
+  if(!box || !img || !info?.id) return;
+  const playerId=String(info.id);
+  if(img.dataset.playerId===playerId && img.getAttribute('src')) return;
+  img.dataset.playerId=playerId;
+  img.hidden=true;
+  const url=supabase.storage.from('avatars').getPublicUrl(`${playerId}/avatar.webp`).data.publicUrl;
+  img.onload=()=>{ img.hidden=false; };
+  img.onerror=()=>{ img.hidden=true; };
+  img.src=url;
 }
 
 function renderPlayers(){
@@ -324,6 +338,8 @@ function renderPlayers(){
 
   topAvatarEl.classList.toggle('light', topColor==='w');
   bottomAvatarEl.classList.toggle('light', bottomColor==='w');
+  setPlayerAvatar(topAvatarEl, topAvatarImgEl, top);
+  setPlayerAvatar(bottomAvatarEl, bottomAvatarImgEl, bottom);
 }
 
 function updateClockUI(){
