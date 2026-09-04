@@ -21,7 +21,7 @@ const rangeEl = $('inlineMatchmakingRange');
 const elapsedEl = $('inlineMatchmakingElapsed');
 const cancelBtn = $('cancelInlineMatchmaking');
 const leaveBtn = $('leaveBtn');
-const flipBtn = $('flipBoard');
+const endGraceCountdownEl = $('endGraceCountdown');
 
 const files = ['a','b','c','d','e','f','g','h'];
 const ranks = [8,7,6,5,4,3,2,1];
@@ -98,13 +98,6 @@ function renderCoords(){
   const shownFiles = flipped ? [...files].reverse() : files;
   shownRanks.forEach((n)=>{ const d=document.createElement('div'); d.textContent=n; leftEl.appendChild(d); });
   shownFiles.forEach((f)=>{ const d=document.createElement('div'); d.textContent=f; bottomEl.appendChild(d); });
-}
-
-function orientPreviewBoard(){
-  const board = ensurePreviewBoard();
-  const orientation = flipped ? COLOR.black : COLOR.white;
-  if(board.getOrientation() !== orientation) board.setOrientation(orientation, false);
-  forceBoardSquareColors();
 }
 
 function formatElapsed(seconds){
@@ -241,6 +234,8 @@ async function init(){
   $('resignBtn').disabled = true;
   $('drawOffer').disabled = true;
   $('reportBtn').disabled = true;
+  $('endGraceBtn').disabled = true;
+  if(endGraceCountdownEl) endGraceCountdownEl.textContent = '5';
 
   if(!supabase){
     errorEl.textContent = 'تعذر الاتصال بخدمة اللعب.';
@@ -269,12 +264,6 @@ leaveBtn.addEventListener('click', async()=>{
   if(!waitingEl.hidden) await cancelMatchmaking();
   location.href = 'index.html';
 });
-flipBtn.addEventListener('click',()=>{
-  flipped = !flipped;
-  renderCoords();
-  orientPreviewBoard();
-});
-
 setInterval(()=>{
   if(!waitingEl.hidden && startedAt){
     elapsedEl.textContent = formatElapsed((Date.now()-startedAt)/1000);

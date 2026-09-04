@@ -45,7 +45,8 @@ const bottomRatingEl = $('bottomRating');
 const topAvatarEl = $('topAvatar');
 const bottomAvatarEl = $('bottomAvatar');
 const resignBtn = $('resignBtn');
-const flipBoardEl = $('flipBoard');
+const endGraceBtn = $('endGraceBtn');
+const endGraceCountdownEl = $('endGraceCountdown');
 const drawOfferBtn = $('drawOffer');
 
 let matchmakingTimer = null;
@@ -69,6 +70,9 @@ let timeoutClaimBusy = false;
 let drawPromptKey = '';
 let finishedAlerted = false;
 let gamePollTimer = null;
+let graceDeadline = 0;
+let graceRequestBusy = false;
+let gameCancelledHandled = false;
 
 function firstRow(data){
   return Array.isArray(data) ? (data[0] || null) : data;
@@ -79,6 +83,38 @@ function toast(message, ms=2200){
   gameToast.hidden = false;
   clearTimeout(toast._timer);
   toast._timer = setTimeout(()=>{ gameToast.hidden=true; }, ms);
+}
+
+function clearLiveSession(){
+  ['shatranj_live_game_id','shatranj_live_game_code','shatranj_live_seat_key','shatranj_live_color'].forEach((key)=>sessionStorage.removeItem(key));
+}
+
+function updateGraceEndUI(){
+  if(!endGraceBtn) return;
+  const remaining = Math.max(0, graceDeadline - performance.now());
+  const seconds = Math.ceil(remaining / 1000);
+  const enabled = remaining > 0 && serverState?.status === 'active' && !graceRequestBusy;
+  endGraceBtn.disabled = !enabled;
+  if(endGraceCountdownEl){
+    endGraceCountdownEl.textContent = remaining > 0 ? String(seconds) : 'انتهت';
+  }
+}
+
+async function loadGraceEndWindow(){
+  if(!liveGameId || !endGraceBtn) return;
+  endGraceBtn.disabled = true;
+  graceDeadline = 0;
+  try{
+    const { data, error } = await supabase.rpc('get_live_game_grace_state',{p_game_id:liveGameId});
+    if(error) throw error;
+    const row = firstRow(data);
+    const remaining = Math.max(0, Number(row?.remaining_ms || 0));
+    graceDeadline = performance.now() + remaining;
+  }catch(err){
+    console.error(err);
+    graceDeadline = 0;
+  }
+  updateGraceEndUI();
 }
 
 function showMatchmakingState(state){
@@ -487,6 +523,17 @@ function applyServerState(row, force=false){
 
   renderPlayers();
 
+  if(row.status==='cancelled' && !gameCancelledHandled){
+    gameCancelledHandled=true;
+    graceDeadline=0;
+    updateGraceEndUI();
+    clearInterval(gamePollTimer);
+    clearLiveSession();
+    toast('تم إنهاء المباراة دون احتساب نقاط.',900);
+    setTimeout(()=>{ location.replace('play-v10.html'); },700);
+    return;
+  }
+
   if(changed){
     try{
       game = new Chess(row.fen);
@@ -507,6 +554,8 @@ function applyServerState(row, force=false){
 
   if(row.status==='finished' && !finishedAlerted){
     finishedAlerted=true;
+    graceDeadline=0;
+    updateGraceEndUI();
     clearInterval(gamePollTimer);
     setTimeout(()=>alert(finishedMessage(row.result)),120);
   }
@@ -577,8 +626,10 @@ async function openLiveGame(){
 
   showGamePage();
   await refreshLiveGame(true);
+  if(serverState?.status==='cancelled') return;
+  await loadGraceEndWindow();
   gamePollTimer=setInterval(()=>{
-    if(!document.hidden && serverState?.status!=='finished') refreshLiveGame(false);
+    if(!document.hidden && !['finished','cancelled'].includes(serverState?.status)) refreshLiveGame(false);
   },1200);
 }
 
@@ -612,12 +663,33 @@ drawOfferBtn.addEventListener('click',async()=>{
   }
 });
 
-flipBoardEl.addEventListener('click',()=>{
-  flipped=!flipped;
-  selected=null;
-  legalTargets=[];
-  renderCoords();
-  renderBoard();
+endGraceBtn.addEventListener('click',async()=>{
+  updateGraceEndUI();
+  if(endGraceBtn.disabled || graceRequestBusy || !liveGameId || !seatKey) return;
+  graceRequestBusy=true;
+  endGraceBtn.disabled=true;
+  try{
+    const { data, error }=await supabase.rpc('cancel_live_game_grace',{p_game_id:liveGameId,p_seat_key:seatKey});
+    if(error) throw error;
+    const ended = data === true || firstRow(data) === true;
+    if(!ended){
+      graceDeadline=0;
+      toast('انتهت مهلة الإنهاء.');
+      return;
+    }
+    graceDeadline=0;
+    clearInterval(gamePollTimer);
+    clearLiveSession();
+    toast('تم إنهاء المباراة دون احتساب نقاط.',900);
+    setTimeout(()=>{ location.replace('play-v10.html'); },650);
+  }catch(err){
+    console.error(err);
+    toast('تعذر إنهاء المباراة. حاول مرة أخرى.');
+    await loadGraceEndWindow();
+  }finally{
+    graceRequestBusy=false;
+    updateGraceEndUI();
+  }
 });
 
 document.querySelectorAll('[data-minutes]').forEach(btn=>{
@@ -676,7 +748,10 @@ submitReportBtn.addEventListener('click',async()=>{
 });
 
 setInterval(()=>{
-  if(!gamePage.hidden) updateClockUI();
+  if(!gamePage.hidden){
+    updateClockUI();
+    updateGraceEndUI();
+  }
   if(!matchmakingWaiting.hidden && matchmakingStartedAt){
     matchmakingElapsed.textContent=formatElapsed((Date.now()-matchmakingStartedAt)/1000);
   }
