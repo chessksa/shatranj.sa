@@ -1,0 +1,62 @@
+name: Fix approved piece image paths
+
+on:
+  push:
+    branches:
+      - 'fix/approved-brown-ivory-pieces'
+    paths:
+      - '.github/workflows/fix-approved-piece-paths.yml'
+
+permissions:
+  contents: write
+
+jobs:
+  fix:
+    if: github.actor != 'github-actions[bot]'
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: fix/approved-brown-ivory-pieces
+          fetch-depth: 0
+
+      - name: Fix sprite-relative PNG paths and bust sprite cache
+        shell: bash
+        run: |
+          python - <<'PY'
+          from pathlib import Path
+
+          sprite_path = Path('assets/pieces/shatranj-approved-20260904.svg')
+          sprite = sprite_path.read_text(encoding='utf-8')
+          sprite = sprite.replace('href="assets/pieces/approved-dark-20260904.png?v=20260904-2"', 'href="approved-dark-20260904.png?v=20260904-2"')
+          sprite = sprite.replace('href="assets/pieces/approved-light-20260904.png?v=20260904-2"', 'href="approved-light-20260904.png?v=20260904-2"')
+          if 'href="assets/pieces/' in sprite:
+              raise SystemExit('broken nested assets/pieces path still present in sprite')
+          sprite_path.write_text(sprite, encoding='utf-8')
+
+          old = "pieces:{file:'pieces/shatranj-approved-20260904.svg',tileSize:40}"
+          new = "pieces:{file:'pieces/shatranj-approved-20260904.svg?v=20260904-5',tileSize:40}"
+          for name in ('play-v8.js', 'play-v10-match.js'):
+              path = Path(name)
+              text = path.read_text(encoding='utf-8')
+              if old not in text:
+                  raise SystemExit(f'expected sprite reference not found in {name}')
+              path.write_text(text.replace(old, new, 1), encoding='utf-8')
+          PY
+
+      - name: Verify fix
+        run: |
+          python -m pip install pytest
+          python -m pytest -q tests/test_approved_piece_sprite.py
+          node --check play-v8.js
+          node --check play-v10-match.js
+
+      - name: Commit fix
+        shell: bash
+        run: |
+          rm -f .github/workflows/fix-approved-piece-paths.yml
+          git config user.name "chessksa"
+          git config user.email "gmel1199@gmail.com"
+          git add -A
+          git commit -m "fix: load approved chess piece images correctly"
+          git push origin HEAD:fix/approved-brown-ivory-pieces
