@@ -442,7 +442,7 @@ function ensureBoard(){
       cssClass:'shatranj',
       showCoordinates:false,
       borderType:BORDER_TYPE.none,
-      pieces:{file:'pieces/shatranj-approved-20260904.svg?v=20260904-12',tileSize:40},
+      pieces:{file:'pieces/shatranj-approved-20260904.svg?v=20260905-1',tileSize:40},
       animationDuration:180
     }
   });
