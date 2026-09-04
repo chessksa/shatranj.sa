@@ -22,6 +22,7 @@ jobs:
           path = Path('assets/pieces/shatranj-approved-20260904.svg')
           root = ET.parse(path).getroot()
           groups = {el.attrib.get('id'): el for el in root.iter() if el.attrib.get('id')}
+          errors=[]
 
           for pawn_id in ('wp', 'bp'):
               group = groups.get(pawn_id)
@@ -30,7 +31,8 @@ jobs:
               assert image is not None, f'missing image for {pawn_id}'
               x=float(image.attrib['x']); y=float(image.attrib['y'])
               width=float(image.attrib['width']); height=float(image.attrib['height'])
-              assert width == 46 and height == 46, f'{pawn_id} size changed: {width}x{height}'
+              if width != 46 or height != 46:
+                  errors.append(f'{pawn_id} size changed: {width}x{height}')
 
               png=Image.open(f'assets/pieces/{pawn_id}.png').convert('RGBA')
               bbox=png.getchannel('A').getbbox()
@@ -41,9 +43,9 @@ jobs:
               visual_x=x + width*(cx/pw)
               visual_y=y + height*(cy/ph)
               print(f'{pawn_id}: bbox={bbox} source_center=({cx:.2f},{cy:.2f}) visual_center=({visual_x:.3f},{visual_y:.3f}) image_xy=({x},{y})')
-              assert abs(visual_x-20) <= 0.35 and abs(visual_y-20) <= 0.35, (
-                  f'{pawn_id} not visually centered: ({visual_x:.3f},{visual_y:.3f})'
-              )
+              if abs(visual_x-20) > 0.35 or abs(visual_y-20) > 0.35:
+                  errors.append(f'{pawn_id} not visually centered: ({visual_x:.3f},{visual_y:.3f})')
 
+          assert not errors, '; '.join(errors)
           print('approved pawns are 15 percent larger and visually centered')
           PY
