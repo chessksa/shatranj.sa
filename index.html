@@ -901,7 +901,7 @@ footer{
   }
 }
 </style>
-<link rel="stylesheet" href="home-theme.css?v=2026090421">
+<link rel="stylesheet" href="home-theme.css?v=2026090422">
 </head>
 
 <body>
@@ -911,16 +911,16 @@ footer{
     <div class="brand"><span class="brand-mark">♟</span><span>شطرنج السعودية</span></div>
 
     <nav class="main-nav" aria-label="التنقل الرئيسي">
-      <a class="active" href="index.html">الرئيسية</a>
-      <a id="dashboardNav" href="#register">لوحة التحكم</a>
-      <a href="#ranking">اللاعبون</a>
-      <a href="#features">البطولات</a>
-      <a href="#features">دليل الموقع</a>
+      <a class="active header-tile" href="index.html"><span class="header-tile-icon" aria-hidden="true">⌂</span><span>الرئيسية</span></a>
+      <a id="dashboardNav" class="header-tile" href="#register"><span class="header-tile-icon" aria-hidden="true">⚙</span><span>لوحة التحكم</span></a>
+      <a class="header-tile" href="#ranking"><span class="header-tile-icon" aria-hidden="true">♟</span><span>اللاعبون</span></a>
+      <a class="header-tile" href="#features"><span class="header-tile-icon" aria-hidden="true">♜</span><span>البطولات</span></a>
+      <a class="header-tile" href="#features"><span class="header-tile-icon" aria-hidden="true">▤</span><span>دليل الموقع</span></a>
     </nav>
 
     <div class="nav-user">
       <div id="headerMember" class="header-member" hidden>
-        <a class="header-member-link" href="profile.html" aria-label="لوحة التحكم">
+        <a class="header-member-link header-tile" href="profile.html" aria-label="لوحة التحكم">
           <span class="header-member-avatar-wrap" aria-hidden="true">
             <img id="headerMemberAvatar" class="header-member-avatar" alt="" hidden>
             <span id="headerMemberFallback" class="header-member-avatar header-member-fallback">♟</span>
@@ -932,8 +932,8 @@ footer{
         </a>
         <div id="siteNotificationHost"></div>
       </div>
-      <a href="#register" id="navAccount" class="nav-account header-action">👤 تسجيل الدخول</a>
-      <button id="navLogout" class="nav-logout header-action" type="button" hidden>خروج</button>
+      <a href="#register" id="navAccount" class="nav-account header-action header-tile">👤 تسجيل الدخول</a>
+      <button id="navLogout" class="nav-logout header-action header-tile" type="button" hidden>خروج</button>
     </div>
   </div>
 </header>
@@ -1031,11 +1031,9 @@ footer{
         <table>
           <thead>
             <tr>
-              <th>#</th>
               <th>اللاعب</th>
               <th>المنطقة</th>
               <th>المدينة</th>
-              <th>الفئة</th>
               <th>النقاط</th>
             </tr>
           </thead>
@@ -1622,9 +1620,9 @@ function applyFilter(){
 }
 
 function renderPlayers(players){
-  $('#tbody').innerHTML=players.map((player,index)=>`
+  const topPlayers=players.slice(0,10);
+  $('#tbody').innerHTML=topPlayers.map(player=>`
     <tr>
-      <td>${index+1}</td>
       <td>
         <a class="player-name player-profile-link" href="player.html?id=${encodeURIComponent(player.id)}">${escapeHTML(player.name)}</a>
         ${player.username
@@ -1634,17 +1632,12 @@ function renderPlayers(players){
       </td>
       <td>${escapeHTML(player.region)}</td>
       <td>${escapeHTML(player.city)}</td>
-      <td>
-        <span class="badge">
-          ${CATEGORY[player.category]||'مفتوح'}
-        </span>
-      </td>
       <td class="rating">${player.rating}</td>
     </tr>
   `).join('');
 
-  $('#results').textContent=players.length+' لاعب';
-  $('#empty').style.display=players.length?'none':'block';
+  $('#results').textContent=topPlayers.length+' لاعب';
+  $('#empty').style.display=topPlayers.length?'none':'block';
 }
 
 async function claimOrCreateProfile(profileData){
