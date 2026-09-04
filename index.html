@@ -912,15 +912,28 @@ footer{
 
     <nav class="main-nav" aria-label="التنقل الرئيسي">
       <a class="active" href="index.html">الرئيسية</a>
-      <a href="#register">لوحة التحكم</a>
+      <a id="dashboardNav" href="#register">لوحة التحكم</a>
       <a href="#ranking">اللاعبون</a>
       <a href="#features">البطولات</a>
       <a href="#features">دليل الموقع</a>
     </nav>
 
     <div class="nav-user">
+      <div id="headerMember" class="header-member" hidden>
+        <a class="header-member-link" href="profile.html" aria-label="لوحة التحكم">
+          <span class="header-member-avatar-wrap" aria-hidden="true">
+            <img id="headerMemberAvatar" class="header-member-avatar" alt="" hidden>
+            <span id="headerMemberFallback" class="header-member-avatar header-member-fallback">♟</span>
+          </span>
+          <span class="header-member-copy">
+            <strong id="headerMemberName">العضو</strong>
+            <small>النقاط <b id="headerMemberRating">1500</b></small>
+          </span>
+        </a>
+        <div id="siteNotificationHost"></div>
+      </div>
       <a href="#register" id="navAccount" class="nav-account header-action">👤 تسجيل الدخول</a>
-      <button id="navLogout" class="nav-logout header-action" type="button" hidden>تسجيل الخروج</button>
+      <button id="navLogout" class="nav-logout header-action" type="button" hidden>خروج</button>
     </div>
   </div>
 </header>
@@ -1742,16 +1755,56 @@ function showAccountAvatar(){
   img.src=accountAvatarPublicUrl(currentPath);
 }
 
+function showHeaderMemberAvatar(){
+  const img=$('#headerMemberAvatar');
+  const fallback=$('#headerMemberFallback');
+  if(!img||!fallback||!currentProfile||!currentSession) return;
+
+  fallback.textContent=accountInitial(currentProfile.name);
+  fallback.hidden=false;
+  img.hidden=true;
+
+  const currentPath=`${currentProfile.id}/avatar.webp`;
+  const legacyPath=`${currentSession.user.id}/avatar.webp`;
+  let triedLegacy=false;
+
+  img.onerror=()=>{
+    if(!triedLegacy && legacyPath!==currentPath){
+      triedLegacy=true;
+      img.src=accountAvatarPublicUrl(legacyPath);
+      return;
+    }
+    img.hidden=true;
+    fallback.hidden=false;
+  };
+
+  img.onload=()=>{
+    fallback.hidden=true;
+    img.hidden=false;
+  };
+
+  img.src=accountAvatarPublicUrl(currentPath);
+}
+
 function renderAccount(){
   const loggedIn=!!currentSession;
+  document.body.classList.toggle('home-signed-in',loggedIn);
+  $('#headerMember').hidden=!loggedIn;
+  $('#navAccount').hidden=loggedIn;
+
 
   if(passwordRecoveryMode){
+    document.body.classList.remove('home-signed-in');
+    $('#headerMember').hidden=true;
+    $('#navAccount').hidden=false;
     $('#guestAuth').hidden=true;
     $('#accountPanel').hidden=true;
     $('#resetPasswordForm').hidden=false;
     $('#navAccount').textContent='تغيير كلمة المرور';
     $('#navAccount').href='#register';
     $('#navLogout').hidden=true;
+    const dashboardNav=$('#dashboardNav');
+    if(dashboardNav) dashboardNav.href='#register';
     return;
   }
 
@@ -1761,6 +1814,9 @@ function renderAccount(){
 
   if(loggedIn && currentProfile){
     showAccountAvatar();
+    showHeaderMemberAvatar();
+    $('#headerMemberName').textContent=currentProfile.name;
+    $('#headerMemberRating').textContent=currentProfile.rating??1500;
     $('#accountWelcome').textContent='مرحبًا، '+currentProfile.name;
     renderAccountRank(currentProfile.rating);
     $('#accountRating').textContent=currentProfile.rating??1500;
@@ -1772,14 +1828,20 @@ function renderAccount(){
     $('#accountGames').textContent=currentProfile.games_count??0;
   }
 
+  const dashboardNav=$('#dashboardNav');
   if(loggedIn){
     $('#navAccount').textContent='👤 لوحة التحكم';
     $('#navAccount').href='profile.html';
+    $('#navAccount').hidden=true;
     $('#navLogout').hidden=false;
+    if(dashboardNav) dashboardNav.href='profile.html';
   }else{
+    $('#headerMember').hidden=true;
     $('#navAccount').textContent='👤 تسجيل الدخول';
     $('#navAccount').href='#register';
+    $('#navAccount').hidden=false;
     $('#navLogout').hidden=true;
+    if(dashboardNav) dashboardNav.href='#register';
   }
 }
 
