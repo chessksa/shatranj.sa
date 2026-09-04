@@ -6,6 +6,8 @@ HTML = (ROOT / "index.html").read_text(encoding="utf-8")
 CSS = (ROOT / "home-theme.css").read_text(encoding="utf-8")
 INVITE = (ROOT / "home-invite.js").read_text(encoding="utf-8")
 
+# Fresh verification trigger after the approved production patch.
+
 
 def test_signed_in_header_has_only_member_dashboard_notifications_logout_in_order():
     header = re.search(r'<header class="home-header">(.*?)</header>', HTML, re.S)
