@@ -37,6 +37,8 @@ def test_home_supports_all_arab_countries_and_international_mobile():
     assert "normalizeInternationalMobile" in html
     assert "normalizeSaudiMobile" not in html
     assert "مفتاح الدولة" in html
+    assert "fillCities(" not in html
+    assert "signupCity').disabled=true" not in html
 
 
 def test_secondary_pages_use_arab_brand():
