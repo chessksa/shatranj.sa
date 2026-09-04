@@ -1,0 +1,33 @@
+name: Apply Arab platform identity
+
+on:
+  push:
+    branches:
+      - feature/shatranj-arab
+    paths:
+      - 'ci/apply_arab_identity.py'
+      - '.github/workflows/apply-arab-identity.yml'
+
+permissions:
+  contents: write
+
+jobs:
+  apply:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: feature/shatranj-arab
+      - name: Apply identity changes
+        run: python ci/apply_arab_identity.py
+      - name: Commit generated changes
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add index.html profile.html profile-section.html player.html play-v10.html play.html watch.html manifest.webmanifest README.md
+          if git diff --cached --quiet; then
+            echo "No changes to commit"
+            exit 0
+          fi
+          git commit -m "feat: switch site identity to Shatranj Al-Arab"
+          git push origin HEAD:feature/shatranj-arab
