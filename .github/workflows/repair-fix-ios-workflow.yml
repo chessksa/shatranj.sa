@@ -1,0 +1,43 @@
+name: Repair iOS piece fix workflow
+
+on:
+  push:
+    branches: [ main ]
+    paths:
+      - '.github/workflows/repair-fix-ios-workflow.yml'
+
+permissions:
+  contents: write
+
+jobs:
+  repair:
+    if: github.actor != 'github-actions[bot]'
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: main
+          fetch-depth: 0
+      - name: Add Pillow dependency
+        shell: bash
+        run: |
+          python - <<'PY'
+          from pathlib import Path
+          p=Path('.github/workflows/fix-ios-piece-images.yml')
+          s=p.read_text(encoding='utf-8')
+          needle='      - name: Replace broken raster entries and bump cache\n'
+          insert='      - name: Install image validator\n        run: python -m pip install pillow\n\n'
+          if insert not in s:
+              if needle not in s: raise SystemExit('target step not found')
+              s=s.replace(needle,insert+needle,1)
+              p.write_text(s,encoding='utf-8')
+          PY
+      - name: Commit repair
+        shell: bash
+        run: |
+          rm -f .github/workflows/repair-fix-ios-workflow.yml
+          git config user.name "chessksa"
+          git config user.email "gmel1199@gmail.com"
+          git add -A
+          git commit -m "ci: install Pillow for iOS piece validation"
+          git push origin HEAD:main
