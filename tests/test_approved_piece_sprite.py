@@ -1,15 +1,19 @@
 from pathlib import Path
 
 ROOT = Path(__file__).resolve().parents[1]
-SPRITE = ROOT / "assets" / "pieces" / "shatranj-approved-20260904.svg"
+PIECES = ROOT / "assets" / "pieces"
+SPRITE = PIECES / "shatranj-approved-20260904.svg"
+DARK = "approved-dark-20260904.png"
+LIGHT = "approved-light-20260904.png"
 
 
-def test_only_the_new_approved_piece_sprite_is_used():
-    assert SPRITE.exists(), "new approved sprite must exist"
+def test_only_the_new_approved_piece_set_is_used():
+    assert SPRITE.exists(), "cm-chessboard wrapper for the approved pieces must exist"
     sprite = SPRITE.read_text(encoding="utf-8")
     for code in ("wk", "wq", "wr", "wb", "wn", "wp", "bk", "bq", "br", "bb", "bn", "bp"):
         assert f'id="{code}"' in sprite
-    assert sprite.count("data:image/webp;base64,") == 12
+    assert DARK in sprite
+    assert LIGHT in sprite
 
     for filename in ("play-v8.js", "play-v10-match.js"):
         js = (ROOT / filename).read_text(encoding="utf-8")
@@ -23,10 +27,12 @@ def test_piece_script_cache_is_busted_for_the_new_sprite():
     assert "play-v10-match.js?v=20260904-4" in html
 
 
-def test_previous_piece_assets_are_removed():
-    pieces = ROOT / "assets" / "pieces"
-    assert not (pieces / "approved-dark-20260904.png").exists()
-    assert not (pieces / "approved-light-20260904.png").exists()
+def test_no_previous_piece_assets_remain():
+    assert {p.name for p in PIECES.iterdir() if p.is_file()} == {
+        DARK,
+        LIGHT,
+        "shatranj-approved-20260904.svg",
+    }
 
 
 def test_board_theme_keeps_approved_cream_and_petrol_colors():
