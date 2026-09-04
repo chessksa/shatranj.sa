@@ -4,7 +4,7 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
 <meta name="theme-color" content="#0c3435">
-<title>شطرنج السعودية</title>
+<title>شطرنج العرب</title>
 
 <style>
 *{box-sizing:border-box}
@@ -942,9 +942,9 @@ footer{
 <section id="homeHero" class="home-hero">
   <div class="wrap home-hero-grid">
     <div class="home-hero-copy">
-      <span class="hero-kicker">المنصة السعودية للشطرنج</span>
-      <h1>مرحبًا بك في <span>شطرنج السعودية</span></h1>
-      <p>مجتمع سعودي لعشاق الشطرنج</p>
+      <span class="hero-kicker">المنصة العربية للشطرنج</span>
+      <h1>مرحبًا بك في <span>شطرنج العرب</span></h1>
+      <p>مجتمع عربي لعشاق الشطرنج</p>
 
       <div class="hero-live-stats" aria-label="إحصاءات المنصة">
         <div class="hero-stat">
@@ -974,30 +974,37 @@ footer{
 
     <div class="head">
       <div>
-        <h2 id="rankingTitle">ترتيب اللاعبين على مستوى السعودية</h2>
+        <h2 id="rankingTitle">ترتيب اللاعبين على مستوى العالم العربي</h2>
       </div>
 
       <div class="filters ranking-filters">
         <select id="regionFilter">
-          <option value="">كل المناطق</option>
-          <option value="الرياض">الرياض</option>
-          <option value="مكة المكرمة">مكة المكرمة</option>
-          <option value="المدينة المنورة">المدينة المنورة</option>
-          <option value="القصيم">القصيم</option>
-          <option value="المنطقة الشرقية">المنطقة الشرقية</option>
-          <option value="عسير">عسير</option>
-          <option value="تبوك">تبوك</option>
-          <option value="حائل">حائل</option>
-          <option value="الحدود الشمالية">الحدود الشمالية</option>
-          <option value="جازان">جازان</option>
-          <option value="نجران">نجران</option>
-          <option value="الباحة">الباحة</option>
-          <option value="الجوف">الجوف</option>
+          <option value="">كل الدول العربية</option>
+          <option value="السعودية">السعودية</option>
+          <option value="الإمارات">الإمارات</option>
+          <option value="الكويت">الكويت</option>
+          <option value="البحرين">البحرين</option>
+          <option value="قطر">قطر</option>
+          <option value="عُمان">عُمان</option>
+          <option value="اليمن">اليمن</option>
+          <option value="العراق">العراق</option>
+          <option value="الأردن">الأردن</option>
+          <option value="فلسطين">فلسطين</option>
+          <option value="لبنان">لبنان</option>
+          <option value="سوريا">سوريا</option>
+          <option value="مصر">مصر</option>
+          <option value="السودان">السودان</option>
+          <option value="ليبيا">ليبيا</option>
+          <option value="تونس">تونس</option>
+          <option value="الجزائر">الجزائر</option>
+          <option value="المغرب">المغرب</option>
+          <option value="موريتانيا">موريتانيا</option>
+          <option value="الصومال">الصومال</option>
+          <option value="جيبوتي">جيبوتي</option>
+          <option value="جزر القمر">جزر القمر</option>
         </select>
 
-        <select id="cityFilter">
-          <option value="">كل المدن</option>
-        </select>
+        <input id="cityFilter" type="search" maxlength="80" placeholder="كل المدن" aria-label="فلترة حسب المدينة">
       </div>
     </div>
 
@@ -1013,7 +1020,7 @@ footer{
             <tr>
               <th class="rank-number-head">#</th>
               <th>اللاعب</th>
-              <th>المنطقة</th>
+              <th>الدولة</th>
               <th>المدينة</th>
               <th>النقاط</th>
             </tr>
@@ -1064,8 +1071,8 @@ footer{
           </label>
 
           <label>
-            <span>رقم الجوال</span>
-            <input id="signupMobile" required maxlength="13" inputmode="tel" placeholder="05xxxxxxxx" autocomplete="tel">
+            <span>رقم الجوال (مع مفتاح الدولة)</span>
+            <input id="signupMobile" required maxlength="18" inputmode="tel" placeholder="مثال: +9665xxxxxxxx" autocomplete="tel">
           </label>
 
           <label class="password-wrap">
@@ -1081,30 +1088,37 @@ footer{
           </label>
 
           <label>
-            <span>المنطقة</span>
+            <span>الدولة</span>
             <select id="signupRegion" required>
-              <option value="">اختر المنطقة</option>
-              <option value="الرياض">الرياض</option>
-              <option value="مكة المكرمة">مكة المكرمة</option>
-              <option value="المدينة المنورة">المدينة المنورة</option>
-              <option value="القصيم">القصيم</option>
-              <option value="المنطقة الشرقية">المنطقة الشرقية</option>
-              <option value="عسير">عسير</option>
-              <option value="تبوك">تبوك</option>
-              <option value="حائل">حائل</option>
-              <option value="الحدود الشمالية">الحدود الشمالية</option>
-              <option value="جازان">جازان</option>
-              <option value="نجران">نجران</option>
-              <option value="الباحة">الباحة</option>
-              <option value="الجوف">الجوف</option>
+              <option value="">اختر الدولة</option>
+              <option value="السعودية">السعودية</option>
+              <option value="الإمارات">الإمارات</option>
+              <option value="الكويت">الكويت</option>
+              <option value="البحرين">البحرين</option>
+              <option value="قطر">قطر</option>
+              <option value="عُمان">عُمان</option>
+              <option value="اليمن">اليمن</option>
+              <option value="العراق">العراق</option>
+              <option value="الأردن">الأردن</option>
+              <option value="فلسطين">فلسطين</option>
+              <option value="لبنان">لبنان</option>
+              <option value="سوريا">سوريا</option>
+              <option value="مصر">مصر</option>
+              <option value="السودان">السودان</option>
+              <option value="ليبيا">ليبيا</option>
+              <option value="تونس">تونس</option>
+              <option value="الجزائر">الجزائر</option>
+              <option value="المغرب">المغرب</option>
+              <option value="موريتانيا">موريتانيا</option>
+              <option value="الصومال">الصومال</option>
+              <option value="جيبوتي">جيبوتي</option>
+              <option value="جزر القمر">جزر القمر</option>
             </select>
           </label>
 
           <label>
             <span>المدينة</span>
-            <select id="signupCity" required disabled>
-              <option value="">اختر المنطقة أولًا</option>
-            </select>
+            <input id="signupCity" required maxlength="80" autocomplete="address-level2" placeholder="اكتب المدينة">
           </label>
 
           <label class="full">
@@ -1218,7 +1232,7 @@ footer{
             </div>
 
             <div class="account-stat">
-              <small>المنطقة</small>
+              <small>الدولة</small>
               <strong id="accountRegion">—</strong>
             </div>
 
@@ -1241,7 +1255,7 @@ footer{
 
 <footer>
   <div class="wrap">
-    <strong>♟ شطرنج السعودية</strong><span class="footer-tagline"> .. أكثر من لعبة</span>
+    <strong>♟ شطرنج العرب</strong><span class="footer-tagline"> .. أكثر من لعبة</span>
   </div>
 </footer>
 
@@ -1255,21 +1269,7 @@ const supabase=createClient(SUPABASE_URL,SUPABASE_KEY);
 
 const $=selector=>document.querySelector(selector);
 
-const CITIES={
-  'الرياض':['الرياض','الدرعية','الخرج','الدلم','الدوادمي','المجمعة','القويعية','وادي الدواسر','الأفلاج','الزلفي','شقراء','حوطة بني تميم','عفيف','السليل','ضرما','المزاحمية','رماح','ثادق','حريملاء','مرات'],
-  'مكة المكرمة':['مكة المكرمة','جدة','الطائف','رابغ','القنفذة','الليث','خليص','الجموم','بحرة','تربة','رنية','الخرمة','الكامل','ميسان'],
-  'المدينة المنورة':['المدينة المنورة','ينبع','العلا','بدر','خيبر','المهد','الحناكية','العيص'],
-  'القصيم':['بريدة','عنيزة','الرس','البكيرية','المذنب','البدائع','رياض الخبراء','عيون الجواء','الأسياح','النبهانية','الشماسية'],
-  'المنطقة الشرقية':['الدمام','الخبر','الظهران','الهفوف','المبرز','الأحساء','الجبيل','القطيف','سيهات','صفوى','رأس تنورة','بقيق','الخفجي','النعيرية','حفر الباطن','قرية العليا'],
-  'عسير':['أبها','خميس مشيط','بيشة','محايل عسير','النماص','أحد رفيدة','سراة عبيدة','ظهران الجنوب','تنومة','رجال ألمع','بلقرن','المجاردة','تثليث'],
-  'تبوك':['تبوك','ضباء','الوجه','أملج','تيماء','حقل','البدع'],
-  'حائل':['حائل','بقعاء','الغزالة','الشنان','موقق','الحائط','الشملي','السليمي'],
-  'الحدود الشمالية':['عرعر','رفحاء','طريف','العويقيلة'],
-  'جازان':['جازان','صبيا','أبو عريش','صامطة','بيش','الدرب','أحد المسارحة','العارضة','ضمد','فرسان','الطوال','فيفاء','هروب','الريث'],
-  'نجران':['نجران','شرورة','حبونا','بدر الجنوب','يدمة','ثار','خباش'],
-  'الباحة':['الباحة','بلجرشي','المندق','المخواة','قلوة','العقيق','القرى','الحجرة'],
-  'الجوف':['سكاكا','دومة الجندل','القريات','طبرجل']
-};
+const SAUDI_REGIONS=new Set(['الرياض','مكة المكرمة','المدينة المنورة','القصيم','المنطقة الشرقية','عسير','تبوك','حائل','الحدود الشمالية','جازان','نجران','الباحة','الجوف']);
 
 const CATEGORY={
   open:'مفتوح',
@@ -1296,43 +1296,30 @@ function escapeHTML(text){
   }[c]));
 }
 
-function fillCities(selectElement,cities,firstOption){
-  selectElement.innerHTML='';
+function normalizeInternationalMobile(value){
+  const raw=String(value||'').trim();
+  const compact=raw.replace(/[\s()\-]/g,'');
 
-  const first=document.createElement('option');
-  first.value='';
-  first.textContent=firstOption;
-  selectElement.appendChild(first);
-
-  cities.forEach(city=>{
-    const option=document.createElement('option');
-    option.value=city;
-    option.textContent=city;
-    selectElement.appendChild(option);
-  });
-}
-
-function allCities(){
-  return [...new Set(Object.values(CITIES).flat())]
-    .sort((a,b)=>a.localeCompare(b,'ar'));
-}
-
-function normalizeSaudiMobile(value){
-  const digits=String(value||'').replace(/\D/g,'');
-
-  if(/^05\d{8}$/.test(digits)){
-    return {local:digits,e164:'+966'+digits.slice(1)};
+  if(/^05\d{8}$/.test(compact)){
+    const e164='+966'+compact.slice(1);
+    return {local:e164,e164};
   }
 
-  if(/^5\d{8}$/.test(digits)){
-    return {local:'0'+digits,e164:'+966'+digits};
+  if(/^00\d{8,15}$/.test(compact)){
+    const e164='+'+compact.slice(2);
+    return {local:e164,e164};
   }
 
-  if(/^9665\d{8}$/.test(digits)){
-    return {local:'0'+digits.slice(3),e164:'+'+digits};
+  if(/^\+\d{8,15}$/.test(compact)){
+    return {local:compact,e164:compact};
   }
 
   return null;
+}
+
+function countryForRegion(value){
+  const region=String(value||'').trim();
+  return SAUDI_REGIONS.has(region)?'السعودية':region;
 }
 
 function setAuthMsg(text,type=''){
@@ -1477,34 +1464,9 @@ document.querySelectorAll('.show-pass').forEach(button=>{
   });
 });
 
-/* مدن إنشاء الحساب */
-$('#signupRegion').addEventListener('change',function(){
-  const region=this.value;
-
-  if(!region){
-    $('#signupCity').disabled=true;
-    fillCities($('#signupCity'),[],'اختر المنطقة أولًا');
-    return;
-  }
-
-  $('#signupCity').disabled=false;
-  fillCities($('#signupCity'),CITIES[region]||[],'اختر المدينة');
-});
-
-/* مدن الفلتر */
-$('#regionFilter').addEventListener('change',function(){
-  const region=this.value;
-
-  fillCities(
-    $('#cityFilter'),
-    region?(CITIES[region]||[]):allCities(),
-    'كل المدن'
-  );
-
-  applyFilter();
-});
-
-$('#cityFilter').addEventListener('change',applyFilter);
+/* الدولة والمدينة */
+$('#regionFilter').addEventListener('change',applyFilter);
+$('#cityFilter').addEventListener('input',applyFilter);
 
 async function loadPlayers(){
   const [{data,error},{data:usernameRows,error:usernameError}]=await Promise.all([
@@ -1564,7 +1526,7 @@ async function loadCurrentMatchesCount(){
   el.textContent='0';
 }
 
-function updateRankingTitle(region,city){
+function updateRankingTitle(country,city){
   const title=$('#rankingTitle');
   if(!title) return;
 
@@ -1573,28 +1535,28 @@ function updateRankingTitle(region,city){
     return;
   }
 
-  if(region){
-    title.textContent=`ترتيب اللاعبين في منطقة ${region}`;
+  if(country){
+    title.textContent=`ترتيب اللاعبين في ${country}`;
     return;
   }
 
-  title.textContent='ترتيب اللاعبين على مستوى السعودية';
+  title.textContent='ترتيب اللاعبين على مستوى العالم العربي';
 }
 
 function applyFilter(){
-  const region=$('#regionFilter').value.trim();
+  const country=$('#regionFilter').value.trim();
   const city=$('#cityFilter').value.trim();
 
-  updateRankingTitle(region,city);
+  updateRankingTitle(country,city);
 
   renderPlayers(
     ALL_PLAYERS.filter(player=>{
-      const playerRegion=(player.region||'').trim();
+      const playerCountry=countryForRegion(player.region);
       const playerCity=(player.city||'').trim();
 
       return (
-        (!region || playerRegion===region) &&
-        (!city || playerCity===city)
+        (!country || playerCountry===country) &&
+        (!city || playerCity.includes(city))
       );
     })
   );
@@ -1630,7 +1592,7 @@ function renderPlayers(players){
             : ''
           }
         </td>
-        <td>${escapeHTML(player.region)}</td>
+        <td>${escapeHTML(countryForRegion(player.region))}</td>
         <td>${escapeHTML(player.city)}</td>
         <td class="rating">${player.rating}</td>
       </tr>
@@ -1679,7 +1641,7 @@ async function ensureProfile(){
     name:metadata.name||'لاعب',
     username:metadata.username||'',
     mobile:metadata.mobile||'',
-    region:metadata.region||'الرياض',
+    region:metadata.region||'السعودية',
     city:metadata.city||'الرياض',
     category:metadata.category||'open'
   };
@@ -1816,7 +1778,7 @@ function renderAccount(){
     renderAccountRank(currentProfile.rating);
     $('#accountRating').textContent=currentProfile.rating??1500;
     const accountRegion=$('#accountRegion');
-    const accountRegionValue=String(currentProfile.region||'—').trim()||'—';
+    const accountRegionValue=countryForRegion(currentProfile.region)||'—';
     accountRegion.textContent=accountRegionValue;
     accountRegion.classList.toggle('account-region-long',accountRegionValue.length>10);
     $('#accountCity').textContent=currentProfile.city||'—';
@@ -1864,7 +1826,7 @@ $('#signupForm').addEventListener('submit',async event=>{
   const displayName=$('#signupName').value.trim();
   const username=$('#signupUsername').value.trim().toLowerCase();
   const email=$('#signupEmail').value.trim().toLowerCase();
-  const mobile=normalizeSaudiMobile($('#signupMobile').value);
+  const mobile=normalizeInternationalMobile($('#signupMobile').value);
   const password=$('#signupPassword').value;
   const password2=$('#signupPassword2').value;
 
@@ -1890,7 +1852,7 @@ $('#signupForm').addEventListener('submit',async event=>{
   }
 
   if(!mobile){
-    return setAuthMsg('رقم الجوال يجب أن يكون بصيغة 05xxxxxxxx.','err');
+    return setAuthMsg('أدخل رقم الجوال مع مفتاح الدولة، مثال +9665xxxxxxxx.','err');
   }
 
   if(password.length<8){
@@ -1902,7 +1864,7 @@ $('#signupForm').addEventListener('submit',async event=>{
   }
 
   if(!$('#signupRegion').value){
-    return setAuthMsg('اختر المنطقة.','err');
+    return setAuthMsg('اختر الدولة.','err');
   }
 
   if(!$('#signupCity').value){
