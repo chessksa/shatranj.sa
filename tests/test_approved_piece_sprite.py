@@ -38,8 +38,8 @@ def test_cm_chessboard_fetches_a_fresh_sprite_after_the_path_fix():
 
 def test_piece_script_cache_is_busted_for_the_new_sprite():
     html = (ROOT / "play-v10.html").read_text(encoding="utf-8")
-    assert "play-v8.js?v=20260904-4" in html
-    assert "play-v10-match.js?v=20260904-4" in html
+    assert "play-v8.js?v=20260904-5" in html
+    assert "play-v10-match.js?v=20260904-5" in html
 
 
 def test_no_previous_piece_assets_remain():
