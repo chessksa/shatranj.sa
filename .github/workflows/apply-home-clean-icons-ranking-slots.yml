@@ -1,0 +1,38 @@
+name: Apply home clean icons and ranking slots
+
+on:
+  push:
+    branches:
+      - home-clean-icons-ranking-slots
+    paths:
+      - ci/apply_home_clean_icons_ranking_slots.py
+      - .github/workflows/apply-home-clean-icons-ranking-slots.yml
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  apply:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: home-clean-icons-ranking-slots
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - run: python ci/apply_home_clean_icons_ranking_slots.py
+      - run: python -m pip install pytest
+      - run: python -m pytest tests/test_home_invite_ranking_stats_polish.py tests/test_home_tournaments_header_center.py tests/test_home_ranking_table_polish.py tests/test_home_header_filters_polish.py -q
+      - name: Commit homepage polish
+        run: |
+          if git diff --quiet -- index.html home-theme.css home-invite.js; then
+            echo "No homepage changes to commit."
+            exit 0
+          fi
+          git config user.name "chessksa"
+          git config user.email "gmel1199@gmail.com"
+          git add index.html home-theme.css home-invite.js
+          git commit -m "feat: clean home controls and reserve ranking slots"
+          git push origin HEAD:home-clean-icons-ranking-slots
