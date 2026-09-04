@@ -1,5 +1,6 @@
 from pathlib import Path
 
+# Regression: play-v8.js binds endGraceBtn before init(); missing markup leaves both screens hidden.
 html = Path('play-v8.html').read_text(encoding='utf-8')
 js = Path('play-v8.js').read_text(encoding='utf-8')
 
