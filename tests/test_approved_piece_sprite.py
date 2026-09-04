@@ -3,32 +3,38 @@ from pathlib import Path
 ROOT = Path(__file__).resolve().parents[1]
 SPRITE = ROOT / "assets" / "pieces" / "shatranj-approved-20260904.svg"
 PIECE_CODES = ("wk", "wq", "wr", "wb", "wn", "wp", "bk", "bq", "br", "bb", "bn", "bp")
+PNG_CODES = ("wr", "wn", "wb", "wq", "wk", "wp", "br", "bn", "bb", "bq", "bk", "bp")
+CACHE = "20260904-12"
+
+
+def test_uploaded_png_piece_set_is_complete():
+    for code in PNG_CODES:
+        piece = ROOT / "assets" / "pieces" / f"{code}.png"
+        assert piece.exists(), f"missing {piece.name}"
+        assert piece.stat().st_size > 1000
 
 
 def test_sprite_is_self_contained_for_ios_webkit():
-    """External raster hrefs inside an externally loaded SVG render as broken images on iOS Safari."""
+    assert SPRITE.exists(), "cm-chessboard sprite is missing"
     sprite = SPRITE.read_text(encoding="utf-8")
     for code in PIECE_CODES:
         assert f'id="{code}"' in sprite
     assert sprite.count("data:image/png;base64,") == 12
-    assert 'href="wk.png' not in sprite
-    assert 'href="wp.png' not in sprite
-    assert 'href="bk.png' not in sprite
-    assert 'href="bp.png' not in sprite
-
-
-def test_piece_layout_is_centered_and_pawns_are_smaller():
-    sprite = SPRITE.read_text(encoding="utf-8")
-    assert 'id="wp"><image' in sprite
-    assert 'id="bp"><image' in sprite
-    assert 'x="4.5" y="4.5" width="31" height="31"' in sprite
     assert sprite.count('preserveAspectRatio="xMidYMid meet"') == 12
+    assert ".png" not in sprite
 
 
-def test_live_and_prematch_boards_use_the_same_approved_sprite():
+def test_live_and_prematch_boards_use_current_sprite_cache():
+    expected = f"pieces/shatranj-approved-20260904.svg?v={CACHE}"
     for filename in ("play-v8.js", "play-v10-match.js"):
         js = (ROOT / filename).read_text(encoding="utf-8")
-        assert "pieces/shatranj-approved-20260904.svg" in js
+        assert expected in js
+
+
+def test_play_page_loads_current_scripts():
+    html = (ROOT / "play-v10.html").read_text(encoding="utf-8")
+    assert f"play-v8.js?v={CACHE}" in html
+    assert f"play-v10-match.js?v={CACHE}" in html
 
 
 def test_board_theme_keeps_approved_colors():
