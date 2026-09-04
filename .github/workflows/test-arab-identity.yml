@@ -30,3 +30,17 @@ jobs:
         run: |
           python tests/test_arab_identity.py
           python tests/test_arab_profile_country.py
+      - name: Check JavaScript syntax
+        run: |
+          node --check profile.js
+          node --check profile-section.js
+          node --check player.js
+          python - <<'PY'
+          import re
+          from pathlib import Path
+          html = Path('index.html').read_text(encoding='utf-8')
+          scripts = re.findall(r'<script type="module">(.*?)</script>', html, re.S)
+          assert scripts, 'No module script found in index.html'
+          Path('/tmp/index-module.mjs').write_text('\n'.join(scripts), encoding='utf-8')
+          PY
+          node --check /tmp/index-module.mjs
