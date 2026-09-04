@@ -104,3 +104,5 @@ jobs:
           git add play-v10.html play-v8.js play-v10-match.js
           git commit -m "fix: keep desktop player card to four lines and load saved avatars"
           git push
+
+# trigger after approval and RED verification
