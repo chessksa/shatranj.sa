@@ -10,6 +10,14 @@ on:
       - home-theme.css
       - tests/test_home_hero_leaderboard.py
       - .github/workflows/test-home-hero-leaderboard.yml
+  pull_request:
+    branches:
+      - main
+    paths:
+      - index.html
+      - home-theme.css
+      - tests/test_home_hero_leaderboard.py
+      - .github/workflows/test-home-hero-leaderboard.yml
 
 jobs:
   test:
