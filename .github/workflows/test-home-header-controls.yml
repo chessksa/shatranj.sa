@@ -1,0 +1,20 @@
+name: Test home header controls
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - home-theme.css
+      - tests/test_home_header_controls.py
+      - .github/workflows/test-home-header-controls.yml
+
+permissions:
+  contents: read
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Verify home header controls
+        run: python tests/test_home_header_controls.py
