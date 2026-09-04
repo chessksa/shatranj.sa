@@ -1,0 +1,45 @@
+name: Apply pawn stylesheet cache bust
+
+on:
+  push:
+    branches:
+      - main
+    paths:
+      - .github/workflows/apply-pawn-css-cache-bust.yml
+
+permissions:
+  contents: write
+
+jobs:
+  apply:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          token: ${{ secrets.GITHUB_TOKEN }}
+      - name: Update pawn stylesheet cache key
+        run: |
+          python - <<'PY'
+          from pathlib import Path
+          p = Path('play.html')
+          text = p.read_text(encoding='utf-8')
+          old = 'realistic-pieces.css?v=20260904-1'
+          new = 'realistic-pieces.css?v=20260905-1'
+          assert old in text or new in text, 'stylesheet link not found'
+          if old in text:
+              text = text.replace(old, new, 1)
+              p.write_text(text, encoding='utf-8')
+          PY
+      - name: Verify pawn cache bust
+        run: python tests/test_realistic_piece_css_cache_live.py
+      - name: Commit page update
+        run: |
+          if git diff --quiet -- play.html; then
+            echo "play.html already updated"
+            exit 0
+          fi
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add play.html
+          git commit -m "fix: refresh pawn alignment stylesheet"
+          git push
