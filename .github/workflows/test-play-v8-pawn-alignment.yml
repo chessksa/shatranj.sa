@@ -5,6 +5,7 @@ on:
     branches: [main]
     paths:
       - play-v8.css
+      - play-v8.html
       - tests/test_play_v8_pawn_alignment.py
       - .github/workflows/test-play-v8-pawn-alignment.yml
 
