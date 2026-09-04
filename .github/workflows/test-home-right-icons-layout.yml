@@ -1,0 +1,21 @@
+name: Test home right icons layout
+
+on:
+  push:
+    branches:
+      - main
+    paths:
+      - index.html
+      - home-theme.css
+      - tests/test_home_right_icons_layout.py
+      - .github/workflows/test-home-right-icons-layout.yml
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - run: python tests/test_home_right_icons_layout.py
