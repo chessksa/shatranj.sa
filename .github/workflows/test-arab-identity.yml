@@ -1,0 +1,25 @@
+name: Test Arab platform identity
+
+on:
+  push:
+    branches:
+      - feature/shatranj-arab
+      - main
+    paths:
+      - 'index.html'
+      - 'profile.html'
+      - 'player.html'
+      - 'play-v10.html'
+      - 'play.html'
+      - 'watch.html'
+      - 'manifest.webmanifest'
+      - 'tests/test_arab_identity.py'
+      - '.github/workflows/test-arab-identity.yml'
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Run Arab identity test
+        run: python tests/test_arab_identity.py
