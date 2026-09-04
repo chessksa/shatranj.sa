@@ -1,0 +1,33 @@
+name: Remove legacy city initializer
+
+on:
+  push:
+    branches:
+      - feature/shatranj-arab
+    paths:
+      - 'ci/remove_legacy_city_init.py'
+      - '.github/workflows/remove-legacy-city-init.yml'
+
+permissions:
+  contents: write
+
+jobs:
+  apply:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: feature/shatranj-arab
+      - name: Remove legacy initializer
+        run: python ci/remove_legacy_city_init.py
+      - name: Commit generated change
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add index.html
+          if git diff --cached --quiet; then
+            echo "No changes to commit"
+            exit 0
+          fi
+          git commit -m "fix: remove legacy Saudi city initializer"
+          git push origin HEAD:feature/shatranj-arab
