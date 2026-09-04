@@ -1,6 +1,7 @@
 name: Test Arab platform identity
 
 on:
+  workflow_dispatch:
   push:
     branches:
       - feature/shatranj-arab
