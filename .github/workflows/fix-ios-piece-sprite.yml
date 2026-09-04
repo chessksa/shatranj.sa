@@ -1,0 +1,83 @@
+name: Fix iOS piece sprite
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - 'ci/trigger-fix-ios-piece-sprite.txt'
+
+permissions:
+  contents: write
+
+jobs:
+  fix:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: main
+          fetch-depth: 0
+      - name: Build self-contained piece sprite
+        shell: bash
+        run: |
+          python - <<'PY'
+          from pathlib import Path
+          import base64
+
+          root = Path('.')
+          pieces = root / 'assets' / 'pieces'
+          layout = {
+              'wk': (2, 2, 36, 36),
+              'wq': (2.5, 2.5, 35, 35),
+              'wr': (3, 3, 34, 34),
+              'wb': (3, 3, 34, 34),
+              'wn': (2.5, 2.5, 35, 35),
+              'wp': (4.5, 4.5, 31, 31),
+              'bk': (2, 2, 36, 36),
+              'bq': (2.5, 2.5, 35, 35),
+              'br': (3, 3, 34, 34),
+              'bb': (3, 3, 34, 34),
+              'bn': (2.5, 2.5, 35, 35),
+              'bp': (4.5, 4.5, 31, 31),
+          }
+          lines = [
+              '<?xml version="1.0" encoding="UTF-8"?>',
+              '<svg xmlns="http://www.w3.org/2000/svg" width="40" height="40" viewBox="0 0 40 40">',
+              '  <title>Shatranj Saudi Arabia centered high-quality self-contained pieces</title>',
+          ]
+          for code, (x, y, w, h) in layout.items():
+              raw = (pieces / f'{code}.png').read_bytes()
+              data = base64.b64encode(raw).decode('ascii')
+              lines.append(
+                  f'  <g id="{code}"><image href="data:image/png;base64,{data}" x="{x}" y="{y}" width="{w}" height="{h}" preserveAspectRatio="xMidYMid meet"/></g>'
+              )
+          lines.append('</svg>')
+          (pieces / 'shatranj-approved-20260904.svg').write_text('\n'.join(lines) + '\n', encoding='utf-8')
+
+          for fn in ('play-v8.js', 'play-v10-match.js'):
+              p = root / fn
+              s = p.read_text(encoding='utf-8')
+              s = s.replace('shatranj-approved-20260904.svg?v=20260904-9', 'shatranj-approved-20260904.svg?v=20260904-10')
+              p.write_text(s, encoding='utf-8')
+
+          p = root / 'play-v10.html'
+          s = p.read_text(encoding='utf-8')
+          s = s.replace('play-v8.js?v=20260904-9', 'play-v8.js?v=20260904-10')
+          s = s.replace('play-v10-match.js?v=20260904-9', 'play-v10-match.js?v=20260904-10')
+          p.write_text(s, encoding='utf-8')
+          PY
+      - name: Verify regression tests and syntax
+        shell: bash
+        run: |
+          python -m pip install pytest
+          python -m pytest -q tests/test_approved_piece_sprite.py
+          node --check play-v8.js
+          node --check play-v10-match.js
+      - name: Commit repair
+        shell: bash
+        run: |
+          git config user.name "chessksa"
+          git config user.email "gmel1199@gmail.com"
+          git add assets/pieces/shatranj-approved-20260904.svg play-v8.js play-v10-match.js play-v10.html
+          git commit -m "fix: embed chess pieces for iOS Safari"
+          git push origin HEAD:main
