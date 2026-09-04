@@ -1,3 +1,4 @@
+# Final release gate for the Shatranj Al-Arab identity migration.
 name: Test Arab platform identity
 
 on:
