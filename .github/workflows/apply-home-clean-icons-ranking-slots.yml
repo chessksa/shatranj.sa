@@ -6,6 +6,8 @@ on:
       - home-clean-icons-ranking-slots
     paths:
       - ci/apply_home_clean_icons_ranking_slots.py
+      - tests/test_home_invite_ranking_stats_polish.py
+      - tests/test_home_header_filters_polish.py
       - .github/workflows/apply-home-clean-icons-ranking-slots.yml
   workflow_dispatch:
 
