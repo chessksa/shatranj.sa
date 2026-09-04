@@ -1,0 +1,98 @@
+name: Apply uploaded 3D pieces
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - '.github/workflows/apply-uploaded-piece-sprite.yml'
+
+permissions:
+  contents: write
+
+jobs:
+  apply:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - run: python -m pip install pillow pytest
+      - name: Build self-contained cm-chessboard sprite from uploaded PNGs
+        run: |
+          python - <<'PY'
+          from pathlib import Path
+          from PIL import Image
+          import base64, io, re, xml.etree.ElementTree as ET
+
+          root = Path('.')
+          pieces_dir = root / 'assets' / 'pieces'
+          codes = ('wk','wq','wr','wb','wn','wp','bk','bq','br','bb','bn','bp')
+          for code in codes:
+              p = pieces_dir / f'{code}.png'
+              if not p.exists() or p.stat().st_size < 1000:
+                  raise SystemExit(f'missing or invalid piece: {p}')
+
+          parts = [
+              '<?xml version="1.0" encoding="UTF-8"?>',
+              '<svg xmlns="http://www.w3.org/2000/svg" width="40" height="40" viewBox="0 0 40 40">'
+          ]
+          for code in codes:
+              image = Image.open(pieces_dir / f'{code}.png').convert('RGBA')
+              image = image.resize((256,256), Image.Resampling.LANCZOS)
+              buf = io.BytesIO()
+              image.save(buf, format='PNG', optimize=True)
+              data = base64.b64encode(buf.getvalue()).decode('ascii')
+              parts.append(
+                  f'<g id="{code}"><image x="0" y="0" width="40" height="40" '
+                  f'preserveAspectRatio="xMidYMid meet" href="data:image/png;base64,{data}"/></g>'
+              )
+          parts.append('</svg>')
+          sprite = pieces_dir / 'shatranj-approved-20260904.svg'
+          sprite.write_text('\n'.join(parts), encoding='utf-8')
+
+          # Validate the generated sprite before wiring it into the site.
+          ET.parse(sprite)
+          text = sprite.read_text(encoding='utf-8')
+          assert text.count('data:image/png;base64,') == 12
+          for code in codes:
+              assert f'id="{code}"' in text
+
+          cache = '20260904-12'
+          for filename in ('play-v8.js','play-v10-match.js'):
+              p = root / filename
+              s = p.read_text(encoding='utf-8')
+              s = re.sub(
+                  r"pieces/shatranj-approved-20260904\.svg\?v=[0-9-]+",
+                  f"pieces/shatranj-approved-20260904.svg?v={cache}",
+                  s,
+              )
+              if filename == 'play-v8.js':
+                  s = re.sub(
+                      r"assets/pieces/\$\{color\}\$\{type\}\.png\?v=[0-9-]+",
+                      f"assets/pieces/${{color}}${{type}}.png?v={cache}",
+                      s,
+                  )
+              p.write_text(s, encoding='utf-8')
+
+          p = root / 'play-v10.html'
+          s = p.read_text(encoding='utf-8')
+          s = re.sub(r"play-v8\.js\?v=[0-9-]+", f"play-v8.js?v={cache}", s)
+          s = re.sub(r"play-v10-match\.js\?v=[0-9-]+", f"play-v10-match.js?v={cache}", s)
+          p.write_text(s, encoding='utf-8')
+          PY
+      - name: Verify approved piece integration
+        run: |
+          python -m pytest -q tests/test_approved_piece_sprite.py
+          node --check play-v8.js
+          node --check play-v10-match.js
+      - name: Commit verified fix
+        run: |
+          rm .github/workflows/apply-uploaded-piece-sprite.yml
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add assets/pieces/shatranj-approved-20260904.svg play-v8.js play-v10-match.js play-v10.html tests/test_approved_piece_sprite.py .github/workflows/apply-uploaded-piece-sprite.yml
+          git commit -m "fix: restore uploaded 3D chess pieces"
+          git push origin main
