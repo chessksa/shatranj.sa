@@ -22,6 +22,13 @@ def test_only_the_new_approved_piece_set_is_used():
         assert "pieces/shatranj-3d-staunton-v3.svg" not in js
 
 
+def test_sprite_png_links_are_relative_to_the_sprite_directory():
+    sprite = SPRITE.read_text(encoding="utf-8")
+    assert 'href="approved-dark-20260904.png?v=20260904-2"' in sprite
+    assert 'href="approved-light-20260904.png?v=20260904-2"' in sprite
+    assert 'href="assets/pieces/' not in sprite
+
+
 def test_piece_script_cache_is_busted_for_the_new_sprite():
     html = (ROOT / "play-v10.html").read_text(encoding="utf-8")
     assert "play-v8.js?v=20260904-4" in html
