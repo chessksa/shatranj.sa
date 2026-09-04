@@ -12,3 +12,5 @@ def test_home_theme_cache_buster_matches_latest_header_layout():
     assert '.header-member-avatar{' in css
     assert 'width:38px' in css and 'height:38px' in css
     assert 'border:1px solid var(--hero-cyan-line)' in css
+
+# This test intentionally fails until the cache-buster is bumped.
