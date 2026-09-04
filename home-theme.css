@@ -272,8 +272,7 @@ input::placeholder{color:#8fa19c}
   box-shadow:0 13px 30px rgba(0,0,0,.15),inset 0 1px 0 rgba(255,255,255,.025);
 }
 #ranking .head>div:first-child{width:100%;text-align:center}
-#rankingTitle{margin:0!important;color:var(--hero-gold)!important;font-size:0!important;line-height:1!important}
-#rankingTitle::after{content:"ترتيب اللاعبين";font-size:20px;font-weight:900}
+#rankingTitle{margin:0!important;color:var(--hero-gold)!important;font-size:18px!important;line-height:1.35!important;font-weight:900}
 #ranking .filters{display:grid!important}
 #ranking .table-card{
   border:1px solid var(--hero-cyan-line)!important;
@@ -397,9 +396,10 @@ footer .wrap{display:flex;justify-content:space-between;align-items:center}
   .home-header{grid-column:1/-1;grid-row:1}
   .home-hero{grid-column:3;grid-row:2}
   .home-hero>.wrap{width:100%!important;margin:0!important}
-  #ranking{grid-column:2;grid-row:2}
-  .home-features{grid-column:2/4;grid-row:3}
+  #ranking{grid-column:2;grid-row:2/4}
+  .home-features{grid-column:3;grid-row:3}
   .home-features>.wrap{width:100%!important;margin:0!important}
+  .home-feature-grid{grid-template-columns:repeat(2,minmax(0,1fr))!important;gap:10px!important}
   #register{grid-column:2/4;grid-row:4}
   #register>.wrap{width:100%!important;margin:0!important}
   footer{grid-column:1/-1;grid-row:5}
@@ -464,7 +464,7 @@ footer .wrap{display:flex;justify-content:space-between;align-items:center}
   .hero-live-stats{grid-template-columns:repeat(3,minmax(0,1fr))}
   .home-hero .home-board-actions{grid-template-columns:1fr 1fr!important}
   #ranking{padding-inline:7px!important}
-  #rankingTitle::after{font-size:18px}
+  #rankingTitle{font-size:16px!important}
   #ranking th,#ranking td{font-size:9px!important;padding-inline:3px!important}
       #register>.wrap{width:min(100% - 18px,720px)!important}
 }
@@ -545,7 +545,7 @@ footer .wrap{display:flex;justify-content:space-between;align-items:center}
   body.home-signed-in .home-header .nav{min-height:64px!important}
   body.home-signed-in .main-nav{height:64px}
   body.home-signed-in .home-hero{grid-row:2;padding:16px 0 10px!important;overflow:hidden}
-  body.home-signed-in #ranking{grid-row:2;height:100%;padding:16px 0 10px!important;overflow:hidden;align-self:stretch}
+  body.home-signed-in #ranking{grid-row:2/4;height:100%;padding:16px 0 10px!important;overflow:hidden;align-self:stretch}
   body.home-signed-in #ranking>.wrap{height:100%;display:flex;flex-direction:column;min-height:0}
   body.home-signed-in #ranking .head{min-height:42px;flex:0 0 42px}
   body.home-signed-in #ranking .table-card{flex:1;min-height:0}
@@ -563,11 +563,11 @@ footer .wrap{display:flex;justify-content:space-between;align-items:center}
   body.home-signed-in .home-hero .home-board-actions>.btn,
   body.home-signed-in .home-hero .home-board-actions>.home-invite-wrap>.btn{height:52px!important;min-height:52px!important;font-size:16px!important}
   body.home-signed-in .home-features{grid-row:3;padding:7px 0 9px!important;overflow:hidden}
-  body.home-signed-in .home-feature-grid{gap:10px!important;height:88px}
-  body.home-signed-in .home-feature-card{min-height:0;height:88px;padding:8px 10px;border-radius:15px}
-  body.home-signed-in .feature-icon{margin-bottom:5px;font-size:24px}
-  body.home-signed-in .home-feature-card strong{font-size:15px}
-  body.home-signed-in .home-feature-card small{margin-top:3px;font-size:10px}
+  body.home-signed-in .home-feature-grid{gap:8px!important;height:88px;grid-template-columns:repeat(2,minmax(0,1fr))!important;grid-template-rows:repeat(2,minmax(0,1fr))!important}
+  body.home-signed-in .home-feature-card{min-height:0;height:auto;padding:4px 8px;border-radius:13px;flex-direction:row;gap:6px}
+  body.home-signed-in .feature-icon{margin:0;font-size:19px}
+  body.home-signed-in .home-feature-card strong{font-size:12px}
+  body.home-signed-in .home-feature-card small{display:none}
   body.home-signed-in footer{grid-row:4;padding:7px 0!important;overflow:hidden}
 }
 
