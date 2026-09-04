@@ -24,6 +24,8 @@ jobs:
           python-version: '3.12'
       - name: Apply no-domain signup copy
         run: python ci/apply_no_domain_auth_ui.py
+      - name: Install test dependency
+        run: python -m pip install pytest
       - name: Verify no-domain signup UI
         run: python -m pytest -q tests/test_no_domain_auth_ui.py
       - name: Commit UI update
