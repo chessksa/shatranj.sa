@@ -31,7 +31,7 @@ def require_replace(text, old, new, label):
 
 
 def require_sub(text, pattern, repl, label, count=1):
-    updated, n = re.subn(pattern, repl, text, count=count, flags=re.S)
+    updated, n = re.subn(pattern, lambda _match: repl, text, count=count, flags=re.S)
     if n != count:
         raise SystemExit(f"expected {count} replacement(s) for {label}, got {n}")
     return updated
