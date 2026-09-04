@@ -41,7 +41,8 @@ def test_play_avatar_uses_legacy_auth_fallback_and_cache_busting():
     prematch = (ROOT / "play-v10-match.js").read_text(encoding="utf-8")
     live = (ROOT / "play-v8.js").read_text(encoding="utf-8")
     assert "`${authUserId}/avatar.webp`" in prematch
-    assert "`${authUserId}/avatar.webp`" in live
+    assert "legacyAvatarPath=" in live
+    assert "avatarUrl(legacyAvatarPath)" in live
     assert "?v=${Date.now()}" in prematch
     assert "?v=${Date.now()}" in live
 
