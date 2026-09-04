@@ -1,0 +1,39 @@
+name: Apply home right icons layout
+
+on:
+  push:
+    branches:
+      - main
+    paths:
+      - ci/apply_home_right_icons_layout.py
+      - .github/workflows/apply-home-right-icons-layout.yml
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  apply:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - name: Apply approved layout
+        run: python ci/apply_home_right_icons_layout.py
+      - name: Verify layout regression
+        run: python tests/test_home_right_icons_layout.py
+      - name: Commit layout update
+        run: |
+          if git diff --quiet -- home-theme.css; then
+            echo "No layout changes needed"
+            exit 0
+          fi
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add home-theme.css
+          git commit -m "style: move home icons to right column"
+          git push origin HEAD:main
