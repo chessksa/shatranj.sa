@@ -1,0 +1,20 @@
+name: Test play-v8 legacy redirect
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - play-v8.html
+      - tests/test_play_v8_legacy_redirect.py
+      - .github/workflows/test-play-v8-legacy-redirect.yml
+
+permissions:
+  contents: read
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Verify legacy redirect
+        run: python tests/test_play_v8_legacy_redirect.py
