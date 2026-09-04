@@ -11,11 +11,13 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
-      - name: Verify white and black pawns are 15 percent larger and centered
+      - name: Verify pawn size and visual centering
         run: |
+          python -m pip install --quiet pillow
           python - <<'PY'
           import xml.etree.ElementTree as ET
           from pathlib import Path
+          from PIL import Image
 
           path = Path('assets/pieces/shatranj-approved-20260904.svg')
           root = ET.parse(path).getroot()
@@ -26,13 +28,22 @@ jobs:
               assert group is not None, f'missing {pawn_id}'
               image = next((child for child in group if child.tag.endswith('image')), None)
               assert image is not None, f'missing image for {pawn_id}'
-              attrs = {k: image.attrib.get(k) for k in ('x','y','width','height')}
-              print(pawn_id, attrs)
-              assert attrs == {'x':'-3','y':'-3','width':'46','height':'46'}, (
-                  f'{pawn_id} not scaled/centered as expected: {attrs}'
+              x=float(image.attrib['x']); y=float(image.attrib['y'])
+              width=float(image.attrib['width']); height=float(image.attrib['height'])
+              assert width == 46 and height == 46, f'{pawn_id} size changed: {width}x{height}'
+
+              png=Image.open(f'assets/pieces/{pawn_id}.png').convert('RGBA')
+              bbox=png.getchannel('A').getbbox()
+              assert bbox, f'no visible pixels in {pawn_id}.png'
+              x0,y0,x1,y1=bbox
+              cx=(x0+x1)/2; cy=(y0+y1)/2
+              pw,ph=png.size
+              visual_x=x + width*(cx/pw)
+              visual_y=y + height*(cy/ph)
+              print(f'{pawn_id}: bbox={bbox} source_center=({cx:.2f},{cy:.2f}) visual_center=({visual_x:.3f},{visual_y:.3f}) image_xy=({x},{y})')
+              assert abs(visual_x-20) <= 0.35 and abs(visual_y-20) <= 0.35, (
+                  f'{pawn_id} not visually centered: ({visual_x:.3f},{visual_y:.3f})'
               )
 
-          print('approved pawns are scaled 1.15x and centered')
+          print('approved pawns are 15 percent larger and visually centered')
           PY
-
-# verification trigger after production update
