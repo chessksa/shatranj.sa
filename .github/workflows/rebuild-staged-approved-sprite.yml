@@ -1,0 +1,46 @@
+name: Rebuild staged approved sprite
+
+on:
+  push:
+    branches:
+      - 'fix/self-contained-approved-pieces'
+    paths:
+      - '.github/workflows/rebuild-staged-approved-sprite.yml'
+
+permissions:
+  contents: write
+
+jobs:
+  rebuild:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: fix/self-contained-approved-pieces
+          fetch-depth: 0
+      - name: Reassemble validated self-contained sprite
+        shell: bash
+        run: |
+          cat .tmp/self-contained/c00.b64 .tmp/self-contained/c01.b64 .tmp/self-contained/c02.b64 .tmp/self-contained/c03.b64 .tmp/self-contained/c04.b64 .tmp/self-contained/c05.b64 .tmp/self-contained/c06.b64 .tmp/self-contained/c07.b64 .tmp/self-contained/c08.b64 | tr -d '\n\r ' | base64 -d > assets/pieces/shatranj-approved-20260904.svg
+          python - <<'PY'
+          from pathlib import Path
+          import xml.etree.ElementTree as ET
+          p=Path('assets/pieces/shatranj-approved-20260904.svg')
+          s=p.read_text(encoding='utf-8')
+          ET.parse(p)
+          for code in ('wk','wq','wr','wb','wn','wp','bk','bq','br','bb','bn','bp'):
+              assert f'id="{code}"' in s, code
+          assert s.count('data:image/png;base64,') == 12, s.count('data:image/png;base64,')
+          assert 'approved-dark-20260904.png' not in s
+          assert 'approved-light-20260904.png' not in s
+          print('bytes', p.stat().st_size, 'pieces', s.count('data:image/png;base64,'))
+          PY
+      - name: Commit sprite
+        shell: bash
+        run: |
+          rm -f .github/workflows/rebuild-staged-approved-sprite.yml
+          git config user.name "chessksa"
+          git config user.email "gmel1199@gmail.com"
+          git add assets/pieces/shatranj-approved-20260904.svg .github/workflows/rebuild-staged-approved-sprite.yml
+          git commit -m "fix: rebuild approved self-contained piece sprite"
+          git push origin HEAD:fix/self-contained-approved-pieces
