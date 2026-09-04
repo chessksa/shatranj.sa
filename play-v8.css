@@ -49,3 +49,7 @@
   .board-frame{padding:7px 7px 15px !important;border-radius:11px !important;}
   .piece{width:98% !important;height:98% !important;}
 }
+.piece-p .piece-image{
+  transform: translateY(-14%) scale(1.15);
+  transform-origin: center;
+}
