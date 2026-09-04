@@ -1,0 +1,21 @@
+name: Test player card layout
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - 'tests/test_player_card_layout.py'
+      - 'play-v10.html'
+      - 'play-v8.js'
+      - 'play-v10-match.js'
+      - '.github/workflows/test-player-card-layout.yml'
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Run player card layout tests
+        run: |
+          python -m pip install pytest
+          python -m pytest -q tests/test_player_card_layout.py
