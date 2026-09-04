@@ -1,4 +1,4 @@
-name: Apply approved pawn scale
+name: Apply all piece centering
 
 on:
   push:
@@ -15,44 +15,98 @@ jobs:
       - uses: actions/checkout@v4
         with:
           ref: main
-      - name: Keep pawn size and visually center white and black pawns
+      - name: Center every non-pawn piece without changing size
         run: |
+          python -m pip install --quiet pillow
           python - <<'PY'
+          import re
+          import xml.etree.ElementTree as ET
           from pathlib import Path
+          from PIL import Image
 
           svg_path = Path('assets/pieces/shatranj-approved-20260904.svg')
           text = svg_path.read_text(encoding='utf-8')
+          piece_ids = ('wr','br','wn','bn','wb','bb','wq','bq','wk','bk')
 
-          replacements = {
-              '<g id="wp"><image x="-3" y="-3" width="46" height="46"':
-              '<g id="wp"><image x="-3" y="-9.828" width="46" height="46"',
-              '<g id="bp"><image x="-3" y="-3" width="46" height="46"':
-              '<g id="bp"><image x="-3" y="-10.457" width="46" height="46"',
-          }
-          for old, new in replacements.items():
-              count = text.count(old)
+          def attr(tag, name):
+              match = re.search(rf'\b{name}="([^"]+)"', tag)
+              if not match:
+                  raise SystemExit(f'missing {name} attribute in {tag[:80]}')
+              return float(match.group(1))
+
+          def set_attr(tag, name, value):
+              formatted = f'{value:.3f}'.rstrip('0').rstrip('.')
+              if formatted == '-0':
+                  formatted = '0'
+              updated, count = re.subn(rf'\b{name}="[^"]+"', f'{name}="{formatted}"', tag, count=1)
               if count != 1:
-                  raise SystemExit(f'expected exactly one pawn image marker, found {count}: {old[:20]}')
-              text = text.replace(old, new, 1)
+                  raise SystemExit(f'could not replace {name} in {tag[:80]}')
+              return updated
+
+          for piece_id in piece_ids:
+              pattern = re.compile(rf'(<g id="{piece_id}">\s*<image\b[^>]*>)')
+              match = pattern.search(text)
+              if not match:
+                  raise SystemExit(f'missing SVG image tag for {piece_id}')
+              tag = match.group(1)
+              width = attr(tag, 'width')
+              height = attr(tag, 'height')
+
+              png = Image.open(f'assets/pieces/{piece_id}.png').convert('RGBA')
+              bbox = png.getchannel('A').getbbox()
+              if not bbox:
+                  raise SystemExit(f'no visible pixels in {piece_id}.png')
+              x0, y0, x1, y1 = bbox
+              cx = (x0 + x1) / 2
+              cy = (y0 + y1) / 2
+              pw, ph = png.size
+
+              new_x = 20 - width * (cx / pw)
+              new_y = 20 - height * (cy / ph)
+              new_tag = set_attr(set_attr(tag, 'x', new_x), 'y', new_y)
+              text = text[:match.start(1)] + new_tag + text[match.end(1):]
+              print(f'{piece_id}: x={new_x:.3f}, y={new_y:.3f}, size={width:g}x{height:g}')
 
           svg_path.write_text(text, encoding='utf-8')
 
+          # Verify all twelve visual centers; pawns keep the already-approved 46x46 size.
+          root = ET.parse(svg_path).getroot()
+          groups = {el.attrib.get('id'): el for el in root.iter() if el.attrib.get('id')}
+          errors = []
+          for piece_id in ('wp','bp','wr','br','wn','bn','wb','bb','wq','bq','wk','bk'):
+              group = groups[piece_id]
+              image = next(child for child in group if child.tag.endswith('image'))
+              x = float(image.attrib['x']); y = float(image.attrib['y'])
+              width = float(image.attrib['width']); height = float(image.attrib['height'])
+              if piece_id in ('wp','bp') and (width != 46 or height != 46):
+                  errors.append(f'{piece_id} pawn size changed: {width}x{height}')
+              png = Image.open(f'assets/pieces/{piece_id}.png').convert('RGBA')
+              x0,y0,x1,y1 = png.getchannel('A').getbbox()
+              pw,ph = png.size
+              vx = x + width * (((x0+x1)/2) / pw)
+              vy = y + height * (((y0+y1)/2) / ph)
+              print(f'verify {piece_id}: ({vx:.3f},{vy:.3f})')
+              if abs(vx-20) > 0.35 or abs(vy-20) > 0.35:
+                  errors.append(f'{piece_id} not centered: ({vx:.3f},{vy:.3f})')
+          if errors:
+              raise SystemExit('; '.join(errors))
+
+          # Refresh only the piece asset/script cache keys so browsers receive the new positions.
           for js_name in ('play-v8.js', 'play-v10-match.js'):
               path = Path(js_name)
               js = path.read_text(encoding='utf-8')
-              old = 'pieces/shatranj-approved-20260904.svg?v=20260905-1'
-              new = 'pieces/shatranj-approved-20260904.svg?v=20260905-2'
+              old = 'pieces/shatranj-approved-20260904.svg?v=20260905-2'
+              new = 'pieces/shatranj-approved-20260904.svg?v=20260905-3'
               if old not in js:
                   raise SystemExit(f'missing expected SVG cache token in {js_name}')
               path.write_text(js.replace(old, new), encoding='utf-8')
 
           html_path = Path('play-v10.html')
           html = html_path.read_text(encoding='utf-8')
-          replacements = {
-              'play-v8.js?v=20260905-1': 'play-v8.js?v=20260905-2',
-              'play-v10-match.js?v=20260905-1': 'play-v10-match.js?v=20260905-2',
-          }
-          for old, new in replacements.items():
+          for old, new in {
+              'play-v8.js?v=20260905-2': 'play-v8.js?v=20260905-3',
+              'play-v10-match.js?v=20260905-2': 'play-v10-match.js?v=20260905-3',
+          }.items():
               if old not in html:
                   raise SystemExit(f'missing expected script cache token: {old}')
               html = html.replace(old, new)
@@ -63,5 +117,5 @@ jobs:
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
           git add assets/pieces/shatranj-approved-20260904.svg play-v8.js play-v10-match.js play-v10.html
           git diff --cached --check
-          git commit -m "fix: visually center enlarged pawns" || exit 0
+          git commit -m "fix: visually center all chess pieces" || exit 0
           git push origin main
