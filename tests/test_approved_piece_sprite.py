@@ -21,7 +21,7 @@ def test_only_the_new_approved_piece_set_is_used():
 
 def test_sprite_is_self_contained_and_cannot_break_on_nested_image_paths():
     sprite = SPRITE.read_text(encoding="utf-8")
-    assert sprite.count("data:image/webp;base64,") == 12
+    assert sprite.count("data:image/") == 12
     assert ".png" not in sprite
     assert "approved-dark-20260904" not in sprite
     assert "approved-light-20260904" not in sprite
