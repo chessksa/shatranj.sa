@@ -14,4 +14,4 @@ def test_mobile_layout_places_opponent_above_centered_board_and_player_below():
     assert ".panel-stack>.player-card:not(#topPlayerCard){order:3;" in HTML
     assert ".actions-card{order:4;" in HTML
 
-# This test intentionally locks the approved mobile visual order.
+# This test locks the approved mobile visual order and centers the board.
