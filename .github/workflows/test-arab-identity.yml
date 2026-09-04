@@ -17,6 +17,8 @@ on:
       - 'play.html'
       - 'watch.html'
       - 'manifest.webmanifest'
+      - 'schema.sql'
+      - 'supabase/migrations/**'
       - 'tests/test_arab_identity.py'
       - 'tests/test_arab_profile_country.py'
       - '.github/workflows/test-arab-identity.yml'
