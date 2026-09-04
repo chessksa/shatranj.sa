@@ -1,0 +1,38 @@
+name: Apply home invite ranking stats polish
+
+on:
+  push:
+    branches:
+      - home-invite-ranking-stats-polish
+    paths:
+      - ci/apply_home_invite_ranking_stats_polish.py
+      - .github/workflows/apply-home-invite-ranking-stats-polish.yml
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  apply:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: home-invite-ranking-stats-polish
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - run: python ci/apply_home_invite_ranking_stats_polish.py
+      - run: python -m pip install pytest
+      - run: python -m pytest tests/test_home_invite_ranking_stats_polish.py -q
+      - name: Commit homepage changes
+        run: |
+          if git diff --quiet -- index.html home-theme.css home-invite.js; then
+            echo "No homepage changes to commit."
+            exit 0
+          fi
+          git config user.name "chessksa"
+          git config user.email "gmel1199@gmail.com"
+          git add index.html home-theme.css home-invite.js
+          git commit -m "style: fix invite ranking and stats layout"
+          git push origin HEAD:home-invite-ranking-stats-polish
