@@ -1,3 +1,4 @@
+# Final verification for the approved 2026-09-04 chess piece set.
 from pathlib import Path
 
 ROOT = Path(__file__).resolve().parents[1]
