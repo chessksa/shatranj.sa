@@ -1,0 +1,20 @@
+name: Test play-v8 pawn alignment
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - play-v8.css
+      - tests/test_play_v8_pawn_alignment.py
+      - .github/workflows/test-play-v8-pawn-alignment.yml
+
+permissions:
+  contents: read
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Verify play-v8 pawn alignment
+        run: python tests/test_play_v8_pawn_alignment.py
