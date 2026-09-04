@@ -1,0 +1,102 @@
+name: Fix iOS chess piece images
+
+on:
+  push:
+    branches: [ main ]
+    paths:
+      - '.github/workflows/fix-ios-piece-images.yml'
+
+permissions:
+  contents: write
+
+jobs:
+  fix:
+    if: github.actor != 'github-actions[bot]'
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: main
+          fetch-depth: 0
+
+      - name: Replace broken raster entries and bump cache
+        shell: bash
+        run: |
+          python - <<'PY'
+          from pathlib import Path
+          import re, base64, io
+          from PIL import Image
+
+          sprite = Path('assets/pieces/shatranj-approved-20260904.svg')
+          text = sprite.read_text(encoding='utf-8')
+          if 'xmlns:xlink=' not in text:
+              text = text.replace('xmlns="http://www.w3.org/2000/svg"', 'xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink"', 1)
+
+          fixes = {
+            'wb': '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',
+            'wp': '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',
+            'bp': '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'
+          }
+
+          dims = {'wb': (21,38), 'wp':(26,38), 'bp':(26,38)}
+          for code, b64 in fixes.items():
+              raw = base64.b64decode(b64, validate=True)
+              img = Image.open(io.BytesIO(raw)); img.verify()
+              w,h = dims[code]
+              tw = w * 38 / h
+              x = (40 - tw)/2
+              href = 'data:image/png;base64,' + b64
+              replacement = f'<g id="{code}"><image x="{x:.3f}" y="1" width="{tw:.3f}" height="38" preserveAspectRatio="xMidYMid meet" href="{href}" xlink:href="{href}"/></g>'
+              pattern = rf'<g id="{code}">.*?</g>'
+              text, n = re.subn(pattern, replacement, text, count=1, flags=re.S)
+              if n != 1:
+                  raise SystemExit(f'could not replace {code}')
+          sprite.write_text(text, encoding='utf-8')
+
+          for f in ('play-v8.js','play-v10-match.js'):
+              p = Path(f); s = p.read_text(encoding='utf-8')
+              old = 'pieces/shatranj-approved-20260904.svg?v=20260904-7'
+              new = 'pieces/shatranj-approved-20260904.svg?v=20260904-8'
+              if old not in s: raise SystemExit(f'missing {old} in {f}')
+              p.write_text(s.replace(old,new), encoding='utf-8')
+
+          p = Path('play-v10.html'); s = p.read_text(encoding='utf-8')
+          for old,new in [
+            ('play-v8.js?v=20260904-7','play-v8.js?v=20260904-8'),
+            ('play-v10-match.js?v=20260904-7','play-v10-match.js?v=20260904-8')]:
+              if old not in s: raise SystemExit(f'missing {old}')
+              s = s.replace(old,new)
+          p.write_text(s,encoding='utf-8')
+          PY
+
+      - name: Verify
+        shell: bash
+        run: |
+          python - <<'PY'
+          from pathlib import Path
+          import re, base64, io, xml.etree.ElementTree as ET
+          from PIL import Image
+          p=Path('assets/pieces/shatranj-approved-20260904.svg')
+          ET.parse(p)
+          s=p.read_text(encoding='utf-8')
+          for code in ('wb','wp','bp'):
+              m=re.search(rf'<g id="{code}">.*?href="data:image/png;base64,([A-Za-z0-9+/=]+)"',s,re.S)
+              assert m, code
+              raw=base64.b64decode(m.group(1),validate=True)
+              im=Image.open(io.BytesIO(raw)); im.verify()
+          assert '20260904-8' in Path('play-v8.js').read_text()
+          assert '20260904-8' in Path('play-v10-match.js').read_text()
+          print('verified iOS piece image payloads')
+          PY
+          node --check play-v8.js
+          node --check play-v10-match.js
+
+      - name: Commit fix
+        shell: bash
+        run: |
+          rm -f .github/workflows/fix-ios-piece-images.yml
+          git config user.name "chessksa"
+          git config user.email "gmel1199@gmail.com"
+          git add -A
+          git commit -m "fix: repair pawn and bishop images on iOS"
+          git push origin HEAD:main
