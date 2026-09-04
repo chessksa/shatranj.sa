@@ -1,4 +1,4 @@
-name: Diagnose play-v8 blank page
+name: Apply play-v8 pawn stylesheet cache bust
 
 on:
   push:
@@ -7,12 +7,40 @@ on:
       - .github/workflows/apply-play-v8-pawn-css-cache-bust.yml
 
 permissions:
-  contents: read
+  contents: write
 
 jobs:
-  diagnose:
+  apply:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
-      - name: Reproduce missing grace-end markup
-        run: python tests/test_play_v8_grace_end_markup.py
+        with:
+          token: ${{ secrets.GITHUB_TOKEN }}
+      - name: Update play-v8 stylesheet cache key
+        run: |
+          python - <<'PY'
+          from pathlib import Path
+          path = Path('play-v8.html')
+          text = path.read_text(encoding='utf-8')
+          old = 'play-v8.css?v=20260903-8'
+          new = 'play-v8.css?v=20260905-1'
+          if new in text:
+              print('cache key already current')
+          else:
+              if old not in text:
+                  raise SystemExit('expected old play-v8.css cache key not found')
+              path.write_text(text.replace(old, new, 1), encoding='utf-8')
+          PY
+      - name: Verify pawn alignment and cache key
+        run: python tests/test_play_v8_pawn_alignment.py
+      - name: Commit page cache key
+        run: |
+          if git diff --quiet -- play-v8.html; then
+            echo 'No changes to commit'
+            exit 0
+          fi
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git add play-v8.html
+          git commit -m 'fix: refresh play-v8 pawn stylesheet'
+          git push
