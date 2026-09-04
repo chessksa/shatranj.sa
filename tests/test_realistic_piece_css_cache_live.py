@@ -3,7 +3,7 @@ from pathlib import Path
 html = Path('play.html').read_text(encoding='utf-8')
 css = Path('realistic-pieces.css').read_text(encoding='utf-8')
 
-assert 'realistic-pieces.css?v=20260903-3' in html, 'play page must cache-bust the repaired realistic stylesheet'
-assert 'assets/realistic-pieces.png?v=20260903-2' in css, 'repaired sprite asset must keep its fresh cache key'
+assert 'realistic-pieces.css?v=20260905-1' in html, 'play page must request a fresh realistic stylesheet after pawn alignment changes'
+assert 'transform: translateY(-14%) scale(1.15);' in css, 'pawn alignment rule must be present in the stylesheet'
 
-print('realistic piece live cache bust: PASS')
+print('pawn stylesheet cache bust: PASS')
