@@ -23,7 +23,7 @@ def test_live_player_location_is_region_then_city_and_avatar_uses_real_profile_p
     assert "[serverState.white_region,serverState.white_city]" in js
     assert "[serverState.black_region,serverState.black_city]" in js
     assert "setPlayerAvatar(topAvatarEl, topAvatarImgEl, top)" in js
-    assert "setPlayerAvatar(bottomAvatarEl, bottomAvatarImgEl, bottom)" in js
+    assert "setPlayerAvatar(bottomAvatarEl, bottomAvatarImgEl, bottom" in js
     assert "get_public_player_profile" in js
     assert "profile?.avatar_path" in js
     assert "storage.from('avatars').getPublicUrl" in js
@@ -35,3 +35,22 @@ def test_search_player_location_is_region_then_city_and_uses_saved_avatar_path()
     assert "p.avatar_path || `${p.id}/avatar.webp`" in js
     assert "storage.from('avatars').getPublicUrl" in js
     assert "bottomAvatarImg" in js
+
+
+def test_play_avatar_uses_legacy_auth_fallback_and_cache_busting():
+    prematch = (ROOT / "play-v10-match.js").read_text(encoding="utf-8")
+    live = (ROOT / "play-v8.js").read_text(encoding="utf-8")
+    assert "`${authUserId}/avatar.webp`" in prematch
+    assert "`${authUserId}/avatar.webp`" in live
+    assert "?v=${Date.now()}" in prematch
+    assert "?v=${Date.now()}" in live
+
+
+def test_play_header_uses_home_label_and_equal_control_sizes():
+    html = (ROOT / "play-v10.html").read_text(encoding="utf-8")
+    live = (ROOT / "play-v8.js").read_text(encoding="utf-8")
+    assert 'id="leaveText">الرئيسية</span>' in html
+    assert ".side-icon-btn{width:64px;height:38px" in html
+    assert "#siteNotificationHost .site-notification-bell{width:64px!important;height:38px!important" in html
+    assert "leaveText.textContent = 'الرئيسية'" in live
+    assert "leaveText.textContent = 'مغادرة المباراة'" not in live
