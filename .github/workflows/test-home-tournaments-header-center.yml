@@ -1,0 +1,23 @@
+name: Test tournaments header and centered hero
+
+on:
+  push:
+    branches:
+      - home-tournaments-header-center-hero
+      - main
+    paths:
+      - index.html
+      - home-theme.css
+      - tests/test_home_tournaments_header_center.py
+      - .github/workflows/test-home-tournaments-header-center.yml
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - run: python -m pip install pytest
+      - run: python -m pytest -q tests/test_home_tournaments_header_center.py
