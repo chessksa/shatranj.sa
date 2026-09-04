@@ -309,15 +309,36 @@ function setPlayerProfileLink(el, info){
   }
 }
 
-function setPlayerAvatar(box,img,info){
+const playerAvatarPathCache = new Map();
+
+async function getPlayerAvatarPath(playerId){
+  if(playerAvatarPathCache.has(playerId)) return playerAvatarPathCache.get(playerId);
+  const pending=(async()=>{
+    try{
+      const { data, error }=await supabase.rpc('get_public_player_profile',{p_player_id:playerId});
+      if(error) throw error;
+      const profile=firstRow(data);
+      return profile?.avatar_path || `${playerId}/avatar.webp`;
+    }catch(err){
+      console.error(err);
+      return `${playerId}/avatar.webp`;
+    }
+  })();
+  playerAvatarPathCache.set(playerId,pending);
+  return pending;
+}
+
+async function setPlayerAvatar(box,img,info){
   if(!box || !img || !info?.id) return;
   const playerId=String(info.id);
   if(img.dataset.playerId===playerId && img.getAttribute('src')) return;
   img.dataset.playerId=playerId;
   img.hidden=true;
-  const url=supabase.storage.from('avatars').getPublicUrl(`${playerId}/avatar.webp`).data.publicUrl;
-  img.onload=()=>{ img.hidden=false; };
-  img.onerror=()=>{ img.hidden=true; };
+  const avatarPath=await getPlayerAvatarPath(playerId);
+  if(img.dataset.playerId!==playerId) return;
+  const url=supabase.storage.from('avatars').getPublicUrl(avatarPath).data.publicUrl;
+  img.onload=()=>{ if(img.dataset.playerId===playerId) img.hidden=false; };
+  img.onerror=()=>{ if(img.dataset.playerId===playerId) img.hidden=true; };
   img.src=url;
 }
 

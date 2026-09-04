@@ -143,7 +143,8 @@ async function loadProfile(){
   bottomRatingEl.textContent = p.rating ?? '—';
   bottomLocationEl.textContent = [p.region,p.city].filter(Boolean).join(' — ') || '—';
   if(bottomAvatarImg && p.id){
-    const url=supabase.storage.from('avatars').getPublicUrl(`${p.id}/avatar.webp`).data.publicUrl;
+    const avatarPath=p.avatar_path || `${p.id}/avatar.webp`;
+    const url=supabase.storage.from('avatars').getPublicUrl(avatarPath).data.publicUrl;
     bottomAvatarImg.onload=()=>{ bottomAvatarImg.hidden=false; };
     bottomAvatarImg.onerror=()=>{ bottomAvatarImg.hidden=true; };
     bottomAvatarImg.src=url;
