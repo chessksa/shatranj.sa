@@ -58,6 +58,7 @@ let matchmakingStartedAt = 0;
 let liveGameId = null;
 let seatKey = null;
 let myColor = null;
+let authUserId = null;
 let game = null;
 let cmBoard = null;
 let serverState = null;
@@ -125,13 +126,13 @@ function showMatchmakingState(state){
   matchmakingSetup.hidden = state !== 'setup';
   matchmakingWaiting.hidden = state !== 'waiting';
   matchmakingFound.hidden = state !== 'found';
-  leaveText.textContent = 'رجوع';
+  leaveText.textContent = 'الرئيسية';
 }
 
 function showGamePage(){
   matchmakingScreen.hidden = true;
   gamePage.hidden = false;
-  leaveText.textContent = 'مغادرة المباراة';
+  leaveText.textContent = 'الرئيسية';
 }
 
 function formatElapsed(seconds){
@@ -328,7 +329,7 @@ async function getPlayerAvatarPath(playerId){
   return pending;
 }
 
-async function setPlayerAvatar(box,img,info){
+async function setPlayerAvatar(box,img,info,legacyAuthUserId=null){
   if(!box || !img || !info?.id) return;
   const playerId=String(info.id);
   if(img.dataset.playerId===playerId && img.getAttribute('src')) return;
@@ -336,10 +337,20 @@ async function setPlayerAvatar(box,img,info){
   img.hidden=true;
   const avatarPath=await getPlayerAvatarPath(playerId);
   if(img.dataset.playerId!==playerId) return;
-  const url=supabase.storage.from('avatars').getPublicUrl(avatarPath).data.publicUrl;
+  const legacyAvatarPath=legacyAuthUserId ? `${legacyAuthUserId}/avatar.webp` : null;
+  const avatarUrl=(path)=>`${supabase.storage.from('avatars').getPublicUrl(path).data.publicUrl}?v=${Date.now()}`;
+  let triedLegacy=false;
   img.onload=()=>{ if(img.dataset.playerId===playerId) img.hidden=false; };
-  img.onerror=()=>{ if(img.dataset.playerId===playerId) img.hidden=true; };
-  img.src=url;
+  img.onerror=()=>{
+    if(img.dataset.playerId!==playerId) return;
+    if(!triedLegacy && legacyAvatarPath && legacyAvatarPath!==avatarPath){
+      triedLegacy=true;
+      img.src=avatarUrl(legacyAvatarPath);
+      return;
+    }
+    img.hidden=true;
+  };
+  img.src=avatarUrl(avatarPath);
 }
 
 function renderPlayers(){
@@ -360,7 +371,7 @@ function renderPlayers(){
   topAvatarEl.classList.toggle('light', topColor==='w');
   bottomAvatarEl.classList.toggle('light', bottomColor==='w');
   setPlayerAvatar(topAvatarEl, topAvatarImgEl, top);
-  setPlayerAvatar(bottomAvatarEl, bottomAvatarImgEl, bottom);
+  setPlayerAvatar(bottomAvatarEl, bottomAvatarImgEl, bottom, authUserId);
 }
 
 function updateClockUI(){
@@ -805,6 +816,7 @@ async function init(){
     location.href='index.html#register';
     return;
   }
+  authUserId=session.user.id;
 
   const params = new URLSearchParams(location.search);
   liveGameId = params.get('game');

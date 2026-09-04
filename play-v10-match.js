@@ -132,7 +132,7 @@ function updateWaiting(row){
   rangeEl.textContent = `±${Number(row?.rating_window || 150)}`;
 }
 
-async function loadProfile(){
+async function loadProfile(authUserId){
   const { data, error } = await supabase.rpc('get_my_player_profile');
   const p = firstRow(data);
   if(error || !p){
@@ -144,10 +144,20 @@ async function loadProfile(){
   bottomLocationEl.textContent = [p.region,p.city].filter(Boolean).join(' — ') || '—';
   if(bottomAvatarImg && p.id){
     const avatarPath=p.avatar_path || `${p.id}/avatar.webp`;
-    const url=supabase.storage.from('avatars').getPublicUrl(avatarPath).data.publicUrl;
+    const legacyAvatarPath=authUserId ? `${authUserId}/avatar.webp` : null;
+    const avatarUrl=(path)=>`${supabase.storage.from('avatars').getPublicUrl(path).data.publicUrl}?v=${Date.now()}`;
+    let triedLegacy=false;
     bottomAvatarImg.onload=()=>{ bottomAvatarImg.hidden=false; };
-    bottomAvatarImg.onerror=()=>{ bottomAvatarImg.hidden=true; };
-    bottomAvatarImg.src=url;
+    bottomAvatarImg.onerror=()=>{
+      if(!triedLegacy && legacyAvatarPath && legacyAvatarPath!==avatarPath){
+        triedLegacy=true;
+        bottomAvatarImg.src=avatarUrl(legacyAvatarPath);
+        return;
+      }
+      bottomAvatarImg.hidden=true;
+    };
+    bottomAvatarImg.hidden=true;
+    bottomAvatarImg.src=avatarUrl(avatarPath);
   }
   return p;
 }
@@ -254,7 +264,7 @@ async function init(){
     location.href = 'index.html#register';
     return;
   }
-  await loadProfile();
+  await loadProfile(session.user.id);
 
   if(sessionStorage.getItem('shatranj_matchmaking_active') === '1'){
     startedAt = Number(sessionStorage.getItem('shatranj_matchmaking_started_at')) || Date.now();
