@@ -27,3 +27,4 @@ jobs:
               y=20-46*(cy/h)
               print(f'{name}: size={w}x{h} bbox={bbox} center=({cx:.2f},{cy:.2f}) suggested_image_xy=({x:.3f},{y:.3f})')
           PY
+# rerun marker
