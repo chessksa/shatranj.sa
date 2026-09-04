@@ -38,3 +38,5 @@ jobs:
           git add play-v10.html .github/workflows/bump-mobile-board-flow-cache.yml
           git commit -m "fix: publish mobile board flow immediately"
           git push origin main
+
+# trigger
