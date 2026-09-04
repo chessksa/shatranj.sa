@@ -52,3 +52,5 @@ jobs:
           fi
           git commit -m "fix: remove duplicate dashboard header tile"
           git push origin main
+
+# Triggered after workflow registration on the default branch.
