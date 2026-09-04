@@ -901,37 +901,79 @@ footer{
   }
 }
 </style>
-<link rel="stylesheet" href="home-theme.css?v=20260903-13">
+<link rel="stylesheet" href="home-theme.css?v=20260904-20">
 </head>
 
 <body>
 
-<header>
+<header class="home-header">
   <div class="wrap nav">
-    <div class="nav-main">
-      <div class="brand">♟ شطرنج السعودية</div>
+    <div class="brand"><span class="brand-mark">♟</span><span>شطرنج السعودية</span></div>
+
+    <nav class="main-nav" aria-label="التنقل الرئيسي">
+      <a class="active" href="index.html">الرئيسية</a>
+      <a href="#register">لوحة التحكم</a>
+      <a href="#ranking">اللاعبون</a>
+      <a href="#features">البطولات</a>
+      <a href="#features">دليل الموقع</a>
+    </nav>
+
+    <div class="nav-user">
       <a href="#register" id="navAccount" class="nav-account header-action">👤 تسجيل الدخول</a>
       <button id="navLogout" class="nav-logout header-action" type="button" hidden>تسجيل الخروج</button>
-
-      <div class="header-live">
-        <div class="header-box header-action">
-          <strong id="headerPlayersCount">0</strong>
-          <span>اللاعبون</span>
-        </div>
-
-        <div class="header-box header-action">
-          <strong id="headerMatchesCount">0</strong>
-          <span>المباريات الحالية</span>
-        </div>
-
-        <a class="header-box header-action watch-box" href="watch.html">
-          <strong>◉</strong>
-          <span>شاهد</span>
-        </a>
-      </div>
     </div>
   </div>
 </header>
+
+
+<!-- APPROVED HOME HERO 20260904 -->
+<section id="homeHero" class="home-hero">
+  <div class="wrap home-hero-grid">
+    <div class="home-hero-copy">
+      <span class="hero-kicker">المنصة السعودية للشطرنج</span>
+      <h1>مرحبًا بك في <span>شطرنج السعودية</span></h1>
+      <p>مجتمع سعودي لعشاق الشطرنج</p>
+
+      <div class="hero-live-stats" aria-label="إحصاءات المنصة">
+        <div class="hero-stat">
+          <span class="hero-stat-icon" aria-hidden="true">👥</span>
+          <div><strong id="headerPlayersCount">0</strong><small>لاعب مسجل</small></div>
+        </div>
+        <div class="hero-stat">
+          <span class="hero-stat-icon" aria-hidden="true">⚔</span>
+          <div><strong id="headerMatchesCount">0</strong><small>مباراة حالية</small></div>
+        </div>
+        <a class="hero-stat hero-stat-watch" href="watch.html">
+          <span class="hero-stat-icon" aria-hidden="true">◉</span>
+          <div><strong>شاهد</strong><small>يشاهد الآن</small></div>
+        </a>
+      </div>
+
+      <div id="homeBoardActions" class="home-board-actions" aria-label="العب الآن ودعوة لاعب">
+        <a class="btn gold protected-play hero-play-btn" href="play-v10.html"><span aria-hidden="true">⚡</span> العب الآن</a>
+      </div>
+    </div>
+
+    <a id="homeBoardPreview" class="home-board-preview protected-play" href="play-v10.html" aria-label="فتح رقعة اللعب"></a>
+  </div>
+</section>
+
+<section id="features" class="home-features" aria-label="أقسام شطرنج السعودية">
+  <div class="wrap home-feature-grid">
+    <a class="home-feature-card" href="#ranking">
+      <span class="feature-icon">▥</span><strong>التصنيف</strong><small>تابع تقدمك في النقاط</small>
+    </a>
+    <a class="home-feature-card" href="#ranking">
+      <span class="feature-icon">👥</span><strong>اللاعبون</strong><small>تعرف على مجتمع اللاعبين</small>
+    </a>
+    <a class="home-feature-card" href="#register">
+      <span class="feature-icon">🏆</span><strong>البطولات</strong><small>شارك في البطولات المحلية</small>
+    </a>
+    <a class="home-feature-card" href="#register">
+      <span class="feature-icon">▤</span><strong>دليل الموقع</strong><small>كل ما تحتاج معرفته</small>
+    </a>
+  </div>
+</section>
 
 <!-- RANKING -->
 <section id="ranking">
@@ -1202,18 +1244,12 @@ footer{
       </div>
 
     </div>
-
-
-    <a id="homeBoardPreview" class="home-board-preview protected-play" href="play-v10.html" aria-label="العب الآن"></a>
-    <div id="homeBoardActions" class="home-board-actions">
-      <a class="btn gold protected-play" href="play-v10.html">♟ العب الآن</a>
-    </div>
   </div>
 </section>
 
 <footer>
   <div class="wrap">
-    <strong>شطرنج السعودية</strong>
+    <strong>♟ شطرنج السعودية</strong><span class="footer-tagline"> .. أكثر من لعبة</span>
   </div>
 </footer>
 
