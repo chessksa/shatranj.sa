@@ -3,6 +3,7 @@ name: Test approved home hero redesign
 on:
   push:
     branches:
+      - main
       - feature/home-hero-redesign-20260904-work
     paths:
       - 'index.html'
