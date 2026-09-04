@@ -9,12 +9,16 @@ on:
     paths:
       - 'index.html'
       - 'profile.html'
+      - 'profile.js'
+      - 'profile-section.js'
       - 'player.html'
+      - 'player.js'
       - 'play-v10.html'
       - 'play.html'
       - 'watch.html'
       - 'manifest.webmanifest'
       - 'tests/test_arab_identity.py'
+      - 'tests/test_arab_profile_country.py'
       - '.github/workflows/test-arab-identity.yml'
 
 jobs:
@@ -22,5 +26,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
-      - name: Run Arab identity test
-        run: python tests/test_arab_identity.py
+      - name: Run Arab identity tests
+        run: |
+          python tests/test_arab_identity.py
+          python tests/test_arab_profile_country.py
