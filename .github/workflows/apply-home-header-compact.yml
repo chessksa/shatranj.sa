@@ -1,0 +1,38 @@
+name: Apply compact home header
+
+on:
+  push:
+    branches:
+      - home-header-compact-no-scroll
+    paths:
+      - ci/apply_home_header_compact.py
+      - .github/workflows/apply-home-header-compact.yml
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  apply:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: home-header-compact-no-scroll
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - run: python ci/apply_home_header_compact.py
+      - run: python -m pip install pytest
+      - run: python -m pytest tests/test_home_hero_leaderboard.py -q
+      - name: Commit applied homepage changes
+        run: |
+          if git diff --quiet -- index.html home-theme.css; then
+            echo "No homepage changes to commit."
+            exit 0
+          fi
+          git config user.name "chessksa"
+          git config user.email "gmel1199@gmail.com"
+          git add index.html home-theme.css
+          git commit -m "feat: compact signed-in home header"
+          git push origin HEAD:home-header-compact-no-scroll
