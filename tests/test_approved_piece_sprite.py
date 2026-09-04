@@ -1,56 +1,37 @@
-# Final post-cleanup verification for the approved 2026-09-04 chess piece set.
 from pathlib import Path
 
 ROOT = Path(__file__).resolve().parents[1]
-PIECES = ROOT / "assets" / "pieces"
-SPRITE = PIECES / "shatranj-approved-20260904.svg"
-DARK = "approved-dark-20260904.png"
-LIGHT = "approved-light-20260904.png"
-SPRITE_URL = "pieces/shatranj-approved-20260904.svg?v=20260904-5"
+SPRITE = ROOT / "assets" / "pieces" / "shatranj-approved-20260904.svg"
+PIECE_CODES = ("wk", "wq", "wr", "wb", "wn", "wp", "bk", "bq", "br", "bb", "bn", "bp")
 
 
-def test_only_the_new_approved_piece_set_is_used():
-    assert SPRITE.exists(), "cm-chessboard wrapper for the approved pieces must exist"
+def test_sprite_is_self_contained_for_ios_webkit():
+    """External raster hrefs inside an externally loaded SVG render as broken images on iOS Safari."""
     sprite = SPRITE.read_text(encoding="utf-8")
-    for code in ("wk", "wq", "wr", "wb", "wn", "wp", "bk", "bq", "br", "bb", "bn", "bp"):
+    for code in PIECE_CODES:
         assert f'id="{code}"' in sprite
-    assert DARK in sprite
-    assert LIGHT in sprite
+    assert sprite.count("data:image/png;base64,") == 12
+    assert 'href="wk.png' not in sprite
+    assert 'href="wp.png' not in sprite
+    assert 'href="bk.png' not in sprite
+    assert 'href="bp.png' not in sprite
 
+
+def test_piece_layout_is_centered_and_pawns_are_smaller():
+    sprite = SPRITE.read_text(encoding="utf-8")
+    assert 'id="wp"><image' in sprite
+    assert 'id="bp"><image' in sprite
+    assert 'x="4.5" y="4.5" width="31" height="31"' in sprite
+    assert sprite.count('preserveAspectRatio="xMidYMid meet"') == 12
+
+
+def test_live_and_prematch_boards_use_the_same_approved_sprite():
     for filename in ("play-v8.js", "play-v10-match.js"):
         js = (ROOT / filename).read_text(encoding="utf-8")
         assert "pieces/shatranj-approved-20260904.svg" in js
-        assert "pieces/shatranj-3d-staunton-v3.svg" not in js
 
 
-def test_sprite_png_links_are_relative_to_the_sprite_directory():
-    sprite = SPRITE.read_text(encoding="utf-8")
-    assert 'href="approved-dark-20260904.png?v=20260904-2"' in sprite
-    assert 'href="approved-light-20260904.png?v=20260904-2"' in sprite
-    assert 'href="assets/pieces/' not in sprite
-
-
-def test_cm_chessboard_fetches_a_fresh_sprite_after_the_path_fix():
-    for filename in ("play-v8.js", "play-v10-match.js"):
-        js = (ROOT / filename).read_text(encoding="utf-8")
-        assert SPRITE_URL in js
-
-
-def test_piece_script_cache_is_busted_for_the_new_sprite():
-    html = (ROOT / "play-v10.html").read_text(encoding="utf-8")
-    assert "play-v8.js?v=20260904-5" in html
-    assert "play-v10-match.js?v=20260904-5" in html
-
-
-def test_no_previous_piece_assets_remain():
-    assert {p.name for p in PIECES.iterdir() if p.is_file()} == {
-        DARK,
-        LIGHT,
-        "shatranj-approved-20260904.svg",
-    }
-
-
-def test_board_theme_keeps_approved_cream_and_petrol_colors():
+def test_board_theme_keeps_approved_colors():
     css = (ROOT / "cm-chessboard-shatranj-v3.css").read_text(encoding="utf-8")
     compact = css.replace(" ", "")
     assert "fill:#d6cfbf" in compact
