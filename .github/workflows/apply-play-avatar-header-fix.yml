@@ -1,0 +1,158 @@
+name: Apply play avatar and header fix
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - '.github/workflows/apply-play-avatar-header-fix.yml'
+
+permissions:
+  contents: write
+
+jobs:
+  apply:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: main
+          fetch-depth: 0
+      - name: Apply avatar fallback and header controls
+        shell: bash
+        run: |
+          python - <<'PY'
+          from pathlib import Path
+          import re
+
+          html_path = Path('play-v10.html')
+          html = html_path.read_text(encoding='utf-8')
+          old_css = ".side-icon-btn{height:36px;padding:0 9px;border:1px solid rgba(224,181,103,.34);border-radius:10px;background:rgba(6,27,31,.46);color:var(--text);font:700 12px inherit;cursor:pointer}.side-icon-btn:disabled{opacity:.35;cursor:default}"
+          new_css = ".side-icon-btn{width:64px;height:38px;padding:0 5px;border:1px solid rgba(224,181,103,.34);border-radius:10px;background:rgba(6,27,31,.46);color:var(--text);font:700 12px inherit;cursor:pointer}.side-icon-btn:disabled{opacity:.35;cursor:default}#siteNotificationHost{width:64px;min-width:64px;display:flex;align-items:center;justify-content:center}#siteNotificationHost .site-notification-bell{width:64px!important;height:38px!important;border-radius:10px!important}"
+          if old_css not in html:
+            raise SystemExit('play-v10.html side button CSS not found')
+          html = html.replace(old_css, new_css, 1)
+          old_leave = '<button class="side-icon-btn" id="leaveBtn" type="button">↩ <span id="leaveText">رجوع</span></button>'
+          new_leave = '<button class="side-icon-btn" id="leaveBtn" type="button"><span id="leaveText">الرئيسية</span></button>'
+          if old_leave not in html:
+            raise SystemExit('play-v10.html leave button not found')
+          html = html.replace(old_leave, new_leave, 1)
+          html = re.sub(r"play-v8\.js\?v=[^'\"]+", "play-v8.js?v=20260904-16", html)
+          html = re.sub(r"play-v10-match\.js\?v=[^'\"]+", "play-v10-match.js?v=20260904-16", html)
+          html_path.write_text(html, encoding='utf-8')
+
+          match_path = Path('play-v10-match.js')
+          match = match_path.read_text(encoding='utf-8')
+          if 'async function loadProfile(){' not in match:
+            raise SystemExit('play-v10-match.js loadProfile signature not found')
+          match = match.replace('async function loadProfile(){', 'async function loadProfile(authUserId){', 1)
+          old_block = """  if(bottomAvatarImg && p.id){
+    const avatarPath=p.avatar_path || `${p.id}/avatar.webp`;
+    const url=supabase.storage.from('avatars').getPublicUrl(avatarPath).data.publicUrl;
+    bottomAvatarImg.onload=()=>{ bottomAvatarImg.hidden=false; };
+    bottomAvatarImg.onerror=()=>{ bottomAvatarImg.hidden=true; };
+    bottomAvatarImg.src=url;
+  }"""
+          new_block = """  if(bottomAvatarImg && p.id){
+    const avatarPath=p.avatar_path || `${p.id}/avatar.webp`;
+    const legacyAvatarPath=authUserId ? `${authUserId}/avatar.webp` : null;
+    const avatarUrl=(path)=>`${supabase.storage.from('avatars').getPublicUrl(path).data.publicUrl}?v=${Date.now()}`;
+    let triedLegacy=false;
+    bottomAvatarImg.onload=()=>{ bottomAvatarImg.hidden=false; };
+    bottomAvatarImg.onerror=()=>{
+      if(!triedLegacy && legacyAvatarPath && legacyAvatarPath!==avatarPath){
+        triedLegacy=true;
+        bottomAvatarImg.src=avatarUrl(legacyAvatarPath);
+        return;
+      }
+      bottomAvatarImg.hidden=true;
+    };
+    bottomAvatarImg.hidden=true;
+    bottomAvatarImg.src=avatarUrl(avatarPath);
+  }"""
+          if old_block not in match:
+            raise SystemExit('play-v10-match.js avatar block not found')
+          match = match.replace(old_block, new_block, 1)
+          if 'await loadProfile();' not in match:
+            raise SystemExit('play-v10-match.js loadProfile call not found')
+          match = match.replace('await loadProfile();', 'await loadProfile(session.user.id);', 1)
+          match_path.write_text(match, encoding='utf-8')
+
+          live_path = Path('play-v8.js')
+          live = live_path.read_text(encoding='utf-8')
+          if 'let myColor = null;' not in live:
+            raise SystemExit('play-v8.js myColor declaration not found')
+          live = live.replace('let myColor = null;', 'let myColor = null;\nlet authUserId = null;', 1)
+          live = live.replace("leaveText.textContent = 'رجوع';", "leaveText.textContent = 'الرئيسية';", 1)
+          live = live.replace("leaveText.textContent = 'مغادرة المباراة';", "leaveText.textContent = 'الرئيسية';", 1)
+          old_live_avatar = """async function setPlayerAvatar(box,img,info){
+  if(!box || !img || !info?.id) return;
+  const playerId=String(info.id);
+  if(img.dataset.playerId===playerId && img.getAttribute('src')) return;
+  img.dataset.playerId=playerId;
+  img.hidden=true;
+  const avatarPath=await getPlayerAvatarPath(playerId);
+  if(img.dataset.playerId!==playerId) return;
+  const url=supabase.storage.from('avatars').getPublicUrl(avatarPath).data.publicUrl;
+  img.onload=()=>{ if(img.dataset.playerId===playerId) img.hidden=false; };
+  img.onerror=()=>{ if(img.dataset.playerId===playerId) img.hidden=true; };
+  img.src=url;
+}"""
+          new_live_avatar = """async function setPlayerAvatar(box,img,info,legacyAuthUserId=null){
+  if(!box || !img || !info?.id) return;
+  const playerId=String(info.id);
+  if(img.dataset.playerId===playerId && img.getAttribute('src')) return;
+  img.dataset.playerId=playerId;
+  img.hidden=true;
+  const avatarPath=await getPlayerAvatarPath(playerId);
+  if(img.dataset.playerId!==playerId) return;
+  const legacyAvatarPath=legacyAuthUserId ? `${legacyAuthUserId}/avatar.webp` : null;
+  const avatarUrl=(path)=>`${supabase.storage.from('avatars').getPublicUrl(path).data.publicUrl}?v=${Date.now()}`;
+  let triedLegacy=false;
+  img.onload=()=>{ if(img.dataset.playerId===playerId) img.hidden=false; };
+  img.onerror=()=>{
+    if(img.dataset.playerId!==playerId) return;
+    if(!triedLegacy && legacyAvatarPath && legacyAvatarPath!==avatarPath){
+      triedLegacy=true;
+      img.src=avatarUrl(legacyAvatarPath);
+      return;
+    }
+    img.hidden=true;
+  };
+  img.src=avatarUrl(avatarPath);
+}"""
+          if old_live_avatar not in live:
+            raise SystemExit('play-v8.js avatar function not found')
+          live = live.replace(old_live_avatar, new_live_avatar, 1)
+          old_bottom_call = 'setPlayerAvatar(bottomAvatarEl, bottomAvatarImgEl, bottom);'
+          if old_bottom_call not in live:
+            raise SystemExit('play-v8.js bottom avatar call not found')
+          live = live.replace(old_bottom_call, 'setPlayerAvatar(bottomAvatarEl, bottomAvatarImgEl, bottom, authUserId);', 1)
+          session_marker = """  if(!session){
+    location.href='index.html#register';
+    return;
+  }
+
+  const params = new URLSearchParams(location.search);"""
+          session_replacement = """  if(!session){
+    location.href='index.html#register';
+    return;
+  }
+  authUserId=session.user.id;
+
+  const params = new URLSearchParams(location.search);"""
+          if session_marker not in live:
+            raise SystemExit('play-v8.js session marker not found')
+          live = live.replace(session_marker, session_replacement, 1)
+          live_path.write_text(live, encoding='utf-8')
+          PY
+      - name: Verify play avatar and header fix
+        run: |
+          python -m pip install pytest
+          python -m pytest -q tests/test_player_card_layout.py
+      - name: Commit play fix
+        run: |
+          git config user.name "chessksa"
+          git config user.email "gmel1199@gmail.com"
+          git add play-v10.html play-v8.js play-v10-match.js
+          git commit -m "fix: show legacy avatars and align play header controls"
+          git push origin HEAD:main
