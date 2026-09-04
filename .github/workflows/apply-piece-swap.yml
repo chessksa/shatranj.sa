@@ -1,0 +1,133 @@
+name: Apply approved chess pieces
+
+on:
+  push:
+    branches:
+      - piece-swap-20260904
+
+permissions:
+  contents: write
+
+jobs:
+  apply:
+    if: github.actor != 'github-actions[bot]'
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: piece-swap-20260904
+          fetch-depth: 0
+
+      - name: Replace previous pieces with approved set
+        shell: bash
+        run: |
+          python - <<'PY'
+          from pathlib import Path
+
+          js_path = Path('play-live.js')
+          js = js_path.read_text(encoding='utf-8')
+          old = 'return `<div class="piece ${cls} piece-${type}"><img class="piece-image" src="assets/pieces/${color}${type}.png?v=20260903-4" alt="" aria-hidden="true" draggable="false"></div>`;'
+          new = 'return `<div class="piece ${cls} piece-${type}"><span class="piece-image piece-${color}${type}" aria-hidden="true"></span></div>`;'
+          if old not in js:
+              raise SystemExit('expected old piece renderer not found')
+          js_path.write_text(js.replace(old, new, 1), encoding='utf-8')
+
+          html_path = Path('play.html')
+          html = html_path.read_text(encoding='utf-8')
+          html = html.replace("PLAY_CACHE_RESET_VERSION = '20260903-7'", "PLAY_CACHE_RESET_VERSION = '20260904-1'")
+          html = html.replace('realistic-pieces.css?v=20260903-7', 'realistic-pieces.css?v=20260904-1')
+          html = html.replace('realistic-pieces.css?v=20260903-4', 'realistic-pieces.css?v=20260904-1')
+          html = html.replace('play-live.js?v=20260903-5', 'play-live.js?v=20260904-1')
+          html = html.replace('play-live.js?v=20260903-7', 'play-live.js?v=20260904-1')
+          if "PLAY_CACHE_RESET_VERSION = '20260904-1'" not in html:
+              raise SystemExit('play cache version was not updated')
+          if 'realistic-pieces.css?v=20260904-1' not in html:
+              raise SystemExit('piece stylesheet cache version was not updated')
+          if 'play-live.js?v=20260904-1' not in html:
+              raise SystemExit('play-live cache version was not updated')
+          html_path.write_text(html, encoding='utf-8')
+          PY
+
+          cat > realistic-pieces.css <<'CSS'
+          /* Approved 2026-09-04 realistic chess pieces. Only these two transparent sprites are used. */
+          :root{
+            --real-board-dark:#0b4850;
+            --real-board-light:#d6cfbf;
+            --real-board-edge:#063a40;
+            --real-board-gold:#e0b567;
+          }
+          .board-frame{
+            padding:10px 10px 18px !important;
+            border-radius:14px !important;
+            background:linear-gradient(145deg,#07363d,#022f33) !important;
+            border:1px solid rgba(224,181,103,.72) !important;
+            box-shadow:0 14px 34px rgba(0,0,0,.30),inset 0 1px 0 rgba(255,255,255,.05) !important;
+          }
+          .board-shell{
+            border-radius:2px !important;
+            background:var(--real-board-edge) !important;
+            box-shadow:inset 0 0 0 1px rgba(0,0,0,.55),0 1px 0 rgba(255,255,255,.04) !important;
+          }
+          .square{
+            border-right:1px solid rgba(2,47,51,.34) !important;
+            border-bottom:1px solid rgba(2,47,51,.34) !important;
+          }
+          .square.light{background:var(--real-board-light) !important;}
+          .square.dark{background:var(--real-board-dark) !important;}
+          .piece{
+            position:relative !important;
+            width:96% !important;
+            height:96% !important;
+            display:flex !important;
+            align-items:center !important;
+            justify-content:center !important;
+            filter:none !important;
+            isolation:isolate;
+          }
+          .piece > svg,.piece::before,.piece::after{display:none !important;}
+          .piece-image{
+            display:block !important;
+            width:100% !important;
+            height:100% !important;
+            background-repeat:no-repeat !important;
+            background-size:600% 100% !important;
+            background-position-y:center !important;
+            opacity:1 !important;
+            visibility:visible !important;
+            filter:drop-shadow(0 4px 3px rgba(0,0,0,.30));
+            pointer-events:none;
+            user-select:none;
+          }
+          .piece.black .piece-image{background-image:url("assets/pieces/approved-dark-20260904.png?v=20260904-1") !important;}
+          .piece.white .piece-image{background-image:url("assets/pieces/approved-light-20260904.png?v=20260904-1") !important;}
+          .piece-r .piece-image{background-position-x:0% !important;}
+          .piece-n .piece-image{background-position-x:20% !important;}
+          .piece-b .piece-image{background-position-x:40% !important;}
+          .piece-q .piece-image{background-position-x:60% !important;}
+          .piece-k .piece-image{background-position-x:80% !important;}
+          .piece-p .piece-image{background-position-x:100% !important;}
+          @media (max-width:900px){
+            .board-frame{padding:7px 7px 15px !important;border-radius:11px !important;}
+            .piece{width:98% !important;height:98% !important;}
+          }
+          CSS
+
+          rm -f \
+            assets/pieces/bb.png assets/pieces/bk.png assets/pieces/bn.png assets/pieces/bp.png assets/pieces/bq.png assets/pieces/br.png \
+            assets/pieces/wb.png assets/pieces/wk.png assets/pieces/wn.png assets/pieces/wp.png assets/pieces/wq.png assets/pieces/wr.png \
+            assets/pieces/shatranj-3d-staunton.svg assets/pieces/shatranj-3d-staunton-v2.svg assets/pieces/shatranj-3d-staunton-v3.svg \
+            assets/pieces/shatranj-approved.svg assets/realistic-pieces.png
+          rm -rf assets/pieces/v3
+
+      - name: Verify approved piece set
+        run: python tests/test_direct_realistic_pieces.py
+
+      - name: Commit applied change
+        shell: bash
+        run: |
+          rm -f .github/workflows/apply-piece-swap.yml
+          git config user.name "chessksa"
+          git config user.email "gmel1199@gmail.com"
+          git add -A
+          git commit -m "feat: deploy approved 20260904 chess pieces"
+          git push origin HEAD:piece-swap-20260904
