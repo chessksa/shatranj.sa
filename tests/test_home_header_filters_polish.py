@@ -9,7 +9,7 @@ INVITE = (ROOT / "home-invite.js").read_text(encoding="utf-8")
 # Fresh verification trigger after the approved production patch.
 
 
-def test_signed_in_header_has_only_member_dashboard_notifications_logout_in_order():
+def test_signed_in_header_has_member_dashboard_notifications_logout_then_tournaments():
     header = re.search(r'<header class="home-header">(.*?)</header>', HTML, re.S)
     assert header, "home header should exist"
     block = header.group(1)
@@ -19,6 +19,7 @@ def test_signed_in_header_has_only_member_dashboard_notifications_logout_in_orde
         block.index('id="dashboardNav"'),
         block.index('id="siteNotificationHost"'),
         block.index('id="navLogout"'),
+        block.index('id="headerTournaments"'),
     ]
     assert order == sorted(order)
 
@@ -33,7 +34,9 @@ def test_ranking_filters_are_visible_at_top_of_ranking_panel():
     assert '.ranking-filters' in CSS
 
 
-def test_play_and_invite_use_matching_action_icons():
-    assert 'class="hero-action-icon"' in HTML
-    assert 'hero-action-icon' in INVITE
-    assert '.hero-action-icon' in CSS
+def test_play_and_invite_have_no_decorative_side_icons():
+    hero = re.search(r'<section id="homeHero".*?</section>', HTML, re.S)
+    assert hero
+    assert 'hero-action-icon' not in hero.group(0)
+    assert 'hero-action-icon' not in INVITE
+    assert '.hero-action-icon' in CSS  # legacy CSS may remain harmlessly unused

@@ -939,3 +939,15 @@ footer .wrap{display:flex;justify-content:space-between;align-items:center}
   #ranking th:nth-child(4),#ranking td:nth-child(4){width:20%!important}
   #ranking th:nth-child(5),#ranking td:nth-child(5){width:15%!important}
 }
+
+
+/* Clean home controls + fixed ten-slot ranking 20260904 */
+.compact-member-nav .header-tournaments{order:5!important}
+.compact-member-nav .nav-account{order:6!important}
+#ranking .ranking-placeholder td{
+  color:transparent!important;
+  background:rgba(255,255,255,.012)!important;
+}
+#ranking .ranking-placeholder .rank-number{
+  color:var(--hero-gold)!important;
+}

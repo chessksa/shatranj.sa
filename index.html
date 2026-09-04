@@ -901,7 +901,7 @@ footer{
   }
 }
 </style>
-<link rel="stylesheet" href="home-theme.css?v=2026090426">
+<link rel="stylesheet" href="home-theme.css?v=2026090427">
 </head>
 
 <body>
@@ -922,10 +922,6 @@ footer{
         </a>
       </div>
 
-      <a id="headerTournaments" class="header-tournaments header-tile" href="#register">
-        <span class="header-tile-icon" aria-hidden="true">♜</span><span>البطولات</span>
-      </a>
-
       <a id="dashboardNav" class="header-action header-tile dashboard-link" href="#register">
         <span class="header-tile-icon" aria-hidden="true">⚙</span><span>لوحة التحكم</span>
       </a>
@@ -933,6 +929,9 @@ footer{
       <div id="siteNotificationHost" class="header-notification-host"></div>
 
       <button id="navLogout" class="nav-logout header-action header-tile" type="button" hidden>خروج</button>
+      <a id="headerTournaments" class="header-tournaments header-tile" href="#register">
+        <span class="header-tile-icon" aria-hidden="true">♜</span><span>البطولات</span>
+      </a>
       <a href="#register" id="navAccount" class="nav-account header-action header-tile">تسجيل الدخول</a>
     </div>
   </div>
@@ -949,21 +948,18 @@ footer{
 
       <div class="hero-live-stats" aria-label="إحصاءات المنصة">
         <div class="hero-stat">
-          <span class="hero-stat-icon" aria-hidden="true">👥</span>
           <div><small>لاعب مسجل</small><strong id="headerPlayersCount">0</strong></div>
         </div>
         <div class="hero-stat">
-          <span class="hero-stat-icon" aria-hidden="true">⚔</span>
           <div><small>مباراة حالية</small><strong id="headerMatchesCount">0</strong></div>
         </div>
         <a class="hero-stat hero-stat-watch" href="watch.html">
-          <span class="hero-stat-icon" aria-hidden="true">◉</span>
           <div><small>يشاهد الآن</small><strong>شاهد</strong></div>
         </a>
       </div>
 
       <div id="homeBoardActions" class="home-board-actions" aria-label="العب الآن ودعوة لاعب">
-        <a class="btn gold protected-play hero-play-btn" href="play-v10.html"><span class="hero-action-icon" aria-hidden="true">♟</span><span>العب الآن</span></a>
+        <a class="btn gold protected-play hero-play-btn" href="play-v10.html"><span>العب الآن</span></a>
       </div>
     </div>
 
@@ -1606,24 +1602,44 @@ function applyFilter(){
 
 function renderPlayers(players){
   const topPlayers=players.slice(0,10);
-  $('#tbody').innerHTML=topPlayers.map((player,index)=>`
-    <tr>
-      <td class="rank-number">${index+1}</td>
-      <td>
-        <a class="player-name player-profile-link" href="player.html?id=${encodeURIComponent(player.id)}">${escapeHTML(player.name)}</a>
-        ${player.username
-          ? `<span class="player-username">@${escapeHTML(player.username)}</span>`
-          : ''
-        }
-      </td>
-      <td>${escapeHTML(player.region)}</td>
-      <td>${escapeHTML(player.city)}</td>
-      <td class="rating">${player.rating}</td>
-    </tr>
-  `).join('');
+  const rows=[];
 
+  for(let index=0;index<10;index++){
+    const player=topPlayers[index];
+
+    if(!player){
+      rows.push(`
+        <tr class="ranking-placeholder">
+          <td class="rank-number">${index+1}</td>
+          <td></td>
+          <td></td>
+          <td></td>
+          <td></td>
+        </tr>
+      `);
+      continue;
+    }
+
+    rows.push(`
+      <tr>
+        <td class="rank-number">${index+1}</td>
+        <td>
+          <a class="player-name player-profile-link" href="player.html?id=${encodeURIComponent(player.id)}">${escapeHTML(player.name)}</a>
+          ${player.username
+            ? `<span class="player-username">@${escapeHTML(player.username)}</span>`
+            : ''
+          }
+        </td>
+        <td>${escapeHTML(player.region)}</td>
+        <td>${escapeHTML(player.city)}</td>
+        <td class="rating">${player.rating}</td>
+      </tr>
+    `);
+  }
+
+  $('#tbody').innerHTML=rows.join('');
   $('#results').textContent=topPlayers.length+' لاعب';
-  $('#empty').style.display=topPlayers.length?'none':'block';
+  $('#empty').style.display='none';
 }
 
 async function claimOrCreateProfile(profileData){
@@ -2183,6 +2199,6 @@ setInterval(loadCurrentMatchesCount,30000);
 </script>
 
 <script src="site-notifications.js?v=20260903-2"></script>
-<script src="home-invite.js?v=20260904-4"></script>
+<script src="home-invite.js?v=20260904-5"></script>
 </body>
 </html>
