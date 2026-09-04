@@ -1,0 +1,43 @@
+name: Apply mobile play layout
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - '.github/workflows/apply-mobile-play-layout.yml'
+
+permissions:
+  contents: write
+
+jobs:
+  apply:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: main
+          fetch-depth: 0
+      - name: Apply approved mobile order
+        shell: bash
+        run: |
+          python - <<'PY'
+          from pathlib import Path
+          p = Path('play-v10.html')
+          s = p.read_text(encoding='utf-8')
+          old = "@media(max-width:900px){body{overflow:auto}.page{height:auto;min-height:100dvh;padding:8px}.layout{display:flex;flex-direction:column;gap:10px}.board-panel{width:100%;height:auto;order:1}.board-frame{width:min(100%,calc(100vw - 16px));}.side-panel{width:100%;height:auto;order:2}.panel-stack{height:auto;display:grid;grid-template-rows:auto auto auto auto;gap:9px}.player-card{min-height:110px;padding:11px;grid-template-columns:60px minmax(0,1fr) 104px;gap:9px}.avatar{width:58px;height:58px}.clock{font-size:22px;padding:10px 6px}.actions-card{min-height:70px}.opponent-time-option{min-height:58px}.coords-left{font-size:11px}.coords-bottom{font-size:11px}}"
+          new = "@media(max-width:900px){body{overflow:auto}.page{height:auto;min-height:100dvh;padding:8px}.layout{display:flex;flex-direction:column;gap:10px}.side-panel{display:contents}.panel-stack{display:contents}.side-header{order:0;width:100%}#topPlayerCard{order:1;width:100%}.board-panel{width:100%;height:auto;order:2;display:flex;justify-content:center;align-items:center}.board-frame{width:min(100%,calc(100vw - 16px));margin-inline:auto}.panel-stack>.player-card:not(#topPlayerCard){order:3;width:100%}.actions-card{order:4;min-height:70px;width:100%}.player-card{min-height:110px;padding:11px;grid-template-columns:60px minmax(0,1fr) 104px;gap:9px}.avatar{width:58px;height:58px}.clock{font-size:22px;padding:10px 6px}.opponent-time-option{min-height:58px}.coords-left{font-size:11px}.coords-bottom{font-size:11px}}"
+          if old not in s:
+              raise SystemExit('expected mobile CSS block not found')
+          p.write_text(s.replace(old, new, 1), encoding='utf-8')
+          PY
+      - name: Verify approved mobile layout
+        run: |
+          python -m pip install pytest
+          python -m pytest -q tests/test_mobile_play_layout.py
+      - name: Commit
+        run: |
+          git config user.name "chessksa"
+          git config user.email "gmel1199@gmail.com"
+          git add play-v10.html
+          git commit -m "fix: center mobile board with opponent above"
+          git push origin HEAD:main
