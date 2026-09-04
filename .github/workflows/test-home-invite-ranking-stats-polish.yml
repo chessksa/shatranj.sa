@@ -1,0 +1,32 @@
+name: Test home invite ranking stats polish
+
+on:
+  push:
+    branches:
+      - home-invite-ranking-stats-polish
+    paths:
+      - index.html
+      - home-theme.css
+      - home-invite.js
+      - tests/test_home_invite_ranking_stats_polish.py
+      - .github/workflows/test-home-invite-ranking-stats-polish.yml
+  pull_request:
+    branches:
+      - main
+    paths:
+      - index.html
+      - home-theme.css
+      - home-invite.js
+      - tests/test_home_invite_ranking_stats_polish.py
+      - .github/workflows/test-home-invite-ranking-stats-polish.yml
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - run: python -m pip install pytest
+      - run: python -m pytest tests/test_home_invite_ranking_stats_polish.py -q
