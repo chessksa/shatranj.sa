@@ -20,6 +20,11 @@
   let challengePolling = false;
 
   const $ = (id) => document.getElementById(id);
+  const SAUDI_REGIONS = new Set(['الرياض','مكة المكرمة','المدينة المنورة','القصيم','المنطقة الشرقية','عسير','تبوك','حائل','الحدود الشمالية','جازان','نجران','الباحة','الجوف']);
+  const countryForRegion = (value) => {
+    const region = String(value || '').trim();
+    return SAUDI_REGIONS.has(region) ? 'السعودية' : region;
+  };
   function rankForRating(rating) {
     const points = Number(rating) || 0;
     if (points >= 3000) return { key: 'champion', label: 'بطل', icon: 'rank-trophy' };
@@ -91,7 +96,7 @@
 
     $('playerName').textContent = row.name;
     const username = publicProfile?.username ? `@${publicProfile.username}` : '';
-    $('playerMeta').textContent = [username, row.city, row.region].filter(Boolean).join(' • ');
+    $('playerMeta').textContent = [username, row.city, countryForRegion(row.region)].filter(Boolean).join(' • ');
     $('heroRating').textContent = row.rating;
     renderPlayerRank(row.rating);
     $('statRating').textContent = row.rating;

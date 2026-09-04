@@ -11,6 +11,11 @@
   }
   const client = window.supabase.createClient(cfg.url, cfg.anonKey);
   const $ = (id) => document.getElementById(id);
+  const SAUDI_REGIONS = new Set(['الرياض','مكة المكرمة','المدينة المنورة','القصيم','المنطقة الشرقية','عسير','تبوك','حائل','الحدود الشمالية','جازان','نجران','الباحة','الجوف']);
+  const countryForRegion = (value) => {
+    const region = String(value || '').trim();
+    return SAUDI_REGIONS.has(region) ? 'السعودية' : region;
+  };
   const playerId = new URLSearchParams(location.search).get('id');
   let session = null;
   let profile = null;
@@ -175,7 +180,7 @@
       if (!profile) { message.textContent='الملف غير متاح حاليًا.'; return; }
       $('publicName').textContent=profile.name;
       renderPublicRank(profile.rating);
-      $('publicMeta').textContent=[profile.username?`@${profile.username}`:'',profile.city,profile.region].filter(Boolean).join(' • ');
+      $('publicMeta').textContent=[profile.username?`@${profile.username}`:'',profile.city,countryForRegion(profile.region)].filter(Boolean).join(' • ');
       $('publicRating').textContent=profile.rating;$('sRating').textContent=profile.rating;$('sGames').textContent=profile.games_count;$('sWins').textContent=profile.wins;$('sDraws').textContent=profile.draws;$('sLosses').textContent=profile.losses;$('sFriends').textContent=profile.friend_count;
       showAvatar(profile.avatar_path || `${profile.id}/avatar.webp`,profile.name);
       renderChart(hData || []);renderGames(gData || []);renderAchievements(aData || []);

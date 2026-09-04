@@ -30,7 +30,7 @@
 
   const client = window.supabase.createClient(cfg.url, cfg.anonKey);
   title.textContent = currentSection.title;
-  document.title = `${currentSection.title} | شطرنج السعودية`;
+  document.title = `${currentSection.title} | شطرنج العرب`;
 
   const esc = (value) => String(value ?? '')
     .replaceAll('&', '&amp;').replaceAll('<', '&lt;')

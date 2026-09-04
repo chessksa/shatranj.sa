@@ -19,9 +19,9 @@ ranking_title_rule = re.search(r'#rankingTitle\{([^}]*)\}', css, re.S)
 assert ranking_title_rule, 'ranking title CSS rule is missing'
 assert 'font-size:0' not in ranking_title_rule.group(1), 'dynamic ranking title must not be visually hidden'
 
-# Dynamic labels are already driven by the filters in the page script.
-assert 'ترتيب اللاعبين في منطقة ${region}' in html
+# Dynamic labels are driven by the Arab country/city filters in the page script.
+assert 'ترتيب اللاعبين في ${country}' in html
 assert 'ترتيب اللاعبين في مدينة ${city}' in html
-assert 'updateRankingTitle(region,city);' in html
+assert 'updateRankingTitle(country,city);' in html
 
 print('home right icons layout: PASS')

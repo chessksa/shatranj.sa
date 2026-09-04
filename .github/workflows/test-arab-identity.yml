@@ -1,0 +1,59 @@
+# Final release gate for the Shatranj Al-Arab identity migration.
+name: Test Arab platform identity
+
+on:
+  workflow_dispatch:
+  push:
+    branches:
+      - feature/shatranj-arab
+      - main
+    paths:
+      - 'index.html'
+      - 'profile.html'
+      - 'profile.js'
+      - 'profile-section.js'
+      - 'player.html'
+      - 'player.js'
+      - 'play-v10.html'
+      - 'play.html'
+      - 'watch.html'
+      - 'manifest.webmanifest'
+      - 'sw.js'
+      - 'schema.sql'
+      - 'supabase/migrations/**'
+      - 'tests/test_arab_identity.py'
+      - 'tests/test_arab_profile_country.py'
+      - 'tests/test_arab_schema.py'
+      - 'tests/test_dynamic_ranking_title.py'
+      - 'tests/test_home_right_icons_layout.py'
+      - 'tests/test_signup_gender.py'
+      - '.github/workflows/test-arab-identity.yml'
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Run Arab platform tests
+        run: |
+          python tests/test_arab_identity.py
+          python tests/test_arab_profile_country.py
+          python tests/test_arab_schema.py
+          python tests/test_dynamic_ranking_title.py
+          python tests/test_home_right_icons_layout.py
+          python tests/test_signup_gender.py
+      - name: Check JavaScript syntax
+        run: |
+          node --check profile.js
+          node --check profile-section.js
+          node --check player.js
+          node --check sw.js
+          python - <<'PY'
+          import re
+          from pathlib import Path
+          html = Path('index.html').read_text(encoding='utf-8')
+          scripts = re.findall(r'<script type="module">(.*?)</script>', html, re.S)
+          assert scripts, 'No module script found in index.html'
+          Path('/tmp/index-module.mjs').write_text('\n'.join(scripts), encoding='utf-8')
+          PY
+          node --check /tmp/index-module.mjs

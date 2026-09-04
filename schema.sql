@@ -1,10 +1,11 @@
--- شطرنج السعودية - Supabase schema v2
+-- شطرنج العرب - Supabase schema v2
 create extension if not exists pgcrypto;
 
 create table if not exists public.players (
   id uuid primary key default gen_random_uuid(),
   name text not null check (char_length(name) between 2 and 60),
-  mobile text not null unique check (mobile ~ '^05[0-9]{8}$'),
+  mobile text not null unique
+    check (mobile ~ '^(05[0-9]{8}|[+][1-9][0-9]{7,14})$'),
   region text not null,
   city text not null,
   category text not null default 'open'
@@ -60,6 +61,7 @@ from public.players
 where status='active';
 
 -- التسجيل يتم عبر RPC حتى لا نمنح الزائر صلاحية قراءة أرقام الجوال.
+-- نحافظ على صيغة الجوال السعودية القديمة ونقبل أرقام E.164 لبقية الدول العربية.
 create or replace function public.register_player(
   p_name text,
   p_mobile text,
@@ -72,13 +74,24 @@ language plpgsql
 security definer
 set search_path = public
 as $$
-declare new_id uuid;
+declare
+  new_id uuid;
+  v_mobile text;
 begin
-  if p_mobile !~ '^05[0-9]{8}$' then
+  v_mobile := regexp_replace(btrim(coalesce(p_mobile,'')), '[[:space:]()-]', '', 'g');
+
+  if v_mobile ~ '^00[1-9][0-9]{7,14}$' then
+    v_mobile := chr(43) || substring(v_mobile from 3);
+  end if;
+
+  if v_mobile ~ '^[+]9665[0-9]{8}$' then
+    v_mobile := '0' || substring(v_mobile from 5);
+  elsif v_mobile !~ '^05[0-9]{8}$' and v_mobile !~ '^[+][1-9][0-9]{7,14}$' then
     raise exception 'invalid mobile';
   end if;
+
   insert into public.players(name,mobile,region,city,category)
-  values(trim(p_name),trim(p_mobile),trim(p_region),trim(p_city),p_category)
+  values(trim(p_name),v_mobile,trim(p_region),trim(p_city),p_category)
   returning id into new_id;
   return new_id;
 end;
