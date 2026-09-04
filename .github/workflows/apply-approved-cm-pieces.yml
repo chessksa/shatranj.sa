@@ -1,0 +1,64 @@
+name: Apply approved cm-chessboard pieces
+
+on:
+  push:
+    branches:
+      - fix/approved-brown-ivory-pieces
+    paths:
+      - '.github/workflows/apply-approved-cm-pieces.yml'
+
+permissions:
+  contents: write
+
+jobs:
+  apply:
+    if: github.actor != 'github-actions[bot]'
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: fix/approved-brown-ivory-pieces
+          fetch-depth: 0
+
+      - name: Point cm-chessboard to the approved pieces
+        shell: bash
+        run: |
+          python - <<'PY'
+          from pathlib import Path
+
+          old_sprite = "pieces/shatranj-3d-staunton-v3.svg"
+          new_sprite = "pieces/shatranj-approved-20260904.svg"
+
+          for filename in ("play-v8.js", "play-v10-match.js"):
+              path = Path(filename)
+              text = path.read_text(encoding="utf-8")
+              if old_sprite not in text:
+                  raise SystemExit(f"expected old sprite reference not found in {filename}")
+              text = text.replace(old_sprite, new_sprite)
+              path.write_text(text, encoding="utf-8")
+
+          html_path = Path("play-v10.html")
+          html = html_path.read_text(encoding="utf-8")
+          html = html.replace("play-v8.js?v=20260904-3", "play-v8.js?v=20260904-4")
+          html = html.replace("play-v10-match.js?v=20260904-3", "play-v10-match.js?v=20260904-4")
+          if "play-v8.js?v=20260904-4" not in html or "play-v10-match.js?v=20260904-4" not in html:
+              raise SystemExit("play-v10 cache version was not updated")
+          html_path.write_text(html, encoding="utf-8")
+          PY
+
+      - name: Verify the approved set
+        run: |
+          python -m pip install pytest
+          python -m pytest -q tests/test_approved_piece_sprite.py
+          node --check play-v8.js
+          node --check play-v10-match.js
+
+      - name: Commit applied change
+        shell: bash
+        run: |
+          rm -f .github/workflows/apply-approved-cm-pieces.yml
+          git config user.name "chessksa"
+          git config user.email "gmel1199@gmail.com"
+          git add -A
+          git commit -m "feat: activate approved brown ivory chess pieces"
+          git push origin HEAD:fix/approved-brown-ivory-pieces
