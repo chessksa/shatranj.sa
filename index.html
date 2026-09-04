@@ -2123,8 +2123,6 @@ document.querySelectorAll('.protected-play').forEach(link=>{
 });
 
 /* تهيئة */
-fillCities($('#cityFilter'),allCities(),'كل المدن');
-
 const {data:{session}}=await supabase.auth.getSession();
 const recoveryFromUrl=new URLSearchParams(location.hash.replace(/^#/,''))
   .get('type')==='recovery';
