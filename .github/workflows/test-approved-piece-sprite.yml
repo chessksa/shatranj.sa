@@ -2,21 +2,22 @@ name: Test approved piece sprite
 
 on:
   push:
-    branches:
-      - 'fix/approved-brown-ivory-pieces'
+    branches: [main]
     paths:
       - 'play-v8.js'
       - 'play-v10-match.js'
-      - 'cm-chessboard-shatranj.css'
-      - 'assets/pieces/shatranj-approved.svg'
+      - 'play-v10.html'
+      - 'cm-chessboard-shatranj-v3.css'
+      - 'assets/pieces/shatranj-approved-20260904.svg'
       - 'tests/test_approved_piece_sprite.py'
       - '.github/workflows/test-approved-piece-sprite.yml'
   pull_request:
     paths:
       - 'play-v8.js'
       - 'play-v10-match.js'
-      - 'cm-chessboard-shatranj.css'
-      - 'assets/pieces/shatranj-approved.svg'
+      - 'play-v10.html'
+      - 'cm-chessboard-shatranj-v3.css'
+      - 'assets/pieces/shatranj-approved-20260904.svg'
       - 'tests/test_approved_piece_sprite.py'
       - '.github/workflows/test-approved-piece-sprite.yml'
 
