@@ -56,13 +56,14 @@ jobs:
           echo "AUTH_TOKEN=$TOKEN" >> "$GITHUB_ENV"
           echo "Supabase Personal Access Token format accepted."
 
-      - name: Apply approved Arabic auth email templates
+      - name: Apply no-domain signup mode and Arabic auth email templates
         shell: bash
         run: |
           set -euo pipefail
 
           cat > /tmp/auth-email.json <<'JSON'
           {
+            "mailer_autoconfirm": true,
             "mailer_subjects_confirmation": "فعّل حسابك في شطرنج السعودية",
             "mailer_templates_confirmation_content": "<div dir=\"rtl\" style=\"font-family:Arial,Tahoma,sans-serif;text-align:right;line-height:1.9;color:#17211f;max-width:560px;margin:0 auto;padding:24px\"><h2 style=\"margin:0 0 18px\">مرحبًا بك في شطرنج السعودية</h2><p>تم إنشاء حسابك بنجاح، وبقيت خطوة واحدة فقط لتفعيله.</p><p>اضغط على الزر أدناه لتأكيد بريدك الإلكتروني وبدء اللعب:</p><p style=\"text-align:center;margin:28px 0\"><a href=\"{{ .ConfirmationURL }}\" style=\"display:inline-block;padding:12px 28px;border-radius:8px;background:#174f46;color:#ffffff;text-decoration:none;font-weight:700\">تفعيل الحساب</a></p><p>بعد التفعيل يمكنك تسجيل الدخول باسم المستخدم وكلمة المرور.</p><p>نتمنى لك مباريات ممتعة ومنافسة قوية.</p><p style=\"margin-top:28px\"><strong>شطرنج السعودية</strong><br>منصة الشطرنج السعودية</p></div>",
             "mailer_subjects_recovery": "استعادة كلمة المرور | شطرنج السعودية",
@@ -91,7 +92,7 @@ jobs:
             exit 1
           fi
 
-      - name: Verify auth email templates were applied
+      - name: Verify auth settings were applied
         shell: bash
         run: |
           set -euo pipefail
@@ -107,11 +108,13 @@ jobs:
 
           data = json.loads(Path('/tmp/auth-config.json').read_text(encoding='utf-8'))
 
+          mailer_autoconfirm = data.get('mailer_autoconfirm')
           confirmation_subject = data.get('mailer_subjects_confirmation', '')
           confirmation_content = data.get('mailer_templates_confirmation_content', '')
           recovery_subject = data.get('mailer_subjects_recovery', '')
           recovery_content = data.get('mailer_templates_recovery_content', '')
 
+          assert mailer_autoconfirm is True, mailer_autoconfirm
           assert confirmation_subject == 'فعّل حسابك في شطرنج السعودية', confirmation_subject
           for phrase in [
               'مرحبًا بك في شطرنج السعودية',
@@ -129,5 +132,5 @@ jobs:
           ]:
               assert phrase in recovery_content, phrase
 
-          print('Verified Arabic confirmation and password recovery email templates.')
+          print('Verified no-domain signup mode and Arabic auth email templates.')
           PY
