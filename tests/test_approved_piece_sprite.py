@@ -6,6 +6,7 @@ PIECES = ROOT / "assets" / "pieces"
 SPRITE = PIECES / "shatranj-approved-20260904.svg"
 DARK = "approved-dark-20260904.png"
 LIGHT = "approved-light-20260904.png"
+SPRITE_URL = "pieces/shatranj-approved-20260904.svg?v=20260904-5"
 
 
 def test_only_the_new_approved_piece_set_is_used():
@@ -27,6 +28,12 @@ def test_sprite_png_links_are_relative_to_the_sprite_directory():
     assert 'href="approved-dark-20260904.png?v=20260904-2"' in sprite
     assert 'href="approved-light-20260904.png?v=20260904-2"' in sprite
     assert 'href="assets/pieces/' not in sprite
+
+
+def test_cm_chessboard_fetches_a_fresh_sprite_after_the_path_fix():
+    for filename in ("play-v8.js", "play-v10-match.js"):
+        js = (ROOT / filename).read_text(encoding="utf-8")
+        assert SPRITE_URL in js
 
 
 def test_piece_script_cache_is_busted_for_the_new_sprite():
