@@ -358,7 +358,7 @@ function ensureBoard(){
       cssClass:'shatranj',
       showCoordinates:false,
       borderType:BORDER_TYPE.none,
-      pieces:{file:'pieces/shatranj-3d-staunton-v3.svg',tileSize:40},
+      pieces:{file:'pieces/shatranj-approved-20260904.svg',tileSize:40},
       animationDuration:180
     }
   });
