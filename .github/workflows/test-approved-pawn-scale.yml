@@ -34,3 +34,5 @@ jobs:
 
           print('approved pawns are scaled 1.15x and centered')
           PY
+
+# verification trigger after production update
