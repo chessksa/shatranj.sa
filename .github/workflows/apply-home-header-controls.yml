@@ -1,0 +1,54 @@
+name: Apply home header controls
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - '.github/workflows/apply-home-header-controls.yml'
+
+permissions:
+  contents: write
+
+jobs:
+  apply:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: main
+      - name: Hide duplicate dashboard tile and unify icons
+        run: |
+          python - <<'PY'
+          from pathlib import Path
+
+          css_path = Path('home-theme.css')
+          css = css_path.read_text(encoding='utf-8')
+          block = '''\n\n/* Home header duplicate cleanup + icon sizing 20260905 */\n.nav-account[hidden]{display:none!important}\n.compact-member-nav .header-tile-icon,\n.compact-member-nav .site-notification-bell{\n  font-size:16px!important;\n}\n'''
+          marker = '/* Home header duplicate cleanup + icon sizing 20260905 */'
+          if marker not in css:
+              css_path.write_text(css.rstrip() + block, encoding='utf-8')
+
+          html_path = Path('index.html')
+          html = html_path.read_text(encoding='utf-8')
+          old = 'home-theme.css?v=2026090427'
+          new = 'home-theme.css?v=20260905-1'
+          if new not in html:
+              if old not in html:
+                  raise SystemExit('expected old home-theme cache key not found')
+              html = html.replace(old, new, 1)
+              html_path.write_text(html, encoding='utf-8')
+          PY
+      - name: Verify home header controls
+        run: python tests/test_home_header_controls.py
+      - name: Commit home header fix
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add home-theme.css index.html
+          git diff --cached --check
+          if git diff --cached --quiet; then
+            echo "No changes to commit"
+            exit 0
+          fi
+          git commit -m "fix: remove duplicate dashboard header tile"
+          git push origin main
