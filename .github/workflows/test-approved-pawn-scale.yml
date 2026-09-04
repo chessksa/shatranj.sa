@@ -1,0 +1,36 @@
+name: Test approved pawn scale
+
+on:
+  push:
+    paths:
+      - 'assets/pieces/shatranj-approved-20260904.svg'
+      - '.github/workflows/test-approved-pawn-scale.yml'
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Verify white and black pawns are 15 percent larger and centered
+        run: |
+          python - <<'PY'
+          import xml.etree.ElementTree as ET
+          from pathlib import Path
+
+          path = Path('assets/pieces/shatranj-approved-20260904.svg')
+          root = ET.parse(path).getroot()
+          groups = {el.attrib.get('id'): el for el in root.iter() if el.attrib.get('id')}
+
+          for pawn_id in ('wp', 'bp'):
+              group = groups.get(pawn_id)
+              assert group is not None, f'missing {pawn_id}'
+              image = next((child for child in group if child.tag.endswith('image')), None)
+              assert image is not None, f'missing image for {pawn_id}'
+              attrs = {k: image.attrib.get(k) for k in ('x','y','width','height')}
+              print(pawn_id, attrs)
+              assert attrs == {'x':'-3','y':'-3','width':'46','height':'46'}, (
+                  f'{pawn_id} not scaled/centered as expected: {attrs}'
+              )
+
+          print('approved pawns are scaled 1.15x and centered')
+          PY
