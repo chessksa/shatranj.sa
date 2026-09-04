@@ -1,0 +1,63 @@
+name: Apply approved pawn scale
+
+on:
+  push:
+    paths:
+      - '.github/workflows/apply-approved-pawn-scale.yml'
+
+permissions:
+  contents: write
+
+jobs:
+  apply:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: main
+      - name: Enlarge only white and black pawns and refresh asset cache
+        run: |
+          python - <<'PY'
+          from pathlib import Path
+
+          svg_path = Path('assets/pieces/shatranj-approved-20260904.svg')
+          text = svg_path.read_text(encoding='utf-8')
+
+          for pawn_id in ('wp', 'bp'):
+              old = f'<g id="{pawn_id}"><image x="0" y="0" width="40" height="40"'
+              new = f'<g id="{pawn_id}"><image x="-3" y="-3" width="46" height="46"'
+              count = text.count(old)
+              if count != 1:
+                  raise SystemExit(f'expected exactly one {pawn_id} image, found {count}')
+              text = text.replace(old, new, 1)
+
+          svg_path.write_text(text, encoding='utf-8')
+
+          for js_name in ('play-v8.js', 'play-v10-match.js'):
+              path = Path(js_name)
+              js = path.read_text(encoding='utf-8')
+              old = 'pieces/shatranj-approved-20260904.svg?v=20260904-12'
+              new = 'pieces/shatranj-approved-20260904.svg?v=20260905-1'
+              if old not in js:
+                  raise SystemExit(f'missing expected SVG cache token in {js_name}')
+              path.write_text(js.replace(old, new), encoding='utf-8')
+
+          html_path = Path('play-v10.html')
+          html = html_path.read_text(encoding='utf-8')
+          replacements = {
+              'play-v8.js?v=20260904-16': 'play-v8.js?v=20260905-1',
+              'play-v10-match.js?v=20260904-16': 'play-v10-match.js?v=20260905-1',
+          }
+          for old, new in replacements.items():
+              if old not in html:
+                  raise SystemExit(f'missing expected script cache token: {old}')
+              html = html.replace(old, new)
+          html_path.write_text(html, encoding='utf-8')
+          PY
+
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add assets/pieces/shatranj-approved-20260904.svg play-v8.js play-v10-match.js play-v10.html
+          git diff --cached --check
+          git commit -m "fix: enlarge approved pawns 15 percent" || exit 0
+          git push origin main
