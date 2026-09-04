@@ -1,0 +1,61 @@
+name: Apply compact opponent search card
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - '.github/workflows/apply-search-card-compact.yml'
+
+permissions:
+  contents: write
+
+jobs:
+  apply:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: main
+          fetch-depth: 0
+      - name: Apply approved search-card spacing and text size
+        shell: bash
+        run: |
+          python - <<'PY'
+          from pathlib import Path
+          p = Path('play-v10.html')
+          s = p.read_text(encoding='utf-8')
+
+          old_slot = '.opponent-slot{position:relative;overflow:hidden}'
+          new_slot = '.opponent-slot{position:relative;overflow:hidden}#topPlayerCard:has(#opponentSearchPanel:not([hidden])){align-self:center;min-height:0;padding-block:0}'
+          if old_slot not in s:
+              raise SystemExit('opponent slot CSS not found')
+          s = s.replace(old_slot, new_slot, 1)
+
+          old_wait = '.opponent-waiting-line{display:flex;align-items:center;justify-content:center;gap:11px;font-size:15px}'
+          new_wait = '.opponent-waiting-line{display:flex;align-items:center;justify-content:center;gap:11px;font-size:20px}'
+          if old_wait not in s:
+              raise SystemExit('waiting line CSS not found')
+          s = s.replace(old_wait, new_wait, 1)
+
+          old_error = '.opponent-search-error{min-height:16px;margin:7px 0 0;color:#ff8d8d;font-size:11px}'
+          new_error = '.opponent-search-error{min-height:16px;margin:7px 0 0;color:#ff8d8d;font-size:11px}.opponent-search-error:empty{display:none}'
+          if old_error not in s:
+              raise SystemExit('search error CSS not found')
+          s = s.replace(old_error, new_error, 1)
+
+          p.write_text(s, encoding='utf-8')
+          PY
+      - name: Verify targeted regression test
+        shell: bash
+        run: |
+          python -m pip install pytest
+          python -m pytest -q tests/test_mobile_play_layout.py
+      - name: Commit approved change
+        shell: bash
+        run: |
+          git config user.name "chessksa"
+          git config user.email "gmel1199@gmail.com"
+          git rm .github/workflows/apply-search-card-compact.yml
+          git add play-v10.html
+          git commit -m "fix: compact opponent search card and enlarge waiting text"
+          git push origin main
