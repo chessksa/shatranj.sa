@@ -213,7 +213,7 @@ async function cancelMatchmaking(){
 
 function pieceSVG(type,color){
   const cls = color === 'w' ? 'white' : 'black';
-  return `<div class="piece ${cls} piece-${type}"><img class="piece-image" src="assets/pieces/${color}${type}.png?v=20260903-4" alt="" aria-hidden="true" draggable="false"></div>`;
+  return `<div class="piece ${cls} piece-${type}"><span class="piece-image piece-${color}${type}" aria-hidden="true"></span></div>`;
 }
 
 function renderCoords(){

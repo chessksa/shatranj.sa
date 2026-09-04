@@ -1,4 +1,4 @@
-/* Approved realistic chess board: direct piece images for reliable rendering. */
+/* Approved 2026-09-04 realistic chess pieces. Only these two transparent sprites are used. */
 :root{
   --real-board-dark:#0b4850;
   --real-board-light:#d6cfbf;
@@ -38,13 +38,23 @@
   display:block !important;
   width:100% !important;
   height:100% !important;
-  object-fit:contain !important;
+  background-repeat:no-repeat !important;
+  background-size:600% 100% !important;
+  background-position-y:center !important;
   opacity:1 !important;
   visibility:visible !important;
   filter:drop-shadow(0 4px 3px rgba(0,0,0,.30));
   pointer-events:none;
   user-select:none;
 }
+.piece.black .piece-image{background-image:url("assets/pieces/approved-dark-20260904.png?v=20260904-1") !important;}
+.piece.white .piece-image{background-image:url("assets/pieces/approved-light-20260904.png?v=20260904-1") !important;}
+.piece-r .piece-image{background-position-x:0% !important;}
+.piece-n .piece-image{background-position-x:20% !important;}
+.piece-b .piece-image{background-position-x:40% !important;}
+.piece-q .piece-image{background-position-x:60% !important;}
+.piece-k .piece-image{background-position-x:80% !important;}
+.piece-p .piece-image{background-position-x:100% !important;}
 @media (max-width:900px){
   .board-frame{padding:7px 7px 15px !important;border-radius:11px !important;}
   .piece{width:98% !important;height:98% !important;}
