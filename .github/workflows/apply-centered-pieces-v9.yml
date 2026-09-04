@@ -1,0 +1,58 @@
+name: Apply centered pieces v9
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - '.github/workflows/apply-centered-pieces-v9.yml'
+
+permissions:
+  contents: write
+
+jobs:
+  apply:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: main
+          fetch-depth: 0
+      - name: Bump piece cache
+        shell: bash
+        run: |
+          python - <<'PY'
+          from pathlib import Path
+          for fn in ('play-v8.js','play-v10-match.js'):
+              p=Path(fn); s=p.read_text(encoding='utf-8')
+              if '20260904-8' not in s: raise SystemExit(f'cache marker missing in {fn}')
+              p.write_text(s.replace('20260904-8','20260904-9'),encoding='utf-8')
+          p=Path('play-v10.html'); s=p.read_text(encoding='utf-8')
+          for old,new in [('play-v8.js?v=20260904-8','play-v8.js?v=20260904-9'),('play-v10-match.js?v=20260904-8','play-v10-match.js?v=20260904-9')]:
+              if old not in s: raise SystemExit(f'{old} missing')
+              s=s.replace(old,new)
+          p.write_text(s,encoding='utf-8')
+          PY
+      - name: Verify assets and syntax
+        shell: bash
+        run: |
+          python - <<'PY'
+          from pathlib import Path
+          import xml.etree.ElementTree as ET
+          svg=Path('assets/pieces/shatranj-approved-20260904.svg')
+          ET.parse(svg)
+          text=svg.read_text(encoding='utf-8')
+          for code in ('wk','wq','wr','wb','wn','wp','bk','bq','br','bb','bn','bp'):
+              assert f'id="{code}"' in text
+              assert Path(f'assets/pieces/{code}.png').exists()
+          assert 'width="31" height="31"' in text
+          PY
+          node --check play-v8.js
+          node --check play-v10-match.js
+      - name: Commit
+        shell: bash
+        run: |
+          git config user.name "chessksa"
+          git config user.email "gmel1199@gmail.com"
+          git add play-v8.js play-v10-match.js play-v10.html
+          git commit -m "fix: center chess pieces and reduce pawn size"
+          git push origin HEAD:main
