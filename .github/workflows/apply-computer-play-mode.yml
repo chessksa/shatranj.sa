@@ -1,0 +1,71 @@
+name: Apply computer play mode
+on:
+  push:
+    branches: [main]
+    paths:
+      - '.github/workflows/apply-computer-play-mode.yml'
+permissions:
+  contents: write
+jobs:
+  apply:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - name: Install local Stockfish and wire computer mode
+        run: |
+          set -euo pipefail
+
+          npm install --no-save --ignore-scripts stockfish@18.0.8
+          mkdir -p vendor/stockfish
+          cp node_modules/stockfish/bin/stockfish-18-lite-single.js vendor/stockfish/stockfish-18-lite-single.js
+          cp node_modules/stockfish/bin/stockfish-18-lite-single.wasm vendor/stockfish/stockfish-18-lite-single.wasm
+          if [ -f node_modules/stockfish/Copying.txt ]; then
+            cp node_modules/stockfish/Copying.txt vendor/stockfish/Copying.txt
+          elif [ -f node_modules/stockfish/COPYING ]; then
+            cp node_modules/stockfish/COPYING vendor/stockfish/Copying.txt
+          else
+            printf '%s\n' 'Stockfish.js 18.0.8 — GPL-3.0. Source: https://github.com/nmrugg/stockfish.js' > vendor/stockfish/Copying.txt
+          fi
+
+          python - <<'PY'
+          from pathlib import Path
+
+          index_path = Path('index.html')
+          index = index_path.read_text(encoding='utf-8')
+          computer_link = '        <a class="btn light hero-computer-btn" href="play-v10.html?computer=1"><span>اللعب ضد الكمبيوتر</span></a>\n'
+          if computer_link not in index:
+              play_link = '        <a class="btn gold protected-play hero-play-btn" href="play-v10.html"><span>العب الآن</span></a>\n'
+              if play_link not in index:
+                  raise SystemExit('home play button anchor not found')
+              index = index.replace(play_link, play_link + computer_link, 1)
+              index_path.write_text(index, encoding='utf-8')
+
+          play_path = Path('play-v10.html')
+          play = play_path.read_text(encoding='utf-8')
+          old = '''  <script type="module">\n    const params = new URLSearchParams(location.search);\n    const hasGame = Boolean(params.get('game'));\n    if(hasGame){\n      document.body.classList.add('live-game');\n      document.getElementById('opponentSearchPanel').hidden = true;\n      document.getElementById('topPlayerLive').hidden = false;\n      const s=document.createElement('script');\n      s.type='module';\n      s.src='play-v8.js?v=20260905-3';\n      document.body.appendChild(s);\n    }else{\n      document.body.classList.add('pregame');\n      const s=document.createElement('script');\n      s.type='module';\n      s.src='play-v10-match.js?v=20260905-3';\n      document.body.appendChild(s);\n    }\n  </script>'''
+          new = '''  <script type="module">\n    const params = new URLSearchParams(location.search);\n    const computerMode = params.has('computer');\n    const hasGame = Boolean(params.get('game'));\n    if(computerMode){\n      document.body.classList.add('pregame','computer-game');\n      const s=document.createElement('script');\n      s.type='module';\n      s.src='play-computer.js?v=20260906-1';\n      document.body.appendChild(s);\n    }else if(hasGame){\n      document.body.classList.add('live-game');\n      document.getElementById('opponentSearchPanel').hidden = true;\n      document.getElementById('topPlayerLive').hidden = false;\n      const s=document.createElement('script');\n      s.type='module';\n      s.src='play-v8.js?v=20260905-3';\n      document.body.appendChild(s);\n    }else{\n      document.body.classList.add('pregame');\n      const s=document.createElement('script');\n      s.type='module';\n      s.src='play-v10-match.js?v=20260905-3';\n      document.body.appendChild(s);\n    }\n  </script>'''
+          if "const computerMode = params.has('computer');" not in play:
+              if old not in play:
+                  raise SystemExit('play loader anchor not found')
+              play = play.replace(old, new, 1)
+              play_path.write_text(play, encoding='utf-8')
+          PY
+
+          cp play-computer.js /tmp/play-computer.mjs
+          node --check /tmp/play-computer.mjs
+          python tests/test_computer_play_mode.py
+          python tests/test_desktop_play_actions_board.py
+          python -m pip install -q pytest
+          python -m pytest -q tests/test_mobile_play_layout.py -k 'mobile_layout_places_opponent_above_centered_board_and_player_below or mobile_runtime_moves_board_into_the_same_flex_flow_as_players'
+
+          git config user.name github-actions[bot]
+          git config user.email 41898282+github-actions[bot]@users.noreply.github.com
+          git add index.html play-v10.html play-computer.js vendor/stockfish
+          git commit -m "feat: add Stockfish computer play mode"
+          git push
