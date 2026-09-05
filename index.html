@@ -1624,10 +1624,11 @@ function applyFilter(){
 }
 
 function renderPlayers(players){
-  const topPlayers=players.slice(0,10);
+  const rankingLimit=window.matchMedia('(max-width:800px)').matches?5:10;
+  const topPlayers=players.slice(0,rankingLimit);
   const rows=[];
 
-  for(let index=0;index<10;index++){
+  for(let index=0;index<rankingLimit;index++){
     const player=topPlayers[index];
 
     if(!player){
