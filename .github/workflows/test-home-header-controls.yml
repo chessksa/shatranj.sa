@@ -2,9 +2,10 @@ name: Test home header controls
 
 on:
   push:
-    branches: [main, fix/mobile-header-layout-v2]
+    branches: [main]
     paths:
       - home-theme.css
+      - index.html
       - tests/test_home_header_controls.py
       - .github/workflows/test-home-header-controls.yml
 
