@@ -7,6 +7,7 @@ on:
       - '*.js'
       - 'tests/test_global_arial_font.py'
       - 'tests/test_welcome_ticker_cache_bust.py'
+      - 'tests/test_welcome_ticker_loader.py'
       - '.github/workflows/test-global-arial-font.yml'
 jobs:
   test:
@@ -17,3 +18,5 @@ jobs:
         run: python tests/test_global_arial_font.py
       - name: Verify welcome ticker wrapper cache bust
         run: python tests/test_welcome_ticker_cache_bust.py
+      - name: Verify welcome ticker loader matches home header
+        run: python tests/test_welcome_ticker_loader.py
