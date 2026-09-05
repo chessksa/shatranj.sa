@@ -2,7 +2,7 @@ name: Test home header controls
 
 on:
   push:
-    branches: [main]
+    branches: [main, fix/mobile-header-icon-alignment]
     paths:
       - home-theme.css
       - tests/test_home_header_controls.py
