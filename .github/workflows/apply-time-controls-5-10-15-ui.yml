@@ -1,0 +1,61 @@
+name: Apply 5 10 15 play controls
+on:
+  push:
+    branches: [main]
+    paths:
+      - '.github/workflows/apply-time-controls-5-10-15-ui.yml'
+permissions:
+  contents: write
+jobs:
+  apply:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Patch current play UI and cache versions
+        run: |
+          python - <<'PY'
+          from pathlib import Path
+
+          play = Path('play-v10.html')
+          text = play.read_text(encoding='utf-8')
+          old = '''                  <button class="opponent-time-option" type="button" data-minutes="3"><strong>3</strong><span>دقائق</span></button>
+                  <button class="opponent-time-option" type="button" data-minutes="5"><strong>5</strong><span>دقائق</span></button>
+                  <button class="opponent-time-option" type="button" data-minutes="10"><strong>10</strong><span>دقائق</span></button>'''
+          new = '''                  <button class="opponent-time-option" type="button" data-minutes="5"><strong>5</strong><span>دقائق</span></button>
+                  <button class="opponent-time-option" type="button" data-minutes="10"><strong>10</strong><span>دقائق</span></button>
+                  <button class="opponent-time-option" type="button" data-minutes="15"><strong>15</strong><span>دقائق</span></button>'''
+          if old not in text:
+              raise SystemExit('time option block not found')
+          text = text.replace(old, new, 1)
+          text = text.replace("play-computer.js?v=20260906-2", "play-computer.js?v=20260906-3", 1)
+          play.write_text(text, encoding='utf-8')
+
+          computer = Path('play-computer.js')
+          code = computer.read_text(encoding='utf-8')
+          old_call = "invokeComputer({ action: 'start', level: levelKey, minutes: selectedMinutes })"
+          new_call = "invokeComputer({ action: 'start', level: levelKey, minutes })"
+          if old_call not in code:
+              raise SystemExit('computer start call marker not found')
+          computer.write_text(code.replace(old_call, new_call, 1), encoding='utf-8')
+
+          workflow = Path('.github/workflows/test-computer-play-mode.yml')
+          w = workflow.read_text(encoding='utf-8')
+          if "      - 'play-v10-match.js'\n" not in w:
+              w = w.replace("      - 'play-v10.html'\n", "      - 'play-v10.html'\n      - 'play-v10-match.js'\n", 1)
+          if "      - 'supabase/migrations/20260906_time_controls_5_10_15.sql'\n" not in w:
+              w = w.replace("      - 'supabase/migrations/20260906_computer_game_ratings.sql'\n", "      - 'supabase/migrations/20260906_computer_game_ratings.sql'\n      - 'supabase/migrations/20260906_time_controls_5_10_15.sql'\n", 1)
+          workflow.write_text(w, encoding='utf-8')
+          PY
+      - name: Verify contract and syntax
+        run: |
+          python tests/test_computer_play_mode.py
+          cp play-computer.js /tmp/play-computer.mjs
+          node --check /tmp/play-computer.mjs
+      - name: Commit changes
+        run: |
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git add play-v10.html play-computer.js .github/workflows/test-computer-play-mode.yml
+          git diff --cached --quiet && exit 0
+          git commit -m 'feat: use 5 10 15 minute controls everywhere'
+          git push
