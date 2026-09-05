@@ -4,7 +4,7 @@ wrapper = Path('site-notifications.js').read_text(encoding='utf-8')
 index = Path('index.html').read_text(encoding='utf-8')
 
 assert '<div id="welcomeTicker" class="welcome-ticker"' in index, (
-    'Home page must contain the visible welcome ticker directly below the header.'
+    'Home page must contain the visible welcome ticker.'
 )
 assert 'id="welcomeTickerTrack"' in index, (
     'Home ticker must contain its scrolling track.'
@@ -18,6 +18,14 @@ assert 'function renderWelcomeTicker' in index, (
 assert 'renderWelcomeTicker(ALL_PLAYERS);' in index, (
     'Ticker must refresh after public player data is loaded.'
 )
+
+header_start = index.index('<header class="home-header">')
+header_end = index.index('</header>', header_start)
+ticker_pos = index.index('id="welcomeTicker"')
+assert header_start < ticker_pos < header_end, (
+    'Ticker must live inside the home header so the desktop body grid cannot auto-place it elsewhere.'
+)
+
 assert 'home-welcome-ticker.js' not in index, (
     'Home page must not depend on the old external ticker loader.'
 )
@@ -25,4 +33,4 @@ assert "import('./welcome-ticker-core.mjs" not in wrapper, (
     'Site-wide notification wrapper must not load the welcome ticker.'
 )
 
-print('welcome ticker is inline, visible, and home-page only')
+print('welcome ticker is inline, inside the home header, and home-page only')
