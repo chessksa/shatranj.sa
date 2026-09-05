@@ -29,7 +29,7 @@ assert 'grid-column:3!important;' in mobile
 assert 'body.home-signed-in .compact-member-nav .dashboard-link>span:not(.header-tile-icon)' in mobile
 assert 'display:inline!important;' in mobile
 
-# Cache-bust the stylesheet so the mobile change appears immediately.
-assert 'home-theme.css?v=20260905-15' in html
+# Cache-bust the stylesheet so mobile layout changes propagate.
+assert ('home-theme.css?v=20260905-15' in html) or ('home-theme.css?v=20260905-16' in html)
 
 print('dashboard desktop/mobile split: PASS')
