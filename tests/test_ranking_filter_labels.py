@@ -17,4 +17,4 @@ if __name__ == "__main__":
     test_ranking_filter_labels_and_font_size()
     print("Ranking filter label tests passed")
 
-# Regression: labels remain concise and filter text remains readable.
+# Regression: concise labels with 14px readable filter text.
