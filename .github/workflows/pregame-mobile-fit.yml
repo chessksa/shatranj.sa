@@ -10,10 +10,12 @@ permissions:
   contents: write
 
 jobs:
-  test:
+  apply:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
+      - name: Apply pregame mobile fit
+        run: python scripts/apply-pregame-mobile-fit.py
       - name: Verify pregame mobile fit
         run: |
           python - <<'PY'
@@ -22,10 +24,21 @@ jobs:
           assert "document.body.classList.add('pregame')" in html, 'pregame state class missing'
           assert '/* Pregame mobile fit */' in html, 'pregame mobile CSS missing'
           assert 'body.pregame #topPlayerCard{order:1' in html, 'time selector slot is not in the intended stack'
-          assert 'body.pregame #topPlayerCard{min-height:96px!important;height:96px!important' in html, 'time selector slot height is not restored'
+          assert 'body.pregame #topPlayerCard{order:1;width:100%;min-height:96px!important;height:96px!important' in html, 'time selector slot height is not restored'
           assert 'body.pregame .panel-stack>.player-card:not(#topPlayerCard){order:3' in html, 'bottom player is not after board/actions'
-          assert 'height:64px!important' in html, 'bottom player card is not compact'
+          assert 'min-height:64px!important;height:64px!important' in html, 'bottom player card is not compact'
           assert 'body.pregame .board-panel>.board-frame{width:min(calc(100vw - 12px),calc(100dvh - 260px))!important' in html, 'board is not viewport-fitted for pregame'
-          assert 'body.pregame{overflow:hidden!important}' in html, 'pregame page is not viewport locked'
+          assert 'body.pregame{height:100dvh!important;min-height:0!important;overflow:hidden!important}' in html, 'pregame page is not viewport locked'
           print('pregame mobile fit verified')
           PY
+      - name: Commit pregame mobile fit
+        run: |
+          if git diff --quiet -- play-v10.html; then
+            echo "No pregame layout changes to commit."
+            exit 0
+          fi
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add play-v10.html
+          git commit -m "fix: fit pregame mobile page without scrolling"
+          git push
