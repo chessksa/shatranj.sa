@@ -27,24 +27,9 @@ jobs:
         run: |
           python - <<'PY'
           from pathlib import Path
-          p = Path('tests/test_mobile_header_identity_22.py')
-          p.write_text("""from pathlib import Path
-css = Path('home-theme.css').read_text(encoding='utf-8')
-html = Path('index.html').read_text(encoding='utf-8')
-marker = '/* Mobile member identity centered 22px 20260905 */'
-assert marker in css
-section = css.split(marker, 1)[1]
-assert 'font-size:22px!important;' in section
-assert 'flex-direction:row!important;' in section
-assert 'justify-content:center!important;' in section
-assert '.compact-member-nav .header-member-points small{display:none!important}' in section
-assert 'grid-template-columns:repeat(3,minmax(0,1fr))!important;' in section
-assert 'grid-column:1!important;' in section
-assert 'grid-column:2!important;' in section
-assert 'grid-column:3!important;' in section
-assert 'home-theme.css?v=20260905-11' in html
-print('mobile header identity 22: PASS')
-""", encoding='utf-8')
+          import base64
+          data = base64.b64decode('ZnJvbSBwYXRobGliIGltcG9ydCBQYXRoCmNzcyA9IFBhdGgoJ2hvbWUtdGhlbWUuY3NzJykucmVhZF90ZXh0KGVuY29kaW5nPSd1dGYtOCcpCmh0bWwgPSBQYXRoKCdpbmRleC5odG1sJykucmVhZF90ZXh0KGVuY29kaW5nPSd1dGYtOCcpCm1hcmtlciA9ICcvKiBNb2JpbGUgbWVtYmVyIGlkZW50aXR5IGNlbnRlcmVkIDIycHggMjAyNjA5MDUgKi8nCmFzc2VydCBtYXJrZXIgaW4gY3NzCnNlY3Rpb24gPSBjc3Muc3BsaXQobWFya2VyLCAxKVsxXQphc3NlcnQgJ2ZvbnQtc2l6ZToyMnB4IWltcG9ydGFudDsnIGluIHNlY3Rpb24KYXNzZXJ0ICdmbGV4LWRpcmVjdGlvbjpyb3chaW1wb3J0YW50OycgaW4gc2VjdGlvbgphc3NlcnQgJ2p1c3RpZnktY29udGVudDpjZW50ZXIhaW1wb3J0YW50OycgaW4gc2VjdGlvbgphc3NlcnQgJy5jb21wYWN0LW1lbWJlci1uYXYgLmhlYWRlci1tZW1iZXItcG9pbnRzIHNtYWxse2Rpc3BsYXk6bm9uZSFpbXBvcnRhbnR9JyBpbiBzZWN0aW9uCmFzc2VydCAnZ3JpZC10ZW1wbGF0ZS1jb2x1bW5zOnJlcGVhdCgzLG1pbm1heCgwLDFmcikpIWltcG9ydGFudDsnIGluIHNlY3Rpb24KYXNzZXJ0ICdncmlkLWNvbHVtbjoxIWltcG9ydGFudDsnIGluIHNlY3Rpb24KYXNzZXJ0ICdncmlkLWNvbHVtbjoyIWltcG9ydGFudDsnIGluIHNlY3Rpb24KYXNzZXJ0ICdncmlkLWNvbHVtbjozIWltcG9ydGFudDsnIGluIHNlY3Rpb24KYXNzZXJ0ICdob21lLXRoZW1lLmNzcz92PTIwMjYwOTA1LTExJyBpbiBodG1sCnByaW50KCdtb2JpbGUgaGVhZGVyIGlkZW50aXR5IDIyOiBQQVNTJykK').decode('utf-8')
+          Path('tests/test_mobile_header_identity_22.py').write_text(data, encoding='utf-8')
           PY
           set +e
           python tests/test_mobile_header_identity_22.py
@@ -60,99 +45,11 @@ print('mobile header identity 22: PASS')
         run: |
           python - <<'PY'
           from pathlib import Path
-          import re
-
+          import base64, re
           cssp = Path('home-theme.css')
           css = cssp.read_text(encoding='utf-8')
           marker = '/* Mobile member identity centered 22px 20260905 */'
-          rule = '''
-
-/* Mobile member identity centered 22px 20260905 */
-@media(max-width:600px){
-  body.home-signed-in .compact-member-nav .nav-user{
-    grid-template-columns:repeat(3,minmax(0,1fr))!important;
-    column-gap:6px!important;
-    row-gap:6px!important;
-  }
-  body.home-signed-in .compact-member-nav .header-member{
-    grid-column:1/-1!important;
-  }
-  body.home-signed-in .compact-member-nav .header-member-link.header-tile{
-    position:relative!important;
-    width:100%!important;
-    min-height:50px!important;
-    padding-inline:54px!important;
-    justify-content:center!important;
-  }
-  body.home-signed-in .compact-member-nav .header-member-avatar-wrap{
-    position:absolute!important;
-    right:10px!important;
-    top:50%!important;
-    transform:translateY(-50%)!important;
-  }
-  body.home-signed-in .compact-member-nav .header-member-copy{
-    width:100%!important;
-    min-width:0!important;
-    display:flex!important;
-    flex-direction:row!important;
-    align-items:baseline!important;
-    justify-content:center!important;
-    gap:8px!important;
-  }
-  body.home-signed-in .compact-member-nav .header-member-copy>strong{
-    flex:0 1 auto!important;
-    min-width:0!important;
-    max-width:calc(100% - 58px)!important;
-    margin:0!important;
-    font-size:22px!important;
-    line-height:1!important;
-    white-space:nowrap!important;
-    overflow:hidden!important;
-    text-overflow:ellipsis!important;
-    text-align:center!important;
-  }
-  body.home-signed-in .compact-member-nav .header-member-points{
-    flex:0 0 auto!important;
-    min-width:0!important;
-    display:inline-flex!important;
-    flex-direction:row!important;
-    align-items:baseline!important;
-    justify-content:center!important;
-    line-height:1!important;
-  }
-  body.home-signed-in .compact-member-nav .header-member-points small{display:none!important}
-  body.home-signed-in .compact-member-nav .header-member-points b{
-    margin:0!important;
-    font-size:22px!important;
-    line-height:1!important;
-  }
-  body.home-signed-in .compact-member-nav .header-notification-host{
-    grid-column:1!important;
-    grid-row:2!important;
-    order:0!important;
-  }
-  body.home-signed-in .compact-member-nav .header-tournaments{
-    grid-column:2!important;
-    grid-row:2!important;
-    order:0!important;
-  }
-  body.home-signed-in .compact-member-nav .nav-logout{
-    grid-column:3!important;
-    grid-row:2!important;
-    order:0!important;
-  }
-  body.home-signed-in .compact-member-nav .header-notification-host,
-  body.home-signed-in .compact-member-nav .header-tournaments,
-  body.home-signed-in .compact-member-nav .nav-logout{
-    width:100%!important;
-    min-width:0!important;
-    max-width:none!important;
-    height:42px!important;
-    min-height:42px!important;
-    margin:0!important;
-  }
-}
-'''
+          rule = base64.b64decode('Ci8qIE1vYmlsZSBtZW1iZXIgaWRlbnRpdHkgY2VudGVyZWQgMjJweCAyMDI2MDkwNSAqLwpAbWVkaWEobWF4LXdpZHRoOjYwMHB4KXsKICBib2R5LmhvbWUtc2lnbmVkLWluIC5jb21wYWN0LW1lbWJlci1uYXYgLm5hdi11c2VyewogICAgZ3JpZC10ZW1wbGF0ZS1jb2x1bW5zOnJlcGVhdCgzLG1pbm1heCgwLDFmcikpIWltcG9ydGFudDsKICAgIGNvbHVtbi1nYXA6NnB4IWltcG9ydGFudDsKICAgIHJvdy1nYXA6NnB4IWltcG9ydGFudDsKICB9CiAgYm9keS5ob21lLXNpZ25lZC1pbiAuY29tcGFjdC1tZW1iZXItbmF2IC5oZWFkZXItbWVtYmVyewogICAgZ3JpZC1jb2x1bW46MS8tMSFpbXBvcnRhbnQ7CiAgfQogIGJvZHkuaG9tZS1zaWduZWQtaW4gLmNvbXBhY3QtbWVtYmVyLW5hdiAuaGVhZGVyLW1lbWJlci1saW5rLmhlYWRlci10aWxlewogICAgcG9zaXRpb246cmVsYXRpdmUhaW1wb3J0YW50OwogICAgd2lkdGg6MTAwJSFpbXBvcnRhbnQ7CiAgICBtaW4taGVpZ2h0OjUwcHghaW1wb3J0YW50OwogICAgcGFkZGluZy1pbmxpbmU6NTRweCFpbXBvcnRhbnQ7CiAgICBqdXN0aWZ5LWNvbnRlbnQ6Y2VudGVyIWltcG9ydGFudDsKICB9CiAgYm9keS5ob21lLXNpZ25lZC1pbiAuY29tcGFjdC1tZW1iZXItbmF2IC5oZWFkZXItbWVtYmVyLWF2YXRhci13cmFwewogICAgcG9zaXRpb246YWJzb2x1dGUhaW1wb3J0YW50OwogICAgcmlnaHQ6MTBweCFpbXBvcnRhbnQ7CiAgICB0b3A6NTAlIWltcG9ydGFudDsKICAgIHRyYW5zZm9ybTp0cmFuc2xhdGVZKC01MCUpIWltcG9ydGFudDsKICB9CiAgYm9keS5ob21lLXNpZ25lZC1pbiAuY29tcGFjdC1tZW1iZXItbmF2IC5oZWFkZXItbWVtYmVyLWNvcHl7CiAgICB3aWR0aDoxMDAlIWltcG9ydGFudDsKICAgIG1pbi13aWR0aDowIWltcG9ydGFudDsKICAgIGRpc3BsYXk6ZmxleCFpbXBvcnRhbnQ7CiAgICBmbGV4LWRpcmVjdGlvbjpyb3chaW1wb3J0YW50OwogICAgYWxpZ24taXRlbXM6YmFzZWxpbmUhaW1wb3J0YW50OwogICAganVzdGlmeS1jb250ZW50OmNlbnRlciFpbXBvcnRhbnQ7CiAgICBnYXA6OHB4IWltcG9ydGFudDsKICB9CiAgYm9keS5ob21lLXNpZ25lZC1pbiAuY29tcGFjdC1tZW1iZXItbmF2IC5oZWFkZXItbWVtYmVyLWNvcHk+c3Ryb25newogICAgZmxleDowIDEgYXV0byFpbXBvcnRhbnQ7CiAgICBtaW4td2lkdGg6MCFpbXBvcnRhbnQ7CiAgICBtYXgtd2lkdGg6Y2FsYygxMDAlIC0gNThweCkhaW1wb3J0YW50OwogICAgbWFyZ2luOjAhaW1wb3J0YW50OwogICAgZm9udC1zaXplOjIycHghaW1wb3J0YW50OwogICAgbGluZS1oZWlnaHQ6MSFpbXBvcnRhbnQ7CiAgICB3aGl0ZS1zcGFjZTpub3dyYXAhaW1wb3J0YW50OwogICAgb3ZlcmZsb3c6aGlkZGVuIWltcG9ydGFudDsKICAgIHRleHQtb3ZlcmZsb3c6ZWxsaXBzaXMhaW1wb3J0YW50OwogICAgdGV4dC1hbGlnbjpjZW50ZXIhaW1wb3J0YW50OwogIH0KICBib2R5LmhvbWUtc2lnbmVkLWluIC5jb21wYWN0LW1lbWJlci1uYXYgLmhlYWRlci1tZW1iZXItcG9pbnRzewogICAgZmxleDowIDAgYXV0byFpbXBvcnRhbnQ7CiAgICBtaW4td2lkdGg6MCFpbXBvcnRhbnQ7CiAgICBkaXNwbGF5OmlubGluZS1mbGV4IWltcG9ydGFudDsKICAgIGZsZXgtZGlyZWN0aW9uOnJvdyFpbXBvcnRhbnQ7CiAgICBhbGlnbi1pdGVtczpiYXNlbGluZSFpbXBvcnRhbnQ7CiAgICBqdXN0aWZ5LWNvbnRlbnQ6Y2VudGVyIWltcG9ydGFudDsKICAgIGxpbmUtaGVpZ2h0OjEhaW1wb3J0YW50OwogIH0KICBib2R5LmhvbWUtc2lnbmVkLWluIC5jb21wYWN0LW1lbWJlci1uYXYgLmhlYWRlci1tZW1iZXItcG9pbnRzIHNtYWxse2Rpc3BsYXk6bm9uZSFpbXBvcnRhbnR9CiAgYm9keS5ob21lLXNpZ25lZC1pbiAuY29tcGFjdC1tZW1iZXItbmF2IC5oZWFkZXItbWVtYmVyLXBvaW50cyBiewogICAgbWFyZ2luOjAhaW1wb3J0YW50OwogICAgZm9udC1zaXplOjIycHghaW1wb3J0YW50OwogICAgbGluZS1oZWlnaHQ6MSFpbXBvcnRhbnQ7CiAgfQogIGJvZHkuaG9tZS1zaWduZWQtaW4gLmNvbXBhY3QtbWVtYmVyLW5hdiAuaGVhZGVyLW5vdGlmaWNhdGlvbi1ob3N0ewogICAgZ3JpZC1jb2x1bW46MSFpbXBvcnRhbnQ7CiAgICBncmlkLXJvdzoyIWltcG9ydGFudDsKICAgIG9yZGVyOjAhaW1wb3J0YW50OwogIH0KICBib2R5LmhvbWUtc2lnbmVkLWluIC5jb21wYWN0LW1lbWJlci1uYXYgLmhlYWRlci10b3VybmFtZW50c3sKICAgIGdyaWQtY29sdW1uOjIhaW1wb3J0YW50OwogICAgZ3JpZC1yb3c6MiFpbXBvcnRhbnQ7CiAgICBvcmRlcjowIWltcG9ydGFudDsKICB9CiAgYm9keS5ob21lLXNpZ25lZC1pbiAuY29tcGFjdC1tZW1iZXItbmF2IC5uYXYtbG9nb3V0ewogICAgZ3JpZC1jb2x1bW46MyFpbXBvcnRhbnQ7CiAgICBncmlkLXJvdzoyIWltcG9ydGFudDsKICAgIG9yZGVyOjAhaW1wb3J0YW50OwogIH0KICBib2R5LmhvbWUtc2lnbmVkLWluIC5jb21wYWN0LW1lbWJlci1uYXYgLmhlYWRlci1ub3RpZmljYXRpb24taG9zdCwKICBib2R5LmhvbWUtc2lnbmVkLWluIC5jb21wYWN0LW1lbWJlci1uYXYgLmhlYWRlci10b3VybmFtZW50cywKICBib2R5LmhvbWUtc2lnbmVkLWluIC5jb21wYWN0LW1lbWJlci1uYXYgLm5hdi1sb2dvdXR7CiAgICB3aWR0aDoxMDAlIWltcG9ydGFudDsKICAgIG1pbi13aWR0aDowIWltcG9ydGFudDsKICAgIG1heC13aWR0aDpub25lIWltcG9ydGFudDsKICAgIGhlaWdodDo0MnB4IWltcG9ydGFudDsKICAgIG1pbi1oZWlnaHQ6NDJweCFpbXBvcnRhbnQ7CiAgICBtYXJnaW46MCFpbXBvcnRhbnQ7CiAgfQp9Cg==').decode('utf-8')
           if marker not in css:
               css += rule
           cssp.write_text(css, encoding='utf-8')
