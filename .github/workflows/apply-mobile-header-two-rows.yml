@@ -1,0 +1,200 @@
+name: Apply mobile header two rows
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - '.github/workflows/apply-mobile-header-two-rows.yml'
+
+permissions:
+  contents: write
+
+jobs:
+  apply:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Configure git
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+
+      - name: Add regression test and verify RED
+        shell: bash
+        run: |
+          cat > tests/test_mobile_header_two_rows.py <<'PY'
+          from pathlib import Path
+
+          css = Path('home-theme.css').read_text(encoding='utf-8')
+          html = Path('index.html').read_text(encoding='utf-8')
+
+          assert '/* Mobile header two-row layout 20260905 */' in css
+          assert 'grid-template-columns:repeat(3,minmax(0,1fr))!important;' in css
+          assert 'grid-column:1/-1!important;' in css
+          assert '.compact-member-nav .header-member-points small{display:none!important}' in css
+          assert '.compact-member-nav .header-member-copy>strong{' in css and 'font-size:18px!important;' in css
+          assert '.compact-member-nav .header-tournaments .header-tile-icon{display:none!important}' in css
+          assert '.compact-member-nav .header-tournaments>span:not(.header-tile-icon){display:inline!important}' in css
+          assert 'home-theme.css?v=20260905-10' in html
+          print('mobile header two rows: PASS')
+          PY
+          set +e
+          python tests/test_mobile_header_two_rows.py
+          status=$?
+          set -e
+          if [ "$status" -eq 0 ]; then
+            echo "Expected RED before implementation, but test already passes"
+            exit 1
+          fi
+          echo "RED verified"
+
+      - name: Implement mobile two-row header
+        run: |
+          python - <<'PY'
+          from pathlib import Path
+          import re
+
+          cssp = Path('home-theme.css')
+          css = cssp.read_text(encoding='utf-8')
+          marker = '/* Mobile header two-row layout 20260905 */'
+          rule = r'''
+
+/* Mobile header two-row layout 20260905 */
+@media(max-width:600px){
+  .home-header .compact-member-nav{
+    min-height:0!important;
+    padding-block:6px!important;
+  }
+  .compact-member-nav .nav-user{
+    width:100%!important;
+    display:grid!important;
+    grid-template-columns:repeat(3,minmax(0,1fr))!important;
+    gap:6px!important;
+    align-items:stretch!important;
+    overflow:visible!important;
+  }
+  .compact-member-nav .header-member{
+    grid-column:1/-1!important;
+    width:100%!important;
+    min-width:0!important;
+  }
+  .compact-member-nav .header-member-link.header-tile{
+    width:100%!important;
+    min-width:0!important;
+    max-width:none!important;
+    height:48px!important;
+    min-height:48px!important;
+    padding:3px 10px!important;
+    display:flex!important;
+    flex-direction:row!important;
+    align-items:center!important;
+    justify-content:flex-start!important;
+    gap:8px!important;
+  }
+  .compact-member-nav .header-member-avatar-wrap,
+  .compact-member-nav .header-member-avatar{
+    width:36px!important;
+    height:36px!important;
+    flex:0 0 36px!important;
+  }
+  .compact-member-nav .header-member-copy{
+    width:auto!important;
+    flex:1 1 auto!important;
+    min-width:0!important;
+    display:grid!important;
+    grid-template-columns:minmax(0,1fr) auto!important;
+    align-items:center!important;
+    gap:8px!important;
+  }
+  .compact-member-nav .header-member-copy>strong{
+    min-width:0!important;
+    font-size:18px!important;
+    line-height:1!important;
+    white-space:nowrap!important;
+    overflow:hidden!important;
+    text-overflow:clip!important;
+  }
+  .compact-member-nav .header-member-points{
+    min-width:40px!important;
+    display:flex!important;
+    align-items:center!important;
+    justify-content:center!important;
+  }
+  .compact-member-nav .header-member-points small{display:none!important}
+  .compact-member-nav .header-member-points b{
+    font-size:18px!important;
+    line-height:1!important;
+  }
+  .compact-member-nav .dashboard-link{display:none!important}
+  .compact-member-nav .header-notification-host,
+  .compact-member-nav .header-tournaments,
+  .compact-member-nav .nav-logout{
+    width:100%!important;
+    min-width:0!important;
+    max-width:none!important;
+    height:42px!important;
+    min-height:42px!important;
+    padding:0 7px!important;
+    margin:0!important;
+    flex:none!important;
+  }
+  .compact-member-nav .header-notification-host{
+    display:flex!important;
+  }
+  .compact-member-nav .site-notification-bell{
+    width:100%!important;
+    min-width:0!important;
+    height:42px!important;
+    padding:0!important;
+  }
+  .compact-member-nav .header-tournaments{
+    display:inline-flex!important;
+    font-size:12px!important;
+    gap:0!important;
+  }
+  .compact-member-nav .header-tournaments .header-tile-icon{display:none!important}
+  .compact-member-nav .header-tournaments>span:not(.header-tile-icon){display:inline!important}
+  .compact-member-nav .nav-logout{
+    display:inline-flex!important;
+    justify-content:center!important;
+    font-size:12px!important;
+  }
+  .compact-member-nav .nav-logout[hidden]{display:none!important}
+  .compact-member-nav .nav-account:not([hidden]){
+    grid-column:1/-1!important;
+    width:100%!important;
+    max-width:none!important;
+  }
+}
+'''
+          if marker not in css:
+              css += rule
+          cssp.write_text(css, encoding='utf-8')
+
+          ip = Path('index.html')
+          html = ip.read_text(encoding='utf-8')
+          html = re.sub(r'home-theme\.css\?v=20260905-\d+', 'home-theme.css?v=20260905-10', html, count=1)
+          ip.write_text(html, encoding='utf-8')
+
+          for p in Path('tests').glob('test_*.py'):
+              s = p.read_text(encoding='utf-8')
+              ns = re.sub(r'home-theme\.css\?v=20260905-\d+', 'home-theme.css?v=20260905-10', s)
+              if ns != s:
+                  p.write_text(ns, encoding='utf-8')
+          PY
+
+      - name: Verify GREEN
+        run: |
+          python tests/test_mobile_header_two_rows.py
+          python tests/test_home_header_controls.py
+          python tests/test_home_stat_labels.py
+
+      - name: Remove temporary workflow and commit
+        run: |
+          rm .github/workflows/apply-mobile-header-two-rows.yml
+          git add home-theme.css index.html tests .github/workflows/apply-mobile-header-two-rows.yml
+          git commit -m "تنسيق هيدر الجوال بسطرين"
+          git push origin main
