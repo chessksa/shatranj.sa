@@ -29,6 +29,14 @@ ticker_style = '''
   .home-features{grid-column:3!important;grid-row:4!important}
   #register{grid-column:2/4!important;grid-row:5!important}
   footer{grid-column:1/-1!important;grid-row:6!important}
+
+  body.home-signed-in{grid-template-rows:64px 34px minmax(0,1fr) 104px 38px!important}
+  body.home-signed-in .home-header{grid-row:1!important}
+  body.home-signed-in .welcome-ticker{grid-row:2!important}
+  body.home-signed-in .home-hero{grid-row:3!important}
+  body.home-signed-in #ranking{grid-row:3/5!important}
+  body.home-signed-in .home-features{grid-row:4!important}
+  body.home-signed-in footer{grid-row:5!important}
 }
 @media(max-width:900px){
   .home-header{order:1!important}
