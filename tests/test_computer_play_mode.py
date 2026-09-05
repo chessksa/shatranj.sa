@@ -44,8 +44,13 @@ validate_start = code.index("if (event.type === INPUT_EVENT_TYPE.validateMoveInp
 validate_end = code.index("if (event.type === INPUT_EVENT_TYPE.moveInputCanceled)", validate_start)
 validate_block = code[validate_start:validate_end]
 assert "renderBoard(false);" not in validate_block, 'accepted drag must be left to cm-chessboard instead of being redrawn mid-drop'
-assert "if (ratedMode) {\n      commitActiveClock();\n      clockActiveSide = null;\n      clockAnchorMs = 0;" in validate_block, 'rated mode must freeze local clock while the server owns the computer turn'
-assert "} else {\n      switchClock('computer');" in validate_block, 'only guest/local Stockfish mode should run the computer clock locally'
+assert "if (ratedMode) {\n      switchClock('computer');" in validate_block, 'rated computer clock must visibly run while the server computes its move'
+assert "clockActiveSide = null" not in validate_block, 'rated move submission must not freeze the computer clock'
+
+assert "function syncRatedClocks(payload, computerCapMs = null)" in code, 'rated clock sync must support a monotonic computer-time cap'
+assert "Math.min(serverComputerTimeMs, computerCapMs)" in code, 'server sync must never increase the computer clock after visible thinking time elapsed'
+assert "const localComputerRemaining = currentClockMs('computer');" in code, 'client must capture visible computer time before applying the server response'
+assert "syncRatedClocks(payload, localComputerRemaining);" in code, 'move response must preserve the lower visible computer clock'
 
 assert EDGE.exists(), 'server computer-game Edge Function source is missing'
 edge = EDGE.read_text(encoding="utf-8")
@@ -67,6 +72,10 @@ assert "medium: { depth: 1" in edge
 assert "hard: { depth: 2" in edge
 assert "function positionalBonus" in edge, 'server engine needs positional evaluation, not material-only play'
 assert "function orderMoves" in edge, 'server search must order forcing moves before quiet moves'
+assert "const MIN_THINK_MS" in edge, 'rated computer clock must include a real minimum thinking interval'
+assert "easy: 900" in edge and "medium: 1200" in edge and "hard: 1600" in edge
+assert "await new Promise((resolve) => setTimeout(resolve, waitMs));" in edge, 'server must wait out the remaining thinking interval before finalizing computer elapsed time'
+assert "const computerElapsed = Math.max(1, Date.now() - computerStartedAt);" in edge, 'server must deduct total thinking wall time, not just search CPU time'
 
 assert MIGRATION.exists(), 'computer-game rating migration is missing'
 sql = MIGRATION.read_text(encoding="utf-8").lower()
@@ -90,4 +99,4 @@ assert ENGINE_JS.exists()
 assert ENGINE_WASM.exists()
 assert ENGINE_WASM.stat().st_size > 1_000_000
 
-print('computer board stability, clocks, strength, and 5/10/15 controls: PASS')
+print('computer board stability, monotonic clocks, strength, and 5/10/15 controls: PASS')
