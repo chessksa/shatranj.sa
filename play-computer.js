@@ -673,10 +673,30 @@ async function resignComputerGame({ navigate = false, ask = false } = {}) {
   }
 }
 
+function addTimeChooserBack() {
+  const existing = opponentSearchSetup?.querySelector('.computer-time-back');
+  if (existing) existing.remove();
+  const options = opponentSearchSetup?.querySelector('.opponent-time-options');
+  if (!options) return;
+  const back = document.createElement('button');
+  back.type = 'button';
+  back.className = 'computer-time-back';
+  back.setAttribute('aria-label', 'الرجوع لاختيار مستوى الكمبيوتر');
+  back.innerHTML = '<span aria-hidden="true">‹</span><span>رجوع</span>';
+  back.style.cssText = 'align-self:flex-start;border:0;background:transparent;color:inherit;font:inherit;font-weight:800;cursor:pointer;display:inline-flex;align-items:center;gap:6px;padding:4px 2px 8px;';
+  back.querySelector('span')?.style.setProperty('font-size', '28px');
+  back.onclick = () => {
+    back.remove();
+    setupLevelChooser();
+  };
+  options.parentNode.insertBefore(back, options);
+}
+
 function setupTimeChooser(levelKey) {
   const level = LEVELS[levelKey];
   const title = opponentSearchSetup?.querySelector('.opponent-search-title');
   if (title) title.textContent = `اختر زمن المباراة — مستوى ${level.label}`;
+  addTimeChooserBack();
   const buttons = [...document.querySelectorAll('.opponent-time-options .opponent-time-option')];
   buttons.forEach((button, index) => {
     const minutes = TIME_CONTROLS[index];
@@ -690,6 +710,7 @@ function setupTimeChooser(levelKey) {
 }
 
 function setupLevelChooser() {
+  opponentSearchSetup?.querySelector('.computer-time-back')?.remove();
   selectedLevel = null;
   selectedMinutes = null;
   if (opponentSearchWaiting) opponentSearchWaiting.hidden = true;
