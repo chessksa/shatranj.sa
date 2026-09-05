@@ -40,19 +40,15 @@ jobs:
           html = html_path.read_text(encoding='utf-8')
 
           if 'id="mobileDashboardNav"' not in html:
-              needle = dedent('''\
-                    <a id="dashboardNav" class="header-action header-tile dashboard-link" href="#register">
-                      <span class="header-tile-icon" aria-hidden="true">⚙</span><span>لوحة التحكم</span>
-                    </a>
-              ''')
-              mobile = dedent('''\
-                    <a id="mobileDashboardNav" class="mobile-dashboard-link header-tile" href="profile.html">
-                      <span class="header-tile-icon" aria-hidden="true">⚙</span><span>لوحة التحكم</span>
-                    </a>
-              ''')
-              if needle not in html:
-                  raise SystemExit('dashboard anchor not found in index.html')
-              html = html.replace(needle, needle + mobile, 1)
+              start = html.find('<a id="dashboardNav"')
+              if start < 0:
+                  raise SystemExit('dashboard anchor start not found in index.html')
+              end = html.find('</a>', start)
+              if end < 0:
+                  raise SystemExit('dashboard anchor end not found in index.html')
+              end += len('</a>')
+              mobile = '''\n      <a id="mobileDashboardNav" class="mobile-dashboard-link header-tile" href="profile.html">\n        <span class="header-tile-icon" aria-hidden="true">⚙</span><span>لوحة التحكم</span>\n      </a>'''
+              html = html[:end] + mobile + html[end:]
 
           old_key = 'home-theme.css?v=20260905-15'
           new_key = 'home-theme.css?v=20260905-16'
