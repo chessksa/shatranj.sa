@@ -1,0 +1,82 @@
+name: Apply mobile dashboard remove
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - '.github/workflows/apply-mobile-dashboard-remove.yml'
+
+permissions:
+  contents: write
+
+jobs:
+  apply:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Configure git
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+
+      - name: Verify RED
+        shell: bash
+        run: |
+          python - <<'PY'
+          from pathlib import Path
+          import base64
+          data = base64.b64decode('ZnJvbSBwYXRobGliIGltcG9ydCBQYXRoCmNzcyA9IFBhdGgoJ2hvbWUtdGhlbWUuY3NzJykucmVhZF90ZXh0KGVuY29kaW5nPSd1dGYtOCcpCmh0bWwgPSBQYXRoKCdpbmRleC5odG1sJykucmVhZF90ZXh0KGVuY29kaW5nPSd1dGYtOCcpCm1hcmtlciA9ICcvKiBNb2JpbGUgaGVhZGVyIHJlbW92ZSBkYXNoYm9hcmQgZmluYWwgMjAyNjA5MDUgKi8nCmFzc2VydCBtYXJrZXIgaW4gY3NzCnNlY3Rpb24gPSBjc3Muc3BsaXQobWFya2VyLDEpWzFdCmFzc2VydCAnZ3JpZC10ZW1wbGF0ZS1jb2x1bW5zOnJlcGVhdCgzLG1pbm1heCgwLDFmcikpIWltcG9ydGFudDsnIGluIHNlY3Rpb24KYXNzZXJ0ICdib2R5LmhvbWUtc2lnbmVkLWluIC5jb21wYWN0LW1lbWJlci1uYXYgLmRhc2hib2FyZC1saW5re2Rpc3BsYXk6bm9uZSFpbXBvcnRhbnR9JyBpbiBzZWN0aW9uCmFzc2VydCAnZ3JpZC1jb2x1bW46MSFpbXBvcnRhbnQ7JyBpbiBzZWN0aW9uCmFzc2VydCAnZ3JpZC1jb2x1bW46MiFpbXBvcnRhbnQ7JyBpbiBzZWN0aW9uCmFzc2VydCAnZ3JpZC1jb2x1bW46MyFpbXBvcnRhbnQ7JyBpbiBzZWN0aW9uCmFzc2VydCAnaG9tZS10aGVtZS5jc3M/dj0yMDI2MDkwNS0xMycgaW4gaHRtbApwcmludCgnbW9iaWxlIGRhc2hib2FyZCByZW1vdmVkOiBQQVNTJykK').decode('utf-8')
+          Path('tests/test_mobile_dashboard_removed.py').write_text(data, encoding='utf-8')
+          PY
+          set +e
+          python tests/test_mobile_dashboard_removed.py
+          status=$?
+          set -e
+          if [ "$status" -eq 0 ]; then
+            echo "Expected RED before implementation, but test already passes"
+            exit 1
+          fi
+          echo "RED verified"
+
+      - name: Implement mobile dashboard removal
+        run: |
+          python - <<'PY'
+          from pathlib import Path
+          import base64, re
+          cssp = Path('home-theme.css')
+          css = cssp.read_text(encoding='utf-8')
+          marker = '/* Mobile header remove dashboard final 20260905 */'
+          rule = base64.b64decode('Ci8qIE1vYmlsZSBoZWFkZXIgcmVtb3ZlIGRhc2hib2FyZCBmaW5hbCAyMDI2MDkwNSAqLwpAbWVkaWEobWF4LXdpZHRoOjYwMHB4KXsKICBib2R5LmhvbWUtc2lnbmVkLWluIC5jb21wYWN0LW1lbWJlci1uYXYgLm5hdi11c2VyewogICAgZ3JpZC10ZW1wbGF0ZS1jb2x1bW5zOnJlcGVhdCgzLG1pbm1heCgwLDFmcikpIWltcG9ydGFudDsKICB9CiAgYm9keS5ob21lLXNpZ25lZC1pbiAuY29tcGFjdC1tZW1iZXItbmF2IC5kYXNoYm9hcmQtbGlua3tkaXNwbGF5Om5vbmUhaW1wb3J0YW50fQogIGJvZHkuaG9tZS1zaWduZWQtaW4gLmNvbXBhY3QtbWVtYmVyLW5hdiAuaGVhZGVyLW5vdGlmaWNhdGlvbi1ob3N0ewogICAgZ3JpZC1jb2x1bW46MSFpbXBvcnRhbnQ7CiAgICBncmlkLXJvdzoyIWltcG9ydGFudDsKICB9CiAgYm9keS5ob21lLXNpZ25lZC1pbiAuY29tcGFjdC1tZW1iZXItbmF2IC5oZWFkZXItdG91cm5hbWVudHN7CiAgICBncmlkLWNvbHVtbjoyIWltcG9ydGFudDsKICAgIGdyaWQtcm93OjIhaW1wb3J0YW50OwogIH0KICBib2R5LmhvbWUtc2lnbmVkLWluIC5jb21wYWN0LW1lbWJlci1uYXYgLm5hdi1sb2dvdXR7CiAgICBncmlkLWNvbHVtbjozIWltcG9ydGFudDsKICAgIGdyaWQtcm93OjIhaW1wb3J0YW50OwogIH0KfQo=').decode('utf-8')
+          if marker not in css:
+              css += rule
+          cssp.write_text(css, encoding='utf-8')
+
+          ip = Path('index.html')
+          html = ip.read_text(encoding='utf-8')
+          html = re.sub(r'home-theme\.css\?v=20260905-\d+', 'home-theme.css?v=20260905-13', html, count=1)
+          ip.write_text(html, encoding='utf-8')
+
+          for p in Path('tests').glob('test_*.py'):
+              s = p.read_text(encoding='utf-8')
+              ns = re.sub(r'home-theme\.css\?v=20260905-\d+', 'home-theme.css?v=20260905-13', s)
+              if ns != s:
+                  p.write_text(ns, encoding='utf-8')
+          PY
+
+      - name: Verify GREEN
+        run: |
+          python tests/test_mobile_dashboard_removed.py
+          python tests/test_mobile_header_avatar_dashboard.py
+          python tests/test_mobile_header_identity_22.py
+          python tests/test_mobile_header_two_rows.py
+          python tests/test_home_header_controls.py
+
+      - name: Remove temporary workflow and commit
+        run: |
+          rm .github/workflows/apply-mobile-dashboard-remove.yml
+          git add home-theme.css index.html tests .github/workflows/apply-mobile-dashboard-remove.yml
+          git commit -m "حذف لوحة التحكم من هيدر الجوال"
+          git push origin main
