@@ -40,14 +40,6 @@ jobs:
           if old_call not in code:
               raise SystemExit('computer start call marker not found')
           computer.write_text(code.replace(old_call, new_call, 1), encoding='utf-8')
-
-          workflow = Path('.github/workflows/test-computer-play-mode.yml')
-          w = workflow.read_text(encoding='utf-8')
-          if "      - 'play-v10-match.js'\n" not in w:
-              w = w.replace("      - 'play-v10.html'\n", "      - 'play-v10.html'\n      - 'play-v10-match.js'\n", 1)
-          if "      - 'supabase/migrations/20260906_time_controls_5_10_15.sql'\n" not in w:
-              w = w.replace("      - 'supabase/migrations/20260906_computer_game_ratings.sql'\n", "      - 'supabase/migrations/20260906_computer_game_ratings.sql'\n      - 'supabase/migrations/20260906_time_controls_5_10_15.sql'\n", 1)
-          workflow.write_text(w, encoding='utf-8')
           PY
       - name: Verify contract and syntax
         run: |
@@ -58,7 +50,7 @@ jobs:
         run: |
           git config user.name 'github-actions[bot]'
           git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
-          git add play-v10.html play-computer.js .github/workflows/test-computer-play-mode.yml
+          git add play-v10.html play-computer.js
           git diff --cached --quiet && exit 0
           git commit -m 'feat: use 5 10 15 minute controls everywhere'
           git push
