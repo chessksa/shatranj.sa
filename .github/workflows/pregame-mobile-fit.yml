@@ -1,0 +1,31 @@
+name: Pregame mobile fit
+
+on:
+  push:
+    paths:
+      - '.github/workflows/pregame-mobile-fit.yml'
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Verify pregame mobile fit
+        run: |
+          python - <<'PY'
+          from pathlib import Path
+          html = Path('play-v10.html').read_text(encoding='utf-8')
+          assert "document.body.classList.add('pregame')" in html, 'pregame state class missing'
+          assert '/* Pregame mobile fit */' in html, 'pregame mobile CSS missing'
+          assert 'body.pregame #topPlayerCard{order:1' in html, 'time selector slot is not in the intended stack'
+          assert 'body.pregame #topPlayerCard{min-height:96px!important;height:96px!important' in html, 'time selector slot height is not restored'
+          assert 'body.pregame .panel-stack>.player-card:not(#topPlayerCard){order:3' in html, 'bottom player is not after board/actions'
+          assert 'height:64px!important' in html, 'bottom player card is not compact'
+          assert 'body.pregame .board-panel>.board-frame{width:min(calc(100vw - 12px),calc(100dvh - 260px))!important' in html, 'board is not viewport-fitted for pregame'
+          assert 'body.pregame{overflow:hidden!important}' in html, 'pregame page is not viewport locked'
+          print('pregame mobile fit verified')
+          PY
