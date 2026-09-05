@@ -33,16 +33,16 @@ assert "function addTimeChooserBack" in code, 'time chooser must expose a dedica
 assert "setupLevelChooser();" in code[code.index("function addTimeChooserBack"):code.index("function setupTimeChooser")], 'back action must return to level chooser'
 assert "computer-time-back" in code, 'time chooser back control needs a stable hook'
 back_block = code[code.index("function addTimeChooserBack"):code.index("function applyChooserTitle")]
-assert '<span>رجوع</span>' not in back_block, 'back control must be icon-only'
-assert "back.innerHTML = '<span aria-hidden=\"true\">›</span>';" in back_block, 'back control should use one simple RTL chevron'
+assert '<span>رجوع</span>' in back_block, 'back control must show a text label beside the icon'
+assert "back.innerHTML = '<span aria-hidden=\"true\">›</span><span>رجوع</span>';" in back_block, 'back control should combine the RTL chevron with the رجوع label'
 assert 'position:absolute' in back_block, 'back icon must not participate in layout flow'
 assert 'inset-inline-end:' in back_block and 'top:' in back_block, 'back icon must remain fixed on the right'
-assert 'width:42px' in back_block and 'height:42px' in back_block, 'back icon should be simple and compact'
-assert 'border:0' in back_block and 'background:transparent' in back_block, 'back icon should have no box decoration'
+assert 'min-width:72px' in back_block and 'height:38px' in back_block, 'back control should remain compact'
+assert 'border:1px solid rgba(224,181,103,.4)' in back_block and 'background:rgba(2,28,33,.44)' in back_block, 'back control should match the chooser style'
 
 assert "function applyChooserTitle(title, text)" in code, 'level and time choosers must share one title style'
 title_block = code[code.index("function applyChooserTitle"):code.index("function setupTimeChooser")]
-assert "font-size', 'clamp(16px, 3vw, 24px)'" in title_block, 'chooser titles must use the same responsive size'
+assert "font-size', 'clamp(14px, 2.6vw, 20px)'" in title_block, 'chooser titles must use the same smaller responsive size'
 assert "white-space', 'normal'" in title_block, 'chooser titles must wrap instead of clipping on narrow screens'
 assert "text-align', 'center'" in title_block, 'chooser titles must remain centered'
 assert "overflow', 'visible'" in title_block, 'chooser title text must not be clipped'

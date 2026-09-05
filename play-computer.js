@@ -683,8 +683,8 @@ function addTimeChooserBack() {
   back.type = 'button';
   back.className = 'computer-time-back';
   back.setAttribute('aria-label', 'الرجوع لاختيار مستوى الكمبيوتر');
-  back.innerHTML = '<span aria-hidden="true">›</span>';
-  back.style.cssText = 'position:absolute;inset-inline-end:12px;top:8px;width:42px;height:42px;border:0;background:transparent;color:#f6ead8;font:800 30px/1 Arial,sans-serif;cursor:pointer;display:flex;align-items:center;justify-content:center;padding:0;z-index:3;';
+  back.innerHTML = '<span aria-hidden="true">›</span><span>رجوع</span>';
+  back.style.cssText = 'position:absolute;inset-inline-end:12px;top:8px;min-width:72px;height:38px;border:1px solid rgba(224,181,103,.4);border-radius:10px;background:rgba(2,28,33,.44);color:#f6ead8;font:700 14px/1 Arial,sans-serif;cursor:pointer;display:inline-flex;align-items:center;justify-content:center;gap:5px;padding:0 10px;z-index:3;';
   back.onclick = () => {
     back.remove();
     setupLevelChooser();
@@ -696,7 +696,7 @@ function applyChooserTitle(title, text) {
   if (!title) return;
   title.textContent = text;
   title.style.setProperty('text-align', 'center', 'important');
-  title.style.setProperty('font-size', 'clamp(16px, 3vw, 24px)', 'important');
+  title.style.setProperty('font-size', 'clamp(14px, 2.6vw, 20px)', 'important');
   title.style.setProperty('line-height', '1.2', 'important');
   title.style.setProperty('white-space', 'normal', 'important');
   title.style.setProperty('width', '100%', 'important');
