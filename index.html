@@ -919,7 +919,7 @@ footer{
 #navAccount[hidden]{display:none!important}
 </style>
 <style id="welcomeTickerInlineStyles">
-.welcome-ticker{width:100%;height:34px;display:flex;align-items:center;overflow:hidden;background:#0a302f;color:#f7f3e7;border-top:1px solid rgba(197,163,77,.55);border-bottom:1px solid rgba(197,163,77,.55);position:relative;z-index:19}
+.welcome-ticker{width:100%;height:34px;display:flex;align-items:center;overflow:hidden;background:#0a302f;color:#f7f3e7;border-top:1px solid rgba(197,163,77,.55);border-bottom:1px solid rgba(197,163,77,.55);position:relative;z-index:19;flex:none}
 .welcome-ticker-track{display:flex;align-items:center;width:max-content;min-width:max-content;will-change:transform;animation:welcomeTickerInlineMove 38s linear infinite}
 .welcome-ticker-group{display:flex;align-items:center;flex:none}
 .welcome-ticker-item{display:inline-flex;align-items:center;white-space:nowrap;direction:rtl;font-size:12px;font-weight:800;line-height:1;padding:0 22px}
@@ -927,6 +927,25 @@ footer{
 .welcome-ticker-loading{display:inline-flex;align-items:center;white-space:nowrap;padding:0 20px;font-size:12px;font-weight:800}
 .welcome-ticker-single{animation:none!important;transform:none!important}
 @keyframes welcomeTickerInlineMove{from{transform:translateX(0)}to{transform:translateX(50%)}}
+@media(min-width:901px){
+  body{grid-template-rows:auto 34px auto auto auto auto!important}
+  .home-header{grid-column:1/-1!important;grid-row:1!important}
+  .welcome-ticker{grid-column:1/-1;grid-row:2;position:relative!important;top:auto!important;left:auto!important;right:auto!important}
+  .home-hero{grid-column:3!important;grid-row:3!important}
+  #ranking{grid-column:2!important;grid-row:3/5!important}
+  .home-features{grid-column:3!important;grid-row:4!important}
+  #register{grid-column:2/4!important;grid-row:5!important}
+  footer{grid-column:1/-1!important;grid-row:6!important}
+}
+@media(max-width:900px){
+  .home-header{order:1!important}
+  .welcome-ticker{order:2}
+  .home-hero{order:3!important}
+  #ranking{order:4!important}
+  .home-features{order:5!important}
+  #register{order:6!important}
+  footer{order:7!important}
+}
 @media(max-width:800px){.welcome-ticker{height:30px}.welcome-ticker-item{font-size:11px;padding:0 16px}.welcome-ticker-track{animation-duration:32s}}
 @media(prefers-reduced-motion:reduce){.welcome-ticker-track{animation:none;transform:none}.welcome-ticker-group:nth-child(2){display:none}}
 </style>
@@ -969,12 +988,13 @@ footer{
     </div>
   </div>
 
+</header>
+
 <div id="welcomeTicker" class="welcome-ticker" role="region" aria-label="آخر الأعضاء المنضمين">
   <div id="welcomeTickerTrack" class="welcome-ticker-track welcome-ticker-single">
     <span class="welcome-ticker-loading">مرحبًا بكم في شطرنج العرب</span>
   </div>
 </div>
-</header>
 
 
 <!-- APPROVED HOME HERO 20260904 -->
