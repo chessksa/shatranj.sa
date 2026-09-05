@@ -7,6 +7,8 @@ on:
       - 'play-v10.html'
       - 'play-computer.js'
       - 'vendor/stockfish/**'
+      - 'supabase/functions/computer-game/**'
+      - 'supabase/migrations/20260906_computer_game_ratings.sql'
       - 'tests/test_computer_play_mode.py'
       - '.github/workflows/test-computer-play-mode.yml'
 jobs:
