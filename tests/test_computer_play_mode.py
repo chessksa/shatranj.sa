@@ -9,6 +9,7 @@ COMPUTER = ROOT / "play-computer.js"
 EDGE = ROOT / "supabase" / "functions" / "computer-game" / "index.ts"
 MIGRATION = ROOT / "supabase" / "migrations" / "20260906_computer_game_ratings.sql"
 TIME_MIGRATION = ROOT / "supabase" / "migrations" / "20260906_time_controls_5_10_15.sql"
+CLOCK_MIGRATION = ROOT / "supabase" / "migrations" / "20260906_computer_clock_floor.sql"
 ENGINE_JS = ROOT / "vendor" / "stockfish" / "stockfish-18-lite-single.js"
 ENGINE_WASM = ROOT / "vendor" / "stockfish" / "stockfish-18-lite-single.wasm"
 
@@ -48,6 +49,7 @@ assert re.search(r"if\s*\(ratedMode\)\s*\{\s*switchClock\('computer'\);", valida
 assert "clockActiveSide = null" not in validate_block, 'rated move submission must not freeze the computer clock'
 
 assert "function syncRatedClocks(payload, computerCapMs = null)" in code
+assert "computerCapMs !== null" in code, 'null must mean no cap; Number(null) must never collapse computer time to zero'
 assert "Math.min(serverComputerTimeMs, computerCapMs)" in code
 assert "const localComputerRemaining = currentClockMs('computer');" in code
 assert "syncRatedClocks(payload, localComputerRemaining);" in code
@@ -94,6 +96,15 @@ time_sql = TIME_MIGRATION.read_text(encoding="utf-8").lower().replace(' ', '')
 assert 'p_minutesnotin(5,10,15)' in time_sql
 assert 'time_control_minutes' in time_sql
 assert 'player_time_ms' in time_sql and 'computer_time_ms' in time_sql and 'turn_started_at' in time_sql
+
+assert CLOCK_MIGRATION.exists(), 'database clock floor migration is missing'
+clock_sql = CLOCK_MIGRATION.read_text(encoding="utf-8").lower()
+assert 'create or replace function public.enforce_computer_clock_floor' in clock_sql
+assert "when 'easy' then 900" in clock_sql
+assert "when 'medium' then 1200" in clock_sql
+assert "when 'hard' then 1600" in clock_sql
+assert 'create trigger computer_clock_floor' in clock_sql
+assert 'new.computer_time_ms' in clock_sql and 'old.computer_time_ms' in clock_sql
 
 assert ENGINE_JS.exists()
 assert ENGINE_WASM.exists()
