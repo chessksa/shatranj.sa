@@ -1,0 +1,81 @@
+name: Apply computer time chooser back
+on:
+  push:
+    branches: [main]
+    paths:
+      - '.github/workflows/apply-computer-time-back.yml'
+permissions:
+  contents: write
+jobs:
+  apply:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Add back control
+        run: |
+          python - <<'PY'
+          from pathlib import Path
+          import re
+
+          js = Path('play-computer.js')
+          text = js.read_text(encoding='utf-8')
+          marker = "function setupTimeChooser(levelKey) {"
+          if 'function addTimeChooserBack()' not in text:
+              fn = r'''function addTimeChooserBack() {
+  const existing = opponentSearchSetup?.querySelector('.computer-time-back');
+  if (existing) existing.remove();
+  const options = opponentSearchSetup?.querySelector('.opponent-time-options');
+  if (!options) return;
+  const back = document.createElement('button');
+  back.type = 'button';
+  back.className = 'computer-time-back';
+  back.setAttribute('aria-label', 'الرجوع لاختيار مستوى الكمبيوتر');
+  back.innerHTML = '<span aria-hidden="true">‹</span><span>رجوع</span>';
+  back.style.cssText = 'align-self:flex-start;border:0;background:transparent;color:inherit;font:inherit;font-weight:800;cursor:pointer;display:inline-flex;align-items:center;gap:6px;padding:4px 2px 8px;';
+  back.querySelector('span')?.style.setProperty('font-size', '28px');
+  back.onclick = () => {
+    back.remove();
+    setupLevelChooser();
+  };
+  options.parentNode.insertBefore(back, options);
+}
+
+'''
+              if marker not in text:
+                  raise SystemExit('time chooser marker missing')
+              text = text.replace(marker, fn + marker, 1)
+
+          time_marker = "  if (title) title.textContent = `اختر زمن المباراة — مستوى ${level.label}`;\n"
+          if '  addTimeChooserBack();\n' not in text[text.index(marker):text.index('function setupLevelChooser()', text.index(marker))]:
+              if time_marker not in text:
+                  raise SystemExit('time title marker missing')
+              text = text.replace(time_marker, time_marker + "  addTimeChooserBack();\n", 1)
+
+          level_marker = "function setupLevelChooser() {\n  selectedLevel = null;"
+          level_new = "function setupLevelChooser() {\n  opponentSearchSetup?.querySelector('.computer-time-back')?.remove();\n  selectedLevel = null;"
+          if level_new not in text:
+              if level_marker not in text:
+                  raise SystemExit('level chooser marker missing')
+              text = text.replace(level_marker, level_new, 1)
+
+          js.write_text(text, encoding='utf-8')
+
+          play = Path('play-v10.html')
+          html = play.read_text(encoding='utf-8')
+          html = re.sub(r"play-computer\.js\?v=\d{8}-\d+", 'play-computer.js?v=20260906-7', html, count=1)
+          play.write_text(html, encoding='utf-8')
+          PY
+      - name: Verify
+        run: |
+          python tests/test_computer_play_mode.py
+          cp play-computer.js /tmp/play-computer.mjs
+          node --check /tmp/play-computer.mjs
+      - name: Commit
+        run: |
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git add play-computer.js play-v10.html
+          git diff --cached --quiet && exit 0
+          git commit -m 'feat: add back button to computer time chooser'
+          git pull --rebase origin main
+          git push
