@@ -1,4 +1,5 @@
 name: Apply computer clock v2
+# rerun after test hardening
 on:
   push:
     branches: [main]
