@@ -34,15 +34,15 @@ jobs:
           assert 'const PULL_REFRESH_THRESHOLD=72' in html
           assert 'const PULL_ACTIVATE_DISTANCE=12' in html, 'downward swipe must distinguish itself from a tap'
           assert 'PULL_START_ZONE' not in html
-          assert 'isBlockedPullTarget' not in html, 'no page area may be excluded from downward refresh'
-          assert "closest?.('.board-frame,.board-shell,#board,.move-hints')" not in html, 'board must not be excluded from pull refresh'
+          assert 'isBlockedPullTarget' not in html, 'no pregame page area may be excluded from downward refresh'
           assert 'window.scrollY>2' not in html, 'refresh must not depend on exact scroll position'
-          assert 'if(event.touches.length!==1) return resetPull();' in html, 'touchstart should arm from any page position'
+          assert "if(!document.body.classList.contains('pregame')) return resetPull();" in html, 'pull refresh must be disabled once the live game starts'
+          assert 'if(event.touches.length!==1) return resetPull();' in html, 'touchstart should arm from any pregame page position'
           assert 'if(distance<PULL_ACTIVATE_DISTANCE) return;' in html, 'tap must remain available before swipe activation'
           assert 'body.pregame .side-header{order:0;width:100%;min-height:48px!important;height:48px!important' in html, 'mobile header must be larger'
           assert 'body.pregame .panel-stack>.player-card:not(#topPlayerCard) .avatar{width:78px!important;height:78px!important' in html, 'player image must fill the card height'
           assert 'body.pregame .panel-stack>.player-card:not(#topPlayerCard) .name{font-size:20px!important' in html, 'player name must be 20px'
-          print('universal downward refresh and larger mobile player UI verified')
+          print('pregame-only pull refresh and larger mobile player UI verified')
           PY
       - name: Commit mobile game polish
         run: |
@@ -53,5 +53,5 @@ jobs:
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
           git add play-v10.html
-          git commit -m "fix: universal mobile pull refresh and larger player card"
+          git commit -m "fix: disable pull refresh during live game"
           git push
