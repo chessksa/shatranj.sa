@@ -21,13 +21,13 @@ jobs:
         run: python ci/fix_mobile_header_layout_v2.py
       - name: Verify regression test
         run: python tests/test_home_header_controls.py
-      - name: Commit patched CSS
+      - name: Commit patched files
         run: |
-          if git diff --quiet -- home-theme.css; then
+          if git diff --quiet -- home-theme.css index.html; then
             exit 0
           fi
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
-          git add home-theme.css
-          git commit -m "fix: compact mobile header layout"
+          git add home-theme.css index.html
+          git commit -m "fix: compact mobile header and bust cache"
           git push
