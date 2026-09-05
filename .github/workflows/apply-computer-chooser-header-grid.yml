@@ -24,24 +24,26 @@ jobs:
           block = base64.b64decode('ZnVuY3Rpb24gZW5zdXJlQ2hvb3NlckhlYWRlcigpIHsKICBjb25zdCB0aXRsZSA9IG9wcG9uZW50U2VhcmNoU2V0dXA/LnF1ZXJ5U2VsZWN0b3IoJy5vcHBvbmVudC1zZWFyY2gtdGl0bGUnKTsKICBpZiAoIXRpdGxlKSByZXR1cm4geyBoZWFkZXI6IG51bGwsIHRpdGxlOiBudWxsIH07CiAgbGV0IGhlYWRlciA9IG9wcG9uZW50U2VhcmNoU2V0dXAucXVlcnlTZWxlY3RvcignLmNvbXB1dGVyLWNob29zZXItaGVhZGVyJyk7CiAgaWYgKCFoZWFkZXIpIHsKICAgIGhlYWRlciA9IGRvY3VtZW50LmNyZWF0ZUVsZW1lbnQoJ2RpdicpOwogICAgaGVhZGVyLmNsYXNzTmFtZSA9ICdjb21wdXRlci1jaG9vc2VyLWhlYWRlcic7CiAgICBoZWFkZXIuc3R5bGUuY3NzVGV4dCA9ICdkaXNwbGF5OmdyaWQ7Z3JpZC10ZW1wbGF0ZS1jb2x1bW5zOm1pbm1heCgwLDFmcik7YWxpZ24taXRlbXM6Y2VudGVyO2NvbHVtbi1nYXA6MTBweDt3aWR0aDoxMDAlO21pbi13aWR0aDowO2JveC1zaXppbmc6Ym9yZGVyLWJveDtkaXJlY3Rpb246bHRyO21hcmdpbi1ib3R0b206MTJweDsnOwogICAgdGl0bGUucGFyZW50Tm9kZS5pbnNlcnRCZWZvcmUoaGVhZGVyLCB0aXRsZSk7CiAgICBoZWFkZXIuYXBwZW5kQ2hpbGQodGl0bGUpOwogIH0KICByZXR1cm4geyBoZWFkZXIsIHRpdGxlIH07Cn0KCmZ1bmN0aW9uIGFkZFRpbWVDaG9vc2VyQmFjaygpIHsKICBjb25zdCB7IGhlYWRlciwgdGl0bGUgfSA9IGVuc3VyZUNob29zZXJIZWFkZXIoKTsKICBpZiAoIWhlYWRlciB8fCAhdGl0bGUpIHJldHVybjsKICBoZWFkZXIucXVlcnlTZWxlY3RvcignLmNvbXB1dGVyLXRpbWUtYmFjaycpPy5yZW1vdmUoKTsKICBoZWFkZXIuc3R5bGUuZ3JpZFRlbXBsYXRlQ29sdW1ucyA9ICdhdXRvIG1pbm1heCgwLCAxZnIpJzsKICBjb25zdCBiYWNrID0gZG9jdW1lbnQuY3JlYXRlRWxlbWVudCgnYnV0dG9uJyk7CiAgYmFjay50eXBlID0gJ2J1dHRvbic7CiAgYmFjay5jbGFzc05hbWUgPSAnY29tcHV0ZXItdGltZS1iYWNrJzsKICBiYWNrLnNldEF0dHJpYnV0ZSgnYXJpYS1sYWJlbCcsICfYp9mE2LHYrNmI2Lkg2YTYp9iu2KrZitin2LEg2YXYs9iq2YjZiSDYp9mE2YPZhdio2YrZiNiq2LEnKTsKICBiYWNrLmlubmVySFRNTCA9ICc8c3BhbiBhcmlhLWhpZGRlbj0idHJ1ZSI+4oC6PC9zcGFuPjxzcGFuPtix2KzZiNi5PC9zcGFuPic7CiAgYmFjay5zdHlsZS5jc3NUZXh0ID0gJ21pbi13aWR0aDo3MnB4O2hlaWdodDozNnB4O2JvcmRlcjoxcHggc29saWQgcmdiYSgyMjQsMTgxLDEwMywuNCk7Ym9yZGVyLXJhZGl1czoxMHB4O2JhY2tncm91bmQ6cmdiYSgyLDI4LDMzLC40NCk7Y29sb3I6I2Y2ZWFkODtmb250OjcwMCAxNHB4LzEgQXJpYWwsc2Fucy1zZXJpZjtjdXJzb3I6cG9pbnRlcjtkaXNwbGF5OmlubGluZS1mbGV4O2FsaWduLWl0ZW1zOmNlbnRlcjtqdXN0aWZ5LWNvbnRlbnQ6Y2VudGVyO2dhcDo1cHg7cGFkZGluZzowIDEwcHg7ei1pbmRleDozO2RpcmVjdGlvbjpydGw7JzsKICBiYWNrLm9uY2xpY2sgPSAoKSA9PiB7CiAgICBiYWNrLnJlbW92ZSgpOwogICAgc2V0dXBMZXZlbENob29zZXIoKTsKICB9OwogIGhlYWRlci5pbnNlcnRCZWZvcmUoYmFjaywgdGl0bGUpOwp9CgpmdW5jdGlvbiBhcHBseUNob29zZXJUaXRsZSh0aXRsZSwgdGV4dCkgewogIGlmICghdGl0bGUpIHJldHVybjsKICB0aXRsZS50ZXh0Q29udGVudCA9IHRleHQ7CiAgdGl0bGUuc3R5bGUuc2V0UHJvcGVydHkoJ3RleHQtYWxpZ24nLCAnY2VudGVyJywgJ2ltcG9ydGFudCcpOwogIHRpdGxlLnN0eWxlLnNldFByb3BlcnR5KCdmb250LXNpemUnLCAnY2xhbXAoMTFweCwgMi41dncsIDE3cHgpJywgJ2ltcG9ydGFudCcpOwogIHRpdGxlLnN0eWxlLnNldFByb3BlcnR5KCdsaW5lLWhlaWdodCcsICcxLjInLCAnaW1wb3J0YW50Jyk7CiAgdGl0bGUuc3R5bGUuc2V0UHJvcGVydHkoJ3doaXRlLXNwYWNlJywgJ25vd3JhcCcsICdpbXBvcnRhbnQnKTsKICB0aXRsZS5zdHlsZS5zZXRQcm9wZXJ0eSgnd2lkdGgnLCAnMTAwJScsICdpbXBvcnRhbnQnKTsKICB0aXRsZS5zdHlsZS5zZXRQcm9wZXJ0eSgnbWluLXdpZHRoJywgJzAnLCAnaW1wb3J0YW50Jyk7CiAgdGl0bGUuc3R5bGUuc2V0UHJvcGVydHkoJ21heC13aWR0aCcsICcxMDAlJywgJ2ltcG9ydGFudCcpOwogIHRpdGxlLnN0eWxlLnNldFByb3BlcnR5KCdib3gtc2l6aW5nJywgJ2JvcmRlci1ib3gnLCAnaW1wb3J0YW50Jyk7CiAgdGl0bGUuc3R5bGUuc2V0UHJvcGVydHkoJ3BhZGRpbmctaW5saW5lJywgJzAnLCAnaW1wb3J0YW50Jyk7CiAgdGl0bGUuc3R5bGUuc2V0UHJvcGVydHkoJ292ZXJmbG93JywgJ2hpZGRlbicsICdpbXBvcnRhbnQnKTsKICB0aXRsZS5zdHlsZS5zZXRQcm9wZXJ0eSgndGV4dC1vdmVyZmxvdycsICdjbGlwJywgJ2ltcG9ydGFudCcpOwogIHRpdGxlLnN0eWxlLnNldFByb3BlcnR5KCdtYXJnaW4tYm90dG9tJywgJzAnLCAnaW1wb3J0YW50Jyk7CiAgdGl0bGUuc3R5bGUuc2V0UHJvcGVydHkoJ2RpcmVjdGlvbicsICdydGwnLCAnaW1wb3J0YW50Jyk7Cn0K').decode('utf-8')
           text = text[:start] + block + text[end:]
 
-          old_time = """  const title = opponentSearchSetup?.querySelector('.opponent-search-title');
-          applyChooserTitle(title, `اختر زمن المباراة — مستوى ${level.label}`);
-          addTimeChooserBack();"""
-          new_time = """  const { title } = ensureChooserHeader();
-          applyChooserTitle(title, `اختر زمن المباراة — مستوى ${level.label}`);
-          addTimeChooserBack();"""
-          if old_time not in text:
+          time_start = text.index('function setupTimeChooser')
+          level_start = text.index('function setupLevelChooser', time_start)
+          time = text[time_start:level_start]
+          pattern = r"  const title = opponentSearchSetup\?\.querySelector\('\.opponent-search-title'\);\n(  applyChooserTitle\(title, [^\n]+\);\n  addTimeChooserBack\(\);)"
+          m = re.search(pattern, time)
+          if not m:
               raise SystemExit('time chooser title block not found')
-          text = text.replace(old_time, new_time, 1)
+          time = time[:m.start()] + "  const { title } = ensureChooserHeader();\n" + m.group(1) + time[m.end():]
+          text = text[:time_start] + time + text[level_start:]
 
-          old_level = """  const title = opponentSearchSetup?.querySelector('.opponent-search-title');
-          applyChooserTitle(title, 'اختر مستوى الكمبيوتر — النقاط للمسجلين');"""
-          new_level = """  const { header, title } = ensureChooserHeader();
-          header.style.gridTemplateColumns = 'minmax(0, 1fr)';
-          applyChooserTitle(title, 'اختر مستوى الكمبيوتر — النقاط للمسجلين');"""
-          if old_level not in text:
+          level_start = text.index('function setupLevelChooser')
+          level_end = text.index("resignBtn?.addEventListener", level_start)
+          level = text[level_start:level_end]
+          pattern = r"  const title = opponentSearchSetup\?\.querySelector\('\.opponent-search-title'\);\n(  applyChooserTitle\(title, [^\n]+\);)"
+          m = re.search(pattern, level)
+          if not m:
               raise SystemExit('level chooser title block not found')
-          text = text.replace(old_level, new_level, 1)
+          replacement = "  const { header, title } = ensureChooserHeader();\n  header.style.gridTemplateColumns = 'minmax(0, 1fr)';\n" + m.group(1)
+          level = level[:m.start()] + replacement + level[m.end():]
+          text = text[:level_start] + level + text[level_end:]
           js.write_text(text, encoding='utf-8')
 
           play = Path('play-v10.html')
