@@ -1004,8 +1004,9 @@ footer{
           <option value="جزر القمر">جزر القمر</option>
         </select>
 
-        <input id="cityFilter" type="search" maxlength="80" list="cityFilterOptions" placeholder="كل المدن" aria-label="فلترة حسب المدينة">
-        <datalist id="cityFilterOptions"></datalist>
+        <select id="cityFilter" disabled aria-label="فلترة حسب المدينة">
+          <option value="">اختر الدولة أولًا</option>
+        </select>
       </div>
     </div>
 
@@ -1485,12 +1486,33 @@ function populateCityList(country,listSelector,inputSelector,allWhenEmpty=false,
   if(clearInput) input.value='';
 }
 
+function populateRankingCitySelect(country){
+  const cityFilter=$('#cityFilter');
+  const cities=ARAB_CITIES[country]||[];
+  const first=document.createElement('option');
+  first.value='';
+  first.textContent=country?'كل مدن الدولة':'اختر الدولة أولًا';
+
+  cityFilter.replaceChildren(
+    first,
+    ...cities.map(city=>{
+      const option=document.createElement('option');
+      option.value=city;
+      option.textContent=city;
+      return option;
+    })
+  );
+  cityFilter.disabled=!country;
+  cityFilter.value='';
+}
+
 $('#regionFilter').addEventListener('change',()=>{
-  populateCityList($('#regionFilter').value,'#cityFilterOptions','#cityFilter',true,true);
+  const country=$('#regionFilter').value;
+  populateRankingCitySelect(country);
   applyFilter();
 });
-$('#cityFilter').addEventListener('input',applyFilter);
-populateCityList('','#cityFilterOptions','#cityFilter',true,false);
+$('#cityFilter').addEventListener('change',applyFilter);
+populateRankingCitySelect('');
 
 async function loadPlayers(){
   const [{data,error},{data:usernameRows,error:usernameError}]=await Promise.all([
