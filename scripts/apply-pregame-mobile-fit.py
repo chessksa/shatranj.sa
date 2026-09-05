@@ -31,7 +31,7 @@ replacements = {
 for old, new in replacements.items():
     html = html.replace(old, new)
 
-# Universal mobile downward swipe-to-refresh.
+# Universal mobile downward swipe-to-refresh during pregame/search only.
 # A tap remains untouched; refresh only takes over after 12px of downward movement.
 html = html.replace(
     '      const PULL_REFRESH_THRESHOLD=72;\n',
@@ -46,6 +46,20 @@ html = html.replace(
 html = html.replace(
     '        if(event.touches.length!==1 || window.scrollY>2 || isBlockedPullTarget(event.target)) return resetPull();\n        pullStartY=event.touches[0].clientY;\n        pullActive=true;',
     '        if(event.touches.length!==1) return resetPull();\n        pullStartY=event.touches[0].clientY;\n        pullActive=true;'
+)
+
+# Disable pull-to-refresh completely once a live game starts.
+html = html.replace(
+    '      const handlePullStart=(event)=>{\n        if(event.touches.length!==1) return resetPull();',
+    '      const handlePullStart=(event)=>{\n        if(!document.body.classList.contains(\'pregame\')) return resetPull();\n        if(event.touches.length!==1) return resetPull();'
+)
+html = html.replace(
+    '      const handlePullMove=(event)=>{\n        if(!pullActive || event.touches.length!==1) return;',
+    '      const handlePullMove=(event)=>{\n        if(!document.body.classList.contains(\'pregame\')) return resetPull();\n        if(!pullActive || event.touches.length!==1) return;'
+)
+html = html.replace(
+    '      const handlePullEnd=()=>{\n        if(!pullActive) return resetPull();',
+    '      const handlePullEnd=()=>{\n        if(!document.body.classList.contains(\'pregame\')) return resetPull();\n        if(!pullActive) return resetPull();'
 )
 
 html = html.replace(
