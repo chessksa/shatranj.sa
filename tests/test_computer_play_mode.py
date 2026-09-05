@@ -29,6 +29,9 @@ assert "medium: { skill: 14, movetime: 600, label: 'متوسط', points: 10" in 
 assert "hard: { skill: 20, movetime: 1200, label: 'صعب', points: 20" in code
 assert "const TIME_CONTROLS = [5, 10, 15];" in code
 assert "function setupTimeChooser" in code
+assert "function addTimeChooserBack" in code, 'time chooser must expose a dedicated back action'
+assert "setupLevelChooser();" in code[code.index("function addTimeChooserBack"):code.index("function setupTimeChooser")], 'back action must return to level chooser'
+assert "computer-time-back" in code, 'time chooser back control needs a stable hook'
 assert "startComputerGame(levelKey, minutes)" in code
 assert "action: 'start', level: levelKey, minutes" in code
 assert "action: 'timeout'" in code
@@ -110,4 +113,4 @@ assert ENGINE_JS.exists()
 assert ENGINE_WASM.exists()
 assert ENGINE_WASM.stat().st_size > 1_000_000
 
-print('computer board stability, monotonic clocks, strength, and 5/10/15 controls: PASS')
+print('computer board stability, monotonic clocks, back navigation, strength, and 5/10/15 controls: PASS')
