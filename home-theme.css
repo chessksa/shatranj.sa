@@ -1588,3 +1588,43 @@ footer .wrap{display:flex;justify-content:space-between;align-items:center}
     display:inline!important;
   }
 }
+
+/* Mobile dashboard right final 20260905 */
+@media(max-width:600px){
+  body.home-signed-in .compact-member-nav .nav-user{
+    grid-template-columns:repeat(3,minmax(0,1fr))!important;
+  }
+  body.home-signed-in .compact-member-nav .header-tournaments{
+    display:none!important;
+  }
+  body.home-signed-in .compact-member-nav .dashboard-link{
+    display:inline-flex!important;
+    grid-column:1!important;
+    grid-row:2!important;
+    order:0!important;
+    width:100%!important;
+    min-width:0!important;
+    max-width:none!important;
+    height:42px!important;
+    min-height:42px!important;
+    margin:0!important;
+    padding-inline:4px!important;
+    align-items:center!important;
+    justify-content:center!important;
+    gap:4px!important;
+    font-size:11px!important;
+  }
+  body.home-signed-in .compact-member-nav .header-notification-host{
+    grid-column:2!important;
+    grid-row:2!important;
+    order:0!important;
+  }
+  body.home-signed-in .compact-member-nav .nav-logout{
+    grid-column:3!important;
+    grid-row:2!important;
+    order:0!important;
+  }
+  body.home-signed-in .compact-member-nav .dashboard-link>span:not(.header-tile-icon){
+    display:inline!important;
+  }
+}
