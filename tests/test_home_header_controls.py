@@ -54,6 +54,15 @@ assert '''.compact-member-nav .header-member-copy strong{
     text-overflow:clip!important;''' in css, 'member name must wrap normally instead of showing ellipsis dots on phones'
 assert 'overflow-wrap:anywhere!important;' in css, 'long member names must stay visible inside the phone header'
 
-assert 'home-theme.css?v=20260905-3' in html, 'home page must request the new stylesheet version so phones cannot reuse stale header CSS'
+assert 'home-theme.css?v=20260905-6' in html, 'home page must request the new stylesheet version so phones cannot reuse stale header CSS'
+
+
+assert 'class="header-member-points"' in html, 'member points must use a dedicated block beside the name'
+assert '<small>النقاط</small>' in html, 'points label must be above the number'
+assert '<b id="headerMemberRating">1500</b>' in html, 'rating number must remain bound to headerMemberRating'
+assert '/* Header member name + points layout 20260905 */' in css, 'member name/points layout rules must exist'
+assert 'grid-template-columns:minmax(0,1fr) auto!important;' in css, 'member name and points must sit side by side'
+assert '.compact-member-nav .header-member-points{' in css, 'dedicated points column styles must exist'
+assert 'font-size:18px!important;' in css, 'header points number must be 18px'
 
 print('home header controls: PASS')
