@@ -1115,3 +1115,42 @@ footer .wrap{display:flex;justify-content:space-between;align-items:center}
   }
 }
 
+
+/* Unified header typography v3 20260905 */
+.compact-member-nav .dashboard-link,
+.compact-member-nav .header-tournaments,
+.compact-member-nav .nav-logout,
+.compact-member-nav .nav-account{
+  font-family:Arial,sans-serif!important;
+  font-size:12px!important;
+  font-weight:800!important;
+  line-height:1!important;
+}
+.compact-member-nav .header-tile-icon{
+  width:22px!important;
+  height:22px!important;
+  flex:0 0 22px!important;
+  display:inline-grid!important;
+  place-items:center!important;
+  font-family:Arial,sans-serif!important;
+  font-size:16px!important;
+  font-weight:800!important;
+  line-height:1!important;
+}
+.compact-member-nav .site-notification-bell{
+  font-family:Arial,sans-serif!important;
+  font-size:16px!important;
+  font-weight:800!important;
+  line-height:1!important;
+  display:inline-grid!important;
+  place-items:center!important;
+}
+@media(max-width:600px){
+  .compact-member-nav .header-tournaments,
+  .compact-member-nav .nav-logout,
+  .compact-member-nav .nav-account{
+    font-size:11px!important;
+    font-weight:800!important;
+    line-height:1!important;
+  }
+}
