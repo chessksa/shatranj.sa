@@ -6,6 +6,8 @@ on:
       - '.github/workflows/apply-welcome-ticker-cache-bust.yml'
       - '.github/scripts/apply_home_ticker.py'
       - 'tests/test_welcome_ticker_loader.py'
+      - 'tests/test_signed_in_ranking_compact.py'
+      - 'home-theme.css'
 permissions:
   contents: write
 jobs:
@@ -20,6 +22,7 @@ jobs:
       - name: Verify inline home-only ticker
         run: |
           python tests/test_welcome_ticker_loader.py
+          python tests/test_signed_in_ranking_compact.py
           python tests/test_welcome_ticker_cache_bust.py
           python tests/test_global_arial_font.py
           grep -q 'id="welcomeTicker"' index.html
