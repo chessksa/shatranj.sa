@@ -1,0 +1,75 @@
+name: Apply compact computer chooser style
+on:
+  push:
+    branches: [main]
+    paths:
+      - '.github/workflows/apply-computer-chooser-compact-style.yml'
+permissions:
+  contents: write
+jobs:
+  apply:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Apply compact chooser styling
+        run: |
+          python - <<'PY'
+          from pathlib import Path
+          import re
+
+          js = Path('play-computer.js')
+          text = js.read_text(encoding='utf-8')
+          old_html = "back.innerHTML = '<span aria-hidden=\"true\">›</span>';"
+          new_html = "back.innerHTML = '<span aria-hidden=\"true\">›</span><span>\u0631\u062c\u0648\u0639</span>';"
+          if old_html not in text:
+              raise SystemExit('back html marker missing')
+          text = text.replace(old_html, new_html, 1)
+
+          old_css = "back.style.cssText = 'position:absolute;inset-inline-end:12px;top:8px;width:42px;height:42px;border:0;background:transparent;color:#f6ead8;font:800 30px/1 Arial,sans-serif;cursor:pointer;display:flex;align-items:center;justify-content:center;padding:0;z-index:3;';"
+          new_css = "back.style.cssText = 'position:absolute;inset-inline-end:12px;top:8px;min-width:72px;height:38px;border:1px solid rgba(224,181,103,.4);border-radius:10px;background:rgba(2,28,33,.44);color:#f6ead8;font:700 14px/1 Arial,sans-serif;cursor:pointer;display:inline-flex;align-items:center;justify-content:center;gap:5px;padding:0 10px;z-index:3;';"
+          if old_css not in text:
+              raise SystemExit('back css marker missing')
+          text = text.replace(old_css, new_css, 1)
+
+          old_font = "title.style.setProperty('font-size', 'clamp(16px, 3vw, 24px)', 'important');"
+          new_font = "title.style.setProperty('font-size', 'clamp(14px, 2.6vw, 20px)', 'important');"
+          if old_font not in text:
+              raise SystemExit('title font marker missing')
+          text = text.replace(old_font, new_font, 1)
+          js.write_text(text, encoding='utf-8')
+
+          test = Path('tests/test_computer_play_mode.py')
+          t = test.read_text(encoding='utf-8')
+          replacements = {
+              "assert '<span>رجوع</span>' not in back_block, 'back control must be icon-only'": "assert '<span>رجوع</span>' in back_block, 'back control must show a text label beside the icon'",
+              "assert \"back.innerHTML = '<span aria-hidden=\\\"true\\\">›</span>';\" in back_block, 'back control should use one simple RTL chevron'": "assert \"back.innerHTML = '<span aria-hidden=\\\"true\\\">›</span><span>رجوع</span>';\" in back_block, 'back control should combine the RTL chevron with the رجوع label'",
+              "assert 'width:42px' in back_block and 'height:42px' in back_block, 'back icon should be simple and compact'": "assert 'min-width:72px' in back_block and 'height:38px' in back_block, 'back control should remain compact'",
+              "assert 'border:0' in back_block and 'background:transparent' in back_block, 'back icon should have no box decoration'": "assert 'border:1px solid rgba(224,181,103,.4)' in back_block and 'background:rgba(2,28,33,.44)' in back_block, 'back control should match the chooser style'",
+              "assert \"font-size', 'clamp(16px, 3vw, 24px)'\" in title_block, 'chooser titles must use the same responsive size'": "assert \"font-size', 'clamp(14px, 2.6vw, 20px)'\" in title_block, 'chooser titles must use the same smaller responsive size'",
+          }
+          for old, new in replacements.items():
+              if old not in t:
+                  raise SystemExit(f'test marker missing: {old[:50]}')
+              t = t.replace(old, new, 1)
+          test.write_text(t, encoding='utf-8')
+
+          play = Path('play-v10.html')
+          html = play.read_text(encoding='utf-8')
+          html = re.sub(r"play-computer\.js\?v=\d{8}-\d+", 'play-computer.js?v=20260906-11', html, count=1)
+          play.write_text(html, encoding='utf-8')
+          PY
+      - name: Verify chooser styling
+        run: |
+          python tests/test_computer_chooser_style.py
+          python tests/test_computer_play_mode.py
+          cp play-computer.js /tmp/play-computer.mjs
+          node --check /tmp/play-computer.mjs
+      - name: Commit chooser styling
+        run: |
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git add play-computer.js play-v10.html tests/test_computer_play_mode.py
+          git diff --cached --quiet && exit 0
+          git commit -m 'fix: compact computer chooser title and style back control'
+          git pull --rebase origin main
+          git push
