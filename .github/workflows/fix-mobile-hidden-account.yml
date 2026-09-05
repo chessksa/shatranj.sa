@@ -52,10 +52,7 @@ jobs:
           from pathlib import Path
           p = Path('index.html')
           html = p.read_text(encoding='utf-8')
-          style = '''<style id="hiddenNavAccountFix">
-#navAccount[hidden]{display:none!important}
-</style>
-'''
+          style = '<style id="hiddenNavAccountFix">\n#navAccount[hidden]{display:none!important}\n</style>\n'
           if '#navAccount[hidden]{display:none!important}' not in html:
               if '</head>' not in html:
                   raise SystemExit('head closing tag not found')
