@@ -12,7 +12,7 @@ style_marker = '''<style id="hiddenNavAccountFix">
 
 ticker_style = '''
 <style id="welcomeTickerInlineStyles">
-.welcome-ticker{width:100%;height:34px;display:flex;align-items:center;overflow:hidden;background:#0a302f;color:#f7f3e7;border-top:1px solid rgba(197,163,77,.55);border-bottom:1px solid rgba(197,163,77,.55);position:relative;z-index:19}
+.welcome-ticker{width:100%;height:34px;display:flex;align-items:center;overflow:hidden;background:#0a302f;color:#f7f3e7;border-top:1px solid rgba(197,163,77,.55);border-bottom:1px solid rgba(197,163,77,.55);position:relative;z-index:19;flex:none}
 .welcome-ticker-track{display:flex;align-items:center;width:max-content;min-width:max-content;will-change:transform;animation:welcomeTickerInlineMove 38s linear infinite}
 .welcome-ticker-group{display:flex;align-items:center;flex:none}
 .welcome-ticker-item{display:inline-flex;align-items:center;white-space:nowrap;direction:rtl;font-size:12px;font-weight:800;line-height:1;padding:0 22px}
@@ -20,11 +20,37 @@ ticker_style = '''
 .welcome-ticker-loading{display:inline-flex;align-items:center;white-space:nowrap;padding:0 20px;font-size:12px;font-weight:800}
 .welcome-ticker-single{animation:none!important;transform:none!important}
 @keyframes welcomeTickerInlineMove{from{transform:translateX(0)}to{transform:translateX(50%)}}
+@media(min-width:901px){
+  body{grid-template-rows:auto 34px auto auto auto auto!important}
+  .home-header{grid-column:1/-1!important;grid-row:1!important}
+  .welcome-ticker{grid-column:1/-1;grid-row:2;position:relative!important;top:auto!important;left:auto!important;right:auto!important}
+  .home-hero{grid-column:3!important;grid-row:3!important}
+  #ranking{grid-column:2!important;grid-row:3/5!important}
+  .home-features{grid-column:3!important;grid-row:4!important}
+  #register{grid-column:2/4!important;grid-row:5!important}
+  footer{grid-column:1/-1!important;grid-row:6!important}
+}
+@media(max-width:900px){
+  .home-header{order:1!important}
+  .welcome-ticker{order:2}
+  .home-hero{order:3!important}
+  #ranking{order:4!important}
+  .home-features{order:5!important}
+  #register{order:6!important}
+  footer{order:7!important}
+}
 @media(max-width:800px){.welcome-ticker{height:30px}.welcome-ticker-item{font-size:11px;padding:0 16px}.welcome-ticker-track{animation-duration:32s}}
 @media(prefers-reduced-motion:reduce){.welcome-ticker-track{animation:none;transform:none}.welcome-ticker-group:nth-child(2){display:none}}
 </style>'''
 
-if 'id="welcomeTickerInlineStyles"' not in text:
+style_start = text.find('<style id="welcomeTickerInlineStyles">')
+if style_start >= 0:
+    style_end = text.find('</style>', style_start)
+    if style_end < 0:
+        raise SystemExit('ticker style closing tag not found')
+    style_end += len('</style>')
+    text = text[:style_start] + ticker_style.strip() + text[style_end:]
+else:
     if style_marker not in text:
         raise SystemExit('style insertion marker not found')
     text = text.replace(style_marker, style_marker + ticker_style, 1)
@@ -35,19 +61,20 @@ ticker_html = '''<div id="welcomeTicker" class="welcome-ticker" role="region" ar
   </div>
 </div>'''
 
-# Keep the ticker inside the home header. On desktop the body is a CSS grid,
-# so a standalone body child can be auto-placed away from the header.
+# Remove any existing ticker copy, whether it was inside or outside the header.
 text = text.replace('\n' + ticker_html + '\n', '\n')
 text = text.replace(ticker_html + '\n', '')
 text = text.replace('\n' + ticker_html, '')
 
+# Place the ticker as a standalone sibling immediately after the home header.
 header_start = text.find('<header class="home-header">')
 if header_start < 0:
     raise SystemExit('home header not found')
 header_end = text.find('</header>', header_start)
 if header_end < 0:
     raise SystemExit('home header closing tag not found')
-text = text[:header_end] + '\n' + ticker_html + '\n' + text[header_end:]
+header_end += len('</header>')
+text = text[:header_end] + '\n\n' + ticker_html + text[header_end:]
 
 function_marker = "function setAuthMsg(text,type=''){"
 render_function = '''function renderWelcomeTicker(rows){
