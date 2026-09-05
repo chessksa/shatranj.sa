@@ -1,0 +1,120 @@
+name: Unify header typography once
+
+on:
+  push:
+    paths:
+      - '.github/workflows/unify-header-typography-once.yml'
+
+permissions:
+  contents: write
+
+jobs:
+  patch:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Verify RED before change
+        shell: bash
+        run: |
+          python - <<'PY'
+          from pathlib import Path
+          css = Path('home-theme.css').read_text(encoding='utf-8')
+          marker = '/* Unified header typography v3 20260905 */'
+          if marker in css:
+              raise SystemExit('Expected RED, but typography marker already exists')
+          print('RED verified: unified typography rule is absent')
+          PY
+
+      - name: Normalize header typography
+        shell: bash
+        run: |
+          cat >> home-theme.css <<'CSS'
+
+          /* Unified header typography v3 20260905 */
+          .compact-member-nav .dashboard-link,
+          .compact-member-nav .header-tournaments,
+          .compact-member-nav .nav-logout,
+          .compact-member-nav .nav-account{
+            font-family:Arial,sans-serif!important;
+            font-size:12px!important;
+            font-weight:800!important;
+            line-height:1!important;
+          }
+          .compact-member-nav .header-tile-icon{
+            width:22px!important;
+            height:22px!important;
+            flex:0 0 22px!important;
+            display:inline-grid!important;
+            place-items:center!important;
+            font-family:Arial,sans-serif!important;
+            font-size:16px!important;
+            font-weight:800!important;
+            line-height:1!important;
+          }
+          .compact-member-nav .site-notification-bell{
+            font-family:Arial,sans-serif!important;
+            font-size:16px!important;
+            font-weight:800!important;
+            line-height:1!important;
+            display:inline-grid!important;
+            place-items:center!important;
+          }
+          @media(max-width:600px){
+            .compact-member-nav .header-tournaments,
+            .compact-member-nav .nav-logout,
+            .compact-member-nav .nav-account{
+              font-size:11px!important;
+              font-weight:800!important;
+              line-height:1!important;
+            }
+          }
+          CSS
+
+          python - <<'PY'
+          from pathlib import Path
+          import re
+          p = Path('index.html')
+          s = p.read_text(encoding='utf-8')
+          s2, n = re.subn(r'home-theme\.css\?v=[^"\']+', 'home-theme.css?v=20260905-5', s, count=1)
+          if n != 1:
+              raise SystemExit('Could not update CSS cache-buster')
+          p.write_text(s2, encoding='utf-8')
+          PY
+
+      - name: Verify GREEN after change
+        shell: bash
+        run: |
+          python - <<'PY'
+          from pathlib import Path
+          css = Path('home-theme.css').read_text(encoding='utf-8')
+          html = Path('index.html').read_text(encoding='utf-8')
+          required = [
+              '/* Unified header typography v3 20260905 */',
+              '.compact-member-nav .header-tile-icon{',
+              'width:22px!important;',
+              'height:22px!important;',
+              'font-size:16px!important;',
+              'font-weight:800!important;',
+              '.compact-member-nav .site-notification-bell{',
+              'home-theme.css?v=20260905-5',
+          ]
+          missing = [item for item in required if item not in (css + '\n' + html)]
+          if missing:
+              raise SystemExit('Missing expected typography rules: ' + repr(missing))
+          if 'font-size:10px!important;' in css[css.rfind('/* Unified header typography v3 20260905 */'):]:
+              raise SystemExit('Old 10px text size leaked into final typography override')
+          print('GREEN verified: header typography is unified and cache-buster updated')
+          PY
+
+      - name: Commit production change and remove temporary workflow
+        shell: bash
+        run: |
+          rm .github/workflows/unify-header-typography-once.yml
+          git config user.name 'chessksa'
+          git config user.email 'gmel1199@gmail.com'
+          git add home-theme.css index.html .github/workflows/unify-header-typography-once.yml
+          git commit -m 'توحيد خط وأيقونات الهيدر'
+          git push origin HEAD:main
