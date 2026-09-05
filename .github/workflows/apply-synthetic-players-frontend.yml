@@ -1,0 +1,70 @@
+name: Apply synthetic player frontend
+on:
+  push:
+    paths:
+      - '.github/workflows/apply-synthetic-players-frontend.yml'
+permissions:
+  contents: write
+jobs:
+  apply:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Confirm remaining RED test
+        run: |
+          if python tests/test_synthetic_players_disclosure.py; then
+            echo 'Expected frontend disclosure contract to fail before patch.'
+            exit 1
+          else
+            echo 'RED confirmed.'
+          fi
+      - name: Patch frontend
+        run: |
+          python - <<'PY'
+          from pathlib import Path
+          import re
+
+          p=Path('index.html')
+          s=p.read_text(encoding='utf-8')
+          old=".select('id,name,region,city,category,rating,rating_status,created_at')"
+          new=".select('id,name,region,city,category,rating,rating_status,created_at,is_synthetic')"
+          if old in s: s=s.replace(old,new,1)
+          elif new not in s: raise SystemExit('public_players select marker missing')
+          old="if(headerPlayers) headerPlayers.textContent=500 + ALL_PLAYERS.length;"
+          new="if(headerPlayers) headerPlayers.textContent=ALL_PLAYERS.filter(player=>!player.is_synthetic).length;"
+          if old in s: s=s.replace(old,new,1)
+          elif new not in s: raise SystemExit('subscriber count marker missing')
+          p.write_text(s,encoding='utf-8')
+
+          p=Path('player.js')
+          s=p.read_text(encoding='utf-8')
+          old="$('publicMeta').textContent=[profile.username?`@${profile.username}`:'',profile.city,countryForRegion(profile.region)].filter(Boolean).join(' • ');"
+          new="$('publicMeta').textContent=[profile.username?`@${profile.username}`:'',profile.city,countryForRegion(profile.region),profile.is_synthetic?'تجريبي':''].filter(Boolean).join(' • ');"
+          if old in s: s=s.replace(old,new,1)
+          elif new not in s: raise SystemExit('profile disclosure marker missing')
+          marker="    const host=$('friendAction');\n"
+          guard="    const host=$('friendAction');\n    if (profile?.is_synthetic) { host.innerHTML=''; return; }\n"
+          if guard not in s:
+              if marker not in s: raise SystemExit('friend action marker missing')
+              s=s.replace(marker,guard,1)
+          p.write_text(s,encoding='utf-8')
+
+          p=Path('player.html')
+          s=p.read_text(encoding='utf-8')
+          s,n=re.subn(r'player\.js\?v=[^"\']+','player.js?v=20260905-synthetic-disclosure',s,count=1)
+          if n!=1: raise SystemExit('player js cache marker missing')
+          p.write_text(s,encoding='utf-8')
+          PY
+      - name: Verify GREEN
+        run: |
+          python tests/test_synthetic_players_disclosure.py
+          python tests/test_arab_cities.py
+          python tests/test_arab_identity.py
+          python tests/test_player_profile_links.py
+      - name: Commit frontend
+        run: |
+          git config user.name github-actions[bot]
+          git config user.email 41898282+github-actions[bot]@users.noreply.github.com
+          git add index.html player.js player.html
+          git commit -m 'feat: disclose synthetic players on profile only'
+          git push
