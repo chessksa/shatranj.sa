@@ -24,4 +24,4 @@ jobs:
         run: |
           cp play-computer.js /tmp/play-computer.mjs
           node --check /tmp/play-computer.mjs
-# fresh verification trigger for rated computer monotonic clock
+# fresh verification trigger for computer time chooser back navigation
