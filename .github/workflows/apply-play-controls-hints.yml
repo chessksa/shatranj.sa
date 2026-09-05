@@ -1,0 +1,31 @@
+name: Apply play controls and move hints
+
+on:
+  push:
+    paths:
+      - '.github/workflows/apply-play-controls-hints.yml'
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Test approved play layout and hints
+        run: |
+          python - <<'PY'
+          from pathlib import Path
+
+          html = Path('play-v10.html').read_text(encoding='utf-8')
+          js = Path('play-v8.js').read_text(encoding='utf-8')
+
+          assert 'id="moveHints"' in html, 'move-hint overlay is missing'
+          assert html.index('<section class="actions-card">') < html.index('<aside class="side-panel">'), 'game actions are not below the board'
+          assert '.move-hint' in html, 'move-hint styling is missing'
+          assert 'showMoveHints(event.squareFrom)' in js, 'legal move hints are not shown when selecting a piece'
+          assert 'await loadGraceEndWindow();' not in js, 'grace countdown still blocks live-game initialization'
+          print('approved play layout and hints verified')
+          PY
