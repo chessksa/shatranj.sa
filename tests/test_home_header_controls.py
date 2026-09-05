@@ -9,7 +9,7 @@ expected = '''.compact-member-nav .header-tile-icon,
 .compact-member-nav .site-notification-bell{
   font-size:16px!important;
 }'''
-assert expected in css, 'dashboard, notification, and tournament header icons must use the same 16px size'
+assert expected in css, 'header icons must use the same 16px size'
 
 assert '/* Mobile header icon alignment 20260905 */' in css, 'mobile header alignment rules must exist'
 assert '''.compact-member-nav .header-tile{
@@ -17,7 +17,7 @@ assert '''.compact-member-nav .header-tile{
     align-items:center!important;
     justify-content:center!important;
     flex-direction:row!important;''' in css, 'mobile header tiles must keep icons and labels on one row'
-assert 'white-space:nowrap!important;' in css, 'mobile header labels must not wrap'
+assert 'white-space:nowrap!important;' in css, 'mobile header action labels must not wrap'
 assert '''.compact-member-nav .header-tile-icon{
     width:20px;
     height:20px;
@@ -42,14 +42,18 @@ assert '''.compact-member-nav .header-member-link.header-tile{
     width:100%!important;
     min-width:0!important;
     max-width:none!important;''' in css, 'member card must not keep the old fixed mobile width'
-assert '''.compact-member-nav .dashboard-link,
-  .compact-member-nav .header-tournaments{
-    width:44px!important;
-    min-width:44px!important;
-    max-width:44px!important;''' in css, 'dashboard and tournament controls must be equal icon squares on phones'
-assert '''.compact-member-nav .dashboard-link>span:not(.header-tile-icon),
-  .compact-member-nav .header-tournaments>span:not(.header-tile-icon){display:none!important}''' in css, 'phone header action labels must be hidden so icons cannot collide with member text'
 
-assert 'home-theme.css?v=20260905-2' in html, 'home page must request a fresh stylesheet version so phones cannot reuse stale header CSS'
+assert '/* Mobile header single dashboard entry 20260905 */' in css, 'single-entry mobile header rules must exist'
+assert '''.compact-member-nav .dashboard-link{
+    display:none!important;
+  }''' in css, 'separate dashboard icon must be hidden on phones because member card already links to dashboard'
+assert '''.compact-member-nav .header-member-copy strong{
+    max-width:none!important;
+    white-space:normal!important;
+    overflow:visible!important;
+    text-overflow:clip!important;''' in css, 'member name must wrap normally instead of showing ellipsis dots on phones'
+assert 'overflow-wrap:anywhere!important;' in css, 'long member names must stay visible inside the phone header'
+
+assert 'home-theme.css?v=20260905-3' in html, 'home page must request the new stylesheet version so phones cannot reuse stale header CSS'
 
 print('home header controls: PASS')
