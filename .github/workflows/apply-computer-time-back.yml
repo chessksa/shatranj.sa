@@ -15,51 +15,29 @@ jobs:
         run: |
           python - <<'PY'
           from pathlib import Path
-          import re
-
+          import base64, re
           js = Path('play-computer.js')
           text = js.read_text(encoding='utf-8')
           marker = "function setupTimeChooser(levelKey) {"
           if 'function addTimeChooserBack()' not in text:
-              fn = r'''function addTimeChooserBack() {
-  const existing = opponentSearchSetup?.querySelector('.computer-time-back');
-  if (existing) existing.remove();
-  const options = opponentSearchSetup?.querySelector('.opponent-time-options');
-  if (!options) return;
-  const back = document.createElement('button');
-  back.type = 'button';
-  back.className = 'computer-time-back';
-  back.setAttribute('aria-label', 'الرجوع لاختيار مستوى الكمبيوتر');
-  back.innerHTML = '<span aria-hidden="true">‹</span><span>رجوع</span>';
-  back.style.cssText = 'align-self:flex-start;border:0;background:transparent;color:inherit;font:inherit;font-weight:800;cursor:pointer;display:inline-flex;align-items:center;gap:6px;padding:4px 2px 8px;';
-  back.querySelector('span')?.style.setProperty('font-size', '28px');
-  back.onclick = () => {
-    back.remove();
-    setupLevelChooser();
-  };
-  options.parentNode.insertBefore(back, options);
-}
-
-'''
+              encoded = 'ZnVuY3Rpb24gYWRkVGltZUNob29zZXJCYWNrKCkgewogIGNvbnN0IGV4aXN0aW5nID0gb3Bwb25lbnRTZWFyY2hTZXR1cD8ucXVlcnlTZWxlY3RvcignLmNvbXB1dGVyLXRpbWUtYmFjaycpOwogIGlmIChleGlzdGluZykgZXhpc3RpbmcucmVtb3ZlKCk7CiAgY29uc3Qgb3B0aW9ucyA9IG9wcG9uZW50U2VhcmNoU2V0dXA/LnF1ZXJ5U2VsZWN0b3IoJy5vcHBvbmVudC10aW1lLW9wdGlvbnMnKTsKICBpZiAoIW9wdGlvbnMpIHJldHVybjsKICBjb25zdCBiYWNrID0gZG9jdW1lbnQuY3JlYXRlRWxlbWVudCgnYnV0dG9uJyk7CiAgYmFjay50eXBlID0gJ2J1dHRvbic7CiAgYmFjay5jbGFzc05hbWUgPSAnY29tcHV0ZXItdGltZS1iYWNrJzsKICBiYWNrLnNldEF0dHJpYnV0ZSgnYXJpYS1sYWJlbCcsICfYp9mE2LHYrNmI2Lkg2YTYp9iu2KrZitin2LEg2YXYs9iq2YjZiSDYp9mE2YPZhdio2YrZiNiq2LEnKTsKICBiYWNrLmlubmVySFRNTCA9ICc8c3BhbiBhcmlhLWhpZGRlbj0idHJ1ZSI+4oC5PC9zcGFuPjxzcGFuPtix2KzZiNi5PC9zcGFuPic7CiAgYmFjay5zdHlsZS5jc3NUZXh0ID0gJ2FsaWduLXNlbGY6ZmxleC1zdGFydDtib3JkZXI6MDtiYWNrZ3JvdW5kOnRyYW5zcGFyZW50O2NvbG9yOmluaGVyaXQ7Zm9udDppbmhlcml0O2ZvbnQtd2VpZ2h0OjgwMDtjdXJzb3I6cG9pbnRlcjtkaXNwbGF5OmlubGluZS1mbGV4O2FsaWduLWl0ZW1zOmNlbnRlcjtnYXA6NnB4O3BhZGRpbmc6NHB4IDJweCA4cHg7JzsKICBiYWNrLnF1ZXJ5U2VsZWN0b3IoJ3NwYW4nKT8uc3R5bGUuc2V0UHJvcGVydHkoJ2ZvbnQtc2l6ZScsICcyOHB4Jyk7CiAgYmFjay5vbmNsaWNrID0gKCkgPT4gewogICAgYmFjay5yZW1vdmUoKTsKICAgIHNldHVwTGV2ZWxDaG9vc2VyKCk7CiAgfTsKICBvcHRpb25zLnBhcmVudE5vZGUuaW5zZXJ0QmVmb3JlKGJhY2ssIG9wdGlvbnMpOwp9Cgo='
+              fn = base64.b64decode(encoded).decode('utf-8')
               if marker not in text:
                   raise SystemExit('time chooser marker missing')
               text = text.replace(marker, fn + marker, 1)
-
           time_marker = "  if (title) title.textContent = `اختر زمن المباراة — مستوى ${level.label}`;\n"
-          if '  addTimeChooserBack();\n' not in text[text.index(marker):text.index('function setupLevelChooser()', text.index(marker))]:
+          chooser = text[text.index(marker):text.index('function setupLevelChooser()', text.index(marker))]
+          if '  addTimeChooserBack();\n' not in chooser:
               if time_marker not in text:
                   raise SystemExit('time title marker missing')
               text = text.replace(time_marker, time_marker + "  addTimeChooserBack();\n", 1)
-
           level_marker = "function setupLevelChooser() {\n  selectedLevel = null;"
           level_new = "function setupLevelChooser() {\n  opponentSearchSetup?.querySelector('.computer-time-back')?.remove();\n  selectedLevel = null;"
           if level_new not in text:
               if level_marker not in text:
                   raise SystemExit('level chooser marker missing')
               text = text.replace(level_marker, level_new, 1)
-
           js.write_text(text, encoding='utf-8')
-
           play = Path('play-v10.html')
           html = play.read_text(encoding='utf-8')
           html = re.sub(r"play-computer\.js\?v=\d{8}-\d+", 'play-computer.js?v=20260906-7', html, count=1)
