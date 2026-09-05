@@ -38,7 +38,7 @@ assert MIGRATION.exists(), 'computer-game rating migration is missing'
 sql = MIGRATION.read_text(encoding="utf-8").lower()
 assert 'create table if not exists public.computer_games' in sql
 assert 'enable row level security' in sql
-assert 'revoke all on table public.computer_games from anon, authenticated' in sql
+assert 'revoke all on table public.computer_games from public, anon, authenticated' in sql
 assert 'create or replace function public.apply_computer_game_rating' in sql
 assert "when 'easy' then 5" in sql
 assert "when 'medium' then 10" in sql
