@@ -591,7 +591,7 @@ async function startComputerGame(levelKey, minutes) {
     ratedTimeoutPending = false;
 
     if (ratedMode) {
-      const started = await invokeComputer({ action: 'start', level: levelKey, minutes: selectedMinutes });
+      const started = await invokeComputer({ action: 'start', level: levelKey, minutes });
       ratedGameId = started.game_id;
       currentRating = Number(started.rating);
       if (!ratedGameId || !started.fen) throw new Error('Rated computer game was not created');
