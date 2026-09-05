@@ -22,6 +22,26 @@ assert 'home-welcome-ticker.js' not in index, (
     'Home page must not depend on the old external ticker loader.'
 )
 
+# The title stays fixed while only member name/country/city scroll in the remaining space.
+assert '<span class="welcome-ticker-label">آخر المسجلين في شطرنج العرب</span>' in index, (
+    'Ticker must show a fixed latest-members label.'
+)
+assert 'class="welcome-ticker-viewport"' in index, (
+    'Ticker must separate the fixed label from the scrolling viewport.'
+)
+assert '.welcome-ticker-label{flex:0 0 auto' in index, (
+    'Fixed label must not move with the ticker track.'
+)
+assert '.welcome-ticker-viewport{min-width:0;flex:1;overflow:hidden' in index, (
+    'Only the member details area should scroll.'
+)
+assert '`نرحب بانضمام ${name}' not in index, (
+    'Scrolling items must contain only name, country and city.'
+)
+assert '`${name} — ${country}، ${city}`' in index, (
+    'Scrolling item must render name, country and city.'
+)
+
 header_start = index.index('<header class="home-header">')
 header_end = index.index('</header>', header_start)
 ticker_pos = index.index('<div id="welcomeTicker" class="welcome-ticker"')
@@ -70,4 +90,4 @@ assert "import('./welcome-ticker-core.mjs" not in wrapper, (
     'Site-wide notification wrapper must not load the welcome ticker.'
 )
 
-print('welcome ticker is standalone and signed-in home content remains visible')
+print('welcome ticker keeps a fixed label while member details scroll')
