@@ -923,7 +923,7 @@ footer .wrap{display:flex;justify-content:space-between;align-items:center}
 
 /* Invite, stats and ranking polish 20260904 */
 .hero-stat div{align-items:center!important;text-align:center!important}
-.hero-stat div small{order:1!important;margin:0 0 7px!important;font-size:12px!important}
+.hero-stat div small{order:1!important;margin:0 0 7px!important;font-size:14px!important}
 .hero-stat div strong{order:2!important}
 .nav-user .header-tournaments{display:inline-flex!important;align-items:center!important;justify-content:center!important;gap:7px!important;min-height:50px!important;padding:0 14px!important;white-space:nowrap}
 #ranking th:nth-child(1),#ranking td:nth-child(1){width:7%!important;text-align:center!important}
