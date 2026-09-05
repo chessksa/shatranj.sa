@@ -16,7 +16,7 @@ jobs:
       - uses: actions/checkout@v4
       - name: Apply equal player card and pull to refresh
         run: python scripts/apply-pregame-mobile-fit.py
-      - name: Verify equal mobile player card and pull to refresh
+      - name: Verify equal mobile player card, search layout and pull to refresh
         run: |
           python - <<'PY'
           from pathlib import Path
@@ -27,7 +27,11 @@ jobs:
           assert 'body.live-game{height:auto!important;min-height:100dvh!important;overflow-y:auto!important;overflow-x:hidden!important' in html, 'live game must allow vertical pull-to-refresh'
           assert '-webkit-overflow-scrolling:touch' in html
           assert 'width:52px!important;height:52px!important' in html
-          print('mobile equal-card and pull-to-refresh behavior verified')
+          assert 'body.pregame #opponentSearchWaiting .opponent-waiting-line{font-size:18px!important;color:#ffbd6a!important' in html, 'search title must be 18px light orange'
+          assert 'body.pregame #opponentSearchWaiting .search-dots i{background:#ffbd6a!important' in html, 'search dots must match the light orange title'
+          assert 'body.pregame #opponentSearchWaiting .inline-cancel-search{margin-top:15px!important' in html, 'cancel search button needs breathing room'
+          assert 'body.pregame .board-panel{order:2;width:100%;height:auto!important;min-height:0!important;flex:0 0 auto!important' in html, 'board panel must not absorb leftover vertical space'
+          print('mobile search spacing, equal-card and pull-to-refresh behavior verified')
           PY
       - name: Commit mobile player card and refresh behavior
         run: |
@@ -38,5 +42,5 @@ jobs:
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
           git add play-v10.html
-          git commit -m "fix: equalize mobile player card and allow pull refresh"
+          git commit -m "fix: compact and style mobile opponent search"
           git push
