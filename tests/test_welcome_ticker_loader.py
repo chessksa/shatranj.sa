@@ -52,8 +52,8 @@ assert 'track.replaceChildren(buildGroup(),buildGroup());' in index, (
 assert 'animation:welcomeTickerInlineMove 60s linear infinite' in index, (
     'Ticker animation must be linear and infinite.'
 )
-assert '@keyframes welcomeTickerInlineMove{from{transform:translateX(0)}to{transform:translateX(50%)}}' in index, (
-    'Ticker must advance exactly one duplicated group before restarting.'
+assert '@keyframes welcomeTickerInlineMove{from{transform:translateX(0)}to{transform:translateX(-50%)}}' in index, (
+    'Ticker must move one duplicated group left before restarting with no visible jump.'
 )
 
 header_start = index.index('<header class="home-header">')
