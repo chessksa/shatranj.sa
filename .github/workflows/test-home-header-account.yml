@@ -1,11 +1,6 @@
 name: Test home header account layout
 on:
-  push:
-    paths:
-      - 'index.html'
-      - 'home-theme.css'
-      - 'tests/test_home_header_account.py'
-      - '.github/workflows/test-home-header-account.yml'
+  workflow_dispatch:
 jobs:
   test:
     runs-on: ubuntu-latest

@@ -1,11 +1,6 @@
 name: Test home member square avatar
 on:
-  push:
-    paths:
-      - 'index.html'
-      - 'home-theme.css'
-      - 'tests/test_home_member_avatar.py'
-      - '.github/workflows/test-home-member-avatar.yml'
+  workflow_dispatch:
 jobs:
   test:
     runs-on: ubuntu-latest

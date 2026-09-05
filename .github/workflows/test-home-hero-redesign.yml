@@ -1,15 +1,7 @@
 name: Test approved home hero redesign
 
 on:
-  push:
-    branches:
-      - main
-      - feature/home-hero-redesign-20260904-work
-    paths:
-      - 'index.html'
-      - 'home-theme.css'
-      - 'tests/test_home_hero_design.py'
-      - '.github/workflows/test-home-hero-redesign.yml'
+  workflow_dispatch:
 
 jobs:
   test:

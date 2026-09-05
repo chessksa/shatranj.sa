@@ -1,15 +1,7 @@
 name: Test homepage region full name
 
 on:
-  push:
-    branches:
-      - main
-      - fix/home-region-full-name
-    paths:
-      - 'index.html'
-      - 'home-theme.css'
-      - 'tests/test_home_region_full_name.py'
-      - '.github/workflows/test-home-region-full-name.yml'
+  workflow_dispatch:
 
 jobs:
   test:

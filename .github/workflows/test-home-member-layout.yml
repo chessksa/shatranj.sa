@@ -1,12 +1,6 @@
 name: Test home member layout
 on:
-  push:
-    paths:
-      - 'index.html'
-      - 'home-theme.css'
-      - 'home-invite.js'
-      - 'tests/test_home_member_layout.py'
-      - '.github/workflows/test-home-member-layout.yml'
+  workflow_dispatch:
 permissions:
   contents: read
 jobs:

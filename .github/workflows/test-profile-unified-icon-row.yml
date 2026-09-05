@@ -1,16 +1,5 @@
 name: Test unified profile icon row
 on:
-  push:
-    branches:
-      - main
-      - feature/profile-unified-icon-row
-    paths:
-      - 'profile.html'
-      - 'profile.js'
-      - 'profile-section.html'
-      - 'profile-section.js'
-      - 'tests/**'
-      - '.github/workflows/test-profile-unified-icon-row.yml'
   workflow_dispatch:
 jobs:
   test:

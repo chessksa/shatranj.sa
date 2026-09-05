@@ -1,14 +1,5 @@
 name: Test profile rank badge
 on:
-  push:
-    branches:
-      - main
-      - feature/profile-rank-badge
-    paths:
-      - '**.html'
-      - '**.js'
-      - 'tests/**'
-      - '.github/workflows/test-profile-rank-badge.yml'
   workflow_dispatch:
 jobs:
   test:

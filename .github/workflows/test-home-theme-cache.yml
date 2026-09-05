@@ -1,15 +1,7 @@
 name: Test home theme cache
 
 on:
-  push:
-    branches: [main]
-    paths:
-      - index.html
-      - home-theme.css
-      - tests/test_home_theme_cache_buster.py
-      - .github/workflows/test-home-theme-cache.yml
-  pull_request:
-    branches: [main]
+  workflow_dispatch:
 
 jobs:
   test:

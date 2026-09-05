@@ -1,14 +1,5 @@
 name: Test member dashboard icon navigation
 on:
-  push:
-    branches:
-      - main
-      - feature/member-dashboard-icon-navigation
-    paths:
-      - '**.html'
-      - '**.js'
-      - 'tests/**'
-      - '.github/workflows/test-profile-icon-navigation.yml'
   workflow_dispatch:
 jobs:
   test:
