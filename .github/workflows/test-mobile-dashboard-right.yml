@@ -34,51 +34,46 @@ jobs:
         run: |
           python - <<'PY'
           from pathlib import Path
-          import re
+          from textwrap import dedent
 
           css_path = Path('home-theme.css')
           css = css_path.read_text(encoding='utf-8')
           marker = '/* Mobile dashboard replaces tournaments 20260905 */'
-          block = r'''
+          block = dedent('''
 
-/* Mobile dashboard replaces tournaments 20260905 */
-@media(max-width:600px){
-  .compact-member-nav .header-tournaments{
-    display:none!important;
-  }
-  .compact-member-nav .dashboard-link{
-    display:inline-flex!important;
-    order:0!important;
-    width:auto!important;
-    min-width:108px!important;
-    max-width:none!important;
-    height:44px!important;
-    min-height:44px!important;
-    padding:0 10px!important;
-    gap:6px!important;
-    flex:0 0 auto!important;
-  }
-  .compact-member-nav .dashboard-link>span:not(.header-tile-icon){
-    display:inline!important;
-  }
-}
-'''
+          /* Mobile dashboard replaces tournaments 20260905 */
+          @media(max-width:600px){
+            .compact-member-nav .header-tournaments{
+              display:none!important;
+            }
+            .compact-member-nav .dashboard-link{
+              display:inline-flex!important;
+              order:0!important;
+              width:auto!important;
+              min-width:108px!important;
+              max-width:none!important;
+              height:44px!important;
+              min-height:44px!important;
+              padding:0 10px!important;
+              gap:6px!important;
+              flex:0 0 auto!important;
+            }
+            .compact-member-nav .dashboard-link>span:not(.header-tile-icon){
+              display:inline!important;
+            }
+          }
+          ''')
           if marker not in css:
               css_path.write_text(css.rstrip() + block, encoding='utf-8')
 
           html_path = Path('index.html')
           html = html_path.read_text(encoding='utf-8')
+          old_key = 'home-theme.css?v=20260905-13'
           new_key = 'home-theme.css?v=20260905-14'
           if new_key not in html:
-              updated, count = re.subn(
-                  r'home-theme\.css\?v=[^"\']+',
-                  new_key,
-                  html,
-                  count=1,
-              )
-              if count != 1:
-                  raise SystemExit('home-theme stylesheet cache key not found exactly once')
-              html_path.write_text(updated, encoding='utf-8')
+              if old_key not in html:
+                  raise SystemExit('expected home-theme cache key not found')
+              html_path.write_text(html.replace(old_key, new_key, 1), encoding='utf-8')
           PY
 
       - name: GREEN - verify mobile dashboard replacement
