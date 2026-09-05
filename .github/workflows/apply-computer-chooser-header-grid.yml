@@ -1,0 +1,71 @@
+name: Apply computer chooser header grid
+on:
+  push:
+    branches: [main]
+    paths:
+      - '.github/workflows/apply-computer-chooser-header-grid.yml'
+permissions:
+  contents: write
+jobs:
+  apply:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Apply non-overlapping chooser header
+        run: |
+          python - <<'PY'
+          from pathlib import Path
+          import base64, re
+
+          js = Path('play-computer.js')
+          text = js.read_text(encoding='utf-8')
+          start = text.index('function addTimeChooserBack() {')
+          end = text.index('function setupTimeChooser', start)
+          block = base64.b64decode('ZnVuY3Rpb24gZW5zdXJlQ2hvb3NlckhlYWRlcigpIHsKICBjb25zdCB0aXRsZSA9IG9wcG9uZW50U2VhcmNoU2V0dXA/LnF1ZXJ5U2VsZWN0b3IoJy5vcHBvbmVudC1zZWFyY2gtdGl0bGUnKTsKICBpZiAoIXRpdGxlKSByZXR1cm4geyBoZWFkZXI6IG51bGwsIHRpdGxlOiBudWxsIH07CiAgbGV0IGhlYWRlciA9IG9wcG9uZW50U2VhcmNoU2V0dXAucXVlcnlTZWxlY3RvcignLmNvbXB1dGVyLWNob29zZXItaGVhZGVyJyk7CiAgaWYgKCFoZWFkZXIpIHsKICAgIGhlYWRlciA9IGRvY3VtZW50LmNyZWF0ZUVsZW1lbnQoJ2RpdicpOwogICAgaGVhZGVyLmNsYXNzTmFtZSA9ICdjb21wdXRlci1jaG9vc2VyLWhlYWRlcic7CiAgICBoZWFkZXIuc3R5bGUuY3NzVGV4dCA9ICdkaXNwbGF5OmdyaWQ7Z3JpZC10ZW1wbGF0ZS1jb2x1bW5zOm1pbm1heCgwLDFmcik7YWxpZ24taXRlbXM6Y2VudGVyO2NvbHVtbi1nYXA6MTBweDt3aWR0aDoxMDAlO21pbi13aWR0aDowO2JveC1zaXppbmc6Ym9yZGVyLWJveDtkaXJlY3Rpb246bHRyO21hcmdpbi1ib3R0b206MTJweDsnOwogICAgdGl0bGUucGFyZW50Tm9kZS5pbnNlcnRCZWZvcmUoaGVhZGVyLCB0aXRsZSk7CiAgICBoZWFkZXIuYXBwZW5kQ2hpbGQodGl0bGUpOwogIH0KICByZXR1cm4geyBoZWFkZXIsIHRpdGxlIH07Cn0KCmZ1bmN0aW9uIGFkZFRpbWVDaG9vc2VyQmFjaygpIHsKICBjb25zdCB7IGhlYWRlciwgdGl0bGUgfSA9IGVuc3VyZUNob29zZXJIZWFkZXIoKTsKICBpZiAoIWhlYWRlciB8fCAhdGl0bGUpIHJldHVybjsKICBoZWFkZXIucXVlcnlTZWxlY3RvcignLmNvbXB1dGVyLXRpbWUtYmFjaycpPy5yZW1vdmUoKTsKICBoZWFkZXIuc3R5bGUuZ3JpZFRlbXBsYXRlQ29sdW1ucyA9ICdhdXRvIG1pbm1heCgwLCAxZnIpJzsKICBjb25zdCBiYWNrID0gZG9jdW1lbnQuY3JlYXRlRWxlbWVudCgnYnV0dG9uJyk7CiAgYmFjay50eXBlID0gJ2J1dHRvbic7CiAgYmFjay5jbGFzc05hbWUgPSAnY29tcHV0ZXItdGltZS1iYWNrJzsKICBiYWNrLnNldEF0dHJpYnV0ZSgnYXJpYS1sYWJlbCcsICfYp9mE2LHYrNmI2Lkg2YTYp9iu2KrZitin2LEg2YXYs9iq2YjZiSDYp9mE2YPZhdio2YrZiNiq2LEnKTsKICBiYWNrLmlubmVySFRNTCA9ICc8c3BhbiBhcmlhLWhpZGRlbj0idHJ1ZSI+4oC6PC9zcGFuPjxzcGFuPtix2KzZiNi5PC9zcGFuPic7CiAgYmFjay5zdHlsZS5jc3NUZXh0ID0gJ21pbi13aWR0aDo3MnB4O2hlaWdodDozNnB4O2JvcmRlcjoxcHggc29saWQgcmdiYSgyMjQsMTgxLDEwMywuNCk7Ym9yZGVyLXJhZGl1czoxMHB4O2JhY2tncm91bmQ6cmdiYSgyLDI4LDMzLC40NCk7Y29sb3I6I2Y2ZWFkODtmb250OjcwMCAxNHB4LzEgQXJpYWwsc2Fucy1zZXJpZjtjdXJzb3I6cG9pbnRlcjtkaXNwbGF5OmlubGluZS1mbGV4O2FsaWduLWl0ZW1zOmNlbnRlcjtqdXN0aWZ5LWNvbnRlbnQ6Y2VudGVyO2dhcDo1cHg7cGFkZGluZzowIDEwcHg7ei1pbmRleDozO2RpcmVjdGlvbjpydGw7JzsKICBiYWNrLm9uY2xpY2sgPSAoKSA9PiB7CiAgICBiYWNrLnJlbW92ZSgpOwogICAgc2V0dXBMZXZlbENob29zZXIoKTsKICB9OwogIGhlYWRlci5pbnNlcnRCZWZvcmUoYmFjaywgdGl0bGUpOwp9CgpmdW5jdGlvbiBhcHBseUNob29zZXJUaXRsZSh0aXRsZSwgdGV4dCkgewogIGlmICghdGl0bGUpIHJldHVybjsKICB0aXRsZS50ZXh0Q29udGVudCA9IHRleHQ7CiAgdGl0bGUuc3R5bGUuc2V0UHJvcGVydHkoJ3RleHQtYWxpZ24nLCAnY2VudGVyJywgJ2ltcG9ydGFudCcpOwogIHRpdGxlLnN0eWxlLnNldFByb3BlcnR5KCdmb250LXNpemUnLCAnY2xhbXAoMTFweCwgMi41dncsIDE3cHgpJywgJ2ltcG9ydGFudCcpOwogIHRpdGxlLnN0eWxlLnNldFByb3BlcnR5KCdsaW5lLWhlaWdodCcsICcxLjInLCAnaW1wb3J0YW50Jyk7CiAgdGl0bGUuc3R5bGUuc2V0UHJvcGVydHkoJ3doaXRlLXNwYWNlJywgJ25vd3JhcCcsICdpbXBvcnRhbnQnKTsKICB0aXRsZS5zdHlsZS5zZXRQcm9wZXJ0eSgnd2lkdGgnLCAnMTAwJScsICdpbXBvcnRhbnQnKTsKICB0aXRsZS5zdHlsZS5zZXRQcm9wZXJ0eSgnbWluLXdpZHRoJywgJzAnLCAnaW1wb3J0YW50Jyk7CiAgdGl0bGUuc3R5bGUuc2V0UHJvcGVydHkoJ21heC13aWR0aCcsICcxMDAlJywgJ2ltcG9ydGFudCcpOwogIHRpdGxlLnN0eWxlLnNldFByb3BlcnR5KCdib3gtc2l6aW5nJywgJ2JvcmRlci1ib3gnLCAnaW1wb3J0YW50Jyk7CiAgdGl0bGUuc3R5bGUuc2V0UHJvcGVydHkoJ3BhZGRpbmctaW5saW5lJywgJzAnLCAnaW1wb3J0YW50Jyk7CiAgdGl0bGUuc3R5bGUuc2V0UHJvcGVydHkoJ292ZXJmbG93JywgJ2hpZGRlbicsICdpbXBvcnRhbnQnKTsKICB0aXRsZS5zdHlsZS5zZXRQcm9wZXJ0eSgndGV4dC1vdmVyZmxvdycsICdjbGlwJywgJ2ltcG9ydGFudCcpOwogIHRpdGxlLnN0eWxlLnNldFByb3BlcnR5KCdtYXJnaW4tYm90dG9tJywgJzAnLCAnaW1wb3J0YW50Jyk7CiAgdGl0bGUuc3R5bGUuc2V0UHJvcGVydHkoJ2RpcmVjdGlvbicsICdydGwnLCAnaW1wb3J0YW50Jyk7Cn0K').decode('utf-8')
+          text = text[:start] + block + text[end:]
+
+          old_time = """  const title = opponentSearchSetup?.querySelector('.opponent-search-title');
+          applyChooserTitle(title, `اختر زمن المباراة — مستوى ${level.label}`);
+          addTimeChooserBack();"""
+          new_time = """  const { title } = ensureChooserHeader();
+          applyChooserTitle(title, `اختر زمن المباراة — مستوى ${level.label}`);
+          addTimeChooserBack();"""
+          if old_time not in text:
+              raise SystemExit('time chooser title block not found')
+          text = text.replace(old_time, new_time, 1)
+
+          old_level = """  const title = opponentSearchSetup?.querySelector('.opponent-search-title');
+          applyChooserTitle(title, 'اختر مستوى الكمبيوتر — النقاط للمسجلين');"""
+          new_level = """  const { header, title } = ensureChooserHeader();
+          header.style.gridTemplateColumns = 'minmax(0, 1fr)';
+          applyChooserTitle(title, 'اختر مستوى الكمبيوتر — النقاط للمسجلين');"""
+          if old_level not in text:
+              raise SystemExit('level chooser title block not found')
+          text = text.replace(old_level, new_level, 1)
+          js.write_text(text, encoding='utf-8')
+
+          play = Path('play-v10.html')
+          html = play.read_text(encoding='utf-8')
+          html = re.sub(r"play-computer\.js\?v=\d{8}-\d+", 'play-computer.js?v=20260906-13', html, count=1)
+          play.write_text(html, encoding='utf-8')
+
+          test = Path('tests/test_computer_play_mode.py')
+          s = test.read_text(encoding='utf-8')
+          s = s.replace("assert 'position:absolute' in back_block, 'back icon must not participate in layout flow'\nassert 'inset-inline-start:12px' in back_block and 'inset-inline-end:auto' in back_block and 'top:' in back_block, 'back control must stay on the opposite side beside the title'", "assert 'position:absolute' not in back_block, 'back control must not overlap the title'\nassert \"header.style.gridTemplateColumns = 'auto minmax(0, 1fr)'\" in back_block and \"header.insertBefore(back, title)\" in back_block, 'back control must occupy a dedicated left column beside the title'")
+          s = s.replace("font-size', 'clamp(12px, 3vw, 18px)'", "font-size', 'clamp(11px, 2.5vw, 17px)'")
+          s = s.replace("assert \"overflow', 'visible'\" in title_block, 'chooser title text must not be clipped'", "assert \"overflow', 'hidden'\" in title_block, 'single-line chooser title must stay inside its own column'")
+          test.write_text(s, encoding='utf-8')
+          PY
+      - name: Verify chooser header
+        run: |
+          python tests/test_computer_chooser_style.py
+          python tests/test_computer_play_mode.py
+          cp play-computer.js /tmp/play-computer.mjs
+          node --check /tmp/play-computer.mjs
+      - name: Commit chooser header
+        run: |
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git add play-computer.js play-v10.html tests/test_computer_play_mode.py
+          git commit -m 'fix: separate computer chooser title and back control'
+          git push
