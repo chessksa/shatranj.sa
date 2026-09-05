@@ -18,6 +18,10 @@ create table if not exists public.computer_games (
 create index if not exists computer_games_player_status_idx
   on public.computer_games(player_id,status,created_at desc);
 
+create unique index if not exists computer_games_one_active_per_player_idx
+  on public.computer_games(player_id)
+  where status='active';
+
 alter table public.computer_games enable row level security;
 
 revoke all on table public.computer_games from public, anon, authenticated;
