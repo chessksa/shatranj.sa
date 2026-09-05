@@ -45,8 +45,29 @@ assert '.home-hero{order:3!important}' in index, (
     'Mobile hero must follow the independent ticker.'
 )
 
+# A signed-in desktop has its own compact grid in home-theme.css. It must also
+# reserve the ticker row; otherwise the hero/features overlap or disappear.
+assert 'body.home-signed-in{grid-template-rows:64px 34px minmax(0,1fr) 104px 38px!important}' in index, (
+    'Signed-in desktop layout must reserve a dedicated 34px ticker row.'
+)
+assert 'body.home-signed-in .welcome-ticker{grid-row:2!important}' in index, (
+    'Signed-in ticker must occupy its own row.'
+)
+assert 'body.home-signed-in .home-hero{grid-row:3!important}' in index, (
+    'Signed-in hero must stay visible below the ticker.'
+)
+assert 'body.home-signed-in #ranking{grid-row:3/5!important}' in index, (
+    'Signed-in ranking must align beside the restored right-side content.'
+)
+assert 'body.home-signed-in .home-features{grid-row:4!important}' in index, (
+    'Signed-in feature cards must remain below the hero.'
+)
+assert 'body.home-signed-in footer{grid-row:5!important}' in index, (
+    'Signed-in footer must remain below the content instead of overlapping it.'
+)
+
 assert "import('./welcome-ticker-core.mjs" not in wrapper, (
     'Site-wide notification wrapper must not load the welcome ticker.'
 )
 
-print('welcome ticker is standalone, non-overlapping, and home-page only')
+print('welcome ticker is standalone and signed-in home content remains visible')
