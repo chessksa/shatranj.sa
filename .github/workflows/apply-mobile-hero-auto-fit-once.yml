@@ -1,0 +1,77 @@
+name: Apply mobile hero auto fit once
+
+on:
+  push:
+    paths:
+      - '.github/workflows/apply-mobile-hero-auto-fit-once.yml'
+
+permissions:
+  contents: write
+
+jobs:
+  apply:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Apply responsive one-line hero title
+        run: |
+          python - <<'PY'
+          from pathlib import Path
+
+          path = Path('index.html')
+          text = path.read_text(encoding='utf-8')
+          old = '''<style id="mobileHeroTitleOneLine">
+          @media(max-width:600px){
+            .home-hero h1{white-space:nowrap!important}
+            .home-hero h1 span{display:inline!important}
+          }
+          </style>'''
+          new = '''<style id="mobileHeroTitleOneLine">
+          @media(max-width:600px){
+            .home-hero h1{
+              width:100%!important;
+              max-width:100%!important;
+              padding-inline:8px!important;
+              white-space:nowrap!important;
+              font-size:clamp(17px,5.2vw,25px)!important;
+              text-align:center!important;
+            }
+            .home-hero h1 span{display:inline!important}
+          }
+          </style>'''
+          if old not in text:
+              raise SystemExit('expected current mobile hero title block not found')
+          text = text.replace(old, new, 1)
+          path.write_text(text, encoding='utf-8')
+          PY
+
+      - name: Verify responsive containment
+        run: |
+          python - <<'PY'
+          from pathlib import Path
+          text = Path('index.html').read_text(encoding='utf-8')
+          checks = [
+              'white-space:nowrap!important',
+              'font-size:clamp(17px,5.2vw,25px)!important',
+              'width:100%!important',
+              'max-width:100%!important',
+              'padding-inline:8px!important',
+              '.home-hero h1 span{display:inline!important}',
+          ]
+          missing = [x for x in checks if x not in text]
+          if missing:
+              raise SystemExit('missing: ' + ', '.join(missing))
+          print('mobile hero auto-fit: PASS')
+          PY
+
+      - name: Remove temporary workflow and commit
+        run: |
+          rm -f .github/workflows/apply-mobile-hero-auto-fit-once.yml
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git add index.html .github/workflows/apply-mobile-hero-auto-fit-once.yml
+          git commit -m 'احتواء تلقائي لعنوان الترحيب في الجوال'
+          git push
