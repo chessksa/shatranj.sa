@@ -15,6 +15,7 @@ jobs:
         run: |
           python - <<'PY'
           from pathlib import Path
+          import re
 
           path = Path('play-computer.js')
           code = path.read_text(encoding='utf-8')
@@ -33,8 +34,7 @@ jobs:
               raise SystemExit('LEVELS marker not found')
           code = code.replace(old_levels, new_levels, 1)
 
-          submit_marker = "async function submitRatedMove(move) {"
-          recovery = """async function fetchRatedState() {
+          replacement = r"""async function fetchRatedState() {
             if (!ratedMode || !ratedGameId) return null;
             try {
               return await invokeComputer({ action: 'state', game_id: ratedGameId });
@@ -44,82 +44,97 @@ jobs:
             }
           }
 
-          """
-          if recovery.strip() not in code:
-              if submit_marker not in code:
-                  raise SystemExit('submit marker not found')
-              code = code.replace(submit_marker, recovery + submit_marker, 1)
-
-          old_catch = """  } catch (error) {
-            console.error(error);
-            game.undo();
-            renderBoard(false);
-            clockActiveSide = 'player';
-            clockAnchorMs = Date.now();
-            setComputerStatus('جاهز');
-            toast('تعذر اعتماد الحركة. أُعيدت الرقعة إلى آخر وضع معتمد.');
-          } finally {
-            thinking = false;
-          }
-          }"""
-          new_catch = """  } catch (error) {
-            console.error(error);
-            const authoritative = await fetchRatedState();
-            if (authoritative?.fen) {
-              game.load(authoritative.fen);
-              renderBoard(false);
-              syncRatedClocks(authoritative);
-              if (authoritative.status === 'finished') finishRatedResult(authoritative);
-              else {
+          async function submitRatedMove(move) {
+            if (!ratedGameId || finished) return;
+            thinking = true;
+            setComputerStatus('يفكر…');
+            try {
+              const payload = await invokeComputer({
+                action: 'move',
+                game_id: ratedGameId,
+                from: move.from,
+                to: move.to,
+                promotion: move.promotion || 'q'
+              });
+              if (!payload?.fen) throw new Error('Missing server position');
+              game.load(payload.fen);
+              renderBoard(true);
+              syncRatedClocks(payload);
+              if (payload.status === 'finished') finishRatedResult(payload);
+              else setComputerStatus('جاهز');
+            } catch (error) {
+              console.error(error);
+              const authoritative = await fetchRatedState();
+              if (authoritative?.fen) {
+                game.load(authoritative.fen);
+                renderBoard(false);
+                syncRatedClocks(authoritative);
+                if (authoritative.status === 'finished') finishRatedResult(authoritative);
+                else {
+                  setComputerStatus('جاهز');
+                  toast('تمت مزامنة المباراة مع الخادم.');
+                }
+              } else {
+                game.undo();
+                renderBoard(false);
+                clockActiveSide = 'player';
+                clockAnchorMs = Date.now();
                 setComputerStatus('جاهز');
-                toast('تمت مزامنة المباراة مع الخادم.');
+                toast('تعذر اعتماد الحركة. أُعيدت الرقعة إلى آخر وضع معتمد.');
               }
-            } else {
-              game.undo();
-              renderBoard(false);
-              clockActiveSide = 'player';
-              clockAnchorMs = Date.now();
-              setComputerStatus('جاهز');
-              toast('تعذر اعتماد الحركة. أُعيدت الرقعة إلى آخر وضع معتمد.');
+            } finally {
+              thinking = false;
             }
-          } finally {
-            thinking = false;
           }
+
+          function handleBoardInput(event) {
+            if (event.type === INPUT_EVENT_TYPE.moveInputStarted) {
+              if (!selectedLevel || !selectedMinutes || finished || thinking || game.turn() !== 'w') return false;
+              if (currentClockMs('player') <= 0) {
+                if (ratedMode) requestRatedTimeout();
+                return false;
+              }
+              const piece = game.get(event.squareFrom);
+              if (!piece || piece.color !== 'w') return false;
+              showMoveHints(event.squareFrom);
+              return true;
+            }
+
+            if (event.type === INPUT_EVENT_TYPE.validateMoveInput) {
+              if (!selectedLevel || !selectedMinutes || finished || thinking || game.turn() !== 'w') return false;
+              if (currentClockMs('player') <= 0) {
+                if (ratedMode) requestRatedTimeout();
+                return false;
+              }
+              const legal = game.moves({ square: event.squareFrom, verbose: true });
+              const candidate = legal.find((move) => move.to === event.squareTo);
+              if (!candidate) return false;
+              clearMoveHints();
+              const move = game.move({ from: event.squareFrom, to: event.squareTo, promotion: 'q' });
+              if (!move) return false;
+
+              if (ratedMode) {
+                commitActiveClock();
+                clockActiveSide = null;
+                clockAnchorMs = 0;
+                renderClocks();
+                Promise.resolve().then(() => submitRatedMove(move));
+              } else {
+                switchClock('computer');
+                if (!checkGuestGameResult()) setTimeout(computerTurn, 180);
+              }
+              return true;
+            }
+
+            if (event.type === INPUT_EVENT_TYPE.moveInputCanceled) clearMoveHints();
+            return true;
           }"""
-          if old_catch not in code:
-              raise SystemExit('submit catch marker not found')
-          code = code.replace(old_catch, new_catch, 1)
 
-          old_move = """    const move = game.move({ from: event.squareFrom, to: event.squareTo, promotion: 'q' });
-            if (!move) return false;
-            switchClock('computer');
-            renderBoard(false);
-
-            if (ratedMode) {
-              Promise.resolve().then(() => submitRatedMove(move));
-            } else if (!checkGuestGameResult()) {
-              setTimeout(computerTurn, 180);
-            }
-            return true;"""
-          new_move = """    const move = game.move({ from: event.squareFrom, to: event.squareTo, promotion: 'q' });
-            if (!move) return false;
-
-            if (ratedMode) {
-              commitActiveClock();
-              clockActiveSide = null;
-              clockAnchorMs = 0;
-              renderClocks();
-              Promise.resolve().then(() => submitRatedMove(move));
-            } else {
-              switchClock('computer');
-              if (!checkGuestGameResult()) setTimeout(computerTurn, 180);
-            }
-            return true;"""
-          if old_move not in code:
-              raise SystemExit('validate move marker not found')
-          code = code.replace(old_move, new_move, 1)
-
-          path.write_text(code, encoding='utf-8')
+          pattern = r"async function submitRatedMove\(move\) \{.*?\n\}\n\nfunction handleBoardInput\(event\) \{.*?\n\}\n\nfunction setPlayingLayout"
+          updated, count = re.subn(pattern, replacement + "\n\nfunction setPlayingLayout", code, count=1, flags=re.S)
+          if count != 1:
+              raise SystemExit(f'controller function block match count={count}')
+          path.write_text(updated, encoding='utf-8')
           PY
       - name: Verify regression contract and syntax
         run: |
