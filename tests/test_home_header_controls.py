@@ -50,6 +50,6 @@ assert '''.compact-member-nav .dashboard-link,
 assert '''.compact-member-nav .dashboard-link>span:not(.header-tile-icon),
   .compact-member-nav .header-tournaments>span:not(.header-tile-icon){display:none!important}''' in css, 'phone header action labels must be hidden so icons cannot collide with member text'
 
-assert 'home-theme.css?v=20260905-1' in html, 'home page must request the fresh header stylesheet'
+assert 'home-theme.css?v=20260905-2' in html, 'home page must request a fresh stylesheet version so phones cannot reuse stale header CSS'
 
 print('home header controls: PASS')
