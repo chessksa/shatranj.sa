@@ -6,6 +6,7 @@ const LEVELS = {
   medium: { skill: 8, movetime: 320, label: 'متوسط', points: 10 },
   hard: { skill: 16, movetime: 700, label: 'صعب', points: 20 }
 };
+const TIME_CONTROLS = [5, 10, 15];
 
 const cfg = window.SHATRANJ_CONFIG?.supabase || {};
 const supabase = cfg.enabled && cfg.url && cfg.anonKey
@@ -44,6 +45,7 @@ let engine = null;
 let engineReady = false;
 let engineFailed = false;
 let selectedLevel = null;
+let selectedMinutes = null;
 let thinking = false;
 let finished = false;
 let bestMoveResolver = null;
@@ -55,6 +57,12 @@ let ratedGameId = null;
 let ratedAccessToken = null;
 let currentRating = null;
 let leaving = false;
+let ratedTimeoutPending = false;
+let clockTimer = null;
+let playerTimeMs = 0;
+let computerTimeMs = 0;
+let clockActiveSide = null;
+let clockAnchorMs = 0;
 
 function toast(message, ms = 2600) {
   if (!gameToast) return;
@@ -172,6 +180,116 @@ function setComputerStatus(text) {
   if (status) status.textContent = text;
 }
 
+function formatClock(ms) {
+  const safeMs = Math.max(0, Number(ms) || 0);
+  const totalSeconds = Math.ceil(safeMs / 1000);
+  const minutes = Math.floor(totalSeconds / 60);
+  const seconds = totalSeconds % 60;
+  return `${String(minutes).padStart(2,'0')}:${String(seconds).padStart(2,'0')}`;
+}
+
+function currentClockMs(side) {
+  let remaining = side === 'player' ? playerTimeMs : computerTimeMs;
+  if (!finished && clockActiveSide === side && clockAnchorMs) {
+    remaining -= Date.now() - clockAnchorMs;
+  }
+  return Math.max(0, remaining);
+}
+
+function commitActiveClock() {
+  if (!clockActiveSide || !clockAnchorMs) return;
+  const remaining = currentClockMs(clockActiveSide);
+  if (clockActiveSide === 'player') playerTimeMs = remaining;
+  else computerTimeMs = remaining;
+  clockAnchorMs = Date.now();
+}
+
+function switchClock(side) {
+  commitActiveClock();
+  clockActiveSide = side;
+  clockAnchorMs = Date.now();
+  renderClocks();
+}
+
+function updateClockElement(element, remaining, totalMs) {
+  if (!element) return;
+  element.textContent = formatClock(remaining);
+  element.classList.toggle('danger', remaining <= 60_000);
+  const progress = element.closest('.clock-box')?.querySelector('.clock-progress span');
+  if (progress) {
+    const pct = totalMs > 0 ? Math.max(0, Math.min(100, (remaining / totalMs) * 100)) : 0;
+    progress.style.width = `${pct}%`;
+  }
+}
+
+function renderClocks() {
+  const totalMs = Math.max(1, Number(selectedMinutes || 0) * 60_000);
+  updateClockElement(bottomClockEl, currentClockMs('player'), totalMs);
+  updateClockElement(topClockEl, currentClockMs('computer'), totalMs);
+}
+
+function syncRatedClocks(payload) {
+  if (!payload) return;
+  playerTimeMs = Math.max(0, Number(payload.player_time_ms) || 0);
+  computerTimeMs = Math.max(0, Number(payload.computer_time_ms) || 0);
+  if (payload.status === 'active') {
+    const serverNow = Date.parse(String(payload.server_now || ''));
+    const turnStarted = Date.parse(String(payload.turn_started_at || ''));
+    if (Number.isFinite(serverNow) && Number.isFinite(turnStarted)) {
+      playerTimeMs = Math.max(0, playerTimeMs - Math.max(0, serverNow - turnStarted));
+    }
+    clockActiveSide = 'player';
+    clockAnchorMs = Date.now();
+  } else {
+    clockActiveSide = null;
+    clockAnchorMs = 0;
+  }
+  renderClocks();
+}
+
+async function requestRatedTimeout() {
+  if (!ratedMode || !ratedGameId || finished || ratedTimeoutPending) return;
+  ratedTimeoutPending = true;
+  try {
+    const payload = await invokeComputer({ action: 'timeout', game_id: ratedGameId });
+    if (payload?.fen) {
+      game.load(payload.fen);
+      renderBoard(false);
+    }
+    syncRatedClocks(payload);
+    if (payload?.status === 'finished') finishRatedResult(payload);
+  } catch (error) {
+    console.error(error);
+    clockAnchorMs = Date.now();
+    toast('تعذر التحقق من انتهاء الوقت. سنحاول مجددًا.');
+  } finally {
+    ratedTimeoutPending = false;
+  }
+}
+
+function startClockLoop() {
+  clearInterval(clockTimer);
+  renderClocks();
+  clockTimer = setInterval(() => {
+    if (finished || !selectedMinutes) return;
+    renderClocks();
+    if (clockActiveSide === 'player' && currentClockMs('player') <= 0) {
+      if (ratedMode) {
+        requestRatedTimeout();
+      } else {
+        commitActiveClock();
+        clockActiveSide = null;
+        finishGame('انتهى وقتك — فاز الكمبيوتر');
+      }
+    } else if (clockActiveSide === 'computer' && currentClockMs('computer') <= 0 && !ratedMode) {
+      commitActiveClock();
+      clockActiveSide = null;
+      if (engine) engine.postMessage('stop');
+      finishGame('انتهى وقت الكمبيوتر — فزت');
+    }
+  }, 100);
+}
+
 function ratingSuffix(rating) {
   if (!ratedMode) return ' — مباراة بدون نقاط.';
   const delta = Number(rating?.rating_delta ?? 0);
@@ -189,9 +307,13 @@ function finishGame(message, rating = null) {
   if (finished) return;
   finished = true;
   thinking = false;
+  clearInterval(clockTimer);
+  clockTimer = null;
+  clockActiveSide = null;
   clearMoveHints();
   if (cmBoard?.disableMoveInput) cmBoard.disableMoveInput();
   setComputerStatus('انتهت المباراة');
+  renderClocks();
   toast(`${message}${ratingSuffix(rating)}`, 5200);
 }
 
@@ -201,6 +323,7 @@ function finishRatedResult(payload) {
     loss: 'فاز الكمبيوتر',
     draw: 'انتهت المباراة بالتعادل'
   };
+  if (payload) syncRatedClocks(payload);
   finishGame(messages[payload?.result] || 'انتهت المباراة', payload?.rating || null);
 }
 
@@ -318,6 +441,7 @@ async function computerTurn() {
   setComputerStatus('يفكر…');
   try {
     const best = await requestBestMove();
+    if (finished) return;
     if (!best || best === '(none)' || best === '0000') {
       if (!checkGuestGameResult()) finishGame('تعذر على الكمبيوتر إكمال المباراة');
       return;
@@ -329,10 +453,13 @@ async function computerTurn() {
     });
     if (!move) throw new Error(`invalid engine move: ${best}`);
     renderBoard(true);
-    if (!checkGuestGameResult()) setComputerStatus('جاهز');
+    if (!checkGuestGameResult()) {
+      switchClock('player');
+      setComputerStatus('جاهز');
+    }
   } catch (error) {
     console.error(error);
-    finishGame('حدث خطأ في محرك الكمبيوتر');
+    if (!finished) finishGame('حدث خطأ في محرك الكمبيوتر');
   } finally {
     thinking = false;
   }
@@ -353,15 +480,15 @@ async function submitRatedMove(move) {
     if (!payload?.fen) throw new Error('Missing server position');
     game.load(payload.fen);
     renderBoard(true);
-    if (payload.status === 'finished') {
-      finishRatedResult(payload);
-    } else {
-      setComputerStatus('جاهز');
-    }
+    syncRatedClocks(payload);
+    if (payload.status === 'finished') finishRatedResult(payload);
+    else setComputerStatus('جاهز');
   } catch (error) {
     console.error(error);
     game.undo();
     renderBoard(false);
+    clockActiveSide = 'player';
+    clockAnchorMs = Date.now();
     setComputerStatus('جاهز');
     toast('تعذر اعتماد الحركة. أُعيدت الرقعة إلى آخر وضع معتمد.');
   } finally {
@@ -371,7 +498,11 @@ async function submitRatedMove(move) {
 
 function handleBoardInput(event) {
   if (event.type === INPUT_EVENT_TYPE.moveInputStarted) {
-    if (!selectedLevel || finished || thinking || game.turn() !== 'w') return false;
+    if (!selectedLevel || !selectedMinutes || finished || thinking || game.turn() !== 'w') return false;
+    if (currentClockMs('player') <= 0) {
+      if (ratedMode) requestRatedTimeout();
+      return false;
+    }
     const piece = game.get(event.squareFrom);
     if (!piece || piece.color !== 'w') return false;
     showMoveHints(event.squareFrom);
@@ -379,13 +510,18 @@ function handleBoardInput(event) {
   }
 
   if (event.type === INPUT_EVENT_TYPE.validateMoveInput) {
-    if (!selectedLevel || finished || thinking || game.turn() !== 'w') return false;
+    if (!selectedLevel || !selectedMinutes || finished || thinking || game.turn() !== 'w') return false;
+    if (currentClockMs('player') <= 0) {
+      if (ratedMode) requestRatedTimeout();
+      return false;
+    }
     const legal = game.moves({ square: event.squareFrom, verbose: true });
     const candidate = legal.find((move) => move.to === event.squareTo);
     if (!candidate) return false;
     clearMoveHints();
     const move = game.move({ from: event.squareFrom, to: event.squareTo, promotion: 'q' });
     if (!move) return false;
+    switchClock('computer');
     renderBoard(false);
 
     if (ratedMode) {
@@ -396,28 +532,29 @@ function handleBoardInput(event) {
     return true;
   }
 
-  if (event.type === INPUT_EVENT_TYPE.moveInputCanceled) {
-    clearMoveHints();
-  }
+  if (event.type === INPUT_EVENT_TYPE.moveInputCanceled) clearMoveHints();
   return true;
 }
 
-function setPlayingLayout(levelKey, player = null) {
+function setPlayingLayout(levelKey, minutes, player = null) {
   const level = LEVELS[levelKey];
+  const initialMs = minutes * 60_000;
   document.body.classList.remove('pregame');
   document.body.classList.add('live-game', 'computer-game');
   opponentSearchPanel.hidden = true;
   topPlayerLive.hidden = false;
   topNameEl.textContent = 'الكمبيوتر';
   topNameEl.removeAttribute('href');
-  topLocationEl.textContent = `مستوى ${level.label} — ±${level.points} نقطة`;
+  topLocationEl.textContent = `مستوى ${level.label} — ${minutes} دقائق — ±${level.points} نقطة`;
   topRatingEl.textContent = `±${level.points}`;
   bottomNameEl.textContent = player?.name || 'أنت';
   bottomLocationEl.textContent = ratedMode ? `مباراة نقاط ±${level.points}` : 'مباراة بدون نقاط';
   bottomRatingEl.textContent = ratedMode && Number.isFinite(Number(player?.rating)) ? String(player.rating) : '—';
-  topClockEl.textContent = '∞';
-  bottomClockEl.textContent = '∞';
-  document.querySelectorAll('.clock-progress').forEach((el) => { el.style.display = 'none'; });
+  playerTimeMs = initialMs;
+  computerTimeMs = initialMs;
+  clockActiveSide = 'player';
+  clockAnchorMs = Date.now();
+  document.querySelectorAll('.clock-progress').forEach((el) => { el.style.display = ''; });
   if (reportBtn) {
     reportBtn.disabled = true;
     reportBtn.title = 'الإبلاغ غير متاح في مباراة الكمبيوتر';
@@ -429,11 +566,12 @@ function setPlayingLayout(levelKey, player = null) {
   const note = endGraceBtn?.querySelector('.grace-note');
   if (note) note.hidden = true;
   setComputerStatus('جاهز');
+  startClockLoop();
 }
 
-async function startComputerGame(levelKey) {
-  if (!LEVELS[levelKey] || selectedLevel) return;
-  selectedLevel = levelKey;
+async function startComputerGame(levelKey, minutes) {
+  if (!LEVELS[levelKey] || selectedLevel !== levelKey || selectedMinutes || !TIME_CONTROLS.includes(Number(minutes))) return;
+  selectedMinutes = Number(minutes);
   const buttons = [...document.querySelectorAll('#opponentTimeOptions .opponent-time-option, .opponent-time-options .opponent-time-option')];
   buttons.forEach((button) => { button.disabled = true; });
   const title = opponentSearchSetup?.querySelector('.opponent-search-title');
@@ -450,20 +588,22 @@ async function startComputerGame(levelKey) {
     finished = false;
     ratedMode = Boolean(session);
     ratedAccessToken = session?.access_token || null;
+    ratedTimeoutPending = false;
 
     if (ratedMode) {
-      const started = await invokeComputer({ action: 'start', level: levelKey });
+      const started = await invokeComputer({ action: 'start', level: levelKey, minutes: selectedMinutes });
       ratedGameId = started.game_id;
       currentRating = Number(started.rating);
       if (!ratedGameId || !started.fen) throw new Error('Rated computer game was not created');
       game.load(started.fen);
-      setPlayingLayout(levelKey, { name: started.player_name, rating: started.rating });
+      setPlayingLayout(levelKey, selectedMinutes, { name: started.player_name, rating: started.rating });
+      syncRatedClocks(started);
     } else {
       ratedGameId = null;
       currentRating = null;
       await initEngine();
       if (engineFailed) throw new Error('engine failed');
-      setPlayingLayout(levelKey);
+      setPlayingLayout(levelKey, selectedMinutes);
     }
 
     renderCoords();
@@ -471,18 +611,20 @@ async function startComputerGame(levelKey) {
   } catch (error) {
     console.error(error);
     selectedLevel = null;
+    selectedMinutes = null;
     ratedMode = false;
     ratedGameId = null;
     ratedAccessToken = null;
-    buttons.forEach((button) => { button.disabled = false; });
-    if (title) title.textContent = 'تعذر بدء المباراة — حاول مرة أخرى';
+    clearInterval(clockTimer);
+    clockTimer = null;
+    setupLevelChooser();
     toast('تعذر بدء مباراة الكمبيوتر.');
   }
 }
 
 async function resignComputerGame({ navigate = false, ask = false } = {}) {
   if (leaving) return;
-  if (!selectedLevel || finished) {
+  if (!selectedLevel || !selectedMinutes || finished) {
     if (navigate) location.href = 'index.html';
     return;
   }
@@ -505,7 +647,25 @@ async function resignComputerGame({ navigate = false, ask = false } = {}) {
   }
 }
 
+function setupTimeChooser(levelKey) {
+  const level = LEVELS[levelKey];
+  const title = opponentSearchSetup?.querySelector('.opponent-search-title');
+  if (title) title.textContent = `اختر زمن المباراة — مستوى ${level.label}`;
+  const buttons = [...document.querySelectorAll('.opponent-time-options .opponent-time-option')];
+  buttons.forEach((button, index) => {
+    const minutes = TIME_CONTROLS[index];
+    button.disabled = false;
+    button.removeAttribute('data-level');
+    button.dataset.minutes = String(minutes);
+    button.innerHTML = `<strong>${minutes}</strong><span>دقائق</span>`;
+    button.onclick = () => startComputerGame(levelKey, minutes);
+  });
+  if (topPlayerCard) topPlayerCard.setAttribute('aria-label', 'اختيار زمن مباراة الكمبيوتر');
+}
+
 function setupLevelChooser() {
+  selectedLevel = null;
+  selectedMinutes = null;
   if (opponentSearchWaiting) opponentSearchWaiting.hidden = true;
   if (opponentSearchSetup) opponentSearchSetup.hidden = false;
   if (topPlayerLive) topPlayerLive.hidden = true;
@@ -519,30 +679,36 @@ function setupLevelChooser() {
   ];
   buttons.forEach((button, index) => {
     const [key, label, sub] = levels[index];
+    button.disabled = false;
     button.removeAttribute('data-minutes');
     button.dataset.level = key;
     button.innerHTML = `<strong>${label}</strong><span>${sub}</span>`;
-    button.addEventListener('click', () => startComputerGame(key));
+    button.onclick = () => {
+      if (selectedLevel) return;
+      selectedLevel = key;
+      setupTimeChooser(key);
+    };
   });
   if (topPlayerCard) topPlayerCard.setAttribute('aria-label', 'اختيار مستوى الكمبيوتر');
   if (resignBtn) resignBtn.disabled = true;
   if (drawOfferBtn) drawOfferBtn.disabled = true;
   if (endGraceBtn) {
     endGraceBtn.disabled = false;
-    endGraceBtn.addEventListener('click', () => resignComputerGame({ navigate: true }));
+    endGraceBtn.onclick = () => resignComputerGame({ navigate: true });
   }
-  if (leaveBtn) leaveBtn.addEventListener('click', () => resignComputerGame({ navigate: true }));
+  if (leaveBtn) leaveBtn.onclick = () => resignComputerGame({ navigate: true });
   if (reportBtn) reportBtn.disabled = true;
 }
 
 resignBtn?.addEventListener('click', () => resignComputerGame({ ask: true }));
 
 drawOfferBtn?.addEventListener('click', () => {
-  if (!selectedLevel || finished) return;
+  if (!selectedLevel || !selectedMinutes || finished) return;
   toast('عرض التعادل غير متاح ضد الكمبيوتر.');
 });
 
 window.addEventListener('pagehide', () => {
+  clearInterval(clockTimer);
   if (engine) engine.terminate();
   if (!ratedMode || !ratedGameId || !ratedAccessToken || finished || leaving || !cfg.url || !cfg.anonKey) return;
   fetch(`${cfg.url}/functions/v1/computer-game`, {
