@@ -10,10 +10,12 @@ permissions:
   contents: write
 
 jobs:
-  test:
+  apply:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
+      - name: Apply equal player card and pull to refresh
+        run: python scripts/apply-pregame-mobile-fit.py
       - name: Verify equal mobile player card and pull to refresh
         run: |
           python - <<'PY'
@@ -24,5 +26,17 @@ jobs:
           assert 'body.pregame{height:auto!important;min-height:100dvh!important;overflow-y:auto!important;overflow-x:hidden!important' in html, 'pregame must allow vertical pull-to-refresh'
           assert 'body.live-game{height:auto!important;min-height:100dvh!important;overflow-y:auto!important;overflow-x:hidden!important' in html, 'live game must allow vertical pull-to-refresh'
           assert '-webkit-overflow-scrolling:touch' in html
+          assert 'width:52px!important;height:52px!important' in html
           print('mobile equal-card and pull-to-refresh behavior verified')
           PY
+      - name: Commit mobile player card and refresh behavior
+        run: |
+          if git diff --quiet -- play-v10.html; then
+            echo "No mobile layout changes to commit."
+            exit 0
+          fi
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add play-v10.html
+          git commit -m "fix: equalize mobile player card and allow pull refresh"
+          git push
