@@ -14,9 +14,20 @@ def test_arab_city_catalog_is_present_and_connected_to_country_inputs():
     assert "const ARAB_CITIES=ARAB_CITIES_DATA;" in html
     assert "populateCityList" in html
     assert 'list="signupCityOptions"' in html
-    assert 'list="cityFilterOptions"' in html
+    assert '<select id="cityFilter"' in html
+    assert 'id="cityFilterOptions"' not in html
     assert "$('#signupRegion').addEventListener('change'" in html
     assert "$('#regionFilter').addEventListener('change'" in html
+
+
+def test_ranking_city_filter_is_a_visible_country_dependent_dropdown():
+    html = read("index.html")
+
+    assert '<select id="cityFilter" disabled' in html
+    assert '<option value="">اختر الدولة أولًا</option>' in html
+    assert "populateRankingCitySelect" in html
+    assert "cityFilter.disabled=!country" in html
+    assert "كل مدن الدولة" in html
 
 
 def test_city_catalog_covers_all_arab_countries_with_multiple_cities():
@@ -55,5 +66,6 @@ def test_city_catalog_covers_all_arab_countries_with_multiple_cities():
 
 if __name__ == "__main__":
     test_arab_city_catalog_is_present_and_connected_to_country_inputs()
+    test_ranking_city_filter_is_a_visible_country_dependent_dropdown()
     test_city_catalog_covers_all_arab_countries_with_multiple_cities()
     print("Arab cities tests passed")
