@@ -9,6 +9,7 @@ on:
       - main
     paths:
       - 'index.html'
+      - 'home-theme.css'
       - 'arab-cities.js'
       - 'profile.html'
       - 'profile.js'
@@ -29,6 +30,7 @@ on:
       - 'tests/test_dynamic_ranking_title.py'
       - 'tests/test_home_right_icons_layout.py'
       - 'tests/test_signup_gender.py'
+      - 'tests/test_ranking_filter_labels.py'
       - '.github/workflows/test-arab-identity.yml'
 
 jobs:
@@ -45,6 +47,7 @@ jobs:
           python tests/test_dynamic_ranking_title.py
           python tests/test_home_right_icons_layout.py
           python tests/test_signup_gender.py
+          python tests/test_ranking_filter_labels.py
       - name: Check JavaScript syntax
         run: |
           node --check arab-cities.js
