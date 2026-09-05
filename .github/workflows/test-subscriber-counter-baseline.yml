@@ -1,0 +1,13 @@
+name: Test subscriber counter baseline
+on:
+  push:
+    paths:
+      - 'index.html'
+      - 'tests/test_subscriber_counter_baseline.py'
+      - '.github/workflows/test-subscriber-counter-baseline.yml'
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - run: python tests/test_subscriber_counter_baseline.py
