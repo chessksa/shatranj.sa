@@ -1,0 +1,20 @@
+name: Test mobile dashboard right
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - '.github/workflows/test-mobile-dashboard-right.yml'
+
+permissions:
+  contents: read
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: main
+      - name: Run mobile dashboard regression test
+        run: python tests/test_dashboard_desktop_mobile_split.py
