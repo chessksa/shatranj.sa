@@ -29,6 +29,27 @@ assert '''.compact-member-nav .header-member-link.header-tile{
     align-items:center!important;
     justify-content:flex-start!important;''' in css, 'member avatar and name must stay horizontally aligned on mobile'
 
-assert 'home-theme.css?v=20260905-1' in html, 'home page must request the fresh header stylesheet'
+assert '/* Mobile header layout v2 20260905 */' in css, 'second-stage mobile header layout must exist'
+assert '''.compact-member-nav .nav-user{
+    width:100%!important;
+    overflow:visible!important;
+    gap:4px!important;''' in css, 'phone header must fit the viewport instead of horizontal scrolling'
+assert '''.compact-member-nav .header-member{
+    flex:1 1 0!important;
+    min-width:0!important;
+  }''' in css, 'member card must absorb the remaining phone width'
+assert '''.compact-member-nav .header-member-link.header-tile{
+    width:100%!important;
+    min-width:0!important;
+    max-width:none!important;''' in css, 'member card must not keep the old fixed mobile width'
+assert '''.compact-member-nav .dashboard-link,
+  .compact-member-nav .header-tournaments{
+    width:44px!important;
+    min-width:44px!important;
+    max-width:44px!important;''' in css, 'dashboard and tournament controls must be equal icon squares on phones'
+assert '''.compact-member-nav .dashboard-link>span:not(.header-tile-icon),
+  .compact-member-nav .header-tournaments>span:not(.header-tile-icon){display:none!important}''' in css, 'phone header action labels must be hidden so icons cannot collide with member text'
+
+assert 'home-theme.css?v=20260905-2' in html, 'home page must request a fresh stylesheet version so phones cannot reuse stale header CSS'
 
 print('home header controls: PASS')

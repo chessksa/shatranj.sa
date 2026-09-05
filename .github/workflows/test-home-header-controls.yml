@@ -5,6 +5,7 @@ on:
     branches: [main]
     paths:
       - home-theme.css
+      - index.html
       - tests/test_home_header_controls.py
       - .github/workflows/test-home-header-controls.yml
 
