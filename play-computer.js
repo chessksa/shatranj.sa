@@ -678,13 +678,13 @@ function addTimeChooserBack() {
   if (existing) existing.remove();
   const options = opponentSearchSetup?.querySelector('.opponent-time-options');
   if (!options) return;
+  if (opponentSearchSetup) opponentSearchSetup.style.position = 'relative';
   const back = document.createElement('button');
   back.type = 'button';
   back.className = 'computer-time-back';
   back.setAttribute('aria-label', 'الرجوع لاختيار مستوى الكمبيوتر');
-  back.innerHTML = '<span aria-hidden="true">‹</span><span>رجوع</span>';
-  back.style.cssText = 'align-self:flex-start;border:0;background:transparent;color:inherit;font:inherit;font-weight:800;cursor:pointer;display:inline-flex;align-items:center;gap:6px;padding:4px 2px 8px;';
-  back.querySelector('span')?.style.setProperty('font-size', '28px');
+  back.innerHTML = '<span aria-hidden="true">›</span>';
+  back.style.cssText = 'position:absolute;inset-inline-end:16px;top:12px;width:64px;height:64px;border:1px solid rgba(224,181,103,.55);border-radius:16px;background:rgba(3,43,48,.28);color:#f6ead8;font:800 42px/1 Arial,sans-serif;cursor:pointer;display:flex;align-items:center;justify-content:center;padding:0;z-index:3;';
   back.onclick = () => {
     back.remove();
     setupLevelChooser();
@@ -695,7 +695,16 @@ function addTimeChooserBack() {
 function setupTimeChooser(levelKey) {
   const level = LEVELS[levelKey];
   const title = opponentSearchSetup?.querySelector('.opponent-search-title');
-  if (title) title.textContent = `اختر زمن المباراة — مستوى ${level.label}`;
+  if (title) {
+    title.textContent = `اختر زمن المباراة — مستوى ${level.label}`;
+    title.style.setProperty('text-align', 'center', 'important');
+    title.style.setProperty('font-size', 'clamp(18px, 4vw, 34px)', 'important');
+    title.style.setProperty('line-height', '1.2', 'important');
+    title.style.setProperty('white-space', 'nowrap', 'important');
+    title.style.setProperty('width', '100%', 'important');
+    title.style.setProperty('box-sizing', 'border-box', 'important');
+    title.style.setProperty('padding-inline', '72px', 'important');
+  }
   addTimeChooserBack();
   const buttons = [...document.querySelectorAll('.opponent-time-options .opponent-time-option')];
   buttons.forEach((button, index) => {
@@ -717,7 +726,11 @@ function setupLevelChooser() {
   if (opponentSearchSetup) opponentSearchSetup.hidden = false;
   if (topPlayerLive) topPlayerLive.hidden = true;
   const title = opponentSearchSetup?.querySelector('.opponent-search-title');
-  if (title) title.textContent = 'اختر مستوى الكمبيوتر — النقاط للمسجلين';
+  if (title) {
+    ['text-align', 'font-size', 'line-height', 'white-space', 'width', 'box-sizing', 'padding-inline'].forEach((prop) => title.style.removeProperty(prop));
+    title.textContent = 'اختر مستوى الكمبيوتر — النقاط للمسجلين';
+  }
+  if (opponentSearchSetup) opponentSearchSetup.style.removeProperty('position');
   const buttons = [...document.querySelectorAll('.opponent-time-options .opponent-time-option')];
   const levels = [
     ['easy', 'سهل', '±5 نقاط'],
