@@ -27,9 +27,10 @@ jobs:
         run: |
           python - <<'PY'
           from pathlib import Path
+          import re
           p=Path('tests/test_home_header_controls.py')
           s=p.read_text(encoding='utf-8')
-          s=s.replace("home-theme.css?v=20260905-7", "home-theme.css?v=20260905-9")
+          s=re.sub(r'home-theme\.css\?v=20260905-\d+', 'home-theme.css?v=20260905-9', s)
           if "Header member name size 20260905" not in s:
               s += "\nassert '/* Header member name size 20260905 */' in css, 'member name size override must exist'\nassert '.compact-member-nav .header-member-copy>strong{font-size:18px!important}' in css, 'member name must be 18px'\n"
           p.write_text(s, encoding='utf-8')
@@ -48,6 +49,7 @@ jobs:
         run: |
           python - <<'PY'
           from pathlib import Path
+          import re
           cssp=Path('home-theme.css')
           css=cssp.read_text(encoding='utf-8')
           marker='/* Header member name size 20260905 */'
@@ -58,7 +60,6 @@ jobs:
 
           ip=Path('index.html')
           html=ip.read_text(encoding='utf-8')
-          import re
           html=re.sub(r'home-theme\.css\?v=20260905-\d+', 'home-theme.css?v=20260905-9', html, count=1)
           ip.write_text(html, encoding='utf-8')
           PY
