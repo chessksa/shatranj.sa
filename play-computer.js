@@ -1,10 +1,16 @@
 import { Chessboard, COLOR, INPUT_EVENT_TYPE, BORDER_TYPE } from 'https://cdn.jsdelivr.net/npm/cm-chessboard@8/src/Chessboard.js';
+import { createClient } from 'https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/+esm';
 
 const LEVELS = {
-  easy: { skill: 2, movetime: 140, label: 'سهل' },
-  medium: { skill: 8, movetime: 320, label: 'متوسط' },
-  hard: { skill: 16, movetime: 700, label: 'صعب' }
+  easy: { skill: 2, movetime: 140, label: 'سهل', points: 5 },
+  medium: { skill: 8, movetime: 320, label: 'متوسط', points: 10 },
+  hard: { skill: 16, movetime: 700, label: 'صعب', points: 20 }
 };
+
+const cfg = window.SHATRANJ_CONFIG?.supabase || {};
+const supabase = cfg.enabled && cfg.url && cfg.anonKey
+  ? createClient(cfg.url, cfg.anonKey)
+  : null;
 
 const $ = (id) => document.getElementById(id);
 const boardEl = $('board');
@@ -44,6 +50,11 @@ let bestMoveResolver = null;
 let readyResolver = null;
 let uciResolver = null;
 let engineInitPromise = null;
+let ratedMode = false;
+let ratedGameId = null;
+let ratedAccessToken = null;
+let currentRating = null;
+let leaving = false;
 
 function toast(message, ms = 2600) {
   if (!gameToast) return;
@@ -111,6 +122,22 @@ function showMoveHints(square) {
   });
 }
 
+function forceBoardSquareColors() {
+  boardEl.querySelectorAll('.cm-chessboard .square.white').forEach((square) => {
+    square.style.setProperty('fill','#d6cfbf','important');
+  });
+  boardEl.querySelectorAll('.cm-chessboard .square.black').forEach((square) => {
+    square.style.setProperty('fill','#246f77','important');
+  });
+}
+
+function watchBoardSquareColors() {
+  if (boardEl._shatranjColorObserver) return;
+  const observer = new MutationObserver(() => forceBoardSquareColors());
+  observer.observe(boardEl, { childList: true, subtree: true });
+  boardEl._shatranjColorObserver = observer;
+}
+
 function ensureBoard() {
   if (cmBoard) return cmBoard;
   ensureCmStyles();
@@ -129,11 +156,14 @@ function ensureBoard() {
     }
   });
   cmBoard.enableMoveInput(handleBoardInput, COLOR.white);
+  forceBoardSquareColors();
+  watchBoardSquareColors();
   return cmBoard;
 }
 
 function renderBoard(animated = true) {
   ensureBoard().setPosition(game.fen(), animated);
+  forceBoardSquareColors();
 }
 
 function setComputerStatus(text) {
@@ -142,16 +172,39 @@ function setComputerStatus(text) {
   if (status) status.textContent = text;
 }
 
-function finishGame(message) {
+function ratingSuffix(rating) {
+  if (!ratedMode) return ' — مباراة بدون نقاط.';
+  const delta = Number(rating?.rating_delta ?? 0);
+  const after = Number(rating?.rating_after);
+  if (Number.isFinite(after)) {
+    currentRating = after;
+    bottomRatingEl.textContent = String(after);
+  }
+  if (delta > 0) return ` — +${delta} نقطة.`;
+  if (delta < 0) return ` — ${delta} نقطة.`;
+  return ' — 0 نقطة.';
+}
+
+function finishGame(message, rating = null) {
+  if (finished) return;
   finished = true;
   thinking = false;
   clearMoveHints();
   if (cmBoard?.disableMoveInput) cmBoard.disableMoveInput();
   setComputerStatus('انتهت المباراة');
-  toast(`${message} — لا تؤثر هذه المباراة على نقاطك.`, 5000);
+  toast(`${message}${ratingSuffix(rating)}`, 5200);
 }
 
-function checkGameResult() {
+function finishRatedResult(payload) {
+  const messages = {
+    win: 'فزت على الكمبيوتر',
+    loss: 'فاز الكمبيوتر',
+    draw: 'انتهت المباراة بالتعادل'
+  };
+  finishGame(messages[payload?.result] || 'انتهت المباراة', payload?.rating || null);
+}
+
+function checkGuestGameResult() {
   if (game.in_checkmate()) {
     finishGame(game.turn() === 'b' ? 'فزت على الكمبيوتر' : 'فاز الكمبيوتر');
     return true;
@@ -161,6 +214,14 @@ function checkGameResult() {
     return true;
   }
   return false;
+}
+
+async function invokeComputer(body) {
+  if (!supabase) throw new Error('Supabase unavailable');
+  const { data, error } = await supabase.functions.invoke('computer-game', { body });
+  if (error) throw error;
+  if (data?.error) throw new Error(data.error);
+  return data;
 }
 
 function parseEngineLine(data) {
@@ -252,13 +313,13 @@ function requestBestMove() {
 }
 
 async function computerTurn() {
-  if (finished || thinking || game.turn() !== 'b') return;
+  if (ratedMode || finished || thinking || game.turn() !== 'b') return;
   thinking = true;
   setComputerStatus('يفكر…');
   try {
     const best = await requestBestMove();
     if (!best || best === '(none)' || best === '0000') {
-      if (!checkGameResult()) finishGame('تعذر على الكمبيوتر إكمال المباراة');
+      if (!checkGuestGameResult()) finishGame('تعذر على الكمبيوتر إكمال المباراة');
       return;
     }
     const move = game.move({
@@ -268,10 +329,41 @@ async function computerTurn() {
     });
     if (!move) throw new Error(`invalid engine move: ${best}`);
     renderBoard(true);
-    if (!checkGameResult()) setComputerStatus('جاهز');
+    if (!checkGuestGameResult()) setComputerStatus('جاهز');
   } catch (error) {
     console.error(error);
     finishGame('حدث خطأ في محرك الكمبيوتر');
+  } finally {
+    thinking = false;
+  }
+}
+
+async function submitRatedMove(move) {
+  if (!ratedGameId || finished) return;
+  thinking = true;
+  setComputerStatus('يفكر…');
+  try {
+    const payload = await invokeComputer({
+      action: 'move',
+      game_id: ratedGameId,
+      from: move.from,
+      to: move.to,
+      promotion: move.promotion || 'q'
+    });
+    if (!payload?.fen) throw new Error('Missing server position');
+    game.load(payload.fen);
+    renderBoard(true);
+    if (payload.status === 'finished') {
+      finishRatedResult(payload);
+    } else {
+      setComputerStatus('جاهز');
+    }
+  } catch (error) {
+    console.error(error);
+    game.undo();
+    renderBoard(false);
+    setComputerStatus('جاهز');
+    toast('تعذر اعتماد الحركة. أُعيدت الرقعة إلى آخر وضع معتمد.');
   } finally {
     thinking = false;
   }
@@ -289,14 +381,18 @@ function handleBoardInput(event) {
   if (event.type === INPUT_EVENT_TYPE.validateMoveInput) {
     if (!selectedLevel || finished || thinking || game.turn() !== 'w') return false;
     const legal = game.moves({ square: event.squareFrom, verbose: true });
-    if (!legal.some((move) => move.to === event.squareTo)) return false;
+    const candidate = legal.find((move) => move.to === event.squareTo);
+    if (!candidate) return false;
     clearMoveHints();
     const move = game.move({ from: event.squareFrom, to: event.squareTo, promotion: 'q' });
     if (!move) return false;
-    Promise.resolve().then(() => {
-      renderBoard(false);
-      if (!checkGameResult()) setTimeout(computerTurn, 180);
-    });
+    renderBoard(false);
+
+    if (ratedMode) {
+      Promise.resolve().then(() => submitRatedMove(move));
+    } else if (!checkGuestGameResult()) {
+      setTimeout(computerTurn, 180);
+    }
     return true;
   }
 
@@ -306,7 +402,7 @@ function handleBoardInput(event) {
   return true;
 }
 
-function setPlayingLayout(levelKey) {
+function setPlayingLayout(levelKey, player = null) {
   const level = LEVELS[levelKey];
   document.body.classList.remove('pregame');
   document.body.classList.add('live-game', 'computer-game');
@@ -314,11 +410,11 @@ function setPlayingLayout(levelKey) {
   topPlayerLive.hidden = false;
   topNameEl.textContent = 'الكمبيوتر';
   topNameEl.removeAttribute('href');
-  topLocationEl.textContent = `مستوى ${level.label}`;
-  topRatingEl.textContent = '—';
-  bottomNameEl.textContent = 'أنت';
-  bottomLocationEl.textContent = 'مباراة تدريبية';
-  bottomRatingEl.textContent = '—';
+  topLocationEl.textContent = `مستوى ${level.label} — ±${level.points} نقطة`;
+  topRatingEl.textContent = `±${level.points}`;
+  bottomNameEl.textContent = player?.name || 'أنت';
+  bottomLocationEl.textContent = ratedMode ? `مباراة نقاط ±${level.points}` : 'مباراة بدون نقاط';
+  bottomRatingEl.textContent = ratedMode && Number.isFinite(Number(player?.rating)) ? String(player.rating) : '—';
   topClockEl.textContent = '∞';
   bottomClockEl.textContent = '∞';
   document.querySelectorAll('.clock-progress').forEach((el) => { el.style.display = 'none'; });
@@ -326,6 +422,7 @@ function setPlayingLayout(levelKey) {
     reportBtn.disabled = true;
     reportBtn.title = 'الإبلاغ غير متاح في مباراة الكمبيوتر';
   }
+  if (resignBtn) resignBtn.disabled = false;
   if (drawOfferBtn) drawOfferBtn.disabled = false;
   if (endGraceBtn) endGraceBtn.disabled = false;
   if (endGraceCountdownEl) endGraceCountdownEl.hidden = true;
@@ -340,20 +437,71 @@ async function startComputerGame(levelKey) {
   const buttons = [...document.querySelectorAll('#opponentTimeOptions .opponent-time-option, .opponent-time-options .opponent-time-option')];
   buttons.forEach((button) => { button.disabled = true; });
   const title = opponentSearchSetup?.querySelector('.opponent-search-title');
-  if (title) title.textContent = 'جارٍ تحميل الكمبيوتر…';
+  if (title) title.textContent = 'جارٍ تجهيز المباراة…';
+
   try {
-    await initEngine();
-    if (engineFailed) throw new Error('engine failed');
+    let session = null;
+    if (supabase) {
+      const sessionResult = await supabase.auth.getSession();
+      session = sessionResult.data?.session || null;
+    }
+
     game.reset();
-    setPlayingLayout(levelKey);
+    finished = false;
+    ratedMode = Boolean(session);
+    ratedAccessToken = session?.access_token || null;
+
+    if (ratedMode) {
+      const started = await invokeComputer({ action: 'start', level: levelKey });
+      ratedGameId = started.game_id;
+      currentRating = Number(started.rating);
+      if (!ratedGameId || !started.fen) throw new Error('Rated computer game was not created');
+      game.load(started.fen);
+      setPlayingLayout(levelKey, { name: started.player_name, rating: started.rating });
+    } else {
+      ratedGameId = null;
+      currentRating = null;
+      await initEngine();
+      if (engineFailed) throw new Error('engine failed');
+      setPlayingLayout(levelKey);
+    }
+
     renderCoords();
     renderBoard(false);
   } catch (error) {
     console.error(error);
     selectedLevel = null;
+    ratedMode = false;
+    ratedGameId = null;
+    ratedAccessToken = null;
     buttons.forEach((button) => { button.disabled = false; });
-    if (title) title.textContent = 'تعذر تحميل الكمبيوتر — حاول مرة أخرى';
-    toast('تعذر تحميل محرك Stockfish.');
+    if (title) title.textContent = 'تعذر بدء المباراة — حاول مرة أخرى';
+    toast('تعذر بدء مباراة الكمبيوتر.');
+  }
+}
+
+async function resignComputerGame({ navigate = false, ask = false } = {}) {
+  if (leaving) return;
+  if (!selectedLevel || finished) {
+    if (navigate) location.href = 'index.html';
+    return;
+  }
+  if (ask && !confirm(`هل تريد الاستسلام؟ سيتم خصم ${LEVELS[selectedLevel].points} نقطة إذا كنت مسجلًا.`)) return;
+
+  leaving = true;
+  try {
+    if (ratedMode && ratedGameId) {
+      const payload = await invokeComputer({ action: 'resign', game_id: ratedGameId });
+      finishRatedResult(payload);
+    } else {
+      finishGame('استسلمت أمام الكمبيوتر');
+    }
+  } catch (error) {
+    console.error(error);
+    toast('تعذر اعتماد نهاية المباراة.');
+  } finally {
+    leaving = false;
+    if (navigate) location.href = 'index.html';
   }
 }
 
@@ -362,12 +510,12 @@ function setupLevelChooser() {
   if (opponentSearchSetup) opponentSearchSetup.hidden = false;
   if (topPlayerLive) topPlayerLive.hidden = true;
   const title = opponentSearchSetup?.querySelector('.opponent-search-title');
-  if (title) title.textContent = 'اختر مستوى الكمبيوتر';
+  if (title) title.textContent = 'اختر مستوى الكمبيوتر — النقاط للمسجلين';
   const buttons = [...document.querySelectorAll('.opponent-time-options .opponent-time-option')];
   const levels = [
-    ['easy', 'سهل', 'للتدريب'],
-    ['medium', 'متوسط', 'متوازن'],
-    ['hard', 'صعب', 'تحدٍ قوي']
+    ['easy', 'سهل', '±5 نقاط'],
+    ['medium', 'متوسط', '±10 نقاط'],
+    ['hard', 'صعب', '±20 نقطة']
   ];
   buttons.forEach((button, index) => {
     const [key, label, sub] = levels[index];
@@ -381,25 +529,32 @@ function setupLevelChooser() {
   if (drawOfferBtn) drawOfferBtn.disabled = true;
   if (endGraceBtn) {
     endGraceBtn.disabled = false;
-    endGraceBtn.addEventListener('click', () => { location.href = 'index.html'; });
+    endGraceBtn.addEventListener('click', () => resignComputerGame({ navigate: true }));
   }
-  if (leaveBtn) leaveBtn.addEventListener('click', () => { location.href = 'index.html'; });
+  if (leaveBtn) leaveBtn.addEventListener('click', () => resignComputerGame({ navigate: true }));
   if (reportBtn) reportBtn.disabled = true;
 }
 
-resignBtn?.addEventListener('click', () => {
-  if (!selectedLevel || finished) return;
-  if (!confirm('هل تريد الاستسلام؟')) return;
-  finishGame('استسلمت أمام الكمبيوتر');
-});
+resignBtn?.addEventListener('click', () => resignComputerGame({ ask: true }));
 
 drawOfferBtn?.addEventListener('click', () => {
   if (!selectedLevel || finished) return;
   toast('عرض التعادل غير متاح ضد الكمبيوتر.');
 });
 
-window.addEventListener('beforeunload', () => {
+window.addEventListener('pagehide', () => {
   if (engine) engine.terminate();
+  if (!ratedMode || !ratedGameId || !ratedAccessToken || finished || leaving || !cfg.url || !cfg.anonKey) return;
+  fetch(`${cfg.url}/functions/v1/computer-game`, {
+    method: 'POST',
+    keepalive: true,
+    headers: {
+      Authorization: `Bearer ${ratedAccessToken}`,
+      apikey: cfg.anonKey,
+      'Content-Type': 'application/json'
+    },
+    body: JSON.stringify({ action: 'resign', game_id: ratedGameId })
+  }).catch(() => {});
 });
 
 setupLevelChooser();
