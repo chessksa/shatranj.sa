@@ -11,28 +11,39 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
-      - name: Patch monotonic clock and cache key
+      - name: Patch computer time chooser back action
         run: |
           python - <<'PY'
           from pathlib import Path
-
+          import base64, re
           js = Path('play-computer.js')
           text = js.read_text(encoding='utf-8')
-          old = "computerTimeMs = Number.isFinite(Number(computerCapMs))\n    ? Math.max(0, Math.min(serverComputerTimeMs, computerCapMs))"
-          new = "computerTimeMs = computerCapMs !== null && Number.isFinite(Number(computerCapMs))\n    ? Math.max(0, Math.min(serverComputerTimeMs, computerCapMs))"
-          if old not in text:
-              raise SystemExit('computer cap marker not found')
-          js.write_text(text.replace(old, new, 1), encoding='utf-8')
-
+          marker = "function setupTimeChooser(levelKey) {"
+          if 'function addTimeChooserBack()' not in text:
+              encoded = 'ZnVuY3Rpb24gYWRkVGltZUNob29zZXJCYWNrKCkgewogIGNvbnN0IGV4aXN0aW5nID0gb3Bwb25lbnRTZWFyY2hTZXR1cD8ucXVlcnlTZWxlY3RvcignLmNvbXB1dGVyLXRpbWUtYmFjaycpOwogIGlmIChleGlzdGluZykgZXhpc3RpbmcucmVtb3ZlKCk7CiAgY29uc3Qgb3B0aW9ucyA9IG9wcG9uZW50U2VhcmNoU2V0dXA/LnF1ZXJ5U2VsZWN0b3IoJy5vcHBvbmVudC10aW1lLW9wdGlvbnMnKTsKICBpZiAoIW9wdGlvbnMpIHJldHVybjsKICBjb25zdCBiYWNrID0gZG9jdW1lbnQuY3JlYXRlRWxlbWVudCgnYnV0dG9uJyk7CiAgYmFjay50eXBlID0gJ2J1dHRvbic7CiAgYmFjay5jbGFzc05hbWUgPSAnY29tcHV0ZXItdGltZS1iYWNrJzsKICBiYWNrLnNldEF0dHJpYnV0ZSgnYXJpYS1sYWJlbCcsICfYp9mE2LHYrNmI2Lkg2YTYp9iu2KrZitin2LEg2YXYs9iq2YjZiSDYp9mE2YPZhdio2YrZiNiq2LEnKTsKICBiYWNrLmlubmVySFRNTCA9ICc8c3BhbiBhcmlhLWhpZGRlbj0idHJ1ZSI+4oC5PC9zcGFuPjxzcGFuPtix2KzZiNi5PC9zcGFuPic7CiAgYmFjay5zdHlsZS5jc3NUZXh0ID0gJ2FsaWduLXNlbGY6ZmxleC1zdGFydDtib3JkZXI6MDtiYWNrZ3JvdW5kOnRyYW5zcGFyZW50O2NvbG9yOmluaGVyaXQ7Zm9udDppbmhlcml0O2ZvbnQtd2VpZ2h0OjgwMDtjdXJzb3I6cG9pbnRlcjtkaXNwbGF5OmlubGluZS1mbGV4O2FsaWduLWl0ZW1zOmNlbnRlcjtnYXA6NnB4O3BhZGRpbmc6NHB4IDJweCA4cHg7JzsKICBiYWNrLnF1ZXJ5U2VsZWN0b3IoJ3NwYW4nKT8uc3R5bGUuc2V0UHJvcGVydHkoJ2ZvbnQtc2l6ZScsICcyOHB4Jyk7CiAgYmFjay5vbmNsaWNrID0gKCkgPT4gewogICAgYmFjay5yZW1vdmUoKTsKICAgIHNldHVwTGV2ZWxDaG9vc2VyKCk7CiAgfTsKICBvcHRpb25zLnBhcmVudE5vZGUuaW5zZXJ0QmVmb3JlKGJhY2ssIG9wdGlvbnMpOwp9Cgo='
+              fn = base64.b64decode(encoded).decode('utf-8')
+              if marker not in text:
+                  raise SystemExit('time chooser marker missing')
+              text = text.replace(marker, fn + marker, 1)
+          time_marker = "  if (title) title.textContent = `اختر زمن المباراة — مستوى ${level.label}`;\n"
+          chooser = text[text.index(marker):text.index('function setupLevelChooser()', text.index(marker))]
+          if '  addTimeChooserBack();\n' not in chooser:
+              if time_marker not in text:
+                  raise SystemExit('time title marker missing')
+              text = text.replace(time_marker, time_marker + "  addTimeChooserBack();\n", 1)
+          level_marker = "function setupLevelChooser() {\n  selectedLevel = null;"
+          level_new = "function setupLevelChooser() {\n  opponentSearchSetup?.querySelector('.computer-time-back')?.remove();\n  selectedLevel = null;"
+          if level_new not in text:
+              if level_marker not in text:
+                  raise SystemExit('level chooser marker missing')
+              text = text.replace(level_marker, level_new, 1)
+          js.write_text(text, encoding='utf-8')
           play = Path('play-v10.html')
           html = play.read_text(encoding='utf-8')
-          old_cache = 'play-computer.js?v=20260906-5'
-          new_cache = 'play-computer.js?v=20260906-6'
-          if old_cache not in html:
-              raise SystemExit('cache marker not found')
-          play.write_text(html.replace(old_cache, new_cache, 1), encoding='utf-8')
+          html = re.sub(r"play-computer\.js\?v=\d{8}-\d+", 'play-computer.js?v=20260906-7', html, count=1)
+          play.write_text(html, encoding='utf-8')
           PY
-      - name: Verify clock regression contract
+      - name: Verify computer flow
         run: |
           python tests/test_computer_play_mode.py
           cp play-computer.js /tmp/play-computer.mjs
@@ -43,5 +54,6 @@ jobs:
           git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
           git add play-computer.js play-v10.html
           git diff --cached --quiet && exit 0
-          git commit -m 'fix: stop computer clock rollback'
+          git commit -m 'feat: add back button to computer time chooser'
+          git pull --rebase origin main
           git push
