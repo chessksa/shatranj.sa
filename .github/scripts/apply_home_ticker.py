@@ -21,7 +21,7 @@ ticker_style = '''
 .welcome-ticker-separator{width:5px;height:5px;border-radius:50%;background:#c5a34d;flex:none}
 .welcome-ticker-loading{display:inline-flex;align-items:center;white-space:nowrap;padding:0 20px;font-size:12px;font-weight:800;direction:rtl}
 .welcome-ticker-single{animation:none!important;transform:none!important}
-@keyframes welcomeTickerInlineMove{from{transform:translateX(0)}to{transform:translateX(-50%)}}
+@keyframes welcomeTickerInlineMove{from{transform:translateX(-50%)}to{transform:translateX(0)}}
 @media(min-width:901px){
   body{grid-template-rows:auto 34px auto auto auto auto!important}
   .home-header{grid-column:1/-1!important;grid-row:1!important}
