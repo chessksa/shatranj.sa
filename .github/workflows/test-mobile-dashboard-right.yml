@@ -1,4 +1,4 @@
-name: Apply mobile dashboard right
+name: Apply dedicated mobile dashboard
 
 on:
   push:
@@ -17,85 +17,107 @@ jobs:
         with:
           ref: main
 
-      - name: RED - prove current mobile header fails the final requirement
+      - name: RED - prove dedicated mobile dashboard is missing
         run: |
           set +e
-          python tests/test_dashboard_desktop_mobile_split.py > /tmp/mobile-dashboard-red.log 2>&1
+          python tests/test_mobile_dashboard_visible.py > /tmp/mobile-dashboard-red.log 2>&1
           code=$?
           set -e
           cat /tmp/mobile-dashboard-red.log
           if [ "$code" -eq 0 ]; then
-            echo "Expected the regression test to fail before the final fix, but it passed."
+            echo "Expected the dedicated mobile dashboard test to fail before the fix."
             exit 1
           fi
-          echo "RED confirmed: the signed-in mobile header still has the old layout."
+          echo "RED confirmed: the dedicated mobile dashboard is not present yet."
 
-      - name: Apply final mobile dashboard-right override
+      - name: Add dedicated signed-in mobile dashboard
         run: |
           python - <<'PY'
           from pathlib import Path
           from textwrap import dedent
 
+          html_path = Path('index.html')
+          html = html_path.read_text(encoding='utf-8')
+
+          if 'id="mobileDashboardNav"' not in html:
+              needle = dedent('''\
+                    <a id="dashboardNav" class="header-action header-tile dashboard-link" href="#register">
+                      <span class="header-tile-icon" aria-hidden="true">⚙</span><span>لوحة التحكم</span>
+                    </a>
+              ''')
+              mobile = dedent('''\
+                    <a id="mobileDashboardNav" class="mobile-dashboard-link header-tile" href="profile.html">
+                      <span class="header-tile-icon" aria-hidden="true">⚙</span><span>لوحة التحكم</span>
+                    </a>
+              ''')
+              if needle not in html:
+                  raise SystemExit('dashboard anchor not found in index.html')
+              html = html.replace(needle, needle + mobile, 1)
+
+          old_key = 'home-theme.css?v=20260905-15'
+          new_key = 'home-theme.css?v=20260905-16'
+          if new_key not in html:
+              if old_key not in html:
+                  raise SystemExit('expected home-theme cache key not found')
+              html = html.replace(old_key, new_key, 1)
+          html_path.write_text(html, encoding='utf-8')
+
           css_path = Path('home-theme.css')
           css = css_path.read_text(encoding='utf-8')
-          marker = '/* Mobile dashboard right final 20260905 */'
+          marker = '/* Dedicated mobile dashboard 20260905 */'
           block = dedent('''
 
-          /* Mobile dashboard right final 20260905 */
+          /* Dedicated mobile dashboard 20260905 */
+          .mobile-dashboard-link{display:none!important}
           @media(max-width:600px){
             body.home-signed-in .compact-member-nav .nav-user{
               grid-template-columns:repeat(3,minmax(0,1fr))!important;
+              direction:rtl!important;
+            }
+            body.home-signed-in .compact-member-nav .dashboard-link{
+              display:none!important;
             }
             body.home-signed-in .compact-member-nav .header-tournaments{
               display:none!important;
             }
-            body.home-signed-in .compact-member-nav .dashboard-link{
+            body.home-signed-in .compact-member-nav .mobile-dashboard-link{
               display:inline-flex!important;
               grid-column:1!important;
               grid-row:2!important;
-              order:0!important;
               width:100%!important;
               min-width:0!important;
               max-width:none!important;
               height:42px!important;
               min-height:42px!important;
               margin:0!important;
-              padding-inline:4px!important;
+              padding:0 6px!important;
               align-items:center!important;
               justify-content:center!important;
-              gap:4px!important;
+              gap:5px!important;
               font-size:11px!important;
+              font-weight:800!important;
+            }
+            body.home-signed-in .compact-member-nav .mobile-dashboard-link>span:not(.header-tile-icon){
+              display:inline!important;
             }
             body.home-signed-in .compact-member-nav .header-notification-host{
               grid-column:2!important;
               grid-row:2!important;
-              order:0!important;
             }
             body.home-signed-in .compact-member-nav .nav-logout{
               grid-column:3!important;
               grid-row:2!important;
-              order:0!important;
-            }
-            body.home-signed-in .compact-member-nav .dashboard-link>span:not(.header-tile-icon){
-              display:inline!important;
             }
           }
           ''')
           if marker not in css:
               css_path.write_text(css.rstrip() + block, encoding='utf-8')
-
-          html_path = Path('index.html')
-          html = html_path.read_text(encoding='utf-8')
-          old_key = 'home-theme.css?v=20260905-14'
-          new_key = 'home-theme.css?v=20260905-15'
-          if new_key not in html:
-              if old_key not in html:
-                  raise SystemExit('expected home-theme cache key not found')
-              html_path.write_text(html.replace(old_key, new_key, 1), encoding='utf-8')
           PY
 
-      - name: GREEN - verify final mobile dashboard layout
-        run: python tests/test_dashboard_desktop_mobile_split.py
+      - name: GREEN - verify dedicated mobile dashboard
+        run: |
+          python tests/test_mobile_dashboard_visible.py
+          python tests/test_dashboard_desktop_mobile_split.py
 
       - name: Verify diff and commit
         run: |
@@ -107,5 +129,5 @@ jobs:
             echo "No production changes to commit"
             exit 0
           fi
-          git commit -m "fix: put mobile dashboard on the right"
+          git commit -m "fix: add dedicated mobile dashboard control"
           git push origin main
