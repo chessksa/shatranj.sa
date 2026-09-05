@@ -1,0 +1,32 @@
+name: Live mobile game stack
+
+on:
+  push:
+    paths:
+      - '.github/workflows/live-mobile-game-stack.yml'
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Verify live mobile game stack
+        run: |
+          python - <<'PY'
+          from pathlib import Path
+          html = Path('play-v10.html').read_text(encoding='utf-8')
+          assert "document.body.classList.add('live-game')" in html, 'live-game state class is missing'
+          assert '/* Live mobile game stack */' in html, 'live-game mobile CSS is missing'
+          assert 'body.live-game #opponentSearchPanel{display:none!important}' in html, 'time selector is not force-hidden during a live game'
+          assert 'body.live-game #topPlayerLive{display:contents!important}' in html, 'top player is not force-shown during a live game'
+          assert 'body.live-game #topPlayerCard{order:1' in html, 'top player is not first in the live mobile stack'
+          assert 'body.live-game .board-panel{order:2' in html, 'board is not second in the live mobile stack'
+          assert 'body.live-game .panel-stack>.player-card:not(#topPlayerCard){order:3' in html, 'bottom player is not after the board/actions'
+          assert 'height:64px!important' in html, 'live player cards are not compact enough'
+          assert 'overflow:hidden!important' in html, 'live page is not locked to the viewport'
+          print('live mobile game stack verified')
+          PY
