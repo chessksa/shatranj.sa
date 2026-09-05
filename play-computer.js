@@ -694,24 +694,42 @@ function addTimeChooserBack() {
 
 function setupTimeChooser(levelKey) {
   const level = LEVELS[levelKey];
+  if (opponentSearchSetup) {
+    opponentSearchSetup.style.position = 'relative';
+    opponentSearchSetup.style.minWidth = '0';
+    opponentSearchSetup.style.width = '100%';
+    opponentSearchSetup.style.overflow = 'hidden';
+  }
   const title = opponentSearchSetup?.querySelector('.opponent-search-title');
   if (title) {
     title.textContent = `اختر زمن المباراة — مستوى ${level.label}`;
     title.style.setProperty('text-align', 'center', 'important');
-    title.style.setProperty('font-size', 'clamp(18px, 4vw, 34px)', 'important');
-    title.style.setProperty('line-height', '1.2', 'important');
+    title.style.setProperty('font-size', 'clamp(16px, 3vw, 24px)', 'important');
+    title.style.setProperty('line-height', '1.15', 'important');
     title.style.setProperty('white-space', 'nowrap', 'important');
     title.style.setProperty('width', '100%', 'important');
+    title.style.setProperty('min-width', '0', 'important');
+    title.style.setProperty('max-width', '100%', 'important');
     title.style.setProperty('box-sizing', 'border-box', 'important');
-    title.style.setProperty('padding-inline', '72px', 'important');
+    title.style.setProperty('padding-inline', '54px', 'important');
+    title.style.setProperty('overflow', 'hidden', 'important');
+    title.style.setProperty('text-overflow', 'clip', 'important');
   }
   addTimeChooserBack();
+  const options = opponentSearchSetup?.querySelector('.opponent-time-options');
+  if (options) {
+    options.style.gridTemplateColumns = 'repeat(3, minmax(0, 1fr))';
+    options.style.width = '100%';
+    options.style.maxWidth = '100%';
+    options.style.minWidth = '0';
+  }
   const buttons = [...document.querySelectorAll('.opponent-time-options .opponent-time-option')];
   buttons.forEach((button, index) => {
     const minutes = TIME_CONTROLS[index];
     button.disabled = false;
     button.removeAttribute('data-level');
     button.dataset.minutes = String(minutes);
+    button.style.minWidth = '0';
     button.innerHTML = `<strong>${minutes}</strong><span>دقائق</span>`;
     button.onclick = () => startComputerGame(levelKey, minutes);
   });
@@ -727,10 +745,10 @@ function setupLevelChooser() {
   if (topPlayerLive) topPlayerLive.hidden = true;
   const title = opponentSearchSetup?.querySelector('.opponent-search-title');
   if (title) {
-    ['text-align', 'font-size', 'line-height', 'white-space', 'width', 'box-sizing', 'padding-inline'].forEach((prop) => title.style.removeProperty(prop));
+    ['text-align', 'font-size', 'line-height', 'white-space', 'width', 'min-width', 'max-width', 'box-sizing', 'padding-inline', 'overflow', 'text-overflow'].forEach((prop) => title.style.removeProperty(prop));
     title.textContent = 'اختر مستوى الكمبيوتر — النقاط للمسجلين';
   }
-  if (opponentSearchSetup) opponentSearchSetup.style.removeProperty('position');
+  if (opponentSearchSetup) ['position', 'min-width', 'width', 'overflow'].forEach((prop) => opponentSearchSetup.style.removeProperty(prop));
   const buttons = [...document.querySelectorAll('.opponent-time-options .opponent-time-option')];
   const levels = [
     ['easy', 'سهل', '±5 نقاط'],
