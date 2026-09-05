@@ -32,23 +32,29 @@ assert "function setupTimeChooser" in code
 assert "function addTimeChooserBack" in code, 'time chooser must expose a dedicated back action'
 assert "setupLevelChooser();" in code[code.index("function addTimeChooserBack"):code.index("function setupTimeChooser")], 'back action must return to level chooser'
 assert "computer-time-back" in code, 'time chooser back control needs a stable hook'
-back_block = code[code.index("function addTimeChooserBack"):code.index("function setupTimeChooser")]
+back_block = code[code.index("function addTimeChooserBack"):code.index("function applyChooserTitle")]
 assert '<span>رجوع</span>' not in back_block, 'back control must be icon-only'
+assert "back.innerHTML = '<span aria-hidden=\"true\">›</span>';" in back_block, 'back control should use one simple RTL chevron'
 assert 'position:absolute' in back_block, 'back icon must not participate in layout flow'
-assert 'inset-inline-end:' in back_block and 'top:' in back_block, 'back icon must remain fixed in the upper RTL corner'
-assert 'width:64px' in back_block and 'height:64px' in back_block, 'back tap target must be large and stable'
+assert 'inset-inline-end:' in back_block and 'top:' in back_block, 'back icon must remain fixed on the right'
+assert 'width:42px' in back_block and 'height:42px' in back_block, 'back icon should be simple and compact'
+assert 'border:0' in back_block and 'background:transparent' in back_block, 'back icon should have no box decoration'
+
+assert "function applyChooserTitle(title, text)" in code, 'level and time choosers must share one title style'
+title_block = code[code.index("function applyChooserTitle"):code.index("function setupTimeChooser")]
+assert "font-size', 'clamp(16px, 3vw, 24px)'" in title_block, 'chooser titles must use the same responsive size'
+assert "white-space', 'normal'" in title_block, 'chooser titles must wrap instead of clipping on narrow screens'
+assert "text-align', 'center'" in title_block, 'chooser titles must remain centered'
+assert "overflow', 'visible'" in title_block, 'chooser title text must not be clipped'
 time_block = code[code.index("function setupTimeChooser"):code.index("function setupLevelChooser")]
-assert "title.style.setProperty('text-align', 'center', 'important')" in time_block, 'time chooser title must be centered'
-assert "title.style.setProperty('font-size', 'clamp(16px, 3vw, 24px)', 'important')" in time_block, 'time chooser title must stay large but fit narrow screens'
-assert "title.style.setProperty('white-space', 'nowrap', 'important')" in time_block, 'time chooser title must remain one line'
-assert "title.style.setProperty('min-width', '0', 'important')" in time_block, 'title must be allowed to shrink inside the grid'
-assert "title.style.setProperty('max-width', '100%', 'important')" in time_block, 'title must not widen the chooser beyond its card'
-assert "title.style.setProperty('overflow', 'hidden', 'important')" in time_block, 'title must not create horizontal scrolling'
+level_block = code[code.index("function setupLevelChooser"):]
+assert "applyChooserTitle(title, `اختر زمن المباراة — مستوى ${level.label}`);" in time_block
+assert "applyChooserTitle(title, 'اختر مستوى الكمبيوتر — النقاط للمسجلين');" in level_block
+assert "title.style.setProperty('font-size'" not in time_block, 'time chooser must not override the shared title size'
+assert "title.style.removeProperty" not in level_block, 'level chooser must not revert to a different title size'
 assert "options.style.gridTemplateColumns = 'repeat(3, minmax(0, 1fr))';" in time_block, 'all three time choices must stay in one bounded row'
 assert "options.style.width = '100%';" in time_block and "options.style.minWidth = '0';" in time_block, 'time choices must remain inside the panel width'
 assert "button.style.minWidth = '0';" in time_block, 'individual time cards must be allowed to shrink'
-assert "clamp(18px, 4vw, 34px)" not in time_block, 'oversized title rule must not return'
-assert "padding-inline', '72px'" not in time_block, 'large symmetric padding must not force overflow'
 assert "startComputerGame(levelKey, minutes)" in code
 assert "action: 'start', level: levelKey, minutes" in code
 assert "action: 'timeout'" in code
@@ -130,4 +136,4 @@ assert ENGINE_JS.exists()
 assert ENGINE_WASM.exists()
 assert ENGINE_WASM.stat().st_size > 1_000_000
 
-print('computer board stability, monotonic clocks, bounded chooser layout, strength, and 5/10/15 controls: PASS')
+print('computer chooser simple back icon, unified titles, board stability, clocks, strength, and 5/10/15 controls: PASS')
