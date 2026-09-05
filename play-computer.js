@@ -228,10 +228,13 @@ function renderClocks() {
   updateClockElement(topClockEl, currentClockMs('computer'), totalMs);
 }
 
-function syncRatedClocks(payload) {
+function syncRatedClocks(payload, computerCapMs = null) {
   if (!payload) return;
   playerTimeMs = Math.max(0, Number(payload.player_time_ms) || 0);
-  computerTimeMs = Math.max(0, Number(payload.computer_time_ms) || 0);
+  const serverComputerTimeMs = Math.max(0, Number(payload.computer_time_ms) || 0);
+  computerTimeMs = Number.isFinite(Number(computerCapMs))
+    ? Math.max(0, Math.min(serverComputerTimeMs, computerCapMs))
+    : serverComputerTimeMs;
   if (payload.status === 'active') {
     const serverNow = Date.parse(String(payload.server_now || ''));
     const turnStarted = Date.parse(String(payload.turn_started_at || ''));
@@ -317,13 +320,13 @@ function finishGame(message, rating = null) {
   toast(`${message}${ratingSuffix(rating)}`, 5200);
 }
 
-function finishRatedResult(payload) {
+function finishRatedResult(payload, computerCapMs = null) {
   const messages = {
     win: 'فزت على الكمبيوتر',
     loss: 'فاز الكمبيوتر',
     draw: 'انتهت المباراة بالتعادل'
   };
-  if (payload) syncRatedClocks(payload);
+  if (payload) syncRatedClocks(payload, computerCapMs);
   finishGame(messages[payload?.result] || 'انتهت المباراة', payload?.rating || null);
 }
 
@@ -488,11 +491,12 @@ async function submitRatedMove(move) {
       promotion: move.promotion || 'q'
     });
     if (!payload?.fen) throw new Error('Missing server position');
-    game.load(payload.fen);
-    renderBoard(true);
-    syncRatedClocks(payload);
-    if (payload.status === 'finished') finishRatedResult(payload);
-    else setComputerStatus('جاهز');
+  const localComputerRemaining = currentClockMs('computer');
+  game.load(payload.fen);
+  renderBoard(true);
+  syncRatedClocks(payload, localComputerRemaining);
+  if (payload.status === 'finished') finishRatedResult(payload, localComputerRemaining);
+  else setComputerStatus('جاهز');
   } catch (error) {
     console.error(error);
     const authoritative = await fetchRatedState();
@@ -545,12 +549,9 @@ function handleBoardInput(event) {
     if (!move) return false;
 
     if (ratedMode) {
-      commitActiveClock();
-      clockActiveSide = null;
-      clockAnchorMs = 0;
-      renderClocks();
-      Promise.resolve().then(() => submitRatedMove(move));
-    } else {
+    switchClock('computer');
+    Promise.resolve().then(() => submitRatedMove(move));
+  } else {
       switchClock('computer');
       if (!checkGuestGameResult()) setTimeout(computerTurn, 180);
     }

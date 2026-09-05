@@ -9,6 +9,7 @@ const corsHeaders = {
 
 const LEVEL_POINTS = { easy: 5, medium: 10, hard: 20 } as const;
 const TIME_CONTROLS = new Set([5, 10, 15]);
+const MIN_THINK_MS = { easy: 900, medium: 1200, hard: 1600 } as const;
 const LEVEL_SEARCH = {
   easy: { depth: 1, candidateWindow: 65, maxCandidates: 4 },
   medium: { depth: 1, candidateWindow: 12, maxCandidates: 2 },
@@ -498,6 +499,9 @@ Deno.serve(async (req: Request) => {
 
       const computerStartedAt = Date.now();
       const selected = chooseComputerMove(chess, row.level);
+      const searchElapsed = Math.max(0, Date.now() - computerStartedAt);
+      const waitMs = Math.max(0, MIN_THINK_MS[row.level] - searchElapsed);
+      if (waitMs > 0) await new Promise((resolve) => setTimeout(resolve, waitMs));
       const computerElapsed = Math.max(1, Date.now() - computerStartedAt);
       const computerTimeMs = Math.max(0, computerTimeBefore - computerElapsed);
 
