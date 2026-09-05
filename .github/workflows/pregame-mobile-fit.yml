@@ -41,8 +41,8 @@ jobs:
           assert 'if(distance<PULL_ACTIVATE_DISTANCE) return;' in html, 'tap must remain available before swipe activation'
           assert 'body.pregame .side-header{order:0;width:100%;min-height:48px!important;height:48px!important' in html, 'mobile header must be larger'
           assert 'body.pregame .panel-stack>.player-card:not(#topPlayerCard) .avatar{width:78px!important;height:78px!important' in html, 'player image must fill the card height'
-          assert 'body.pregame .panel-stack>.player-card:not(#topPlayerCard) .name{font-size:20px!important' in html, 'player name must be 20px'
-          print('pregame-only pull refresh and larger mobile player UI verified')
+          assert 'body.pregame .panel-stack>.player-card:not(#topPlayerCard) .name{font-size:20px!important;margin:0 0 3px!important;line-height:1.35!important;padding-bottom:2px!important}' in html, 'Arabic player name must have enough vertical room to avoid clipping'
+          print('pregame-only pull refresh, larger mobile player UI and unclipped Arabic name verified')
           PY
       - name: Commit mobile game polish
         run: |
@@ -53,5 +53,5 @@ jobs:
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
           git add play-v10.html
-          git commit -m "fix: disable pull refresh during live game"
+          git commit -m "fix: prevent Arabic player name clipping"
           git push
