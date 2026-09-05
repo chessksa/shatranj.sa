@@ -1,4 +1,4 @@
-name: Test mobile dashboard right
+name: Apply mobile dashboard right
 
 on:
   push:
@@ -7,14 +7,92 @@ on:
       - '.github/workflows/test-mobile-dashboard-right.yml'
 
 permissions:
-  contents: read
+  contents: write
 
 jobs:
-  test:
+  apply-and-test:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
         with:
           ref: main
-      - name: Run mobile dashboard regression test
+
+      - name: RED - prove current mobile header fails the new requirement
+        run: |
+          set +e
+          python tests/test_dashboard_desktop_mobile_split.py > /tmp/mobile-dashboard-red.log 2>&1
+          code=$?
+          set -e
+          cat /tmp/mobile-dashboard-red.log
+          if [ "$code" -eq 0 ]; then
+            echo "Expected the regression test to fail before the fix, but it passed."
+            exit 1
+          fi
+          echo "RED confirmed: the current mobile header does not meet the new requirement."
+
+      - name: Apply mobile-only dashboard replacement
+        run: |
+          python - <<'PY'
+          from pathlib import Path
+          import re
+
+          css_path = Path('home-theme.css')
+          css = css_path.read_text(encoding='utf-8')
+          marker = '/* Mobile dashboard replaces tournaments 20260905 */'
+          block = r'''
+
+/* Mobile dashboard replaces tournaments 20260905 */
+@media(max-width:600px){
+  .compact-member-nav .header-tournaments{
+    display:none!important;
+  }
+  .compact-member-nav .dashboard-link{
+    display:inline-flex!important;
+    order:0!important;
+    width:auto!important;
+    min-width:108px!important;
+    max-width:none!important;
+    height:44px!important;
+    min-height:44px!important;
+    padding:0 10px!important;
+    gap:6px!important;
+    flex:0 0 auto!important;
+  }
+  .compact-member-nav .dashboard-link>span:not(.header-tile-icon){
+    display:inline!important;
+  }
+}
+'''
+          if marker not in css:
+              css_path.write_text(css.rstrip() + block, encoding='utf-8')
+
+          html_path = Path('index.html')
+          html = html_path.read_text(encoding='utf-8')
+          new_key = 'home-theme.css?v=20260905-14'
+          if new_key not in html:
+              updated, count = re.subn(
+                  r'home-theme\.css\?v=[^"\']+',
+                  new_key,
+                  html,
+                  count=1,
+              )
+              if count != 1:
+                  raise SystemExit('home-theme stylesheet cache key not found exactly once')
+              html_path.write_text(updated, encoding='utf-8')
+          PY
+
+      - name: GREEN - verify mobile dashboard replacement
         run: python tests/test_dashboard_desktop_mobile_split.py
+
+      - name: Verify diff and commit
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add home-theme.css index.html
+          git diff --cached --check
+          if git diff --cached --quiet; then
+            echo "No production changes to commit"
+            exit 0
+          fi
+          git commit -m "fix: replace mobile tournaments with dashboard"
+          git push origin main
