@@ -1,0 +1,38 @@
+name: Apply subscriber counter baseline
+on:
+  push:
+    paths:
+      - '.github/workflows/apply-subscriber-counter-baseline.yml'
+permissions:
+  contents: write
+jobs:
+  apply:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Apply 500 baseline including all accounts
+        run: |
+          python - <<'PY'
+          from pathlib import Path
+
+          path = Path('index.html')
+          html = path.read_text(encoding='utf-8')
+          old = "if(headerPlayers) headerPlayers.textContent=ALL_PLAYERS.filter(player=>!player.is_synthetic).length;"
+          new = "if(headerPlayers) headerPlayers.textContent=500 + ALL_PLAYERS.length;"
+          if old not in html:
+              if new in html:
+                  raise SystemExit('counter already updated')
+              raise SystemExit('subscriber counter marker not found')
+          html = html.replace(old, new, 1)
+          path.write_text(html, encoding='utf-8')
+          PY
+
+          python tests/test_subscriber_counter_baseline.py
+          python tests/test_arab_identity.py
+          python tests/test_home_stat_labels.py
+
+          git config user.name github-actions[bot]
+          git config user.email 41898282+github-actions[bot]@users.noreply.github.com
+          git add index.html
+          git commit -m "feat: start subscriber counter at 500"
+          git push
