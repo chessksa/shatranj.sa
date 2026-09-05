@@ -232,7 +232,7 @@ function syncRatedClocks(payload, computerCapMs = null) {
   if (!payload) return;
   playerTimeMs = Math.max(0, Number(payload.player_time_ms) || 0);
   const serverComputerTimeMs = Math.max(0, Number(payload.computer_time_ms) || 0);
-  computerTimeMs = Number.isFinite(Number(computerCapMs))
+  computerTimeMs = computerCapMs !== null && Number.isFinite(Number(computerCapMs))
     ? Math.max(0, Math.min(serverComputerTimeMs, computerCapMs))
     : serverComputerTimeMs;
   if (payload.status === 'active') {
