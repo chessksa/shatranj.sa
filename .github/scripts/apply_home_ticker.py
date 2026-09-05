@@ -15,13 +15,13 @@ ticker_style = '''
 .welcome-ticker{width:100%;height:34px;display:flex;align-items:center;overflow:hidden;background:#0a302f;color:#f7f3e7;border-top:1px solid rgba(197,163,77,.55);border-bottom:1px solid rgba(197,163,77,.55);position:relative;z-index:19;flex:none;direction:rtl}
 .welcome-ticker-label{flex:0 0 auto;height:100%;display:flex;align-items:center;padding:0 18px;white-space:nowrap;background:#0d3b39;color:#efcf7c;border-left:1px solid rgba(197,163,77,.5);font-size:12px;font-weight:900;line-height:1;position:relative;z-index:2;box-shadow:-8px 0 18px rgba(0,0,0,.12)}
 .welcome-ticker-viewport{min-width:0;flex:1;overflow:hidden;height:100%;display:flex;align-items:center;direction:ltr}
-.welcome-ticker-track{display:flex;align-items:center;width:max-content;min-width:max-content;will-change:transform;animation:welcomeTickerInlineMove 38s linear infinite;direction:ltr}
+.welcome-ticker-track{display:flex;align-items:center;width:max-content;min-width:max-content;will-change:transform;animation:welcomeTickerInlineMove 60s linear infinite;direction:ltr}
 .welcome-ticker-group{display:flex;align-items:center;flex:none}
 .welcome-ticker-item{display:inline-flex;align-items:center;white-space:nowrap;direction:rtl;font-size:12px;font-weight:800;line-height:1;padding:0 22px}
 .welcome-ticker-separator{width:5px;height:5px;border-radius:50%;background:#c5a34d;flex:none}
 .welcome-ticker-loading{display:inline-flex;align-items:center;white-space:nowrap;padding:0 20px;font-size:12px;font-weight:800;direction:rtl}
 .welcome-ticker-single{animation:none!important;transform:none!important}
-@keyframes welcomeTickerInlineMove{from{transform:translateX(0)}to{transform:translateX(50%)}}
+@keyframes welcomeTickerInlineMove{from{transform:translateX(0)}to{transform:translateX(-50%)}}
 @media(min-width:901px){
   body{grid-template-rows:auto 34px auto auto auto auto!important}
   .home-header{grid-column:1/-1!important;grid-row:1!important}
@@ -58,7 +58,7 @@ ticker_style = '''
   #register{order:6!important}
   footer{order:7!important}
 }
-@media(max-width:800px){.welcome-ticker{height:30px}.welcome-ticker-label{padding:0 10px;font-size:10px}.welcome-ticker-item{font-size:11px;padding:0 16px}.welcome-ticker-track{animation-duration:32s}}
+@media(max-width:800px){.welcome-ticker{height:30px}.welcome-ticker-label{padding:0 10px;font-size:10px}.welcome-ticker-item{font-size:11px;padding:0 16px}.welcome-ticker-track{animation-duration:52s}}
 @media(max-width:430px){.welcome-ticker-label{padding:0 8px;font-size:9px}.welcome-ticker-item{padding:0 12px;font-size:10px}}
 @media(prefers-reduced-motion:reduce){.welcome-ticker-track{animation:none;transform:none}.welcome-ticker-group:nth-child(2){display:none}}
 </style>'''
@@ -110,7 +110,7 @@ render_function = '''function renderWelcomeTicker(rows){
   const members=[...(Array.isArray(rows)?rows:[])]
     .filter(player=>player&&player.created_at)
     .sort((a,b)=>new Date(b.created_at)-new Date(a.created_at))
-    .slice(0,10);
+    .slice(0,20);
 
   if(!members.length){
     track.className='welcome-ticker-track welcome-ticker-single';
