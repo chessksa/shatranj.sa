@@ -17,7 +17,7 @@ def test_home_uses_arab_identity_and_country_location():
     assert "ترتيب اللاعبين على مستوى العالم العربي" in html
     assert "<th>الدولة</th>" in html
     assert "<span>الدولة</span>" in html
-    assert "كل الدول العربية" in html
+    assert '<option value="">الدولة</option>' in html
     assert "اختر الدولة" in html
     assert "شطرنج السعودية" not in html
 
