@@ -1,0 +1,18 @@
+name: Test ranking filter font 14
+
+on:
+  push:
+    branches:
+      - fix/ranking-filter-font-14
+    paths:
+      - 'home-theme.css'
+      - 'tests/test_ranking_filter_labels.py'
+      - '.github/workflows/test-ranking-filter-font-14.yml'
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Run regression test
+        run: python tests/test_ranking_filter_labels.py
