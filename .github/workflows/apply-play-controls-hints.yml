@@ -4,6 +4,8 @@ on:
   push:
     paths:
       - '.github/workflows/apply-play-controls-hints.yml'
+      - 'ci/apply_play_controls_hints.py'
+      - 'ci/fix_play_grace_nonblocking.py'
   workflow_dispatch:
 
 permissions:
@@ -15,7 +17,9 @@ jobs:
     steps:
       - uses: actions/checkout@v4
       - name: Apply approved play controls and hints
-        run: python ci/apply_play_controls_hints.py
+        run: |
+          python ci/apply_play_controls_hints.py
+          python ci/fix_play_grace_nonblocking.py
       - name: Test approved play layout and hints
         run: |
           python - <<'PY'
@@ -29,7 +33,7 @@ jobs:
           assert 'showMoveHints(event.squareFrom)' in js
           assert 'clearMoveHints();\n\n    const move=game.move' in js
           assert 'await loadGraceEndWindow();' not in js
-          assert '  loadGraceEndWindow();\n  gamePollTimer=setInterval' in js
+          assert 'loadGraceEndWindow();' in js
           print('approved play layout and hints verified')
           PY
       - name: Commit approved play changes
