@@ -37,7 +37,10 @@ jobs:
           assert "addEventListener('touchend',handlePullEnd" in html, 'pull refresh touchend handler missing'
           assert 'location.reload()' in html, 'pull refresh must reload the page after threshold'
           assert 'const PULL_REFRESH_THRESHOLD=72' in html, 'pull refresh threshold must be explicit'
-          print('mobile search spacing, equal-card and in-page pull-to-refresh behavior verified')
+          assert 'PULL_START_ZONE' not in html, 'pull refresh must not require starting in a top pixel zone'
+          assert 'window.scrollY>2' in html, 'minor Safari scroll offset must not disable pull refresh'
+          assert "closest?.('.board-frame,.board-shell,#board,.move-hints')" in html, 'board area must be excluded from pull refresh'
+          print('mobile pull refresh can start from any safe page area')
           PY
       - name: Commit mobile pull refresh
         run: |
@@ -48,5 +51,5 @@ jobs:
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
           git add play-v10.html
-          git commit -m "fix: enable in-page mobile pull refresh"
+          git commit -m "fix: allow mobile pull refresh from safe page areas"
           git push
