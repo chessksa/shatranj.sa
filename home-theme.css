@@ -296,8 +296,8 @@ input::placeholder{color:#8fa19c}
   overflow:hidden;
   text-overflow:ellipsis;
 }
-#ranking th{height:38px;color:#d9c58f!important;font-size:11px!important;font-weight:900}
-#ranking td{font-size:12px!important}
+#ranking th{height:38px;color:#d9c58f!important;font-size:14px!important;font-weight:900}
+#ranking td{font-size:15px!important}
 #ranking tbody tr:hover{background:rgba(255,255,255,.035)!important}
 #ranking tbody tr:last-child td{border-bottom:0!important}
 #ranking th:nth-child(1),#ranking td:nth-child(1){width:42%;text-align:right!important}
@@ -465,7 +465,7 @@ footer .wrap{display:flex;justify-content:space-between;align-items:center}
   .home-hero .home-board-actions{grid-template-columns:1fr 1fr!important}
   #ranking{padding-inline:7px!important}
   #rankingTitle{font-size:16px!important}
-  #ranking th,#ranking td{font-size:9px!important;padding-inline:3px!important}
+  #ranking th,#ranking td{font-size:12px!important;padding-inline:3px!important}
       #register>.wrap{width:min(100% - 18px,720px)!important}
 }
 
