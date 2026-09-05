@@ -1096,3 +1096,22 @@ footer .wrap{display:flex;justify-content:space-between;align-items:center}
   }
 }
 
+/* Mobile header single dashboard entry 20260905 */
+@media(max-width:600px){
+  .compact-member-nav .dashboard-link{
+    display:none!important;
+  }
+  .compact-member-nav .header-member-link.header-tile{
+    height:auto!important;
+    min-height:44px!important;
+  }
+  .compact-member-nav .header-member-copy strong{
+    max-width:none!important;
+    white-space:normal!important;
+    overflow:visible!important;
+    text-overflow:clip!important;
+    overflow-wrap:anywhere!important;
+    line-height:1.2!important;
+  }
+}
+
