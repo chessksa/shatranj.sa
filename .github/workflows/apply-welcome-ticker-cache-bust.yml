@@ -4,6 +4,8 @@ on:
     branches: [main]
     paths:
       - '.github/workflows/apply-welcome-ticker-cache-bust.yml'
+      - '.github/scripts/apply_home_ticker.py'
+      - 'tests/test_welcome_ticker_loader.py'
 permissions:
   contents: write
 jobs:
