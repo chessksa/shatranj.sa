@@ -1,0 +1,44 @@
+from pathlib import Path
+
+path = Path('play-v10.html')
+html = path.read_text(encoding='utf-8')
+marker = '/* Compact mobile no-scroll game layout */'
+
+patch = r'''
+    /* Compact mobile no-scroll game layout */
+    @media(max-width:900px){
+      html,body{height:100%;overflow:hidden!important}
+      body{min-height:100dvh}
+      .page{height:100dvh!important;min-height:0!important;padding:4px 6px!important;overflow:hidden}
+      .layout{height:100%!important;min-height:0;gap:4px!important;overflow:hidden;justify-content:flex-start}
+      .side-header{min-height:42px!important;height:42px;padding:3px 7px!important;border-radius:10px}
+      .side-brand{font-size:12px;gap:5px}
+      .side-brand-mark{width:27px;height:27px;font-size:17px;border-radius:8px}
+      .side-header-actions{gap:4px}
+      .side-icon-btn{height:32px;width:58px;font-size:10px;border-radius:8px}
+      #siteNotificationHost{width:58px;min-width:58px}
+      #siteNotificationHost .site-notification-bell{width:58px!important;height:32px!important;border-radius:8px!important}
+      #topPlayerCard,.panel-stack>.player-card:not(#topPlayerCard){min-height:74px!important;height:74px!important;padding:5px 7px!important;grid-template-columns:46px minmax(0,1fr) 86px!important;gap:6px!important;border-radius:11px}
+      .opponent-slot{min-height:74px!important}
+      .avatar{width:44px!important;height:44px!important;border-radius:9px}
+      .name{font-size:13px!important;margin:0 0 2px!important;line-height:1.15!important;white-space:nowrap!important;overflow:hidden!important;text-overflow:ellipsis!important}
+      .location{font-size:9px!important;margin-bottom:2px!important;line-height:1.1}
+      .rating{font-size:10px!important;gap:3px!important;line-height:1.1}
+      .status{font-size:9px!important;margin:2px 0 0!important;gap:4px!important;line-height:1}
+      .status::before{width:6px!important;height:6px!important}
+      .clock{font-size:18px!important;padding:5px 4px!important;border-radius:8px}
+      .clock-progress{margin-top:3px!important;height:3px!important}
+      .board-panel{height:auto!important;min-height:0;gap:3px!important;flex:1 1 auto;justify-content:center!important;align-items:center!important}
+      .board-panel>.board-frame{width:min(calc(100vw - 12px),calc(100dvh - 270px))!important;max-width:100%;padding:5px 5px 12px!important;border-radius:10px;margin-inline:auto}
+      .coords-left,.coords-bottom{font-size:9px!important}
+      .board-panel>.actions-card{width:min(calc(100vw - 12px),calc(100dvh - 270px))!important;min-height:36px!important;border-radius:9px}
+      .board-panel>.actions-card .action-item{min-height:36px!important;padding:2px 4px!important;gap:3px!important}
+      .board-panel>.actions-card .action-icon{font-size:15px!important}
+      .board-panel>.actions-card .action-label{font-size:9px!important}
+      .board-panel>.actions-card .grace-countdown{font-size:9px!important;min-width:22px!important;padding:1px 5px!important}
+    }
+'''
+
+if marker not in html:
+    html = html.replace('  </style>', patch + '  </style>', 1)
+    path.write_text(html, encoding='utf-8')
