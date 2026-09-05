@@ -1,0 +1,63 @@
+name: Apply desktop play actions and larger board
+on:
+  push:
+    paths:
+      - '.github/workflows/apply-desktop-play-actions-board.yml'
+permissions:
+  contents: write
+jobs:
+  apply:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - name: Move desktop actions and enlarge board
+        run: |
+          python - <<'PY'
+          from pathlib import Path
+
+          path = Path('play-v10.html')
+          html = path.read_text(encoding='utf-8')
+
+          old_actions = '<section class="actions-card">'
+          new_actions = '<section class="actions-card" id="gameActions">'
+          if new_actions not in html:
+              if old_actions not in html:
+                  raise SystemExit('actions card marker not found')
+              html = html.replace(old_actions, new_actions, 1)
+
+          old_bottom = '''          <section class="player-card">\n            <div class="avatar light" id="bottomAvatar">'''
+          new_bottom = '''          <section class="player-card" id="bottomPlayerCard">\n            <div class="avatar light" id="bottomAvatar">'''
+          if new_bottom not in html:
+              if old_bottom not in html:
+                  raise SystemExit('bottom player marker not found')
+              html = html.replace(old_bottom, new_bottom, 1)
+
+          css_anchor = '    .board-panel>.actions-card .grace-note{display:none}\n'
+          desktop_css = '''    @media(min-width:901px){\n      .board-panel{grid-template-rows:minmax(0,1fr);row-gap:0}\n      .board-panel>.board-frame{width:min(100%,calc(100dvh - 34px),1000px)}\n      .panel-stack>.actions-card{width:100%;min-height:100px;border-radius:18px}\n    }\n'''
+          if desktop_css not in html:
+              if css_anchor not in html:
+                  raise SystemExit('desktop css anchor not found')
+              html = html.replace(css_anchor, css_anchor + desktop_css, 1)
+
+          script_anchor = '  <script type="module">\n    const params = new URLSearchParams(location.search);'
+          desktop_script = '''  <script>\n    (()=>{\n      const desktopMedia=window.matchMedia('(min-width:901px)');\n      const gameActions=document.getElementById('gameActions');\n      const boardPanel=document.querySelector('.board-panel');\n      const desktopStack=document.querySelector('.panel-stack');\n      const bottomPlayerCard=document.getElementById('bottomPlayerCard');\n      const placeGameActions=()=>{\n        if(!gameActions||!boardPanel||!desktopStack||!bottomPlayerCard) return;\n        if(desktopMedia.matches){\n          desktopStack.insertBefore(gameActions, bottomPlayerCard);\n        }else{\n          boardPanel.appendChild(gameActions);\n        }\n      };\n      placeGameActions();\n      if(desktopMedia.addEventListener) desktopMedia.addEventListener('change',placeGameActions);\n      else desktopMedia.addListener(placeGameActions);\n    })();\n  </script>\n\n'''
+          if desktop_script not in html:
+              if script_anchor not in html:
+                  raise SystemExit('module script anchor not found')
+              html = html.replace(script_anchor, desktop_script + script_anchor, 1)
+
+          path.write_text(html, encoding='utf-8')
+          PY
+
+          python tests/test_desktop_play_actions_board.py
+          python -m pip install -q pytest
+          python -m pytest -q tests/test_mobile_play_layout.py
+
+          git config user.name github-actions[bot]
+          git config user.email 41898282+github-actions[bot]@users.noreply.github.com
+          git add play-v10.html
+          git commit -m "feat: move desktop game actions between players and enlarge board"
+          git push
