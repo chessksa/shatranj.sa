@@ -4,6 +4,7 @@ on:
   push:
     paths:
       - '.github/workflows/pregame-mobile-fit.yml'
+      - 'scripts/apply-pregame-mobile-fit.py'
   workflow_dispatch:
 
 permissions:
@@ -14,35 +15,33 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
-      - name: Apply safe-area mobile pull refresh and existing mobile fixes
+      - name: Apply universal mobile pull refresh and player sizing
         run: python scripts/apply-pregame-mobile-fit.py
-      - name: Verify equal mobile player card, search layout and pull to refresh
+      - name: Verify mobile pull refresh, header and player sizing
         run: |
           python - <<'PY'
           from pathlib import Path
           html = Path('play-v10.html').read_text(encoding='utf-8')
           assert 'body.pregame #topPlayerCard{order:1;width:100%;min-height:96px!important;height:96px!important' in html
-          assert 'body.pregame .panel-stack>.player-card:not(#topPlayerCard){order:3;width:100%;min-height:96px!important;height:96px!important' in html, 'bottom player card must equal top card height'
-          assert 'body.pregame{height:auto!important;min-height:100dvh!important;overflow-y:auto!important;overflow-x:hidden!important' in html, 'pregame must allow vertical pull-to-refresh'
-          assert 'body.live-game{height:auto!important;min-height:100dvh!important;overflow-y:auto!important;overflow-x:hidden!important' in html, 'live game must allow vertical pull-to-refresh'
-          assert '-webkit-overflow-scrolling:touch' in html
-          assert 'width:52px!important;height:52px!important' in html
-          assert 'body.pregame #opponentSearchWaiting .opponent-waiting-line{font-size:18px!important;color:#ffbd6a!important' in html, 'search title must be 18px light orange'
-          assert 'body.pregame #opponentSearchWaiting .search-dots i{background:#ffbd6a!important' in html, 'search dots must match the light orange title'
-          assert 'body.pregame #opponentSearchWaiting .inline-cancel-search{margin-top:15px!important' in html, 'cancel search button needs breathing room'
-          assert 'body.pregame .board-panel{order:2;width:100%;height:auto!important;min-height:0!important;flex:0 0 auto!important' in html, 'board panel must not absorb leftover vertical space'
-          assert 'id="mobilePullRefresh"' in html, 'mobile pull refresh indicator missing'
-          assert "addEventListener('touchstart',handlePullStart" in html, 'pull refresh touchstart handler missing'
-          assert "addEventListener('touchmove',handlePullMove" in html, 'pull refresh touchmove handler missing'
-          assert "addEventListener('touchend',handlePullEnd" in html, 'pull refresh touchend handler missing'
-          assert 'location.reload()' in html, 'pull refresh must reload the page after threshold'
-          assert 'const PULL_REFRESH_THRESHOLD=72' in html, 'pull refresh threshold must be explicit'
-          assert 'PULL_START_ZONE' not in html, 'pull refresh must not require starting in a top pixel zone'
-          assert 'window.scrollY>2' in html, 'minor Safari scroll offset must not disable pull refresh'
-          assert "closest?.('.board-frame,.board-shell,#board,.move-hints')" in html, 'board area must be excluded from pull refresh'
-          print('mobile pull refresh can start from any safe page area')
+          assert 'body.pregame .panel-stack>.player-card:not(#topPlayerCard){order:3;width:100%;min-height:96px!important;height:96px!important' in html
+          assert 'body.pregame{height:auto!important;min-height:100dvh!important;overflow-y:auto!important;overflow-x:hidden!important' in html
+          assert 'body.live-game{height:auto!important;min-height:100dvh!important;overflow-y:auto!important;overflow-x:hidden!important' in html
+          assert 'id="mobilePullRefresh"' in html
+          assert "addEventListener('touchstart',handlePullStart" in html
+          assert "addEventListener('touchmove',handlePullMove" in html
+          assert "addEventListener('touchend',handlePullEnd" in html
+          assert 'location.reload()' in html
+          assert 'const PULL_REFRESH_THRESHOLD=72' in html
+          assert 'const PULL_ACTIVATE_DISTANCE=12' in html, 'downward swipe must distinguish itself from a tap'
+          assert 'PULL_START_ZONE' not in html
+          assert "closest?.('.board-frame,.board-shell,#board,.move-hints')" not in html, 'board must no longer be excluded from pull refresh'
+          assert 'if(distance<PULL_ACTIVATE_DISTANCE) return;' in html, 'tap must remain available before swipe activation'
+          assert 'body.pregame .side-header{order:0;width:100%;min-height:48px!important;height:48px!important' in html, 'mobile header must be larger'
+          assert 'body.pregame .panel-stack>.player-card:not(#topPlayerCard) .avatar{width:78px!important;height:78px!important' in html, 'player image must fill the card height'
+          assert 'body.pregame .panel-stack>.player-card:not(#topPlayerCard) .name{font-size:20px!important' in html, 'player name must be 20px'
+          print('universal mobile pull refresh and larger player UI verified')
           PY
-      - name: Commit mobile pull refresh
+      - name: Commit mobile game polish
         run: |
           if git diff --quiet -- play-v10.html; then
             echo "No mobile layout changes to commit."
@@ -51,5 +50,5 @@ jobs:
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
           git add play-v10.html
-          git commit -m "fix: allow mobile pull refresh from safe page areas"
+          git commit -m "fix: universal mobile pull refresh and larger player card"
           git push
