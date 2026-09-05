@@ -1,0 +1,38 @@
+name: Remove home footer once
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - '.github/workflows/remove-home-footer-once.yml'
+
+permissions:
+  contents: write
+
+jobs:
+  remove-footer:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Remove footer block
+        run: |
+          python - <<'PY'
+          from pathlib import Path
+          path = Path('index.html')
+          text = path.read_text(encoding='utf-8')
+          block = '''<footer>\n  <div class="wrap">\n    <strong>♟ شطرنج العرب</strong><span class="footer-tagline"> .. أكثر من لعبة</span>\n  </div>\n</footer>\n\n'''
+          if block not in text:
+              raise SystemExit('Target footer block not found; refusing unrelated edit')
+          text = text.replace(block, '', 1)
+          path.write_text(text, encoding='utf-8')
+          if 'أكثر من لعبة' in text:
+              raise SystemExit('Footer phrase still present')
+          PY
+      - name: Remove temporary workflow and commit
+        run: |
+          rm .github/workflows/remove-home-footer-once.yml
+          git config user.name "chessksa"
+          git config user.email "gmel1199@gmail.com"
+          git add index.html .github/workflows/remove-home-footer-once.yml
+          git commit -m "حذف الفوتر السفلي من الواجهة"
+          git push
