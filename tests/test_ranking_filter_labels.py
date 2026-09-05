@@ -10,7 +10,7 @@ def test_ranking_filter_labels_and_font_size():
     assert '<option value="">الدولة</option>' in html
     assert "first.textContent=country?'المدينة':'اختر الدولة أولًا';" in html
     assert "#ranking .ranking-filters select" in css
-    assert "font-size:12px!important;" in css
+    assert "font-size:14px!important;" in css
 
 
 if __name__ == "__main__":
