@@ -20,6 +20,28 @@
     .legacy-matchmaking{display:none!important}
     @media(min-width:901px){.player-card{padding:14px;grid-template-columns:82px minmax(0,1fr) 108px;gap:10px}.player-info{min-width:0}.name{display:block;color:inherit;text-decoration:none;font-size:16px;font-weight:800;margin:0 0 5px;white-space:nowrap;overflow:visible;text-overflow:clip;line-height:1.35}.location{color:#efbd64;font-size:11px;margin-bottom:6px;white-space:nowrap;overflow:visible}}
     @media(max-width:900px){body{overflow:auto}.page{height:auto;min-height:100dvh;padding:8px}.layout{display:flex;flex-direction:column;gap:10px}.side-panel{display:contents}.panel-stack{display:contents}.side-header{order:0;width:100%}#topPlayerCard{order:1;width:100%}.board-panel{width:100%;height:auto;order:2;display:flex;justify-content:center;align-items:center}.board-frame{width:min(100%,calc(100vw - 16px));margin-inline:auto}.panel-stack>.player-card:not(#topPlayerCard){order:3;width:100%}.actions-card{order:4;min-height:70px;width:100%}.player-card{min-height:110px;padding:11px;grid-template-columns:60px minmax(0,1fr) 104px;gap:9px}.avatar{width:58px;height:58px}.clock{font-size:22px;padding:10px 6px}.opponent-time-option{min-height:58px}.coords-left{font-size:11px}.coords-bottom{font-size:11px}}
+
+    /* Approved compact game actions below the board */
+    .board-panel{grid-template-rows:minmax(0,1fr) auto;row-gap:7px;align-content:center}
+    .board-panel>.board-frame{grid-row:1;width:min(100%,calc(100dvh - 88px),920px)}
+    .board-panel>.actions-card{grid-row:2;width:min(100%,calc(100dvh - 88px),920px);min-height:44px;border-radius:11px;justify-self:end;box-shadow:0 7px 18px rgba(0,0,0,.20);background:rgba(7,54,61,.78)}
+    .board-panel>.actions-card .action-item{min-height:44px;flex-direction:row;gap:5px;padding:4px 8px}
+    .board-panel>.actions-card .action-icon{font-size:18px;line-height:1}
+    .board-panel>.actions-card .action-label{font-size:11px}
+    .board-panel>.actions-card .grace-countdown{min-width:25px;padding:1px 6px;font-size:10px}
+    .board-panel>.actions-card .grace-note{display:none}
+    .move-hints{position:absolute;inset:0;z-index:8;pointer-events:none}
+    .move-hint{position:absolute;width:12.5%;height:12.5%;display:grid;place-items:center;pointer-events:none}
+    .move-hint::after{content:"";width:22%;height:22%;border-radius:50%;background:rgba(10,58,46,.62);box-shadow:0 0 0 1px rgba(255,255,255,.16)}
+    .move-hint.capture::after{width:68%;height:68%;background:transparent;border:4px solid rgba(117,45,36,.58);box-shadow:none}
+    @media(max-width:900px){
+      .board-panel{flex-direction:column;gap:6px}
+      .board-panel>.board-frame{width:min(100%,calc(100vw - 16px))}
+      .board-panel>.actions-card{order:4;width:min(100%,calc(100vw - 16px));min-height:42px}
+      .board-panel>.actions-card .action-item{min-height:42px;padding:3px 5px}
+      .board-panel>.actions-card .action-icon{font-size:17px}
+      .board-panel>.actions-card .action-label{font-size:10px}
+    }
   </style>
   <link rel="stylesheet" href="exact-board-v13.css?v=20260903-14" />
 </head>
@@ -35,9 +57,15 @@
       <section class="board-panel">
         <div class="board-frame">
           <div class="coords-left" id="coordsLeft"></div>
-          <div class="board-shell"><div id="board" class="board" aria-label="رقعة الشطرنج"></div></div>
+          <div class="board-shell"><div id="board" class="board" aria-label="رقعة الشطرنج"></div><div id="moveHints" class="move-hints" aria-hidden="true"></div></div>
           <div class="coords-bottom" id="coordsBottom"></div>
         </div>
+
+        <section class="actions-card">
+            <button class="action-item" id="resignBtn" type="button"><span class="action-icon">🏳</span><span class="action-label">استسلام</span></button>
+            <button class="action-item" id="drawOffer" type="button"><span class="action-icon">🤝</span><span class="action-label">عرض تعادل</span></button>
+            <button class="action-item grace-end-action" id="endGraceBtn" type="button" disabled><span class="action-icon">✕</span><span class="action-label">إنهاء</span><span class="grace-countdown" id="endGraceCountdown">5</span><span class="grace-note">خلال 5 ثوانٍ دون خصم نقاط</span></button>
+        </section>
       </section>
 
       <aside class="side-panel">
@@ -76,11 +104,6 @@
             </div>
           </section>
 
-          <section class="actions-card">
-            <button class="action-item" id="resignBtn" type="button"><span class="action-icon">🏳</span><span class="action-label">استسلام</span></button>
-            <button class="action-item" id="drawOffer" type="button"><span class="action-icon">🤝</span><span class="action-label">عرض تعادل</span></button>
-            <button class="action-item grace-end-action" id="endGraceBtn" type="button" disabled><span class="action-icon">✕</span><span class="action-label">إنهاء</span><span class="grace-countdown" id="endGraceCountdown">5</span><span class="grace-note">خلال 5 ثوانٍ دون خصم نقاط</span></button>
-          </section>
 
           <section class="player-card">
             <div class="avatar light" id="bottomAvatar"><img class="avatar-img" id="bottomAvatarImg" alt="" hidden></div>

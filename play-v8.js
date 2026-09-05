@@ -32,6 +32,7 @@ const cancelReportBtn = $('cancelReport');
 const reportMessage = $('reportMessage');
 
 const boardEl = $('board');
+const moveHintsEl = $('moveHints');
 const leftEl = $('coordsLeft');
 const bottomEl = $('coordsBottom');
 const topClockEl = $('topClock');
@@ -395,6 +396,45 @@ function updateClockUI(){
   if(serverState.status==='active' && activeMs<=0 && !timeoutClaimBusy) claimTimeout();
 }
 
+
+function clearMoveHints(){
+  if(moveHintsEl) moveHintsEl.replaceChildren();
+}
+
+function moveHintPosition(square){
+  const fileIndex=files.indexOf(String(square || '')[0]);
+  const rank=Number(String(square || '')[1]);
+  if(fileIndex<0 || !Number.isFinite(rank) || rank<1 || rank>8) return null;
+  let col=fileIndex;
+  let row=8-rank;
+  if(flipped){
+    col=7-col;
+    row=7-row;
+  }
+  return {col,row};
+}
+
+function showMoveHints(fromSquare){
+  clearMoveHints();
+  if(!moveHintsEl || !game || !fromSquare) return;
+  const moves=game.moves({square:fromSquare,verbose:true});
+  const targets=new Map();
+  moves.forEach((move)=>{
+    const current=targets.get(move.to);
+    targets.set(move.to,{to:move.to,capture:Boolean(move.captured) || Boolean(current?.capture)});
+  });
+  targets.forEach((target)=>{
+    const pos=moveHintPosition(target.to);
+    if(!pos) return;
+    const hint=document.createElement('span');
+    hint.className='move-hint' + (target.capture ? ' capture' : '');
+    hint.style.left=`${pos.col * 12.5}%`;
+    hint.style.top=`${pos.row * 12.5}%`;
+    hint.dataset.square=target.to;
+    moveHintsEl.appendChild(hint);
+  });
+}
+
 function ensureCmStyles(){
   if(!document.querySelector('link[data-cm-chessboard-core]')){
     const core=document.createElement('link');
@@ -473,7 +513,15 @@ function handleBoardInput(event){
     if(moveBusy || !game || !serverState || serverState.status!=='active') return false;
     if(game.turn()!==myColor) return false;
     const piece=game.get(event.squareFrom);
-    return Boolean(piece && piece.color===myColor && piece.color===game.turn());
+    const allowed=Boolean(piece && piece.color===myColor && piece.color===game.turn());
+    if(!allowed){
+      clearMoveHints();
+      return false;
+    }
+    selected=event.squareFrom;
+    legalTargets=game.moves({square:event.squareFrom,verbose:true});
+    showMoveHints(event.squareFrom);
+    return true;
   }
 
   if(event.type===INPUT_EVENT_TYPE.validateMoveInput){
@@ -482,6 +530,7 @@ function handleBoardInput(event){
     const legal=game.moves({square:event.squareFrom,verbose:true});
     const candidate=legal.find(move=>move.to===event.squareTo);
     if(!candidate) return false;
+    clearMoveHints();
 
     const move=game.move({from:event.squareFrom,to:event.squareTo,promotion:'q'});
     if(!move) return false;
@@ -592,6 +641,7 @@ function applyServerState(row, force=false){
     }
     selected=null;
     legalTargets=[];
+    clearMoveHints();
     lastServerUpdate=row.updated_at || '';
     renderBoard();
   }else{
@@ -675,7 +725,7 @@ async function openLiveGame(){
   showGamePage();
   await refreshLiveGame(true);
   if(serverState?.status==='cancelled') return;
-  await loadGraceEndWindow();
+  loadGraceEndWindow();
   gamePollTimer=setInterval(()=>{
     if(!document.hidden && !['finished','cancelled'].includes(serverState?.status)) refreshLiveGame(false);
   },1200);
@@ -733,7 +783,7 @@ endGraceBtn.addEventListener('click',async()=>{
   }catch(err){
     console.error(err);
     toast('تعذر إنهاء المباراة. حاول مرة أخرى.');
-    await loadGraceEndWindow();
+    loadGraceEndWindow();
   }finally{
     graceRequestBusy=false;
     updateGraceEndUI();
