@@ -12,6 +12,6 @@ assert '.hero-live-stats{margin:0 0 10px!important}' in css
 assert '#ranking{padding:4px 7px 6px!important}' in css
 assert '.home-features{padding:10px 0 12px!important}' in css
 assert '#register{padding:14px 0!important}' in css
-assert 'home-theme.css?v=20260905-12' in html
+assert 'home-theme.css?v=20260905-13' in html
 
 print('mobile home spacing: PASS')

@@ -1546,3 +1546,23 @@ footer .wrap{display:flex;justify-content:space-between;align-items:center}
     height:42px!important;
   }
 }
+
+/* Mobile header remove dashboard final 20260905 */
+@media(max-width:600px){
+  body.home-signed-in .compact-member-nav .nav-user{
+    grid-template-columns:repeat(3,minmax(0,1fr))!important;
+  }
+  body.home-signed-in .compact-member-nav .dashboard-link{display:none!important}
+  body.home-signed-in .compact-member-nav .header-notification-host{
+    grid-column:1!important;
+    grid-row:2!important;
+  }
+  body.home-signed-in .compact-member-nav .header-tournaments{
+    grid-column:2!important;
+    grid-row:2!important;
+  }
+  body.home-signed-in .compact-member-nav .nav-logout{
+    grid-column:3!important;
+    grid-row:2!important;
+  }
+}

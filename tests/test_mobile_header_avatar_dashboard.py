@@ -16,5 +16,5 @@ assert '.compact-member-nav .dashboard-link{' in section
 assert 'display:inline-flex!important;' in section
 assert '.compact-member-nav .dashboard-link>span:not(.header-tile-icon){display:inline!important}' in section
 assert 'grid-column:4!important;' in section
-assert 'home-theme.css?v=20260905-12' in html
+assert 'home-theme.css?v=20260905-13' in html
 print('mobile header avatar dashboard: PASS')

@@ -4,5 +4,5 @@ css = Path('home-theme.css').read_text(encoding='utf-8')
 html = Path('index.html').read_text(encoding='utf-8')
 
 assert '.hero-stat div small{order:1!important;margin:0 0 7px!important;font-size:14px!important}' in css, 'hero stat labels must be 14px'
-assert 'home-theme.css?v=20260905-12' in html, 'home page must use fresh stylesheet cache version'
+assert 'home-theme.css?v=20260905-13' in html, 'home page must use fresh stylesheet cache version'
 print('home stat labels: PASS')

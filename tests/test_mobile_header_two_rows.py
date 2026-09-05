@@ -7,5 +7,5 @@ assert 'grid-column:1/-1!important;' in css
 assert '.compact-member-nav .header-member-points small{display:none!important}' in css
 assert '.compact-member-nav .header-tournaments .header-tile-icon{display:none!important}' in css
 assert '.compact-member-nav .header-tournaments>span:not(.header-tile-icon){display:inline!important}' in css
-assert 'home-theme.css?v=20260905-12' in html
+assert 'home-theme.css?v=20260905-13' in html
 print('mobile header two rows: PASS')
