@@ -1,0 +1,136 @@
+name: Apply computer reliability fixes
+on:
+  push:
+    branches: [main]
+    paths:
+      - '.github/workflows/apply-computer-reliability.yml'
+permissions:
+  contents: write
+jobs:
+  apply:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Patch computer controller
+        run: |
+          python - <<'PY'
+          from pathlib import Path
+
+          path = Path('play-computer.js')
+          code = path.read_text(encoding='utf-8')
+
+          old_levels = """const LEVELS = {
+            easy: { skill: 2, movetime: 140, label: 'سهل', points: 5 },
+            medium: { skill: 8, movetime: 320, label: 'متوسط', points: 10 },
+            hard: { skill: 16, movetime: 700, label: 'صعب', points: 20 }
+          };"""
+          new_levels = """const LEVELS = {
+            easy: { skill: 8, movetime: 250, label: 'سهل', points: 5 },
+            medium: { skill: 14, movetime: 600, label: 'متوسط', points: 10 },
+            hard: { skill: 20, movetime: 1200, label: 'صعب', points: 20 }
+          };"""
+          if old_levels not in code:
+              raise SystemExit('LEVELS marker not found')
+          code = code.replace(old_levels, new_levels, 1)
+
+          submit_marker = "async function submitRatedMove(move) {"
+          recovery = """async function fetchRatedState() {
+            if (!ratedMode || !ratedGameId) return null;
+            try {
+              return await invokeComputer({ action: 'state', game_id: ratedGameId });
+            } catch (error) {
+              console.error('computer state reconciliation failed', error);
+              return null;
+            }
+          }
+
+          """
+          if recovery.strip() not in code:
+              if submit_marker not in code:
+                  raise SystemExit('submit marker not found')
+              code = code.replace(submit_marker, recovery + submit_marker, 1)
+
+          old_catch = """  } catch (error) {
+            console.error(error);
+            game.undo();
+            renderBoard(false);
+            clockActiveSide = 'player';
+            clockAnchorMs = Date.now();
+            setComputerStatus('جاهز');
+            toast('تعذر اعتماد الحركة. أُعيدت الرقعة إلى آخر وضع معتمد.');
+          } finally {
+            thinking = false;
+          }
+          }"""
+          new_catch = """  } catch (error) {
+            console.error(error);
+            const authoritative = await fetchRatedState();
+            if (authoritative?.fen) {
+              game.load(authoritative.fen);
+              renderBoard(false);
+              syncRatedClocks(authoritative);
+              if (authoritative.status === 'finished') finishRatedResult(authoritative);
+              else {
+                setComputerStatus('جاهز');
+                toast('تمت مزامنة المباراة مع الخادم.');
+              }
+            } else {
+              game.undo();
+              renderBoard(false);
+              clockActiveSide = 'player';
+              clockAnchorMs = Date.now();
+              setComputerStatus('جاهز');
+              toast('تعذر اعتماد الحركة. أُعيدت الرقعة إلى آخر وضع معتمد.');
+            }
+          } finally {
+            thinking = false;
+          }
+          }"""
+          if old_catch not in code:
+              raise SystemExit('submit catch marker not found')
+          code = code.replace(old_catch, new_catch, 1)
+
+          old_move = """    const move = game.move({ from: event.squareFrom, to: event.squareTo, promotion: 'q' });
+            if (!move) return false;
+            switchClock('computer');
+            renderBoard(false);
+
+            if (ratedMode) {
+              Promise.resolve().then(() => submitRatedMove(move));
+            } else if (!checkGuestGameResult()) {
+              setTimeout(computerTurn, 180);
+            }
+            return true;"""
+          new_move = """    const move = game.move({ from: event.squareFrom, to: event.squareTo, promotion: 'q' });
+            if (!move) return false;
+
+            if (ratedMode) {
+              commitActiveClock();
+              clockActiveSide = null;
+              clockAnchorMs = 0;
+              renderClocks();
+              Promise.resolve().then(() => submitRatedMove(move));
+            } else {
+              switchClock('computer');
+              if (!checkGuestGameResult()) setTimeout(computerTurn, 180);
+            }
+            return true;"""
+          if old_move not in code:
+              raise SystemExit('validate move marker not found')
+          code = code.replace(old_move, new_move, 1)
+
+          path.write_text(code, encoding='utf-8')
+          PY
+      - name: Verify regression contract and syntax
+        run: |
+          python tests/test_computer_play_mode.py
+          cp play-computer.js /tmp/play-computer.mjs
+          node --check /tmp/play-computer.mjs
+      - name: Commit product fix
+        run: |
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git add play-computer.js
+          git diff --cached --quiet && exit 0
+          git commit -m 'fix: stabilize computer moves clocks and recovery'
+          git push
