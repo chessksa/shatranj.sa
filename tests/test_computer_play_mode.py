@@ -8,6 +8,7 @@ ENGINE_JS = ROOT / "vendor" / "stockfish" / "stockfish-18-lite-single.js"
 ENGINE_WASM = ROOT / "vendor" / "stockfish" / "stockfish-18-lite-single.wasm"
 
 assert 'href="play-v10.html?computer=1"' in INDEX, 'home must expose computer play without protected-play login gate'
+assert 'class="btn light hero-computer-btn"' in INDEX, 'computer play must stay outside the login-protected play class'
 assert 'اللعب ضد الكمبيوتر' in INDEX, 'computer play button label is missing'
 assert "const computerMode = params.has('computer');" in PLAY, 'play page must detect computer mode'
 assert "s.src='play-computer.js?v=20260906-1'" in PLAY, 'computer mode must load its own controller'
