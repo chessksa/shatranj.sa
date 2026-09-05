@@ -18,3 +18,7 @@ jobs:
       - uses: actions/checkout@v4
       - name: Run computer play contract
         run: python tests/test_computer_play_mode.py
+      - name: Syntax-check computer controller
+        run: |
+          cp play-computer.js /tmp/play-computer.mjs
+          node --check /tmp/play-computer.mjs
