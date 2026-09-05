@@ -2,19 +2,27 @@ from pathlib import Path
 
 wrapper = Path('site-notifications.js').read_text(encoding='utf-8')
 index = Path('index.html').read_text(encoding='utf-8')
+home_ticker = Path('home-welcome-ticker.js')
 
-assert '<div id="welcomeTicker" class="welcome-ticker"' in index, (
-    'Home page must contain a visible welcome ticker directly below the header.'
+assert 'home-welcome-ticker.js?v=' in index, (
+    'Home page must load its dedicated welcome ticker script.'
 )
-assert 'id="welcomeTickerTrack"' in index, 'Home ticker must contain its scrolling track.'
-assert 'function renderWelcomeTicker' in index, (
-    'Home page must render the ticker from the already-loaded public player data.'
+assert "window.__HOME_PLAYERS__=ALL_PLAYERS" in index, (
+    'Home page must expose loaded public players to the ticker.'
 )
-assert 'renderWelcomeTicker(ALL_PLAYERS)' in index, (
-    'Ticker must refresh whenever public players are loaded.'
+assert "home-players-loaded" in index, (
+    'Home page must notify the ticker when player data finishes loading.'
+)
+assert home_ticker.exists(), 'Dedicated home ticker script must exist.'
+script = home_ticker.read_text(encoding='utf-8')
+assert "document.getElementById('homeHero')" in script, (
+    'Ticker script must refuse to run outside the home page.'
+)
+assert "id = 'welcomeTicker'" in script or "id='welcomeTicker'" in script, (
+    'Ticker script must create the visible ticker element.'
 )
 assert "import('./welcome-ticker-core.mjs" not in wrapper, (
-    'Site-wide notification wrapper must not load the welcome ticker; it belongs on the home page only.'
+    'Site-wide notification wrapper must not load the welcome ticker.'
 )
 
-print('welcome ticker is inline, visible, and home-page only')
+print('welcome ticker is dedicated to the home page and uses loaded player data')
