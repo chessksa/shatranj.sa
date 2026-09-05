@@ -10,10 +10,12 @@ permissions:
   contents: write
 
 jobs:
-  test:
+  apply:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
+      - name: Apply live mobile game stack
+        run: python ci/apply_live_mobile_game_stack.py
       - name: Verify live mobile game stack
         run: |
           python - <<'PY'
@@ -27,6 +29,17 @@ jobs:
           assert 'body.live-game .board-panel{order:2' in html, 'board is not second in the live mobile stack'
           assert 'body.live-game .panel-stack>.player-card:not(#topPlayerCard){order:3' in html, 'bottom player is not after the board/actions'
           assert 'height:64px!important' in html, 'live player cards are not compact enough'
-          assert 'overflow:hidden!important' in html, 'live page is not locked to the viewport'
+          assert 'body.live-game #gamePage{height:100dvh!important;min-height:0!important;padding:3px 5px!important;overflow:hidden!important}' in html, 'live page is not locked to the viewport'
           print('live mobile game stack verified')
           PY
+      - name: Commit live mobile game stack
+        run: |
+          if git diff --quiet -- play-v10.html; then
+            echo "No live mobile changes to commit."
+            exit 0
+          fi
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add play-v10.html
+          git commit -m "fix: fit live mobile game stack without scrolling"
+          git push
