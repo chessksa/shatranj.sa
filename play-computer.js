@@ -684,7 +684,7 @@ function addTimeChooserBack() {
   back.className = 'computer-time-back';
   back.setAttribute('aria-label', 'الرجوع لاختيار مستوى الكمبيوتر');
   back.innerHTML = '<span aria-hidden="true">›</span><span>رجوع</span>';
-  back.style.cssText = 'position:absolute;inset-inline-end:12px;top:8px;min-width:72px;height:38px;border:1px solid rgba(224,181,103,.4);border-radius:10px;background:rgba(2,28,33,.44);color:#f6ead8;font:700 14px/1 Arial,sans-serif;cursor:pointer;display:inline-flex;align-items:center;justify-content:center;gap:5px;padding:0 10px;z-index:3;';
+  back.style.cssText = 'position:absolute;inset-inline-start:12px;inset-inline-end:auto;top:6px;min-width:72px;height:36px;border:1px solid rgba(224,181,103,.4);border-radius:10px;background:rgba(2,28,33,.44);color:#f6ead8;font:700 14px/1 Arial,sans-serif;cursor:pointer;display:inline-flex;align-items:center;justify-content:center;gap:5px;padding:0 10px;z-index:3;';
   back.onclick = () => {
     back.remove();
     setupLevelChooser();
@@ -696,14 +696,15 @@ function applyChooserTitle(title, text) {
   if (!title) return;
   title.textContent = text;
   title.style.setProperty('text-align', 'center', 'important');
-  title.style.setProperty('font-size', 'clamp(14px, 2.6vw, 20px)', 'important');
+  title.style.setProperty('font-size', 'clamp(12px, 3vw, 18px)', 'important');
   title.style.setProperty('line-height', '1.2', 'important');
-  title.style.setProperty('white-space', 'normal', 'important');
+  title.style.setProperty('white-space', 'nowrap', 'important');
   title.style.setProperty('width', '100%', 'important');
   title.style.setProperty('min-width', '0', 'important');
   title.style.setProperty('max-width', '100%', 'important');
   title.style.setProperty('box-sizing', 'border-box', 'important');
-  title.style.setProperty('padding-inline', '48px', 'important');
+  title.style.setProperty('padding-inline-start', '8px', 'important');
+  title.style.setProperty('padding-inline-end', '88px', 'important');
   title.style.setProperty('overflow', 'visible', 'important');
   title.style.setProperty('text-overflow', 'clip', 'important');
   title.style.setProperty('margin-bottom', '12px', 'important');

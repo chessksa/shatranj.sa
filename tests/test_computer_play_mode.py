@@ -36,14 +36,14 @@ back_block = code[code.index("function addTimeChooserBack"):code.index("function
 assert '<span>رجوع</span>' in back_block, 'back control must show a text label beside the icon'
 assert "back.innerHTML = '<span aria-hidden=\"true\">›</span><span>رجوع</span>';" in back_block, 'back control should combine the RTL chevron with the رجوع label'
 assert 'position:absolute' in back_block, 'back icon must not participate in layout flow'
-assert 'inset-inline-end:' in back_block and 'top:' in back_block, 'back icon must remain fixed on the right'
-assert 'min-width:72px' in back_block and 'height:38px' in back_block, 'back control should remain compact'
+assert 'inset-inline-start:12px' in back_block and 'inset-inline-end:auto' in back_block and 'top:' in back_block, 'back control must stay on the opposite side beside the title'
+assert 'min-width:72px' in back_block and 'height:36px' in back_block, 'back control should remain compact'
 assert 'border:1px solid rgba(224,181,103,.4)' in back_block and 'background:rgba(2,28,33,.44)' in back_block, 'back control should match the chooser style'
 
 assert "function applyChooserTitle(title, text)" in code, 'level and time choosers must share one title style'
 title_block = code[code.index("function applyChooserTitle"):code.index("function setupTimeChooser")]
-assert "font-size', 'clamp(14px, 2.6vw, 20px)'" in title_block, 'chooser titles must use the same smaller responsive size'
-assert "white-space', 'normal'" in title_block, 'chooser titles must wrap instead of clipping on narrow screens'
+assert "font-size', 'clamp(12px, 3vw, 18px)'" in title_block, 'chooser titles must use the same compact single-line size'
+assert "white-space', 'nowrap'" in title_block, 'chooser titles must remain on one line'
 assert "text-align', 'center'" in title_block, 'chooser titles must remain centered'
 assert "overflow', 'visible'" in title_block, 'chooser title text must not be clipped'
 time_block = code[code.index("function setupTimeChooser"):code.index("function setupLevelChooser")]
