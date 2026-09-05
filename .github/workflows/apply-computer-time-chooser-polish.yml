@@ -15,71 +15,24 @@ jobs:
         run: |
           python - <<'PY'
           from pathlib import Path
-          import re
-
+          import base64, re
           js = Path('play-computer.js')
           text = js.read_text(encoding='utf-8')
-
           start = text.index('function addTimeChooserBack() {')
           end = text.index('function setupTimeChooser(levelKey) {', start)
-          new_back = '''function addTimeChooserBack() {
-  const existing = opponentSearchSetup?.querySelector('.computer-time-back');
-  if (existing) existing.remove();
-  const options = opponentSearchSetup?.querySelector('.opponent-time-options');
-  if (!options) return;
-  if (opponentSearchSetup) opponentSearchSetup.style.position = 'relative';
-  const back = document.createElement('button');
-  back.type = 'button';
-  back.className = 'computer-time-back';
-  back.setAttribute('aria-label', 'الرجوع لاختيار مستوى الكمبيوتر');
-  back.innerHTML = '<span aria-hidden="true">›</span>';
-  back.style.cssText = 'position:absolute;inset-inline-end:16px;top:12px;width:64px;height:64px;border:1px solid rgba(224,181,103,.55);border-radius:16px;background:rgba(3,43,48,.28);color:#f6ead8;font:800 42px/1 Arial,sans-serif;cursor:pointer;display:flex;align-items:center;justify-content:center;padding:0;z-index:3;';
-  back.onclick = () => {
-    back.remove();
-    setupLevelChooser();
-  };
-  options.parentNode.insertBefore(back, options);
-}
-
-'''
+          new_back = base64.b64decode('ZnVuY3Rpb24gYWRkVGltZUNob29zZXJCYWNrKCkgewogIGNvbnN0IGV4aXN0aW5nID0gb3Bwb25lbnRTZWFyY2hTZXR1cD8ucXVlcnlTZWxlY3RvcignLmNvbXB1dGVyLXRpbWUtYmFjaycpOwogIGlmIChleGlzdGluZykgZXhpc3RpbmcucmVtb3ZlKCk7CiAgY29uc3Qgb3B0aW9ucyA9IG9wcG9uZW50U2VhcmNoU2V0dXA/LnF1ZXJ5U2VsZWN0b3IoJy5vcHBvbmVudC10aW1lLW9wdGlvbnMnKTsKICBpZiAoIW9wdGlvbnMpIHJldHVybjsKICBpZiAob3Bwb25lbnRTZWFyY2hTZXR1cCkgb3Bwb25lbnRTZWFyY2hTZXR1cC5zdHlsZS5wb3NpdGlvbiA9ICdyZWxhdGl2ZSc7CiAgY29uc3QgYmFjayA9IGRvY3VtZW50LmNyZWF0ZUVsZW1lbnQoJ2J1dHRvbicpOwogIGJhY2sudHlwZSA9ICdidXR0b24nOwogIGJhY2suY2xhc3NOYW1lID0gJ2NvbXB1dGVyLXRpbWUtYmFjayc7CiAgYmFjay5zZXRBdHRyaWJ1dGUoJ2FyaWEtbGFiZWwnLCAn2KfZhNix2KzZiNi5INmE2KfYrtiq2YrYp9ixINmF2LPYqtmI2Ykg2KfZhNmD2YXYqNmK2YjYqtixJyk7CiAgYmFjay5pbm5lckhUTUwgPSAnPHNwYW4gYXJpYS1oaWRkZW49InRydWUiPuKAujwvc3Bhbj4nOwogIGJhY2suc3R5bGUuY3NzVGV4dCA9ICdwb3NpdGlvbjphYnNvbHV0ZTtpbnNldC1pbmxpbmUtZW5kOjE2cHg7dG9wOjEycHg7d2lkdGg6NjRweDtoZWlnaHQ6NjRweDtib3JkZXI6MXB4IHNvbGlkIHJnYmEoMjI0LDE4MSwxMDMsLjU1KTtib3JkZXItcmFkaXVzOjE2cHg7YmFja2dyb3VuZDpyZ2JhKDMsNDMsNDgsLjI4KTtjb2xvcjojZjZlYWQ4O2ZvbnQ6ODAwIDQycHgvMSBBcmlhbCxzYW5zLXNlcmlmO2N1cnNvcjpwb2ludGVyO2Rpc3BsYXk6ZmxleDthbGlnbi1pdGVtczpjZW50ZXI7anVzdGlmeS1jb250ZW50OmNlbnRlcjtwYWRkaW5nOjA7ei1pbmRleDozOyc7CiAgYmFjay5vbmNsaWNrID0gKCkgPT4gewogICAgYmFjay5yZW1vdmUoKTsKICAgIHNldHVwTGV2ZWxDaG9vc2VyKCk7CiAgfTsKICBvcHRpb25zLnBhcmVudE5vZGUuaW5zZXJ0QmVmb3JlKGJhY2ssIG9wdGlvbnMpOwp9Cgo=').decode('utf-8')
           text = text[:start] + new_back + text[end:]
-
-          old_time = '''function setupTimeChooser(levelKey) {
-  const level = LEVELS[levelKey];
-  const title = opponentSearchSetup?.querySelector('.opponent-search-title');
-  if (title) title.textContent = `اختر زمن المباراة — مستوى ${level.label}`;
-  addTimeChooserBack();'''
-          new_time = '''function setupTimeChooser(levelKey) {
-  const level = LEVELS[levelKey];
-  const title = opponentSearchSetup?.querySelector('.opponent-search-title');
-  if (title) {
-    title.textContent = `اختر زمن المباراة — مستوى ${level.label}`;
-    title.style.setProperty('text-align', 'center', 'important');
-    title.style.setProperty('font-size', 'clamp(18px, 4vw, 34px)', 'important');
-    title.style.setProperty('line-height', '1.2', 'important');
-    title.style.setProperty('white-space', 'nowrap', 'important');
-    title.style.setProperty('width', '100%', 'important');
-    title.style.setProperty('box-sizing', 'border-box', 'important');
-    title.style.setProperty('padding-inline', '72px', 'important');
-  }
-  addTimeChooserBack();'''
+          old_time = "function setupTimeChooser(levelKey) {\n  const level = LEVELS[levelKey];\n  const title = opponentSearchSetup?.querySelector('.opponent-search-title');\n  if (title) title.textContent = `اختر زمن المباراة — مستوى ${level.label}`;\n  addTimeChooserBack();"
+          new_time = base64.b64decode('ZnVuY3Rpb24gc2V0dXBUaW1lQ2hvb3NlcihsZXZlbEtleSkgewogIGNvbnN0IGxldmVsID0gTEVWRUxTW2xldmVsS2V5XTsKICBjb25zdCB0aXRsZSA9IG9wcG9uZW50U2VhcmNoU2V0dXA/LnF1ZXJ5U2VsZWN0b3IoJy5vcHBvbmVudC1zZWFyY2gtdGl0bGUnKTsKICBpZiAodGl0bGUpIHsKICAgIHRpdGxlLnRleHRDb250ZW50ID0gYNin2K7YqtixINiy2YXZhiDYp9mE2YXYqNin2LHYp9ipIOKAlCDZhdiz2KrZiNmJICR7bGV2ZWwubGFiZWx9YDsKICAgIHRpdGxlLnN0eWxlLnNldFByb3BlcnR5KCd0ZXh0LWFsaWduJywgJ2NlbnRlcicsICdpbXBvcnRhbnQnKTsKICAgIHRpdGxlLnN0eWxlLnNldFByb3BlcnR5KCdmb250LXNpemUnLCAnY2xhbXAoMThweCwgNHZ3LCAzNHB4KScsICdpbXBvcnRhbnQnKTsKICAgIHRpdGxlLnN0eWxlLnNldFByb3BlcnR5KCdsaW5lLWhlaWdodCcsICcxLjInLCAnaW1wb3J0YW50Jyk7CiAgICB0aXRsZS5zdHlsZS5zZXRQcm9wZXJ0eSgnd2hpdGUtc3BhY2UnLCAnbm93cmFwJywgJ2ltcG9ydGFudCcpOwogICAgdGl0bGUuc3R5bGUuc2V0UHJvcGVydHkoJ3dpZHRoJywgJzEwMCUnLCAnaW1wb3J0YW50Jyk7CiAgICB0aXRsZS5zdHlsZS5zZXRQcm9wZXJ0eSgnYm94LXNpemluZycsICdib3JkZXItYm94JywgJ2ltcG9ydGFudCcpOwogICAgdGl0bGUuc3R5bGUuc2V0UHJvcGVydHkoJ3BhZGRpbmctaW5saW5lJywgJzcycHgnLCAnaW1wb3J0YW50Jyk7CiAgfQogIGFkZFRpbWVDaG9vc2VyQmFjaygpOw==').decode('utf-8')
           if old_time not in text:
               raise SystemExit('time chooser marker missing')
           text = text.replace(old_time, new_time, 1)
-
-          old_level = '''  const title = opponentSearchSetup?.querySelector('.opponent-search-title');
-  if (title) title.textContent = 'اختر مستوى الكمبيوتر — النقاط للمسجلين';'''
-          new_level = '''  const title = opponentSearchSetup?.querySelector('.opponent-search-title');
-  if (title) {
-    ['text-align', 'font-size', 'line-height', 'white-space', 'width', 'box-sizing', 'padding-inline'].forEach((prop) => title.style.removeProperty(prop));
-    title.textContent = 'اختر مستوى الكمبيوتر — النقاط للمسجلين';
-  }
-  if (opponentSearchSetup) opponentSearchSetup.style.removeProperty('position');'''
+          old_level = "  const title = opponentSearchSetup?.querySelector('.opponent-search-title');\n  if (title) title.textContent = 'اختر مستوى الكمبيوتر — النقاط للمسجلين';"
+          new_level = base64.b64decode('ICBjb25zdCB0aXRsZSA9IG9wcG9uZW50U2VhcmNoU2V0dXA/LnF1ZXJ5U2VsZWN0b3IoJy5vcHBvbmVudC1zZWFyY2gtdGl0bGUnKTsKICBpZiAodGl0bGUpIHsKICAgIFsndGV4dC1hbGlnbicsICdmb250LXNpemUnLCAnbGluZS1oZWlnaHQnLCAnd2hpdGUtc3BhY2UnLCAnd2lkdGgnLCAnYm94LXNpemluZycsICdwYWRkaW5nLWlubGluZSddLmZvckVhY2goKHByb3ApID0+IHRpdGxlLnN0eWxlLnJlbW92ZVByb3BlcnR5KHByb3ApKTsKICAgIHRpdGxlLnRleHRDb250ZW50ID0gJ9in2K7YqtixINmF2LPYqtmI2Ykg2KfZhNmD2YXYqNmK2YjYqtixIOKAlCDYp9mE2YbZgtin2Lcg2YTZhNmF2LPYrNmE2YrZhic7CiAgfQogIGlmIChvcHBvbmVudFNlYXJjaFNldHVwKSBvcHBvbmVudFNlYXJjaFNldHVwLnN0eWxlLnJlbW92ZVByb3BlcnR5KCdwb3NpdGlvbicpOw==').decode('utf-8')
           if old_level not in text:
               raise SystemExit('level chooser title marker missing')
           text = text.replace(old_level, new_level, 1)
           js.write_text(text, encoding='utf-8')
-
           play = Path('play-v10.html')
           html = play.read_text(encoding='utf-8')
           html = re.sub(r"play-computer\.js\?v=\d{8}-\d+", 'play-computer.js?v=20260906-8', html, count=1)
