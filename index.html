@@ -904,7 +904,14 @@ footer{
 <link rel="stylesheet" href="home-theme.css?v=20260905-7">
 <style id="mobileHeroTitleOneLine">
 @media(max-width:600px){
-  .home-hero h1{white-space:nowrap!important}
+  .home-hero h1{
+    width:100%!important;
+    max-width:100%!important;
+    padding-inline:8px!important;
+    white-space:nowrap!important;
+    font-size:clamp(17px,5.2vw,25px)!important;
+    text-align:center!important;
+  }
   .home-hero h1 span{display:inline!important}
 }
 </style>
