@@ -23,14 +23,15 @@ assert 'startMatchmaking(btn.dataset.minutes)' in MATCH
 
 assert COMPUTER.exists(), 'play-computer.js is missing'
 code = COMPUTER.read_text(encoding="utf-8")
-assert "easy: { skill: 2, movetime: 140, label: 'سهل', points: 5" in code
-assert "medium: { skill: 8, movetime: 320, label: 'متوسط', points: 10" in code
-assert "hard: { skill: 16, movetime: 700, label: 'صعب', points: 20" in code
+assert "easy: { skill: 8, movetime: 250, label: 'سهل', points: 5" in code
+assert "medium: { skill: 14, movetime: 600, label: 'متوسط', points: 10" in code
+assert "hard: { skill: 20, movetime: 1200, label: 'صعب', points: 20" in code
 assert "const TIME_CONTROLS = [5, 10, 15];" in code
 assert "function setupTimeChooser" in code, 'computer flow must choose time after level'
 assert "startComputerGame(levelKey, minutes)" in code, 'computer game start must receive level and time'
 assert "action: 'start', level: levelKey, minutes" in code, 'rated computer start must send time to server'
 assert "action: 'timeout'" in code, 'rated computer clock expiry must be adjudicated by server'
+assert "action: 'state'" in code, 'rated move errors must reconcile with authoritative server state before reverting the board'
 assert "function formatClock" in code and "function startClockLoop" in code
 assert "fill','#d6cfbf','important'" in code, 'computer board light squares must match live play'
 assert "fill','#246f77','important'" in code, 'computer board dark squares must match live play'
@@ -39,18 +40,33 @@ assert "supabase.functions.invoke('computer-game'" in code, 'rated games must be
 assert ".from('players').update" not in code, 'browser must never update rating directly'
 assert "new Worker('vendor/stockfish/stockfish-18-lite-single.js')" in code, 'guest/local mode should retain Stockfish'
 
+validate_start = code.index("if (event.type === INPUT_EVENT_TYPE.validateMoveInput) {")
+validate_end = code.index("if (event.type === INPUT_EVENT_TYPE.moveInputCanceled)", validate_start)
+validate_block = code[validate_start:validate_end]
+assert "renderBoard(false);" not in validate_block, 'accepted drag must be left to cm-chessboard instead of being redrawn mid-drop'
+assert "if (ratedMode) {\n      commitActiveClock();\n      clockActiveSide = null;\n      clockAnchorMs = 0;" in validate_block, 'rated mode must freeze local clock while the server owns the computer turn'
+assert "} else {\n      switchClock('computer');" in validate_block, 'only guest/local Stockfish mode should run the computer clock locally'
+
 assert EDGE.exists(), 'server computer-game Edge Function source is missing'
 edge = EDGE.read_text(encoding="utf-8")
 assert "easy: 5" in edge and "medium: 10" in edge and "hard: 20" in edge
 assert "new Set([5, 10, 15])" in edge, 'server must allow only 5/10/15 computer games'
 assert "action === 'start'" in edge
 assert "action === 'move'" in edge
+assert "action === 'state'" in edge, 'server must expose authoritative game state for safe reconciliation'
 assert "action === 'timeout'" in edge
 assert "action === 'resign'" in edge
 assert "time_control_minutes" in edge
 assert "player_time_ms" in edge and "computer_time_ms" in edge and "turn_started_at" in edge
 assert "apply_computer_game_rating" in edge
 assert "Chess" in edge, 'server must validate legal chess moves'
+assert "if (level === 'easy') return randomItem(moves);" not in edge, 'easy must not choose a completely random legal move'
+assert "const LEVEL_SEARCH" in edge, 'server difficulty must be explicit and bounded'
+assert "easy: { depth: 1" in edge
+assert "medium: { depth: 1" in edge
+assert "hard: { depth: 2" in edge
+assert "function positionalBonus" in edge, 'server engine needs positional evaluation, not material-only play'
+assert "function orderMoves" in edge, 'server search must order forcing moves before quiet moves'
 
 assert MIGRATION.exists(), 'computer-game rating migration is missing'
 sql = MIGRATION.read_text(encoding="utf-8").lower()
@@ -74,4 +90,4 @@ assert ENGINE_JS.exists()
 assert ENGINE_WASM.exists()
 assert ENGINE_WASM.stat().st_size > 1_000_000
 
-print('computer rated mode, clocks, and 5/10/15 time controls: PASS')
+print('computer board stability, clocks, strength, and 5/10/15 controls: PASS')
