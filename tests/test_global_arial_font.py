@@ -11,6 +11,7 @@ for path in files:
     for match in re.finditer(r'font-family\s*:\s*([^;}]+)', text, flags=re.I):
         font_declarations += 1
         value = re.sub(r'\s+', '', match.group(1)).strip('"\'').lower()
+        value = value.removesuffix('!important')
         if value not in {'arial,sans-serif'}:
             bad.append(f'{path}: font-family:{match.group(1).strip()}')
     if re.search(r'\bTahoma\b|Segoe UI', text, flags=re.I):
