@@ -1,0 +1,20 @@
+name: Test computer chooser style
+on:
+  push:
+    branches: [main]
+    paths:
+      - 'play-computer.js'
+      - 'play-v10.html'
+      - 'tests/test_computer_chooser_style.py'
+      - '.github/workflows/test-computer-chooser-style.yml'
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Run chooser style contract
+        run: python tests/test_computer_chooser_style.py
+      - name: Syntax-check controller
+        run: |
+          cp play-computer.js /tmp/play-computer.mjs
+          node --check /tmp/play-computer.mjs
