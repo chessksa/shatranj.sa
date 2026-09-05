@@ -50,13 +50,4 @@
   const core = document.createElement('script');
   core.src = 'site-notifications-core.js?v=20260905-mobile5';
   document.head.appendChild(core);
-
-  import('./welcome-ticker-core.mjs?v=20260906-2')
-    .then(({ initWelcomeTicker }) => initWelcomeTicker({
-      supabaseUrl: 'https://zjxkxhsvltihucdacjrv.supabase.co',
-      anonKey: 'sb_publishable_bwFGOiJzT_Xv656pLPR8ww_oJxFzSGJ',
-      limit: 10,
-      refreshMs: 60000
-    }))
-    .catch(error => console.warn('welcome ticker failed to load', error));
 })();
