@@ -55,4 +55,22 @@ html = html.replace(
     'body.live-game{height:auto!important;min-height:100dvh!important;overflow-y:auto!important;overflow-x:hidden!important;-webkit-overflow-scrolling:touch;overscroll-behavior-y:auto!important}'
 )
 
+# Polish the active opponent-search state and keep the vertical stack tight.
+search_marker = '/* Mobile opponent search polish */'
+search_css = r'''
+    /* Mobile opponent search polish */
+    @media(max-width:900px){
+      body.pregame #opponentSearchWaiting{width:100%;height:100%;display:grid;align-content:center;justify-items:center}
+      body.pregame #opponentSearchWaiting .opponent-waiting-line{font-size:18px!important;color:#ffbd6a!important;font-weight:800!important;gap:9px!important;line-height:1.2!important}
+      body.pregame #opponentSearchWaiting .opponent-waiting-line strong{font-size:18px!important;color:inherit!important}
+      body.pregame #opponentSearchWaiting .search-dots{gap:5px!important}
+      body.pregame #opponentSearchWaiting .search-dots i{background:#ffbd6a!important;width:7px!important;height:7px!important}
+      body.pregame #opponentSearchWaiting .opponent-waiting-meta{margin-top:9px!important;gap:22px!important;font-size:10px!important;line-height:1.15!important}
+      body.pregame #opponentSearchWaiting .inline-cancel-search{margin-top:15px!important;height:32px!important;padding:0 18px!important;border-radius:8px!important}
+      body.pregame .board-panel{order:2;width:100%;height:auto!important;min-height:0!important;flex:0 0 auto!important;display:flex!important;flex-direction:column!important;gap:3px!important;justify-content:flex-start!important;align-items:center!important;overflow:visible!important}
+    }
+'''
+if search_marker not in html:
+    html = html.replace('  </style>', search_css + '  </style>', 1)
+
 path.write_text(html, encoding='utf-8')
