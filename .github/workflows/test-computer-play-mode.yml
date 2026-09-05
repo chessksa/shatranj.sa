@@ -1,0 +1,18 @@
+name: Test computer play mode
+on:
+  push:
+    branches: [main]
+    paths:
+      - 'index.html'
+      - 'play-v10.html'
+      - 'play-computer.js'
+      - 'vendor/stockfish/**'
+      - 'tests/test_computer_play_mode.py'
+      - '.github/workflows/test-computer-play-mode.yml'
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Run computer play contract
+        run: python tests/test_computer_play_mode.py
