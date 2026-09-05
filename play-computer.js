@@ -673,43 +673,55 @@ async function resignComputerGame({ navigate = false, ask = false } = {}) {
   }
 }
 
+function ensureChooserHeader() {
+  const title = opponentSearchSetup?.querySelector('.opponent-search-title');
+  if (!title) return { header: null, title: null };
+  let header = opponentSearchSetup.querySelector('.computer-chooser-header');
+  if (!header) {
+    header = document.createElement('div');
+    header.className = 'computer-chooser-header';
+    header.style.cssText = 'display:grid;grid-template-columns:minmax(0,1fr);align-items:center;column-gap:10px;width:100%;min-width:0;box-sizing:border-box;direction:ltr;margin-bottom:12px;';
+    title.parentNode.insertBefore(header, title);
+    header.appendChild(title);
+  }
+  return { header, title };
+}
+
 function addTimeChooserBack() {
-  const existing = opponentSearchSetup?.querySelector('.computer-time-back');
-  if (existing) existing.remove();
-  const options = opponentSearchSetup?.querySelector('.opponent-time-options');
-  if (!options) return;
-  if (opponentSearchSetup) opponentSearchSetup.style.position = 'relative';
+  const { header, title } = ensureChooserHeader();
+  if (!header || !title) return;
+  header.querySelector('.computer-time-back')?.remove();
+  header.style.gridTemplateColumns = 'auto minmax(0, 1fr)';
   const back = document.createElement('button');
   back.type = 'button';
   back.className = 'computer-time-back';
   back.setAttribute('aria-label', 'الرجوع لاختيار مستوى الكمبيوتر');
   back.innerHTML = '<span aria-hidden="true">›</span><span>رجوع</span>';
-  back.style.cssText = 'position:absolute;inset-inline-start:12px;inset-inline-end:auto;top:6px;min-width:72px;height:36px;border:1px solid rgba(224,181,103,.4);border-radius:10px;background:rgba(2,28,33,.44);color:#f6ead8;font:700 14px/1 Arial,sans-serif;cursor:pointer;display:inline-flex;align-items:center;justify-content:center;gap:5px;padding:0 10px;z-index:3;';
+  back.style.cssText = 'min-width:72px;height:36px;border:1px solid rgba(224,181,103,.4);border-radius:10px;background:rgba(2,28,33,.44);color:#f6ead8;font:700 14px/1 Arial,sans-serif;cursor:pointer;display:inline-flex;align-items:center;justify-content:center;gap:5px;padding:0 10px;z-index:3;direction:rtl;';
   back.onclick = () => {
     back.remove();
     setupLevelChooser();
   };
-  options.parentNode.insertBefore(back, options);
+  header.insertBefore(back, title);
 }
 
 function applyChooserTitle(title, text) {
   if (!title) return;
   title.textContent = text;
   title.style.setProperty('text-align', 'center', 'important');
-  title.style.setProperty('font-size', 'clamp(12px, 3vw, 18px)', 'important');
+  title.style.setProperty('font-size', 'clamp(11px, 2.5vw, 17px)', 'important');
   title.style.setProperty('line-height', '1.2', 'important');
   title.style.setProperty('white-space', 'nowrap', 'important');
   title.style.setProperty('width', '100%', 'important');
   title.style.setProperty('min-width', '0', 'important');
   title.style.setProperty('max-width', '100%', 'important');
   title.style.setProperty('box-sizing', 'border-box', 'important');
-  title.style.setProperty('padding-inline-start', '8px', 'important');
-  title.style.setProperty('padding-inline-end', '88px', 'important');
-  title.style.setProperty('overflow', 'visible', 'important');
+  title.style.setProperty('padding-inline', '0', 'important');
+  title.style.setProperty('overflow', 'hidden', 'important');
   title.style.setProperty('text-overflow', 'clip', 'important');
-  title.style.setProperty('margin-bottom', '12px', 'important');
+  title.style.setProperty('margin-bottom', '0', 'important');
+  title.style.setProperty('direction', 'rtl', 'important');
 }
-
 function setupTimeChooser(levelKey) {
   const level = LEVELS[levelKey];
   if (opponentSearchSetup) {
@@ -718,7 +730,7 @@ function setupTimeChooser(levelKey) {
     opponentSearchSetup.style.width = '100%';
     opponentSearchSetup.style.overflow = 'hidden';
   }
-  const title = opponentSearchSetup?.querySelector('.opponent-search-title');
+  const { title } = ensureChooserHeader();
   applyChooserTitle(title, `اختر زمن المباراة — مستوى ${level.label}`);
   addTimeChooserBack();
   const options = opponentSearchSetup?.querySelector('.opponent-time-options');
@@ -748,7 +760,8 @@ function setupLevelChooser() {
   if (opponentSearchWaiting) opponentSearchWaiting.hidden = true;
   if (opponentSearchSetup) opponentSearchSetup.hidden = false;
   if (topPlayerLive) topPlayerLive.hidden = true;
-  const title = opponentSearchSetup?.querySelector('.opponent-search-title');
+  const { header, title } = ensureChooserHeader();
+  header.style.gridTemplateColumns = 'minmax(0, 1fr)';
   applyChooserTitle(title, 'اختر مستوى الكمبيوتر — النقاط للمسجلين');
   if (opponentSearchSetup) ['position', 'min-width', 'width', 'overflow'].forEach((prop) => opponentSearchSetup.style.removeProperty(prop));
   const buttons = [...document.querySelectorAll('.opponent-time-options .opponent-time-option')];
