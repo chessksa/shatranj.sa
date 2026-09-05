@@ -289,11 +289,13 @@
         indicator.textContent='اسحب للتحديث';
       };
       const handlePullStart=(event)=>{
+        if(!document.body.classList.contains('pregame')) return resetPull();
         if(event.touches.length!==1) return resetPull();
         pullStartY=event.touches[0].clientY;
         pullActive=true;
       };
       const handlePullMove=(event)=>{
+        if(!document.body.classList.contains('pregame')) return resetPull();
         if(!pullActive || event.touches.length!==1) return;
         const distance=event.touches[0].clientY-pullStartY;
         if(distance<=0) return resetPull();
@@ -307,6 +309,7 @@
         indicator.textContent=pullDistance>=PULL_REFRESH_THRESHOLD?'اترك للتحديث':'اسحب للتحديث';
       };
       const handlePullEnd=()=>{
+        if(!document.body.classList.contains('pregame')) return resetPull();
         if(!pullActive) return resetPull();
         const shouldRefresh=pullDistance>=PULL_REFRESH_THRESHOLD;
         if(!shouldRefresh) return resetPull();
