@@ -1,0 +1,93 @@
+name: Apply single-line computer chooser header
+on:
+  push:
+    branches: [main]
+    paths:
+      - '.github/workflows/apply-computer-chooser-inline-header.yml'
+permissions:
+  contents: write
+jobs:
+  apply:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Apply chooser header layout
+        run: |
+          python - <<'PY'
+          from pathlib import Path
+
+          js = Path('play-computer.js')
+          text = js.read_text(encoding='utf-8')
+
+          replacements = [
+              (
+                  "inset-inline-end:12px;top:8px;min-width:72px;height:38px;",
+                  "inset-inline-start:12px;inset-inline-end:auto;top:6px;min-width:72px;height:36px;"
+              ),
+              (
+                  "title.style.setProperty('font-size', 'clamp(14px, 2.6vw, 20px)', 'important');",
+                  "title.style.setProperty('font-size', 'clamp(12px, 3vw, 18px)', 'important');"
+              ),
+              (
+                  "title.style.setProperty('white-space', 'normal', 'important');",
+                  "title.style.setProperty('white-space', 'nowrap', 'important');"
+              ),
+              (
+                  "title.style.setProperty('padding-inline', '48px', 'important');",
+                  "title.style.setProperty('padding-inline-start', '8px', 'important');\n  title.style.setProperty('padding-inline-end', '88px', 'important');"
+              ),
+          ]
+          for old, new in replacements:
+              if old not in text:
+                  raise SystemExit(f'missing JS marker: {old}')
+              text = text.replace(old, new, 1)
+          js.write_text(text, encoding='utf-8')
+
+          play = Path('play-v10.html')
+          html = play.read_text(encoding='utf-8')
+          old = 'play-computer.js?v=20260906-11'
+          new = 'play-computer.js?v=20260906-12'
+          if old not in html:
+              raise SystemExit('missing cache marker')
+          play.write_text(html.replace(old, new, 1), encoding='utf-8')
+
+          test = Path('tests/test_computer_play_mode.py')
+          t = test.read_text(encoding='utf-8')
+          test_replacements = [
+              (
+                  "assert 'inset-inline-end:' in back_block and 'top:' in back_block, 'back icon must remain fixed on the right'",
+                  "assert 'inset-inline-start:12px' in back_block and 'inset-inline-end:auto' in back_block and 'top:' in back_block, 'back control must stay on the opposite side beside the title'"
+              ),
+              (
+                  "assert 'min-width:72px' in back_block and 'height:38px' in back_block, 'back control should remain compact'",
+                  "assert 'min-width:72px' in back_block and 'height:36px' in back_block, 'back control should remain compact'"
+              ),
+              (
+                  "assert \"font-size', 'clamp(14px, 2.6vw, 20px)'\" in title_block, 'chooser titles must use the same smaller responsive size'",
+                  "assert \"font-size', 'clamp(12px, 3vw, 18px)'\" in title_block, 'chooser titles must use the same compact single-line size'"
+              ),
+              (
+                  "assert \"white-space', 'normal'\" in title_block, 'chooser titles must wrap instead of clipping on narrow screens'",
+                  "assert \"white-space', 'nowrap'\" in title_block, 'chooser titles must remain on one line'"
+              ),
+          ]
+          for old, new in test_replacements:
+              if old not in t:
+                  raise SystemExit(f'missing test marker: {old}')
+              t = t.replace(old, new, 1)
+          test.write_text(t, encoding='utf-8')
+          PY
+      - name: Verify chooser header
+        run: |
+          python tests/test_computer_chooser_style.py
+          python tests/test_computer_play_mode.py
+          cp play-computer.js /tmp/play-computer.mjs
+          node --check /tmp/play-computer.mjs
+      - name: Commit chooser header
+        run: |
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git add play-computer.js play-v10.html tests/test_computer_play_mode.py
+          git commit -m 'fix: keep computer chooser title inline with opposite-side back control'
+          git pull --rebase origin main
+          git push origin HEAD:main
