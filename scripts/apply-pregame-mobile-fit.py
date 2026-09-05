@@ -73,8 +73,7 @@ search_css = r'''
 if search_marker not in html:
     html = html.replace('  </style>', search_css + '  </style>', 1)
 
-# Add an in-page pull-to-refresh gesture for mobile Safari. It starts only from
-# the upper page area and ignores interactive controls to avoid interfering with chess moves.
+# Add an in-page pull-to-refresh gesture for mobile Safari.
 pull_marker = '/* Mobile in-page pull refresh */'
 pull_css = r'''
     /* Mobile in-page pull refresh */
@@ -96,12 +95,11 @@ if pull_script_marker not in html:
       const indicator=document.getElementById('mobilePullRefresh');
       if(!indicator || !window.matchMedia('(max-width:900px)').matches) return;
       const PULL_REFRESH_THRESHOLD=72;
-      const PULL_START_ZONE=120;
       let pullStartY=0;
       let pullDistance=0;
       let pullActive=false;
 
-      const isInteractive=(target)=>Boolean(target?.closest?.('button,a,input,textarea,select,[role="button"]'));
+      const isBlockedPullTarget=(target)=>Boolean(target?.closest?.('button,a,input,textarea,select,[role="button"]') || target?.closest?.('.board-frame,.board-shell,#board,.move-hints'));
       const resetPull=()=>{
         pullActive=false;
         pullDistance=0;
@@ -110,10 +108,8 @@ if pull_script_marker not in html:
         indicator.textContent='اسحب للتحديث';
       };
       const handlePullStart=(event)=>{
-        if(event.touches.length!==1 || window.scrollY>0) return resetPull();
-        const touch=event.touches[0];
-        if(touch.clientY>PULL_START_ZONE || isInteractive(event.target)) return resetPull();
-        pullStartY=touch.clientY;
+        if(event.touches.length!==1 || window.scrollY>2 || isBlockedPullTarget(event.target)) return resetPull();
+        pullStartY=event.touches[0].clientY;
         pullActive=true;
       };
       const handlePullMove=(event)=>{
@@ -145,5 +141,15 @@ if pull_script_marker not in html:
   </script>
 '''
     html = html.replace('</body>', pull_script + '</body>', 1)
+else:
+    html = html.replace('      const PULL_START_ZONE=120;\n', '')
+    html = html.replace(
+        '      const isInteractive=(target)=>Boolean(target?.closest?.(\'button,a,input,textarea,select,[role="button"]\'));',
+        '      const isBlockedPullTarget=(target)=>Boolean(target?.closest?.(\'button,a,input,textarea,select,[role="button"]\') || target?.closest?.(\'.board-frame,.board-shell,#board,.move-hints\'));'
+    )
+    html = html.replace(
+        '        if(event.touches.length!==1 || window.scrollY>0) return resetPull();\n        const touch=event.touches[0];\n        if(touch.clientY>PULL_START_ZONE || isInteractive(event.target)) return resetPull();\n        pullStartY=touch.clientY;',
+        '        if(event.touches.length!==1 || window.scrollY>2 || isBlockedPullTarget(event.target)) return resetPull();\n        pullStartY=event.touches[0].clientY;'
+    )
 
 path.write_text(html, encoding='utf-8')
