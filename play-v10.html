@@ -30,6 +30,11 @@
     .board-panel>.actions-card .action-label{font-size:11px}
     .board-panel>.actions-card .grace-countdown{min-width:25px;padding:1px 6px;font-size:10px}
     .board-panel>.actions-card .grace-note{display:none}
+    @media(min-width:901px){
+      .board-panel{grid-template-rows:minmax(0,1fr);row-gap:0}
+      .board-panel>.board-frame{width:min(100%,calc(100dvh - 34px),1000px)}
+      .panel-stack>.actions-card{width:100%;min-height:100px;border-radius:18px}
+    }
     .move-hints{position:absolute;inset:0;z-index:8;pointer-events:none}
     .move-hint{position:absolute;width:12.5%;height:12.5%;display:grid;place-items:center;pointer-events:none}
     .move-hint::after{content:"";width:22%;height:22%;border-radius:50%;background:rgba(10,58,46,.62);box-shadow:0 0 0 1px rgba(255,255,255,.16)}
@@ -188,7 +193,7 @@
           <div class="coords-bottom" id="coordsBottom"></div>
         </div>
 
-        <section class="actions-card">
+        <section class="actions-card" id="gameActions">
             <button class="action-item" id="resignBtn" type="button"><span class="action-icon">🏳</span><span class="action-label">استسلام</span></button>
             <button class="action-item" id="drawOffer" type="button"><span class="action-icon">🤝</span><span class="action-label">عرض تعادل</span></button>
             <button class="action-item grace-end-action" id="endGraceBtn" type="button" disabled><span class="action-icon">✕</span><span class="action-label">إنهاء</span><span class="grace-countdown" id="endGraceCountdown">5</span><span class="grace-note">خلال 5 ثوانٍ دون خصم نقاط</span></button>
@@ -232,7 +237,7 @@
           </section>
 
 
-          <section class="player-card">
+          <section class="player-card" id="bottomPlayerCard">
             <div class="avatar light" id="bottomAvatar"><img class="avatar-img" id="bottomAvatarImg" alt="" hidden></div>
             <div class="player-info"><a class="name" id="bottomName">أنت</a><div class="location"><span id="bottomLocation">—</span></div><div class="rating"><span class="rating-label">النقاط</span><span id="bottomRating">—</span></div><div class="status">متصل</div></div>
             <div class="clock-box"><div class="clock" id="bottomClock">--:--</div><div class="clock-progress"><span></span></div></div>
@@ -251,6 +256,27 @@
   <script src="https://cdnjs.cloudflare.com/ajax/libs/chess.js/0.10.3/chess.min.js"></script>
   <script src="site-notifications.js"></script>
   <script src="exact-board-v13.js?v=20260903-14"></script>
+  <script>
+    (()=>{
+      const desktopMedia=window.matchMedia('(min-width:901px)');
+      const gameActions=document.getElementById('gameActions');
+      const boardPanel=document.querySelector('.board-panel');
+      const desktopStack=document.querySelector('.panel-stack');
+      const bottomPlayerCard=document.getElementById('bottomPlayerCard');
+      const placeGameActions=()=>{
+        if(!gameActions||!boardPanel||!desktopStack||!bottomPlayerCard) return;
+        if(desktopMedia.matches){
+          desktopStack.insertBefore(gameActions, bottomPlayerCard);
+        }else{
+          boardPanel.appendChild(gameActions);
+        }
+      };
+      placeGameActions();
+      if(desktopMedia.addEventListener) desktopMedia.addEventListener('change',placeGameActions);
+      else desktopMedia.addListener(placeGameActions);
+    })();
+  </script>
+
   <script type="module">
     const params = new URLSearchParams(location.search);
     const hasGame = Boolean(params.get('game'));
