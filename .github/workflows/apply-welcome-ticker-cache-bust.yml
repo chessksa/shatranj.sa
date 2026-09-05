@@ -11,6 +11,8 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
       - name: Force fresh home notification wrapper
         run: |
           python - <<'PY'
@@ -34,4 +36,5 @@ jobs:
           git add index.html
           git diff --cached --quiet && exit 0
           git commit -m 'fix: force fresh welcome ticker loader'
-          git push
+          git pull --rebase origin main
+          git push origin main
