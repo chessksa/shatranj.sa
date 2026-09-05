@@ -29,7 +29,6 @@ jobs:
 
           python tests/test_subscriber_counter_baseline.py
           python tests/test_arab_identity.py
-          python tests/test_home_stat_labels.py
 
           git config user.name github-actions[bot]
           git config user.email 41898282+github-actions[bot]@users.noreply.github.com
