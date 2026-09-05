@@ -15,14 +15,55 @@ jobs:
         run: |
           python - <<'PY'
           from pathlib import Path
-          import base64, re
+          import re
 
           js = Path('play-computer.js')
           text = js.read_text(encoding='utf-8')
-          start = text.index('function addTimeChooserBack() {')
-          end = text.index("resignBtn?.addEventListener('click'", start)
-          block = base64.b64decode('ZnVuY3Rpb24gYWRkVGltZUNob29zZXJCYWNrKCkgewogIGNvbnN0IGV4aXN0aW5nID0gb3Bwb25lbnRTZWFyY2hTZXR1cD8ucXVlcnlTZWxlY3RvcignLmNvbXB1dGVyLXRpbWUtYmFjaycpOwogIGlmIChleGlzdGluZykgZXhpc3RpbmcucmVtb3ZlKCk7CiAgY29uc3Qgb3B0aW9ucyA9IG9wcG9uZW50U2VhcmNoU2V0dXA/LnF1ZXJ5U2VsZWN0b3IoJy5vcHBvbmVudC10aW1lLW9wdGlvbnMnKTsKICBpZiAoIW9wdGlvbnMpIHJldHVybjsKICBpZiAob3Bwb25lbnRTZWFyY2hTZXR1cCkgb3Bwb25lbnRTZWFyY2hTZXR1cC5zdHlsZS5wb3NpdGlvbiA9ICdyZWxhdGl2ZSc7CiAgY29uc3QgYmFjayA9IGRvY3VtZW50LmNyZWF0ZUVsZW1lbnQoJ2J1dHRvbicpOwogIGJhY2sudHlwZSA9ICdidXR0b24nOwogIGJhY2suY2xhc3NOYW1lID0gJ2NvbXB1dGVyLXRpbWUtYmFjayc7CiAgYmFjay5zZXRBdHRyaWJ1dGUoJ2FyaWEtbGFiZWwnLCAn2KfZhNix2KzZiNi5INmE2KfYrtiq2YrYp9ixINmF2LPYqtmI2Ykg2KfZhNmD2YXYqNmK2YjYqtixJyk7CiAgYmFjay5pbm5lckhUTUwgPSAnPHNwYW4gYXJpYS1oaWRkZW49InRydWUiPuKAujwvc3Bhbj4nOwogIGJhY2suc3R5bGUuY3NzVGV4dCA9ICdwb3NpdGlvbjphYnNvbHV0ZTtpbnNldC1pbmxpbmUtZW5kOjEycHg7dG9wOjhweDt3aWR0aDo0MnB4O2hlaWdodDo0MnB4O2JvcmRlcjowO2JhY2tncm91bmQ6dHJhbnNwYXJlbnQ7Y29sb3I6I2Y2ZWFkODtmb250OjgwMCAzMHB4LzEgQXJpYWwsc2Fucy1zZXJpZjtjdXJzb3I6cG9pbnRlcjtkaXNwbGF5OmZsZXg7YWxpZ24taXRlbXM6Y2VudGVyO2p1c3RpZnktY29udGVudDpjZW50ZXI7cGFkZGluZzowO3otaW5kZXg6MzsnOwogIGJhY2sub25jbGljayA9ICgpID0+IHsKICAgIGJhY2sucmVtb3ZlKCk7CiAgICBzZXR1cExldmVsQ2hvb3NlcigpOwogIH07CiAgb3B0aW9ucy5wYXJlbnROb2RlLmluc2VydEJlZm9yZShiYWNrLCBvcHRpb25zKTsKfQoKZnVuY3Rpb24gYXBwbHlDaG9vc2VyVGl0bGUodGl0bGUsIHRleHQpIHsKICBpZiAoIXRpdGxlKSByZXR1cm47CiAgdGl0bGUudGV4dENvbnRlbnQgPSB0ZXh0OwogIHRpdGxlLnN0eWxlLnNldFByb3BlcnR5KCd0ZXh0LWFsaWduJywgJ2NlbnRlcicsICdpbXBvcnRhbnQnKTsKICB0aXRsZS5zdHlsZS5zZXRQcm9wZXJ0eSgnZm9udC1zaXplJywgJ2NsYW1wKDE2cHgsIDN2dywgMjRweCknLCAnaW1wb3J0YW50Jyk7CiAgdGl0bGUuc3R5bGUuc2V0UHJvcGVydHkoJ2xpbmUtaGVpZ2h0JywgJzEuMicsICdpbXBvcnRhbnQnKTsKICB0aXRsZS5zdHlsZS5zZXRQcm9wZXJ0eSgnd2hpdGUtc3BhY2UnLCAnbm9ybWFsJywgJ2ltcG9ydGFudCcpOwogIHRpdGxlLnN0eWxlLnNldFByb3BlcnR5KCd3aWR0aCcsICcxMDAlJywgJ2ltcG9ydGFudCcpOwogIHRpdGxlLnN0eWxlLnNldFByb3BlcnR5KCdtaW4td2lkdGgnLCAnMCcsICdpbXBvcnRhbnQnKTsKICB0aXRsZS5zdHlsZS5zZXRQcm9wZXJ0eSgnbWF4LXdpZHRoJywgJzEwMCUnLCAnaW1wb3J0YW50Jyk7CiAgdGl0bGUuc3R5bGUuc2V0UHJvcGVydHkoJ2JveC1zaXppbmcnLCAnYm9yZGVyLWJveCcsICdpbXBvcnRhbnQnKTsKICB0aXRsZS5zdHlsZS5zZXRQcm9wZXJ0eSgncGFkZGluZy1pbmxpbmUnLCAnNDhweCcsICdpbXBvcnRhbnQnKTsKICB0aXRsZS5zdHlsZS5zZXRQcm9wZXJ0eSgnb3ZlcmZsb3cnLCAndmlzaWJsZScsICdpbXBvcnRhbnQnKTsKICB0aXRsZS5zdHlsZS5zZXRQcm9wZXJ0eSgndGV4dC1vdmVyZmxvdycsICdjbGlwJywgJ2ltcG9ydGFudCcpOwogIHRpdGxlLnN0eWxlLnNldFByb3BlcnR5KCdtYXJnaW4tYm90dG9tJywgJzEycHgnLCAnaW1wb3J0YW50Jyk7Cn0KCmZ1bmN0aW9uIHNldHVwVGltZUNob29zZXIobGV2ZWxLZXkpIHsKICBjb25zdCBsZXZlbCA9IExFVkVMU1tsZXZlbEtleV07CiAgaWYgKG9wcG9uZW50U2VhcmNoU2V0dXApIHsKICAgIG9wcG9uZW50U2VhcmNoU2V0dXAuc3R5bGUucG9zaXRpb24gPSAncmVsYXRpdmUnOwogICAgb3Bwb25lbnRTZWFyY2hTZXR1cC5zdHlsZS5taW5XaWR0aCA9ICcwJzsKICAgIG9wcG9uZW50U2VhcmNoU2V0dXAuc3R5bGUud2lkdGggPSAnMTAwJSc7CiAgICBvcHBvbmVudFNlYXJjaFNldHVwLnN0eWxlLm92ZXJmbG93ID0gJ2hpZGRlbic7CiAgfQogIGNvbnN0IHRpdGxlID0gb3Bwb25lbnRTZWFyY2hTZXR1cD8ucXVlcnlTZWxlY3RvcignLm9wcG9uZW50LXNlYXJjaC10aXRsZScpOwogIGFwcGx5Q2hvb3NlclRpdGxlKHRpdGxlLCBg2KfYrtiq2LHZitmF2YYg2KfZhNmF2KjYp9ix2KfYqSDigJQg2YXYs9iq2YjZiSAke2xldmVsLmxhYmVsfWApOwogIGFkZFRpbWVDaG9vc2VyQmFjaygpOwogIGNvbnN0IG9wdGlvbnMgPSBvcHBvbmVudFNlYXJjaFNldHVwPy5xdWVyeVNlbGVjdG9yKCcub3Bwb25lbnQtdGltZS1vcHRpb25zJyk7CiAgaWYgKG9wdGlvbnMpIHsKICAgIG9wdGlvbnMuc3R5bGUuZ3JpZFRlbXBsYXRlQ29sdW1ucyA9ICdyZXBlYXQoMywgbWlubWF4KDAsIDFmcikpJzsKICAgIG9wdGlvbnMuc3R5bGUud2lkdGggPSAnMTAwJSc7CiAgICBvcHRpb25zLnN0eWxlLm1heFdpZHRoID0gJzEwMCUnOwogICAgb3B0aW9ucy5zdHlsZS5taW5XaWR0aCA9ICcwJzsKICB9CiAgY29uc3QgYnV0dG9ucyA9IFsuLi5kb2N1bWVudC5xdWVyeVNlbGVjdG9yQWxsKCcub3Bwb25lbnQtdGltZS1vcHRpb25zIC5vcHBvbmVudC10aW1lLW9wdGlvbicpXTsKICBidXR0b25zLmZvckVhY2goKGJ1dHRvbiwgaW5kZXgpID0+IHsKICAgIGNvbnN0IG1pbnV0ZXMgPSBUSU1FX0NPTlRST0xTW2luZGV4XTsKICAgIGJ1dHRvbi5kaXNhYmxlZCA9IGZhbHNlOwogICAgYnV0dG9uLnJlbW92ZUF0dHJpYnV0ZSgnZGF0YS1sZXZlbCcpOwogICAgYnV0dG9uLmRhdGFzZXQubWludXRlcyA9IFN0cmluZyhtaW51dGVzKTsKICAgIGJ1dHRvbi5zdHlsZS5taW5XaWR0aCA9ICcwJzsKICAgIGJ1dHRvbi5pbm5lckhUTUwgPSBgPHN0cm9uZz4ke21pbnV0ZXN9PC9zdHJvbmc+PHNwYW4+2K/Zgtin2KbZgjwvc3Bhbj5gOwogICAgYnV0dG9uLm9uY2xpY2sgPSAoKSA9PiBzdGFydENvbXB1dGVyR2FtZShsZXZlbEtleSwgbWludXRlcyk7CiAgfSk7CiAgaWYgKHRvcFBsYXllckNhcmQpIHRvcFBsYXllckNhcmQuc2V0QXR0cmlidXRlKCdhcmlhLWxhYmVsJywgJ9in2K7YqtmK2KfYsSDYstmF2YYg2YXYqNin2LHYp9ipINin2YTZg9mF2KjZitmI2KrYsScpOwp9CgpmdW5jdGlvbiBzZXR1cExldmVsQ2hvb3NlcigpIHsKICBvcHBvbmVudFNlYXJjaFNldHVwPy5xdWVyeVNlbGVjdG9yKCcuY29tcHV0ZXItdGltZS1iYWNrJyk/LnJlbW92ZSgpOwogIHNlbGVjdGVkTGV2ZWwgPSBudWxsOwogIHNlbGVjdGVkTWludXRlcyA9IG51bGw7CiAgaWYgKG9wcG9uZW50U2VhcmNoV2FpdGluZykgb3Bwb25lbnRTZWFyY2hXYWl0aW5nLmhpZGRlbiA9IHRydWU7CiAgaWYgKG9wcG9uZW50U2VhcmNoU2V0dXApIHsKICAgIG9wcG9uZW50U2VhcmNoU2V0dXAuaGlkZGVuID0gZmFsc2U7CiAgICBvcHBvbmVudFNlYXJjaFNldHVwLnN0eWxlLnBvc2l0aW9uID0gJ3JlbGF0aXZlJzsKICAgIG9wcG9uZW50U2VhcmNoU2V0dXAuc3R5bGUubWluV2lkdGggPSAnMCc7CiAgICBvcHBvbmVudFNlYXJjaFNldHVwLnN0eWxlLndpZHRoID0gJzEwMCUnOwogICAgb3Bwb25lbnRTZWFyY2hTZXR1cC5zdHlsZS5vdmVyZmxvdyA9ICdoaWRkZW4nOwogIH0KICBpZiAodG9wUGxheWVyTGl2ZSkgdG9wUGxheWVyTGl2ZS5oaWRkZW4gPSB0cnVlOwogIGNvbnN0IHRpdGxlID0gb3Bwb25lbnRTZWFyY2hTZXR1cD8ucXVlcnlTZWxlY3RvcignLm9wcG9uZW50LXNlYXJjaC10aXRsZScpOwogIGFwcGx5Q2hvb3NlclRpdGxlKHRpdGxlLCAn2KfYrtiq2LEg2YXYs9iq2YjZiSDYp9mE2YPZhdio2YrZiNiq2LEg4oCUINin2YTZhtmC2KfYtyDZhNmE2YXYs9is2YTZitmGJyk7CiAgY29uc3Qgb3B0aW9ucyA9IG9wcG9uZW50U2VhcmNoU2V0dXA/LnF1ZXJ5U2VsZWN0b3IoJy5vcHBvbmVudC10aW1lLW9wdGlvbnMnKTsKICBpZiAob3B0aW9ucykgewogICAgb3B0aW9ucy5zdHlsZS5ncmlkVGVtcGxhdGVDb2x1bW5zID0gJ3JlcGVhdCgzLCBtaW5tYXgoMCwgMWZyKSknOwogICAgb3B0aW9ucy5zdHlsZS53aWR0aCA9ICcxMDAlJzsKICAgIG9wdGlvbnMuc3R5bGUubWF4V2lkdGggPSAnMTAwJSc7CiAgICBvcHRpb25zLnN0eWxlLm1pbldpZHRoID0gJzAnOwogIH0KICBjb25zdCBidXR0b25zID0gWy4uLmRvY3VtZW50LnF1ZXJ5U2VsZWN0b3JBbGwoJy5vcHBvbmVudC10aW1lLW9wdGlvbnMgLm9wcG9uZW50LXRpbWUtb3B0aW9uJyldOwogIGNvbnN0IGxldmVscyA9IFsKICAgIFsnZWFzeScsICfYs9mH2YQnLCAnwrE1INmG2YLYp9i4J10sCiAgICBbJ21lZGl1bScsICfZhdiq2YjYs9i3JywgJ8KxMTAg2YbZgtin2LcnXSwKICAgIFsnaGFyZCcsICfYtdi52KgnLCAnwrEyMCDZhtmC2LfYqSddCiAgXTsKICBidXR0b25zLmZvckVhY2goKGJ1dHRvbiwgaW5kZXgpID0+IHsKICAgIGNvbnN0IFtrZXksIGxhYmVsLCBzdWJdID0gbGV2ZWxzW2luZGV4XTsKICAgIGJ1dHRvbi5kaXNhYmxlZCA9IGZhbHNlOwogICAgYnV0dG9uLnJlbW92ZUF0dHJpYnV0ZSgnZGF0YS1taW51dGVzJyk7CiAgICBidXR0b24uZGF0YXNldC5sZXZlbCA9IGtleTsKICAgIGJ1dHRvbi5zdHlsZS5taW5XaWR0aCA9ICcwJzsKICAgIGJ1dHRvbi5pbm5lckhUTUwgPSBgPHN0cm9uZz4ke2xhYmVsfTwvc3Ryb25nPjxzcGFuPiR7c3VifTwvc3Bhbj5gOwogICAgYnV0dG9uLm9uY2xpY2sgPSAoKSA9PiB7CiAgICAgIGlmIChzZWxlY3RlZExldmVsKSByZXR1cm47CiAgICAgIHNlbGVjdGVkTGV2ZWwgPSBrZXk7CiAgICAgIHNldHVwVGltZUNob29zZXIoa2V5KTsKICAgIH07CiAgfSk7CiAgaWYgKHRvcFBsYXllckNhcmQpIHRvcFBsYXllckNhcmQuc2V0QXR0cmlidXRlKCdhcmlhLWxhYmVsJywgJ9in2K7YqtmK2KfYsSDZhdiz2KrZiNmJINin2YTZg9mF2KjZitmI2KrYsScpOwogIGlmIChyZXNpZ25CdG4pIHJlc2lnbkJ0bi5kaXNhYmxlZCA9IHRydWU7CiAgaWYgKGRyYXdPZmZlckJ0bikgZHJhd09mZmVyQnRuLmRpc2FibGVkID0gdHJ1ZTsKICBpZiAoZW5kR3JhY2VCdG4pIHsKICAgIGVuZEdyYWNlQnRuLmRpc2FibGVkID0gZmFsc2U7CiAgICBlbmRHcmFjZUJ0bi5vbmNsaWNrID0gKCkgPT4gcmVzaWduQ29tcHV0ZXJHYW1lKHsgbmF2aWdhdGU6IHRydWUgfSk7CiAgfQogIGlmIChsZWF2ZUJ0bikgbGVhdmVCdG4ub25jbGljayA9ICgpID0+IHJlc2lnbkNvbXB1dGVyR2FtZSh7IG5hdmlnYXRlOiB0cnVlIH0pOwogIGlmIChyZXBvcnRCdG4pIHJlcG9ydEJ0bi5kaXNhYmxlZCA9IHRydWU7Cn0KCg==').decode('utf-8')
-          text = text[:start] + block + text[end:]
+
+          old_back_style = "back.style.cssText = 'position:absolute;inset-inline-end:16px;top:12px;width:64px;height:64px;border:1px solid rgba(224,181,103,.55);border-radius:16px;background:rgba(3,43,48,.28);color:#f6ead8;font:800 42px/1 Arial,sans-serif;cursor:pointer;display:flex;align-items:center;justify-content:center;padding:0;z-index:3;';"
+          current_back_style = "back.style.cssText = 'position:absolute;inset-inline-end:16px;top:12px;width:64px;height:64px;border:1px solid rgba(224,181,103,.55);border-radius:16px;background:rgba(3,43,48,.28);color:#f6ead8;font:800 42px/1 Arial,sans-serif;cursor:pointer;display:flex;align-items:center;justify-content:center;padding:0;z-index:3;';"
+          new_back_style = "back.style.cssText = 'position:absolute;inset-inline-end:12px;top:8px;width:42px;height:42px;border:0;background:transparent;color:#f6ead8;font:800 30px/1 Arial,sans-serif;cursor:pointer;display:flex;align-items:center;justify-content:center;padding:0;z-index:3;';"
+          if current_back_style in text:
+              text = text.replace(current_back_style, new_back_style, 1)
+          elif new_back_style not in text:
+              raise SystemExit('back style marker missing')
+
+          helper = (
+              "function applyChooserTitle(title, text) {\n"
+              "  if (!title) return;\n"
+              "  title.textContent = text;\n"
+              "  title.style.setProperty('text-align', 'center', 'important');\n"
+              "  title.style.setProperty('font-size', 'clamp(16px, 3vw, 24px)', 'important');\n"
+              "  title.style.setProperty('line-height', '1.2', 'important');\n"
+              "  title.style.setProperty('white-space', 'normal', 'important');\n"
+              "  title.style.setProperty('width', '100%', 'important');\n"
+              "  title.style.setProperty('min-width', '0', 'important');\n"
+              "  title.style.setProperty('max-width', '100%', 'important');\n"
+              "  title.style.setProperty('box-sizing', 'border-box', 'important');\n"
+              "  title.style.setProperty('padding-inline', '48px', 'important');\n"
+              "  title.style.setProperty('overflow', 'visible', 'important');\n"
+              "  title.style.setProperty('text-overflow', 'clip', 'important');\n"
+              "  title.style.setProperty('margin-bottom', '12px', 'important');\n"
+              "}\n\n"
+          )
+          if 'function applyChooserTitle(title, text)' not in text:
+              text = text.replace('function setupTimeChooser(levelKey) {', helper + 'function setupTimeChooser(levelKey) {', 1)
+
+          time_start = text.index('function setupTimeChooser(levelKey) {')
+          time_end = text.index('function setupLevelChooser() {', time_start)
+          time_block = text[time_start:time_end]
+          title_start = time_block.index("  const title = opponentSearchSetup?.querySelector('.opponent-search-title');")
+          add_back = time_block.index('  addTimeChooserBack();', title_start)
+          time_block = time_block[:title_start] + "  const title = opponentSearchSetup?.querySelector('.opponent-search-title');\n  applyChooserTitle(title, `اختر زمن المباراة — مستوى ${level.label}`);\n" + time_block[add_back:]
+          text = text[:time_start] + time_block + text[time_end:]
+
+          level_start = text.index('function setupLevelChooser() {')
+          level_end = text.index("resignBtn?.addEventListener('click'", level_start)
+          level_block = text[level_start:level_end]
+          title_start = level_block.index("  const title = opponentSearchSetup?.querySelector('.opponent-search-title');")
+          next_marker = level_block.index("  if (opponentSearchSetup)", title_start)
+          level_block = level_block[:title_start] + "  const title = opponentSearchSetup?.querySelector('.opponent-search-title');\n  applyChooserTitle(title, 'اختر مستوى الكمبيوتر — النقاط للمسجلين');\n" + level_block[next_marker:]
+          text = text[:level_start] + level_block + text[level_end:]
           js.write_text(text, encoding='utf-8')
 
           play = Path('play-v10.html')
