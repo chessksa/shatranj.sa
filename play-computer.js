@@ -2,9 +2,9 @@ import { Chessboard, COLOR, INPUT_EVENT_TYPE, BORDER_TYPE } from 'https://cdn.js
 import { createClient } from 'https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/+esm';
 
 const LEVELS = {
-  easy: { skill: 2, movetime: 140, label: 'سهل', points: 5 },
-  medium: { skill: 8, movetime: 320, label: 'متوسط', points: 10 },
-  hard: { skill: 16, movetime: 700, label: 'صعب', points: 20 }
+  easy: { skill: 8, movetime: 250, label: 'سهل', points: 5 },
+  medium: { skill: 14, movetime: 600, label: 'متوسط', points: 10 },
+  hard: { skill: 20, movetime: 1200, label: 'صعب', points: 20 }
 };
 const TIME_CONTROLS = [5, 10, 15];
 
@@ -465,6 +465,16 @@ async function computerTurn() {
   }
 }
 
+async function fetchRatedState() {
+  if (!ratedMode || !ratedGameId) return null;
+  try {
+    return await invokeComputer({ action: 'state', game_id: ratedGameId });
+  } catch (error) {
+    console.error('computer state reconciliation failed', error);
+    return null;
+  }
+}
+
 async function submitRatedMove(move) {
   if (!ratedGameId || finished) return;
   thinking = true;
@@ -485,12 +495,24 @@ async function submitRatedMove(move) {
     else setComputerStatus('جاهز');
   } catch (error) {
     console.error(error);
-    game.undo();
-    renderBoard(false);
-    clockActiveSide = 'player';
-    clockAnchorMs = Date.now();
-    setComputerStatus('جاهز');
-    toast('تعذر اعتماد الحركة. أُعيدت الرقعة إلى آخر وضع معتمد.');
+    const authoritative = await fetchRatedState();
+    if (authoritative?.fen) {
+      game.load(authoritative.fen);
+      renderBoard(false);
+      syncRatedClocks(authoritative);
+      if (authoritative.status === 'finished') finishRatedResult(authoritative);
+      else {
+        setComputerStatus('جاهز');
+        toast('تمت مزامنة المباراة مع الخادم.');
+      }
+    } else {
+      game.undo();
+      renderBoard(false);
+      clockActiveSide = 'player';
+      clockAnchorMs = Date.now();
+      setComputerStatus('جاهز');
+      toast('تعذر اعتماد الحركة. أُعيدت الرقعة إلى آخر وضع معتمد.');
+    }
   } finally {
     thinking = false;
   }
@@ -521,13 +543,16 @@ function handleBoardInput(event) {
     clearMoveHints();
     const move = game.move({ from: event.squareFrom, to: event.squareTo, promotion: 'q' });
     if (!move) return false;
-    switchClock('computer');
-    renderBoard(false);
 
     if (ratedMode) {
+      commitActiveClock();
+      clockActiveSide = null;
+      clockAnchorMs = 0;
+      renderClocks();
       Promise.resolve().then(() => submitRatedMove(move));
-    } else if (!checkGuestGameResult()) {
-      setTimeout(computerTurn, 180);
+    } else {
+      switchClock('computer');
+      if (!checkGuestGameResult()) setTimeout(computerTurn, 180);
     }
     return true;
   }
