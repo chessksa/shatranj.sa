@@ -31,7 +31,13 @@ jobs:
           assert 'body.pregame #opponentSearchWaiting .search-dots i{background:#ffbd6a!important' in html, 'search dots must match the light orange title'
           assert 'body.pregame #opponentSearchWaiting .inline-cancel-search{margin-top:15px!important' in html, 'cancel search button needs breathing room'
           assert 'body.pregame .board-panel{order:2;width:100%;height:auto!important;min-height:0!important;flex:0 0 auto!important' in html, 'board panel must not absorb leftover vertical space'
-          print('mobile search spacing, equal-card and pull-to-refresh behavior verified')
+          assert 'id="mobilePullRefresh"' in html, 'mobile pull refresh indicator missing'
+          assert "addEventListener('touchstart',handlePullStart" in html, 'pull refresh touchstart handler missing'
+          assert "addEventListener('touchmove',handlePullMove" in html, 'pull refresh touchmove handler missing'
+          assert "addEventListener('touchend',handlePullEnd" in html, 'pull refresh touchend handler missing'
+          assert 'location.reload()' in html, 'pull refresh must reload the page after threshold'
+          assert 'const PULL_REFRESH_THRESHOLD=72' in html, 'pull refresh threshold must be explicit'
+          print('mobile search spacing, equal-card and in-page pull-to-refresh behavior verified')
           PY
       - name: Commit mobile search layout
         run: |
@@ -42,5 +48,5 @@ jobs:
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
           git add play-v10.html
-          git commit -m "fix: compact and style mobile opponent search"
+          git commit -m "fix: enable in-page mobile pull refresh"
           git push
