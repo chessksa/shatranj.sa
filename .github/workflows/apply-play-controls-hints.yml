@@ -10,10 +10,162 @@ permissions:
   contents: write
 
 jobs:
-  test:
+  apply:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
+      - name: Apply approved play controls and hints
+        run: |
+          python - <<'PY'
+          from pathlib import Path
+
+          html_path = Path('play-v10.html')
+          js_path = Path('play-v8.js')
+          html = html_path.read_text(encoding='utf-8')
+          js = js_path.read_text(encoding='utf-8')
+
+          board_shell_old = '<div class="board-shell"><div id="board" class="board" aria-label="رقعة الشطرنج"></div></div>'
+          board_shell_new = '<div class="board-shell"><div id="board" class="board" aria-label="رقعة الشطرنج"></div><div id="moveHints" class="move-hints" aria-hidden="true"></div></div>'
+          if board_shell_old in html:
+              html = html.replace(board_shell_old, board_shell_new, 1)
+
+          actions = '''          <section class="actions-card">
+            <button class="action-item" id="resignBtn" type="button"><span class="action-icon">🏳</span><span class="action-label">استسلام</span></button>
+            <button class="action-item" id="drawOffer" type="button"><span class="action-icon">🤝</span><span class="action-label">عرض تعادل</span></button>
+            <button class="action-item grace-end-action" id="endGraceBtn" type="button" disabled><span class="action-icon">✕</span><span class="action-label">إنهاء</span><span class="grace-countdown" id="endGraceCountdown">5</span><span class="grace-note">خلال 5 ثوانٍ دون خصم نقاط</span></button>
+          </section>'''
+
+          if html.index(actions) > html.index('<aside class="side-panel">'):
+              html = html.replace('\n' + actions + '\n', '\n', 1)
+              board_end = '        </div>\n      </section>\n\n      <aside class="side-panel">'
+              board_end_new = '        </div>\n\n' + actions.replace('          ', '        ', 1) + '\n      </section>\n\n      <aside class="side-panel">'
+              if board_end not in html:
+                  raise SystemExit('board panel insertion point not found')
+              html = html.replace(board_end, board_end_new, 1)
+
+          style_patch = '''
+    /* Approved compact game actions below the board */
+    .board-panel{grid-template-rows:minmax(0,1fr) auto;row-gap:7px;align-content:center}
+    .board-panel>.board-frame{grid-row:1;width:min(100%,calc(100dvh - 88px),920px)}
+    .board-panel>.actions-card{grid-row:2;width:min(100%,calc(100dvh - 88px),920px);min-height:44px;border-radius:11px;justify-self:end;box-shadow:0 7px 18px rgba(0,0,0,.20);background:rgba(7,54,61,.78)}
+    .board-panel>.actions-card .action-item{min-height:44px;flex-direction:row;gap:5px;padding:4px 8px}
+    .board-panel>.actions-card .action-icon{font-size:18px;line-height:1}
+    .board-panel>.actions-card .action-label{font-size:11px}
+    .board-panel>.actions-card .grace-countdown{min-width:25px;padding:1px 6px;font-size:10px}
+    .board-panel>.actions-card .grace-note{display:none}
+    .move-hints{position:absolute;inset:0;z-index:8;pointer-events:none}
+    .move-hint{position:absolute;width:12.5%;height:12.5%;display:grid;place-items:center;pointer-events:none}
+    .move-hint::after{content:"";width:22%;height:22%;border-radius:50%;background:rgba(10,58,46,.62);box-shadow:0 0 0 1px rgba(255,255,255,.16)}
+    .move-hint.capture::after{width:68%;height:68%;background:transparent;border:4px solid rgba(117,45,36,.58);box-shadow:none}
+    @media(max-width:900px){
+      .board-panel{flex-direction:column;gap:6px}
+      .board-panel>.board-frame{width:min(100%,calc(100vw - 16px))}
+      .board-panel>.actions-card{order:4;width:min(100%,calc(100vw - 16px));min-height:42px}
+      .board-panel>.actions-card .action-item{min-height:42px;padding:3px 5px}
+      .board-panel>.actions-card .action-icon{font-size:17px}
+      .board-panel>.actions-card .action-label{font-size:10px}
+    }
+'''
+          if '/* Approved compact game actions below the board */' not in html:
+              html = html.replace('  </style>', style_patch + '  </style>', 1)
+
+          html_path.write_text(html, encoding='utf-8')
+
+          if "const moveHintsEl = $('moveHints');" not in js:
+              js = js.replace("const boardEl = $('board');", "const boardEl = $('board');\nconst moveHintsEl = $('moveHints');", 1)
+
+          hint_functions = '''
+function clearMoveHints(){
+  if(moveHintsEl) moveHintsEl.replaceChildren();
+}
+
+function moveHintPosition(square){
+  const fileIndex=files.indexOf(String(square || '')[0]);
+  const rank=Number(String(square || '')[1]);
+  if(fileIndex<0 || !Number.isFinite(rank) || rank<1 || rank>8) return null;
+  let col=fileIndex;
+  let row=8-rank;
+  if(flipped){
+    col=7-col;
+    row=7-row;
+  }
+  return {col,row};
+}
+
+function showMoveHints(fromSquare){
+  clearMoveHints();
+  if(!moveHintsEl || !game || !fromSquare) return;
+  const moves=game.moves({square:fromSquare,verbose:true});
+  const targets=new Map();
+  moves.forEach((move)=>{
+    const current=targets.get(move.to);
+    targets.set(move.to,{to:move.to,capture:Boolean(move.captured) || Boolean(current?.capture)});
+  });
+  targets.forEach((target)=>{
+    const pos=moveHintPosition(target.to);
+    if(!pos) return;
+    const hint=document.createElement('span');
+    hint.className='move-hint' + (target.capture ? ' capture' : '');
+    hint.style.left=`${pos.col * 12.5}%`;
+    hint.style.top=`${pos.row * 12.5}%`;
+    hint.dataset.square=target.to;
+    moveHintsEl.appendChild(hint);
+  });
+}
+
+'''
+          if 'function showMoveHints(fromSquare)' not in js:
+              js = js.replace('function ensureCmStyles(){', hint_functions + 'function ensureCmStyles(){', 1)
+
+          old_start = '''  if(event.type===INPUT_EVENT_TYPE.moveInputStarted){
+    if(moveBusy || !game || !serverState || serverState.status!=='active') return false;
+    if(game.turn()!==myColor) return false;
+    const piece=game.get(event.squareFrom);
+    return Boolean(piece && piece.color===myColor && piece.color===game.turn());
+  }'''
+          new_start = '''  if(event.type===INPUT_EVENT_TYPE.moveInputStarted){
+    if(moveBusy || !game || !serverState || serverState.status!=='active') return false;
+    if(game.turn()!==myColor) return false;
+    const piece=game.get(event.squareFrom);
+    const allowed=Boolean(piece && piece.color===myColor && piece.color===game.turn());
+    if(!allowed){
+      clearMoveHints();
+      return false;
+    }
+    selected=event.squareFrom;
+    legalTargets=game.moves({square:event.squareFrom,verbose:true});
+    showMoveHints(event.squareFrom);
+    return true;
+  }'''
+          if old_start in js:
+              js = js.replace(old_start, new_start, 1)
+
+          candidate_old = '''    const candidate=legal.find(move=>move.to===event.squareTo);
+    if(!candidate) return false;
+
+    const move=game.move({from:event.squareFrom,to:event.squareTo,promotion:'q'});'''
+          candidate_new = '''    const candidate=legal.find(move=>move.to===event.squareTo);
+    if(!candidate) return false;
+    clearMoveHints();
+
+    const move=game.move({from:event.squareFrom,to:event.squareTo,promotion:'q'});'''
+          if candidate_old in js:
+              js = js.replace(candidate_old, candidate_new, 1)
+
+          reset_old = '''    selected=null;
+    legalTargets=[];
+    lastServerUpdate=row.updated_at || '';'''
+          reset_new = '''    selected=null;
+    legalTargets=[];
+    clearMoveHints();
+    lastServerUpdate=row.updated_at || '';'''
+          if reset_old in js:
+              js = js.replace(reset_old, reset_new, 1)
+
+          js = js.replace('  await loadGraceEndWindow();\n  gamePollTimer=setInterval(()=>{', '  loadGraceEndWindow();\n  gamePollTimer=setInterval(()=>{', 1)
+
+          js_path.write_text(js, encoding='utf-8')
+          PY
       - name: Test approved play layout and hints
         run: |
           python - <<'PY'
@@ -24,8 +176,22 @@ jobs:
 
           assert 'id="moveHints"' in html, 'move-hint overlay is missing'
           assert html.index('<section class="actions-card">') < html.index('<aside class="side-panel">'), 'game actions are not below the board'
-          assert '.move-hint' in html, 'move-hint styling is missing'
+          assert '/* Approved compact game actions below the board */' in html, 'compact action styling is missing'
+          assert '.move-hint.capture::after' in html, 'capture hint styling is missing'
           assert 'showMoveHints(event.squareFrom)' in js, 'legal move hints are not shown when selecting a piece'
+          assert 'clearMoveHints();\n\n    const move=game.move' in js, 'move hints are not cleared after a legal move'
           assert 'await loadGraceEndWindow();' not in js, 'grace countdown still blocks live-game initialization'
+          assert '  loadGraceEndWindow();\n  gamePollTimer=setInterval' in js, 'grace countdown is not running independently'
           print('approved play layout and hints verified')
           PY
+      - name: Commit approved play changes
+        run: |
+          if git diff --quiet -- play-v10.html play-v8.js; then
+            echo "No play changes to commit."
+            exit 0
+          fi
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add play-v10.html play-v8.js
+          git commit -m "feat: move game actions below board and show legal move hints"
+          git push
