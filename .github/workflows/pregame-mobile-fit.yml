@@ -14,7 +14,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
-      - name: Apply equal player card and pull to refresh
+      - name: Apply mobile search polish and existing pregame fixes
         run: python scripts/apply-pregame-mobile-fit.py
       - name: Verify equal mobile player card, search layout and pull to refresh
         run: |
@@ -33,7 +33,7 @@ jobs:
           assert 'body.pregame .board-panel{order:2;width:100%;height:auto!important;min-height:0!important;flex:0 0 auto!important' in html, 'board panel must not absorb leftover vertical space'
           print('mobile search spacing, equal-card and pull-to-refresh behavior verified')
           PY
-      - name: Commit mobile player card and refresh behavior
+      - name: Commit mobile search layout
         run: |
           if git diff --quiet -- play-v10.html; then
             echo "No mobile layout changes to commit."
