@@ -1,4 +1,4 @@
-const CACHE="shatranj-arab-v2";
+const CACHE="shatranj-arab-v3";
 const ASSETS=["./","./index.html","./styles.css","./app.js","./config.js","./manifest.webmanifest","./arab-cities.js"];
 const PLAY_PATHS=["/play.html","/play-v8.html","/play-live.js","/play-v8.js","/realistic-pieces.css","/play-v8.css","/play-v10.html","/play-v10-match.js","/assets/pieces/"];
 
@@ -8,11 +8,13 @@ self.addEventListener("install",e=>{
 });
 
 self.addEventListener("activate",e=>{
-  e.waitUntil(
-    caches.keys()
-      .then(keys=>Promise.all(keys.filter(k=>k!==CACHE).map(k=>caches.delete(k))))
-      .then(()=>self.clients.claim())
-  );
+  e.waitUntil((async()=>{
+    const keys=await caches.keys();
+    await Promise.all(keys.filter(k=>k!==CACHE).map(k=>caches.delete(k)));
+    await self.clients.claim();
+    const clients=await self.clients.matchAll({type:"window",includeUncontrolled:true});
+    await Promise.all(clients.map(client=>client.navigate(client.url).catch(()=>null)));
+  })());
 });
 
 self.addEventListener("fetch",e=>{

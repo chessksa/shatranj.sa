@@ -1,6 +1,15 @@
 (async () => {
   'use strict';
 
+  function removeStaleMobileDashboard() {
+    if (!window.matchMedia('(max-width:600px)').matches) return;
+    document.querySelectorAll('.home-header #dashboardNav,.home-header .dashboard-link').forEach(el => el.remove());
+    document.querySelectorAll('.home-header a,.home-header button').forEach(el => {
+      if (el.textContent.trim() === 'لوحة التحكم') el.remove();
+    });
+  }
+  removeStaleMobileDashboard();
+
   const fallbackCfg = {
     enabled: true,
     url: 'https://zjxkxhsvltihucdacjrv.supabase.co',
