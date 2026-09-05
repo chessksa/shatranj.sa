@@ -14,7 +14,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
-      - name: Apply in-page mobile pull refresh and existing mobile fixes
+      - name: Apply safe-area mobile pull refresh and existing mobile fixes
         run: python scripts/apply-pregame-mobile-fit.py
       - name: Verify equal mobile player card, search layout and pull to refresh
         run: |
