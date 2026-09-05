@@ -1325,3 +1325,89 @@ footer .wrap{display:flex;justify-content:space-between;align-items:center}
     max-width:none!important;
   }
 }
+
+/* Mobile member identity centered 22px 20260905 */
+@media(max-width:600px){
+  body.home-signed-in .compact-member-nav .nav-user{
+    grid-template-columns:repeat(3,minmax(0,1fr))!important;
+    column-gap:6px!important;
+    row-gap:6px!important;
+  }
+  body.home-signed-in .compact-member-nav .header-member{
+    grid-column:1/-1!important;
+  }
+  body.home-signed-in .compact-member-nav .header-member-link.header-tile{
+    position:relative!important;
+    width:100%!important;
+    min-height:50px!important;
+    padding-inline:54px!important;
+    justify-content:center!important;
+  }
+  body.home-signed-in .compact-member-nav .header-member-avatar-wrap{
+    position:absolute!important;
+    right:10px!important;
+    top:50%!important;
+    transform:translateY(-50%)!important;
+  }
+  body.home-signed-in .compact-member-nav .header-member-copy{
+    width:100%!important;
+    min-width:0!important;
+    display:flex!important;
+    flex-direction:row!important;
+    align-items:baseline!important;
+    justify-content:center!important;
+    gap:8px!important;
+  }
+  body.home-signed-in .compact-member-nav .header-member-copy>strong{
+    flex:0 1 auto!important;
+    min-width:0!important;
+    max-width:calc(100% - 58px)!important;
+    margin:0!important;
+    font-size:22px!important;
+    line-height:1!important;
+    white-space:nowrap!important;
+    overflow:hidden!important;
+    text-overflow:ellipsis!important;
+    text-align:center!important;
+  }
+  body.home-signed-in .compact-member-nav .header-member-points{
+    flex:0 0 auto!important;
+    min-width:0!important;
+    display:inline-flex!important;
+    flex-direction:row!important;
+    align-items:baseline!important;
+    justify-content:center!important;
+    line-height:1!important;
+  }
+  body.home-signed-in .compact-member-nav .header-member-points small{display:none!important}
+  body.home-signed-in .compact-member-nav .header-member-points b{
+    margin:0!important;
+    font-size:22px!important;
+    line-height:1!important;
+  }
+  body.home-signed-in .compact-member-nav .header-notification-host{
+    grid-column:1!important;
+    grid-row:2!important;
+    order:0!important;
+  }
+  body.home-signed-in .compact-member-nav .header-tournaments{
+    grid-column:2!important;
+    grid-row:2!important;
+    order:0!important;
+  }
+  body.home-signed-in .compact-member-nav .nav-logout{
+    grid-column:3!important;
+    grid-row:2!important;
+    order:0!important;
+  }
+  body.home-signed-in .compact-member-nav .header-notification-host,
+  body.home-signed-in .compact-member-nav .header-tournaments,
+  body.home-signed-in .compact-member-nav .nav-logout{
+    width:100%!important;
+    min-width:0!important;
+    max-width:none!important;
+    height:42px!important;
+    min-height:42px!important;
+    margin:0!important;
+  }
+}
