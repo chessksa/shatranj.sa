@@ -1,0 +1,13 @@
+name: Test desktop play actions and board
+on:
+  push:
+    paths:
+      - 'tests/test_desktop_play_actions_board.py'
+      - 'play-v10.html'
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Run desktop play layout test
+        run: python tests/test_desktop_play_actions_board.py
