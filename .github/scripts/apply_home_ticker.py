@@ -37,6 +37,15 @@ ticker_style = '''
   body.home-signed-in #ranking{grid-row:3/5!important}
   body.home-signed-in .home-features{grid-row:4!important}
   body.home-signed-in footer{grid-row:5!important}
+  body.home-signed-in #ranking .table-card{flex:0 0 auto!important}
+  body.home-signed-in #ranking .table-wrap{height:auto!important;overflow:visible!important}
+  body.home-signed-in #ranking table{height:auto!important}
+}
+@media(min-width:901px) and (max-height:700px){
+  body.home-signed-in{height:auto!important;min-height:100vh!important;overflow-y:auto!important;grid-template-rows:64px 34px auto 104px 38px!important}
+  body.home-signed-in #ranking{height:auto!important;overflow:visible!important}
+  body.home-signed-in #ranking>.wrap{height:auto!important}
+  body.home-signed-in .home-hero{overflow:visible!important}
 }
 @media(max-width:900px){
   .home-header{order:1!important}
