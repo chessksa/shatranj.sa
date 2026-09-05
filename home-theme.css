@@ -1628,3 +1628,46 @@ footer .wrap{display:flex;justify-content:space-between;align-items:center}
     display:inline!important;
   }
 }
+
+/* Dedicated mobile dashboard 20260905 */
+.mobile-dashboard-link{display:none!important}
+@media(max-width:600px){
+  body.home-signed-in .compact-member-nav .nav-user{
+    grid-template-columns:repeat(3,minmax(0,1fr))!important;
+    direction:rtl!important;
+  }
+  body.home-signed-in .compact-member-nav .dashboard-link{
+    display:none!important;
+  }
+  body.home-signed-in .compact-member-nav .header-tournaments{
+    display:none!important;
+  }
+  body.home-signed-in .compact-member-nav .mobile-dashboard-link{
+    display:inline-flex!important;
+    grid-column:1!important;
+    grid-row:2!important;
+    width:100%!important;
+    min-width:0!important;
+    max-width:none!important;
+    height:42px!important;
+    min-height:42px!important;
+    margin:0!important;
+    padding:0 6px!important;
+    align-items:center!important;
+    justify-content:center!important;
+    gap:5px!important;
+    font-size:11px!important;
+    font-weight:800!important;
+  }
+  body.home-signed-in .compact-member-nav .mobile-dashboard-link>span:not(.header-tile-icon){
+    display:inline!important;
+  }
+  body.home-signed-in .compact-member-nav .header-notification-host{
+    grid-column:2!important;
+    grid-row:2!important;
+  }
+  body.home-signed-in .compact-member-nav .nav-logout{
+    grid-column:3!important;
+    grid-row:2!important;
+  }
+}
