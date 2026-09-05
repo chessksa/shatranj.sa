@@ -1533,7 +1533,7 @@ async function loadPlayers(){
   const [{data,error},{data:usernameRows,error:usernameError}]=await Promise.all([
     supabase
       .from('public_players')
-      .select('id,name,region,city,category,rating,rating_status,created_at')
+      .select('id,name,region,city,category,rating,rating_status,created_at,is_synthetic')
       .order('rating',{ascending:false})
       .order('created_at',{ascending:true}),
     supabase.rpc('get_public_usernames')
@@ -1558,7 +1558,7 @@ async function loadPlayers(){
   }));
 
   const headerPlayers=document.querySelector('#headerPlayersCount');
-  if(headerPlayers) headerPlayers.textContent=500 + ALL_PLAYERS.length;
+  if(headerPlayers) headerPlayers.textContent=ALL_PLAYERS.filter(player=>!player.is_synthetic).length;
 
   applyFilter();
 }

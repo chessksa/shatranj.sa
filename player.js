@@ -118,6 +118,7 @@
 
   async function renderFriendAction() {
     const host=$('friendAction');
+    if (profile?.is_synthetic) { host.innerHTML=''; return; }
     if (!session) {
       host.innerHTML='<a class="btn gold" href="index.html#register">سجل الدخول لإضافة صديق</a>';
       return;
@@ -180,7 +181,7 @@
       if (!profile) { message.textContent='الملف غير متاح حاليًا.'; return; }
       $('publicName').textContent=profile.name;
       renderPublicRank(profile.rating);
-      $('publicMeta').textContent=[profile.username?`@${profile.username}`:'',profile.city,countryForRegion(profile.region)].filter(Boolean).join(' • ');
+      $('publicMeta').textContent=[profile.username?`@${profile.username}`:'',profile.city,countryForRegion(profile.region),profile.is_synthetic?'تجريبي':''].filter(Boolean).join(' • ');
       $('publicRating').textContent=profile.rating;$('sRating').textContent=profile.rating;$('sGames').textContent=profile.games_count;$('sWins').textContent=profile.wins;$('sDraws').textContent=profile.draws;$('sLosses').textContent=profile.losses;$('sFriends').textContent=profile.friend_count;
       showAvatar(profile.avatar_path || `${profile.id}/avatar.webp`,profile.name);
       renderChart(hData || []);renderGames(gData || []);renderAchievements(aData || []);
