@@ -1219,3 +1219,109 @@ footer .wrap{display:flex;justify-content:space-between;align-items:center}
 
 /* Header member name size 20260905 */
 .compact-member-nav .header-member-copy>strong{font-size:18px!important}
+
+/* Mobile header two-row layout 20260905 */
+@media(max-width:600px){
+  .home-header .compact-member-nav{
+    min-height:0!important;
+    padding-block:6px!important;
+  }
+  .compact-member-nav .nav-user{
+    width:100%!important;
+    display:grid!important;
+    grid-template-columns:repeat(3,minmax(0,1fr))!important;
+    gap:6px!important;
+    align-items:stretch!important;
+    overflow:visible!important;
+  }
+  .compact-member-nav .header-member{
+    grid-column:1/-1!important;
+    width:100%!important;
+    min-width:0!important;
+  }
+  .compact-member-nav .header-member-link.header-tile{
+    width:100%!important;
+    min-width:0!important;
+    max-width:none!important;
+    height:48px!important;
+    min-height:48px!important;
+    padding:3px 10px!important;
+    display:flex!important;
+    flex-direction:row!important;
+    align-items:center!important;
+    justify-content:flex-start!important;
+    gap:8px!important;
+  }
+  .compact-member-nav .header-member-avatar-wrap,
+  .compact-member-nav .header-member-avatar{
+    width:36px!important;
+    height:36px!important;
+    flex:0 0 36px!important;
+  }
+  .compact-member-nav .header-member-copy{
+    width:auto!important;
+    flex:1 1 auto!important;
+    min-width:0!important;
+    display:grid!important;
+    grid-template-columns:minmax(0,1fr) auto!important;
+    align-items:center!important;
+    gap:8px!important;
+  }
+  .compact-member-nav .header-member-copy>strong{
+    min-width:0!important;
+    font-size:18px!important;
+    line-height:1!important;
+    white-space:nowrap!important;
+    overflow:hidden!important;
+    text-overflow:clip!important;
+  }
+  .compact-member-nav .header-member-points{
+    min-width:40px!important;
+    display:flex!important;
+    align-items:center!important;
+    justify-content:center!important;
+  }
+  .compact-member-nav .header-member-points small{display:none!important}
+  .compact-member-nav .header-member-points b{
+    font-size:18px!important;
+    line-height:1!important;
+  }
+  .compact-member-nav .dashboard-link{display:none!important}
+  .compact-member-nav .header-notification-host,
+  .compact-member-nav .header-tournaments,
+  .compact-member-nav .nav-logout{
+    width:100%!important;
+    min-width:0!important;
+    max-width:none!important;
+    height:42px!important;
+    min-height:42px!important;
+    padding:0 7px!important;
+    margin:0!important;
+    flex:none!important;
+  }
+  .compact-member-nav .header-notification-host{display:flex!important}
+  .compact-member-nav .site-notification-bell{
+    width:100%!important;
+    min-width:0!important;
+    height:42px!important;
+    padding:0!important;
+  }
+  .compact-member-nav .header-tournaments{
+    display:inline-flex!important;
+    font-size:12px!important;
+    gap:0!important;
+  }
+  .compact-member-nav .header-tournaments .header-tile-icon{display:none!important}
+  .compact-member-nav .header-tournaments>span:not(.header-tile-icon){display:inline!important}
+  .compact-member-nav .nav-logout{
+    display:inline-flex!important;
+    justify-content:center!important;
+    font-size:12px!important;
+  }
+  .compact-member-nav .nav-logout[hidden]{display:none!important}
+  .compact-member-nav .nav-account:not([hidden]){
+    grid-column:1/-1!important;
+    width:100%!important;
+    max-width:none!important;
+  }
+}
