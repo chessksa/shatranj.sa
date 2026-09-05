@@ -1,7 +1,7 @@
 from pathlib import Path
 
-path = Path('home-theme.css')
-css = path.read_text(encoding='utf-8')
+css_path = Path('home-theme.css')
+css = css_path.read_text(encoding='utf-8')
 marker = '/* Mobile header layout v2 20260905 */'
 block = r'''
 
@@ -86,4 +86,11 @@ block = r'''
 
 if marker not in css:
     css = css.rstrip() + block + '\n'
-    path.write_text(css, encoding='utf-8')
+    css_path.write_text(css, encoding='utf-8')
+
+html_path = Path('index.html')
+html = html_path.read_text(encoding='utf-8')
+old = 'home-theme.css?v=20260905-1'
+new = 'home-theme.css?v=20260905-2'
+if old in html:
+    html_path.write_text(html.replace(old, new, 1), encoding='utf-8')
