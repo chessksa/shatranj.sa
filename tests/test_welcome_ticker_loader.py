@@ -42,7 +42,7 @@ assert '`${name} — ${country}، ${city}`' in index, (
     'Scrolling item must render name, country and city.'
 )
 
-# Newest 20 members must move in a seamless continuous loop.
+# Newest 20 members must move in a seamless continuous loop, rightward as approved.
 assert '.slice(0,20)' in index, (
     'Ticker must show the newest 20 registered members.'
 )
@@ -52,8 +52,8 @@ assert 'track.replaceChildren(buildGroup(),buildGroup());' in index, (
 assert 'animation:welcomeTickerInlineMove 60s linear infinite' in index, (
     'Ticker animation must be linear and infinite.'
 )
-assert '@keyframes welcomeTickerInlineMove{from{transform:translateX(0)}to{transform:translateX(-50%)}}' in index, (
-    'Ticker must move one duplicated group left before restarting with no visible jump.'
+assert '@keyframes welcomeTickerInlineMove{from{transform:translateX(-50%)}to{transform:translateX(0)}}' in index, (
+    'Ticker must move rightward one duplicated group with no visible jump.'
 )
 
 header_start = index.index('<header class="home-header">')
@@ -104,4 +104,4 @@ assert "import('./welcome-ticker-core.mjs" not in wrapper, (
     'Site-wide notification wrapper must not load the welcome ticker.'
 )
 
-print('welcome ticker keeps a fixed label and loops the newest 20 members continuously')
+print('welcome ticker keeps a fixed label and loops the newest 20 members continuously in the approved direction')
