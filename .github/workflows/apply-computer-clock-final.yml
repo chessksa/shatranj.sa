@@ -1,0 +1,97 @@
+name: Apply final computer clock fix
+on:
+  push:
+    branches: [main]
+    paths:
+      - '.github/workflows/apply-computer-clock-final.yml'
+permissions:
+  contents: write
+jobs:
+  apply:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Patch monotonic clock and cache key
+        run: |
+          python - <<'PY'
+          from pathlib import Path
+
+          js = Path('play-computer.js')
+          text = js.read_text(encoding='utf-8')
+          old = "computerTimeMs = Number.isFinite(Number(computerCapMs))\n    ? Math.max(0, Math.min(serverComputerTimeMs, computerCapMs))"
+          new = "computerTimeMs = computerCapMs !== null && Number.isFinite(Number(computerCapMs))\n    ? Math.max(0, Math.min(serverComputerTimeMs, computerCapMs))"
+          if old not in text:
+              raise SystemExit('computer cap marker not found')
+          js.write_text(text.replace(old, new, 1), encoding='utf-8')
+
+          play = Path('play-v10.html')
+          html = play.read_text(encoding='utf-8')
+          old_cache = 'play-computer.js?v=20260906-5'
+          new_cache = 'play-computer.js?v=20260906-6'
+          if old_cache not in html:
+              raise SystemExit('cache marker not found')
+          play.write_text(html.replace(old_cache, new_cache, 1), encoding='utf-8')
+
+          migration = Path('supabase/migrations/20260906_computer_clock_floor.sql')
+          migration.write_text(r'''create or replace function public.enforce_computer_clock_floor()
+returns trigger
+language plpgsql
+set search_path = public
+as $$
+declare
+  v_floor_ms bigint;
+  v_old_moves integer;
+  v_new_moves integer;
+  v_actual_drop bigint;
+begin
+  if old.computer_time_ms is null or new.computer_time_ms is null then
+    return new;
+  end if;
+
+  v_old_moves := jsonb_array_length(coalesce(old.moves, '[]'::jsonb));
+  v_new_moves := jsonb_array_length(coalesce(new.moves, '[]'::jsonb));
+
+  -- A completed player+computer turn appends two move records.
+  if v_new_moves - v_old_moves < 2 then
+    return new;
+  end if;
+
+  v_floor_ms := case new.level
+    when 'easy' then 900
+    when 'medium' then 1200
+    when 'hard' then 1600
+    else 900
+  end;
+
+  v_actual_drop := old.computer_time_ms - new.computer_time_ms;
+  if v_actual_drop < v_floor_ms then
+    new.computer_time_ms := greatest(0, old.computer_time_ms - v_floor_ms);
+  end if;
+
+  return new;
+end;
+$$;
+
+revoke all on function public.enforce_computer_clock_floor() from public, anon, authenticated;
+grant execute on function public.enforce_computer_clock_floor() to service_role;
+
+drop trigger if exists computer_clock_floor on public.computer_games;
+create trigger computer_clock_floor
+before update of moves, computer_time_ms on public.computer_games
+for each row
+execute function public.enforce_computer_clock_floor();
+''', encoding='utf-8')
+          PY
+      - name: Verify clock regression contract
+        run: |
+          python tests/test_computer_play_mode.py
+          cp play-computer.js /tmp/play-computer.mjs
+          node --check /tmp/play-computer.mjs
+      - name: Commit fix
+        run: |
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git add play-computer.js play-v10.html supabase/migrations/20260906_computer_clock_floor.sql
+          git diff --cached --quiet && exit 0
+          git commit -m 'fix: make computer clock monotonic and authoritative'
+          git push
