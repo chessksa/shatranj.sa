@@ -1,0 +1,33 @@
+name: Apply mobile header alignment patch
+
+on:
+  push:
+    branches: [fix/mobile-header-icon-alignment]
+    paths:
+      - ci/fix_mobile_header_icons.py
+      - .github/workflows/fix-mobile-header-icons.yml
+
+permissions:
+  contents: write
+
+jobs:
+  apply:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: fix/mobile-header-icon-alignment
+      - name: Apply patch
+        run: python ci/fix_mobile_header_icons.py
+      - name: Verify regression test
+        run: python tests/test_home_header_controls.py
+      - name: Commit patched CSS
+        run: |
+          if git diff --quiet -- home-theme.css; then
+            exit 0
+          fi
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add home-theme.css
+          git commit -m "fix: align mobile header icons"
+          git push
