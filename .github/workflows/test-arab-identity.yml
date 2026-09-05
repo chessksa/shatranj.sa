@@ -1,5 +1,4 @@
 # Final release gate for the Shatranj Al-Arab identity migration.
-# Also exercises the ranking country/city filter regression on its fix branch.
 name: Test Arab platform identity
 
 on:
@@ -7,7 +6,6 @@ on:
   push:
     branches:
       - feature/shatranj-arab
-      - fix/ranking-city-dropdown
       - main
     paths:
       - 'index.html'
