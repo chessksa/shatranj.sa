@@ -1,0 +1,51 @@
+name: Fix mobile ranking to five rows
+
+on:
+  push:
+    paths:
+      - '.github/workflows/fix-mobile-ranking-five.yml'
+
+permissions:
+  contents: write
+
+jobs:
+  apply:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Patch ranking renderer
+        run: |
+          python - <<'PY'
+          from pathlib import Path
+
+          p = Path('index.html')
+          s = p.read_text(encoding='utf-8')
+
+          old_head = "function renderPlayers(players){\n  const topPlayers=players.slice(0,10);"
+          new_head = "function renderPlayers(players){\n  const rankingLimit=window.matchMedia('(max-width:800px)').matches?5:10;\n  const topPlayers=players.slice(0,rankingLimit);"
+          old_loop = "for(let index=0;index<10;index++){"
+          new_loop = "for(let index=0;index<rankingLimit;index++){"
+
+          if s.count(old_head) != 1:
+              raise SystemExit(f'Expected one old ranking head, found {s.count(old_head)}')
+          if s.count(old_loop) != 1:
+              raise SystemExit(f'Expected one old ranking loop, found {s.count(old_loop)}')
+
+          s = s.replace(old_head, new_head, 1)
+          s = s.replace(old_loop, new_loop, 1)
+
+          assert "const rankingLimit=window.matchMedia('(max-width:800px)').matches?5:10;" in s
+          assert "players.slice(0,rankingLimit)" in s
+          assert "index<rankingLimit" in s
+          assert old_head not in s
+          assert old_loop not in s
+
+          p.write_text(s, encoding='utf-8')
+          PY
+      - name: Commit direct mobile ranking fix
+        run: |
+          git config user.name github-actions[bot]
+          git config user.email 41898282+github-actions[bot]@users.noreply.github.com
+          git add index.html
+          git commit -m "fix: render five ranking players on mobile"
+          git push
