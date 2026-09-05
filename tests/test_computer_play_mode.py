@@ -32,6 +32,15 @@ assert "function setupTimeChooser" in code
 assert "function addTimeChooserBack" in code, 'time chooser must expose a dedicated back action'
 assert "setupLevelChooser();" in code[code.index("function addTimeChooserBack"):code.index("function setupTimeChooser")], 'back action must return to level chooser'
 assert "computer-time-back" in code, 'time chooser back control needs a stable hook'
+back_block = code[code.index("function addTimeChooserBack"):code.index("function setupTimeChooser")]
+assert '<span>رجوع</span>' not in back_block, 'back control must be icon-only'
+assert 'position:absolute' in back_block, 'back icon must not participate in layout flow'
+assert 'inset-inline-end:' in back_block and 'top:' in back_block, 'back icon must remain fixed in the upper RTL corner'
+assert 'width:64px' in back_block and 'height:64px' in back_block, 'back tap target must be large and stable'
+time_block = code[code.index("function setupTimeChooser"):code.index("function setupLevelChooser")]
+assert "title.style.setProperty('text-align', 'center', 'important')" in time_block, 'time chooser title must be centered'
+assert "title.style.setProperty('font-size', 'clamp(18px, 4vw, 34px)', 'important')" in time_block, 'time chooser title must be larger than the mobile default'
+assert "title.style.setProperty('white-space', 'nowrap', 'important')" in time_block, 'time chooser title must remain one line'
 assert "startComputerGame(levelKey, minutes)" in code
 assert "action: 'start', level: levelKey, minutes" in code
 assert "action: 'timeout'" in code
@@ -113,4 +122,4 @@ assert ENGINE_JS.exists()
 assert ENGINE_WASM.exists()
 assert ENGINE_WASM.stat().st_size > 1_000_000
 
-print('computer board stability, monotonic clocks, back navigation, strength, and 5/10/15 controls: PASS')
+print('computer board stability, monotonic clocks, fixed icon navigation, strength, and 5/10/15 controls: PASS')
