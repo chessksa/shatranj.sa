@@ -51,13 +51,21 @@ jobs:
           if not match:
               raise SystemExit('submitRatedMove function not found')
           submit_block = match.group(0)
-          submit_block = submit_block.replace(
-              "    if (!payload?.fen) throw new Error('Missing server position');\n    game.load(payload.fen);\n    renderBoard(true);\n    syncRatedClocks(payload);\n    if (payload.status === 'finished') finishRatedResult(payload);\n    else setComputerStatus('جاهز');",
-              "    if (!payload?.fen) throw new Error('Missing server position');\n    const localComputerRemaining = currentClockMs('computer');\n    game.load(payload.fen);\n    renderBoard(true);\n    syncRatedClocks(payload, localComputerRemaining);\n    if (payload.status === 'finished') finishRatedResult(payload, localComputerRemaining);\n    else setComputerStatus('جاهز');",
-              1,
+          response_re = re.compile(
+              r"if \(!payload\?\.fen\) throw new Error\('Missing server position'\);\s*"
+              r"game\.load\(payload\.fen\);\s*renderBoard\(true\);\s*syncRatedClocks\(payload\);\s*"
+              r"if \(payload\.status === 'finished'\) finishRatedResult\(payload\);\s*else setComputerStatus\('جاهز'\);"
           )
-          if "const localComputerRemaining = currentClockMs('computer');" not in submit_block:
-              raise SystemExit('submitRatedMove response patch failed')
+          response_new = """if (!payload?.fen) throw new Error('Missing server position');
+            const localComputerRemaining = currentClockMs('computer');
+            game.load(payload.fen);
+            renderBoard(true);
+            syncRatedClocks(payload, localComputerRemaining);
+            if (payload.status === 'finished') finishRatedResult(payload, localComputerRemaining);
+            else setComputerStatus('جاهز');"""
+          submit_block, response_count = response_re.subn(response_new, submit_block, count=1)
+          if response_count != 1:
+              raise SystemExit(f'submitRatedMove response match count={response_count}')
           client = client[:match.start()] + submit_block + client[match.end():]
 
           finish_re = re.compile(r"function finishRatedResult\(payload\) \{.*?\n\}", re.S)
@@ -72,20 +80,17 @@ jobs:
           validate_start = client.index("if (event.type === INPUT_EVENT_TYPE.validateMoveInput) {")
           validate_end = client.index("if (event.type === INPUT_EVENT_TYPE.moveInputCanceled)", validate_start)
           validate = client[validate_start:validate_end]
-          old_rated = """if (ratedMode) {
-              commitActiveClock();
-              clockActiveSide = null;
-              clockAnchorMs = 0;
-              renderClocks();
-              Promise.resolve().then(() => submitRatedMove(move));
-            } else {"""
-          new_rated = """if (ratedMode) {
+          rated_re = re.compile(
+              r"if \(ratedMode\) \{\s*commitActiveClock\(\);\s*clockActiveSide = null;\s*clockAnchorMs = 0;\s*"
+              r"renderClocks\(\);\s*Promise\.resolve\(\)\.then\(\(\) => submitRatedMove\(move\)\);\s*\} else \{"
+          )
+          rated_new = """if (ratedMode) {
               switchClock('computer');
               Promise.resolve().then(() => submitRatedMove(move));
             } else {"""
-          if old_rated not in validate:
-              raise SystemExit('rated validate clock block not found')
-          validate = validate.replace(old_rated, new_rated, 1)
+          validate, rated_count = rated_re.subn(rated_new, validate, count=1)
+          if rated_count != 1:
+              raise SystemExit(f'rated validate clock match count={rated_count}')
           client = client[:validate_start] + validate + client[validate_end:]
           client_path.write_text(client, encoding='utf-8')
 
@@ -97,25 +102,21 @@ jobs:
                   raise SystemExit('edge time controls marker not found')
               edge = edge.replace(marker, marker + 'const MIN_THINK_MS = { easy: 900, medium: 1200, hard: 1600 } as const;\n', 1)
 
-          old_elapsed = """      const computerStartedAt = Date.now();
+          elapsed_re = re.compile(
+              r"const computerStartedAt = Date\.now\(\);\s*const selected = chooseComputerMove\(chess, row\.level\);\s*"
+              r"const computerElapsed = Math\.max\(1, Date\.now\(\) - computerStartedAt\);\s*"
+              r"const computerTimeMs = Math\.max\(0, computerTimeBefore - computerElapsed\);"
+          )
+          elapsed_new = """const computerStartedAt = Date.now();
                 const selected = chooseComputerMove(chess, row.level);
+                const searchElapsed = Math.max(0, Date.now() - computerStartedAt);
+                const waitMs = Math.max(0, MIN_THINK_MS[row.level] - searchElapsed);
+                if (waitMs > 0) await new Promise((resolve) => setTimeout(resolve, waitMs));
                 const computerElapsed = Math.max(1, Date.now() - computerStartedAt);
                 const computerTimeMs = Math.max(0, computerTimeBefore - computerElapsed);"""
-          compact_old = "\n".join(line[6:] if line.startswith('      ') else line for line in old_elapsed.splitlines())
-          target = """const computerStartedAt = Date.now();
-          const selected = chooseComputerMove(chess, row.level);
-          const computerElapsed = Math.max(1, Date.now() - computerStartedAt);
-          const computerTimeMs = Math.max(0, computerTimeBefore - computerElapsed);"""
-          replacement = """const computerStartedAt = Date.now();
-          const selected = chooseComputerMove(chess, row.level);
-          const searchElapsed = Math.max(0, Date.now() - computerStartedAt);
-          const waitMs = Math.max(0, MIN_THINK_MS[row.level] - searchElapsed);
-          if (waitMs > 0) await new Promise((resolve) => setTimeout(resolve, waitMs));
-          const computerElapsed = Math.max(1, Date.now() - computerStartedAt);
-          const computerTimeMs = Math.max(0, computerTimeBefore - computerElapsed);"""
-          if target not in edge:
-              raise SystemExit('edge elapsed block not found')
-          edge = edge.replace(target, replacement, 1)
+          edge, elapsed_count = elapsed_re.subn(elapsed_new, edge, count=1)
+          if elapsed_count != 1:
+              raise SystemExit(f'edge elapsed match count={elapsed_count}')
           edge_path.write_text(edge, encoding='utf-8')
 
           play_path = Path('play-v10.html')
