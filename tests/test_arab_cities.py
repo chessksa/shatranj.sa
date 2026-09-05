@@ -27,7 +27,7 @@ def test_ranking_city_filter_is_a_visible_country_dependent_dropdown():
     assert '<option value="">اختر الدولة أولًا</option>' in html
     assert "populateRankingCitySelect" in html
     assert "cityFilter.disabled=!country" in html
-    assert "كل مدن الدولة" in html
+    assert "first.textContent=country?'المدينة':'اختر الدولة أولًا';" in html
 
 
 def test_city_catalog_covers_all_arab_countries_with_multiple_cities():
