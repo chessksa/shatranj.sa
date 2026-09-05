@@ -14,7 +14,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
-      - name: Apply mobile search polish and existing pregame fixes
+      - name: Apply in-page mobile pull refresh and existing mobile fixes
         run: python scripts/apply-pregame-mobile-fit.py
       - name: Verify equal mobile player card, search layout and pull to refresh
         run: |
@@ -39,7 +39,7 @@ jobs:
           assert 'const PULL_REFRESH_THRESHOLD=72' in html, 'pull refresh threshold must be explicit'
           print('mobile search spacing, equal-card and in-page pull-to-refresh behavior verified')
           PY
-      - name: Commit mobile search layout
+      - name: Commit mobile pull refresh
         run: |
           if git diff --quiet -- play-v10.html; then
             echo "No mobile layout changes to commit."
