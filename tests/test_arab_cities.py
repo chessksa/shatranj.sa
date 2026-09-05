@@ -7,17 +7,20 @@ def read(name):
     return (ROOT / name).read_text(encoding="utf-8")
 
 
-def test_arab_city_catalog_is_present_and_connected_to_country_selects():
+def test_arab_city_catalog_is_present_and_connected_to_country_inputs():
     html = read("index.html")
 
-    assert "const ARAB_CITIES" in html
-    assert "populateCitySelect" in html
-    assert "signupRegion.addEventListener('change'" in html
-    assert "regionFilter.addEventListener('change'" in html
+    assert "import { ARAB_CITIES_DATA } from './arab-cities.js';" in html
+    assert "const ARAB_CITIES=ARAB_CITIES_DATA;" in html
+    assert "populateCityList" in html
+    assert 'list="signupCityOptions"' in html
+    assert 'list="cityFilterOptions"' in html
+    assert "$('#signupRegion').addEventListener('change'" in html
+    assert "$('#regionFilter').addEventListener('change'" in html
 
 
 def test_city_catalog_covers_all_arab_countries_with_multiple_cities():
-    html = read("index.html")
+    cities_js = read("arab-cities.js")
 
     samples = {
         "السعودية": ["الرياض", "جدة", "طريف"],
@@ -45,12 +48,12 @@ def test_city_catalog_covers_all_arab_countries_with_multiple_cities():
     }
 
     for country, cities in samples.items():
-        assert f'"{country}"' in html
+        assert f'"{country}"' in cities_js
         for city in cities:
-            assert city in html
+            assert city in cities_js
 
 
 if __name__ == "__main__":
-    test_arab_city_catalog_is_present_and_connected_to_country_selects()
+    test_arab_city_catalog_is_present_and_connected_to_country_inputs()
     test_city_catalog_covers_all_arab_countries_with_multiple_cities()
     print("Arab cities tests passed")
