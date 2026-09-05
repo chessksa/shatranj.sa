@@ -1,0 +1,19 @@
+name: Test ranking filter labels
+
+on:
+  push:
+    branches:
+      - fix/ranking-filter-labels-v3
+    paths:
+      - 'index.html'
+      - 'home-theme.css'
+      - 'tests/test_ranking_filter_labels.py'
+      - '.github/workflows/test-ranking-filter-labels.yml'
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Run regression test
+        run: python tests/test_ranking_filter_labels.py
