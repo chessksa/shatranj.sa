@@ -5,10 +5,12 @@ on:
     paths:
       - 'index.html'
       - 'play-v10.html'
+      - 'play-v10-match.js'
       - 'play-computer.js'
       - 'vendor/stockfish/**'
       - 'supabase/functions/computer-game/**'
       - 'supabase/migrations/20260906_computer_game_ratings.sql'
+      - 'supabase/migrations/20260906_time_controls_5_10_15.sql'
       - 'tests/test_computer_play_mode.py'
       - '.github/workflows/test-computer-play-mode.yml'
 jobs:
