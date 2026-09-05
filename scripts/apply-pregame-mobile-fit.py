@@ -26,7 +26,9 @@ replacements = {
     'body.pregame .panel-stack>.player-card:not(#topPlayerCard) .avatar{width:52px!important;height:52px!important;border-radius:9px!important}':
     'body.pregame .panel-stack>.player-card:not(#topPlayerCard) .avatar{width:78px!important;height:78px!important;border-radius:10px!important}',
     'body.pregame .panel-stack>.player-card:not(#topPlayerCard) .name{font-size:14px!important;margin:0 0 2px!important;line-height:1.12!important}':
-    'body.pregame .panel-stack>.player-card:not(#topPlayerCard) .name{font-size:20px!important;margin:0 0 3px!important;line-height:1.08!important}',
+    'body.pregame .panel-stack>.player-card:not(#topPlayerCard) .name{font-size:20px!important;margin:0 0 3px!important;line-height:1.35!important;padding-bottom:2px!important}',
+    'body.pregame .panel-stack>.player-card:not(#topPlayerCard) .name{font-size:20px!important;margin:0 0 3px!important;line-height:1.08!important}':
+    'body.pregame .panel-stack>.player-card:not(#topPlayerCard) .name{font-size:20px!important;margin:0 0 3px!important;line-height:1.35!important;padding-bottom:2px!important}',
 }
 for old, new in replacements.items():
     html = html.replace(old, new)
