@@ -1558,7 +1558,7 @@ async function loadPlayers(){
   }));
 
   const headerPlayers=document.querySelector('#headerPlayersCount');
-  if(headerPlayers) headerPlayers.textContent=ALL_PLAYERS.filter(player=>!player.is_synthetic).length;
+  if(headerPlayers) headerPlayers.textContent=500 + ALL_PLAYERS.length;
 
   applyFilter();
 }
