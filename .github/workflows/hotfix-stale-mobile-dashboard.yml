@@ -115,3 +115,5 @@ jobs:
           git add sw.js site-notifications.js index.html tests/test_stale_mobile_dashboard_hotfix.py .github/workflows/hotfix-stale-mobile-dashboard.yml
           git commit -m "إزالة لوحة التحكم من النسخ المخزنة في الجوال"
           git push origin main
+
+# retry after v3 regression expectation update
