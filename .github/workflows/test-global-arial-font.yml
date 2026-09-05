@@ -6,6 +6,7 @@ on:
       - '*.css'
       - '*.js'
       - 'tests/test_global_arial_font.py'
+      - 'tests/test_welcome_ticker_cache_bust.py'
       - '.github/workflows/test-global-arial-font.yml'
 jobs:
   test:
@@ -14,3 +15,5 @@ jobs:
       - uses: actions/checkout@v4
       - name: Verify Arial is the only site font
         run: python tests/test_global_arial_font.py
+      - name: Verify welcome ticker wrapper cache bust
+        run: python tests/test_welcome_ticker_cache_bust.py
