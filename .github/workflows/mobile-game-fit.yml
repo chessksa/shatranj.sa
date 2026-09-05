@@ -1,0 +1,27 @@
+name: Mobile game fit
+
+on:
+  push:
+    paths:
+      - '.github/workflows/mobile-game-fit.yml'
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Verify compact mobile game layout
+        run: |
+          python - <<'PY'
+          from pathlib import Path
+          html = Path('play-v10.html').read_text(encoding='utf-8')
+          assert '/* Compact mobile no-scroll game layout */' in html
+          assert 'height:74px' in html
+          assert 'overflow:hidden' in html
+          assert 'calc(100dvh - 238px)' in html
+          print('mobile game layout is compact and viewport-fitted')
+          PY
