@@ -1,0 +1,34 @@
+name: Publish rated computer controller cache bump
+on:
+  push:
+    branches: [main]
+    paths:
+      - '.github/workflows/bump-computer-play-cache.yml'
+permissions:
+  contents: write
+jobs:
+  bump:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Bump computer controller asset version
+        run: |
+          set -euo pipefail
+          python - <<'PY'
+          from pathlib import Path
+          path=Path('play-v10.html')
+          text=path.read_text(encoding='utf-8')
+          old="play-computer.js?v=20260906-1"
+          new="play-computer.js?v=20260906-2"
+          if new not in text:
+              if old not in text:
+                  raise SystemExit('computer controller loader not found')
+              path.write_text(text.replace(old,new,1),encoding='utf-8')
+          PY
+          grep -q "play-computer.js?v=20260906-2" play-v10.html
+          git config user.name github-actions[bot]
+          git config user.email 41898282+github-actions[bot]@users.noreply.github.com
+          git add play-v10.html
+          if git diff --cached --quiet; then exit 0; fi
+          git commit -m "chore: refresh rated computer controller"
+          git push
