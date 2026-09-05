@@ -1,0 +1,75 @@
+name: Apply header member points layout
+
+on:
+  push:
+    branches: [fix/header-member-points-layout-work]
+
+permissions:
+  contents: write
+
+jobs:
+  patch:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Add regression assertions
+        run: |
+          python - <<'PY'
+          from pathlib import Path
+          p=Path('tests/test_home_header_controls.py')
+          s=p.read_text(encoding='utf-8')
+          s=s.replace("home-theme.css?v=20260905-3", "home-theme.css?v=20260905-6")
+          marker="print('home header controls: PASS')"
+          extra='''\nassert 'class="header-member-points"' in html, 'member points must use a dedicated block beside the name'\nassert '<small>النقاط</small>' in html, 'points label must be above the number'\nassert '<b id="headerMemberRating">1500</b>' in html, 'rating number must remain bound to headerMemberRating'\nassert '/* Header member name + points layout 20260905 */' in css, 'member name/points layout rules must exist'\nassert 'grid-template-columns:minmax(0,1fr) auto!important;' in css, 'member name and points must sit side by side'\nassert '.compact-member-nav .header-member-points{' in css, 'dedicated points column styles must exist'\nassert 'font-size:18px!important;' in css, 'header points number must be 18px'\n\n'''
+          if extra.strip() not in s:
+              s=s.replace(marker, extra+marker)
+          p.write_text(s,encoding='utf-8')
+          PY
+
+      - name: Verify RED
+        run: |
+          set +e
+          python tests/test_home_header_controls.py > /tmp/red.log 2>&1
+          code=$?
+          cat /tmp/red.log
+          if [ "$code" -eq 0 ]; then
+            echo "Expected regression test to fail before implementation"
+            exit 1
+          fi
+          grep -Eq "member points must use a dedicated block|points label must be above the number|new stylesheet version" /tmp/red.log
+
+      - name: Apply member points layout
+        run: |
+          python - <<'PY'
+          from pathlib import Path
+
+          html_path=Path('index.html')
+          html=html_path.read_text(encoding='utf-8')
+          old='''          <span class="header-member-copy">\n            <strong id="headerMemberName">العضو</strong>\n            <small>النقاط <b id="headerMemberRating">1500</b></small>\n          </span>'''
+          new='''          <span class="header-member-copy">\n            <strong id="headerMemberName">العضو</strong>\n            <span class="header-member-points">\n              <small>النقاط</small>\n              <b id="headerMemberRating">1500</b>\n            </span>\n          </span>'''
+          if old not in html:
+              raise SystemExit('expected member copy markup not found')
+          html=html.replace(old,new,1)
+          html=html.replace('home-theme.css?v=20260905-5','home-theme.css?v=20260905-6',1)
+          html_path.write_text(html,encoding='utf-8')
+
+          css_path=Path('home-theme.css')
+          css=css_path.read_text(encoding='utf-8')
+          block='''\n\n/* Header member name + points layout 20260905 */\n.compact-member-nav .header-member-copy{\n  width:100%!important;\n  min-width:0!important;\n  display:grid!important;\n  grid-template-columns:minmax(0,1fr) auto!important;\n  align-items:center!important;\n  gap:12px!important;\n  line-height:1.1!important;\n}\n.compact-member-nav .header-member-copy>strong{\n  min-width:0!important;\n  margin:0!important;\n  align-self:center!important;\n}\n.compact-member-nav .header-member-points{\n  min-width:46px;\n  display:flex;\n  flex-direction:column;\n  align-items:center;\n  justify-content:center;\n  text-align:center;\n  line-height:1!important;\n}\n.compact-member-nav .header-member-points small{\n  margin:0 0 3px!important;\n  color:#b9c9c4!important;\n  font-size:10px!important;\n  font-weight:800!important;\n  white-space:nowrap!important;\n}\n.compact-member-nav .header-member-points b{\n  margin:0!important;\n  color:var(--hero-gold-2)!important;\n  font-size:18px!important;\n  font-weight:900!important;\n  line-height:1!important;\n}\n@media(max-width:600px){\n  .compact-member-nav .header-member-copy{\n    grid-template-columns:minmax(0,1fr) auto!important;\n    gap:7px!important;\n  }\n  .compact-member-nav .header-member-points{min-width:42px}\n}\n'''
+          if '/* Header member name + points layout 20260905 */' not in css:
+              css += block
+          css_path.write_text(css,encoding='utf-8')
+          PY
+
+      - name: Verify GREEN
+        run: python tests/test_home_header_controls.py
+
+      - name: Commit production change and remove temporary workflow
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git rm .github/workflows/apply-header-member-points-layout.yml
+          git add index.html home-theme.css tests/test_home_header_controls.py
+          git commit -m "فصل اسم العضو عن النقاط في الهيدر"
+          git push
