@@ -9,13 +9,29 @@ const corsHeaders = {
 
 const LEVEL_POINTS = { easy: 5, medium: 10, hard: 20 } as const;
 const TIME_CONTROLS = new Set([5, 10, 15]);
+const LEVEL_SEARCH = {
+  easy: { depth: 1, candidateWindow: 65, maxCandidates: 4 },
+  medium: { depth: 1, candidateWindow: 12, maxCandidates: 2 },
+  hard: { depth: 2, candidateWindow: 0, maxCandidates: 1 },
+} as const;
+
 type Level = keyof typeof LEVEL_POINTS;
 type GameResult = 'win' | 'loss' | 'draw';
+
+type SearchMove = {
+  from: string;
+  to: string;
+  san: string;
+  piece: string;
+  captured?: string;
+  promotion?: string;
+  flags?: string;
+};
 
 const PIECE_VALUE: Record<string, number> = {
   p: 100,
   n: 320,
-  b: 330,
+  b: 335,
   r: 500,
   q: 900,
   k: 0,
@@ -46,27 +62,86 @@ function positionResult(chess: Chess): GameResult | null {
   return null;
 }
 
+function positionalBonus(piece: { type: string; color: string }, row: number, col: number) {
+  const centerDistance = Math.abs(3.5 - row) + Math.abs(3.5 - col);
+  const centrality = Math.max(0, 7 - centerDistance * 2);
+  const whiteAdvance = Math.max(0, 6 - row);
+  const blackAdvance = Math.max(0, row - 1);
+  const advance = piece.color === 'w' ? whiteAdvance : blackAdvance;
+
+  if (piece.type === 'p') {
+    const centerPawn = col === 3 || col === 4 ? 10 : (col === 2 || col === 5 ? 4 : 0);
+    return advance * 5 + centerPawn;
+  }
+  if (piece.type === 'n') return Math.round(centrality * 7 - centerDistance * 2);
+  if (piece.type === 'b') return Math.round(centrality * 4 + (col === 2 || col === 5 ? 2 : 0));
+  if (piece.type === 'r') {
+    const seventh = piece.color === 'w' ? row === 1 : row === 6;
+    return seventh ? 18 : Math.round(centrality);
+  }
+  if (piece.type === 'q') return Math.round(centrality * 1.5);
+  if (piece.type === 'k') {
+    const homeRow = piece.color === 'w' ? 7 : 0;
+    if (row === homeRow && (col === 6 || col === 2)) return 34;
+    if (row === homeRow && (col === 4 || col === 3 || col === 5)) return 10;
+    return -Math.round(centrality * 3);
+  }
+  return 0;
+}
+
 function evaluate(chess: Chess): number {
   if (chess.isCheckmate()) return chess.turn() === 'w' ? 100000 : -100000;
   if (chess.isDraw()) return 0;
 
   let score = 0;
-  for (const row of chess.board()) {
-    for (const piece of row) {
+  let whiteBishops = 0;
+  let blackBishops = 0;
+  const board = chess.board();
+
+  for (let row = 0; row < board.length; row += 1) {
+    for (let col = 0; col < board[row].length; col += 1) {
+      const piece = board[row][col];
       if (!piece) continue;
-      const value = PIECE_VALUE[piece.type] ?? 0;
-      score += piece.color === 'b' ? value : -value;
+      const material = PIECE_VALUE[piece.type] ?? 0;
+      const position = positionalBonus(piece, row, col);
+      const value = material + position;
+      if (piece.color === 'b') score += value;
+      else score -= value;
+      if (piece.type === 'b') {
+        if (piece.color === 'b') blackBishops += 1;
+        else whiteBishops += 1;
+      }
     }
   }
-  const mobility = chess.moves().length;
-  score += (chess.turn() === 'b' ? mobility : -mobility) * 2;
-  if (chess.inCheck()) score += chess.turn() === 'w' ? 35 : -35;
+
+  if (blackBishops >= 2) score += 24;
+  if (whiteBishops >= 2) score -= 24;
+  if (chess.inCheck()) score += chess.turn() === 'w' ? 45 : -45;
   return score;
+}
+
+function moveOrderingScore(move: SearchMove) {
+  let score = 0;
+  if (move.san.includes('#')) score += 1_000_000;
+  else if (move.san.includes('+')) score += 2_000;
+  if (move.promotion) score += 9_000 + (PIECE_VALUE[move.promotion] ?? 0);
+  if (move.captured) {
+    score += 10_000 + (PIECE_VALUE[move.captured] ?? 0) * 12 - (PIECE_VALUE[move.piece] ?? 0);
+  }
+  if ((move.flags || '').includes('k') || (move.flags || '').includes('q')) score += 700;
+  const file = move.to.charCodeAt(0) - 97;
+  const rank = Number(move.to[1]);
+  if ((file === 3 || file === 4) && (rank === 4 || rank === 5)) score += 80;
+  return score;
+}
+
+function orderMoves<T extends SearchMove>(moves: T[]): T[] {
+  return [...moves].sort((a, b) => moveOrderingScore(b) - moveOrderingScore(a));
 }
 
 function minimax(chess: Chess, depth: number, alpha: number, beta: number): number {
   if (depth <= 0 || chess.isGameOver()) return evaluate(chess);
-  const moves = chess.moves({ verbose: true });
+  const moves = orderMoves(chess.moves({ verbose: true }) as SearchMove[]);
   const blackToMove = chess.turn() === 'b';
 
   if (blackToMove) {
@@ -99,30 +174,27 @@ function randomItem<T>(items: T[]): T {
 }
 
 function chooseComputerMove(chess: Chess, level: Level) {
-  const moves = chess.moves({ verbose: true });
+  const moves = orderMoves(chess.moves({ verbose: true }) as SearchMove[]);
   if (!moves.length) return null;
-  if (level === 'easy') return randomItem(moves);
-
-  let bestScore = -Infinity;
-  let bestMoves: typeof moves = [];
-  const depth = level === 'hard' ? 2 : 0;
+  const settings = LEVEL_SEARCH[level];
+  const scored: Array<{ move: SearchMove; score: number }> = [];
 
   for (const move of moves) {
     chess.move({ from: move.from, to: move.to, promotion: move.promotion || 'q' });
-    let score = depth > 0 ? minimax(chess, depth, -Infinity, Infinity) : evaluate(chess);
-    if (move.captured) score += (PIECE_VALUE[move.captured] ?? 0) * 0.15;
-    if (move.san.includes('+')) score += 18;
+    let score = minimax(chess, settings.depth, -Infinity, Infinity);
+    if (move.captured) score += (PIECE_VALUE[move.captured] ?? 0) * 0.08;
+    if (move.san.includes('+')) score += 14;
+    if (move.san.includes('#')) score += 50_000;
     chess.undo();
-
-    if (score > bestScore + 0.01) {
-      bestScore = score;
-      bestMoves = [move];
-    } else if (Math.abs(score - bestScore) <= 0.01) {
-      bestMoves.push(move);
-    }
+    scored.push({ move, score });
   }
 
-  return randomItem(bestMoves.length ? bestMoves : moves);
+  scored.sort((a, b) => b.score - a.score);
+  const bestScore = scored[0].score;
+  const candidates = scored
+    .filter((entry) => entry.score >= bestScore - settings.candidateWindow)
+    .slice(0, settings.maxCandidates);
+  return level === 'hard' ? candidates[0].move : randomItem(candidates).move;
 }
 
 function moveRecord(side: 'player' | 'computer', move: { from: string; to: string; san: string; promotion?: string }) {
@@ -196,6 +268,18 @@ Deno.serve(async (req: Request) => {
     }
 
     const action = String(body.action ?? '');
+    const gameSelect = 'id,level,fen,moves,status,result,time_control_minutes,player_time_ms,computer_time_ms,turn_started_at';
+
+    async function getGame(gameId: string) {
+      const { data, error } = await admin
+        .from('computer_games')
+        .select(gameSelect)
+        .eq('id', gameId)
+        .eq('player_id', player.id)
+        .maybeSingle();
+      if (error) throw error;
+      return data;
+    }
 
     async function settle(
       gameId: string,
@@ -223,7 +307,6 @@ Deno.serve(async (req: Request) => {
         .eq('id', gameId)
         .eq('player_id', player.id)
         .eq('status', 'active');
-
       if (updateError) throw updateError;
 
       const { data: ratingData, error: ratingError } = await admin.rpc('apply_computer_game_rating', {
@@ -233,7 +316,11 @@ Deno.serve(async (req: Request) => {
       return Array.isArray(ratingData) ? ratingData[0] ?? null : ratingData;
     }
 
-    const gameSelect = 'id,level,fen,moves,status,result,time_control_minutes,player_time_ms,computer_time_ms,turn_started_at';
+    async function settledRating(gameId: string) {
+      const { data, error } = await admin.rpc('apply_computer_game_rating', { p_game_id: gameId });
+      if (error) throw error;
+      return Array.isArray(data) ? data[0] ?? null : data;
+    }
 
     if (action === 'start') {
       const level = body.level;
@@ -249,17 +336,11 @@ Deno.serve(async (req: Request) => {
       if (abandonedError) throw abandonedError;
 
       for (const oldGame of abandoned ?? []) {
-        await settle(
-          oldGame.id,
-          'loss',
-          oldGame.fen,
-          Array.isArray(oldGame.moves) ? oldGame.moves : [],
-          {
-            playerTimeMs: Number(oldGame.player_time_ms ?? 0),
-            computerTimeMs: Number(oldGame.computer_time_ms ?? 0),
-            turnStartedAt: String(oldGame.turn_started_at ?? new Date().toISOString()),
-          },
-        );
+        await settle(oldGame.id, 'loss', oldGame.fen, Array.isArray(oldGame.moves) ? oldGame.moves : [], {
+          playerTimeMs: Number(oldGame.player_time_ms ?? 0),
+          computerTimeMs: Number(oldGame.computer_time_ms ?? 0),
+          turnStartedAt: String(oldGame.turn_started_at ?? new Date().toISOString()),
+        });
       }
 
       const initialMs = minutes * 60_000;
@@ -280,7 +361,6 @@ Deno.serve(async (req: Request) => {
         })
         .select(gameSelect)
         .single();
-
       if (createError || !created) throw createError ?? new Error('computer game not created');
 
       const { data: refreshedPlayer } = await admin
@@ -301,6 +381,50 @@ Deno.serve(async (req: Request) => {
       });
     }
 
+    if (action === 'state') {
+      const gameId = String(body.game_id ?? '');
+      if (!gameId) return reply({ error: 'Game id required' }, 400);
+      const row = await getGame(gameId);
+      if (!row) return reply({ error: 'Computer game not found' }, 404);
+
+      if (row.status === 'finished' && row.result) {
+        return reply({
+          game_id: row.id,
+          fen: row.fen,
+          status: row.status,
+          result: row.result,
+          rating: await settledRating(row.id),
+          ...clockPayload(row),
+        });
+      }
+
+      if (row.status !== 'active') {
+        return reply({ game_id: row.id, fen: row.fen, status: row.status, result: row.result, ...clockPayload(row) });
+      }
+
+      const nowMs = Date.now();
+      const playerTimeMs = Math.max(0, Number(row.player_time_ms) - elapsedMs(row.turn_started_at, nowMs));
+      const computerTimeMs = Math.max(0, Number(row.computer_time_ms));
+      if (playerTimeMs <= 0) {
+        const nowIso = new Date(nowMs).toISOString();
+        const rating = await settle(row.id, 'loss', row.fen, Array.isArray(row.moves) ? row.moves : [], {
+          playerTimeMs: 0,
+          computerTimeMs,
+          turnStartedAt: nowIso,
+        });
+        return reply({
+          game_id: row.id,
+          fen: row.fen,
+          status: 'finished',
+          result: 'loss',
+          rating,
+          ...clockPayload(row, 0, computerTimeMs, nowIso),
+        });
+      }
+
+      return reply({ game_id: row.id, fen: row.fen, status: 'active', result: null, ...clockPayload(row) });
+    }
+
     if (action === 'move') {
       const gameId = String(body.game_id ?? '');
       const from = String(body.from ?? '');
@@ -310,23 +434,14 @@ Deno.serve(async (req: Request) => {
         return reply({ error: 'Invalid move' }, 400);
       }
 
-      const { data: row, error: gameError } = await admin
-        .from('computer_games')
-        .select(gameSelect)
-        .eq('id', gameId)
-        .eq('player_id', player.id)
-        .maybeSingle();
-
-      if (gameError || !row) return reply({ error: 'Computer game not found' }, 404);
+      const row = await getGame(gameId);
+      if (!row) return reply({ error: 'Computer game not found' }, 404);
       if (row.status !== 'active') return reply({ error: 'Computer game is finished' }, 409);
       if (!isLevel(row.level)) return reply({ error: 'Invalid stored level' }, 500);
       if (!isTimeControl(row.time_control_minutes)) return reply({ error: 'Invalid stored time control' }, 500);
 
       const receivedAt = Date.now();
-      const playerTimeMs = Math.max(
-        0,
-        Number(row.player_time_ms) - elapsedMs(row.turn_started_at, receivedAt),
-      );
+      const playerTimeMs = Math.max(0, Number(row.player_time_ms) - elapsedMs(row.turn_started_at, receivedAt));
       const computerTimeBefore = Math.max(0, Number(row.computer_time_ms));
       const playerTurnStartedAt = new Date(receivedAt).toISOString();
 
@@ -383,7 +498,7 @@ Deno.serve(async (req: Request) => {
 
       const computerStartedAt = Date.now();
       const selected = chooseComputerMove(chess, row.level);
-      const computerElapsed = Math.max(0, Date.now() - computerStartedAt);
+      const computerElapsed = Math.max(1, Date.now() - computerStartedAt);
       const computerTimeMs = Math.max(0, computerTimeBefore - computerElapsed);
 
       if (computerTimeMs <= 0) {
@@ -404,11 +519,8 @@ Deno.serve(async (req: Request) => {
       }
 
       if (!selected) return reply({ error: 'Computer has no legal move' }, 500);
-      const computerMove = chess.move({
-        from: selected.from,
-        to: selected.to,
-        promotion: selected.promotion || 'q',
-      });
+      const computerMove = chess.move({ from: selected.from, to: selected.to, promotion: selected.promotion || 'q' });
+      if (!computerMove) return reply({ error: 'Computer selected an invalid move' }, 500);
       moves.push(moveRecord('computer', computerMove));
 
       result = positionResult(chess);
@@ -458,24 +570,16 @@ Deno.serve(async (req: Request) => {
     if (action === 'timeout') {
       const gameId = String(body.game_id ?? '');
       if (!gameId) return reply({ error: 'Game id required' }, 400);
-
-      const { data: row, error: gameError } = await admin
-        .from('computer_games')
-        .select(gameSelect)
-        .eq('id', gameId)
-        .eq('player_id', player.id)
-        .maybeSingle();
-      if (gameError || !row) return reply({ error: 'Computer game not found' }, 404);
+      const row = await getGame(gameId);
+      if (!row) return reply({ error: 'Computer game not found' }, 404);
 
       if (row.status !== 'active') {
-        const { data: settled, error: ratingError } = await admin.rpc('apply_computer_game_rating', { p_game_id: row.id });
-        if (ratingError) throw ratingError;
         return reply({
           game_id: row.id,
           fen: row.fen,
           status: row.status,
           result: row.result,
-          rating: Array.isArray(settled) ? settled[0] ?? null : settled,
+          rating: row.status === 'finished' && row.result ? await settledRating(row.id) : null,
           ...clockPayload(row),
         });
       }
@@ -486,13 +590,7 @@ Deno.serve(async (req: Request) => {
       const computerTimeMs = Math.max(0, Number(row.computer_time_ms));
 
       if (playerTimeMs > 0) {
-        return reply({
-          game_id: row.id,
-          fen: row.fen,
-          status: 'active',
-          result: null,
-          ...clockPayload(row, playerTimeMs, computerTimeMs, nowIso),
-        });
+        return reply({ game_id: row.id, fen: row.fen, status: 'active', result: null, ...clockPayload(row) });
       }
 
       const rating = await settle(row.id, 'loss', row.fen, Array.isArray(row.moves) ? row.moves : [], {
@@ -513,24 +611,16 @@ Deno.serve(async (req: Request) => {
     if (action === 'resign') {
       const gameId = String(body.game_id ?? '');
       if (!gameId) return reply({ error: 'Game id required' }, 400);
-
-      const { data: row, error: gameError } = await admin
-        .from('computer_games')
-        .select(gameSelect)
-        .eq('id', gameId)
-        .eq('player_id', player.id)
-        .maybeSingle();
-      if (gameError || !row) return reply({ error: 'Computer game not found' }, 404);
+      const row = await getGame(gameId);
+      if (!row) return reply({ error: 'Computer game not found' }, 404);
 
       if (row.status !== 'active') {
-        const { data: settled, error: ratingError } = await admin.rpc('apply_computer_game_rating', { p_game_id: row.id });
-        if (ratingError) throw ratingError;
         return reply({
           game_id: row.id,
           fen: row.fen,
           status: row.status,
           result: row.result,
-          rating: Array.isArray(settled) ? settled[0] ?? null : settled,
+          rating: row.status === 'finished' && row.result ? await settledRating(row.id) : null,
           ...clockPayload(row),
         });
       }
