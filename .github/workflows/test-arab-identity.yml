@@ -9,6 +9,7 @@ on:
       - main
     paths:
       - 'index.html'
+      - 'arab-cities.js'
       - 'profile.html'
       - 'profile.js'
       - 'profile-section.js'
@@ -46,6 +47,7 @@ jobs:
           python tests/test_signup_gender.py
       - name: Check JavaScript syntax
         run: |
+          node --check arab-cities.js
           node --check profile.js
           node --check profile-section.js
           node --check player.js
