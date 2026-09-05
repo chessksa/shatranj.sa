@@ -29,21 +29,25 @@ if 'id="welcomeTickerInlineStyles"' not in text:
         raise SystemExit('style insertion marker not found')
     text = text.replace(style_marker, style_marker + ticker_style, 1)
 
-header_marker = '</header>\n\n\n<!-- APPROVED HOME HERO 20260904 -->'
-ticker_html = '''</header>
-
-<div id="welcomeTicker" class="welcome-ticker" role="region" aria-label="آخر الأعضاء المنضمين">
+ticker_html = '''<div id="welcomeTicker" class="welcome-ticker" role="region" aria-label="آخر الأعضاء المنضمين">
   <div id="welcomeTickerTrack" class="welcome-ticker-track welcome-ticker-single">
     <span class="welcome-ticker-loading">مرحبًا بكم في شطرنج العرب</span>
   </div>
-</div>
+</div>'''
 
-<!-- APPROVED HOME HERO 20260904 -->'''
+# Keep the ticker inside the home header. On desktop the body is a CSS grid,
+# so a standalone body child can be auto-placed away from the header.
+text = text.replace('\n' + ticker_html + '\n', '\n')
+text = text.replace(ticker_html + '\n', '')
+text = text.replace('\n' + ticker_html, '')
 
-if 'id="welcomeTicker"' not in text:
-    if header_marker not in text:
-        raise SystemExit('header insertion marker not found')
-    text = text.replace(header_marker, ticker_html, 1)
+header_start = text.find('<header class="home-header">')
+if header_start < 0:
+    raise SystemExit('home header not found')
+header_end = text.find('</header>', header_start)
+if header_end < 0:
+    raise SystemExit('home header closing tag not found')
+text = text[:header_end] + '\n' + ticker_html + '\n' + text[header_end:]
 
 function_marker = "function setAuthMsg(text,type=''){"
 render_function = '''function renderWelcomeTicker(rows){
