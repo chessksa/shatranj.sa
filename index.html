@@ -1004,7 +1004,8 @@ footer{
           <option value="جزر القمر">جزر القمر</option>
         </select>
 
-        <input id="cityFilter" type="search" maxlength="80" placeholder="كل المدن" aria-label="فلترة حسب المدينة">
+        <input id="cityFilter" type="search" maxlength="80" list="cityFilterOptions" placeholder="كل المدن" aria-label="فلترة حسب المدينة">
+        <datalist id="cityFilterOptions"></datalist>
       </div>
     </div>
 
@@ -1118,7 +1119,8 @@ footer{
 
           <label>
             <span>المدينة</span>
-            <input id="signupCity" required maxlength="80" autocomplete="address-level2" placeholder="اكتب المدينة">
+            <input id="signupCity" required maxlength="80" list="signupCityOptions" autocomplete="address-level2" placeholder="اختر أو اكتب المدينة">
+            <datalist id="signupCityOptions"></datalist>
           </label>
 
           <label class="full">
@@ -1262,6 +1264,7 @@ footer{
 
 <script type="module">
 import { createClient } from 'https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/+esm';
+import { ARAB_CITIES_DATA } from './arab-cities.js';
 
 const SUPABASE_URL='https://zjxkxhsvltihucdacjrv.supabase.co';
 const SUPABASE_KEY='sb_publishable_bwFGOiJzT_Xv656pLPR8ww_oJxFzSGJ';
@@ -1270,6 +1273,7 @@ const supabase=createClient(SUPABASE_URL,SUPABASE_KEY);
 const $=selector=>document.querySelector(selector);
 
 const SAUDI_REGIONS=new Set(['الرياض','مكة المكرمة','المدينة المنورة','القصيم','المنطقة الشرقية','عسير','تبوك','حائل','الحدود الشمالية','جازان','نجران','الباحة','الجوف']);
+const ARAB_CITIES=ARAB_CITIES_DATA;
 
 const CATEGORY={
   open:'مفتوح',
@@ -1465,8 +1469,28 @@ document.querySelectorAll('.show-pass').forEach(button=>{
 });
 
 /* الدولة والمدينة */
-$('#regionFilter').addEventListener('change',applyFilter);
+function populateCityList(country,listSelector,inputSelector,allWhenEmpty=false,clearInput=true){
+  const list=$(listSelector);
+  const input=$(inputSelector);
+  const cities=country
+    ? (ARAB_CITIES[country]||[])
+    : (allWhenEmpty?[...new Set(Object.values(ARAB_CITIES).flat())]:[]);
+
+  list.replaceChildren(...cities.map(city=>{
+    const option=document.createElement('option');
+    option.value=city;
+    return option;
+  }));
+
+  if(clearInput) input.value='';
+}
+
+$('#regionFilter').addEventListener('change',()=>{
+  populateCityList($('#regionFilter').value,'#cityFilterOptions','#cityFilter',true,true);
+  applyFilter();
+});
 $('#cityFilter').addEventListener('input',applyFilter);
+populateCityList('','#cityFilterOptions','#cityFilter',true,false);
 
 async function loadPlayers(){
   const [{data,error},{data:usernameRows,error:usernameError}]=await Promise.all([
@@ -1819,6 +1843,10 @@ async function refreshAuthUI(session){
 }
 
 /* إنشاء الحساب */
+$('#signupRegion').addEventListener('change',()=>{
+  populateCityList($('#signupRegion').value,'#signupCityOptions','#signupCity',false,true);
+});
+
 $('#signupForm').addEventListener('submit',async event=>{
   event.preventDefault();
   setAuthMsg('');
@@ -1933,7 +1961,7 @@ $('#signupForm').addEventListener('submit',async event=>{
       $('#signupForm').reset();
       usernameAvailability=null;
       setUsernameStatus('اكتب اسم المستخدم للتحقق من توفره.','');
-      $('#signupCity').value='';
+      populateCityList('','#signupCityOptions','#signupCity',false,true);
 
       switchAuthTab('login');
     }
