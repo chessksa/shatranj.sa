@@ -18,16 +18,19 @@ jobs:
 
           play = Path('play-v10.html')
           text = play.read_text(encoding='utf-8')
-          old = '''                  <button class="opponent-time-option" type="button" data-minutes="3"><strong>3</strong><span>دقائق</span></button>
-                  <button class="opponent-time-option" type="button" data-minutes="5"><strong>5</strong><span>دقائق</span></button>
-                  <button class="opponent-time-option" type="button" data-minutes="10"><strong>10</strong><span>دقائق</span></button>'''
-          new = '''                  <button class="opponent-time-option" type="button" data-minutes="5"><strong>5</strong><span>دقائق</span></button>
-                  <button class="opponent-time-option" type="button" data-minutes="10"><strong>10</strong><span>دقائق</span></button>
-                  <button class="opponent-time-option" type="button" data-minutes="15"><strong>15</strong><span>دقائق</span></button>'''
-          if old not in text:
-              raise SystemExit('time option block not found')
-          text = text.replace(old, new, 1)
-          text = text.replace("play-computer.js?v=20260906-2", "play-computer.js?v=20260906-3", 1)
+          replacements = [
+              ('data-minutes="3"><strong>3</strong>', 'data-minutes="__TC5__"><strong>__TC5__</strong>'),
+              ('data-minutes="5"><strong>5</strong>', 'data-minutes="__TC10__"><strong>__TC10__</strong>'),
+              ('data-minutes="10"><strong>10</strong>', 'data-minutes="__TC15__"><strong>__TC15__</strong>'),
+          ]
+          for old, new in replacements:
+              if old not in text:
+                  raise SystemExit(f'time option marker not found: {old}')
+              text = text.replace(old, new, 1)
+          text = text.replace('__TC5__', '5').replace('__TC10__', '10').replace('__TC15__', '15')
+          if 'play-computer.js?v=20260906-2' not in text:
+              raise SystemExit('computer cache marker not found')
+          text = text.replace('play-computer.js?v=20260906-2', 'play-computer.js?v=20260906-3', 1)
           play.write_text(text, encoding='utf-8')
 
           computer = Path('play-computer.js')
