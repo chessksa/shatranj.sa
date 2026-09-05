@@ -24,3 +24,4 @@ jobs:
         run: |
           cp play-computer.js /tmp/play-computer.mjs
           node --check /tmp/play-computer.mjs
+# final verification trigger for standardized 5/10/15 controls
