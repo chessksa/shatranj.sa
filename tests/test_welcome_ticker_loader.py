@@ -2,7 +2,6 @@ from pathlib import Path
 
 wrapper = Path('site-notifications.js').read_text(encoding='utf-8')
 index = Path('index.html').read_text(encoding='utf-8')
-theme = Path('home-theme.css').read_text(encoding='utf-8')
 
 assert '<div id="welcomeTicker" class="welcome-ticker"' in index, (
     'Home page must contain the visible welcome ticker.'
@@ -30,19 +29,19 @@ assert ticker_pos > header_end, (
     'Welcome ticker must be a standalone element after the header, not inside the sticky header.'
 )
 
-assert '.welcome-ticker{grid-column:1/-1;grid-row:2' in theme, (
+assert '.welcome-ticker{grid-column:1/-1;grid-row:2' in index, (
     'Desktop layout must reserve a dedicated full-width grid row for the ticker.'
 )
-assert '.home-hero{grid-column:3;grid-row:3}' in theme, (
+assert '.home-hero{grid-column:3!important;grid-row:3!important}' in index, (
     'Desktop hero must start below the ticker row.'
 )
-assert '#ranking{grid-column:2;grid-row:3/5}' in theme, (
+assert '#ranking{grid-column:2!important;grid-row:3/5!important}' in index, (
     'Desktop ranking must start below the ticker row.'
 )
-assert '.welcome-ticker{order:2}' in theme, (
+assert '.welcome-ticker{order:2}' in index, (
     'Mobile layout must place ticker immediately after the header.'
 )
-assert '.home-hero{order:3' in theme, (
+assert '.home-hero{order:3!important}' in index, (
     'Mobile hero must follow the independent ticker.'
 )
 
