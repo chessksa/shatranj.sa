@@ -1215,3 +1215,7 @@ footer .wrap{display:flex;justify-content:space-between;align-items:center}
   .home-features{padding:10px 0 12px!important}
   #register{padding:14px 0!important}
 }
+
+
+/* Header member name size 20260905 */
+.compact-member-nav .header-member-copy>strong{font-size:18px!important}

@@ -54,7 +54,7 @@ assert '''.compact-member-nav .header-member-copy strong{
     text-overflow:clip!important;''' in css, 'member name must wrap normally instead of showing ellipsis dots on phones'
 assert 'overflow-wrap:anywhere!important;' in css, 'long member names must stay visible inside the phone header'
 
-assert 'home-theme.css?v=20260905-8' in html, 'home page must request the new stylesheet version so phones cannot reuse stale header CSS'
+assert 'home-theme.css?v=20260905-9' in html, 'home page must request the new stylesheet version so phones cannot reuse stale header CSS'
 
 
 assert 'class="header-member-points"' in html, 'member points must use a dedicated block beside the name'
@@ -66,3 +66,6 @@ assert '.compact-member-nav .header-member-points{' in css, 'dedicated points co
 assert 'font-size:18px!important;' in css, 'header points number must be 18px'
 
 print('home header controls: PASS')
+
+assert '/* Header member name size 20260905 */' in css, 'member name size override must exist'
+assert '.compact-member-nav .header-member-copy>strong{font-size:18px!important}' in css, 'member name must be 18px'
