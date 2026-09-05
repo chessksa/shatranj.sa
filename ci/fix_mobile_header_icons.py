@@ -1,5 +1,6 @@
 from pathlib import Path
 
+# Re-run after refining the regression test.
 path = Path('home-theme.css')
 css = path.read_text(encoding='utf-8')
 marker = '/* Mobile header icon alignment 20260905 */'
