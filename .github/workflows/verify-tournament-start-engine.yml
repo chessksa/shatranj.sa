@@ -10,6 +10,7 @@ on:
       - 'supabase/migrations/20260907010000_tournament_start_engine.sql'
       - 'supabase/migrations/20260907011000_tournament_start_engine_permissions.sql'
       - 'supabase/migrations/20260907011500_tournament_match_indexes.sql'
+      - 'supabase/migrations/20260907012000_tournament_rating_step.sql'
       - 'tests/test_tournament_start_engine.py'
       - '.github/workflows/verify-tournament-start-engine.yml'
 
