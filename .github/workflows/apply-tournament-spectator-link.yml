@@ -1,0 +1,47 @@
+name: Apply tournament spectator link
+
+on:
+  push:
+    branches:
+      - main
+    paths:
+      - 'tools/add_tournament_spectator_link.py'
+      - '.github/workflows/apply-tournament-spectator-link.yml'
+
+permissions:
+  contents: write
+
+jobs:
+  apply:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - name: Apply tournament spectator link
+        run: python tools/add_tournament_spectator_link.py
+      - name: Verify tournament spectator link
+        run: python tests/test_tournament_spectator_link.py
+      - name: Check tournament JavaScript syntax
+        run: |
+          python - <<'PY'
+          from pathlib import Path
+          html=Path('tournaments.html').read_text(encoding='utf-8')
+          marker='<script type="module">'
+          start=html.index(marker)+len(marker)
+          end=html.index('</script>',start)
+          Path('/tmp/tournaments.mjs').write_text(html[start:end],encoding='utf-8')
+          PY
+          node --check /tmp/tournaments.mjs
+      - name: Commit change
+        run: |
+          if git diff --quiet -- tournaments.html; then
+            echo "No changes"
+            exit 0
+          fi
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add tournaments.html
+          git commit -m "feat: add tournament live spectating"
+          git push
