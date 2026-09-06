@@ -1,5 +1,6 @@
 from pathlib import Path
 
+# Fresh verification for the deployed timeout-turn guard.
 EDGE = Path('supabase/functions/computer-game/index.ts').read_text(encoding='utf-8')
 start = EDGE.index("if (action === 'timeout')")
 end = EDGE.index("if (action === 'resign')", start)
