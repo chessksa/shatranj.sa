@@ -1,6 +1,7 @@
 from pathlib import Path
 
 source = Path('site-notifications.js').read_text(encoding='utf-8')
+index = Path('index.html').read_text(encoding='utf-8')
 
 assert '#welcomeTicker:hover .welcome-ticker-track' in source, (
     'Welcome ticker must pause while the pointer is over it.'
@@ -17,5 +18,11 @@ assert 'player.html?id=${encodeURIComponent(player.id)}' in source, (
 assert "window.addEventListener('home-players-loaded',decorateLinks)" in source, (
     'Player links must be applied after home player data is loaded.'
 )
+assert "const divider = ' / ';" in source, (
+    'Ticker player-name parsing must use a slash separator.'
+)
+assert '${name} / ${country}' in index, (
+    'Welcome ticker must display a slash between player name and country.'
+)
 
-print('welcome ticker pauses on hover and player names link to public profiles')
+print('welcome ticker pauses on hover, links player names, and uses slash separator')
