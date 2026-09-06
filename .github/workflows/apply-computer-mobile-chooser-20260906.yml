@@ -41,13 +41,7 @@ jobs:
               text = text.replace(old, new, 1)
           js.write_text(text, encoding='utf-8')
           PY
-      - name: Verify approved mobile chooser layout
-        run: python tests/test_computer_mobile_chooser_20260906.py
-      - name: Check computer script syntax
-        run: |
-          cp play-computer.js /tmp/play-computer.mjs
-          node --check /tmp/play-computer.mjs
-      - name: Commit mobile chooser polish
+      - name: Commit mobile chooser polish to feature branch
         run: |
           if git diff --quiet -- play-v10.html play-computer.js; then
             echo 'No change needed'
@@ -58,3 +52,9 @@ jobs:
           git add play-v10.html play-computer.js
           git commit -m 'fix: polish mobile computer chooser'
           git push
+      - name: Verify approved mobile chooser layout
+        run: python tests/test_computer_mobile_chooser_20260906.py
+      - name: Check computer script syntax
+        run: |
+          cp play-computer.js /tmp/play-computer.mjs
+          node --check /tmp/play-computer.mjs
