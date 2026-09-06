@@ -478,18 +478,35 @@ async function fetchRatedState() {
   }
 }
 
-async function submitRatedMove(move) {
+function createRatedMoveId() {
+  if (globalThis.crypto?.randomUUID) return globalThis.crypto.randomUUID();
+  return `move-${Date.now()}-${Math.random().toString(36).slice(2)}`;
+}
+
+async function retryRatedMove(move, moveId) {
+  const request = {
+    action: 'move',
+    game_id: ratedGameId,
+    from: move.from,
+    to: move.to,
+    promotion: move.promotion || 'q',
+    move_id: moveId
+  };
+  try {
+    return await invokeComputer(request);
+  } catch (firstError) {
+    console.warn('computer move request failed; retrying once', firstError);
+    await new Promise((resolve) => setTimeout(resolve, 250));
+    return await invokeComputer(request);
+  }
+}
+
+async function submitRatedMove(move, moveId) {
   if (!ratedGameId || finished) return;
   thinking = true;
   setComputerStatus('يفكر…');
   try {
-    const payload = await invokeComputer({
-      action: 'move',
-      game_id: ratedGameId,
-      from: move.from,
-      to: move.to,
-      promotion: move.promotion || 'q'
-    });
+    const payload = await retryRatedMove(move, moveId);
     if (!payload?.fen) throw new Error('Missing server position');
   const localComputerRemaining = currentClockMs('computer');
   game.load(payload.fen);
@@ -553,7 +570,7 @@ function handleBoardInput(event) {
 
     if (ratedMode) {
     switchClock('computer');
-    Promise.resolve().then(() => submitRatedMove(move));
+    Promise.resolve().then(() => submitRatedMove(move, createRatedMoveId()));
   } else {
       switchClock('computer');
       if (!checkGuestGameResult()) setTimeout(computerTurn, 180);

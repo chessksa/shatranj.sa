@@ -198,13 +198,18 @@ function chooseComputerMove(chess: Chess, level: Level) {
   return level === 'hard' ? candidates[0].move : randomItem(candidates).move;
 }
 
-function moveRecord(side: 'player' | 'computer', move: { from: string; to: string; san: string; promotion?: string }) {
+function moveRecord(
+  side: 'player' | 'computer',
+  move: { from: string; to: string; san: string; promotion?: string },
+  requestId: string | null = null,
+) {
   return {
     side,
     from: move.from,
     to: move.to,
     san: move.san,
     promotion: move.promotion ?? null,
+    request_id: requestId,
   };
 }
 
@@ -431,12 +436,33 @@ Deno.serve(async (req: Request) => {
       const from = String(body.from ?? '');
       const to = String(body.to ?? '');
       const promotion = String(body.promotion ?? 'q').toLowerCase();
-      if (!gameId || !/^[a-h][1-8]$/.test(from) || !/^[a-h][1-8]$/.test(to)) {
+      const moveId = String(body.move_id ?? '');
+      if (!gameId || !/^[a-h][1-8]$/.test(from) || !/^[a-h][1-8]$/.test(to) || moveId.length > 128) {
         return reply({ error: 'Invalid move' }, 400);
       }
 
       const row = await getGame(gameId);
       if (!row) return reply({ error: 'Computer game not found' }, 404);
+
+      const storedMoves = Array.isArray(row.moves) ? row.moves : [];
+      const existingMove = moveId
+        ? storedMoves.find((entry) => {
+            if (!entry || typeof entry !== 'object') return false;
+            const record = entry as Record<string, unknown>;
+            return record.side === 'player' && record.request_id === moveId;
+          })
+        : null;
+      if (existingMove) {
+        return reply({
+          game_id: row.id,
+          fen: row.fen,
+          status: row.status,
+          result: row.result,
+          rating: row.status === 'finished' && row.result ? await settledRating(row.id) : null,
+          ...clockPayload(row),
+        });
+      }
+
       if (row.status !== 'active') return reply({ error: 'Computer game is finished' }, 409);
       if (!isLevel(row.level)) return reply({ error: 'Invalid stored level' }, 500);
       if (!isTimeControl(row.time_control_minutes)) return reply({ error: 'Invalid stored time control' }, 500);
@@ -478,7 +504,7 @@ Deno.serve(async (req: Request) => {
       if (!playerMove) return reply({ error: 'Illegal move' }, 400);
 
       const moves = Array.isArray(row.moves) ? [...row.moves] : [];
-      moves.push(moveRecord('player', playerMove));
+      moves.push(moveRecord('player', playerMove, moveId || null));
 
       let result = positionResult(chess);
       if (result) {
