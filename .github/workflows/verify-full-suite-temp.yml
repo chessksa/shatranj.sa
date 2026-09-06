@@ -20,4 +20,4 @@ jobs:
             count=$((count + 1))
           done
           echo "Ran $count test files"
-          echo "Full-suite verification after dashboard regression alignment"
+          echo "Full-suite verification after current piece regression alignment"
