@@ -2,6 +2,7 @@ from pathlib import Path
 
 theme = Path('home-theme.css').read_text(encoding='utf-8')
 
+# Approved mobile-only layout: equal 2x2 boxes and unified 20px Arial text.
 assert 'MOBILE PLAY BOXES 20PX 20260906' in theme
 assert 'grid-template-rows:repeat(2,82px)!important' in theme
 assert 'gap:10px!important' in theme
