@@ -65,4 +65,16 @@
     font-weight:700!important;
     color:#f4efe6!important;
   }
+
+  /* Difficulty points subline: larger, lower, and separated from its number. */
+  body.computer-game.pregame .opponent-time-option[data-level] > span{
+    display:block!important;
+    margin-top:8px!important;
+    font-size:14px!important;
+    line-height:1!important;
+    font-weight:700!important;
+    color:#f4efe6!important;
+    word-spacing:8px!important;
+    white-space:nowrap!important;
+  }
 }
