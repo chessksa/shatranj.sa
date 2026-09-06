@@ -19,8 +19,8 @@ jobs:
           from pathlib import Path
           p = Path('index.html')
           text = p.read_text(encoding='utf-8')
-          old = 'home-theme.css?v=20260906-18'
-          new = 'home-theme.css?v=20260906-19'
+          old = 'home-theme.css?v=20260906-19'
+          new = 'home-theme.css?v=20260906-20'
           if old not in text and new not in text:
               raise SystemExit('home-theme link not found')
           if old in text:
@@ -37,5 +37,5 @@ jobs:
           git config user.name 'github-actions[bot]'
           git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
           git add index.html
-          git commit -m 'fix: refresh mobile play box cache'
+          git commit -m 'fix: refresh mobile three-plus-one action cache'
           git push
