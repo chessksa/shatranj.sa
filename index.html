@@ -969,21 +969,7 @@ footer{
 @media(max-width:430px){.welcome-ticker-label{padding:0 8px;font-size:9px}.welcome-ticker-item{padding:0 12px;font-size:10px}}
 @media(prefers-reduced-motion:reduce){.welcome-ticker-track{animation:none;transform:none}.welcome-ticker-group:nth-child(2){display:none}}
 </style>
-<style id="publicTournamentStyles">
-.public-tournaments{padding:14px 0;background:#f0ece2;border-top:1px solid #ddd7ca;border-bottom:1px solid #ddd7ca;scroll-margin-top:72px}
-.public-tournaments .head{align-items:center}.public-tournaments .head p{margin:2px 0 0}
-.tournaments-grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:8px}
-.tournament-card{background:#fff;border:1px solid #ded8cd;border-radius:10px;padding:12px;min-width:0}
-.tournament-card h3{margin:0 0 8px;font-size:16px;color:#0d3b2e;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
-.tournament-meta{display:grid;grid-template-columns:1fr 1fr;gap:6px}
-.tournament-meta span{display:block;padding:7px 8px;border-radius:7px;background:#f7f4ed;color:#5e6762;font-size:11px}
-.tournament-meta strong{display:block;margin-top:2px;color:#17231e;font-size:12px}
-.tournament-status{display:inline-flex;margin-top:9px;padding:4px 8px;border-radius:999px;background:#eef5ef;color:#176148;font-size:10px;font-weight:900}
-.tournament-empty{grid-column:1/-1;background:#fff;border:1px solid #ded8cd;border-radius:10px;padding:18px;text-align:center;color:#777;font-size:12px}
-@media(min-width:901px){body{grid-template-rows:auto 34px auto auto auto auto auto!important}#tournaments{grid-column:2/4!important;grid-row:5!important}#register{grid-row:6!important}footer{grid-row:7!important}body.home-signed-in{grid-template-rows:64px 34px minmax(0,1fr) 104px auto 38px!important}body.home-signed-in #tournaments{grid-row:5!important}body.home-signed-in footer{grid-row:6!important}}
-@media(max-width:900px){#tournaments{order:6!important}#register{order:7!important}footer{order:8!important}}
-@media(max-width:700px){.tournaments-grid{grid-template-columns:1fr}.tournament-meta{grid-template-columns:1fr 1fr}}
-</style>
+
 </head>
 
 <body>
@@ -1143,14 +1129,6 @@ footer{
   </div>
 </section>
 
-
-<!-- PUBLIC TOURNAMENTS -->
-<section id="tournaments" class="public-tournaments">
-  <div class="wrap">
-    <div class="head"><div><h2>البطولات</h2><p>البطولات المعلنة على مستوى العالم العربي أو حسب الدولة والمدينة.</p></div></div>
-    <div id="publicTournamentsList" class="tournaments-grid"><div class="tournament-empty">جاري تحميل البطولات...</div></div>
-  </div>
-</section>
 
 <!-- ACCOUNT -->
 <section id="register" class="register">
@@ -1479,38 +1457,6 @@ function renderWelcomeTicker(rows){
 
   track.className='welcome-ticker-track';
   track.replaceChildren(buildGroup(),buildGroup());
-}
-
-function publicTournamentScope(row){
-  if(row.scope_type==='global') return 'عامة';
-  if(row.scope_type==='country') return row.country||'دولة محددة';
-  return [row.country,row.city].filter(Boolean).join(' — ')||'مدينة محددة';
-}
-
-function publicTournamentStatus(status){
-  return ({open:'التسجيل مفتوح',running:'جارية',finished:'منتهية'})[status]||status||'—';
-}
-
-function publicTournamentDate(value){
-  if(!value) return 'يحدد لاحقًا';
-  return new Intl.DateTimeFormat('ar-SA',{dateStyle:'medium',timeStyle:'short'}).format(new Date(value));
-}
-
-function renderPublicTournaments(rows){
-  const host=$('#publicTournamentsList');
-  if(!host) return;
-  const list=Array.isArray(rows)?rows:[];
-  if(!list.length){host.innerHTML='<div class="tournament-empty">لا توجد بطولات معلنة حاليًا.</div>';return;}
-  host.innerHTML=list.map(row=>`<article class="tournament-card"><h3>${escapeHTML(row.name)}</h3><div class="tournament-meta"><span>النطاق<strong>${escapeHTML(publicTournamentScope(row))}</strong></span><span>نظام الوقت<strong>${escapeHTML(row.time_control||'—')} دقيقة</strong></span><span>موعد البداية<strong>${escapeHTML(publicTournamentDate(row.starts_at))}</strong></span><span>السعة<strong>${row.max_players?escapeHTML(row.max_players)+' لاعب':'مفتوحة'}</strong></span></div><span class="tournament-status">${escapeHTML(publicTournamentStatus(row.status))}</span></article>`).join('');
-}
-
-async function loadPublicTournaments(){
-  const host=$('#publicTournamentsList');
-  try{
-    const {data,error}=await supabase.from('tournaments').select('id,name,scope_type,country,city,time_control,starts_at,status,registration_opens_at,registration_closes_at,max_players').in('status',['open','running','finished']).order('starts_at',{ascending:true,nullsFirst:false});
-    if(error) throw error;
-    renderPublicTournaments(data||[]);
-  }catch(error){console.error('Unable to load public tournaments',error);if(host)host.innerHTML='<div class="tournament-empty">تعذر تحميل البطولات الآن.</div>';}
 }
 
 function setAuthMsg(text,type=''){
@@ -2390,7 +2336,6 @@ supabase.auth.onAuthStateChange((event,session)=>{
   }
 });
 
-loadPublicTournaments().catch(error=>console.error(error));
 
 loadPlayers().catch(error=>{
   console.error(error);
