@@ -1,0 +1,23 @@
+name: Verify computer chooser layout v2
+
+on:
+  push:
+    branches:
+      - feature/computer-chooser-layout-v2
+    paths:
+      - 'tests/test_computer_chooser_layout_v2.py'
+      - 'play-v10.html'
+      - 'play-computer.js'
+      - '.github/workflows/verify-computer-chooser-layout-v2.yml'
+
+jobs:
+  verify:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Verify chooser layout
+        run: python tests/test_computer_chooser_layout_v2.py
+      - name: Check computer script syntax
+        run: |
+          cp play-computer.js /tmp/play-computer.mjs
+          node --check /tmp/play-computer.mjs
