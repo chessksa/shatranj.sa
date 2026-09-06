@@ -1671,3 +1671,37 @@ footer .wrap{display:flex;justify-content:space-between;align-items:center}
     grid-row:2!important;
   }
 }
+
+
+/* HOME PLAY ACTION STACK 20260906 */
+.home-hero .home-board-actions{
+  width:100%!important;
+  max-width:100%!important;
+  grid-template-columns:minmax(0,1.55fr) minmax(250px,.45fr)!important;
+  grid-template-rows:repeat(3,56px)!important;
+  gap:10px 14px!important;
+  align-items:stretch!important;
+}
+.home-hero .hero-play-btn{
+  grid-column:1!important;
+  grid-row:1/4!important;
+  height:auto!important;
+  min-height:188px!important;
+  font-size:26px!important;
+}
+.home-hero .home-invite-wrap{grid-column:2!important;grid-row:1!important}
+.home-hero .hero-computer-btn{grid-column:2!important;grid-row:2!important}
+.home-hero .hero-tournaments-btn{grid-column:2!important;grid-row:3!important}
+.home-hero .home-invite-wrap,.home-hero .home-invite-wrap>.btn,.home-hero .hero-computer-btn,.home-hero .hero-tournaments-btn{
+  height:56px!important;
+  min-height:56px!important;
+}
+@media(max-width:700px){
+  .home-hero .home-board-actions{
+    grid-template-columns:minmax(0,1.08fr) minmax(0,.92fr)!important;
+    grid-template-rows:repeat(3,50px)!important;
+    gap:8px!important;
+  }
+  .home-hero .hero-play-btn{min-height:166px!important;font-size:21px!important}
+  .home-hero .home-invite-wrap,.home-hero .home-invite-wrap>.btn,.home-hero .hero-computer-btn,.home-hero .hero-tournaments-btn{height:50px!important;min-height:50px!important;font-size:12px!important;padding-inline:6px!important}
+}
