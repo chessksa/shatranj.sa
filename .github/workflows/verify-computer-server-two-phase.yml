@@ -1,0 +1,21 @@
+name: Verify computer server two-phase move
+
+on:
+  push:
+    paths:
+      - 'tests/test_computer_server_two_phase_move.py'
+      - 'play-computer.js'
+      - 'play-v10.html'
+      - 'index.html'
+      - 'supabase/functions/computer-game/index.ts'
+      - '.github/workflows/verify-computer-server-two-phase.yml'
+
+jobs:
+  verify:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - run: python tests/test_computer_server_two_phase_move.py
