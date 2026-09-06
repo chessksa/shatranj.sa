@@ -1,0 +1,58 @@
+name: Apply computer chooser layout v2
+
+on:
+  push:
+    branches:
+      - feature/computer-chooser-layout-v2
+    paths:
+      - '.github/workflows/apply-computer-chooser-layout-v2.yml'
+
+permissions:
+  contents: write
+
+jobs:
+  apply:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Apply chooser layout fix
+        run: |
+          python - <<'PY'
+          from pathlib import Path
+          import re
+
+          play = Path('play-v10.html')
+          html = play.read_text(encoding='utf-8')
+
+          old_pattern = re.compile(r'''\n\s*/\* COMPUTER MOBILE CHOOSER POLISH 20260906 \*/\n\s*@media\(max-width:900px\)\{\n\s*body\.computer-game\.pregame \.opponent-time-option\[data-level\] strong\{.*?\n\s*\}\n\s*body\.computer-game\.pregame \.computer-chooser-header\{margin-bottom:4px!important\}\n\s*body\.computer-game\.pregame \.computer-time-back\{height:30px!important;min-height:30px!important\}\n\s*\}\n''', re.S)
+
+          new_block = '''\n    /* COMPUTER MOBILE CHOOSER POLISH V2 20260906 */\n    @media(max-width:900px){\n      body.computer-game.pregame .opponent-time-option[data-level] strong{\n        font-family:Arial,sans-serif!important;\n        font-size:18px!important;\n        line-height:1!important;\n      }\n      body.computer-game.pregame .computer-chooser-header{\n        position:relative!important;\n        display:block!important;\n        height:30px!important;\n        min-height:30px!important;\n        margin-bottom:4px!important;\n        direction:rtl!important;\n      }\n      body.computer-game.pregame .computer-chooser-header .opponent-search-title{\n        height:30px!important;\n        display:flex!important;\n        align-items:center!important;\n        justify-content:center!important;\n        padding:0 82px!important;\n      }\n      body.computer-game.pregame .computer-time-back{\n        position:absolute!important;\n        right:0!important;\n        left:auto!important;\n        top:0!important;\n        height:30px!important;\n        min-height:30px!important;\n      }\n    }\n'''
+
+          html2, count = old_pattern.subn(new_block, html, count=1)
+          if count != 1:
+              raise SystemExit(f'old chooser polish block not found exactly once: {count}')
+          html2 = html2.replace('play-computer.js?v=20260906-14', 'play-computer.js?v=20260906-15', 1)
+          if 'play-computer.js?v=20260906-15' not in html2:
+              raise SystemExit('computer script cache key was not updated')
+          play.write_text(html2, encoding='utf-8')
+
+          js = Path('play-computer.js')
+          text = js.read_text(encoding='utf-8')
+          text2 = text.replace("  header.style.direction = 'rtl';\n", '', 1)
+          if text2 == text:
+              raise SystemExit('inline header direction line not found')
+          js.write_text(text2, encoding='utf-8')
+          PY
+      - name: Verify chooser layout
+        run: python tests/test_computer_chooser_layout_v2.py
+      - name: Check computer script syntax
+        run: |
+          cp play-computer.js /tmp/play-computer.mjs
+          node --check /tmp/play-computer.mjs
+      - name: Commit chooser layout fix
+        run: |
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git add play-v10.html play-computer.js
+          git commit -m 'fix: stabilize mobile computer chooser layout'
+          git push
