@@ -16,16 +16,14 @@
     if (!document.getElementById(style.id)) document.head.appendChild(style);
   }
 
-  function flagForCountry(country) {
-    const code = COUNTRY_FLAG_CODES[String(country || '').trim()];
-    if (!code) return '';
-    return [...code].map(char => String.fromCodePoint(127397 + char.charCodeAt(0))).join('');
+  function flagCodeForCountry(country) {
+    return COUNTRY_FLAG_CODES[String(country || '').trim()] || '';
   }
 
   function installWelcomeTickerFlags() {
     const style = document.createElement('style');
     style.id = 'welcomeTickerCountryFlagStyles';
-    style.textContent = `#welcomeTicker .welcome-country-flag{font-size:14px!important;line-height:1;display:inline-block;margin-inline-end:5px;vertical-align:middle}`;
+    style.textContent = `#welcomeTicker .welcome-country-flag{width:18px!important;height:13px!important;display:inline-block!important;flex:0 0 18px;object-fit:cover;border-radius:2px;margin-inline-end:6px;vertical-align:middle;box-shadow:0 0 0 1px rgba(255,255,255,.18)}`;
     if (!document.getElementById(style.id)) document.head.appendChild(style);
 
     const decorate = () => {
@@ -33,13 +31,16 @@
         if (item.dataset.countryFlagged === '1') return;
         const match = item.textContent.match(/—\s*([^،]+)(?:،|$)/);
         if (!match) return;
-        const flag = flagForCountry(match[1]);
-        if (!flag) return;
+        const code = flagCodeForCountry(match[1]);
+        if (!code) return;
 
-        const flagEl = document.createElement('span');
+        const flagEl = document.createElement('img');
         flagEl.className = 'welcome-country-flag';
+        flagEl.alt = '';
         flagEl.setAttribute('aria-hidden', 'true');
-        flagEl.textContent = flag;
+        flagEl.decoding = 'async';
+        flagEl.src = `https://flagcdn.com/${code.toLowerCase()}.svg`;
+        flagEl.onerror = () => flagEl.remove();
         item.prepend(flagEl);
         item.dataset.countryFlagged = '1';
       });
