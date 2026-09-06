@@ -1,9 +1,12 @@
-name: Cache bust welcome flags
+name: Verify welcome ticker
 
 on:
   push:
     paths:
       - '.github/workflows/cache-bust-welcome-flags.yml'
+      - 'site-notifications.js'
+      - 'tests/test_welcome_ticker_flag_images.py'
+      - 'tests/test_welcome_ticker_interactions.py'
 
 permissions:
   contents: write
@@ -17,6 +20,9 @@ jobs:
       - name: Verify real flag images
         run: python tests/test_welcome_ticker_flag_images.py
 
+      - name: Verify ticker interactions
+        run: python tests/test_welcome_ticker_interactions.py
+
       - name: Bust welcome ticker script cache
         run: |
           python - <<'PY'
@@ -27,7 +33,7 @@ jobs:
           text = path.read_text(encoding='utf-8')
           new_text, count = re.subn(
               r'site-notifications\.js\?v=[^"\']+',
-              'site-notifications.js?v=20260906-flags-img2',
+              'site-notifications.js?v=20260906-ticker-interact1',
               text,
               count=1,
           )
@@ -46,5 +52,5 @@ jobs:
             echo "No cache token change needed"
             exit 0
           fi
-          git commit -m "fix: refresh welcome ticker flag assets"
+          git commit -m "fix: refresh welcome ticker interactions"
           git push
