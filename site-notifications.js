@@ -4,6 +4,13 @@
   const MOBILE_BREAKPOINT = 800;
   const MOBILE_RANKING_LIMIT = 5;
 
+  function installWelcomeTickerFontSize() {
+    const style = document.createElement('style');
+    style.id = 'welcomeTickerFont16Styles';
+    style.textContent = `#welcomeTicker .welcome-ticker-label,#welcomeTicker .welcome-ticker-item,#welcomeTicker .welcome-ticker-loading{font-size:16px!important}`;
+    if (!document.getElementById(style.id)) document.head.appendChild(style);
+  }
+
   function isMobileRanking() {
     return window.matchMedia(`(max-width:${MOBILE_BREAKPOINT}px)`).matches;
   }
@@ -45,6 +52,7 @@
     window.addEventListener('resize', syncCount, { passive: true });
   }
 
+  installWelcomeTickerFontSize();
   installMobileRankingLimit();
 
   const core = document.createElement('script');
