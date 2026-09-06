@@ -52,6 +52,7 @@ let matchmakingPolling = false;
 let matchmakingStartedAt = 0;
 
 let liveGameId = null;
+let spectatorMode = false;
 let seatKey = null;
 let myColor = null;
 let game = null;
@@ -306,7 +307,7 @@ function updateClockUI(){
     ? '2px solid rgba(64,207,103,.65)' : 'none';
 
   const activeMs = clocks[game.turn()];
-  if(serverState.status==='active' && activeMs<=0 && !timeoutClaimBusy) claimTimeout();
+  if(!spectatorMode && serverState.status==='active' && activeMs<=0 && !timeoutClaimBusy) claimTimeout();
 }
 
 function renderBoard(){
@@ -341,6 +342,7 @@ function localResult(){
 }
 
 async function handleSquare(square){
+  if(spectatorMode) return;
   if(moveBusy || !game || !serverState || serverState.status!=='active') return;
   if(game.turn() !== myColor) return;
 
@@ -403,6 +405,7 @@ async function claimTimeout(){
 }
 
 async function maybeHandleDrawOffer(){
+  if(spectatorMode) return;
   if(!serverState?.draw_offer_by || serverState.status!=='active') return;
   if(serverState.draw_offer_by===myColor) return;
   const key=`${serverState.draw_offer_by}|${serverState.updated_at}`;
@@ -427,6 +430,12 @@ async function maybeHandleDrawOffer(){
 }
 
 function finishedMessage(result){
+  if(spectatorMode){
+    if(result==='1/2-1/2') return 'انتهت المباراة بالتعادل.';
+    if(result==='1-0') return 'انتهت المباراة — فاز الأبيض.';
+    if(result==='0-1') return 'انتهت المباراة — فاز الأسود.';
+    return 'انتهت المباراة.';
+  }
   if(result==='1/2-1/2') return 'انتهت المباراة بالتعادل.';
   const won = (result==='1-0' && myColor==='w') || (result==='0-1' && myColor==='b');
   return won ? 'انتهت المباراة — فزت.' : 'انتهت المباراة — فاز الخصم.';
@@ -474,7 +483,10 @@ async function refreshLiveGame(force=false){
   if(refreshBusy || !liveGameId) return;
   refreshBusy=true;
   try{
-    const { data, error } = await supabase.rpc('get_live_game_state',{p_game_id:liveGameId});
+    const request = spectatorMode
+      ? supabase.rpc('get_spectator_live_game_state',{p_game_id:liveGameId})
+      : supabase.rpc('get_live_game_state',{p_game_id:liveGameId});
+    const { data, error } = await request;
     if(error) throw error;
     const row=firstRow(data);
     if(!row) throw new Error('game not found');
@@ -525,6 +537,24 @@ async function recoverSeatIfNeeded(){
   return true;
 }
 
+async function openSpectatorGame(){
+  spectatorMode=true;
+  seatKey=null;
+  myColor='w';
+  showGamePage();
+  leaveText.textContent='العودة للمباريات';
+  resignBtn.hidden=true;
+  drawOfferBtn.hidden=true;
+  reportBtn.hidden=true;
+  const actionsCard=flipBoardEl.closest('.actions-card');
+  if(actionsCard) actionsCard.style.gridTemplateColumns='1fr';
+  document.title='مشاهدة مباشرة | شطرنج العرب';
+  await refreshLiveGame(true);
+  gamePollTimer=setInterval(()=>{
+    if(!document.hidden && serverState?.status!=='finished') refreshLiveGame(false);
+  },1200);
+}
+
 async function openLiveGame(){
   const recovered=await recoverSeatIfNeeded();
   if(!recovered){
@@ -541,6 +571,7 @@ async function openLiveGame(){
 }
 
 resignBtn.addEventListener('click',async()=>{
+  if(spectatorMode) return;
   if(!serverState || serverState.status!=='active') return;
   if(!confirm('هل تريد الاستسلام؟')) return;
   try{
@@ -554,6 +585,7 @@ resignBtn.addEventListener('click',async()=>{
 });
 
 drawOfferBtn.addEventListener('click',async()=>{
+  if(spectatorMode) return;
   if(!serverState || serverState.status!=='active') return;
   if(serverState.draw_offer_by){
     toast(serverState.draw_offer_by===myColor ? 'عرض التعادل مرسل بالفعل.' : 'لديك عرض تعادل من الخصم.');
@@ -586,10 +618,11 @@ cancelMatchmakingBtn.addEventListener('click',cancelMatchmaking);
 
 leaveBtn.addEventListener('click',async()=>{
   if(!matchmakingWaiting.hidden) await cancelMatchmaking();
-  location.href='index.html';
+  location.href=spectatorMode?'watch.html':'index.html';
 });
 
 reportBtn.addEventListener('click',()=>{
+  if(spectatorMode) return;
   if(!liveGameId || gamePage.hidden){
     toast('يمكن إرسال البلاغ أثناء المباراة فقط.');
     return;
@@ -646,13 +679,20 @@ async function init(){
     return;
   }
 
+  const params = new URLSearchParams(location.search);
+  const spectatorGameId = params.get('spectate');
+  if(spectatorGameId){
+    liveGameId=spectatorGameId;
+    await openSpectatorGame();
+    return;
+  }
+
   const { data:{session} }=await supabase.auth.getSession();
   if(!session){
     location.href='index.html#register';
     return;
   }
 
-  const params = new URLSearchParams(location.search);
   liveGameId = params.get('game');
 
   if(liveGameId){

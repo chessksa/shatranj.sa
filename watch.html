@@ -62,13 +62,13 @@ async function load(){
   document.querySelector('#liveCount').textContent=games.length;
   document.querySelector('#empty').style.display=games.length?'none':'block';
   document.querySelector('#games').innerHTML=games.map((g,i)=>`
-    <article class="game">
+    <a class="game" href="play.html?spectate=${encodeURIComponent(g.id)}" aria-label="مشاهدة المباراة مباشرة">
       <div class="game-top"><span class="live">● مباشر</span><span class="id">مباراة ${esc(g.id??i+1)}</span></div>
       <div class="players">
         <div class="player"><strong>♙ ${esc(nameOf(g,'white'))}</strong><span>${esc(ratingOf(g,'white'))}</span></div>
         <div class="player"><strong>♟ ${esc(nameOf(g,'black'))}</strong><span>${esc(ratingOf(g,'black'))}</span></div>
       </div>
-    </article>`).join('');
+    </a>`).join('');
 }
 load();setInterval(load,30000);
 </script>
