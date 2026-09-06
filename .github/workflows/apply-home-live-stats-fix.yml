@@ -1,0 +1,29 @@
+name: Apply home live stats fix
+
+on:
+  push:
+    branches:
+      - main
+    paths:
+      - '.github/workflows/apply-home-live-stats-fix.yml'
+
+permissions:
+  contents: write
+
+jobs:
+  apply:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Repair live stats bindings and source
+        run: python tools/fix_home_live_stats.py
+      - name: Verify live stats bindings
+        run: python tests/test_home_stat_labels.py
+      - name: Commit live stats repair
+        run: |
+          git diff --check
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add index.html watch.html
+          git commit -m "fix: bind online and live match stats correctly"
+          git push
