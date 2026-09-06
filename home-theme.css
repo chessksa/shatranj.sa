@@ -218,10 +218,10 @@ input::placeholder{color:#8fa19c}
 .hero-stat-watch strong{font-size:22px}
 .home-hero .home-board-actions{
   width:100%!important;
-  max-width:620px;
+  max-width:760px;
   margin:0!important;
   display:grid!important;
-  grid-template-columns:repeat(2,minmax(0,1fr))!important;
+  grid-template-columns:repeat(3,minmax(0,1fr))!important;
   gap:18px!important;
 }
 .home-hero .home-board-actions>.btn,
@@ -802,7 +802,7 @@ footer .wrap{display:flex;justify-content:space-between;align-items:center}
 }
 
 .home-hero .home-board-actions{
-  grid-template-columns:repeat(2,minmax(0,1fr))!important;
+  grid-template-columns:repeat(3,minmax(0,1fr))!important;
   gap:12px!important;
   align-items:stretch!important;
 }
