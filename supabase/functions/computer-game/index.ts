@@ -730,6 +730,11 @@ Deno.serve(async (req: Request) => {
         });
       }
 
+      const timeoutChess = new Chess(row.fen);
+      if (timeoutChess.turn() === 'b') {
+        return reply(await completePendingComputerTurn(row));
+      }
+
       const nowMs = Date.now();
       const nowIso = new Date(nowMs).toISOString();
       const playerTimeMs = Math.max(0, Number(row.player_time_ms) - elapsedMs(row.turn_started_at, nowMs));
