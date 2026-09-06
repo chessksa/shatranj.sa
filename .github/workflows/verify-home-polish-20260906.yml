@@ -1,0 +1,13 @@
+name: Verify approved home polish
+
+on:
+  push:
+    branches:
+      - feature/home-polish-20260906
+
+jobs:
+  verify:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - run: python tests/test_home_polish_20260906.py
