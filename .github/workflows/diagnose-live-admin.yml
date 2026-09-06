@@ -1,0 +1,24 @@
+name: Diagnose live admin
+
+on:
+  push:
+    branches:
+      - diagnose/live-admin
+
+jobs:
+  check:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Fetch deployed admin files
+        run: |
+          set -euxo pipefail
+          curl -fsSL -H 'Cache-Control: no-cache' 'https://chessksa.github.io/shatranj.sa/admin.html?diag=20260906' -o /tmp/admin.html
+          curl -fsSL -H 'Cache-Control: no-cache' 'https://chessksa.github.io/shatranj.sa/admin.js?v=20260906-cache1' -o /tmp/admin.js
+          echo '--- admin.html checks ---'
+          grep -F 'admin.js?v=20260906-cache1' /tmp/admin.html
+          echo '--- admin.js checks ---'
+          grep -F 'admin_add_moderator' /tmp/admin.js
+          grep -F 'admin_create_tournament' /tmp/admin.js
+          grep -F '+ إضافة لاعب' /tmp/admin.js
+          grep -F '♛ البطولات' /tmp/admin.js
+          echo 'LIVE_ADMIN_NEW_VERSION_OK'
