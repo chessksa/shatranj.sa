@@ -161,6 +161,57 @@
     window.addEventListener('resize', syncCount, { passive: true });
   }
 
+  function installDesktopHomeFit() {
+    const style = document.createElement('style');
+    style.id = 'desktopHomeFitStyles';
+    style.textContent = `
+      @media(min-width:901px){
+        body.home-signed-in{height:100dvh!important;min-height:0!important;overflow:hidden!important;grid-template-rows:64px 34px minmax(0,1fr) 38px!important}
+        body.home-signed-in .home-hero{grid-row:3!important;min-height:0!important;overflow:hidden!important}
+        body.home-signed-in #ranking{grid-row:3!important}
+        body.home-signed-in #ranking{min-height:0!important;overflow:hidden!important}
+        body.home-signed-in footer{grid-row:4!important}
+
+        body.home-signed-in .home-hero .home-board-actions{
+          display:grid!important;
+          grid-template-columns:repeat(2,minmax(0,1fr))!important;
+          grid-template-rows:repeat(2,88px)!important;
+          grid-auto-rows:88px!important;
+          gap:10px!important;
+          align-content:start!important;
+          align-items:stretch!important;
+          height:auto!important;
+          min-height:0!important;
+        }
+        body.home-signed-in .home-hero .hero-play-btn{grid-column:1!important;grid-row:1!important}
+        body.home-signed-in .home-hero .home-invite-wrap{grid-column:2!important;grid-row:1!important}
+        body.home-signed-in .home-hero .hero-computer-btn{grid-column:1!important;grid-row:2!important}
+        body.home-signed-in .home-hero .hero-tournaments-btn{grid-column:2!important;grid-row:2!important}
+      }
+
+      @media(min-width:901px) and (max-height:700px){
+        body.home-signed-in{height:100dvh!important;min-height:0!important;overflow:hidden!important}
+        body.home-signed-in .home-hero{padding:8px 0 6px!important}
+        body.home-signed-in .home-hero h1{margin:5px 0 4px!important;font-size:clamp(34px,4vw,46px)!important}
+        body.home-signed-in .home-hero p{margin-bottom:8px!important;font-size:16px!important}
+        body.home-signed-in .hero-live-stats{margin-bottom:8px!important}
+        body.home-signed-in .hero-stat{min-height:64px!important}
+        body.home-signed-in .home-hero .home-board-actions{
+          grid-template-rows:repeat(2,70px)!important;
+          grid-auto-rows:70px!important;
+          gap:8px!important;
+        }
+        body.home-signed-in .home-hero .home-board-actions>.btn,
+        body.home-signed-in .home-hero .home-invite-wrap,
+        body.home-signed-in .home-hero .home-invite-wrap>.btn{
+          height:70px!important;
+          min-height:70px!important;
+        }
+      }
+    `;
+    if (!document.getElementById(style.id)) document.head.appendChild(style);
+  }
+
   function installTournamentPageLink() {
     const headerTournaments = document.getElementById('headerTournaments');
     if (headerTournaments) headerTournaments.href = 'tournaments.html';
@@ -170,6 +221,7 @@
   installWelcomeTickerFlags();
   installWelcomeTickerInteractions();
   installMobileRankingLimit();
+  installDesktopHomeFit();
   installTournamentPageLink();
 
   const core = document.createElement('script');
