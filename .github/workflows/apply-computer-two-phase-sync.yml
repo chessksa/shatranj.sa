@@ -20,6 +20,16 @@ jobs:
           python-version: '3.12'
       - name: Apply two-phase synchronization fix
         run: python tools/fix_computer_two_phase_sync.py
+      - name: Normalize computer page cache version
+        run: |
+          python - <<'PY'
+          from pathlib import Path
+          p = Path('index.html')
+          text = p.read_text(encoding='utf-8')
+          duplicate = 'play-v10.html?computer=1&v=20260907-19&v=20260907-19'
+          text = text.replace(duplicate, 'play-v10.html?computer=1&v=20260907-19')
+          p.write_text(text, encoding='utf-8')
+          PY
       - name: Verify focused regression
         run: python tests/test_computer_server_two_phase_move.py
       - name: Commit fix
