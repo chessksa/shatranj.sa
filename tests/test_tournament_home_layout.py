@@ -15,15 +15,18 @@ assert 'get_tournament_registration_counts' in page
 assert 'data-registration-count' in page
 assert 'registered_count' in page
 
-assert 'HOME PLAY ACTION STACK 20260906' in theme
-assert 'grid-template-rows:repeat(3,56px)!important' in theme
-assert 'grid-row:1/4!important' in theme
-assert '.home-invite-wrap{grid-column:2!important;grid-row:1!important}' in theme
-assert '.hero-computer-btn{grid-column:2!important;grid-row:2!important}' in theme
-assert '.hero-tournaments-btn{grid-column:2!important;grid-row:3!important}' in theme
+assert 'HOME PLAY ACTION GRID 20260906' in theme
+assert 'grid-template-columns:repeat(2,minmax(0,1fr))!important' in theme
+assert 'grid-template-rows:repeat(2,88px)!important' in theme
+assert 'grid-template-rows:repeat(2,66px)!important' in theme
+assert '.hero-play-btn::before{content:"▶"}' in theme
+assert '.home-invite-wrap>.btn::before{content:"♙＋"}' in theme
+assert '.hero-computer-btn::before{content:"▣"}' in theme
+assert '.hero-tournaments-btn::before{content:"♛"}' in theme
+assert 'HOME PLAY ACTION STACK 20260906' not in theme
 
 assert 'get_tournament_registration_counts' in migrations
 assert 'security definer' in migrations.lower()
 assert 'grant execute on function public.get_tournament_registration_counts() to anon, authenticated;' in migrations.lower()
 
-print('tournament table fits without horizontal scroll, shows registration count, and play action spans three buttons')
+print('tournament layout remains intact and home play actions use a responsive four-button grid')
