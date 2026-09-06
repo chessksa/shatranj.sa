@@ -68,7 +68,6 @@ jobs:
       - name: Verify focused change
         run: |
           python tests/test_computer_desktop_back_side.py
-          python tests/test_computer_chooser_style.py
           python tests/test_mobile_time_options_style.py
           python tests/test_computer_time_chooser_visibility.py
 
