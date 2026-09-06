@@ -1,0 +1,28 @@
+name: Verify live spectator mode
+
+on:
+  push:
+    branches:
+      - main
+    paths:
+      - 'watch.html'
+      - 'play.html'
+      - 'play-live.js'
+      - 'supabase/migrations/20260907013000_live_spectator_mode.sql'
+      - 'tests/test_live_spectator_mode.py'
+      - '.github/workflows/verify-live-spectator-mode.yml'
+
+jobs:
+  verify:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - name: Verify spectator contract
+        run: python tests/test_live_spectator_mode.py
+      - name: Check JavaScript syntax
+        run: |
+          cp play-live.js /tmp/play-live.mjs
+          node --check /tmp/play-live.mjs
