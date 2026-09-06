@@ -19,6 +19,7 @@ for marker in [
     'public.get_my_active_tournament_matches',
     "cron.schedule('start-due-tournaments'",
     "'1/2-1/2'",
+    'values(v_game_id,v_white_player,v_black_player,10);',
 ]:
     assert marker in migration, marker
 
