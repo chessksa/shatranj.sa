@@ -1,5 +1,6 @@
 from pathlib import Path
 
+# The home play controls must remain a balanced 2x2 grid on desktop and mobile.
 page = Path('tournaments.html').read_text(encoding='utf-8')
 theme = Path('home-theme.css').read_text(encoding='utf-8')
 migrations = '\n'.join(
