@@ -1,4 +1,4 @@
-name: Apply computer time chooser visibility fix
+name: Apply desktop computer back button side fix
 
 on:
   push:
@@ -19,71 +19,65 @@ jobs:
 
       - name: Add focused regression test
         run: |
-          cat > tests/test_computer_time_chooser_visibility.py <<'PY'
+          cat > tests/test_computer_desktop_back_side.py <<'PY'
           from pathlib import Path
 
           ROOT = Path(__file__).resolve().parents[1]
-          CODE = (ROOT / 'play-computer.js').read_text(encoding='utf-8')
           PLAY = (ROOT / 'play-v10.html').read_text(encoding='utf-8')
 
-          start = CODE.index('function setupTimeChooser')
-          end = CODE.index('function setupLevelChooser', start)
-          time_block = CODE[start:end]
-
-          assert "opponentSearchSetup.style.overflow = 'hidden'" not in time_block, (
-              'computer time chooser must not clip the 5/10/15 minute buttons after a level is selected'
-          )
-          assert "s.src='play-computer.js?v=20260907-20';" in PLAY, (
-              'computer controller cache version must advance so the visibility fix reaches browsers'
-          )
-          print('computer time chooser visibility: PASS')
+          expected = '''@media(min-width:901px){
+                body.computer-game.pregame .computer-chooser-header{
+                  direction:rtl!important;
+                }
+              }'''
+          assert expected in PLAY, 'desktop computer time chooser back button must be on the opposite/right side'
+          print('desktop computer back side: PASS')
           PY
 
-      - name: Confirm the regression is reproduced before the fix
+      - name: Confirm regression before fix
         run: |
-          if python tests/test_computer_time_chooser_visibility.py; then
-            echo 'Expected the regression test to fail before applying the fix.'
+          if python tests/test_computer_desktop_back_side.py; then
+            echo 'Expected regression test to fail before applying the fix.'
             exit 1
           else
             echo 'Regression reproduced as expected.'
           fi
 
-      - name: Apply focused visibility fix
+      - name: Apply desktop-only side change
         run: |
           python - <<'PY'
           from pathlib import Path
 
-          js_path = Path('play-computer.js')
-          code = js_path.read_text(encoding='utf-8')
-          start = code.index('function setupTimeChooser')
-          end = code.index('function setupLevelChooser', start)
-          prefix, block, suffix = code[:start], code[start:end], code[end:]
-          old = "    opponentSearchSetup.style.overflow = 'hidden';\n"
-          if old not in block:
-              raise SystemExit('time chooser overflow anchor not found')
-          block = block.replace(old, '', 1)
-          js_path.write_text(prefix + block + suffix, encoding='utf-8')
-
-          play_path = Path('play-v10.html')
-          html = play_path.read_text(encoding='utf-8')
-          old_src = "s.src='play-computer.js?v=20260907-19';"
-          new_src = "s.src='play-computer.js?v=20260907-20';"
-          if old_src not in html:
-              raise SystemExit('computer controller cache anchor not found')
-          play_path.write_text(html.replace(old_src, new_src, 1), encoding='utf-8')
+          path = Path('play-v10.html')
+          html = path.read_text(encoding='utf-8')
+          anchor = '    /* COMPUTER MOBILE CHOOSER POLISH V2 20260906 */\n'
+          block = '''    /* COMPUTER DESKTOP CHOOSER: back button on opposite side */
+              @media(min-width:901px){
+                body.computer-game.pregame .computer-chooser-header{
+                  direction:rtl!important;
+                }
+              }
+          '''
+          if block in html:
+              raise SystemExit('desktop back-side block already present')
+          if anchor not in html:
+              raise SystemExit('computer chooser CSS anchor not found')
+          path.write_text(html.replace(anchor, block + anchor, 1), encoding='utf-8')
           PY
 
-      - name: Verify the focused fix
+      - name: Verify focused change
         run: |
-          python tests/test_computer_time_chooser_visibility.py
+          python tests/test_computer_desktop_back_side.py
+          python tests/test_computer_chooser_style.py
           python tests/test_mobile_time_options_style.py
+          python tests/test_computer_time_chooser_visibility.py
 
       - name: Commit fix
         run: |
           git config user.name 'github-actions[bot]'
           git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
-          git add play-computer.js play-v10.html tests/test_computer_time_chooser_visibility.py
+          git add play-v10.html tests/test_computer_desktop_back_side.py
           git diff --cached --quiet && exit 0
-          git commit -m 'fix: keep computer time choices visible'
+          git commit -m 'fix: move desktop computer back button to right'
           git pull --rebase origin main
           git push origin HEAD:main
