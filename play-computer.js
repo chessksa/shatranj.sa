@@ -236,12 +236,20 @@ function syncRatedClocks(payload, computerCapMs = null) {
     ? Math.max(0, Math.min(serverComputerTimeMs, computerCapMs))
     : serverComputerTimeMs;
   if (payload.status === 'active') {
+    let activeSide = 'player';
+    try {
+      if (payload.fen) activeSide = new window.Chess(payload.fen).turn() === 'b' ? 'computer' : 'player';
+    } catch (error) {
+      console.warn('تعذر تحديد صاحب الدور من وضع الخادم', error);
+    }
     const serverNow = Date.parse(String(payload.server_now || ''));
     const turnStarted = Date.parse(String(payload.turn_started_at || ''));
     if (Number.isFinite(serverNow) && Number.isFinite(turnStarted)) {
-      playerTimeMs = Math.max(0, playerTimeMs - Math.max(0, serverNow - turnStarted));
+      const elapsed = Math.max(0, serverNow - turnStarted);
+      if (activeSide === 'computer') computerTimeMs = Math.max(0, computerTimeMs - elapsed);
+      else playerTimeMs = Math.max(0, playerTimeMs - elapsed);
     }
-    clockActiveSide = 'player';
+    clockActiveSide = activeSide;
     clockAnchorMs = Date.now();
   } else {
     clockActiveSide = null;
@@ -501,37 +509,109 @@ async function retryRatedMove(move, moveId) {
   }
 }
 
+function ratedPayloadMatchesMove(payload, moveId) {
+  return Boolean(payload && moveId && payload.last_player_request_id === moveId);
+}
+
+function ratedPayloadTurn(payload) {
+  if (!payload?.fen) return null;
+  try {
+    return new window.Chess(payload.fen).turn();
+  } catch (error) {
+    console.error('invalid rated payload fen', error);
+    return null;
+  }
+}
+
+async function waitForRatedMoveAck(moveId, attempts = 8) {
+  for (let attempt = 0; attempt < attempts; attempt += 1) {
+    const payload = await fetchRatedState();
+    if (ratedPayloadMatchesMove(payload, moveId)) return payload;
+    await new Promise((resolve) => setTimeout(resolve, 250 + attempt * 120));
+  }
+  return null;
+}
+
+async function waitForRatedComputerReply(moveId, initialPayload = null, attempts = 8) {
+  let payload = initialPayload;
+  for (let attempt = 0; attempt < attempts; attempt += 1) {
+    if (ratedPayloadMatchesMove(payload, moveId) && payload?.fen) {
+      const turn = ratedPayloadTurn(payload);
+      if (payload.status === 'finished' || turn === 'w') return payload;
+    }
+    await new Promise((resolve) => setTimeout(resolve, 220 + attempt * 120));
+    payload = await fetchRatedState();
+  }
+  return ratedPayloadMatchesMove(payload, moveId) ? payload : null;
+}
+
 async function submitRatedMove(move, moveId) {
   if (!ratedGameId || finished) return;
   thinking = true;
   setComputerStatus('يفكر…');
   try {
-    const payload = await retryRatedMove(move, moveId);
-    if (!payload?.fen) throw new Error('Missing server position');
-  const localComputerRemaining = currentClockMs('computer');
-  game.load(payload.fen);
-  renderBoard(true);
-  syncRatedClocks(payload, localComputerRemaining);
-  if (payload.status === 'finished') finishRatedResult(payload, localComputerRemaining);
-  else setComputerStatus('جاهز');
+    let payload = null;
+    try {
+      payload = await retryRatedMove(move, moveId);
+    } catch (requestError) {
+      console.warn('computer move acknowledgement delayed; reconciling by request id', requestError);
+      payload = await waitForRatedMoveAck(moveId);
+    }
+
+    if (!ratedPayloadMatchesMove(payload, moveId)) {
+      payload = await waitForRatedMoveAck(moveId);
+    }
+    if (!payload?.fen || !ratedPayloadMatchesMove(payload, moveId)) {
+      throw new Error('Server did not acknowledge this player move');
+    }
+
+    const localComputerRemaining = currentClockMs('computer');
+    game.load(payload.fen);
+    renderBoard(true);
+    syncRatedClocks(payload, localComputerRemaining);
+    if (payload.status === 'finished') {
+      finishRatedResult(payload, localComputerRemaining);
+      return;
+    }
+
+    const finalPayload = await waitForRatedComputerReply(moveId, payload);
+    if (!finalPayload?.fen || !ratedPayloadMatchesMove(finalPayload, moveId)) {
+      setComputerStatus('إعادة الاتصال…');
+      toast('تعذر تأكيد رد الكمبيوتر. حركتك بقيت في مكانها.', 3600);
+      return;
+    }
+
+    game.load(finalPayload.fen);
+    renderBoard(true);
+    syncRatedClocks(finalPayload);
+    if (finalPayload.status === 'finished') finishRatedResult(finalPayload);
+    else setComputerStatus('جاهز');
   } catch (error) {
     console.error(error);
-    const authoritative = await fetchRatedState();
-    if (authoritative?.fen) {
-      game.load(authoritative.fen);
-      renderBoard(false);
-      syncRatedClocks(authoritative);
-      if (authoritative.status === 'finished') finishRatedResult(authoritative);
+    const recovered = await waitForRatedMoveAck(moveId, 10);
+    if (recovered?.fen && ratedPayloadMatchesMove(recovered, moveId)) {
+      game.load(recovered.fen);
+      renderBoard(true);
+      syncRatedClocks(recovered);
+      if (recovered.status === 'finished') finishRatedResult(recovered);
       else {
-        setComputerStatus('جاهز');
+        const finalPayload = await waitForRatedComputerReply(moveId, recovered, 10);
+        if (finalPayload?.fen && ratedPayloadMatchesMove(finalPayload, moveId)) {
+          game.load(finalPayload.fen);
+          renderBoard(true);
+          syncRatedClocks(finalPayload);
+          if (finalPayload.status === 'finished') finishRatedResult(finalPayload);
+          else setComputerStatus('جاهز');
+        } else {
+          setComputerStatus('إعادة الاتصال…');
+          toast('الاتصال بالخادم متعثر. حركتك بقيت في مكانها.', 4000);
+        }
       }
     } else {
-      game.undo();
-      renderBoard(false);
-      clockActiveSide = 'player';
+      clockActiveSide = 'computer';
       clockAnchorMs = Date.now();
-      setComputerStatus('جاهز');
-      toast('تعذر اعتماد الحركة. أُعيدت الرقعة إلى آخر وضع معتمد.');
+      setComputerStatus('إعادة الاتصال…');
+      toast('تعذر الاتصال بالخادم. حركتك لن تُعاد للخلف.', 4000);
     }
   } finally {
     thinking = false;

@@ -213,6 +213,20 @@ function moveRecord(
   };
 }
 
+
+function lastPlayerRequestId(row: Record<string, unknown>) {
+  const moves = Array.isArray(row.moves) ? row.moves : [];
+  for (let index = moves.length - 1; index >= 0; index -= 1) {
+    const entry = moves[index];
+    if (!entry || typeof entry !== 'object') continue;
+    const record = entry as Record<string, unknown>;
+    if (record.side === 'player' && typeof record.request_id === 'string' && record.request_id) {
+      return record.request_id;
+    }
+  }
+  return null;
+}
+
 function clockPayload(
   row: Record<string, unknown>,
   playerTimeMs = Number(row.player_time_ms ?? 0),
@@ -225,6 +239,7 @@ function clockPayload(
     computer_time_ms: Math.max(0, Math.round(computerTimeMs)),
     turn_started_at: turnStartedAt,
     server_now: new Date().toISOString(),
+    last_player_request_id: lastPlayerRequestId(row),
   };
 }
 
@@ -695,10 +710,6 @@ Deno.serve(async (req: Request) => {
         computerTimeBefore,
         computerStartedAt,
       );
-      const persistedChess = new Chess(persisted.fen);
-      if (persisted.status === 'active' && persistedChess.turn() === 'b') {
-        return reply(await completePendingComputerTurn(persisted));
-      }
       return reply(await currentGamePayload(persisted));
     }
 
