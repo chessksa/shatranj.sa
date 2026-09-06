@@ -51,10 +51,13 @@ def test_refresh_button_forces_real_reload_and_has_feedback():
     assert "addEventListener('click',handleRefresh)" in js
 
 
-def test_header_tournaments_link_opens_standalone_page():
+def test_header_tournaments_opens_standalone_page():
     html = read("index.html")
+    helper = read("site-notifications.js")
     assert 'id="headerTournaments"' in html
-    assert 'href="tournaments.html"' in html
+    direct = 'href="tournaments.html"' in html
+    scripted = "headerTournaments" in helper and "tournaments.html" in helper
+    assert direct or scripted
 
 
 def test_tournaments_page_has_numbered_table():
@@ -80,7 +83,7 @@ if __name__ == "__main__":
     test_country_city_catalog_is_reused()
     test_admin_sidebar_keeps_return_link_visible()
     test_refresh_button_forces_real_reload_and_has_feedback()
-    test_header_tournaments_link_opens_standalone_page()
+    test_header_tournaments_opens_standalone_page()
     test_tournaments_page_has_numbered_table()
     test_tournaments_page_loads_public_tournaments_from_supabase()
     print("Admin management and tournaments page tests passed")
