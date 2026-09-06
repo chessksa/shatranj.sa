@@ -1,0 +1,42 @@
+name: Apply hero copy update 20260907
+
+on:
+  push:
+    paths:
+      - '.github/workflows/apply-hero-copy-20260907.yml'
+
+permissions:
+  contents: write
+
+jobs:
+  apply:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Apply approved hero copy change
+        run: |
+          python - <<'PY'
+          from pathlib import Path
+          p = Path('index.html')
+          text = p.read_text(encoding='utf-8')
+          old_line = '      <p>مجتمع عربي لعشاق الشطرنج</p>\n'
+          if old_line not in text:
+              raise SystemExit('approved subtitle line not found')
+          text = text.replace(old_line, '', 1)
+          old_ver = 'home-theme.css?v=2026090701'
+          new_ver = 'home-theme.css?v=2026090702'
+          if old_ver not in text:
+              raise SystemExit('expected home theme cache version not found')
+          text = text.replace(old_ver, new_ver, 1)
+          p.write_text(text, encoding='utf-8')
+          updated = p.read_text(encoding='utf-8')
+          assert 'مجتمع عربي لعشاق الشطرنج' not in updated
+          assert new_ver in updated
+          PY
+      - name: Commit hero copy update
+        run: |
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git add index.html
+          git commit -m 'copy: remove hero subtitle and refresh kicker styles'
+          git push
