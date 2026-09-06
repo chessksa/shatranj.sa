@@ -1,0 +1,10 @@
+-- Documentation migration marker for the admin-management rollout applied on 2026-09-06.
+-- The live Supabase project already contains the schema/RPC changes described in:
+-- docs/superpowers/specs/2026-09-06-admin-management-tournaments-design.md
+-- and verified by docs/superpowers/plans/2026-09-06-admin-management-tournaments-implementation.md.
+--
+-- This file intentionally contains no executable DDL because the production changes were
+-- applied incrementally through the Supabase management connection and verified in place.
+-- Reconstructing destructive DDL from production metadata would be less safe than retaining
+-- the verified live schema as the source of truth. Future schema changes should use normal
+-- checked-in migrations from this point forward.
