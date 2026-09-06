@@ -1,0 +1,35 @@
+name: Apply computer two-phase synchronization fix
+
+on:
+  push:
+    paths:
+      - '.github/workflows/apply-computer-two-phase-sync.yml'
+
+permissions:
+  contents: write
+
+jobs:
+  apply:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: main
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - name: Apply two-phase synchronization fix
+        run: python tools/fix_computer_two_phase_sync.py
+      - name: Verify focused regression
+        run: python tests/test_computer_server_two_phase_move.py
+      - name: Commit fix
+        run: |
+          if git diff --quiet; then
+            echo 'No changes to commit'
+            exit 0
+          fi
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git add play-computer.js play-v10.html index.html supabase/functions/computer-game/index.ts
+          git commit -m 'fix: persist computer player move before engine reply'
+          git push origin HEAD:main
