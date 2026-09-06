@@ -1,0 +1,21 @@
+name: Verify home total matches
+
+on:
+  push:
+    branches:
+      - feature/home-watch-label-20260906
+
+jobs:
+  verify:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Verify total matches stat
+        run: |
+          python - <<'PY'
+          from pathlib import Path
+          text=Path('index.html').read_text(encoding='utf-8')
+          assert '<small>المباريات</small><strong id="headerTotalMatchesCount">0</strong>' in text
+          assert 'async function loadTotalMatchesCount()' in text
+          assert 'loadTotalMatchesCount();' in text
+          PY
