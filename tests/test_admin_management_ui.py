@@ -51,13 +51,14 @@ def test_refresh_button_forces_real_reload_and_has_feedback():
     assert "addEventListener('click',handleRefresh)" in js
 
 
-def test_header_tournaments_opens_standalone_page():
+def test_tournaments_button_moves_from_header_beside_computer_play():
     html = read("index.html")
-    helper = read("site-notifications.js")
-    assert 'id="headerTournaments"' in html
-    direct = 'href="tournaments.html"' in html
-    scripted = "headerTournaments" in helper and "tournaments.html" in helper
-    assert direct or scripted
+    header = html.split("</header>", 1)[0]
+    actions = html.split('id="homeBoardActions"', 1)[1].split("</div>", 1)[0]
+    assert 'id="headerTournaments"' not in header
+    assert 'hero-computer-btn' in actions
+    assert 'href="tournaments.html"' in actions
+    assert '>البطولات<' in actions
 
 
 def test_tournaments_page_has_numbered_table():
@@ -67,6 +68,20 @@ def test_tournaments_page_has_numbered_table():
     for heading in ["#", "اسم البطولة", "النطاق", "الدولة", "المدينة", "نظام الوقت", "الموعد", "السعة", "الحالة"]:
         assert heading in html
     assert "index+1" in html or "index + 1" in html
+
+
+def test_tournaments_page_uses_home_interface_palette():
+    html = read("tournaments.html")
+    for token in [
+        "--hero-deep:#062f31",
+        "--hero-deeper:#042628",
+        "--hero-panel:#0b4143",
+        "--hero-gold:#d8b665",
+        "--hero-gold-2:#efcf7c",
+        "--hero-cream:#f4eddc",
+        "linear-gradient(145deg,var(--hero-deeper),var(--hero-deep) 50%,#07383a)",
+    ]:
+        assert token in html, token
 
 
 def test_tournaments_page_loads_public_tournaments_from_supabase():
@@ -83,7 +98,8 @@ if __name__ == "__main__":
     test_country_city_catalog_is_reused()
     test_admin_sidebar_keeps_return_link_visible()
     test_refresh_button_forces_real_reload_and_has_feedback()
-    test_header_tournaments_opens_standalone_page()
+    test_tournaments_button_moves_from_header_beside_computer_play()
     test_tournaments_page_has_numbered_table()
+    test_tournaments_page_uses_home_interface_palette()
     test_tournaments_page_loads_public_tournaments_from_supabase()
     print("Admin management and tournaments page tests passed")
