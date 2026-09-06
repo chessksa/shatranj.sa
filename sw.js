@@ -1,4 +1,4 @@
-const CACHE="shatranj-arab-v4";
+const CACHE="shatranj-arab-v5";
 const ASSETS=["./","./index.html","./styles.css","./app.js","./config.js","./manifest.webmanifest","./arab-cities.js"];
 const PLAY_PATHS=["/play.html","/play-v8.html","/play-live.js","/play-v8.js","/realistic-pieces.css","/play-v8.css","/play-v10.html","/play-v10-match.js","/assets/pieces/"];
 const ADMIN_PATHS=["/admin.html","/admin.js"];
@@ -33,11 +33,16 @@ self.addEventListener("fetch",e=>{
     return;
   }
 
+  if(url.pathname.endsWith("/home-theme.css")){
+    e.respondWith(fetch(new Request(e.request,{cache:"no-store"})).catch(()=>caches.match(e.request)));
+    return;
+  }
+
   const isAdminAsset=ADMIN_PATHS.some(path=>url.pathname.endsWith(path));
-if(isAdminAsset){
-  e.respondWith(fetch(new Request(e.request,{cache:"no-store"})).catch(()=>caches.match(e.request)));
-  return;
-}
+  if(isAdminAsset){
+    e.respondWith(fetch(new Request(e.request,{cache:"no-store"})).catch(()=>caches.match(e.request)));
+    return;
+  }
 
   const isPlayAsset=PLAY_PATHS.some(path=>url.pathname.endsWith(path)||url.pathname.includes(path));
   if(isPlayAsset){
