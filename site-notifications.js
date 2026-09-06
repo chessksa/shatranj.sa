@@ -28,8 +28,14 @@
 
     const decorate = () => {
       document.querySelectorAll('#welcomeTicker .welcome-ticker-item').forEach(item => {
+        [...item.childNodes].forEach(node => {
+          if (node.nodeType === Node.TEXT_NODE && node.textContent.includes(' — ')) {
+            node.textContent = node.textContent.replace(' — ',' / ');
+          }
+        });
+
         if (item.dataset.countryFlagged === '1') return;
-        const match = item.textContent.match(/—\s*([^،]+)(?:،|$)/);
+        const match = item.textContent.match(/\/\s*([^،]+)(?:،|$)/);
         if (!match) return;
         const code = flagCodeForCountry(match[1]);
         if (!code) return;
@@ -80,12 +86,12 @@
         if (!player?.id) return;
 
         const textNode = [...item.childNodes].find(node =>
-          node.nodeType === Node.TEXT_NODE && node.textContent.includes(' — ')
+          node.nodeType === Node.TEXT_NODE && node.textContent.includes(' / ')
         );
         if (!textNode) return;
 
         const fullText = textNode.textContent;
-        const divider = ' — ';
+        const divider = ' / ';
         const splitAt = fullText.indexOf(divider);
         if (splitAt <= 0) return;
 
