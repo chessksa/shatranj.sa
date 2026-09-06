@@ -1,0 +1,22 @@
+name: Verify full Python test suite (temporary)
+
+on:
+  push:
+    paths:
+      - '.github/workflows/verify-full-suite-temp.yml'
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Run all repository Python tests
+        run: |
+          set -e
+          count=0
+          for test in tests/test_*.py; do
+            echo "==> $test"
+            python "$test"
+            count=$((count + 1))
+          done
+          echo "Ran $count test files"
