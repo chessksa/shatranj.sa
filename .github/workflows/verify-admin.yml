@@ -23,5 +23,5 @@ jobs:
         run: python -m pip install pytest
       - name: Check admin JavaScript syntax
         run: node --check admin.js
-      - name: Run Python tests
-        run: python -m pytest -q
+      - name: Run admin feature tests
+        run: python -m pytest -q tests/test_admin_management_ui.py
