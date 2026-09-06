@@ -1,7 +1,8 @@
 from pathlib import Path
 import re
 
-# Verification refresh for the deployed two-phase synchronization path.
+# Verification for the deployed two-phase synchronization path:
+# phase 1 acknowledges the persisted player move; phase 2 completes the computer reply via state polling.
 ROOT = Path(__file__).resolve().parents[1]
 EDGE = (ROOT / 'supabase' / 'functions' / 'computer-game' / 'index.ts').read_text(encoding='utf-8')
 PLAY = (ROOT / 'play-computer.js').read_text(encoding='utf-8')
@@ -17,14 +18,17 @@ state_block = EDGE[state_start:state_end]
 
 assert 'persistPlayerTurnBeforeComputer' in EDGE, 'player move must be persisted before computer thinking begins'
 assert 'completePendingComputerTurn' in EDGE, 'server needs a resumable pending-computer-turn helper'
-assert move_block.index('await persistPlayerTurnBeforeComputer') < move_block.index('completePendingComputerTurn(persisted)'), 'persist player move before resuming computer work'
+assert 'await persistPlayerTurnBeforeComputer' in move_block, 'move action must persist the player move'
+assert 'completePendingComputerTurn(persisted)' not in move_block, 'move action must acknowledge persistence without waiting for engine reply'
+assert 'currentGamePayload(persisted)' in move_block, 'move action must return the persisted player position immediately'
 assert 'chooseComputerMove' in EDGE[EDGE.index('async function completePendingComputerTurn'):EDGE.index("if (action === 'start')")], 'computer calculation belongs in the resumable helper'
-assert "stateChess.turn() === 'b'" in state_block and 'completePendingComputerTurn' in state_block, 'state reconciliation must resume a pending computer turn instead of returning the pre-move position'
-assert 'existingMove' in move_block and 'completePendingComputerTurn' in move_block, 'retry of the same request id must resume pending computer work'
-assert "const activeSide = stateChess.turn() === 'b' ? 'computer' : 'player';" in state_block, 'state clocks must follow the side to move'
-assert re.search(r'play-v10\.html\?computer=1&v=20260907-(?:19|2\d)', INDEX), 'computer entry link must cache-bust the HTML page itself'
+assert "stateChess.turn() === 'b'" in state_block and 'completePendingComputerTurn' in state_block, 'state reconciliation must resume a pending computer turn'
+assert 'last_player_request_id' in EDGE and 'ratedPayloadMatchesMove' in PLAY, 'state reconciliation must correlate to the exact player move id'
+assert 'waitForRatedComputerReply' in PLAY, 'client must wait independently for the computer reply after player move acknowledgement'
+assert 'game.undo()' not in PLAY[PLAY.index('async function submitRatedMove'):PLAY.index('function handleBoardInput')], 'transient synchronization must not roll the player move back'
+assert re.search(r'play-v10\.html\?computer=1&v=20260907-(?:2\d|[3-9]\d)', INDEX), 'computer entry link must cache-bust the HTML page itself'
 script_match = re.search(r"play-computer\.js\?v=20260907-(\d+)", HTML)
-assert script_match and int(script_match.group(1)) >= 19, 'computer script cache version must include the synchronization fix'
-assert "toast('تمت مزامنة المباراة مع الخادم.');" not in PLAY, 'generic reconciliation must no longer silently roll a legal local move back'
+assert script_match and int(script_match.group(1)) >= 22, 'computer script cache version must include the move-acknowledgement fix'
+assert "toast('تم تحديث المباراة من الخادم.');" not in PLAY, 'successful synchronization must remain silent'
 
-print('computer server two-phase move persistence and recovery: PASS')
+print('computer server move acknowledgement and resumable reply: PASS')
