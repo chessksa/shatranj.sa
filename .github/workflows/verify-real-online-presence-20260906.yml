@@ -1,0 +1,34 @@
+name: Verify real online presence
+
+on:
+  push:
+    branches:
+      - feature/real-online-presence-final-20260906
+
+jobs:
+  verify:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Verify presence implementation
+        run: |
+          python - <<'PY'
+          from pathlib import Path
+
+          presence = Path('site-presence.js')
+          assert presence.exists(), 'site-presence.js is missing'
+          js = presence.read_text(encoding='utf-8')
+          index = Path('index.html').read_text(encoding='utf-8')
+
+          assert "channel('site-online-v1'" in js
+          assert 'presenceState()' in js
+          assert '.track(' in js
+          assert 'Object.keys(state || {}).length' in js
+          assert 'id="headerOnlineCount">0</strong>' in index
+          assert '<small>المتواجدين</small>' in index
+          assert '<strong>شاهد</strong>' not in index
+
+          for page in ['index.html','play-v10.html','tournaments.html','watch.html','profile.html','player.html']:
+              text = Path(page).read_text(encoding='utf-8')
+              assert 'site-presence.js?v=20260906-1' in text, f'presence script missing from {page}'
+          PY
