@@ -33,21 +33,28 @@ main{padding:34px 0 48px}
 .page-head h1{margin:0;color:var(--hero-gold);font-size:30px}
 .page-head p{margin:6px 0 0;color:var(--hero-muted);font-size:13px}
 .count{color:var(--hero-gold-2);font-size:13px;font-weight:900;white-space:nowrap}
+.registration-message{min-height:22px;margin:0 0 12px;padding:0 4px;color:var(--hero-muted);font-size:14px;font-weight:800}
+.registration-message.ok{color:#a7e7bd}.registration-message.error{color:#ffb2a8}
 .table-card{border:1px solid var(--hero-cyan-line);border-radius:18px;overflow:hidden;background:linear-gradient(145deg,rgba(8,62,64,.86),rgba(7,49,51,.8));box-shadow:0 13px 30px rgba(0,0,0,.15),inset 0 1px 0 rgba(255,255,255,.025)}
 .table-wrap{overflow:auto}
-table{width:100%;border-collapse:collapse;min-width:1040px}
-th,td{padding:13px 12px;border-bottom:1px solid rgba(216,182,101,.18);text-align:right;vertical-align:middle;white-space:nowrap}
-th{background:rgba(4,38,40,.62);color:#d9c58f;font-size:12px;font-weight:900}
-td{color:var(--hero-cream);font-size:13px}
+table{width:100%;border-collapse:collapse;min-width:1180px}
+th,td{padding:14px 12px;border-bottom:1px solid rgba(216,182,101,.18);text-align:right;vertical-align:middle;white-space:nowrap}
+th{background:rgba(4,38,40,.62);color:#d9c58f;font-size:15px;font-weight:900}
+td{color:var(--hero-cream);font-size:16px}
 tbody tr:hover{background:rgba(255,255,255,.035)}
 tbody tr:last-child td{border-bottom:0}
 .num{width:54px;text-align:center;font-weight:900;color:var(--hero-gold-2)}
 .name{font-weight:900;color:var(--hero-cream)}
-.status{display:inline-flex;border-radius:999px;padding:5px 9px;border:1px solid var(--hero-line);font-size:10px;font-weight:900}
+.status{display:inline-flex;border-radius:999px;padding:6px 10px;border:1px solid var(--hero-line);font-size:13px;font-weight:900}
 .status-open{background:rgba(84,178,132,.11);color:#8fe0b1}.status-running{background:rgba(216,182,101,.11);color:var(--hero-gold-2)}.status-finished{background:rgba(255,255,255,.06);color:#cbd3cf}
-.empty{padding:32px;text-align:center;color:var(--hero-muted);font-size:13px}
+.registration-cell{text-align:center}
+.register-btn{min-width:112px;min-height:42px;padding:0 13px;border:0;border-radius:11px;background:#f6b26b;color:#3c2614;font:900 14px Arial,sans-serif;cursor:pointer;box-shadow:0 5px 12px rgba(0,0,0,.16);transition:.15s ease}
+.register-btn:hover:not(:disabled){background:#ffc27d;transform:translateY(-1px)}
+.register-btn:disabled{opacity:.55;cursor:not-allowed;box-shadow:none}
+.register-btn.registered{background:#b9c7c2;color:#163537;opacity:1}
+.empty{padding:32px;text-align:center;color:var(--hero-muted);font-size:15px}
 .error{color:#ffabab}
-@media(max-width:700px){.wrap{width:min(100% - 18px,1180px)}.nav{min-height:62px}.brand{font-size:18px}.back{min-height:39px;padding:0 11px}.page-head{align-items:flex-start;flex-direction:column;padding:15px}.page-head h1{font-size:24px}main{padding-top:18px}th,td{padding:11px 10px;font-size:12px}}
+@media(max-width:700px){.wrap{width:min(100% - 18px,1180px)}.nav{min-height:62px}.brand{font-size:18px}.back{min-height:39px;padding:0 11px}.page-head{align-items:flex-start;flex-direction:column;padding:15px}.page-head h1{font-size:24px}main{padding-top:18px}th,td{padding:12px 10px}th{font-size:14px}td{font-size:15px}.register-btn{min-height:40px;font-size:13px}}
 </style>
 <script src="config.js"></script>
 </head>
@@ -69,6 +76,8 @@ tbody tr:last-child td{border-bottom:0}
       <div id="tournamentCount" class="count">0 بطولة</div>
     </div>
 
+    <div id="registrationMsg" class="registration-message" role="status" aria-live="polite"></div>
+
     <div class="table-card">
       <div class="table-wrap">
         <table aria-label="جدول البطولات">
@@ -83,6 +92,7 @@ tbody tr:last-child td{border-bottom:0}
               <th>الموعد</th>
               <th>السعة</th>
               <th>الحالة</th>
+              <th class="registration-cell">التسجيل</th>
             </tr>
           </thead>
           <tbody id="tournamentRows"></tbody>
@@ -101,6 +111,7 @@ const supabase=createClient(cfg.url,cfg.anonKey);
 const rowsEl=document.getElementById('tournamentRows');
 const emptyEl=document.getElementById('tournamentEmpty');
 const countEl=document.getElementById('tournamentCount');
+const registrationMsg=document.getElementById('registrationMsg');
 
 function esc(value){
   return String(value??'').replace(/[&<>"']/g,ch=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[ch]));
@@ -116,29 +127,104 @@ function formatDate(value){
   if(!value)return 'يحدد لاحقًا';
   return new Intl.DateTimeFormat('ar-SA',{dateStyle:'medium',timeStyle:'short'}).format(new Date(value));
 }
+function registrationOpen(row){
+  if(row.status!=='open')return false;
+  const now=Date.now();
+  if(row.registration_opens_at && now<new Date(row.registration_opens_at).getTime())return false;
+  if(row.registration_closes_at && now>=new Date(row.registration_closes_at).getTime())return false;
+  return true;
+}
+function setRegistrationMessage(text,type=''){
+  registrationMsg.textContent=text||'';
+  registrationMsg.className='registration-message'+(type?` ${type}`:'');
+}
+function registrationErrorMessage(code){
+  return ({
+    not_authenticated:'سجّل الدخول أولًا للتسجيل في البطولة.',
+    player_not_found:'تعذر العثور على ملف اللاعب النشط.',
+    tournament_not_found:'البطولة غير موجودة.',
+    registration_closed:'التسجيل مغلق لهذه البطولة.',
+    tournament_full:'اكتمل عدد المشاركين في البطولة.',
+    outside_scope:'هذه البطولة مخصصة لدولة أو مدينة مختلفة.',
+    already_registered:'أنت مسجل بالفعل في هذه البطولة.'
+  })[code]||'تعذر إتمام التسجيل الآن.';
+}
 function renderTournaments(rows){
   const list=Array.isArray(rows)?rows:[];
   countEl.textContent=`${list.length} بطولة`;
   if(!list.length){rowsEl.innerHTML='';emptyEl.hidden=false;emptyEl.textContent='لا توجد بطولات معلنة حاليًا.';return}
   emptyEl.hidden=true;
-  rowsEl.innerHTML=list.map((row,index)=>`<tr>
-    <td class="num">${index+1}</td>
-    <td class="name">${esc(row.name)}</td>
-    <td>${esc(scopeLabel(row))}</td>
-    <td>${esc(row.country||'—')}</td>
-    <td>${esc(row.city||'—')}</td>
-    <td>${esc(row.time_control||'—')}</td>
-    <td>${esc(formatDate(row.starts_at))}</td>
-    <td>${row.max_players?esc(row.max_players)+' لاعب':'مفتوحة'}</td>
-    <td><span class="status status-${esc(row.status)}">${esc(statusLabel(row.status))}</span></td>
-  </tr>`).join('');
+  rowsEl.innerHTML=list.map((row,index)=>{
+    const canRegister=registrationOpen(row);
+    const registerControl=canRegister
+      ? `<button class="register-btn" type="button" data-tournament-id="${esc(row.id)}">سجّل الآن</button>`
+      : '<button class="register-btn" type="button" disabled>التسجيل مغلق</button>';
+    return `<tr>
+      <td class="num">${index+1}</td>
+      <td class="name">${esc(row.name)}</td>
+      <td>${esc(scopeLabel(row))}</td>
+      <td>${esc(row.country||'—')}</td>
+      <td>${esc(row.city||'—')}</td>
+      <td>${esc(row.time_control||'—')}</td>
+      <td>${esc(formatDate(row.starts_at))}</td>
+      <td>${row.max_players?esc(row.max_players)+' لاعب':'مفتوحة'}</td>
+      <td><span class="status status-${esc(row.status)}">${esc(statusLabel(row.status))}</span></td>
+      <td class="registration-cell">${registerControl}</td>
+    </tr>`;
+  }).join('');
 }
+
+async function registerForTournament(button,tournamentId){
+  setRegistrationMessage('');
+  const {data:{session}}=await supabase.auth.getSession();
+  if(!session){
+    setRegistrationMessage('سجّل الدخول أولًا للتسجيل في البطولات.','error');
+    location.href='index.html#register';
+    return;
+  }
+
+  const originalText=button.textContent;
+  button.disabled=true;
+  button.textContent='جاري التسجيل...';
+
+  try{
+    const {data,error}=await supabase.rpc('register_for_tournament',{p_tournament_id:tournamentId});
+    if(error)throw error;
+    const result=data||{};
+
+    if(result.ok || result.code==='already_registered'){
+      button.textContent=result.code==='already_registered'?'مسجل':'تم التسجيل';
+      button.classList.add('registered');
+      button.disabled=true;
+      setRegistrationMessage(
+        result.code==='already_registered'?'أنت مسجل بالفعل في هذه البطولة.':'تم تسجيلك في البطولة بنجاح.',
+        'ok'
+      );
+      return;
+    }
+
+    button.disabled=false;
+    button.textContent=originalText;
+    setRegistrationMessage(registrationErrorMessage(result.code),'error');
+  }catch(error){
+    console.error(error);
+    button.disabled=false;
+    button.textContent=originalText;
+    setRegistrationMessage('تعذر إتمام التسجيل الآن. حاول مرة أخرى.','error');
+  }
+}
+
+rowsEl.addEventListener('click',event=>{
+  const button=event.target.closest('.register-btn[data-tournament-id]');
+  if(!button || button.disabled)return;
+  registerForTournament(button,button.dataset.tournamentId);
+});
 
 async function loadTournaments(){
   try{
     const {data,error}=await supabase
       .from('tournaments')
-      .select('id,name,scope_type,country,city,time_control,starts_at,max_players,status')
+      .select('id,name,scope_type,country,city,time_control,starts_at,max_players,status,registration_opens_at,registration_closes_at')
       .in('status',['open','running','finished'])
       .order('starts_at',{ascending:true,nullsFirst:false});
     if(error)throw error;
