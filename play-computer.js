@@ -524,7 +524,7 @@ async function submitRatedMove(move, moveId) {
       if (authoritative.status === 'finished') finishRatedResult(authoritative);
       else {
         setComputerStatus('جاهز');
-        toast('تمت مزامنة المباراة مع الخادم.');
+        toast('تم تحديث المباراة من الخادم.');
       }
     } else {
       game.undo();

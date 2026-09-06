@@ -328,6 +328,178 @@ Deno.serve(async (req: Request) => {
       return Array.isArray(data) ? data[0] ?? null : data;
     }
 
+    async function currentGamePayload(row: Record<string, any>) {
+      return {
+        game_id: row.id,
+        fen: row.fen,
+        status: row.status,
+        result: row.result,
+        rating: row.status === 'finished' && row.result ? await settledRating(row.id) : null,
+        ...clockPayload(row),
+      };
+    }
+
+    async function persistPlayerTurnBeforeComputer(
+      row: Record<string, any>,
+      chess: Chess,
+      moves: unknown[],
+      playerTimeMs: number,
+      computerTimeMs: number,
+      turnStartedAt: string,
+    ) {
+      const { data: saved, error } = await admin
+        .from('computer_games')
+        .update({
+          fen: chess.fen(),
+          moves,
+          player_time_ms: Math.round(playerTimeMs),
+          computer_time_ms: Math.round(computerTimeMs),
+          turn_started_at: turnStartedAt,
+          updated_at: turnStartedAt,
+        })
+        .eq('id', row.id)
+        .eq('player_id', player.id)
+        .eq('status', 'active')
+        .eq('fen', row.fen)
+        .select(gameSelect)
+        .maybeSingle();
+      if (error) throw error;
+      if (saved) return saved;
+      const current = await getGame(row.id);
+      if (!current) throw new Error('Computer game disappeared while saving player move');
+      return current;
+    }
+
+    async function settlePendingComputerTurn(
+      row: Record<string, any>,
+      result: GameResult,
+      fen: string,
+      moves: unknown[],
+      playerTimeMs: number,
+      computerTimeMs: number,
+      turnStartedAt: string,
+    ) {
+      const { data: saved, error } = await admin
+        .from('computer_games')
+        .update({
+          fen,
+          moves,
+          status: 'finished',
+          result,
+          finished_at: turnStartedAt,
+          player_time_ms: Math.max(0, Math.round(playerTimeMs)),
+          computer_time_ms: Math.max(0, Math.round(computerTimeMs)),
+          turn_started_at: turnStartedAt,
+          updated_at: turnStartedAt,
+        })
+        .eq('id', row.id)
+        .eq('player_id', player.id)
+        .eq('status', 'active')
+        .eq('fen', row.fen)
+        .select(gameSelect)
+        .maybeSingle();
+      if (error) throw error;
+      if (!saved) {
+        const current = await getGame(row.id);
+        if (!current) throw new Error('Computer game disappeared while settling computer turn');
+        return currentGamePayload(current);
+      }
+      const rating = await settledRating(saved.id);
+      return {
+        game_id: saved.id,
+        fen: saved.fen,
+        status: 'finished',
+        result: saved.result,
+        rating,
+        ...clockPayload(saved),
+      };
+    }
+
+    async function completePendingComputerTurn(row: Record<string, any>) {
+      if (row.status !== 'active') return currentGamePayload(row);
+      if (!isLevel(row.level)) throw new Error('Invalid stored level');
+      if (!isTimeControl(row.time_control_minutes)) throw new Error('Invalid stored time control');
+
+      const chess = new Chess(row.fen);
+      if (chess.turn() !== 'b') return currentGamePayload(row);
+
+      const moves = Array.isArray(row.moves) ? [...row.moves] : [];
+      const playerTimeMs = Math.max(0, Number(row.player_time_ms));
+      const computerTimeBefore = Math.max(0, Number(row.computer_time_ms));
+      const startedAtMs = Date.parse(String(row.turn_started_at ?? ''));
+      const computerStartedAt = Number.isFinite(startedAtMs) ? startedAtMs : Date.now();
+
+      const selected = chooseComputerMove(chess, row.level);
+      const elapsedAfterSearch = Math.max(0, Date.now() - computerStartedAt);
+      const waitMs = Math.max(0, MIN_THINK_MS[row.level] - elapsedAfterSearch);
+      if (waitMs > 0) await new Promise((resolve) => setTimeout(resolve, waitMs));
+      const computerElapsed = Math.max(1, Date.now() - computerStartedAt);
+      const computerTimeMs = Math.max(0, computerTimeBefore - computerElapsed);
+      const completedAt = new Date().toISOString();
+
+      if (computerTimeMs <= 0) {
+        return settlePendingComputerTurn(
+          row,
+          'win',
+          chess.fen(),
+          moves,
+          playerTimeMs,
+          0,
+          completedAt,
+        );
+      }
+
+      if (!selected) throw new Error('Computer has no legal move');
+      const computerMove = chess.move({ from: selected.from, to: selected.to, promotion: selected.promotion || 'q' });
+      if (!computerMove) throw new Error('Computer selected an invalid move');
+      moves.push(moveRecord('computer', computerMove));
+
+      const result = positionResult(chess);
+      if (result) {
+        const payload = await settlePendingComputerTurn(
+          row,
+          result,
+          chess.fen(),
+          moves,
+          playerTimeMs,
+          computerTimeMs,
+          completedAt,
+        );
+        return { ...payload, computer_move: moveRecord('computer', computerMove) };
+      }
+
+      const { data: saved, error } = await admin
+        .from('computer_games')
+        .update({
+          fen: chess.fen(),
+          moves,
+          player_time_ms: Math.round(playerTimeMs),
+          computer_time_ms: Math.round(computerTimeMs),
+          turn_started_at: completedAt,
+          updated_at: completedAt,
+        })
+        .eq('id', row.id)
+        .eq('player_id', player.id)
+        .eq('status', 'active')
+        .eq('fen', row.fen)
+        .select(gameSelect)
+        .maybeSingle();
+      if (error) throw error;
+      if (!saved) {
+        const current = await getGame(row.id);
+        if (!current) throw new Error('Computer game disappeared while saving computer move');
+        return currentGamePayload(current);
+      }
+      return {
+        game_id: saved.id,
+        fen: saved.fen,
+        computer_move: moveRecord('computer', computerMove),
+        status: 'active',
+        result: null,
+        ...clockPayload(saved),
+      };
+    }
+
     if (action === 'start') {
       const level = body.level;
       const minutes = Number(body.minutes);
@@ -393,19 +565,13 @@ Deno.serve(async (req: Request) => {
       const row = await getGame(gameId);
       if (!row) return reply({ error: 'Computer game not found' }, 404);
 
-      if (row.status === 'finished' && row.result) {
-        return reply({
-          game_id: row.id,
-          fen: row.fen,
-          status: row.status,
-          result: row.result,
-          rating: await settledRating(row.id),
-          ...clockPayload(row),
-        });
-      }
+      if (row.status === 'finished' && row.result) return reply(await currentGamePayload(row));
+      if (row.status !== 'active') return reply(await currentGamePayload(row));
 
-      if (row.status !== 'active') {
-        return reply({ game_id: row.id, fen: row.fen, status: row.status, result: row.result, ...clockPayload(row) });
+      const stateChess = new Chess(row.fen);
+      const activeSide = stateChess.turn() === 'b' ? 'computer' : 'player';
+      if (activeSide === 'computer') {
+        return reply(await completePendingComputerTurn(row));
       }
 
       const nowMs = Date.now();
@@ -453,14 +619,11 @@ Deno.serve(async (req: Request) => {
           })
         : null;
       if (existingMove) {
-        return reply({
-          game_id: row.id,
-          fen: row.fen,
-          status: row.status,
-          result: row.result,
-          rating: row.status === 'finished' && row.result ? await settledRating(row.id) : null,
-          ...clockPayload(row),
-        });
+        const retryChess = new Chess(row.fen);
+        if (row.status === 'active' && retryChess.turn() === 'b') {
+          return reply(await completePendingComputerTurn(row));
+        }
+        return reply(await currentGamePayload(row));
       }
 
       if (row.status !== 'active') return reply({ error: 'Computer game is finished' }, 409);
@@ -473,7 +636,7 @@ Deno.serve(async (req: Request) => {
       const playerTurnStartedAt = new Date(receivedAt).toISOString();
 
       if (playerTimeMs <= 0) {
-        const rating = await settle(row.id, 'loss', row.fen, Array.isArray(row.moves) ? row.moves : [], {
+        const rating = await settle(row.id, 'loss', row.fen, storedMoves, {
           playerTimeMs: 0,
           computerTimeMs: computerTimeBefore,
           turnStartedAt: playerTurnStartedAt,
@@ -489,7 +652,7 @@ Deno.serve(async (req: Request) => {
       }
 
       const chess = new Chess(row.fen);
-      if (chess.turn() !== 'w') return reply({ error: 'Not player turn' }, 409);
+      if (chess.turn() !== 'w') return reply({ error: 'Computer turn in progress' }, 409);
 
       let playerMove;
       try {
@@ -503,10 +666,10 @@ Deno.serve(async (req: Request) => {
       }
       if (!playerMove) return reply({ error: 'Illegal move' }, 400);
 
-      const moves = Array.isArray(row.moves) ? [...row.moves] : [];
+      const moves = [...storedMoves];
       moves.push(moveRecord('player', playerMove, moveId || null));
 
-      let result = positionResult(chess);
+      const result = positionResult(chess);
       if (result) {
         const rating = await settle(row.id, result, chess.fen(), moves, {
           playerTimeMs,
@@ -523,78 +686,20 @@ Deno.serve(async (req: Request) => {
         });
       }
 
-      const computerStartedAt = Date.now();
-      const selected = chooseComputerMove(chess, row.level);
-      const searchElapsed = Math.max(0, Date.now() - computerStartedAt);
-      const waitMs = Math.max(0, MIN_THINK_MS[row.level] - searchElapsed);
-      if (waitMs > 0) await new Promise((resolve) => setTimeout(resolve, waitMs));
-      const computerElapsed = Math.max(1, Date.now() - computerStartedAt);
-      const computerTimeMs = Math.max(0, computerTimeBefore - computerElapsed);
-
-      if (computerTimeMs <= 0) {
-        const stoppedAt = new Date().toISOString();
-        const rating = await settle(row.id, 'win', chess.fen(), moves, {
-          playerTimeMs,
-          computerTimeMs: 0,
-          turnStartedAt: stoppedAt,
-        });
-        return reply({
-          game_id: row.id,
-          fen: chess.fen(),
-          status: 'finished',
-          result: 'win',
-          rating,
-          ...clockPayload(row, playerTimeMs, 0, stoppedAt),
-        });
+      const computerStartedAt = new Date().toISOString();
+      const persisted = await persistPlayerTurnBeforeComputer(
+        row,
+        chess,
+        moves,
+        playerTimeMs,
+        computerTimeBefore,
+        computerStartedAt,
+      );
+      const persistedChess = new Chess(persisted.fen);
+      if (persisted.status === 'active' && persistedChess.turn() === 'b') {
+        return reply(await completePendingComputerTurn(persisted));
       }
-
-      if (!selected) return reply({ error: 'Computer has no legal move' }, 500);
-      const computerMove = chess.move({ from: selected.from, to: selected.to, promotion: selected.promotion || 'q' });
-      if (!computerMove) return reply({ error: 'Computer selected an invalid move' }, 500);
-      moves.push(moveRecord('computer', computerMove));
-
-      result = positionResult(chess);
-      const nextTurnStartedAt = new Date().toISOString();
-      if (result) {
-        const rating = await settle(row.id, result, chess.fen(), moves, {
-          playerTimeMs,
-          computerTimeMs,
-          turnStartedAt: nextTurnStartedAt,
-        });
-        return reply({
-          game_id: row.id,
-          fen: chess.fen(),
-          computer_move: moveRecord('computer', computerMove),
-          status: 'finished',
-          result,
-          rating,
-          ...clockPayload(row, playerTimeMs, computerTimeMs, nextTurnStartedAt),
-        });
-      }
-
-      const { error: saveError } = await admin
-        .from('computer_games')
-        .update({
-          fen: chess.fen(),
-          moves,
-          player_time_ms: Math.round(playerTimeMs),
-          computer_time_ms: Math.round(computerTimeMs),
-          turn_started_at: nextTurnStartedAt,
-          updated_at: nextTurnStartedAt,
-        })
-        .eq('id', row.id)
-        .eq('player_id', player.id)
-        .eq('status', 'active');
-      if (saveError) throw saveError;
-
-      return reply({
-        game_id: row.id,
-        fen: chess.fen(),
-        computer_move: moveRecord('computer', computerMove),
-        status: 'active',
-        result: null,
-        ...clockPayload(row, playerTimeMs, computerTimeMs, nextTurnStartedAt),
-      });
+      return reply(await currentGamePayload(persisted));
     }
 
     if (action === 'timeout') {
