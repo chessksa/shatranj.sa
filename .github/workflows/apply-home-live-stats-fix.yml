@@ -27,3 +27,4 @@ jobs:
           git add index.html watch.html
           git commit -m "fix: bind online and live match stats correctly"
           git push
+# rerun after focusing the regression test on live-stat bindings
