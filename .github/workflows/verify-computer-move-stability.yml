@@ -1,0 +1,23 @@
+name: Verify computer move stability
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - 'play-computer.js'
+      - 'tests/test_computer_move_stability.py'
+      - '.github/workflows/verify-computer-move-stability.yml'
+
+permissions:
+  contents: read
+
+jobs:
+  verify:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - name: Verify accepted computer-game moves stay on destination square
+        run: python tests/test_computer_move_stability.py
