@@ -4,6 +4,7 @@ ROOT = Path(__file__).resolve().parents[1]
 admin = (ROOT / 'admin.js').read_text(encoding='utf-8')
 public_page = (ROOT / 'tournaments.html').read_text(encoding='utf-8')
 migration = (ROOT / 'supabase/migrations/20260907010000_tournament_start_engine.sql').read_text(encoding='utf-8')
+permissions = (ROOT / 'supabase/migrations/20260907011000_tournament_start_engine_permissions.sql').read_text(encoding='utf-8')
 
 for marker in [
     'create table if not exists private.tournament_matches',
@@ -20,6 +21,13 @@ for marker in [
     "'1/2-1/2'",
 ]:
     assert marker in migration, marker
+
+for marker in [
+    'revoke execute on function public.admin_start_tournament(uuid) from anon',
+    'revoke execute on function public.get_my_tournament_match_access(uuid) from anon',
+    'revoke execute on function public.get_my_active_tournament_matches() from anon',
+]:
+    assert marker in permissions, marker
 
 assert 'ابدأ البطولة الآن' in admin
 assert "rpc('admin_start_tournament'" in admin
