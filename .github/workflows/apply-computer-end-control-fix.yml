@@ -30,17 +30,13 @@ jobs:
               raise SystemExit('live-game end control anchor not found')
           code = code.replace(old_live, new_live, 1)
 
-          old_chooser = """  if (endGraceBtn) {
-            endGraceBtn.disabled = false;
-            endGraceBtn.onclick = () => resignComputerGame({ navigate: true });
-          }"""
-          new_chooser = """  if (endGraceBtn) {
-            endGraceBtn.disabled = true;
-            endGraceBtn.onclick = null;
-          }"""
-          if old_chooser not in code:
+          chooser_at = code.index('function setupLevelChooser')
+          prefix, chooser = code[:chooser_at], code[chooser_at:]
+          old_chooser = "    endGraceBtn.disabled = false;\n    endGraceBtn.onclick = () => resignComputerGame({ navigate: true });"
+          new_chooser = "    endGraceBtn.disabled = true;\n    endGraceBtn.onclick = null;"
+          if old_chooser not in chooser:
               raise SystemExit('chooser end control anchor not found')
-          code = code.replace(old_chooser, new_chooser, 1)
+          code = prefix + chooser.replace(old_chooser, new_chooser, 1)
           path.write_text(code, encoding='utf-8')
 
           play = Path('play-v10.html')
