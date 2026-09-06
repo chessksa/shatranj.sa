@@ -1,0 +1,28 @@
+name: Apply home play action grid
+
+on:
+  push:
+    paths:
+      - '.github/workflows/apply-home-play-grid.yml'
+      - 'scripts/apply_home_play_grid.py'
+
+permissions:
+  contents: write
+
+jobs:
+  apply:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Apply responsive play action grid
+        run: python scripts/apply_home_play_grid.py
+      - name: Verify layout
+        run: python tests/test_tournament_home_layout.py
+      - name: Commit generated CSS
+        run: |
+          git diff --check
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add home-theme.css
+          git commit -m "style: arrange home play actions in responsive four-button grid"
+          git push
