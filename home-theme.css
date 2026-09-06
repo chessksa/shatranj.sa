@@ -1781,3 +1781,34 @@ footer .wrap{display:flex;justify-content:space-between;align-items:center}
   content:none!important;
   display:none!important;
 }
+
+/* MOBILE PLAY BOXES 20PX 20260906 */
+@media(max-width:700px){
+  .home-hero .home-board-actions{
+    grid-template-columns:repeat(2,minmax(0,1fr))!important;
+    grid-template-rows:repeat(2,82px)!important;
+    gap:10px!important;
+    align-items:stretch!important;
+  }
+  .home-hero .home-board-actions>.btn,
+  .home-hero .home-invite-wrap,
+  .home-hero .home-invite-wrap>.btn{
+    width:100%!important;
+    height:82px!important;
+    min-height:82px!important;
+    min-width:0!important;
+  }
+  .home-hero .home-board-actions>.btn,
+  .home-hero .home-invite-wrap>.btn{
+    border-radius:14px!important;
+    padding:8px 10px!important;
+    gap:0!important;
+    font-family:Arial,sans-serif!important;
+    font-size:20px!important;
+    line-height:1.2!important;
+    font-weight:900!important;
+    text-align:center!important;
+    align-items:center!important;
+    justify-content:center!important;
+  }
+}
