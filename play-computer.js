@@ -548,6 +548,9 @@ function handleBoardInput(event) {
     const move = game.move({ from: event.squareFrom, to: event.squareTo, promotion: 'q' });
     if (!move) return false;
 
+    const moveInputProcess = event.chessboard?.state?.moveInputProcess;
+    Promise.resolve(moveInputProcess).then(() => renderBoard(true));
+
     if (ratedMode) {
     switchClock('computer');
     Promise.resolve().then(() => submitRatedMove(move));
