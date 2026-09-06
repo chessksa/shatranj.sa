@@ -66,10 +66,20 @@
     color:#f4efe6!important;
   }
 
-  /* Difficulty points subline: larger, lower, and separated from its number. */
+  /* Difficulty points subline: same presentation, without showing the ± sign. */
   body.computer-game.pregame .opponent-time-option[data-level] > span{
     display:block!important;
     margin-top:8px!important;
+    font-family:Arial,sans-serif!important;
+    font-size:0!important;
+    line-height:1!important;
+    font-weight:700!important;
+    color:#f4efe6!important;
+    white-space:nowrap!important;
+  }
+
+  body.computer-game.pregame .opponent-time-option[data-level] > span::after{
+    display:inline-block!important;
     font-family:Arial,sans-serif!important;
     font-size:14px!important;
     line-height:1!important;
@@ -77,5 +87,17 @@
     color:#f4efe6!important;
     word-spacing:8px!important;
     white-space:nowrap!important;
+  }
+
+  body.computer-game.pregame .opponent-time-option[data-level="easy"] > span::after{
+    content:"5 نقاط";
+  }
+
+  body.computer-game.pregame .opponent-time-option[data-level="medium"] > span::after{
+    content:"10 نقاط";
+  }
+
+  body.computer-game.pregame .opponent-time-option[data-level="hard"] > span::after{
+    content:"20 نقطة";
   }
 }
