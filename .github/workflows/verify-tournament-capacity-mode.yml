@@ -1,0 +1,20 @@
+name: Verify tournament capacity mode
+
+on:
+  push:
+    branches:
+      - main
+    paths:
+      - '.github/workflows/verify-tournament-capacity-mode.yml'
+      - 'tests/test_tournament_capacity_mode.py'
+      - 'admin.js'
+      - 'tournaments.html'
+      - 'supabase/migrations/20260906183000_tournament_registration_rpc.sql'
+
+jobs:
+  verify:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - run: python tests/test_tournament_capacity_mode.py
+      - run: node --check admin.js
