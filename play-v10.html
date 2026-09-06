@@ -173,6 +173,12 @@
     #mobilePullRefresh{position:fixed;z-index:120;top:6px;left:50%;transform:translate(-50%,-56px);min-width:122px;height:34px;padding:0 13px;border:1px solid rgba(224,181,103,.55);border-radius:18px;background:rgba(3,43,48,.96);color:#f4cd67;display:flex;align-items:center;justify-content:center;font:700 11px Arial,sans-serif;opacity:0;pointer-events:none;transition:transform .16s ease,opacity .16s ease;box-shadow:0 6px 18px rgba(0,0,0,.24)}
     #mobilePullRefresh.visible{opacity:1}
     #mobilePullRefresh.ready{color:#ffbd6a;border-color:rgba(255,189,106,.78)}
+    /* COMPUTER DESKTOP CHOOSER: back button on opposite side */
+    @media(min-width:901px){
+      body.computer-game.pregame .computer-chooser-header{
+        direction:rtl!important;
+      }
+    }
     /* COMPUTER MOBILE CHOOSER POLISH V2 20260906 */
     @media(max-width:900px){
       body.computer-game.pregame .opponent-time-option[data-level] strong{
