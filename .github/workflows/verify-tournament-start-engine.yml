@@ -8,6 +8,8 @@ on:
       - 'admin.js'
       - 'tournaments.html'
       - 'supabase/migrations/20260907010000_tournament_start_engine.sql'
+      - 'supabase/migrations/20260907011000_tournament_start_engine_permissions.sql'
+      - 'supabase/migrations/20260907011500_tournament_match_indexes.sql'
       - 'tests/test_tournament_start_engine.py'
       - '.github/workflows/verify-tournament-start-engine.yml'
 
@@ -21,3 +23,16 @@ jobs:
           python-version: '3.12'
       - name: Verify tournament engine contract
         run: python tests/test_tournament_start_engine.py
+      - name: Check JavaScript syntax
+        run: |
+          cp admin.js /tmp/admin.mjs
+          node --check /tmp/admin.mjs
+          python - <<'PY'
+          from pathlib import Path
+          html = Path('tournaments.html').read_text(encoding='utf-8')
+          marker = '<script type="module">'
+          start = html.index(marker) + len(marker)
+          end = html.index('</script>', start)
+          Path('/tmp/tournaments.mjs').write_text(html[start:end], encoding='utf-8')
+          PY
+          node --check /tmp/tournaments.mjs
