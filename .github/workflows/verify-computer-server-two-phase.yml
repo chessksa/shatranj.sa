@@ -1,5 +1,6 @@
 name: Verify computer server two-phase move
 
+# Verifies move acknowledgement first, then resumable computer reply.
 on:
   push:
     paths:
