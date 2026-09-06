@@ -14,11 +14,53 @@ jobs:
           set -euxo pipefail
           curl -fsSL -H 'Cache-Control: no-cache' 'https://chessksa.github.io/shatranj.sa/admin.html?diag=20260906' -o /tmp/admin.html
           curl -fsSL -H 'Cache-Control: no-cache' 'https://chessksa.github.io/shatranj.sa/admin.js?v=20260906-cache1' -o /tmp/admin.js
-          echo '--- admin.html checks ---'
           grep -F 'admin.js?v=20260906-cache1' /tmp/admin.html
-          echo '--- admin.js checks ---'
           grep -F 'admin_add_moderator' /tmp/admin.js
           grep -F 'admin_create_tournament' /tmp/admin.js
           grep -F '+ إضافة لاعب' /tmp/admin.js
           grep -F '♛ البطولات' /tmp/admin.js
           echo 'LIVE_ADMIN_NEW_VERSION_OK'
+
+      - name: Run deployed admin module in Chrome
+        run: |
+          set -euxo pipefail
+          CHROME="$(command -v google-chrome || command -v google-chrome-stable || command -v chromium || command -v chromium-browser)"
+          test -n "$CHROME"
+          mkdir -p /tmp/probe
+          cat >/tmp/probe/probe.html <<'HTML'
+          <!doctype html><html lang="ar" dir="rtl"><head><meta charset="utf-8"></head><body>
+          <div id="accessGate"><p id="accessMessage">probe</p></div>
+          <div id="adminApp">
+            <aside><nav class="nav-list">
+              <button class="nav-btn" data-view="dashboardView">الرئيسية</button>
+              <button class="nav-btn" data-view="playersView">اللاعبون</button>
+              <button class="nav-btn" data-view="actionsView">سجل الإدارة</button>
+            </nav><div id="adminIdentity"></div></aside>
+            <main class="content">
+              <section id="dashboardView" class="view"></section>
+              <section id="playersView" class="view"><div class="toolbar"></div><tbody id="playersTableBody"></tbody></section>
+              <section id="gamesView" class="view"><select id="gameStatusFilter"></select><tbody id="gamesTableBody"></tbody></section>
+              <section id="reportsView" class="view"><select id="reportStatusFilter"></select><tbody id="reportsTableBody"></tbody></section>
+              <section id="actionsView" class="view"><tbody id="actionsTableBody"></tbody></section>
+              <h1 id="viewTitle"></h1><p id="viewSubtitle"></p>
+            </main>
+          </div>
+          <button id="mobileMenuBtn"></button><button id="refreshBtn"></button>
+          <input id="playerSearch"><select id="playerStatusFilter"></select><select id="playerCityFilter"></select>
+          <script>window.SHATRANJ_CONFIG={supabase:{enabled:false}};</script>
+          <script type="module" src="https://chessksa.github.io/shatranj.sa/admin.js?v=20260906-cache1"></script>
+          </body></html>
+          HTML
+          cd /tmp/probe
+          python3 -m http.server 8765 >/tmp/probe-server.log 2>&1 &
+          SERVER_PID=$!
+          trap 'kill $SERVER_PID || true' EXIT
+          sleep 1
+          "$CHROME" --headless=new --no-sandbox --disable-gpu --virtual-time-budget=5000 --dump-dom http://127.0.0.1:8765/probe.html >/tmp/probe-dom.html
+          grep -F 'id="addPlayerBtn"' /tmp/probe-dom.html
+          grep -F 'data-view="moderatorsView"' /tmp/probe-dom.html
+          grep -F 'data-view="tournamentsView"' /tmp/probe-dom.html
+          grep -F 'id="moderatorsView"' /tmp/probe-dom.html
+          grep -F 'id="tournamentsView"' /tmp/probe-dom.html
+          grep -F 'تعذر الاتصال بخدمة الموقع.' /tmp/probe-dom.html
+          echo 'LIVE_ADMIN_BROWSER_EXECUTION_OK'
