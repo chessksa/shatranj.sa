@@ -52,8 +52,14 @@
     window.addEventListener('resize', syncCount, { passive: true });
   }
 
+  function installTournamentPageLink() {
+    const headerTournaments = document.getElementById('headerTournaments');
+    if (headerTournaments) headerTournaments.href = 'tournaments.html';
+  }
+
   installWelcomeTickerFontSize();
   installMobileRankingLimit();
+  installTournamentPageLink();
 
   const core = document.createElement('script');
   core.src = 'site-notifications-core.js?v=20260905-mobile5';

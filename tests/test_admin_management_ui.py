@@ -51,20 +51,30 @@ def test_refresh_button_forces_real_reload_and_has_feedback():
     assert "addEventListener('click',handleRefresh)" in js
 
 
-def test_header_tournaments_link_targets_live_tournaments_section():
+def test_header_tournaments_opens_standalone_page():
     html = read("index.html")
+    helper = read("site-notifications.js")
     assert 'id="headerTournaments"' in html
-    assert 'href="#tournaments"' in html
-    assert 'id="tournaments"' in html
-    assert 'id="publicTournamentsList"' in html
+    direct = 'href="tournaments.html"' in html
+    scripted = "headerTournaments" in helper and "tournaments.html" in helper
+    assert direct or scripted
 
 
-def test_home_loads_public_tournaments_from_supabase():
-    html = read("index.html")
-    assert "async function loadPublicTournaments()" in html
+def test_tournaments_page_has_numbered_table():
+    html = read("tournaments.html")
+    assert '<table' in html
+    assert 'id="tournamentRows"' in html
+    for heading in ["#", "اسم البطولة", "النطاق", "الدولة", "المدينة", "نظام الوقت", "الموعد", "السعة", "الحالة"]:
+        assert heading in html
+    assert "index+1" in html or "index + 1" in html
+
+
+def test_tournaments_page_loads_public_tournaments_from_supabase():
+    html = read("tournaments.html")
+    assert "createClient" in html
     assert ".from('tournaments')" in html
     assert ".in('status',['open','running','finished'])" in html
-    assert "renderPublicTournaments" in html
+    assert "renderTournaments" in html
 
 
 if __name__ == "__main__":
@@ -73,6 +83,7 @@ if __name__ == "__main__":
     test_country_city_catalog_is_reused()
     test_admin_sidebar_keeps_return_link_visible()
     test_refresh_button_forces_real_reload_and_has_feedback()
-    test_header_tournaments_link_targets_live_tournaments_section()
-    test_home_loads_public_tournaments_from_supabase()
-    print("Admin management UI tests passed")
+    test_header_tournaments_opens_standalone_page()
+    test_tournaments_page_has_numbered_table()
+    test_tournaments_page_loads_public_tournaments_from_supabase()
+    print("Admin management and tournaments page tests passed")
