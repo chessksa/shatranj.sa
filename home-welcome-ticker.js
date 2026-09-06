@@ -66,8 +66,8 @@
       const item = document.createElement('span');
       item.className = 'welcome-ticker-item';
       item.textContent = city
-        ? `نرحب بانضمام ${name} — ${country}، ${city}`
-        : `نرحب بانضمام ${name} — ${country}`;
+        ? `${name} — ${country}، ${city}`
+        : `${name} — ${country}`;
       group.appendChild(item);
 
       const separator = document.createElement('span');
@@ -86,7 +86,7 @@
     const members = [...(Array.isArray(rows) ? rows : [])]
       .filter(row => row && row.created_at)
       .sort((a, b) => new Date(b.created_at).getTime() - new Date(a.created_at).getTime())
-      .slice(0, 10);
+      .slice(0, 20);
 
     if (!members.length) {
       track.innerHTML = '<span class="welcome-ticker-loading">مرحبًا بكم في شطرنج العرب</span>';

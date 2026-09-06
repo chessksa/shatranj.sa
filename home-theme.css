@@ -1769,3 +1769,15 @@ footer .wrap{display:flex;justify-content:space-between;align-items:center}
   .home-hero .home-board-actions>.btn::before,
   .home-hero .home-invite-wrap>.btn::before{font-size:19px}
 }
+
+/* HOME PLAY ACTION TEXT ONLY 20260906 */
+.home-hero .home-board-actions>.btn,
+.home-hero .home-invite-wrap>.btn{
+  font-family:Arial,sans-serif!important;
+  font-weight:900!important;
+}
+.home-hero .home-board-actions>.btn::before,
+.home-hero .home-invite-wrap>.btn::before{
+  content:none!important;
+  display:none!important;
+}
