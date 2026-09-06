@@ -63,6 +63,7 @@ function esc(value){return String(value??'').replace(/[&<>"']/g,ch=>({'&':'&amp;
 function scopeLabel(row){if(row.scope_type==='global')return 'عامة';if(row.scope_type==='country')return 'دولة';if(row.scope_type==='city')return 'مدينة';return row.scope_type||'—'}
 function statusLabel(value){return ({open:'مفتوحة',running:'جارية',finished:'منتهية'})[value]||value||'—'}
 function formatDate(value){if(!value)return 'يحدد لاحقًا';return new Intl.DateTimeFormat('ar-SA',{dateStyle:'medium',timeStyle:'short'}).format(new Date(value))}
+function tournamentIsFull(row){const max=Number(row.max_players);return Number.isFinite(max)&&max>0&&Number(row.registered_count||0)>=max}
 function registrationOpen(row){if(row.status!=='open')return false;const now=Date.now();if(row.registration_opens_at&&now<new Date(row.registration_opens_at).getTime())return false;if(row.registration_closes_at&&now>=new Date(row.registration_closes_at).getTime())return false;return true}
 function setRegistrationMessage(text,type=''){registrationMsg.textContent=text||'';registrationMsg.className='registration-message'+(type?` ${type}`:'')}
 function registrationErrorMessage(code){return ({not_authenticated:'سجّل الدخول أولًا للتسجيل في البطولة.',player_not_found:'تعذر العثور على ملف اللاعب النشط.',tournament_not_found:'البطولة غير موجودة.',registration_closed:'التسجيل مغلق لهذه البطولة.',tournament_full:'اكتمل عدد المشاركين في البطولة.',outside_scope:'هذه البطولة مخصصة لدولة أو مدينة مختلفة.',already_registered:'أنت مسجل بالفعل في هذه البطولة.'})[code]||'تعذر إتمام التسجيل الآن.'}
@@ -85,7 +86,7 @@ function renderTournamentList(rows){
   listEl.innerHTML=list.map((row,index)=>`<tr class="tournament-row${row.status==='finished'?' finished-row':''}" tabindex="0" data-tournament-id="${esc(row.id)}" aria-label="عرض تفاصيل ${esc(row.name)}"><td class="num">${index+1}</td><td><span class="tournament-name">${esc(row.name)}</span></td><td><span class="tournament-date">${esc(formatDate(row.starts_at))}</span></td><td class="status-col"><span class="status status-${esc(row.status)}">${esc(statusLabel(row.status))}</span></td></tr>`).join('');
 }
 
-function registrationControl(row){return registrationOpen(row)?`<button class="register-btn" type="button" data-tournament-id="${esc(row.id)}">سجّل الآن</button>`:'<button class="register-btn" type="button" disabled>التسجيل مغلق</button>'}
+function registrationControl(row){if(tournamentIsFull(row))return '<button class="register-btn" type="button" disabled>اكتمل العدد</button>';return registrationOpen(row)?`<button class="register-btn" type="button" data-tournament-id="${esc(row.id)}">سجّل الآن</button>`:'<button class="register-btn" type="button" disabled>التسجيل مغلق</button>'}
 
 function renderTournamentDetail(row){
   const registeredCount=Number(row.registered_count||0);

@@ -143,7 +143,8 @@ function injectExtendedUi(){
         <div id="tournamentCountryGroup" class="form-group" hidden><label>الدولة</label><select id="tournamentCountry" class="field"></select></div>
         <div id="tournamentCityGroup" class="form-group" hidden><label>المدينة</label><select id="tournamentCity" class="field"></select></div>
         <div class="form-group"><label>بداية البطولة</label><input id="tournamentStarts" class="field" type="datetime-local"></div>
-        <div class="form-group"><label>الحد الأقصى للاعبين</label><input id="tournamentMax" class="field" type="number" min="2" placeholder="بدون حد"></div>
+        <div class="form-group"><label>عدد المشاركين</label><select id="tournamentCapacityMode" class="field"><option value="fixed">محدد</option><option value="open">مفتوح</option></select></div>
+        <div id="tournamentMaxGroup" class="form-group"><label>العدد المحدد</label><input id="tournamentMax" class="field" type="number" min="2" step="1" placeholder="مثال: 16"></div>
         <div class="form-group"><label>فتح التسجيل</label><input id="tournamentRegOpen" class="field" type="datetime-local"></div>
         <div class="form-group"><label>إغلاق التسجيل</label><input id="tournamentRegClose" class="field" type="datetime-local"></div>
         <div class="form-group"><label>الحالة</label><select id="tournamentStatus" class="field"><option value="draft">مسودة</option><option value="open">مفتوحة</option><option value="running">جارية</option><option value="finished">منتهية</option></select></div>
@@ -329,18 +330,30 @@ async function saveModerator(){
   catch(err){console.error(err);$('moderatorMessage').textContent=err.message||'تعذر إضافة المشرف.'}finally{button.disabled=false}
 }
 
+function syncTournamentCapacityMode(){
+  const mode=$('tournamentCapacityMode')?.value||'fixed';
+  const group=$('tournamentMaxGroup');
+  const input=$('tournamentMax');
+  if(group)group.hidden=mode==='open';
+  if(input){input.disabled=mode==='open';input.required=mode==='fixed';if(mode==='open')input.value='';}
+}
+
 async function loadTournaments(){
   state.tournaments=await rpc('admin_list_tournaments')||[];
   $('tournamentsTableBody').innerHTML=state.tournaments.map(t=>`<tr><td>${esc(t.name)}</td><td>${esc(scopeLabel(t))}</td><td>${esc(t.time_control)} د</td><td>${fmtDate(t.starts_at)}</td><td>${pill(t.status)}</td><td>${esc(t.registration_count||0)}${t.max_players?' / '+esc(t.max_players):''}</td><td><div class="table-actions"><button class="link-btn" data-action="editTournament" data-tournament="${esc(t.id)}">تعديل</button>${!['cancelled','finished'].includes(t.status)?`<button class="link-btn" data-action="cancelTournament" data-tournament="${esc(t.id)}">إلغاء</button>`:''}</div></td></tr>`).join('')||emptyRow(7);
 }
 function openTournamentModal(t=null){
-  state.selectedTournament=t;$('tournamentModalTitle').textContent=t?'تعديل البطولة':'إضافة بطولة';$('tournamentName').value=t?.name||'';$('tournamentScope').value=t?.scope_type||'global';$('tournamentTime').value=t?.time_control||'10';fillCountries($('tournamentCountry'),t?.country||'');fillCities($('tournamentCountry'),$('tournamentCity'),t?.city||'');$('tournamentStarts').value=toLocalInput(t?.starts_at);$('tournamentRegOpen').value=toLocalInput(t?.registration_opens_at);$('tournamentRegClose').value=toLocalInput(t?.registration_closes_at);$('tournamentMax').value=t?.max_players||'';$('tournamentStatus').value=t?.status==='cancelled'?'draft':(t?.status||'draft');$('tournamentReason').value='';$('tournamentReasonGroup').hidden=!t;setScopeFields('tournamentScope','tournamentCountryGroup','tournamentCityGroup','tournamentCountry','tournamentCity');$('tournamentMessage').textContent='';
+  state.selectedTournament=t;$('tournamentModalTitle').textContent=t?'تعديل البطولة':'إضافة بطولة';$('tournamentName').value=t?.name||'';$('tournamentScope').value=t?.scope_type||'global';$('tournamentTime').value=t?.time_control||'10';fillCountries($('tournamentCountry'),t?.country||'');fillCities($('tournamentCountry'),$('tournamentCity'),t?.city||'');$('tournamentStarts').value=toLocalInput(t?.starts_at);$('tournamentRegOpen').value=toLocalInput(t?.registration_opens_at);$('tournamentRegClose').value=toLocalInput(t?.registration_closes_at);$('tournamentCapacityMode').value=t?.max_players?'fixed':'open';$('tournamentMax').value=t?.max_players||'';$('tournamentStatus').value=t?.status==='cancelled'?'draft':(t?.status||'draft');$('tournamentReason').value='';$('tournamentReasonGroup').hidden=!t;setScopeFields('tournamentScope','tournamentCountryGroup','tournamentCityGroup','tournamentCountry','tournamentCity');syncTournamentCapacityMode();$('tournamentMessage').textContent='';
   [...$('tournamentStatus').options].forEach(o=>o.disabled=!t&&['running','finished'].includes(o.value));showModal('tournamentModal');
 }
 async function saveTournament(){
-  const t=state.selectedTournament,scope=$('tournamentScope').value,button=$('saveTournament');button.disabled=true;$('tournamentMessage').textContent='جارٍ الحفظ...';
-  const common={p_name:$('tournamentName').value.trim(),p_scope_type:scope,p_country:scope==='global'?null:$('tournamentCountry').value,p_city:scope==='city'?$('tournamentCity').value:null,p_time_control:$('tournamentTime').value,p_starts_at:fromLocalInput($('tournamentStarts').value),p_registration_opens_at:fromLocalInput($('tournamentRegOpen').value),p_registration_closes_at:fromLocalInput($('tournamentRegClose').value),p_max_players:$('tournamentMax').value?Number($('tournamentMax').value):null,p_status:$('tournamentStatus').value};
+  const t=state.selectedTournament,scope=$('tournamentScope').value,button=$('saveTournament');
+  const capacityMode=$('tournamentCapacityMode').value;
+  const maxPlayers=capacityMode==='fixed'?Number($('tournamentMax').value):null;
+  button.disabled=true;$('tournamentMessage').textContent='جارٍ الحفظ...';
   try{
+    if(capacityMode==='fixed'&&(!Number.isInteger(maxPlayers)||maxPlayers<2))throw new Error('حدد عدد المشاركين للبطولة.');
+    const common={p_name:$('tournamentName').value.trim(),p_scope_type:scope,p_country:scope==='global'?null:$('tournamentCountry').value,p_city:scope==='city'?$('tournamentCity').value:null,p_time_control:$('tournamentTime').value,p_starts_at:fromLocalInput($('tournamentStarts').value),p_registration_opens_at:fromLocalInput($('tournamentRegOpen').value),p_registration_closes_at:fromLocalInput($('tournamentRegClose').value),p_max_players:capacityMode==='open'?null:maxPlayers,p_status:$('tournamentStatus').value};
     if(t){const reason=$('tournamentReason').value.trim();if(reason.length<3)throw new Error('اكتب سبب التعديل.');await rpc('admin_update_tournament',{p_tournament_id:t.id,...common,p_reason:reason});}
     else await rpc('admin_create_tournament',common);
     hideModal('tournamentModal');await loadTournaments();
@@ -400,7 +413,7 @@ function wireEvents(){
   $('addPlayerBtn')?.addEventListener('click',openCreatePlayer);$('saveNewPlayer')?.addEventListener('click',saveNewPlayer);$('newPlayerCountry')?.addEventListener('change',()=>fillCities($('newPlayerCountry'),$('newPlayerCity')));
   $('editPlayerCountry')?.addEventListener('change',()=>fillCities($('editPlayerCountry'),$('editPlayerCity')));$('savePlayerEdit')?.addEventListener('click',savePlayerEdit);$('confirmDeletePlayer')?.addEventListener('click',deletePlayer);
   $('addModeratorBtn')?.addEventListener('click',openModeratorModal);$('moderatorScope')?.addEventListener('change',()=>setScopeFields('moderatorScope','moderatorCountryGroup','moderatorCityGroup','moderatorCountry','moderatorCity'));$('moderatorCountry')?.addEventListener('change',()=>fillCities($('moderatorCountry'),$('moderatorCity')));$('saveModerator')?.addEventListener('click',saveModerator);
-  $('addTournamentBtn')?.addEventListener('click',()=>openTournamentModal());$('tournamentScope')?.addEventListener('change',()=>setScopeFields('tournamentScope','tournamentCountryGroup','tournamentCityGroup','tournamentCountry','tournamentCity'));$('tournamentCountry')?.addEventListener('change',()=>fillCities($('tournamentCountry'),$('tournamentCity')));$('saveTournament')?.addEventListener('click',saveTournament);
+  $('addTournamentBtn')?.addEventListener('click',()=>openTournamentModal());$('tournamentScope')?.addEventListener('change',()=>setScopeFields('tournamentScope','tournamentCountryGroup','tournamentCityGroup','tournamentCountry','tournamentCity'));$('tournamentCountry')?.addEventListener('change',()=>fillCities($('tournamentCountry'),$('tournamentCity')));$('tournamentCapacityMode')?.addEventListener('change',syncTournamentCapacityMode);$('saveTournament')?.addEventListener('click',saveTournament);
 
   document.addEventListener('click',e=>{
     const close=e.target.closest('[data-close]');if(close){hideModal(close.dataset.close);return}
