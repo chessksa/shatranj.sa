@@ -33,7 +33,7 @@ jobs:
           text = path.read_text(encoding='utf-8')
           new_text, count = re.subn(
               r'site-notifications\.js\?v=[^"\']+',
-              'site-notifications.js?v=20260906-ticker-slash1',
+              'site-notifications.js?v=20260906-ticker-hyphen1',
               text,
               count=1,
           )
@@ -52,5 +52,5 @@ jobs:
             echo "No cache token change needed"
             exit 0
           fi
-          git commit -m "fix: refresh welcome ticker slash separator"
+          git commit -m "fix: refresh welcome ticker hyphen separator"
           git push
