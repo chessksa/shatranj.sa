@@ -1,0 +1,33 @@
+name: Apply computer server sync fix
+on:
+  push:
+    paths:
+      - '.github/workflows/apply-computer-server-sync-fix.yml'
+  workflow_dispatch:
+permissions:
+  contents: write
+jobs:
+  apply:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: main
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - name: Apply server synchronization fix
+        run: python tools/fix_computer_server_sync.py
+      - name: Verify synchronization regression
+        run: python tests/test_computer_move_sync_retry.py
+      - name: Commit fix
+        run: |
+          if git diff --quiet; then
+            echo 'No changes to commit'
+            exit 0
+          fi
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git add play-computer.js play-v10.html supabase/functions/computer-game/index.ts
+          git commit -m 'fix: make computer move synchronization idempotent'
+          git push origin HEAD:main
