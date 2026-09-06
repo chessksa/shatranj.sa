@@ -1,0 +1,41 @@
+name: Apply mobile actions 60px 18px
+
+on:
+  push:
+    branches:
+      - feature/mobile-actions-60px-18px-20260906
+    paths:
+      - '.github/workflows/apply-mobile-actions-60px-18px-20260906.yml'
+
+permissions:
+  contents: write
+
+jobs:
+  apply:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Apply approved mobile action sizing
+        run: |
+          python - <<'PY'
+          from pathlib import Path
+          p = Path('home-theme.css')
+          text = p.read_text(encoding='utf-8')
+          marker = '/* MOBILE PLAY ACTIONS 60PX 18PX 20260906 */'
+          block = '''\n\n/* MOBILE PLAY ACTIONS 60PX 18PX 20260906 */\n@media(max-width:700px){\n  .home-hero .home-board-actions{\n    grid-template-columns:repeat(3,minmax(0,1fr))!important;\n    grid-template-rows:repeat(2,60px)!important;\n    gap:10px!important;\n    align-items:stretch!important;\n    direction:rtl!important;\n  }\n  .home-hero .hero-tournaments-btn{grid-column:1!important;grid-row:1!important}\n  .home-hero .hero-play-btn{grid-column:2!important;grid-row:1!important}\n  .home-hero .home-invite-wrap{grid-column:3!important;grid-row:1!important}\n  .home-hero .hero-computer-btn{grid-column:1/-1!important;grid-row:2!important}\n  .home-hero .home-board-actions>.btn,\n  .home-hero .home-invite-wrap,\n  .home-hero .home-invite-wrap>.btn{\n    width:100%!important;\n    min-width:0!important;\n    height:60px!important;\n    min-height:60px!important;\n    max-height:60px!important;\n    margin:0!important;\n  }\n  .home-hero .home-board-actions>.btn,\n  .home-hero .home-invite-wrap>.btn{\n    display:flex!important;\n    flex-direction:row!important;\n    align-items:center!important;\n    justify-content:center!important;\n    padding:0 6px!important;\n    border-radius:14px!important;\n    background:linear-gradient(145deg,rgba(9,68,70,.96),rgba(6,47,49,.96))!important;\n    border:1px solid rgba(216,182,101,.62)!important;\n    color:var(--hero-cream)!important;\n    box-shadow:0 10px 22px rgba(0,0,0,.12)!important;\n    font-family:Arial,sans-serif!important;\n    font-size:18px!important;\n    line-height:1!important;\n    font-weight:900!important;\n    text-align:center!important;\n    white-space:nowrap!important;\n  }\n}\n'''
+          if marker not in text:
+              p.write_text(text.rstrip() + block, encoding='utf-8')
+          PY
+      - name: Verify approved mobile action sizing
+        run: python tests/test_mobile_actions_60px_18px_20260906.py
+      - name: Commit approved mobile action sizing
+        run: |
+          if git diff --quiet -- home-theme.css; then
+            echo 'No change needed'
+            exit 0
+          fi
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git add home-theme.css
+          git commit -m 'style: size mobile play actions at 60px'
+          git push
