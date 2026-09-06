@@ -1,0 +1,36 @@
+name: Apply computer move stability fix
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - '.github/workflows/apply-computer-move-stability-fix.yml'
+
+permissions:
+  contents: write
+
+jobs:
+  apply:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: main
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - name: Apply focused computer move fix
+        run: python tools/fix_computer_move_snapback.py
+      - name: Verify focused regression
+        run: python tests/test_computer_move_stability.py
+      - name: Commit fix
+        run: |
+          if git diff --quiet; then
+            echo 'No changes to commit'
+            exit 0
+          fi
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git add play-computer.js play-v10.html
+          git commit -m 'fix: keep computer moves on destination square'
+          git push origin HEAD:main
