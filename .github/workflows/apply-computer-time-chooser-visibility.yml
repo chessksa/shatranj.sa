@@ -33,7 +33,7 @@ jobs:
           assert "opponentSearchSetup.style.overflow = 'hidden'" not in time_block, (
               'computer time chooser must not clip the 5/10/15 minute buttons after a level is selected'
           )
-          assert "s.src='play-computer.js?v=20260907-19';" in PLAY, (
+          assert "s.src='play-computer.js?v=20260907-20';" in PLAY, (
               'computer controller cache version must advance so the visibility fix reaches browsers'
           )
           print('computer time chooser visibility: PASS')
@@ -66,8 +66,8 @@ jobs:
 
           play_path = Path('play-v10.html')
           html = play_path.read_text(encoding='utf-8')
-          old_src = "s.src='play-computer.js?v=20260907-18';"
-          new_src = "s.src='play-computer.js?v=20260907-19';"
+          old_src = "s.src='play-computer.js?v=20260907-19';"
+          new_src = "s.src='play-computer.js?v=20260907-20';"
           if old_src not in html:
               raise SystemExit('computer controller cache anchor not found')
           play_path.write_text(html.replace(old_src, new_src, 1), encoding='utf-8')
