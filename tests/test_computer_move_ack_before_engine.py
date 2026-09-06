@@ -23,7 +23,7 @@ assert 'currentGamePayload(persisted)' in move_block, (
 assert 'waitForRatedComputerReply' in PLAY, (
     'client must poll for the computer reply after the player move is acknowledged'
 )
-assert 'last_player_request_id' in submit_block, (
+assert 'payload.last_player_request_id === moveId' in PLAY and 'ratedPayloadMatchesMove' in submit_block, (
     'client reconciliation must correlate server state to the exact player move id'
 )
 assert 'game.undo()' not in submit_block, (
