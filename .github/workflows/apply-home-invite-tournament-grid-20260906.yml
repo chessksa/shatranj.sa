@@ -1,0 +1,112 @@
+name: Apply invite button and tournament grid fixes
+
+on:
+  push:
+    branches:
+      - feature/home-invite-tournament-grid-20260906
+    paths:
+      - '.github/workflows/apply-home-invite-tournament-grid-20260906.yml'
+
+permissions:
+  contents: write
+
+jobs:
+  apply:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Apply approved UI fixes
+        run: |
+          python - <<'PY'
+          from pathlib import Path
+
+          theme_path = Path('home-theme.css')
+          theme = theme_path.read_text(encoding='utf-8')
+          marker = '/* MOBILE INVITE BUTTON MATCH 20260906 */'
+          block = r'''
+
+/* MOBILE INVITE BUTTON MATCH 20260906 */
+@media(max-width:700px){
+  body.home-signed-in .home-hero .home-invite-wrap{display:contents!important}
+  body.home-signed-in .home-hero #homeInviteToggle{
+    grid-column:3!important;
+    grid-row:1!important;
+    width:100%!important;
+    min-width:0!important;
+    height:60px!important;
+    min-height:60px!important;
+    max-height:60px!important;
+    margin:0!important;
+    padding:0 6px!important;
+    border-radius:14px!important;
+    background:linear-gradient(145deg,rgba(9,68,70,.96),rgba(6,47,49,.96))!important;
+    border:1px solid rgba(216,182,101,.62)!important;
+    color:var(--hero-cream)!important;
+    box-shadow:0 10px 22px rgba(0,0,0,.12)!important;
+    font:900 18px/1 Arial,sans-serif!important;
+    display:flex!important;
+    align-items:center!important;
+    justify-content:center!important;
+    text-align:center!important;
+    white-space:nowrap!important;
+  }
+}
+'''
+          if marker not in theme:
+              theme = theme.rstrip() + block + '\n'
+              theme_path.write_text(theme, encoding='utf-8')
+
+          tournament_path = Path('tournaments.html')
+          tournaments = tournament_path.read_text(encoding='utf-8')
+          grid_marker = '/* TOURNAMENT TABLE FULL GRID 20260906 */'
+          grid_block = r'''
+
+/* TOURNAMENT TABLE FULL GRID 20260906 */
+@media(min-width:701px){
+  table{border-collapse:collapse!important}
+  th,td{border:1px solid rgba(216,182,101,.28)!important}
+}
+@media(max-width:700px){
+  tbody tr{gap:0!important;border-color:rgba(216,182,101,.34)!important}
+  tbody td{
+    border:0!important;
+    box-shadow:inset 0 0 0 1px rgba(216,182,101,.24)!important;
+  }
+}
+'''
+          if grid_marker not in tournaments:
+              tournaments = tournaments.replace('</style>', grid_block + '\n</style>', 1)
+              tournament_path.write_text(tournaments, encoding='utf-8')
+
+          index_path = Path('index.html')
+          index = index_path.read_text(encoding='utf-8')
+          index = index.replace('home-theme.css?v=20260906-21', 'home-theme.css?v=20260906-22', 1)
+          index_path.write_text(index, encoding='utf-8')
+          PY
+
+      - name: Verify approved UI fixes
+        run: |
+          python - <<'PY'
+          from pathlib import Path
+          theme = Path('home-theme.css').read_text(encoding='utf-8')
+          tournaments = Path('tournaments.html').read_text(encoding='utf-8')
+          index = Path('index.html').read_text(encoding='utf-8')
+          assert 'MOBILE INVITE BUTTON MATCH 20260906' in theme
+          assert 'body.home-signed-in .home-hero .home-invite-wrap{display:contents!important}' in theme
+          assert 'body.home-signed-in .home-hero #homeInviteToggle' in theme
+          assert 'height:60px!important' in theme
+          assert 'font:900 18px/1 Arial,sans-serif!important' in theme
+          assert 'TOURNAMENT TABLE FULL GRID 20260906' in tournaments
+          assert 'th,td{border:1px solid rgba(216,182,101,.28)!important}' in tournaments
+          assert 'box-shadow:inset 0 0 0 1px rgba(216,182,101,.24)!important' in tournaments
+          assert 'home-theme.css?v=20260906-22' in index
+          PY
+
+      - name: Commit fixes
+        run: |
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git add home-theme.css tournaments.html index.html
+          git diff --cached --quiet && exit 0
+          git commit -m 'fix: match invite button and grid tournament table'
+          git push
