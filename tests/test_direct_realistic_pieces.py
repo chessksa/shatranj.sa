@@ -19,18 +19,19 @@ for code in ('wk','wq','wr','wb','wn','wp','bk','bq','br','bb','bn','bp'):
     assert f'id="{code}"' in sprite_text
 assert sprite_text.count('data:image/png;base64,') == 12
 
-# Superseded row sprites and legacy generated sets must not be referenced by the live board.
+# Superseded row sprites must stay removed.
 for old_name in ('approved-dark-20260904.png', 'approved-light-20260904.png'):
     assert not (pieces / old_name).exists(), f'obsolete piece sprite still exists: {old_name}'
 
-cache = '20260904-12'
-expected = f'pieces/shatranj-approved-20260904.svg?v={cache}'
-for filename in ('play-v8.js', 'play-v10-match.js'):
-    js = (root / filename).read_text(encoding='utf-8')
-    assert expected in js
+# Live games use the individual approved PNGs; the prematch board uses the approved cm-chessboard sprite.
+live_js = (root / 'play-v8.js').read_text(encoding='utf-8')
+assert 'assets/pieces/${color}${type}.png?v=20260904-12' in live_js
+
+prematch_js = (root / 'play-v10-match.js').read_text(encoding='utf-8')
+assert "pieces:{file:'pieces/shatranj-approved-20260904.svg?v=20260905-3',tileSize:40}" in prematch_js
 
 html = (root / 'play-v10.html').read_text(encoding='utf-8')
-assert f'play-v8.js?v={cache}' in html
-assert f'play-v10-match.js?v={cache}' in html
+assert "s.src='play-v8.js?v=20260905-3'" in html
+assert "s.src='play-v10-match.js?v=20260905-3'" in html
 
 print('approved realistic pieces: PASS')
