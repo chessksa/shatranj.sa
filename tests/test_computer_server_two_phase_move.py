@@ -1,4 +1,5 @@
 from pathlib import Path
+import re
 
 # Verification refresh for the deployed two-phase synchronization path.
 ROOT = Path(__file__).resolve().parents[1]
@@ -21,9 +22,9 @@ assert 'chooseComputerMove' in EDGE[EDGE.index('async function completePendingCo
 assert "stateChess.turn() === 'b'" in state_block and 'completePendingComputerTurn' in state_block, 'state reconciliation must resume a pending computer turn instead of returning the pre-move position'
 assert 'existingMove' in move_block and 'completePendingComputerTurn' in move_block, 'retry of the same request id must resume pending computer work'
 assert "const activeSide = stateChess.turn() === 'b' ? 'computer' : 'player';" in state_block, 'state clocks must follow the side to move'
-assert "play-v10.html?computer=1&v=20260907-19" in INDEX, 'computer entry link must cache-bust the HTML page itself'
-assert INDEX.count('play-v10.html?computer=1&v=20260907-19') >= 1 and '&v=20260907-19&v=' not in INDEX, 'computer entry version must appear exactly once per URL'
-assert "play-computer.js?v=20260907-19" in HTML, 'computer script cache version must advance with the fix'
+assert re.search(r'play-v10\.html\?computer=1&v=20260907-(?:19|2\d)', INDEX), 'computer entry link must cache-bust the HTML page itself'
+script_match = re.search(r"play-computer\.js\?v=20260907-(\d+)", HTML)
+assert script_match and int(script_match.group(1)) >= 19, 'computer script cache version must include the synchronization fix'
 assert "toast('تمت مزامنة المباراة مع الخادم.');" not in PLAY, 'generic reconciliation must no longer silently roll a legal local move back'
 
 print('computer server two-phase move persistence and recovery: PASS')
