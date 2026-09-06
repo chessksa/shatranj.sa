@@ -32,3 +32,4 @@ jobs:
               text = Path(page).read_text(encoding='utf-8')
               assert 'site-presence.js?v=20260906-1' in text, f'presence script missing from {page}'
           PY
+# rerun after implementation
