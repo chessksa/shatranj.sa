@@ -1,12 +1,15 @@
 from pathlib import Path
 
 index = Path('index.html').read_text(encoding='utf-8')
+ticker = Path('home-welcome-ticker.js').read_text(encoding='utf-8')
 theme = Path('home-theme.css').read_text(encoding='utf-8')
 tournaments = Path('tournaments.html').read_text(encoding='utf-8')
 
 assert '<span class="welcome-ticker-label">آخر المسجلين</span>' in index
 assert '.slice(0,20);' in index
 assert 'نرحب بانضمام' not in index
+assert '.slice(0, 20);' in ticker
+assert 'نرحب بانضمام' not in ticker
 
 assert 'HOME PLAY ACTION TEXT ONLY 20260906' in theme
 assert 'content:none!important' in theme
