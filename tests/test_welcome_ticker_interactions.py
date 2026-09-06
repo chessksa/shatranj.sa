@@ -17,14 +17,14 @@ assert 'player.html?id=${encodeURIComponent(player.id)}' in source, (
 assert "window.addEventListener('home-players-loaded',decorateLinks)" in source, (
     'Player links must be applied after home player data is loaded.'
 )
-assert "const divider = ' / ';" in source, (
-    'Ticker player-name parsing must use a slash separator.'
+assert "const divider = ' - ';" in source, (
+    'Ticker player-name parsing must use one hyphen with spaces around it.'
 )
-assert ".replace(' — ',' / ')" in source, (
-    'Existing ticker items must replace the dash separator with a slash.'
+assert ".replace(' / ',' - ')" in source, (
+    'Existing ticker items must replace the slash separator with one spaced hyphen.'
 )
-assert "match(/\\/\\s*([^،]+)(?:،|$)/)" in source, (
-    'Country flag parsing must understand the slash separator.'
+assert "match(/-\\s*([^،]+)(?:،|$)/)" in source, (
+    'Country flag parsing must understand the spaced hyphen separator.'
 )
 
-print('welcome ticker pauses on hover, links player names, and uses slash separator')
+print('welcome ticker pauses on hover, links player names, and uses one spaced hyphen separator')
