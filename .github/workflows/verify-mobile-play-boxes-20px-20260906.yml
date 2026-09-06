@@ -1,0 +1,14 @@
+name: Verify mobile play boxes 20px
+
+on:
+  push:
+    branches:
+      - feature/mobile-play-boxes-20px-20260906
+
+jobs:
+  verify:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Verify mobile play boxes
+        run: python tests/test_mobile_play_boxes_20px_20260906.py
