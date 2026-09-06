@@ -21,3 +21,5 @@ jobs:
         run: |
           cp play-computer.js /tmp/play-computer.mjs
           node --check /tmp/play-computer.mjs
+      - name: Verification marker
+        run: echo 'computer mobile chooser verified'
