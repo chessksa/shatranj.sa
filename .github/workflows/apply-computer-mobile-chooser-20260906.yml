@@ -1,0 +1,60 @@
+name: Apply computer mobile chooser polish
+
+on:
+  push:
+    branches:
+      - feature/computer-mobile-chooser-20260906
+    paths:
+      - '.github/workflows/apply-computer-mobile-chooser-20260906.yml'
+
+permissions:
+  contents: write
+
+jobs:
+  apply:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Apply approved mobile chooser polish
+        run: |
+          python - <<'PY'
+          from pathlib import Path
+
+          play = Path('play-v10.html')
+          html = play.read_text(encoding='utf-8')
+          marker = '/* COMPUTER MOBILE CHOOSER POLISH 20260906 */'
+          block = '''\n    /* COMPUTER MOBILE CHOOSER POLISH 20260906 */\n    @media(max-width:900px){\n      body.computer-game.pregame .opponent-time-option[data-level] strong{\n        font-family:Arial,sans-serif!important;\n        font-size:18px!important;\n        line-height:1!important;\n      }\n      body.computer-game.pregame .computer-chooser-header{margin-bottom:4px!important}\n      body.computer-game.pregame .computer-time-back{height:30px!important;min-height:30px!important}\n    }\n'''
+          if marker not in html:
+              if '</style>' not in html:
+                  raise SystemExit('style closing tag not found')
+              html = html.replace('</style>', block + '  </style>', 1)
+          html = html.replace('play-computer.js?v=20260906-13', 'play-computer.js?v=20260906-14', 1)
+          play.write_text(html, encoding='utf-8')
+
+          js = Path('play-computer.js')
+          text = js.read_text(encoding='utf-8')
+          old = '  header.insertBefore(back, title);'
+          new = "  header.style.direction = 'rtl';\n  header.insertBefore(back, title);"
+          if "header.style.direction = 'rtl';" not in text:
+              if old not in text:
+                  raise SystemExit('back insertion point not found')
+              text = text.replace(old, new, 1)
+          js.write_text(text, encoding='utf-8')
+          PY
+      - name: Verify approved mobile chooser layout
+        run: python tests/test_computer_mobile_chooser_20260906.py
+      - name: Check computer script syntax
+        run: |
+          cp play-computer.js /tmp/play-computer.mjs
+          node --check /tmp/play-computer.mjs
+      - name: Commit mobile chooser polish
+        run: |
+          if git diff --quiet -- play-v10.html play-computer.js; then
+            echo 'No change needed'
+            exit 0
+          fi
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git add play-v10.html play-computer.js
+          git commit -m 'fix: polish mobile computer chooser'
+          git push
