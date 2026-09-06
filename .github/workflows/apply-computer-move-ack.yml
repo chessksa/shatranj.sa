@@ -1,5 +1,6 @@
 name: Apply computer move ack before engine
 
+# Re-run after refining the focused correlation regression.
 on:
   push:
     paths:
