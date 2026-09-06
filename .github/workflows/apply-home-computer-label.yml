@@ -1,0 +1,43 @@
+name: Apply home computer button label
+
+on:
+  push:
+    branches:
+      - main
+    paths:
+      - '.github/workflows/apply-home-computer-label.yml'
+
+permissions:
+  contents: write
+
+jobs:
+  apply:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: main
+          fetch-depth: 0
+      - name: Change computer button label only
+        run: |
+          python - <<'PY'
+          from pathlib import Path
+          path = Path('index.html')
+          text = path.read_text(encoding='utf-8')
+          old = '<a class="btn light hero-computer-btn" href="play-v10.html?computer=1"><span>اللعب ضد الكمبيوتر</span></a>'
+          new = '<a class="btn light hero-computer-btn" href="play-v10.html?computer=1"><span>العب ضد الكمبيوتر</span></a>'
+          count = text.count(old)
+          if count != 1:
+              raise SystemExit(f'Expected exactly one old computer label, found {count}')
+          path.write_text(text.replace(old, new, 1), encoding='utf-8')
+          PY
+      - name: Verify label
+        run: python tests/test_home_computer_button_label.py
+      - name: Commit change
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add index.html
+          git commit -m "fix: rename play against computer button"
+          git pull --rebase origin main
+          git push origin HEAD:main
