@@ -43,13 +43,18 @@ function ratingOf(g,side){
   return candidates.find(v=>v!==undefined&&v!==null)||'';
 }
 async function fetchGames(){
-  for(const table of ['matches','games']){
-    try{
-      const {data,error}=await supabase.from(table).select('*').in('status',liveStatuses).limit(50);
-      if(!error) return data||[];
-    }catch(e){}
+  try{
+    const {data,error}=await supabase
+      .from('live_games')
+      .select('*')
+      .in('status',liveStatuses)
+      .limit(50);
+    if(error) throw error;
+    return data||[];
+  }catch(error){
+    console.warn('تعذر تحميل المباريات الجارية',error);
+    return [];
   }
-  return [];
 }
 async function load(){
   const games=await fetchGames();

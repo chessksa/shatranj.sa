@@ -1039,10 +1039,10 @@ footer{
           <div><small>المشتركين</small><strong id="headerPlayersCount">0</strong></div>
         </div>
         <div class="hero-stat">
-          <div><small>المتواجدين</small><strong id="headerMatchesCount">0</strong></div>
+          <div><small>المتواجدين</small><strong id="headerOnlineCount">0</strong></div>
         </div>
         <a class="hero-stat hero-stat-watch" href="watch.html">
-          <div><small>المباريات الآن</small><strong id="headerOnlineCount">0</strong></div>
+          <div><small>المباريات الآن</small><strong id="headerMatchesCount">0</strong></div>
         </a>
       </div>
 
@@ -1689,24 +1689,20 @@ async function loadCurrentMatchesCount(){
   const el=document.querySelector('#headerMatchesCount');
   if(!el) return;
 
-  const attempts=['matches','games'];
   const liveStatuses=['playing','active','in_progress','started'];
 
-  for(const table of attempts){
-    try{
-      const {count,error}=await supabase
-        .from(table)
-        .select('*',{count:'exact',head:true})
-        .in('status',liveStatuses);
+  try{
+    const {count,error}=await supabase
+      .from('live_games')
+      .select('*',{count:'exact',head:true})
+      .in('status',liveStatuses);
 
-      if(!error && typeof count==='number'){
-        el.textContent=count;
-        return;
-      }
-    }catch(e){}
+    if(error) throw error;
+    el.textContent=String(typeof count==='number'?count:0);
+  }catch(error){
+    console.warn('تعذر تحميل عدد المباريات الجارية',error);
+    el.textContent='0';
   }
-
-  el.textContent='0';
 }
 
 function updateRankingTitle(country,city){
