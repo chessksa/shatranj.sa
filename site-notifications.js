@@ -57,6 +57,61 @@
     window.addEventListener('home-players-loaded', decorate);
   }
 
+  function tickerPlayers() {
+    return [...(Array.isArray(window.__HOME_PLAYERS__) ? window.__HOME_PLAYERS__ : [])]
+      .filter(player => player && player.id && player.created_at)
+      .sort((a,b) => new Date(b.created_at) - new Date(a.created_at))
+      .slice(0,20);
+  }
+
+  function installWelcomeTickerInteractions() {
+    const style = document.createElement('style');
+    style.id = 'welcomeTickerInteractionStyles';
+    style.textContent = `#welcomeTicker:hover .welcome-ticker-track,#welcomeTicker:focus-within .welcome-ticker-track{animation-play-state:paused!important}#welcomeTicker .welcome-player-link{color:inherit;text-decoration:none;font:inherit;font-weight:inherit;cursor:pointer}#welcomeTicker .welcome-player-link:hover,#welcomeTicker .welcome-player-link:focus-visible{text-decoration:underline;text-underline-offset:2px}`;
+    if (!document.getElementById(style.id)) document.head.appendChild(style);
+
+    const decorateLinks = () => {
+      const players = tickerPlayers();
+      if (!players.length) return;
+
+      document.querySelectorAll('#welcomeTicker .welcome-ticker-item').forEach((item,index) => {
+        if (item.dataset.playerLinked === '1' || item.querySelector('.welcome-player-link')) return;
+        const player = players[index % players.length];
+        if (!player?.id) return;
+
+        const textNode = [...item.childNodes].find(node =>
+          node.nodeType === Node.TEXT_NODE && node.textContent.includes(' — ')
+        );
+        if (!textNode) return;
+
+        const fullText = textNode.textContent;
+        const divider = ' — ';
+        const splitAt = fullText.indexOf(divider);
+        if (splitAt <= 0) return;
+
+        const link = document.createElement('a');
+        link.className = 'welcome-player-link';
+        link.href = `player.html?id=${encodeURIComponent(player.id)}`;
+        link.textContent = fullText.slice(0,splitAt);
+        link.setAttribute('aria-label', `فتح صفحة ${link.textContent}`);
+
+        textNode.textContent = fullText.slice(splitAt);
+        item.insertBefore(link,textNode);
+        item.dataset.playerLinked = '1';
+      });
+    };
+
+    decorateLinks();
+
+    const ticker = document.getElementById('welcomeTicker');
+    if (ticker && ticker.dataset.playerLinkObserver !== '1') {
+      ticker.dataset.playerLinkObserver = '1';
+      new MutationObserver(decorateLinks).observe(ticker, { childList: true, subtree: true });
+    }
+
+    window.addEventListener('home-players-loaded',decorateLinks);
+  }
+
   function isMobileRanking() {
     return window.matchMedia(`(max-width:${MOBILE_BREAKPOINT}px)`).matches;
   }
@@ -105,6 +160,7 @@
 
   installWelcomeTickerFontSize();
   installWelcomeTickerFlags();
+  installWelcomeTickerInteractions();
   installMobileRankingLimit();
   installTournamentPageLink();
 
