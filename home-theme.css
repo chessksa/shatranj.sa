@@ -1812,3 +1812,45 @@ footer .wrap{display:flex;justify-content:space-between;align-items:center}
     justify-content:center!important;
   }
 }
+
+/* MOBILE PLAY ACTIONS THREE PLUS ONE 20260906 */
+@media(max-width:700px){
+  .home-hero .home-board-actions{
+    grid-template-columns:repeat(3,minmax(0,1fr))!important;
+    grid-template-rows:repeat(2,82px)!important;
+    gap:10px!important;
+    align-items:stretch!important;
+    direction:rtl!important;
+  }
+  .home-hero .hero-tournaments-btn{grid-column:1!important;grid-row:1!important}
+  .home-hero .hero-play-btn{grid-column:2!important;grid-row:1!important}
+  .home-hero .home-invite-wrap{grid-column:3!important;grid-row:1!important}
+  .home-hero .hero-computer-btn{grid-column:1/-1!important;grid-row:2!important}
+  .home-hero .home-board-actions>.btn,
+  .home-hero .home-invite-wrap,
+  .home-hero .home-invite-wrap>.btn{
+    width:100%!important;
+    min-width:0!important;
+    height:82px!important;
+    min-height:82px!important;
+  }
+  .home-hero .home-board-actions>.btn,
+  .home-hero .home-invite-wrap>.btn{
+    display:flex!important;
+    align-items:center!important;
+    justify-content:center!important;
+    padding:8px!important;
+    border-radius:14px!important;
+    background:linear-gradient(145deg,rgba(9,68,70,.96),rgba(6,47,49,.96))!important;
+    border-color:rgba(216,182,101,.62)!important;
+    color:var(--hero-cream)!important;
+    box-shadow:0 10px 22px rgba(0,0,0,.12)!important;
+    font-family:Arial,sans-serif!important;
+    font-size:20px!important;
+    line-height:1.2!important;
+    font-weight:900!important;
+    text-align:center!important;
+    white-space:nowrap!important;
+  }
+}
+
