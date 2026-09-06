@@ -377,6 +377,15 @@ async function refreshCurrent(){
   }catch(err){console.error(err);alert('تعذر تحميل بيانات لوحة الإدارة: '+(err.message||''))}
 }
 
+async function handleRefresh(){
+  const button=$('refreshBtn');if(!button||button.disabled)return;
+  const original=button.textContent;
+  button.disabled=true;button.textContent='↻ جارٍ التحديث...';
+  state.allPlayers=[];
+  try{await refreshCurrent();button.textContent='✓ تم التحديث';}
+  finally{setTimeout(()=>{button.disabled=false;button.textContent=original;},650);}
+}
+
 function applyAccessUi(){
   document.querySelectorAll('.owner-only').forEach(el=>el.hidden=!isOwner());
   if(!isOwner()&&state.view==='moderatorsView')setView('dashboardView');
@@ -384,7 +393,7 @@ function applyAccessUi(){
 
 function wireEvents(){
   $('mobileMenuBtn')?.addEventListener('click',()=>$('adminSidebar').classList.toggle('open'));
-  $('refreshBtn')?.addEventListener('click',refreshCurrent);
+  $('refreshBtn')?.addEventListener('click',handleRefresh);
   $('playerSearch')?.addEventListener('input',()=>{clearTimeout(loadPlayers.t);loadPlayers.t=setTimeout(loadPlayers,250)});
   $('playerStatusFilter')?.addEventListener('change',loadPlayers);$('playerCityFilter')?.addEventListener('change',loadPlayers);$('playerCountryFilter')?.addEventListener('change',()=>{if($('playerCityFilter'))$('playerCityFilter').value='';loadPlayers()});
   $('gameStatusFilter')?.addEventListener('change',loadGames);$('reportStatusFilter')?.addEventListener('change',loadReports);$('confirmAdminAction')?.addEventListener('click',confirmAction);
