@@ -748,7 +748,6 @@ function setupTimeChooser(levelKey) {
     opponentSearchSetup.style.position = 'relative';
     opponentSearchSetup.style.minWidth = '0';
     opponentSearchSetup.style.width = '100%';
-    opponentSearchSetup.style.overflow = 'hidden';
   }
   const { title } = ensureChooserHeader();
   applyChooserTitle(title, `اختر زمن المباراة — مستوى ${level.label}`);
