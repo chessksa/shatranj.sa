@@ -1,5 +1,6 @@
 from pathlib import Path
 
+# Verification refresh for the deployed two-phase synchronization path.
 ROOT = Path(__file__).resolve().parents[1]
 EDGE = (ROOT / 'supabase' / 'functions' / 'computer-game' / 'index.ts').read_text(encoding='utf-8')
 PLAY = (ROOT / 'play-computer.js').read_text(encoding='utf-8')
