@@ -1,0 +1,50 @@
+name: Cache bust welcome flags
+
+on:
+  push:
+    paths:
+      - '.github/workflows/cache-bust-welcome-flags.yml'
+
+permissions:
+  contents: write
+
+jobs:
+  apply:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Verify real flag images
+        run: python tests/test_welcome_ticker_flag_images.py
+
+      - name: Bust welcome ticker script cache
+        run: |
+          python - <<'PY'
+          from pathlib import Path
+          import re
+
+          path = Path('index.html')
+          text = path.read_text(encoding='utf-8')
+          new_text, count = re.subn(
+              r'site-notifications\.js\?v=[^"\']+',
+              'site-notifications.js?v=20260906-flags-img2',
+              text,
+              count=1,
+          )
+          if count != 1:
+              raise SystemExit(f'expected one site-notifications cache token, found {count}')
+          path.write_text(new_text, encoding='utf-8')
+          PY
+
+      - name: Commit cache token
+        run: |
+          git diff --check
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add index.html
+          if git diff --cached --quiet; then
+            echo "No cache token change needed"
+            exit 0
+          fi
+          git commit -m "fix: refresh welcome ticker flag assets"
+          git push
