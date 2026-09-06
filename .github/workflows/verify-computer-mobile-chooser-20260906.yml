@@ -1,0 +1,23 @@
+name: Verify computer mobile chooser polish
+
+on:
+  push:
+    branches:
+      - feature/computer-mobile-chooser-20260906
+    paths:
+      - 'tests/test_computer_mobile_chooser_20260906.py'
+      - 'play-v10.html'
+      - 'play-computer.js'
+      - '.github/workflows/verify-computer-mobile-chooser-20260906.yml'
+
+jobs:
+  verify:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Verify approved mobile chooser layout
+        run: python tests/test_computer_mobile_chooser_20260906.py
+      - name: Check computer script syntax
+        run: |
+          cp play-computer.js /tmp/play-computer.mjs
+          node --check /tmp/play-computer.mjs
