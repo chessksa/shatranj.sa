@@ -18,7 +18,12 @@ assert 'body.computer-game.pregame .opponent-time-option:not([data-level]) stron
 assert 'font-size:18px' in CSS and 'color:#e0b567' in CSS, 'minute numbers should stay compact at 18px and remain gold'
 assert 'body.computer-game.pregame .opponent-time-option:not([data-level]) span' in CSS
 assert 'font-size:11px' in CSS, 'minute label should be compact and centered'
-assert 'body.pregame .board-panel,\n  body.live-game .board-panel' not in CSS, 'lower game-action spacing must be restored to its prior layout'
+assert 'body.computer-game.pregame .opponent-time-option[data-level] > span' in CSS, 'difficulty point labels need a dedicated rule'
+level_subline = CSS[CSS.index('body.computer-game.pregame .opponent-time-option[data-level] > span'):]
+assert 'font-size:14px!important' in level_subline, 'difficulty point labels must be 14px'
+assert 'margin-top:8px!important' in level_subline, 'difficulty point labels must sit farther below the level name'
+assert 'word-spacing:8px!important' in level_subline, 'the number and points word must be visually separated'
+assert 'body.pregame .board-panel,\n  body.live-game .board-panel' not in CSS, 'lower game-action spacing must stay restored to its prior layout'
 assert 'body.pregame .board-panel > .actions-card,\n  body.live-game .board-panel > .actions-card' not in CSS, 'lower action bar must not receive the extra margin'
 assert '"/exact-board-v13.css"' in SW, 'the chooser stylesheet must bypass stale service-worker cache'
-print('mobile time chooser unclipped and lower actions restored: PASS')
+print('mobile time chooser and level labels: PASS')
