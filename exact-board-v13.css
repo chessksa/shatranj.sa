@@ -1,7 +1,24 @@
 /* Legacy exact-board overlay disabled. The board is rendered by cm-chessboard. */
 
-/* Approved mobile computer time choices: equal, balanced cards */
+/* Mobile computer time choices: fixed height without clipping. */
 @media(max-width:900px){
+  body.computer-game.pregame #topPlayerCard{
+    min-height:118px!important;
+    height:auto!important;
+    overflow:visible!important;
+  }
+
+  body.computer-game.pregame #opponentSearchPanel{
+    min-height:110px!important;
+    height:auto!important;
+    padding:4px 3px 8px!important;
+    align-content:start!important;
+  }
+
+  body.computer-game.pregame .computer-chooser-header{
+    margin-bottom:6px!important;
+  }
+
   body.computer-game.pregame .opponent-time-options{
     display:grid!important;
     grid-template-columns:repeat(3,minmax(0,1fr))!important;
@@ -11,13 +28,14 @@
     align-items:stretch!important;
     padding:0 2px!important;
   }
+
   body.computer-game.pregame .opponent-time-option:not([data-level]){
     width:100%!important;
     min-width:0!important;
-    height:56px!important;
-    min-height:56px!important;
+    height:52px!important;
+    min-height:52px!important;
     margin:0!important;
-    padding:5px 4px!important;
+    padding:4px 4px!important;
     border:1.5px solid rgba(224,181,103,.72)!important;
     border-radius:12px!important;
     background:rgba(2,28,33,.52)!important;
@@ -26,34 +44,25 @@
     flex-direction:column!important;
     align-items:center!important;
     justify-content:center!important;
-    gap:2px!important;
+    gap:1px!important;
     text-align:center!important;
   }
+
   body.computer-game.pregame .opponent-time-option:not([data-level]) strong{
     display:block!important;
     margin:0!important;
     font-size:18px!important;
-    line-height:.95!important;
+    line-height:1!important;
     font-weight:800!important;
     color:#e0b567!important;
   }
+
   body.computer-game.pregame .opponent-time-option:not([data-level]) span{
     display:block!important;
-    margin:3px 0 0!important;
+    margin:2px 0 0!important;
     font-size:11px!important;
     line-height:1!important;
     font-weight:700!important;
     color:#f4efe6!important;
-  }
-
-  /* Keep the game-action icons visually separate from the board. */
-  body.pregame .board-panel,
-  body.live-game .board-panel{
-    gap:8px!important;
-  }
-
-  body.pregame .board-panel > .actions-card,
-  body.live-game .board-panel > .actions-card{
-    margin-top:6px!important;
   }
 }
