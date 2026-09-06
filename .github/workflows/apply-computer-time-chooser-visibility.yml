@@ -85,4 +85,5 @@ jobs:
           git add play-computer.js play-v10.html tests/test_computer_time_chooser_visibility.py
           git diff --cached --quiet && exit 0
           git commit -m 'fix: keep computer time choices visible'
+          git pull --rebase origin main
           git push origin HEAD:main
