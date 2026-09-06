@@ -1,0 +1,47 @@
+name: Apply real online presence
+
+on:
+  push:
+    branches:
+      - feature/real-online-presence-final-20260906
+
+permissions:
+  contents: write
+
+jobs:
+  apply:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Apply presence UI wiring
+        run: |
+          python - <<'PY'
+          from pathlib import Path
+
+          index_path = Path('index.html')
+          index = index_path.read_text(encoding='utf-8')
+          old = '<div><small>المتواجدين</small><strong>شاهد</strong></div>'
+          new = '<div><small>المتواجدين</small><strong id="headerOnlineCount">0</strong></div>'
+          if old in index:
+              index = index.replace(old, new, 1)
+          assert new in index, 'online count target was not installed'
+          index_path.write_text(index, encoding='utf-8')
+
+          pages = ['index.html','play-v10.html','tournaments.html','watch.html','profile.html','player.html']
+          tag = '<script type="module" src="site-presence.js?v=20260906-1"></script>'
+          for page in pages:
+              path = Path(page)
+              text = path.read_text(encoding='utf-8')
+              if tag not in text:
+                  assert '</body>' in text, f'missing body close in {page}'
+                  text = text.replace('</body>', tag + '\n</body>', 1)
+                  path.write_text(text, encoding='utf-8')
+          PY
+      - name: Commit presence wiring
+        run: |
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git add index.html play-v10.html tournaments.html watch.html profile.html player.html
+          git diff --cached --quiet && exit 0
+          git commit -m 'feat: show real online visitors count'
+          git push
