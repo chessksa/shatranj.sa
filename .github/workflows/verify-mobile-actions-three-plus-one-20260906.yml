@@ -1,0 +1,18 @@
+name: Verify mobile actions three plus one
+
+on:
+  push:
+    branches:
+      - feature/mobile-actions-three-plus-one-20260906
+    paths:
+      - 'home-theme.css'
+      - 'tests/test_mobile_actions_three_plus_one_20260906.py'
+      - '.github/workflows/verify-mobile-actions-three-plus-one-20260906.yml'
+
+jobs:
+  verify:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Verify mobile action layout
+        run: python tests/test_mobile_actions_three_plus_one_20260906.py
