@@ -30,3 +30,4 @@ jobs:
 
           assert 'home-theme.css?v=20260906-22' in index
           PY
+# rerun after production fix
