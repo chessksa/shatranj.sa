@@ -1,0 +1,8 @@
+marker=true
+level_selector=true
+arial=true
+font18=true
+header_margin=true
+back_height=false
+back_direction=true
+cache14=true
