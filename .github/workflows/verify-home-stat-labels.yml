@@ -1,0 +1,16 @@
+name: Verify home stat labels
+
+on:
+  push:
+    branches:
+      - main
+    paths:
+      - 'tests/test_home_stat_labels.py'
+      - 'index.html'
+
+jobs:
+  verify:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - run: python tests/test_home_stat_labels.py
