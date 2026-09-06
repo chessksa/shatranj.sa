@@ -10,8 +10,11 @@ block = code[start:end]
 assert "toast('تم تحديث المباراة من الخادم.');" not in block, (
     'successful reconciliation with the authoritative server state must be silent'
 )
-assert "toast('تعذر اعتماد الحركة. أُعيدت الرقعة إلى آخر وضع معتمد.');" in block, (
-    'actual failure to recover server state should still warn the player'
+assert 'game.undo()' not in block, (
+    'synchronization failure must never roll a locally legal move back'
+)
+assert 'حركتك لن تُعاد للخلف' in block or 'حركتك بقيت في مكانها' in block, (
+    'connection failures should explain that the local move is preserved'
 )
 
-print('computer successful sync notice is silent: PASS')
+print('computer synchronization is silent on success and never rolls moves back: PASS')
