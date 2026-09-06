@@ -1,6 +1,6 @@
 name: Apply computer move ack before engine
 
-# Re-run after refining the focused correlation regression.
+# Re-run after aligning rollback regression with preserved-move behavior.
 on:
   push:
     paths:
