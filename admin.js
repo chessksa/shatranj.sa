@@ -28,7 +28,7 @@ const actionNames={
   ban:'حظر دائم',unban:'فك الحظر',rating_plus_10:'إضافة 10 نقاط',rating_minus_10:'حسم 10 نقاط',close_report:'إغلاق بلاغ',gender_change:'تعديل الجنس',
   player_create:'إضافة لاعب',player_update:'تعديل لاعب',player_delete:'حذف لاعب',player_ban:'حظر لاعب',player_unban:'فك حظر لاعب',rating_change:'تعديل النقاط',
   moderator_create:'إضافة مشرف',moderator_update:'تعديل مشرف',moderator_remove:'إلغاء مشرف',
-  tournament_create:'إنشاء بطولة',tournament_update:'تعديل بطولة',tournament_cancel:'إلغاء بطولة'
+  tournament_create:'إنشاء بطولة',tournament_update:'تعديل بطولة',tournament_cancel:'إلغاء بطولة',tournament_start:'بدء بطولة'
 };
 
 function isOwner(){return state.access?.role==='owner'}
@@ -340,7 +340,18 @@ function syncTournamentCapacityMode(){
 
 async function loadTournaments(){
   state.tournaments=await rpc('admin_list_tournaments')||[];
-  $('tournamentsTableBody').innerHTML=state.tournaments.map(t=>`<tr><td>${esc(t.name)}</td><td>${esc(scopeLabel(t))}</td><td>${esc(t.time_control)} د</td><td>${fmtDate(t.starts_at)}</td><td>${pill(t.status)}</td><td>${esc(t.registration_count||0)}${t.max_players?' / '+esc(t.max_players):''}</td><td><div class="table-actions"><button class="link-btn" data-action="editTournament" data-tournament="${esc(t.id)}">تعديل</button>${!['cancelled','finished'].includes(t.status)?`<button class="link-btn" data-action="cancelTournament" data-tournament="${esc(t.id)}">إلغاء</button>`:''}</div></td></tr>`).join('')||emptyRow(7);
+  $('tournamentsTableBody').innerHTML=state.tournaments.map(t=>`<tr><td>${esc(t.name)}</td><td>${esc(scopeLabel(t))}</td><td>${esc(t.time_control)} د</td><td>${fmtDate(t.starts_at)}</td><td>${pill(t.status)}</td><td>${esc(t.registration_count||0)}${t.max_players?' / '+esc(t.max_players):''}</td><td><div class="table-actions"><button class="link-btn" data-action="editTournament" data-tournament="${esc(t.id)}">تعديل</button>${t.status==='open'?`<button class="admin-primary" data-action="startTournament" data-tournament="${esc(t.id)}">ابدأ البطولة الآن</button>`:''}${!['cancelled','finished'].includes(t.status)?`<button class="link-btn" data-action="cancelTournament" data-tournament="${esc(t.id)}">إلغاء</button>`:''}</div></td></tr>`).join('')||emptyRow(7);
+}
+
+async function startTournamentNow(tournamentId){
+  try{
+    await rpc('admin_start_tournament',{p_tournament_id:tournamentId});
+    await loadTournaments();
+  }catch(err){
+    console.error(err);
+    const message=String(err?.message||'');
+    alert(message.includes('at least two registered players required')?'يلزم تسجيل لاعبين على الأقل لبدء البطولة.':'تعذر بدء البطولة الآن.');
+  }
 }
 function openTournamentModal(t=null){
   state.selectedTournament=t;$('tournamentModalTitle').textContent=t?'تعديل البطولة':'إضافة بطولة';$('tournamentName').value=t?.name||'';$('tournamentScope').value=t?.scope_type||'global';$('tournamentTime').value=t?.time_control||'10';fillCountries($('tournamentCountry'),t?.country||'');fillCities($('tournamentCountry'),$('tournamentCity'),t?.city||'');$('tournamentStarts').value=toLocalInput(t?.starts_at);$('tournamentRegOpen').value=toLocalInput(t?.registration_opens_at);$('tournamentRegClose').value=toLocalInput(t?.registration_closes_at);$('tournamentCapacityMode').value=t?.max_players?'fixed':'open';$('tournamentMax').value=t?.max_players||'';$('tournamentStatus').value=t?.status==='cancelled'?'draft':(t?.status||'draft');$('tournamentReason').value='';$('tournamentReasonGroup').hidden=!t;setScopeFields('tournamentScope','tournamentCountryGroup','tournamentCityGroup','tournamentCountry','tournamentCity');syncTournamentCapacityMode();$('tournamentMessage').textContent='';
@@ -429,6 +440,7 @@ function wireEvents(){
       if(type==='banReportPlayer'){requestAction('ban',{playerId:state.selectedReport?.reported_player_id});return}
       if(type==='removeModerator'){requestAction('removeModerator',{authUserId:action.dataset.authUser});return}
       if(type==='editTournament'){openTournamentModal(state.tournaments.find(t=>t.id===action.dataset.tournament)||null);return}
+      if(type==='startTournament'){startTournamentNow(action.dataset.tournament);return}
       if(type==='cancelTournament'){requestAction('cancelTournament',{tournamentId:action.dataset.tournament});return}
     }
     const p=e.target.closest('[data-player]');if(p){openPlayer(p.dataset.player);return}
