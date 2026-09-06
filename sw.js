@@ -1,6 +1,6 @@
 const CACHE="shatranj-arab-v5";
 const ASSETS=["./","./index.html","./styles.css","./app.js","./config.js","./manifest.webmanifest","./arab-cities.js"];
-const PLAY_PATHS=["/play.html","/play-v8.html","/play-live.js","/play-v8.js","/realistic-pieces.css","/play-v8.css","/play-v10.html","/play-v10-match.js","/assets/pieces/"];
+const PLAY_PATHS=["/play.html","/play-v8.html","/play-live.js","/play-v8.js","/realistic-pieces.css","/play-v8.css","/play-v10.html","/play-v10-match.js","/exact-board-v13.css","/assets/pieces/"];
 const ADMIN_PATHS=["/admin.html","/admin.js"];
 
 self.addEventListener("install",e=>{
