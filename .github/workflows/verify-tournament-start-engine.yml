@@ -1,0 +1,23 @@
+name: Verify tournament start engine
+
+on:
+  push:
+    branches:
+      - main
+    paths:
+      - 'admin.js'
+      - 'tournaments.html'
+      - 'supabase/migrations/20260907010000_tournament_start_engine.sql'
+      - 'tests/test_tournament_start_engine.py'
+      - '.github/workflows/verify-tournament-start-engine.yml'
+
+jobs:
+  verify:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - name: Verify tournament engine contract
+        run: python tests/test_tournament_start_engine.py
