@@ -1,0 +1,63 @@
+name: Apply computer end control fix
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - '.github/workflows/apply-computer-end-control-fix.yml'
+
+permissions:
+  contents: write
+
+jobs:
+  apply:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: main
+      - name: Apply focused fix
+        run: |
+          python - <<'PY'
+          from pathlib import Path
+
+          path = Path('play-computer.js')
+          code = path.read_text(encoding='utf-8')
+
+          old_live = "  if (endGraceBtn) endGraceBtn.disabled = false;"
+          new_live = "  if (endGraceBtn) endGraceBtn.disabled = true;"
+          if old_live not in code:
+              raise SystemExit('live-game end control anchor not found')
+          code = code.replace(old_live, new_live, 1)
+
+          old_chooser = """  if (endGraceBtn) {
+            endGraceBtn.disabled = false;
+            endGraceBtn.onclick = () => resignComputerGame({ navigate: true });
+          }"""
+          new_chooser = """  if (endGraceBtn) {
+            endGraceBtn.disabled = true;
+            endGraceBtn.onclick = null;
+          }"""
+          if old_chooser not in code:
+              raise SystemExit('chooser end control anchor not found')
+          code = code.replace(old_chooser, new_chooser, 1)
+          path.write_text(code, encoding='utf-8')
+
+          play = Path('play-v10.html')
+          html = play.read_text(encoding='utf-8')
+          old_src = "s.src='play-computer.js?v=20260906-15';"
+          new_src = "s.src='play-computer.js?v=20260907-16';"
+          if old_src not in html:
+              raise SystemExit('computer script cache anchor not found')
+          play.write_text(html.replace(old_src, new_src, 1), encoding='utf-8')
+          PY
+      - name: Verify focused behavior
+        run: python tests/test_computer_end_control.py
+      - name: Commit fix
+        run: |
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git add play-computer.js play-v10.html
+          git diff --cached --quiet && exit 0
+          git commit -m 'fix: prevent computer end button from resigning'
+          git push origin HEAD:main
