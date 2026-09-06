@@ -587,7 +587,7 @@ function setPlayingLayout(levelKey, minutes, player = null) {
   }
   if (resignBtn) resignBtn.disabled = false;
   if (drawOfferBtn) drawOfferBtn.disabled = false;
-  if (endGraceBtn) endGraceBtn.disabled = false;
+  if (endGraceBtn) endGraceBtn.disabled = true;
   if (endGraceCountdownEl) endGraceCountdownEl.hidden = true;
   const note = endGraceBtn?.querySelector('.grace-note');
   if (note) note.hidden = true;
@@ -786,8 +786,8 @@ function setupLevelChooser() {
   if (resignBtn) resignBtn.disabled = true;
   if (drawOfferBtn) drawOfferBtn.disabled = true;
   if (endGraceBtn) {
-    endGraceBtn.disabled = false;
-    endGraceBtn.onclick = () => resignComputerGame({ navigate: true });
+    endGraceBtn.disabled = true;
+    endGraceBtn.onclick = null;
   }
   if (leaveBtn) leaveBtn.onclick = () => resignComputerGame({ navigate: true });
   if (reportBtn) reportBtn.disabled = true;
