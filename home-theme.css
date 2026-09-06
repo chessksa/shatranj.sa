@@ -28,3 +28,12 @@
   html body.home-signed-in .home-hero .home-board-actions{height:126px!important;min-height:126px!important;max-height:126px!important;grid-template-rows:58px 58px!important;grid-auto-rows:58px!important;row-gap:10px!important}
   html body.home-signed-in .home-hero .home-board-actions>.btn,html body.home-signed-in .home-hero .home-invite-wrap,html body.home-signed-in .home-hero .home-invite-wrap>.btn,html body.home-signed-in .home-hero #homeInviteToggle{height:58px!important;min-height:58px!important;max-height:58px!important}
 }
+
+/* Mobile live stats vertical spacing 20260907 */
+@media(max-width:700px){
+  html body .home-hero .hero-stat{
+    height:auto!important;
+    min-height:0!important;
+    padding:3px 5px!important;
+  }
+}
