@@ -23,6 +23,7 @@ level_subline = CSS[CSS.index('body.computer-game.pregame .opponent-time-option[
 assert 'font-size:14px!important' in level_subline, 'difficulty point labels must be 14px'
 assert 'margin-top:8px!important' in level_subline, 'difficulty point labels must sit farther below the level name'
 assert 'word-spacing:8px!important' in level_subline, 'the number and points word must be visually separated'
+assert 'font-family:Arial,sans-serif!important' in level_subline, 'difficulty point labels must use the same Arial UI font as the rest of the page'
 assert 'body.pregame .board-panel,\n  body.live-game .board-panel' not in CSS, 'lower game-action spacing must stay restored to its prior layout'
 assert 'body.pregame .board-panel > .actions-card,\n  body.live-game .board-panel > .actions-card' not in CSS, 'lower action bar must not receive the extra margin'
 assert '"/exact-board-v13.css"' in SW, 'the chooser stylesheet must bypass stale service-worker cache'
