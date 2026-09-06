@@ -5,6 +5,7 @@ admin = (ROOT / 'admin.js').read_text(encoding='utf-8')
 public_page = (ROOT / 'tournaments.html').read_text(encoding='utf-8')
 migration = (ROOT / 'supabase/migrations/20260907010000_tournament_start_engine.sql').read_text(encoding='utf-8')
 permissions = (ROOT / 'supabase/migrations/20260907011000_tournament_start_engine_permissions.sql').read_text(encoding='utf-8')
+rating_fix = (ROOT / 'supabase/migrations/20260907012000_tournament_rating_step.sql').read_text(encoding='utf-8')
 
 for marker in [
     'create table if not exists private.tournament_matches',
@@ -19,9 +20,11 @@ for marker in [
     'public.get_my_active_tournament_matches',
     "cron.schedule('start-due-tournaments'",
     "'1/2-1/2'",
-    'values(v_game_id,v_white_player,v_black_player,10);',
 ]:
     assert marker in migration, marker
+
+assert 'values(v_game_id,v_white_player,v_black_player,10);' in rating_fix
+assert 'values(v_game_id,v_white_player,v_black_player,1);' not in rating_fix
 
 for marker in [
     'revoke execute on function public.admin_start_tournament(uuid) from anon',
