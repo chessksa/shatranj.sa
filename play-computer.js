@@ -702,6 +702,7 @@ function addTimeChooserBack() {
     back.remove();
     setupLevelChooser();
   };
+  header.style.direction = 'rtl';
   header.insertBefore(back, title);
 }
 
