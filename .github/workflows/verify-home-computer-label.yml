@@ -1,0 +1,21 @@
+name: Verify home computer button label
+
+on:
+  push:
+    branches:
+      - main
+    paths:
+      - 'index.html'
+      - 'tests/test_home_computer_button_label.py'
+      - '.github/workflows/verify-home-computer-label.yml'
+
+jobs:
+  verify:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - name: Verify label
+        run: python tests/test_home_computer_button_label.py
