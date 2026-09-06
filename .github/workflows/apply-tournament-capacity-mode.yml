@@ -1,0 +1,31 @@
+name: Apply tournament capacity mode
+
+on:
+  push:
+    branches:
+      - main
+    paths:
+      - '.github/workflows/apply-tournament-capacity-mode.yml'
+
+permissions:
+  contents: write
+
+jobs:
+  apply:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Apply fixed or open capacity UI
+        run: python tools/apply_tournament_capacity_mode.py
+      - name: Verify tournament capacity behavior
+        run: |
+          python tests/test_tournament_capacity_mode.py
+          node --check admin.js
+          git diff --check
+      - name: Commit tournament capacity mode
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add admin.js tournaments.html
+          git commit -m "feat: add fixed or open tournament capacity"
+          git push
