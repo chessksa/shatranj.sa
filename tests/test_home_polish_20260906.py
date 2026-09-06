@@ -1,5 +1,6 @@
 from pathlib import Path
 
+# Final regression check for the approved September 6 homepage/tournament polish.
 index = Path('index.html').read_text(encoding='utf-8')
 ticker = Path('home-welcome-ticker.js').read_text(encoding='utf-8')
 theme = Path('home-theme.css').read_text(encoding='utf-8')
