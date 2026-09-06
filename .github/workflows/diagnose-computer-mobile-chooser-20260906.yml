@@ -1,0 +1,45 @@
+name: Diagnose computer mobile chooser polish
+
+on:
+  push:
+    branches:
+      - feature/computer-mobile-chooser-20260906
+    paths:
+      - '.github/workflows/diagnose-computer-mobile-chooser-20260906.yml'
+
+permissions:
+  contents: write
+
+jobs:
+  diagnose:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Record chooser verification conditions
+        run: |
+          python - <<'PY'
+          from pathlib import Path
+          html = Path('play-v10.html').read_text(encoding='utf-8')
+          js = Path('play-computer.js').read_text(encoding='utf-8')
+          checks = {
+            'marker': 'COMPUTER MOBILE CHOOSER POLISH 20260906' in html,
+            'level_selector': 'body.computer-game.pregame .opponent-time-option[data-level] strong' in html,
+            'arial': 'font-family:Arial,sans-serif!important' in html,
+            'font18': 'font-size:18px!important' in html,
+            'header_margin': '.computer-chooser-header{margin-bottom:4px!important}' in html,
+            'back_height': '.computer-time-back{height:30px!important}' in html,
+            'back_direction': "header.style.direction = 'rtl';" in js,
+            'cache14': 'play-computer.js?v=20260906-14' in html,
+          }
+          Path('tests/computer_mobile_chooser_status.txt').write_text(
+              '\n'.join(f'{key}={str(value).lower()}' for key, value in checks.items()) + '\n',
+              encoding='utf-8'
+          )
+          PY
+      - name: Commit diagnostic status
+        run: |
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git add tests/computer_mobile_chooser_status.txt
+          git commit -m 'test: record mobile chooser verification status' || exit 0
+          git push
