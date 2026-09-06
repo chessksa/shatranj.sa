@@ -7,3 +7,4 @@ assert '<a class="btn light hero-computer-btn" href="play-v10.html?computer=1"><
 assert '<span>اللعب ضد الكمبيوتر</span>' not in html
 
 print('home computer button label: PASS')
+# Verifies the live main-branch label after the production change.
