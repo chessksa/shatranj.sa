@@ -11,8 +11,10 @@ assert 'body.computer-game.pregame .opponent-time-option:not([data-level])' in C
 assert 'height:56px' in CSS and 'border-radius:12px' in CSS, 'time cards need one consistent size and radius'
 assert 'border:1.5px solid rgba(224,181,103,.72)' in CSS, 'time cards should use a clear gold outline matching the approved mockup'
 assert 'body.computer-game.pregame .opponent-time-option:not([data-level]) strong' in CSS
-assert 'font-size:28px' in CSS and 'color:#e0b567' in CSS, 'minute numbers should be prominent and gold'
+assert 'font-size:18px' in CSS and 'color:#e0b567' in CSS, 'minute numbers should be compact at 18px and remain gold'
 assert 'body.computer-game.pregame .opponent-time-option:not([data-level]) span' in CSS
 assert 'font-size:11px' in CSS, 'minute label should be compact and centered'
+assert 'body.pregame .board-panel,\n  body.live-game .board-panel{\n    gap:8px!important;' in CSS, 'mobile board and action bar need visible breathing room'
+assert 'body.pregame .board-panel > .actions-card,\n  body.live-game .board-panel > .actions-card{\n    margin-top:6px!important;' in CSS, 'mobile action bar must not touch the board'
 assert '"/exact-board-v13.css"' in SW, 'the chooser stylesheet must bypass stale service-worker cache'
-print('mobile time option cards aligned: PASS')
+print('mobile time size and board action spacing: PASS')
