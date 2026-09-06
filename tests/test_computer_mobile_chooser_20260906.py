@@ -8,6 +8,6 @@ assert 'body.computer-game.pregame .opponent-time-option[data-level] strong' in 
 assert 'font-family:Arial,sans-serif!important' in html
 assert 'font-size:18px!important' in html
 assert '.computer-chooser-header{margin-bottom:4px!important}' in html
-assert '.computer-time-back{height:30px!important}' in html
+assert '.computer-time-back{height:30px!important;min-height:30px!important}' in html
 assert "header.style.direction = 'rtl';" in js
 assert 'play-computer.js?v=20260906-14' in html
