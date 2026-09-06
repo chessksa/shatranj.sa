@@ -1,40 +1,36 @@
 from pathlib import Path
 
-# The approved 2026-09-04 set is deployed as exactly two transparent row sprites.
-for name in ('approved-dark-20260904.png', 'approved-light-20260904.png'):
-    p = Path('assets/pieces') / name
+# Current approved set: twelve transparent PNG pieces plus the self-contained cm-chessboard sprite.
+root = Path('.')
+pieces = root / 'assets' / 'pieces'
+codes = ('wr','wn','wb','wq','wk','wp','br','bn','bb','bq','bk','bp')
+
+for code in codes:
+    p = pieces / f'{code}.png'
     assert p.exists(), f'missing {p}'
     data = p.read_bytes()
     assert data.startswith(b'\x89PNG\r\n\x1a\n'), f'{p} is not png'
-    assert len(data) > 500, f'{p} is unexpectedly small'
+    assert len(data) > 1000, f'{p} is unexpectedly small'
 
-# No previous chess-piece assets may remain.
-old = [
-    *(Path('assets/pieces') / f'{color}{piece}.png' for color in 'wb' for piece in 'kqbnrp'),
-    Path('assets/pieces/shatranj-3d-staunton.svg'),
-    Path('assets/pieces/shatranj-3d-staunton-v2.svg'),
-    Path('assets/pieces/shatranj-3d-staunton-v3.svg'),
-    Path('assets/pieces/shatranj-approved.svg'),
-    Path('assets/realistic-pieces.png'),
-    *(Path('assets/pieces/v3') / f'{color}{piece}.png' for color in 'wb' for piece in 'kqbnrp'),
-]
-for p in old:
-    assert not p.exists(), f'old piece asset still exists: {p}'
+sprite = pieces / 'shatranj-approved-20260904.svg'
+assert sprite.exists(), f'missing {sprite}'
+sprite_text = sprite.read_text(encoding='utf-8')
+for code in ('wk','wq','wr','wb','wn','wp','bk','bq','br','bb','bn','bp'):
+    assert f'id="{code}"' in sprite_text
+assert sprite_text.count('data:image/png;base64,') == 12
 
-js = Path('play-live.js').read_text(encoding='utf-8')
-assert 'piece-image piece-${color}${type}' in js
-assert 'assets/pieces/${color}${type}.png' not in js
+# Superseded row sprites and legacy generated sets must not be referenced by the live board.
+for old_name in ('approved-dark-20260904.png', 'approved-light-20260904.png'):
+    assert not (pieces / old_name).exists(), f'obsolete piece sprite still exists: {old_name}'
 
-css = Path('realistic-pieces.css').read_text(encoding='utf-8')
-assert 'approved-dark-20260904.png?v=20260904-1' in css
-assert 'approved-light-20260904.png?v=20260904-1' in css
-assert 'background-size:600% 100%' in css
-for pos in ('0%', '20%', '40%', '60%', '80%', '100%'):
-    assert f'background-position-x:{pos}' in css
+cache = '20260904-12'
+expected = f'pieces/shatranj-approved-20260904.svg?v={cache}'
+for filename in ('play-v8.js', 'play-v10-match.js'):
+    js = (root / filename).read_text(encoding='utf-8')
+    assert expected in js
 
-html = Path('play.html').read_text(encoding='utf-8')
-assert "PLAY_CACHE_RESET_VERSION = '20260904-1'" in html
-assert 'realistic-pieces.css?v=20260904-1' in html
-assert 'play-live.js?v=20260904-1' in html
+html = (root / 'play-v10.html').read_text(encoding='utf-8')
+assert f'play-v8.js?v={cache}' in html
+assert f'play-v10-match.js?v={cache}' in html
 
 print('approved realistic pieces: PASS')
