@@ -32,7 +32,7 @@
   body.computer-game.pregame .opponent-time-option:not([data-level]) strong{
     display:block!important;
     margin:0!important;
-    font-size:28px!important;
+    font-size:18px!important;
     line-height:.95!important;
     font-weight:800!important;
     color:#e0b567!important;
@@ -44,5 +44,16 @@
     line-height:1!important;
     font-weight:700!important;
     color:#f4efe6!important;
+  }
+
+  /* Keep the game-action icons visually separate from the board. */
+  body.pregame .board-panel,
+  body.live-game .board-panel{
+    gap:8px!important;
+  }
+
+  body.pregame .board-panel > .actions-card,
+  body.live-game .board-panel > .actions-card{
+    margin-top:6px!important;
   }
 }
