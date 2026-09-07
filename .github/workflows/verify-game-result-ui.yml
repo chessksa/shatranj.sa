@@ -24,6 +24,7 @@ jobs:
         with:
           python-version: '3.12'
 
+      # Regression guard for the finished-game visual state.
       - name: Verify result UI behavior
         run: python tests/test_game_result_ui.py
 
