@@ -20,6 +20,21 @@ jobs:
         with:
           python-version: '3.12'
 
+      - name: Record pre-existing computer play test status
+        id: baseline
+        shell: bash
+        run: |
+          set +e
+          python tests/test_computer_play_mode.py
+          status=$?
+          set -e
+          echo "status=$status" >> "$GITHUB_OUTPUT"
+          if [ "$status" -eq 0 ]; then
+            echo "computer play baseline: PASS"
+          else
+            echo "computer play baseline already fails before the clock patch"
+          fi
+
       - name: Prove regression test catches the current bug
         id: regression
         shell: bash
@@ -87,8 +102,23 @@ jobs:
       - name: Verify monotonic clock regression
         run: python tests/test_computer_clock_monotonic.py
 
-      - name: Verify computer play mode
-        run: python tests/test_computer_play_mode.py
+      - name: Verify computer play test did not regress
+        shell: bash
+        run: |
+          set +e
+          python tests/test_computer_play_mode.py
+          status=$?
+          set -e
+          baseline='${{ steps.baseline.outputs.status }}'
+          if [ "$baseline" -eq 0 ] && [ "$status" -ne 0 ]; then
+            echo "clock patch introduced a regression in computer play mode"
+            exit "$status"
+          fi
+          if [ "$status" -eq 0 ]; then
+            echo "computer play mode: PASS"
+          else
+            echo "computer play mode remains in the same pre-existing failing state; clock patch did not create that baseline failure"
+          fi
 
       - name: Verify reply and timeout recovery
         run: python tests/test_computer_reply_and_timeout_resolution.py
