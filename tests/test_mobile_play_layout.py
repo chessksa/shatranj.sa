@@ -48,4 +48,10 @@ def test_live_mobile_player_cards_keep_their_pregame_size():
     assert "body.live-game .player-card .clock" in block and "font-size:20px!important" in block
     assert "calc(100dvh - 300px)" in block
 
-# This test locks the approved mobile visual order and keeps player cards stable when play starts.
+
+if __name__ == "__main__":
+    test_mobile_layout_places_opponent_above_centered_board_and_player_below()
+    test_mobile_runtime_moves_board_into_the_same_flex_flow_as_players()
+    test_opponent_search_card_has_small_bottom_spacing_and_all_text_is_20px()
+    test_live_mobile_player_cards_keep_their_pregame_size()
+    print("mobile play layout: PASS")
