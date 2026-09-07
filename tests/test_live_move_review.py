@@ -46,10 +46,17 @@ def test_live_script_cache_is_bumped_for_review_feature():
     assert "play-v8.js?v=20260907-5" in html
 
 
+def test_move_review_css_is_well_formed_at_opponent_slot_boundary():
+    html = (ROOT / "play-v10.html").read_text(encoding="utf-8")
+    assert 'white-space:nowrap}"' not in html
+    assert 'white-space:nowrap}\n\n    .opponent-slot' in html
+
+
 if __name__ == "__main__":
     test_grace_end_becomes_bidirectional_move_review()
     test_review_tracks_real_server_fen_history_without_mutating_live_game()
     test_review_has_back_forward_boundaries_and_blocks_moves_while_reviewing_past()
     test_new_server_positions_are_recorded_before_live_board_render()
     test_live_script_cache_is_bumped_for_review_feature()
+    test_move_review_css_is_well_formed_at_opponent_slot_boundary()
     print("live move review: PASS")
