@@ -32,7 +32,7 @@ jobs:
       - name: Verify computer End review
         run: python tests/test_computer_end_review.py
       - name: Verify mobile play layout
-        run: python -m pytest -q tests/test_mobile_play_layout.py
+        run: python tests/test_mobile_play_layout.py
       - name: Verify JavaScript syntax
         run: |
           node --check play-v8.js
