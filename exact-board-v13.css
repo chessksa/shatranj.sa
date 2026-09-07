@@ -135,3 +135,70 @@
   font-size:42px!important;
   border-radius:12px!important;
 }
+
+@media(max-width:900px){
+  /* Mobile live-game player cards stay fixed at pregame size. */
+  body.live-game #topPlayerCard,
+  body.live-game .panel-stack>.player-card:not(#topPlayerCard){
+    min-height:96px!important;
+    height:96px!important;
+    padding:7px 8px!important;
+    grid-template-columns:82px minmax(0,1fr) 92px!important;
+    gap:8px!important;
+    border-radius:10px!important;
+    flex:0 0 96px!important;
+  }
+
+  body.live-game .player-card .avatar{
+    width:78px!important;
+    height:78px!important;
+    border-radius:10px!important;
+  }
+
+  body.live-game .player-card .name{
+    font-size:20px!important;
+    margin:0 0 3px!important;
+    line-height:1.35!important;
+    padding-bottom:2px!important;
+  }
+
+  body.live-game .player-card .location{
+    font-size:9px!important;
+    margin-bottom:2px!important;
+    line-height:1.05!important;
+  }
+
+  body.live-game .player-card .rating{
+    font-size:10px!important;
+    gap:3px!important;
+    line-height:1.05!important;
+  }
+
+  body.live-game .player-card .status{
+    font-size:9px!important;
+    margin:2px 0 0!important;
+    gap:3px!important;
+    line-height:1!important;
+  }
+
+  body.live-game .player-card .status::before{
+    width:5px!important;
+    height:5px!important;
+  }
+
+  body.live-game .player-card .clock{
+    font-size:20px!important;
+    padding:7px 4px!important;
+    border-radius:8px!important;
+  }
+
+  body.live-game .player-card .clock-progress{
+    margin-top:3px!important;
+    height:4px!important;
+  }
+
+  body.live-game .board-panel>.board-frame,
+  body.live-game .board-panel>.actions-card{
+    width:min(calc(100vw - 10px),calc(100dvh - 300px))!important;
+  }
+}
