@@ -102,7 +102,7 @@
   }
 }
 
-/* End grace control: label above countdown, with larger type. */
+/* End grace control: label above countdown, with a larger light-orange countdown. */
 .grace-end-action:not(.move-review-mode){
   flex-direction:column!important;
   gap:4px!important;
@@ -115,19 +115,23 @@
 }
 .grace-end-action:not(.move-review-mode) .grace-countdown{
   order:2;
-  min-width:38px!important;
-  padding:3px 9px!important;
-  font-size:16px!important;
-  line-height:1.1!important;
+  min-width:44px!important;
+  padding:4px 10px!important;
+  color:#ffb45a!important;
+  border-color:rgba(255,180,90,.82)!important;
+  font-size:22px!important;
+  font-weight:900!important;
+  line-height:1.05!important;
 }
 
-/* Move review controls: make both arrows easier to see and tap. */
+/* Move review controls: back on the right, forward on the left, both larger. */
 .move-review-inline{
-  grid-template-columns:44px 44px!important;
-  gap:8px!important;
+  grid-template-columns:54px 54px!important;
+  gap:10px!important;
+  direction:rtl!important;
 }
 .move-review-arrow{
-  min-height:44px!important;
-  font-size:34px!important;
-  border-radius:10px!important;
+  min-height:54px!important;
+  font-size:42px!important;
+  border-radius:12px!important;
 }
