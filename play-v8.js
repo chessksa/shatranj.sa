@@ -80,6 +80,10 @@ let gamePollTimer = null;
 let graceDeadline = 0;
 let graceRequestBusy = false;
 let gameCancelledHandled = false;
+let reviewFens = [];
+let reviewIndex = -1;
+let moveReviewMode = false;
+let graceStateLoaded = false;
 
 function firstRow(data){
   return Array.isArray(data) ? (data[0] || null) : data;
@@ -92,31 +96,122 @@ function toast(message, ms=2200){
   toast._timer = setTimeout(()=>{ gameToast.hidden=true; }, ms);
 }
 
+function reviewStorageKey(){
+  return `shatranj_live_review_${liveGameId || 'unknown'}`;
+}
+
+function restoreMoveReviewHistory(){
+  if(!liveGameId || reviewFens.length) return;
+  try{
+    const raw=sessionStorage.getItem(reviewStorageKey());
+    const parsed=raw ? JSON.parse(raw) : [];
+    if(Array.isArray(parsed)) reviewFens=parsed.filter((fen)=>typeof fen==='string' && fen.trim()).slice(-512);
+  }catch(err){
+    console.warn('تعذر استعادة سجل الحركات المحلي',err);
+    reviewFens=[];
+  }
+  reviewIndex=reviewFens.length-1;
+}
+
+function rememberLiveFen(fen){
+  if(!fen) return;
+  restoreMoveReviewHistory();
+  if(reviewFens[reviewFens.length-1]!==fen){
+    reviewFens.push(fen);
+    if(reviewFens.length>512) reviewFens=reviewFens.slice(-512);
+  }
+  reviewIndex=reviewFens.length-1;
+  try{
+    sessionStorage.setItem(reviewStorageKey(),JSON.stringify(reviewFens));
+  }catch(err){
+    console.warn('تعذر حفظ سجل الحركات المحلي',err);
+  }
+  updateMoveReviewControls();
+}
+
+function isReviewingPast(){
+  return moveReviewMode && reviewIndex>=0 && reviewIndex<reviewFens.length-1;
+}
+
+function updateMoveReviewControls(){
+  if(!moveReviewMode || !endGraceBtn) return;
+  const back=endGraceBtn.querySelector('[data-review-direction="-1"]');
+  const forward=endGraceBtn.querySelector('[data-review-direction="1"]');
+  const backDisabled=reviewIndex <= 0;
+  const forwardDisabled=reviewIndex >= reviewFens.length - 1;
+  back?.classList.toggle('disabled',backDisabled);
+  forward?.classList.toggle('disabled',forwardDisabled);
+  back?.setAttribute('aria-disabled',String(backDisabled));
+  forward?.setAttribute('aria-disabled',String(forwardDisabled));
+}
+
+function showMoveReviewMode(){
+  if(!endGraceBtn || gameActions?.classList.contains('game-result-actions')) return;
+  if(!moveReviewMode){
+    moveReviewMode=true;
+    endGraceBtn.classList.add('move-review-mode');
+    endGraceBtn.disabled=false;
+    endGraceBtn.setAttribute('aria-label','مراجعة الحركات السابقة');
+    endGraceBtn.innerHTML=`<span class="move-review-inline"><span class="move-review-arrow" data-review-direction="-1" aria-label="رجوع">‹</span><span class="move-review-label">الحركة السابقة</span><span class="move-review-arrow" data-review-direction="1" aria-label="تقدم">›</span></span>`;
+  }
+  updateMoveReviewControls();
+}
+
+function renderReviewedFen(index){
+  if(index<0 || index>=reviewFens.length || !game) return;
+  reviewIndex=index;
+  clearMoveHints();
+  const board=ensureBoard();
+  const orientation=flipped ? COLOR.black : COLOR.white;
+  if(board.getOrientation()!==orientation) board.setOrientation(orientation,false);
+  board.setPosition(reviewFens[reviewIndex],false);
+  forceBoardSquareColors();
+  updateMoveReviewControls();
+}
+
+function stepMoveReview(direction){
+  if(!moveReviewMode || !reviewFens.length) return;
+  const step=Number(direction)<0 ? -1 : 1;
+  if(step<0 && reviewIndex <= 0) return;
+  if(step>0 && reviewIndex >= reviewFens.length - 1) return;
+  renderReviewedFen(reviewIndex+step);
+}
+
 function clearLiveSession(){
   ['shatranj_live_game_id','shatranj_live_game_code','shatranj_live_seat_key','shatranj_live_color'].forEach((key)=>sessionStorage.removeItem(key));
+  if(liveGameId) sessionStorage.removeItem(reviewStorageKey());
 }
 
 function updateGraceEndUI(){
-  if(!endGraceBtn) return;
-  const remaining = Math.max(0, graceDeadline - performance.now());
-  const seconds = Math.ceil(remaining / 1000);
-  const enabled = remaining > 0 && serverState?.status === 'active' && !graceRequestBusy;
-  endGraceBtn.disabled = !enabled;
-  if(endGraceCountdownEl){
-    endGraceCountdownEl.textContent = remaining > 0 ? String(seconds) : 'انتهت';
+  if(!endGraceBtn || moveReviewMode) return;
+  if(!graceStateLoaded){
+    endGraceBtn.disabled=true;
+    return;
   }
+  const remaining = Math.max(0, graceDeadline - performance.now());
+  if(remaining <= 0){
+    if(serverState?.status==='active') showMoveReviewMode();
+    else endGraceBtn.disabled=true;
+    return;
+  }
+  const seconds = Math.ceil(remaining / 1000);
+  const enabled = serverState?.status === 'active' && !graceRequestBusy;
+  endGraceBtn.disabled = !enabled;
+  if(endGraceCountdownEl) endGraceCountdownEl.textContent=String(seconds);
 }
 
 async function loadGraceEndWindow(){
   if(!liveGameId || !endGraceBtn) return;
   endGraceBtn.disabled = true;
   graceDeadline = 0;
+  graceStateLoaded=false;
   try{
     const { data, error } = await supabase.rpc('get_live_game_grace_state',{p_game_id:liveGameId});
     if(error) throw error;
     const row = firstRow(data);
     const remaining = Math.max(0, Number(row?.remaining_ms || 0));
     graceDeadline = performance.now() + remaining;
+    graceStateLoaded=true;
   }catch(err){
     console.error(err);
     graceDeadline = 0;
@@ -513,6 +608,7 @@ function localResult(){
 
 function handleBoardInput(event){
   if(event.type===INPUT_EVENT_TYPE.moveInputStarted){
+    if(isReviewingPast()) return false;
     if(moveBusy || !game || !serverState || serverState.status!=='active') return false;
     if(game.turn()!==myColor) return false;
     const piece=game.get(event.squareFrom);
@@ -528,6 +624,7 @@ function handleBoardInput(event){
   }
 
   if(event.type===INPUT_EVENT_TYPE.validateMoveInput){
+    if(isReviewingPast()) return false;
     if(moveBusy || !game || !serverState || serverState.status!=='active') return false;
     if(game.turn()!==myColor) return false;
     const legal=game.moves({square:event.squareFrom,verbose:true});
@@ -671,6 +768,7 @@ function applyServerState(row, force=false){
   if(changed){
     try{
       game = new Chess(row.fen);
+      rememberLiveFen(row.fen);
     }catch(err){
       console.error(err);
       toast('تعذر تحميل وضع الرقعة.');
@@ -799,8 +897,14 @@ drawOfferBtn.addEventListener('click',async()=>{
   }
 });
 
-endGraceBtn.addEventListener('click',async()=>{
+endGraceBtn.addEventListener('click',async(event)=>{
   updateGraceEndUI();
+  if(moveReviewMode){
+    const directionTarget=event.target.closest?.('[data-review-direction]');
+    const direction=directionTarget ? Number(directionTarget.dataset.reviewDirection) : -1;
+    stepMoveReview(direction);
+    return;
+  }
   if(endGraceBtn.disabled || graceRequestBusy || !liveGameId || !seatKey) return;
   graceRequestBusy=true;
   endGraceBtn.disabled=true;
