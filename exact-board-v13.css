@@ -101,3 +101,33 @@
     content:"20 نقطة";
   }
 }
+
+/* End grace control: label above countdown, with larger type. */
+.grace-end-action:not(.move-review-mode){
+  flex-direction:column!important;
+  gap:4px!important;
+}
+.grace-end-action:not(.move-review-mode) .action-label{
+  order:1;
+  font-size:18px!important;
+  font-weight:900!important;
+  line-height:1.05!important;
+}
+.grace-end-action:not(.move-review-mode) .grace-countdown{
+  order:2;
+  min-width:38px!important;
+  padding:3px 9px!important;
+  font-size:16px!important;
+  line-height:1.1!important;
+}
+
+/* Move review controls: make both arrows easier to see and tap. */
+.move-review-inline{
+  grid-template-columns:44px 44px!important;
+  gap:8px!important;
+}
+.move-review-arrow{
+  min-height:44px!important;
+  font-size:34px!important;
+  border-radius:10px!important;
+}
