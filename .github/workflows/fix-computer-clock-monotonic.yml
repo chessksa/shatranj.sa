@@ -46,49 +46,29 @@ jobs:
           js = Path('play-computer.js')
           text = js.read_text(encoding='utf-8')
 
-          old_apply = """function applyRatedComputerReply(payload) {
-            if (!payload?.fen) return false;
-            game.load(payload.fen);
-            renderBoard(true);
-            syncRatedClocks(payload);
-            if (payload.status === 'finished') finishRatedResult(payload);
-            else setComputerStatus('جاهز');
-            return true;
-          }
-          """
-          new_apply = """function applyRatedComputerReply(payload, computerCapMs = null) {
-            if (!payload?.fen) return false;
-            game.load(payload.fen);
-            renderBoard(true);
-            syncRatedClocks(payload, computerCapMs);
-            if (payload.status === 'finished') finishRatedResult(payload, computerCapMs);
-            else setComputerStatus('جاهز');
-            return true;
-          }
-          """
-          old_apply = '\n'.join(line[10:] if line.startswith('          ') else line for line in old_apply.splitlines()) + '\n'
-          new_apply = '\n'.join(line[10:] if line.startswith('          ') else line for line in new_apply.splitlines()) + '\n'
-          if old_apply not in text:
-            raise SystemExit('applyRatedComputerReply marker changed')
-          text = text.replace(old_apply, new_apply, 1)
+          replacements = [
+              (
+                  "function applyRatedComputerReply(payload) {",
+                  "function applyRatedComputerReply(payload, computerCapMs = null) {",
+                  1,
+              ),
+              (
+                  "  syncRatedClocks(payload);\n  if (payload.status === 'finished') finishRatedResult(payload);",
+                  "  syncRatedClocks(payload, computerCapMs);\n  if (payload.status === 'finished') finishRatedResult(payload, computerCapMs);",
+                  1,
+              ),
+              (
+                  "    applyRatedComputerReply(finalPayload);",
+                  "    const finalComputerRemaining = currentClockMs('computer');\n    applyRatedComputerReply(finalPayload, finalComputerRemaining);",
+                  2,
+              ),
+          ]
+          for old, new, expected in replacements:
+              count = text.count(old)
+              if count != expected:
+                  raise SystemExit(f'patch marker mismatch for {old!r}: expected {expected}, found {count}')
+              text = text.replace(old, new)
 
-          old_reply = """  if (finalPayload?.fen && ratedPayloadMatchesMove(finalPayload, moveId)) {
-            applyRatedComputerReply(finalPayload);
-            return;
-          }
-          """
-          new_reply = """  if (finalPayload?.fen && ratedPayloadMatchesMove(finalPayload, moveId)) {
-            const finalComputerRemaining = currentClockMs('computer');
-            applyRatedComputerReply(finalPayload, finalComputerRemaining);
-            return;
-          }
-          """
-          old_reply = '\n'.join(line[10:] if line.startswith('          ') else line for line in old_reply.splitlines()) + '\n'
-          new_reply = '\n'.join(line[10:] if line.startswith('          ') else line for line in new_reply.splitlines()) + '\n'
-          count = text.count(old_reply)
-          if count != 2:
-            raise SystemExit(f'expected 2 final reply markers, found {count}')
-          text = text.replace(old_reply, new_reply)
           js.write_text(text, encoding='utf-8')
 
           play = Path('play-v10.html')
@@ -100,7 +80,7 @@ jobs:
               count=1,
           )
           if count != 1:
-            raise SystemExit('computer script cache marker missing')
+              raise SystemExit('computer script cache marker missing')
           play.write_text(updated, encoding='utf-8')
           PY
 
