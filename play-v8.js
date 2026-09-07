@@ -48,6 +48,9 @@ const bottomAvatarEl = $('bottomAvatar');
 const topAvatarImgEl = $('topAvatarImg');
 const bottomAvatarImgEl = $('bottomAvatarImg');
 const resignBtn = $('resignBtn');
+const topPlayerCard = $('topPlayerCard');
+const bottomPlayerCard = $('bottomPlayerCard');
+const gameActions = $('gameActions');
 const endGraceBtn = $('endGraceBtn');
 const endGraceCountdownEl = $('endGraceCountdown');
 const drawOfferBtn = $('drawOffer');
@@ -607,6 +610,40 @@ function finishedMessage(result){
   return won ? 'انتهت المباراة — فزت.' : 'انتهت المباراة — فاز الخصم.';
 }
 
+function applyFinishedGameUI(result){
+  if(!topPlayerCard || !bottomPlayerCard || !gameActions) return;
+  [topPlayerCard,bottomPlayerCard].forEach((card)=>{
+    card.classList.remove('result-winner','result-loser');
+  });
+  gameActions.classList.add('game-result-actions');
+
+  const banner=document.createElement('div');
+  banner.className='game-result-banner';
+  const title=document.createElement('span');
+  title.className='game-result-title';
+  const name=document.createElement('strong');
+  name.className='game-result-name';
+  const winnerColor = result==='1-0' ? 'w' : result==='0-1' ? 'b' : null;
+
+  if(!winnerColor){
+    title.textContent='انتهت المباراة بالتعادل';
+    banner.appendChild(title);
+    gameActions.replaceChildren(banner);
+    return;
+  }
+
+  const topColor = myColor === 'w' ? 'b' : 'w';
+  const winner = colorInfo(winnerColor);
+  const winnerCard = winnerColor===topColor ? topPlayerCard : bottomPlayerCard;
+  const loserCard = winnerColor===topColor ? bottomPlayerCard : topPlayerCard;
+  winnerCard.classList.add('result-winner');
+  loserCard.classList.add('result-loser');
+  title.textContent='مبروك';
+  name.textContent=winner.name || (winnerColor===myColor ? 'أنت' : 'الخصم');
+  banner.append(title,name);
+  gameActions.replaceChildren(banner);
+}
+
 function applyServerState(row, force=false){
   if(!row) return;
   const changed = force || row.updated_at !== lastServerUpdate;
@@ -655,7 +692,8 @@ function applyServerState(row, force=false){
     graceDeadline=0;
     updateGraceEndUI();
     clearInterval(gamePollTimer);
-    setTimeout(()=>alert(finishedMessage(row.result)),120);
+    applyFinishedGameUI(row.result);
+    toast(finishedMessage(row.result),4200);
   }
 }
 

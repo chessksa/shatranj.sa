@@ -19,6 +19,8 @@ const moveHintsEl = $('moveHints');
 const leftEl = $('coordsLeft');
 const bottomEl = $('coordsBottom');
 const topPlayerCard = $('topPlayerCard');
+const bottomPlayerCard = $('bottomPlayerCard');
+const gameActions = $('gameActions');
 const opponentSearchPanel = $('opponentSearchPanel');
 const opponentSearchSetup = $('opponentSearchSetup');
 const opponentSearchWaiting = $('opponentSearchWaiting');
@@ -180,6 +182,40 @@ function setComputerStatus(text) {
   if (status) status.textContent = text;
 }
 
+function showGameResultUI(outcome) {
+  if (!topPlayerCard || !bottomPlayerCard || !gameActions || !outcome) return;
+  [topPlayerCard, bottomPlayerCard].forEach((card) => {
+    card.classList.remove('result-winner', 'result-loser');
+  });
+  gameActions.classList.add('game-result-actions');
+
+  const banner = document.createElement('div');
+  banner.className = 'game-result-banner';
+  const title = document.createElement('span');
+  title.className = 'game-result-title';
+  const name = document.createElement('strong');
+  name.className = 'game-result-name';
+
+  if (outcome === 'draw') {
+    title.textContent = 'انتهت المباراة بالتعادل';
+    banner.appendChild(title);
+    gameActions.replaceChildren(banner);
+    return;
+  }
+
+  const playerWon = outcome === 'player';
+  const winnerCard = playerWon ? bottomPlayerCard : topPlayerCard;
+  const loserCard = playerWon ? topPlayerCard : bottomPlayerCard;
+  winnerCard.classList.add('result-winner');
+  loserCard.classList.add('result-loser');
+  title.textContent = 'مبروك';
+  name.textContent = playerWon
+    ? (bottomNameEl.textContent.trim() || 'أنت')
+    : (topNameEl.textContent.trim() || 'الكمبيوتر');
+  banner.append(title, name);
+  gameActions.replaceChildren(banner);
+}
+
 function formatClock(ms) {
   const safeMs = Math.max(0, Number(ms) || 0);
   const totalSeconds = Math.ceil(safeMs / 1000);
@@ -289,7 +325,7 @@ function startClockLoop() {
       } else {
         commitActiveClock();
         clockActiveSide = null;
-        finishGame('انتهى وقتك — فاز الكمبيوتر');
+        finishGame('انتهى وقتك — فاز الكمبيوتر', null, 'computer');
       }
     } else if (clockActiveSide === 'computer' && currentClockMs('computer') <= 0) {
       if (ratedMode) {
@@ -298,7 +334,7 @@ function startClockLoop() {
         commitActiveClock();
         clockActiveSide = null;
         if (engine) engine.postMessage('stop');
-        finishGame('انتهى وقت الكمبيوتر — فزت');
+        finishGame('انتهى وقت الكمبيوتر — فزت', null, 'player');
       }
     }
   }, 100);
@@ -317,7 +353,7 @@ function ratingSuffix(rating) {
   return ' — 0 نقطة.';
 }
 
-function finishGame(message, rating = null) {
+function finishGame(message, rating = null, outcome = null) {
   if (finished) return;
   finished = true;
   thinking = false;
@@ -328,26 +364,28 @@ function finishGame(message, rating = null) {
   if (cmBoard?.disableMoveInput) cmBoard.disableMoveInput();
   setComputerStatus('انتهت المباراة');
   renderClocks();
+  showGameResultUI(outcome);
   toast(`${message}${ratingSuffix(rating)}`, 5200);
 }
 
 function finishRatedResult(payload, computerCapMs = null) {
-  const messages = {
-    win: 'فزت على الكمبيوتر',
-    loss: 'فاز الكمبيوتر',
-    draw: 'انتهت المباراة بالتعادل'
+  const results = {
+    win: { message: 'فزت على الكمبيوتر', outcome: 'player' },
+    loss: { message: 'فاز الكمبيوتر', outcome: 'computer' },
+    draw: { message: 'انتهت المباراة بالتعادل', outcome: 'draw' }
   };
   if (payload) syncRatedClocks(payload, computerCapMs);
-  finishGame(messages[payload?.result] || 'انتهت المباراة', payload?.rating || null);
+  const resolved = results[payload?.result] || { message: 'انتهت المباراة', outcome: null };
+  finishGame(resolved.message, payload?.rating || null, resolved.outcome);
 }
 
 function checkGuestGameResult() {
   if (game.in_checkmate()) {
-    finishGame(game.turn() === 'b' ? 'فزت على الكمبيوتر' : 'فاز الكمبيوتر');
+    finishGame(game.turn() === 'b' ? 'فزت على الكمبيوتر' : 'فاز الكمبيوتر', null, game.turn() === 'b' ? 'player' : 'computer');
     return true;
   }
   if (game.in_draw()) {
-    finishGame('انتهت المباراة بالتعادل');
+    finishGame('انتهت المباراة بالتعادل', null, 'draw');
     return true;
   }
   return false;
@@ -772,7 +810,7 @@ async function resignComputerGame({ navigate = false, ask = false } = {}) {
       const payload = await invokeComputer({ action: 'resign', game_id: ratedGameId });
       finishRatedResult(payload);
     } else {
-      finishGame('استسلمت أمام الكمبيوتر');
+      finishGame('استسلمت أمام الكمبيوتر', null, 'computer');
     }
   } catch (error) {
     console.error(error);
