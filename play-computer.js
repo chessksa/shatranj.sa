@@ -556,12 +556,12 @@ async function waitForRatedComputerReply(moveId, initialPayload = null, attempts
   return null;
 }
 
-function applyRatedComputerReply(payload) {
+function applyRatedComputerReply(payload, computerCapMs = null) {
   if (!payload?.fen) return false;
   game.load(payload.fen);
   renderBoard(true);
-  syncRatedClocks(payload);
-  if (payload.status === 'finished') finishRatedResult(payload);
+  syncRatedClocks(payload, computerCapMs);
+  if (payload.status === 'finished') finishRatedResult(payload, computerCapMs);
   else setComputerStatus('جاهز');
   return true;
 }
@@ -572,7 +572,8 @@ async function resumeRatedComputerReply(moveId) {
   const finalPayload = await waitForRatedComputerReply(moveId, null, 12);
   if (finished) return;
   if (finalPayload?.fen && ratedPayloadMatchesMove(finalPayload, moveId)) {
-    applyRatedComputerReply(finalPayload);
+    const finalComputerRemaining = currentClockMs('computer');
+    applyRatedComputerReply(finalPayload, finalComputerRemaining);
     return;
   }
   if (clockActiveSide === 'computer' && currentClockMs('computer') <= 0) {
@@ -613,7 +614,8 @@ async function submitRatedMove(move, moveId) {
     const finalPayload = await waitForRatedComputerReply(moveId, payload);
     if (finished) return;
     if (finalPayload?.fen && ratedPayloadMatchesMove(finalPayload, moveId)) {
-      applyRatedComputerReply(finalPayload);
+      const finalComputerRemaining = currentClockMs('computer');
+    applyRatedComputerReply(finalPayload, finalComputerRemaining);
       return;
     }
     setComputerStatus('يفكر…');
