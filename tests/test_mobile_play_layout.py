@@ -3,6 +3,7 @@ from pathlib import Path
 ROOT = Path(__file__).resolve().parents[1]
 HTML = (ROOT / "play-v10.html").read_text(encoding="utf-8")
 LAYOUT_FIX = (ROOT / "exact-board-v13.js").read_text(encoding="utf-8")
+CSS = (ROOT / "exact-board-v13.css").read_text(encoding="utf-8")
 
 
 def test_mobile_layout_places_opponent_above_centered_board_and_player_below():
@@ -32,4 +33,19 @@ def test_opponent_search_card_has_small_bottom_spacing_and_all_text_is_20px():
     assert ".opponent-search-error:empty{display:none}" in HTML
     assert "#opponentSearchPanel,#opponentSearchPanel *{font-size:20px}" in HTML
 
-# This test locks the approved mobile visual order and search-card presentation.
+
+def test_live_mobile_player_cards_keep_their_pregame_size():
+    marker = "/* Mobile live-game player cards stay fixed at pregame size. */"
+    assert marker in CSS
+    block = CSS.split(marker, 1)[1]
+    assert "body.live-game #topPlayerCard" in block
+    assert "body.live-game .panel-stack>.player-card:not(#topPlayerCard)" in block
+    assert "min-height:96px!important" in block
+    assert "height:96px!important" in block
+    assert "grid-template-columns:82px minmax(0,1fr) 92px!important" in block
+    assert "body.live-game .player-card .avatar" in block and "width:78px!important" in block
+    assert "body.live-game .player-card .name" in block and "font-size:20px!important" in block
+    assert "body.live-game .player-card .clock" in block and "font-size:20px!important" in block
+    assert "calc(100dvh - 300px)" in block
+
+# This test locks the approved mobile visual order and keeps player cards stable when play starts.
