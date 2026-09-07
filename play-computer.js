@@ -271,8 +271,7 @@ async function requestRatedTimeout() {
     if (payload?.status === 'finished') finishRatedResult(payload);
   } catch (error) {
     console.error(error);
-    clockAnchorMs = Date.now();
-    toast('تعذر التحقق من انتهاء الوقت. سنحاول مجددًا.');
+    if (clockActiveSide === 'computer') setComputerStatus('يفكر…');
   } finally {
     ratedTimeoutPending = false;
   }
@@ -292,11 +291,15 @@ function startClockLoop() {
         clockActiveSide = null;
         finishGame('انتهى وقتك — فاز الكمبيوتر');
       }
-    } else if (clockActiveSide === 'computer' && currentClockMs('computer') <= 0 && !ratedMode) {
-      commitActiveClock();
-      clockActiveSide = null;
-      if (engine) engine.postMessage('stop');
-      finishGame('انتهى وقت الكمبيوتر — فزت');
+    } else if (clockActiveSide === 'computer' && currentClockMs('computer') <= 0) {
+      if (ratedMode) {
+        requestRatedTimeout();
+      } else {
+        commitActiveClock();
+        clockActiveSide = null;
+        if (engine) engine.postMessage('stop');
+        finishGame('انتهى وقت الكمبيوتر — فزت');
+      }
     }
   }, 100);
 }
@@ -532,17 +535,51 @@ async function waitForRatedMoveAck(moveId, attempts = 8) {
   return null;
 }
 
-async function waitForRatedComputerReply(moveId, initialPayload = null, attempts = 8) {
+async function waitForRatedComputerReply(moveId, initialPayload = null, attempts = 12) {
   let payload = initialPayload;
-  for (let attempt = 0; attempt < attempts; attempt += 1) {
+  for (let attempt = 0; attempt < attempts && !finished; attempt += 1) {
     if (ratedPayloadMatchesMove(payload, moveId) && payload?.fen) {
       const turn = ratedPayloadTurn(payload);
       if (payload.status === 'finished' || turn === 'w') return payload;
     }
-    await new Promise((resolve) => setTimeout(resolve, 220 + attempt * 120));
+    if (clockActiveSide === 'computer' && currentClockMs('computer') <= 0) {
+      await requestRatedTimeout();
+      if (finished) return null;
+    }
+    await new Promise((resolve) => setTimeout(resolve, 300));
     payload = await fetchRatedState();
   }
-  return ratedPayloadMatchesMove(payload, moveId) ? payload : null;
+  if (ratedPayloadMatchesMove(payload, moveId) && payload?.fen) {
+    const turn = ratedPayloadTurn(payload);
+    if (payload.status === 'finished' || turn === 'w') return payload;
+  }
+  return null;
+}
+
+function applyRatedComputerReply(payload) {
+  if (!payload?.fen) return false;
+  game.load(payload.fen);
+  renderBoard(true);
+  syncRatedClocks(payload);
+  if (payload.status === 'finished') finishRatedResult(payload);
+  else setComputerStatus('جاهز');
+  return true;
+}
+
+async function resumeRatedComputerReply(moveId) {
+  if (!ratedGameId || finished) return;
+  setComputerStatus('يفكر…');
+  const finalPayload = await waitForRatedComputerReply(moveId, null, 12);
+  if (finished) return;
+  if (finalPayload?.fen && ratedPayloadMatchesMove(finalPayload, moveId)) {
+    applyRatedComputerReply(finalPayload);
+    return;
+  }
+  if (clockActiveSide === 'computer' && currentClockMs('computer') <= 0) {
+    await requestRatedTimeout();
+    if (finished) return;
+  }
+  setTimeout(() => resumeRatedComputerReply(moveId), 650);
 }
 
 async function submitRatedMove(move, moveId) {
@@ -558,11 +595,10 @@ async function submitRatedMove(move, moveId) {
       payload = await waitForRatedMoveAck(moveId);
     }
 
-    if (!ratedPayloadMatchesMove(payload, moveId)) {
-      payload = await waitForRatedMoveAck(moveId);
-    }
+    if (!ratedPayloadMatchesMove(payload, moveId)) payload = await waitForRatedMoveAck(moveId);
     if (!payload?.fen || !ratedPayloadMatchesMove(payload, moveId)) {
-      throw new Error('Server did not acknowledge this player move');
+      setTimeout(() => resumeRatedComputerReply(moveId), 450);
+      return;
     }
 
     const localComputerRemaining = currentClockMs('computer');
@@ -575,44 +611,17 @@ async function submitRatedMove(move, moveId) {
     }
 
     const finalPayload = await waitForRatedComputerReply(moveId, payload);
-    if (!finalPayload?.fen || !ratedPayloadMatchesMove(finalPayload, moveId)) {
-      setComputerStatus('إعادة الاتصال…');
-      toast('تعذر تأكيد رد الكمبيوتر. حركتك بقيت في مكانها.', 3600);
+    if (finished) return;
+    if (finalPayload?.fen && ratedPayloadMatchesMove(finalPayload, moveId)) {
+      applyRatedComputerReply(finalPayload);
       return;
     }
-
-    game.load(finalPayload.fen);
-    renderBoard(true);
-    syncRatedClocks(finalPayload);
-    if (finalPayload.status === 'finished') finishRatedResult(finalPayload);
-    else setComputerStatus('جاهز');
+    setComputerStatus('يفكر…');
+    setTimeout(() => resumeRatedComputerReply(moveId), 650);
   } catch (error) {
     console.error(error);
-    const recovered = await waitForRatedMoveAck(moveId, 10);
-    if (recovered?.fen && ratedPayloadMatchesMove(recovered, moveId)) {
-      game.load(recovered.fen);
-      renderBoard(true);
-      syncRatedClocks(recovered);
-      if (recovered.status === 'finished') finishRatedResult(recovered);
-      else {
-        const finalPayload = await waitForRatedComputerReply(moveId, recovered, 10);
-        if (finalPayload?.fen && ratedPayloadMatchesMove(finalPayload, moveId)) {
-          game.load(finalPayload.fen);
-          renderBoard(true);
-          syncRatedClocks(finalPayload);
-          if (finalPayload.status === 'finished') finishRatedResult(finalPayload);
-          else setComputerStatus('جاهز');
-        } else {
-          setComputerStatus('إعادة الاتصال…');
-          toast('الاتصال بالخادم متعثر. حركتك بقيت في مكانها.', 4000);
-        }
-      }
-    } else {
-      clockActiveSide = 'computer';
-      clockAnchorMs = Date.now();
-      setComputerStatus('إعادة الاتصال…');
-      toast('تعذر الاتصال بالخادم. حركتك لن تُعاد للخلف.', 4000);
-    }
+    setComputerStatus('يفكر…');
+    setTimeout(() => resumeRatedComputerReply(moveId), 650);
   } finally {
     thinking = false;
   }

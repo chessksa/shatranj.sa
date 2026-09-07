@@ -10,6 +10,7 @@ const corsHeaders = {
 const LEVEL_POINTS = { easy: 5, medium: 10, hard: 20 } as const;
 const TIME_CONTROLS = new Set([5, 10, 15]);
 const MIN_THINK_MS = { easy: 900, medium: 1200, hard: 1600 } as const;
+const SEARCH_BUDGET_MS = { easy: 250, medium: 500, hard: 900 } as const;
 const LEVEL_SEARCH = {
   easy: { depth: 1, candidateWindow: 65, maxCandidates: 4 },
   medium: { depth: 1, candidateWindow: 12, maxCandidates: 2 },
@@ -140,8 +141,8 @@ function orderMoves<T extends SearchMove>(moves: T[]): T[] {
   return [...moves].sort((a, b) => moveOrderingScore(b) - moveOrderingScore(a));
 }
 
-function minimax(chess: Chess, depth: number, alpha: number, beta: number): number {
-  if (depth <= 0 || chess.isGameOver()) return evaluate(chess);
+function minimax(chess: Chess, depth: number, alpha: number, beta: number, deadlineMs = Number.POSITIVE_INFINITY): number {
+  if (Date.now() >= deadlineMs || depth <= 0 || chess.isGameOver()) return evaluate(chess);
   const moves = orderMoves(chess.moves({ verbose: true }) as SearchMove[]);
   const blackToMove = chess.turn() === 'b';
 
@@ -149,7 +150,7 @@ function minimax(chess: Chess, depth: number, alpha: number, beta: number): numb
     let best = -Infinity;
     for (const move of moves) {
       chess.move({ from: move.from, to: move.to, promotion: move.promotion || 'q' });
-      best = Math.max(best, minimax(chess, depth - 1, alpha, beta));
+      best = Math.max(best, minimax(chess, depth - 1, alpha, beta, deadlineMs));
       chess.undo();
       alpha = Math.max(alpha, best);
       if (beta <= alpha) break;
@@ -160,7 +161,7 @@ function minimax(chess: Chess, depth: number, alpha: number, beta: number): numb
   let best = Infinity;
   for (const move of moves) {
     chess.move({ from: move.from, to: move.to, promotion: move.promotion || 'q' });
-    best = Math.min(best, minimax(chess, depth - 1, alpha, beta));
+    best = Math.min(best, minimax(chess, depth - 1, alpha, beta, deadlineMs));
     chess.undo();
     beta = Math.min(beta, best);
     if (beta <= alpha) break;
@@ -174,15 +175,16 @@ function randomItem<T>(items: T[]): T {
   return items[bytes[0] % items.length];
 }
 
-function chooseComputerMove(chess: Chess, level: Level) {
+function chooseComputerMove(chess: Chess, level: Level, deadlineMs = Date.now() + SEARCH_BUDGET_MS[level]) {
   const moves = orderMoves(chess.moves({ verbose: true }) as SearchMove[]);
   if (!moves.length) return null;
   const settings = LEVEL_SEARCH[level];
   const scored: Array<{ move: SearchMove; score: number }> = [];
 
   for (const move of moves) {
+    if (Date.now() >= deadlineMs && scored.length) break;
     chess.move({ from: move.from, to: move.to, promotion: move.promotion || 'q' });
-    let score = minimax(chess, settings.depth, -Infinity, Infinity);
+    let score = minimax(chess, settings.depth, -Infinity, Infinity, deadlineMs);
     if (move.captured) score += (PIECE_VALUE[move.captured] ?? 0) * 0.08;
     if (move.san.includes('+')) score += 14;
     if (move.san.includes('#')) score += 50_000;
@@ -190,6 +192,7 @@ function chooseComputerMove(chess: Chess, level: Level) {
     scored.push({ move, score });
   }
 
+  if (!scored.length) return moves[0];
   scored.sort((a, b) => b.score - a.score);
   const bestScore = scored[0].score;
   const candidates = scored
@@ -444,7 +447,23 @@ Deno.serve(async (req: Request) => {
       const startedAtMs = Date.parse(String(row.turn_started_at ?? ''));
       const computerStartedAt = Number.isFinite(startedAtMs) ? startedAtMs : Date.now();
 
-      const selected = chooseComputerMove(chess, row.level);
+      const elapsedBeforeSearch = Math.max(0, Date.now() - computerStartedAt);
+      const computerRemainingMs = Math.max(0, computerTimeBefore - elapsedBeforeSearch);
+      if (computerRemainingMs <= 0) {
+        const expiredAt = new Date().toISOString();
+        return settlePendingComputerTurn(
+          row,
+          'win',
+          chess.fen(),
+          moves,
+          playerTimeMs,
+          0,
+          expiredAt,
+        );
+      }
+
+      const searchBudgetMs = Math.max(1, Math.min(SEARCH_BUDGET_MS[row.level], computerRemainingMs));
+      const selected = chooseComputerMove(chess, row.level, Date.now() + searchBudgetMs);
       const elapsedAfterSearch = Math.max(0, Date.now() - computerStartedAt);
       const waitMs = Math.max(0, MIN_THINK_MS[row.level] - elapsedAfterSearch);
       if (waitMs > 0) await new Promise((resolve) => setTimeout(resolve, waitMs));
