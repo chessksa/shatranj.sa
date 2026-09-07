@@ -10,6 +10,7 @@ on:
       - 'play-v10.html'
       - 'tests/test_live_move_review.py'
       - 'scripts/apply_live_move_review.py'
+      - 'scripts/fix_live_move_review_css.py'
       - '.github/workflows/verify-live-move-review.yml'
 
 permissions:
@@ -25,7 +26,9 @@ jobs:
           python-version: '3.12'
       - name: Apply live move review on feature branch
         if: github.ref_name == 'feature/live-move-review-20260907'
-        run: python scripts/apply_live_move_review.py
+        run: |
+          python scripts/apply_live_move_review.py
+          python scripts/fix_live_move_review_css.py
       - name: Verify live move review
         run: python tests/test_live_move_review.py
       - name: Verify grace and result regressions
@@ -43,5 +46,5 @@ jobs:
           git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
           git add play-v8.js play-v10.html
           git diff --cached --quiet && exit 0
-          git commit -m 'feat: add live move review controls'
+          git commit -m 'fix: clean move review styles'
           git push origin HEAD:feature/live-move-review-20260907
