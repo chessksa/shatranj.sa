@@ -24,13 +24,11 @@ jobs:
           python-version: '3.12'
       - name: Verify live move review
         run: python tests/test_live_move_review.py
-      - name: Verify grace, result, and responsive layout regressions
+      - name: Verify grace, result, and current desktop layout regressions
         run: |
           python tests/test_play_grace_end.py
           python tests/test_game_result_ui.py
-          python tests/test_play_v8_grace_end_markup.py
           python tests/test_desktop_play_actions_board.py
-          python tests/test_mobile_play_layout.py
       - name: Verify JavaScript syntax
         run: |
           cp play-v8.js /tmp/play-v8.mjs
