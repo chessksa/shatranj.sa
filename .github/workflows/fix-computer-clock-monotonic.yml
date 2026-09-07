@@ -84,12 +84,20 @@ jobs:
           play.write_text(updated, encoding='utf-8')
           PY
 
-      - name: Verify clock fix and related computer flows
+      - name: Verify monotonic clock regression
+        run: python tests/test_computer_clock_monotonic.py
+
+      - name: Verify computer play mode
+        run: python tests/test_computer_play_mode.py
+
+      - name: Verify reply and timeout recovery
+        run: python tests/test_computer_reply_and_timeout_resolution.py
+
+      - name: Verify two-phase server move flow
+        run: python tests/test_computer_server_two_phase_move.py
+
+      - name: Verify JavaScript syntax
         run: |
-          python tests/test_computer_clock_monotonic.py
-          python tests/test_computer_play_mode.py
-          python tests/test_computer_reply_and_timeout_resolution.py
-          python tests/test_computer_server_two_phase_move.py
           cp play-computer.js /tmp/play-computer.mjs
           node --check /tmp/play-computer.mjs
 
