@@ -44,3 +44,12 @@ def test_new_server_positions_are_recorded_before_live_board_render():
 def test_live_script_cache_is_bumped_for_review_feature():
     html = (ROOT / "play-v10.html").read_text(encoding="utf-8")
     assert "play-v8.js?v=20260907-5" in html
+
+
+if __name__ == "__main__":
+    test_grace_end_becomes_bidirectional_move_review()
+    test_review_tracks_real_server_fen_history_without_mutating_live_game()
+    test_review_has_back_forward_boundaries_and_blocks_moves_while_reviewing_past()
+    test_new_server_positions_are_recorded_before_live_board_render()
+    test_live_script_cache_is_bumped_for_review_feature()
+    print("live move review: PASS")
