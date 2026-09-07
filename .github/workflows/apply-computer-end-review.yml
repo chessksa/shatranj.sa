@@ -1,0 +1,38 @@
+name: Apply computer End review fix
+
+on:
+  push:
+    branches:
+      - fix/computer-end-review-20260907
+    paths:
+      - 'scripts/patch_computer_end_review.py'
+      - '.github/workflows/apply-computer-end-review.yml'
+
+permissions:
+  contents: write
+
+jobs:
+  apply:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: fix/computer-end-review-20260907
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - name: Apply fix
+        run: python scripts/patch_computer_end_review.py
+      - name: Verify targeted behavior before commit
+        run: |
+          python tests/test_computer_end_review.py
+          cp play-computer.js /tmp/play-computer.mjs
+          node --check /tmp/play-computer.mjs
+      - name: Commit production changes
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add play-computer.js play-v10.html supabase/functions/computer-game/index.ts
+          git diff --cached --exit-code && exit 1 || true
+          git commit -m "fix: enable computer End grace and move review"
+          git push origin HEAD:fix/computer-end-review-20260907
