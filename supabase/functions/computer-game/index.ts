@@ -433,6 +433,48 @@ Deno.serve(async (req: Request) => {
       };
     }
 
+    async function settlePlayerTimeoutIfCurrent(
+      row: Record<string, any>,
+      computerTimeMs: number,
+      nowIso: string,
+    ) {
+      const moves = Array.isArray(row.moves) ? row.moves : [];
+      const { data: saved, error } = await admin
+        .from('computer_games')
+        .update({
+          fen: row.fen,
+          moves,
+          status: 'finished',
+          result: 'loss',
+          finished_at: nowIso,
+          player_time_ms: 0,
+          computer_time_ms: Math.max(0, Math.round(computerTimeMs)),
+          turn_started_at: nowIso,
+          updated_at: nowIso,
+        })
+        .eq('id', row.id)
+        .eq('player_id', player.id)
+        .eq('status', 'active')
+        .eq('fen', row.fen)
+        .select(gameSelect)
+        .maybeSingle();
+      if (error) throw error;
+      if (!saved) {
+        const current = await getGame(row.id);
+        if (!current) throw new Error('Computer game disappeared while settling player timeout');
+        return currentGamePayload(current);
+      }
+      const rating = await settledRating(saved.id);
+      return {
+        game_id: saved.id,
+        fen: saved.fen,
+        status: 'finished',
+        result: 'loss',
+        rating,
+        ...clockPayload(saved),
+      };
+    }
+
     async function completePendingComputerTurn(row: Record<string, any>) {
       if (row.status !== 'active') return currentGamePayload(row);
       if (!isLevel(row.level)) throw new Error('Invalid stored level');
@@ -612,20 +654,7 @@ Deno.serve(async (req: Request) => {
       const playerTimeMs = Math.max(0, Number(row.player_time_ms) - elapsedMs(row.turn_started_at, nowMs));
       const computerTimeMs = Math.max(0, Number(row.computer_time_ms));
       if (playerTimeMs <= 0) {
-        const nowIso = new Date(nowMs).toISOString();
-        const rating = await settle(row.id, 'loss', row.fen, Array.isArray(row.moves) ? row.moves : [], {
-          playerTimeMs: 0,
-          computerTimeMs,
-          turnStartedAt: nowIso,
-        });
-        return reply({
-          game_id: row.id,
-          fen: row.fen,
-          status: 'finished',
-          result: 'loss',
-          rating,
-          ...clockPayload(row, 0, computerTimeMs, nowIso),
-        });
+        return reply(await settlePlayerTimeoutIfCurrent(row, computerTimeMs, new Date(nowMs).toISOString()));
       }
 
       return reply({ game_id: row.id, fen: row.fen, status: 'active', result: null, ...clockPayload(row) });
@@ -670,19 +699,7 @@ Deno.serve(async (req: Request) => {
       const playerTurnStartedAt = new Date(receivedAt).toISOString();
 
       if (playerTimeMs <= 0) {
-        const rating = await settle(row.id, 'loss', row.fen, storedMoves, {
-          playerTimeMs: 0,
-          computerTimeMs: computerTimeBefore,
-          turnStartedAt: playerTurnStartedAt,
-        });
-        return reply({
-          game_id: row.id,
-          fen: row.fen,
-          status: 'finished',
-          result: 'loss',
-          rating,
-          ...clockPayload(row, 0, computerTimeBefore, playerTurnStartedAt),
-        });
+        return reply(await settlePlayerTimeoutIfCurrent(row, computerTimeBefore, playerTurnStartedAt));
       }
 
       const chess = new Chess(row.fen);
@@ -763,19 +780,7 @@ Deno.serve(async (req: Request) => {
         return reply({ game_id: row.id, fen: row.fen, status: 'active', result: null, ...clockPayload(row) });
       }
 
-      const rating = await settle(row.id, 'loss', row.fen, Array.isArray(row.moves) ? row.moves : [], {
-        playerTimeMs: 0,
-        computerTimeMs,
-        turnStartedAt: nowIso,
-      });
-      return reply({
-        game_id: row.id,
-        fen: row.fen,
-        status: 'finished',
-        result: 'loss',
-        rating,
-        ...clockPayload(row, 0, computerTimeMs, nowIso),
-      });
+      return reply(await settlePlayerTimeoutIfCurrent(row, computerTimeMs, nowIso));
     }
 
     if (action === 'resign') {
