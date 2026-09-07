@@ -1,0 +1,125 @@
+name: Fix monotonic computer clock
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - '.github/workflows/fix-computer-clock-monotonic.yml'
+      - 'tests/test_computer_clock_monotonic.py'
+      - 'play-computer.js'
+
+permissions:
+  contents: write
+
+jobs:
+  fix-and-verify:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+
+      - name: Prove regression test catches the current bug
+        id: regression
+        shell: bash
+        run: |
+          set +e
+          python tests/test_computer_clock_monotonic.py
+          status=$?
+          set -e
+          if [ "$status" -eq 0 ]; then
+            echo "already_fixed=true" >> "$GITHUB_OUTPUT"
+            echo "Regression is already fixed; no source patch is needed."
+          else
+            echo "already_fixed=false" >> "$GITHUB_OUTPUT"
+            echo "Regression test failed as expected before the fix."
+          fi
+
+      - name: Apply minimal clock reconciliation fix
+        if: steps.regression.outputs.already_fixed == 'false'
+        run: |
+          python - <<'PY'
+          from pathlib import Path
+          import re
+
+          js = Path('play-computer.js')
+          text = js.read_text(encoding='utf-8')
+
+          old_apply = """function applyRatedComputerReply(payload) {
+            if (!payload?.fen) return false;
+            game.load(payload.fen);
+            renderBoard(true);
+            syncRatedClocks(payload);
+            if (payload.status === 'finished') finishRatedResult(payload);
+            else setComputerStatus('جاهز');
+            return true;
+          }
+          """
+          new_apply = """function applyRatedComputerReply(payload, computerCapMs = null) {
+            if (!payload?.fen) return false;
+            game.load(payload.fen);
+            renderBoard(true);
+            syncRatedClocks(payload, computerCapMs);
+            if (payload.status === 'finished') finishRatedResult(payload, computerCapMs);
+            else setComputerStatus('جاهز');
+            return true;
+          }
+          """
+          old_apply = '\n'.join(line[10:] if line.startswith('          ') else line for line in old_apply.splitlines()) + '\n'
+          new_apply = '\n'.join(line[10:] if line.startswith('          ') else line for line in new_apply.splitlines()) + '\n'
+          if old_apply not in text:
+            raise SystemExit('applyRatedComputerReply marker changed')
+          text = text.replace(old_apply, new_apply, 1)
+
+          old_reply = """  if (finalPayload?.fen && ratedPayloadMatchesMove(finalPayload, moveId)) {
+            applyRatedComputerReply(finalPayload);
+            return;
+          }
+          """
+          new_reply = """  if (finalPayload?.fen && ratedPayloadMatchesMove(finalPayload, moveId)) {
+            const finalComputerRemaining = currentClockMs('computer');
+            applyRatedComputerReply(finalPayload, finalComputerRemaining);
+            return;
+          }
+          """
+          old_reply = '\n'.join(line[10:] if line.startswith('          ') else line for line in old_reply.splitlines()) + '\n'
+          new_reply = '\n'.join(line[10:] if line.startswith('          ') else line for line in new_reply.splitlines()) + '\n'
+          count = text.count(old_reply)
+          if count != 2:
+            raise SystemExit(f'expected 2 final reply markers, found {count}')
+          text = text.replace(old_reply, new_reply)
+          js.write_text(text, encoding='utf-8')
+
+          play = Path('play-v10.html')
+          html = play.read_text(encoding='utf-8')
+          updated, count = re.subn(
+              r"play-computer\.js\?v=\d{8}-\d+",
+              'play-computer.js?v=20260907-24',
+              html,
+              count=1,
+          )
+          if count != 1:
+            raise SystemExit('computer script cache marker missing')
+          play.write_text(updated, encoding='utf-8')
+          PY
+
+      - name: Verify clock fix and related computer flows
+        run: |
+          python tests/test_computer_clock_monotonic.py
+          python tests/test_computer_play_mode.py
+          python tests/test_computer_reply_and_timeout_resolution.py
+          python tests/test_computer_server_two_phase_move.py
+          cp play-computer.js /tmp/play-computer.mjs
+          node --check /tmp/play-computer.mjs
+
+      - name: Commit verified fix
+        if: steps.regression.outputs.already_fixed == 'false'
+        run: |
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git add play-computer.js play-v10.html
+          git diff --cached --quiet && exit 0
+          git commit -m 'fix: keep computer clock monotonic after server reply'
+          git pull --rebase origin main
+          git push
