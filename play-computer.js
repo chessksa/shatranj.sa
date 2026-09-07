@@ -65,6 +65,12 @@ let playerTimeMs = 0;
 let computerTimeMs = 0;
 let clockActiveSide = null;
 let clockAnchorMs = 0;
+let computerGraceDeadline = 0;
+let computerGraceTimer = null;
+let computerGraceCancelBusy = false;
+let computerReviewFens = [];
+let computerReviewIndex = -1;
+let computerMoveReviewMode = false;
 
 function toast(message, ms = 2600) {
   if (!gameToast) return;
@@ -72,6 +78,94 @@ function toast(message, ms = 2600) {
   gameToast.hidden = false;
   clearTimeout(toast._timer);
   toast._timer = setTimeout(() => { gameToast.hidden = true; }, ms);
+}
+
+function rememberComputerFen(fen) {
+  if (!fen) return;
+  if (computerReviewFens[computerReviewFens.length - 1] !== fen) {
+    computerReviewFens.push(fen);
+    if (computerReviewFens.length > 512) computerReviewFens = computerReviewFens.slice(-512);
+  }
+  computerReviewIndex = computerReviewFens.length - 1;
+  updateComputerMoveReviewControls();
+}
+
+function isComputerReviewingPast() {
+  return computerMoveReviewMode && computerReviewIndex >= 0 && computerReviewIndex < computerReviewFens.length - 1;
+}
+
+function updateComputerMoveReviewControls() {
+  if (!computerMoveReviewMode || !endGraceBtn) return;
+  const back = endGraceBtn.querySelector('[data-review-direction="-1"]');
+  const forward = endGraceBtn.querySelector('[data-review-direction="1"]');
+  const backDisabled = computerReviewIndex <= 0;
+  const forwardDisabled = computerReviewIndex >= computerReviewFens.length - 1;
+  back?.classList.toggle('disabled', backDisabled);
+  forward?.classList.toggle('disabled', forwardDisabled);
+  back?.setAttribute('aria-disabled', String(backDisabled));
+  forward?.setAttribute('aria-disabled', String(forwardDisabled));
+}
+
+function showComputerMoveReviewMode() {
+  if (!endGraceBtn || finished || gameActions?.classList.contains('game-result-actions')) return;
+  computerMoveReviewMode = true;
+  endGraceBtn.classList.add('move-review-mode');
+  endGraceBtn.disabled = false;
+  endGraceBtn.setAttribute('aria-label', 'مراجعة الحركات السابقة');
+  endGraceBtn.innerHTML = `<span class="move-review-inline"><span class="move-review-arrow" data-review-direction="-1" aria-label="رجوع">‹</span><span class="move-review-label">الحركة السابقة</span><span class="move-review-arrow" data-review-direction="1" aria-label="تقدم">›</span></span>`;
+  updateComputerMoveReviewControls();
+}
+
+function renderComputerReviewedFen(index) {
+  if (index < 0 || index >= computerReviewFens.length) return;
+  computerReviewIndex = index;
+  clearMoveHints();
+  ensureBoard().setPosition(computerReviewFens[index], false);
+  forceBoardSquareColors();
+  updateComputerMoveReviewControls();
+}
+
+function stepComputerMoveReview(direction) {
+  if (!computerMoveReviewMode || !computerReviewFens.length) return;
+  const step = Number(direction) < 0 ? -1 : 1;
+  if (step < 0 && computerReviewIndex <= 0) return;
+  if (step > 0 && computerReviewIndex >= computerReviewFens.length - 1) return;
+  renderComputerReviewedFen(computerReviewIndex + step);
+}
+
+function updateComputerGraceEndUI() {
+  if (!endGraceBtn || computerMoveReviewMode || finished) return;
+  const remaining = Math.max(0, computerGraceDeadline - performance.now());
+  if (remaining <= 0) {
+    clearInterval(computerGraceTimer);
+    computerGraceTimer = null;
+    computerGraceDeadline = 0;
+    showComputerMoveReviewMode();
+    return;
+  }
+  endGraceBtn.disabled = computerGraceCancelBusy;
+  if (endGraceCountdownEl) {
+    endGraceCountdownEl.hidden = false;
+    endGraceCountdownEl.textContent = String(Math.ceil(remaining / 1000));
+  }
+}
+
+function startComputerGraceWindow() {
+  if (!endGraceBtn) return;
+  clearInterval(computerGraceTimer);
+  computerReviewFens = [];
+  computerReviewIndex = -1;
+  computerMoveReviewMode = false;
+  computerGraceCancelBusy = false;
+  endGraceBtn.classList.remove('move-review-mode');
+  endGraceBtn.disabled = false;
+  endGraceBtn.removeAttribute('aria-label');
+  if (endGraceCountdownEl) endGraceCountdownEl.hidden = false;
+  const note = endGraceBtn.querySelector('.grace-note');
+  if (note) note.hidden = false;
+  computerGraceDeadline = performance.now() + 5000;
+  updateComputerGraceEndUI();
+  computerGraceTimer = setInterval(updateComputerGraceEndUI, 100);
 }
 
 function ensureCmStyles() {
@@ -172,6 +266,7 @@ function ensureBoard() {
 }
 
 function renderBoard(animated = true) {
+  if (selectedLevel && selectedMinutes) rememberComputerFen(game.fen());
   ensureBoard().setPosition(game.fen(), animated);
   forceBoardSquareColors();
 }
@@ -359,6 +454,9 @@ function finishGame(message, rating = null, outcome = null) {
   thinking = false;
   clearInterval(clockTimer);
   clockTimer = null;
+  clearInterval(computerGraceTimer);
+  computerGraceTimer = null;
+  computerGraceDeadline = 0;
   clockActiveSide = null;
   clearMoveHints();
   if (cmBoard?.disableMoveInput) cmBoard.disableMoveInput();
@@ -669,6 +767,7 @@ async function submitRatedMove(move, moveId) {
 
 function handleBoardInput(event) {
   if (event.type === INPUT_EVENT_TYPE.moveInputStarted) {
+    if (isComputerReviewingPast()) return false;
     if (!selectedLevel || !selectedMinutes || finished || thinking || game.turn() !== 'w') return false;
     if (currentClockMs('player') <= 0) {
       if (ratedMode) requestRatedTimeout();
@@ -681,6 +780,7 @@ function handleBoardInput(event) {
   }
 
   if (event.type === INPUT_EVENT_TYPE.validateMoveInput) {
+    if (isComputerReviewingPast()) return false;
     if (!selectedLevel || !selectedMinutes || finished || thinking || game.turn() !== 'w') return false;
     if (currentClockMs('player') <= 0) {
       if (ratedMode) requestRatedTimeout();
@@ -735,10 +835,7 @@ function setPlayingLayout(levelKey, minutes, player = null) {
   }
   if (resignBtn) resignBtn.disabled = false;
   if (drawOfferBtn) drawOfferBtn.disabled = false;
-  if (endGraceBtn) endGraceBtn.disabled = true;
-  if (endGraceCountdownEl) endGraceCountdownEl.hidden = true;
-  const note = endGraceBtn?.querySelector('.grace-note');
-  if (note) note.hidden = true;
+  startComputerGraceWindow();
   setComputerStatus('جاهز');
   startClockLoop();
 }
@@ -939,6 +1036,41 @@ function setupLevelChooser() {
   if (leaveBtn) leaveBtn.onclick = () => resignComputerGame({ navigate: true });
   if (reportBtn) reportBtn.disabled = true;
 }
+
+endGraceBtn?.addEventListener('click', async (event) => {
+  updateComputerGraceEndUI();
+  if (computerMoveReviewMode) {
+    const directionTarget = event.target.closest?.('[data-review-direction]');
+    const direction = directionTarget ? Number(directionTarget.dataset.reviewDirection) : -1;
+    stepComputerMoveReview(direction);
+    return;
+  }
+  if (endGraceBtn.disabled || computerGraceCancelBusy || finished || performance.now() >= computerGraceDeadline) return;
+
+  computerGraceCancelBusy = true;
+  endGraceBtn.disabled = true;
+  try {
+    if (ratedMode && ratedGameId) {
+      const payload = await invokeComputer({ action: 'cancel', game_id: ratedGameId });
+      if (!payload?.cancelled || payload?.status !== 'abandoned') throw new Error('computer grace cancellation rejected');
+    }
+    finished = true;
+    thinking = false;
+    if (engine) engine.postMessage('stop');
+    clearInterval(clockTimer);
+    clockTimer = null;
+    clearInterval(computerGraceTimer);
+    computerGraceTimer = null;
+    computerGraceDeadline = 0;
+    location.replace('play-v10.html?computer=1');
+  } catch (error) {
+    console.error(error);
+    toast('تعذر إنهاء المباراة ضمن المهلة.');
+  } finally {
+    computerGraceCancelBusy = false;
+    if (!finished) updateComputerGraceEndUI();
+  }
+});
 
 resignBtn?.addEventListener('click', () => resignComputerGame({ ask: true }));
 

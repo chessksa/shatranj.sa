@@ -292,7 +292,7 @@ Deno.serve(async (req: Request) => {
     }
 
     const action = String(body.action ?? '');
-    const gameSelect = 'id,level,fen,moves,status,result,time_control_minutes,player_time_ms,computer_time_ms,turn_started_at';
+    const gameSelect = 'id,level,fen,moves,status,result,time_control_minutes,player_time_ms,computer_time_ms,turn_started_at,created_at';
 
     async function getGame(gameId: string) {
       const { data, error } = await admin
@@ -632,6 +632,54 @@ Deno.serve(async (req: Request) => {
         player_name: refreshedPlayer?.name ?? player.name,
         rating: refreshedPlayer?.rating ?? player.rating,
         ...clockPayload(created),
+      });
+    }
+
+    if (action === 'cancel') {
+      const gameId = String(body.game_id ?? '');
+      if (!gameId) return reply({ error: 'Game id required' }, 400);
+      const row = await getGame(gameId);
+      if (!row) return reply({ error: 'Computer game not found' }, 404);
+
+      if (row.status !== 'active') {
+        return reply({ ...(await currentGamePayload(row)), cancelled: row.status === 'abandoned' });
+      }
+
+      const createdAtMs = Date.parse(String(row.created_at ?? ''));
+      const nowMs = Date.now();
+      if (!Number.isFinite(createdAtMs) || nowMs >= createdAtMs + 5000) {
+        return reply({ error: 'Grace period expired' }, 409);
+      }
+
+      const nowIso = new Date(nowMs).toISOString();
+      const { data: cancelled, error: cancelError } = await admin
+        .from('computer_games')
+        .update({
+          status: 'abandoned',
+          result: null,
+          finished_at: nowIso,
+          turn_started_at: nowIso,
+          updated_at: nowIso,
+        })
+        .eq('id', row.id)
+        .eq('player_id', player.id)
+        .eq('status', 'active')
+        .select(gameSelect)
+        .maybeSingle();
+      if (cancelError) throw cancelError;
+      if (!cancelled) {
+        const current = await getGame(row.id);
+        if (!current) return reply({ error: 'Computer game not found' }, 404);
+        return reply({ ...(await currentGamePayload(current)), cancelled: current.status === 'abandoned' });
+      }
+
+      return reply({
+        game_id: cancelled.id,
+        fen: cancelled.fen,
+        status: 'abandoned',
+        result: null,
+        cancelled: true,
+        ...clockPayload(cancelled),
       });
     }
 
