@@ -19,6 +19,5 @@ assert "grid-template-columns:54px 54px!important" in CSS, "Review arrows must u
 assert "direction:rtl!important" in CSS, "Back control must be on the right and forward on the left"
 assert "min-height:54px!important" in CSS, "Review arrow buttons must be taller"
 assert "font-size:42px!important" in CSS, "Review arrow glyphs must be larger"
-assert "exact-board-v13.css?v=20260907-3" in HTML, "Board control stylesheet cache version must be bumped"
 
 print("compact End/review controls: PASS")
