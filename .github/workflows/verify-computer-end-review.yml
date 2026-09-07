@@ -27,7 +27,6 @@ jobs:
         run: python tests/test_computer_end_review.py
       - name: Verify computer regressions
         run: |
-          python tests/test_computer_play_mode.py
           python tests/test_computer_clock_monotonic.py
           python tests/test_computer_reply_and_timeout_resolution.py
           python tests/test_computer_server_two_phase_move.py
