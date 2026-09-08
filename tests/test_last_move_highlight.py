@@ -92,6 +92,7 @@ def test_computer_game_uses_native_markers():
 
 
 def test_native_marker_and_capture_hint_style():
+    square_capture = '.square.capture::after{content:"";position:absolute;inset:8px;border:2px solid #ff0000;border-radius:50%}'
     page = require(
         "play-v10.html",
         ".marker-frame-last-move",
@@ -100,13 +101,17 @@ def test_native_marker_and_capture_hint_style():
         "opacity:1",
         ".move-hint.capture::after",
         "border:2px solid #ff0000",
+        square_capture,
         "play-computer.js?v=20260909-stalereply1",
         "play-v8.js?v=20260909-tournamentspectator1",
     )
+    legacy_page = require("play.html", square_capture)
     sprite = require("assets/last-move-markers.svg", 'id="markerFrame"', '<rect')
     assert 'width="40"' in sprite
     assert "stroke:#b3262e" not in page
     assert "border:4px solid rgba(117,45,36,.58)" not in page
+    assert "border:4px solid rgba(117,45,36,.55)" not in page
+    assert "border:4px solid rgba(117,45,36,.55)" not in legacy_page
     assert ".last-move-highlight{" not in page
     assert ".move-hint{position:absolute" in page
 
