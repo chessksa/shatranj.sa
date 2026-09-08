@@ -1,5 +1,6 @@
 import {Chessboard, COLOR, INPUT_EVENT_TYPE, BORDER_TYPE} from 'https://cdn.jsdelivr.net/npm/cm-chessboard@8/src/Chessboard.js';
 import { createClient } from 'https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/+esm';
+import { inferLastMoveFromFens, squareOverlayPosition } from './last-move-highlight.mjs?v=20260908-1';
 
 const files = ['a','b','c','d','e','f','g','h'];
 const ranks = [8,7,6,5,4,3,2,1];
@@ -84,6 +85,8 @@ let reviewFens = [];
 let reviewIndex = -1;
 let moveReviewMode = false;
 let graceStateLoaded = false;
+let lastMove = null;
+let ignoreNextLastMoveInference = false;
 
 function firstRow(data){
   return Array.isArray(data) ? (data[0] || null) : data;
@@ -166,6 +169,7 @@ function renderReviewedFen(index){
   if(board.getOrientation()!==orientation) board.setOrientation(orientation,false);
   board.setPosition(reviewFens[reviewIndex],false);
   forceBoardSquareColors();
+  renderLastMoveHighlight();
   updateMoveReviewControls();
 }
 
@@ -496,7 +500,8 @@ function updateClockUI(){
 
 
 function clearMoveHints(){
-  if(moveHintsEl) moveHintsEl.replaceChildren();
+  if(!moveHintsEl) return;
+  moveHintsEl.querySelectorAll('.move-hint').forEach((hint)=>hint.remove());
 }
 
 function moveHintPosition(square){
@@ -510,6 +515,27 @@ function moveHintPosition(square){
     row=7-row;
   }
   return {col,row};
+}
+
+function clearLastMoveHighlight(){
+  if(!moveHintsEl) return;
+  moveHintsEl.querySelectorAll('.last-move-highlight').forEach((marker)=>marker.remove());
+}
+
+function renderLastMoveHighlight(){
+  clearLastMoveHighlight();
+  if(!moveHintsEl || !lastMove?.from || !lastMove?.to || isReviewingPast()) return;
+  [lastMove.from,lastMove.to].forEach((square,index)=>{
+    const pos=squareOverlayPosition(square,flipped);
+    if(!pos) return;
+    const marker=document.createElement('span');
+    marker.className='last-move-highlight';
+    marker.dataset.square=square;
+    marker.dataset.moveEnd=index===0?'from':'to';
+    marker.style.left=`${pos.left}%`;
+    marker.style.top=`${pos.top}%`;
+    moveHintsEl.appendChild(marker);
+  });
 }
 
 function showMoveHints(fromSquare){
@@ -597,6 +623,7 @@ function renderBoard(){
   if(board.getOrientation()!==orientation) board.setOrientation(orientation,false);
   board.setPosition(game.fen(),false);
   forceBoardSquareColors();
+  renderLastMoveHighlight();
   updateClockUI();
 }
 
@@ -634,6 +661,8 @@ function handleBoardInput(event){
 
     const move=game.move({from:event.squareFrom,to:event.squareTo,promotion:'q'});
     if(!move) return false;
+    lastMove = { from: move.from, to: move.to };
+    renderLastMoveHighlight();
     moveBusy=true;
 
     Promise.resolve().then(async()=>{
@@ -651,6 +680,9 @@ function handleBoardInput(event){
         if(error) throw error;
       }catch(err){
         console.error(err);
+        ignoreNextLastMoveInference = true;
+        lastMove = null;
+        renderLastMoveHighlight();
         toast('تعذر اعتماد الحركة. أُعيدت الرقعة إلى حالة الخادم.');
       }finally{
         moveBusy=false;
@@ -766,6 +798,18 @@ function applyServerState(row, force=false){
   }
 
   if(changed){
+    restoreMoveReviewHistory();
+    let previousFen=game?.fen?.() || null;
+    if(!previousFen && reviewFens.length){
+      const latestStoredFen=reviewFens[reviewFens.length-1];
+      previousFen=latestStoredFen===row.fen && reviewFens.length>1
+        ? reviewFens[reviewFens.length-2]
+        : latestStoredFen;
+    }
+    const fenChanged=Boolean(previousFen && previousFen!==row.fen);
+    const inferredLastMove=fenChanged && !ignoreNextLastMoveInference
+      ? inferLastMoveFromFens(previousFen, row.fen, Chess)
+      : null;
     try{
       game = new Chess(row.fen);
       rememberLiveFen(row.fen);
@@ -773,6 +817,12 @@ function applyServerState(row, force=false){
       console.error(err);
       toast('تعذر تحميل وضع الرقعة.');
       return;
+    }
+    if(ignoreNextLastMoveInference){
+      lastMove=null;
+      ignoreNextLastMoveInference=false;
+    }else if(fenChanged){
+      lastMove=inferredLastMove;
     }
     selected=null;
     legalTargets=[];

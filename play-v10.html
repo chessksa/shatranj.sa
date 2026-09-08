@@ -43,9 +43,10 @@
       .panel-stack>.actions-card{width:100%;min-height:100px;border-radius:18px}
     }
     .move-hints{position:absolute;inset:0;z-index:8;pointer-events:none}
-    .move-hint{position:absolute;width:12.5%;height:12.5%;display:grid;place-items:center;pointer-events:none}
+    .move-hint{position:absolute;width:12.5%;height:12.5%;display:grid;place-items:center;pointer-events:none;z-index:1}
     .move-hint::after{content:"";width:22%;height:22%;border-radius:50%;background:rgba(10,58,46,.62);box-shadow:0 0 0 1px rgba(255,255,255,.16)}
     .move-hint.capture::after{width:68%;height:68%;background:transparent;border:4px solid rgba(117,45,36,.58);box-shadow:none}
+    .last-move-highlight{position:absolute;width:12.5%;height:12.5%;background:rgba(240,196,93,.18);box-shadow:inset 0 0 0 1px rgba(240,196,93,.22);pointer-events:none;z-index:0}
     @media(max-width:900px){
       .board-panel{flex-direction:column;gap:6px}
       .board-panel>.board-frame{width:min(100%,calc(100vw - 16px))}
@@ -329,7 +330,7 @@
       document.body.classList.add('pregame','computer-game');
       const s=document.createElement('script');
       s.type='module';
-      s.src='play-computer.js?v=20260907-26';
+      s.src='play-computer.js?v=20260908-lastmove1';
       document.body.appendChild(s);
     }else if(hasGame){
       document.body.classList.add('live-game');
@@ -337,7 +338,7 @@
       document.getElementById('topPlayerLive').hidden = false;
       const s=document.createElement('script');
       s.type='module';
-      s.src='play-v8.js?v=20260907-5';
+      s.src='play-v8.js?v=20260908-lastmove1';
       document.body.appendChild(s);
     }else{
       document.body.classList.add('pregame');

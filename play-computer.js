@@ -1,5 +1,6 @@
 import { Chessboard, COLOR, INPUT_EVENT_TYPE, BORDER_TYPE } from 'https://cdn.jsdelivr.net/npm/cm-chessboard@8/src/Chessboard.js';
 import { createClient } from 'https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/+esm';
+import { inferLastMoveFromFens, squareOverlayPosition } from './last-move-highlight.mjs?v=20260908-1';
 
 const LEVELS = {
   easy: { skill: 8, movetime: 250, label: 'سهل', points: 5 },
@@ -71,6 +72,7 @@ let computerGraceCancelBusy = false;
 let computerReviewFens = [];
 let computerReviewIndex = -1;
 let computerMoveReviewMode = false;
+let lastMove = null;
 
 function toast(message, ms = 2600) {
   if (!gameToast) return;
@@ -122,6 +124,7 @@ function renderComputerReviewedFen(index) {
   clearMoveHints();
   ensureBoard().setPosition(computerReviewFens[index], false);
   forceBoardSquareColors();
+  renderLastMoveHighlight();
   updateComputerMoveReviewControls();
 }
 
@@ -209,7 +212,29 @@ function squarePosition(square) {
 }
 
 function clearMoveHints() {
-  if (moveHintsEl) moveHintsEl.innerHTML = '';
+  if (!moveHintsEl) return;
+  moveHintsEl.querySelectorAll('.move-hint').forEach((hint) => hint.remove());
+}
+
+function clearLastMoveHighlight() {
+  if (!moveHintsEl) return;
+  moveHintsEl.querySelectorAll('.last-move-highlight').forEach((marker) => marker.remove());
+}
+
+function renderLastMoveHighlight() {
+  clearLastMoveHighlight();
+  if (!moveHintsEl || !lastMove?.from || !lastMove?.to || isComputerReviewingPast()) return;
+  [lastMove.from, lastMove.to].forEach((square, index) => {
+    const pos = squareOverlayPosition(square, false);
+    if (!pos) return;
+    const marker = document.createElement('span');
+    marker.className = 'last-move-highlight';
+    marker.dataset.square = square;
+    marker.dataset.moveEnd = index === 0 ? 'from' : 'to';
+    marker.style.left = `${pos.left}%`;
+    marker.style.top = `${pos.top}%`;
+    moveHintsEl.appendChild(marker);
+  });
 }
 
 function showMoveHints(square) {
@@ -269,6 +294,20 @@ function renderBoard(animated = true) {
   if (selectedLevel && selectedMinutes) rememberComputerFen(game.fen());
   ensureBoard().setPosition(game.fen(), animated);
   forceBoardSquareColors();
+  renderLastMoveHighlight();
+}
+
+function loadComputerFen(fen) {
+  if (!fen) return false;
+  const previousFen = game.fen();
+  const fenChanged = Boolean(previousFen && previousFen !== fen);
+  const inferredLastMove = fenChanged
+    ? inferLastMoveFromFens(previousFen, fen, window.Chess)
+    : null;
+  const loaded = game.load(fen);
+  if (loaded === false) return false;
+  if (fenChanged) lastMove = inferredLastMove;
+  return true;
 }
 
 function setComputerStatus(text) {
@@ -395,7 +434,7 @@ async function requestRatedTimeout() {
   try {
     const payload = await invokeComputer({ action: 'timeout', game_id: ratedGameId });
     if (payload?.fen) {
-      game.load(payload.fen);
+      loadComputerFen(payload.fen);
       renderBoard(false);
     }
     syncRatedClocks(payload);
@@ -602,6 +641,7 @@ async function computerTurn() {
       promotion: best[4] || 'q'
     });
     if (!move) throw new Error(`invalid engine move: ${best}`);
+    lastMove = { from: move.from, to: move.to };
     renderBoard(true);
     if (!checkGuestGameResult()) {
       switchClock('player');
@@ -694,7 +734,7 @@ async function waitForRatedComputerReply(moveId, initialPayload = null, attempts
 
 function applyRatedComputerReply(payload, computerCapMs = null) {
   if (!payload?.fen) return false;
-  game.load(payload.fen);
+  loadComputerFen(payload.fen);
   renderBoard(true);
   syncRatedClocks(payload, computerCapMs);
   if (payload.status === 'finished') finishRatedResult(payload, computerCapMs);
@@ -739,7 +779,7 @@ async function submitRatedMove(move, moveId) {
     }
 
     const localComputerRemaining = currentClockMs('computer');
-    game.load(payload.fen);
+    loadComputerFen(payload.fen);
     renderBoard(true);
     syncRatedClocks(payload, localComputerRemaining);
     if (payload.status === 'finished') {
@@ -792,6 +832,8 @@ function handleBoardInput(event) {
     clearMoveHints();
     const move = game.move({ from: event.squareFrom, to: event.squareTo, promotion: 'q' });
     if (!move) return false;
+    lastMove = { from: move.from, to: move.to };
+    renderLastMoveHighlight();
 
     const moveInputProcess = event.chessboard?.state?.moveInputProcess;
     Promise.resolve(moveInputProcess).then(() => renderBoard(true));
@@ -856,6 +898,8 @@ async function startComputerGame(levelKey, minutes) {
     }
 
     game.reset();
+    lastMove = null;
+    clearLastMoveHighlight();
     finished = false;
     ratedMode = Boolean(session);
     ratedAccessToken = session?.access_token || null;
@@ -866,7 +910,7 @@ async function startComputerGame(levelKey, minutes) {
       ratedGameId = started.game_id;
       currentRating = Number(started.rating);
       if (!ratedGameId || !started.fen) throw new Error('Rated computer game was not created');
-      game.load(started.fen);
+      loadComputerFen(started.fen);
       setPlayingLayout(levelKey, selectedMinutes, { name: started.player_name, rating: started.rating });
       syncRatedClocks(started);
     } else {
