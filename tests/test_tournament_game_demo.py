@@ -9,7 +9,7 @@ demo_path = ROOT / 'play-tournament-demo.js'
 assert 'play-v10.html?demo_tournament=1' in tournaments, 'tournaments page must link to tournament demo'
 assert 'عرض مثال مباراة بطولة' in tournaments, 'demo link must be clearly labelled'
 assert "const demoTournament = params.get('demo_tournament')==='1';" in page, 'play page must recognize demo mode'
-assert 'play-tournament-demo.js?v=20260909-1' in page, 'play page must load isolated demo module'
+assert 'play-tournament-demo.js?v=20260909-2' in page, 'play page must load isolated demo module'
 assert demo_path.exists(), 'isolated tournament demo module must exist'
 
 demo = demo_path.read_text(encoding='utf-8')

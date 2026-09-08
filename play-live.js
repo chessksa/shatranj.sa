@@ -43,6 +43,7 @@ const topRatingEl = $('topRating');
 const bottomRatingEl = $('bottomRating');
 const topAvatarEl = $('topAvatar');
 const bottomAvatarEl = $('bottomAvatar');
+const topPlayerCard = $('topPlayerCard');
 const resignBtn = $('resignBtn');
 const flipBoardEl = $('flipBoard');
 const drawOfferBtn = $('drawOffer');
@@ -90,6 +91,7 @@ async function loadTournamentGameContext(){
   const badge=tournamentGameBadge;
   if(!badge || !liveGameId || !supabase) return;
   badge.hidden = true;
+  topPlayerCard?.classList.remove('tournament-match-card');
   try{
     const {data,error}=await supabase.rpc('get_live_game_tournament_context',{p_game_id:liveGameId});
     if(error) throw error;
@@ -98,9 +100,11 @@ async function loadTournamentGameContext(){
     if(tournamentGameNameEl) tournamentGameNameEl.textContent=String(row.tournament_name);
     if(tournamentGameRoundEl) tournamentGameRoundEl.textContent=tournamentRoundLabel(row.round_no,row.max_round);
     badge.hidden = false;
+    topPlayerCard?.classList.add('tournament-match-card');
   }catch(err){
     console.warn('تعذر تحميل بيانات بطولة المباراة',err);
     badge.hidden = true;
+    topPlayerCard?.classList.remove('tournament-match-card');
   }
 }
 

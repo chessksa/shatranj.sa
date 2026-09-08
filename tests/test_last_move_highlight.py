@@ -118,7 +118,7 @@ def test_native_marker_style_sprite_and_cache_bust():
         "stroke-width:1px",
         "opacity:1",
         "play-computer.js?v=20260909-stalereply1",
-        "play-v8.js?v=20260909-tournamentbadge1",
+        "play-v8.js?v=20260909-tournamentbanner1",
     )
     sprite = require("assets/last-move-markers.svg", 'id="markerFrame"', '<rect')
     assert 'width="40"' in sprite

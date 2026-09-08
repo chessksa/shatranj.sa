@@ -5,6 +5,7 @@ const board = $('board');
 const tournamentGameBadge = $('tournamentGameBadge');
 const tournamentGameName = $('tournamentGameName');
 const tournamentGameRound = $('tournamentGameRound');
+const topPlayerCard = $('topPlayerCard');
 const opponentSearchPanel = $('opponentSearchPanel');
 const topPlayerLive = $('topPlayerLive');
 const topName = $('topName');
@@ -55,6 +56,7 @@ function renderCoords(){
 }
 
 if(tournamentGameBadge) tournamentGameBadge.hidden = false;
+if(topPlayerCard) topPlayerCard.classList.add('tournament-match-card');
 if(tournamentGameName) tournamentGameName.textContent = 'البداية';
 if(tournamentGameRound) tournamentGameRound.textContent = 'نصف النهائي';
 if(opponentSearchPanel) opponentSearchPanel.hidden = true;

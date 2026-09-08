@@ -25,7 +25,7 @@ for html in [page, spectator_page]:
         'id="tournamentGameBadge"',
         'id="tournamentGameName"',
         'id="tournamentGameRound"',
-        'class="tournament-game-badge"',
+        'tournament-game-badge',
     ]:
         assert marker in html, marker
 
