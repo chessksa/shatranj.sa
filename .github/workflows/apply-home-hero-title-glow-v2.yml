@@ -1,0 +1,31 @@
+name: Apply home hero title glow v2
+
+on:
+  push:
+    branches:
+      - feature/hero-title-glow-20260908
+    paths:
+      - '.github/workflows/apply-home-hero-title-glow-v2.yml'
+
+permissions:
+  contents: write
+
+jobs:
+  apply:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Apply title effect and cache refresh
+        env:
+          TITLE_GLOW_B64: Ci8qIENhbG0gb3JhbmdlLWN5YW4gaGVybyB0aXRsZSBnbG93IDIwMjYwOTA4ICovCi5ob21lLWhlcm8gaDF7CiAgYmFja2dyb3VuZDpsaW5lYXItZ3JhZGllbnQoOTBkZWcsI2ZmYjQ1YyAwJSwjNzllN2VmIDUwJSwjZmZiNDVjIDEwMCUpIWltcG9ydGFudDsKICBiYWNrZ3JvdW5kLXNpemU6MjIwJSAxMDAlIWltcG9ydGFudDsKICAtd2Via2l0LWJhY2tncm91bmQtY2xpcDp0ZXh0IWltcG9ydGFudDsKICBiYWNrZ3JvdW5kLWNsaXA6dGV4dCFpbXBvcnRhbnQ7CiAgLXdlYmtpdC10ZXh0LWZpbGwtY29sb3I6dHJhbnNwYXJlbnQhaW1wb3J0YW50OwogIGNvbG9yOnRyYW5zcGFyZW50IWltcG9ydGFudDsKICBhbmltYXRpb246aGVyb1RpdGxlT3JhbmdlQ3lhbkdow7Z3IDZzIGVhc2UtaW4tb3V0IGluZmluaXRlIWltcG9ydGFudDsKICBmaWx0ZXI6ZHJvcC1zaGFkb3coMCAwIDRweCByZ2JhKDI1NSwxODAsOTIsLjE2KSk7Cn0KLmhvbWUtaGVybyBoMSBzcGFuewogIGNvbG9yOnRyYW5zcGFyZW50IWltcG9ydGFudDsKICAtd2Via2l0LXRleHQtZmlsbC1jb2xvcjp0cmFuc3BhcmVudCFpbXBvcnRhbnQ7Cn0KQGtleWZyYW1lcyBoZXJvVGl0bGVPcmFuZ2VDeWFuR2xvd3sKICAwJSwxMDAlewogICAgYmFja2dyb3VuZC1wb3NpdGlvbjowJSA1MCU7CiAgICBmaWx0ZXI6ZHJvcC1zaGFkb3coMCAwIDRweCByZ2JhKDI1NSwxODAsOTIsLjE4KSk7CiAgfQogIDUwJXsKICAgIGJhY2tncm91bmQtcG9zaXRpb246MTAwJSA1MCU7CiAgICBmaWx0ZXI6ZHJvcC1zaGFkb3coMCAwIDdweCByZ2JhKDEyMSwyMzEsMjM5LC4yMikpOwogIH0KfQpAbWVkaWEocHJlZmVycy1yZWR1Y2VkLW1vdGlvbjpyZWR1Y2UpewogIC5ob21lLWhlcm8gaDF7CiAgICBhbmltYXRpb246bm9uZSFpbXBvcnRhbnQ7CiAgICBiYWNrZ3JvdW5kLXBvc2l0aW9uOjUwJSA1MCUhaW1wb3J0YW50OwogICAgZmlsdGVyOm5vbmUhaW1wb3J0YW50OwogIH0KfQo=
+        run: |
+          python -c "from pathlib import Path; import os,base64; p=Path('home-theme.css'); s=p.read_text(encoding='utf-8'); marker='/* Calm orange-cyan hero title glow 20260908 */'; block=base64.b64decode(os.environ['TITLE_GLOW_B64']).decode('utf-8'); p.write_text(s.rstrip()+block+'\n',encoding='utf-8') if marker not in s else None; q=Path('index.html'); t=q.read_text(encoding='utf-8'); old='home-theme.css?v=2026090802'; new='home-theme.css?v=2026090803'; q.write_text(t.replace(old,new,1),encoding='utf-8') if old in t else None"
+      - run: python tests/test_home_hero_title_glow.py
+      - run: git diff --check
+      - name: Commit title glow
+        run: |
+          git config user.name "chessksa"
+          git config user.email "gmel1199@gmail.com"
+          git add home-theme.css index.html
+          git commit -m "style: add calm orange cyan hero title glow"
+          git push
