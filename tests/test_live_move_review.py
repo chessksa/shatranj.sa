@@ -49,7 +49,7 @@ def test_live_script_cache_is_bumped_for_review_feature():
 def test_move_review_css_is_well_formed_at_opponent_slot_boundary():
     html = (ROOT / "play-v10.html").read_text(encoding="utf-8")
     assert 'white-space:nowrap}"' not in html
-    assert 'white-space:nowrap}\n\n    .opponent-slot' in html
+    assert '.move-review-label{display:none}\n\n    .opponent-slot' in html
 
 
 if __name__ == "__main__":
