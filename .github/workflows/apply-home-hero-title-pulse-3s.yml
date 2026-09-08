@@ -1,0 +1,51 @@
+name: Apply reliable home hero title pulse 3s
+
+on:
+  push:
+    branches:
+      - feature/hero-title-glow-20260908
+    paths:
+      - '.github/workflows/apply-home-hero-title-pulse-3s.yml'
+
+permissions:
+  contents: write
+
+jobs:
+  apply:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Replace title effect and refresh cache
+        env:
+          NEW_CSS_B64: LyogUmVsaWFibGUgb3JhbmdlLWN5YW4gaGVybyB0aXRsZSBwdWxzZSAyMDI2MDkwOCAqLwouaG9tZS1oZXJvIGgxLAouaG9tZS1oZXJvIGgxIHNwYW57CiAgY29sb3I6I2ZmYWQ0ZCFpbXBvcnRhbnQ7CiAgLXdlYmtpdC10ZXh0LWZpbGwtY29sb3I6I2ZmYWQ0ZCFpbXBvcnRhbnQ7CiAgYW5pbWF0aW9uOmhlcm9UaXRsZU9yYW5nZUN5YW5QdWxzZSAzcyBlYXNlLWluLW91dCBpbmZpbml0ZSFpbXBvcnRhbnQ7Cn0KQGtleWZyYW1lcyBoZXJvVGl0bGVPcmFuZ2VDeWFuUHVsc2V7CiAgMCUsMTAwJXsKICAgIGNvbG9yOiNmZmFkNGQhaW1wb3J0YW50OwogICAgLXdlYmtpdC10ZXh0LWZpbGwtY29sb3I6I2ZmYWQ0ZCFpbXBvcnRhbnQ7CiAgICB0ZXh0LXNoYWRvdzowIDAgNXB4IHJnYmEoMjU1LDE3Myw3NywuMTgpOwogIH0KICA1MCV7CiAgICBjb2xvcjojNzJlM2YxIWltcG9ydGFudDsKICAgIC13ZWJraXQtdGV4dC1maWxsLWNvbG9yOiM3MmUzZjEhaW1wb3J0YW50OwogICAgdGV4dC1zaGFkb3c6MCAwIDdweCByZ2JhKDExNCwyMjcsMjQxLC4yNCk7CiAgfQp9Cg==
+        run: |
+          python - <<'PY'
+          from pathlib import Path
+          import base64, os
+
+          css_path = Path('home-theme.css')
+          css = css_path.read_text(encoding='utf-8')
+          old_marker = '/* Calm orange-cyan hero title glow 20260908 */'
+          if old_marker not in css:
+              raise SystemExit('old hero title effect marker not found')
+          new_css = base64.b64decode(os.environ['NEW_CSS_B64']).decode('utf-8').rstrip()
+          css_path.write_text(css[:css.index(old_marker)].rstrip() + '\n\n' + new_css + '\n', encoding='utf-8')
+
+          page_path = Path('index.html')
+          page = page_path.read_text(encoding='utf-8')
+          old = 'home-theme.css?v=2026090803'
+          new = 'home-theme.css?v=2026090804'
+          if old not in page and new not in page:
+              raise SystemExit('home theme cache key not found')
+          if old in page:
+              page_path.write_text(page.replace(old, new, 1), encoding='utf-8')
+          PY
+      - run: python tests/test_home_hero_title_glow.py
+      - run: git diff --check
+      - name: Commit title pulse fix
+        run: |
+          git config user.name "chessksa"
+          git config user.email "gmel1199@gmail.com"
+          git add home-theme.css index.html
+          git commit -m "fix: make hero title pulse visible in 3 seconds"
+          git push
