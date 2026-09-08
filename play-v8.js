@@ -67,6 +67,7 @@ let matchmakingPolling = false;
 let matchmakingStartedAt = 0;
 
 let liveGameId = null;
+let spectatorMode = false;
 let seatKey = null;
 let myColor = null;
 let authUserId = null;
@@ -670,6 +671,7 @@ function localResult(){
 }
 
 function handleBoardInput(event){
+  if(spectatorMode) return false;
   if(event.type===INPUT_EVENT_TYPE.moveInputStarted){
     if(isReviewingPast()) return false;
     if(moveBusy || !game || !serverState || serverState.status!=='active') return false;
@@ -746,6 +748,7 @@ async function claimTimeout(){
 }
 
 async function maybeHandleDrawOffer(){
+  if(spectatorMode) return;
   if(!serverState?.draw_offer_by || serverState.status!=='active') return;
   if(serverState.draw_offer_by===myColor) return;
   const key=`${serverState.draw_offer_by}|${serverState.updated_at}`;
@@ -888,7 +891,10 @@ async function refreshLiveGame(force=false){
   if(refreshBusy || !liveGameId) return;
   refreshBusy=true;
   try{
-    const { data, error } = await supabase.rpc('get_live_game_state',{p_game_id:liveGameId});
+    const request = spectatorMode
+      ? supabase.rpc('get_spectator_live_game_state',{p_game_id:liveGameId})
+      : supabase.rpc('get_live_game_state',{p_game_id:liveGameId});
+    const { data, error } = await request;
     if(error) throw error;
     const row=firstRow(data);
     if(!row) throw new Error('game not found');
@@ -937,6 +943,24 @@ async function recoverSeatIfNeeded(){
   sessionStorage.setItem('shatranj_live_seat_key',row.seat_key);
   sessionStorage.setItem('shatranj_live_color',row.color);
   return true;
+}
+
+async function openSpectatorGame(){
+  spectatorMode=true;
+  seatKey=null;
+  myColor='w';
+  showGamePage();
+  if(leaveText) leaveText.textContent='العودة للبطولات';
+  if(resignBtn) resignBtn.hidden=true;
+  if(drawOfferBtn) drawOfferBtn.hidden=true;
+  if(endGraceBtn) endGraceBtn.hidden=true;
+  if(reportBtn) reportBtn.hidden=true;
+  document.title='مشاهدة مباراة بطولة | شطرنج العرب';
+  await loadTournamentGameContext();
+  await refreshLiveGame(true);
+  gamePollTimer=setInterval(()=>{
+    if(!document.hidden && !['finished','cancelled'].includes(serverState?.status)) refreshLiveGame(false);
+  },1200);
 }
 
 async function openLiveGame(){
@@ -1030,10 +1054,11 @@ cancelMatchmakingBtn.addEventListener('click',cancelMatchmaking);
 
 leaveBtn.addEventListener('click',async()=>{
   if(!matchmakingWaiting.hidden) await cancelMatchmaking();
-  location.href='index.html';
+  location.href=spectatorMode?'tournaments.html':'index.html';
 });
 
 reportBtn.addEventListener('click',()=>{
+  if(spectatorMode) return;
   if(!liveGameId || gamePage.hidden){
     toast('يمكن إرسال البلاغ أثناء المباراة فقط.');
     return;
@@ -1093,6 +1118,14 @@ async function init(){
     return;
   }
 
+  const params = new URLSearchParams(location.search);
+  const spectatorGameId = params.get('spectate');
+  if(spectatorGameId){
+    liveGameId=spectatorGameId;
+    await openSpectatorGame();
+    return;
+  }
+
   const { data:{session} }=await supabase.auth.getSession();
   if(!session){
     location.href='index.html#register';
@@ -1100,7 +1133,6 @@ async function init(){
   }
   authUserId=session.user.id;
 
-  const params = new URLSearchParams(location.search);
   liveGameId = params.get('game');
 
   if(liveGameId){
