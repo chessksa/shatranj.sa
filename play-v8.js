@@ -1,6 +1,9 @@
 import {Chessboard, COLOR, INPUT_EVENT_TYPE, BORDER_TYPE} from 'https://cdn.jsdelivr.net/npm/cm-chessboard@8/src/Chessboard.js';
+import {Markers} from 'https://cdn.jsdelivr.net/npm/cm-chessboard@8/src/extensions/markers/Markers.js';
 import { createClient } from 'https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/+esm';
-import { inferLastMoveFromFens, squareOverlayPosition } from './last-move-highlight.mjs?v=20260908-1';
+import { inferLastMoveFromFens } from './last-move-highlight.mjs?v=20260908-1';
+
+const LAST_MOVE_MARKER = { class: 'marker-frame-last-move', slice: 'markerFrame', position: 'above' };
 
 const files = ['a','b','c','d','e','f','g','h'];
 const ranks = [8,7,6,5,4,3,2,1];
@@ -518,24 +521,17 @@ function moveHintPosition(square){
 }
 
 function clearLastMoveHighlight(){
-  if(!moveHintsEl) return;
-  moveHintsEl.querySelectorAll('.last-move-highlight').forEach((marker)=>marker.remove());
+  const board=cmBoard;
+  if(!board?.removeMarkers) return;
+  board.removeMarkers(LAST_MOVE_MARKER);
 }
 
 function renderLastMoveHighlight(){
+  const board=cmBoard;
   clearLastMoveHighlight();
-  if(!moveHintsEl || !lastMove?.from || !lastMove?.to || isReviewingPast()) return;
-  [lastMove.from,lastMove.to].forEach((square,index)=>{
-    const pos=squareOverlayPosition(square,flipped);
-    if(!pos) return;
-    const marker=document.createElement('span');
-    marker.className='last-move-highlight';
-    marker.dataset.square=square;
-    marker.dataset.moveEnd=index===0?'from':'to';
-    marker.style.left=`${pos.left}%`;
-    marker.style.top=`${pos.top}%`;
-    moveHintsEl.appendChild(marker);
-  });
+  if(!board?.addMarker || !lastMove?.from || !lastMove?.to || isReviewingPast()) return;
+  board.addMarker(LAST_MOVE_MARKER,lastMove.from);
+  board.addMarker(LAST_MOVE_MARKER,lastMove.to);
 }
 
 function showMoveHints(fromSquare){
@@ -602,6 +598,7 @@ function ensureBoard(){
     orientation,
     responsive:true,
     assetsUrl:'assets/',
+    extensions:[{class:Markers,props:{autoMarkers:null,sprite:'last-move-markers.svg'}}],
     style:{
       cssClass:'shatranj',
       showCoordinates:false,
