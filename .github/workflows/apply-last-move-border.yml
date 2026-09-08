@@ -1,4 +1,4 @@
-name: Apply native last move markers
+name: Adjust last move marker style
 
 on:
   push:
@@ -18,30 +18,33 @@ jobs:
       - uses: actions/setup-python@v5
         with:
           python-version: '3.12'
-      - uses: actions/setup-node@v4
-        with:
-          node-version: '22'
 
-      - name: Verify native marker regression is red before patch
+      - name: Apply 2px light red marker style
         run: |
-          if python tests/test_last_move_highlight.py; then
-            echo 'Expected native marker regression to fail before implementation' >&2
-            exit 1
-          fi
-          echo 'RED confirmed: last move is still using the external HTML overlay'
+          python - <<'PY'
+          from pathlib import Path
 
-      - name: Apply native cm-chessboard markers
-        run: python tools/apply_last_move_border.py
+          page = Path('play-v10.html')
+          text = page.read_text(encoding='utf-8')
+          old = ".cm-board-host .cm-chessboard .marker.marker-frame-last-move{stroke:#ffb45a!important;stroke-width:3.6px!important;stroke-linecap:round;stroke-linejoin:round;opacity:1!important;fill:none!important;filter:drop-shadow(0 0 1px rgba(255,180,90,.85))}"
+          new = ".cm-board-host .cm-chessboard .marker.marker-frame-last-move{stroke:#ff6b6b!important;stroke-width:2px!important;stroke-linecap:round;stroke-linejoin:round;opacity:1!important;fill:none!important;filter:drop-shadow(0 0 1px rgba(255,107,107,.75))}"
+          if old not in text:
+              raise SystemExit('current last-move marker style not found')
+          page.write_text(text.replace(old, new, 1), encoding='utf-8')
 
-      - name: Verify native last-move behavior and related board regressions
+          test = Path('tests/test_last_move_highlight.py')
+          text = test.read_text(encoding='utf-8')
+          text = text.replace('"stroke:#ffb45a",', '"stroke:#ff6b6b",', 1)
+          text = text.replace('"stroke-width:3.6px",', '"stroke-width:2px",', 1)
+          test.write_text(text, encoding='utf-8')
+          PY
+
+      - name: Verify last move marker tests
         run: |
           python tests/test_last_move_highlight.py
           python tests/test_live_move_review.py
-          python tests/test_compact_end_review_controls.py
-          python tests/test_play_v10_cm_preview.py
-          python tests/test_computer_move_stability.py
 
-      - name: Commit implementation
+      - name: Commit style change
         run: |
           if git diff --quiet; then
             echo 'No changes to commit'
@@ -49,8 +52,8 @@ jobs:
           fi
           git config user.name 'github-actions[bot]'
           git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
-          git add play-v8.js play-computer.js play-v10.html assets/last-move-markers.svg
-          git commit -m 'fix: render last move with native board markers'
+          git add play-v10.html tests/test_last_move_highlight.py
+          git commit -m 'style: make last move marker thin light red'
           git push origin HEAD:main
 
-# verification trigger: native-markers-v2
+# style trigger: light-red-2px
