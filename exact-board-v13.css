@@ -236,3 +236,11 @@
   body.live-game .board-panel{flex:0 0 auto!important}
   body.live-game .board-panel>.board-frame{flex:0 0 auto!important}
 }
+
+/* Tournament banner must not change the established mobile board width. */
+@media(max-width:900px){
+  body.live-game .board-panel>.board-frame,body.live-game .board-panel>.actions-card{
+    width:calc(100vw - 10px)!important;
+    max-width:100%!important;
+  }
+}
