@@ -42,3 +42,5 @@ jobs:
           git add last-move-highlight.mjs play-v8.js play-v10.html
           git commit -m 'fix: use server move history for live highlight'
           git push origin HEAD:main
+
+# rerun after behavior-focused regression assertion
