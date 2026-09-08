@@ -67,51 +67,59 @@ def test_helper_behavior():
     )
 
 
-def test_live_game_tracks_and_renders_last_move():
+def test_live_game_uses_native_cm_markers_for_last_move():
     live = require(
         "play-v8.js",
-        "./last-move-highlight.mjs?v=20260908-1",
+        "cm-chessboard@8/src/extensions/markers/Markers.js",
+        "const LAST_MOVE_MARKER",
+        "marker-frame-last-move",
+        "position: 'above'",
+        "autoMarkers:null",
+        "board.removeMarkers(LAST_MOVE_MARKER)",
+        "board.addMarker(LAST_MOVE_MARKER,lastMove.from)",
+        "board.addMarker(LAST_MOVE_MARKER,lastMove.to)",
         "let lastMove = null;",
-        "let ignoreNextLastMoveInference = false;",
-        "function renderLastMoveHighlight()",
-        "lastMove = { from: move.from, to: move.to };",
         "inferLastMoveFromFens(previousFen, row.fen, Chess)",
-        "ignoreNextLastMoveInference = true;",
-        "moveHintsEl.querySelectorAll('.move-hint')",
     )
-    assert live.count("renderLastMoveHighlight();") >= 3
+    assert "squareOverlayPosition } from './last-move-highlight.mjs" not in live
+    assert "document.createElement('span')" not in live[live.index("function renderLastMoveHighlight()"):live.index("function showMoveHints(")]
 
 
-def test_computer_game_tracks_player_and_computer_moves():
+def test_computer_game_uses_native_cm_markers_for_last_move():
     computer = require(
         "play-computer.js",
-        "./last-move-highlight.mjs?v=20260908-1",
+        "cm-chessboard@8/src/extensions/markers/Markers.js",
+        "const LAST_MOVE_MARKER",
+        "marker-frame-last-move",
+        "position: 'above'",
+        "autoMarkers: null",
+        "board.removeMarkers(LAST_MOVE_MARKER)",
+        "board.addMarker(LAST_MOVE_MARKER, lastMove.from)",
+        "board.addMarker(LAST_MOVE_MARKER, lastMove.to)",
         "let lastMove = null;",
-        "function renderLastMoveHighlight()",
-        "function loadComputerFen(fen)",
         "inferLastMoveFromFens(previousFen, fen, window.Chess)",
-        "lastMove = { from: move.from, to: move.to };",
-        "moveHintsEl.querySelectorAll('.move-hint')",
     )
-    assert computer.count("lastMove = { from: move.from, to: move.to };") >= 2
-    assert computer.count("loadComputerFen(payload.fen)") >= 2
+    assert "squareOverlayPosition } from './last-move-highlight.mjs" not in computer
+    assert "document.createElement('span')" not in computer[computer.index("function renderLastMoveHighlight()") : computer.index("function showMoveHints(")]
 
 
-def test_highlight_style_and_cache_bust():
+def test_native_marker_style_and_cache_bust():
     page = require(
         "play-v10.html",
-        ".last-move-highlight{",
-        "background:rgba(255,180,90,.10)",
-        "box-shadow:inset 0 0 0 3px rgba(255,180,90,.95)",
-        "play-computer.js?v=20260908-lastmove1",
-        "play-v8.js?v=20260908-lastmove1",
+        ".marker-frame-last-move",
+        "stroke:#ffb45a",
+        "stroke-width:3.6px",
+        "opacity:1",
+        "play-computer.js?v=20260908-lastmove2",
+        "play-v8.js?v=20260908-lastmove2",
     )
+    assert ".last-move-highlight{" not in page
     assert ".move-hint{position:absolute" in page
 
 
 if __name__ == "__main__":
     test_helper_behavior()
-    test_live_game_tracks_and_renders_last_move()
-    test_computer_game_tracks_player_and_computer_moves()
-    test_highlight_style_and_cache_bust()
-    print("last-move highlight tests passed")
+    test_live_game_uses_native_cm_markers_for_last_move()
+    test_computer_game_uses_native_cm_markers_for_last_move()
+    test_native_marker_style_and_cache_bust()
+    print("native last-move marker tests passed")
