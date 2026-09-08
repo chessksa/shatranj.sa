@@ -1,0 +1,31 @@
+name: Verify tournament player banner RED
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - '.github/workflows/verify-tournament-player-banner-red.yml'
+
+permissions:
+  contents: read
+
+jobs:
+  red:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - name: Confirm new regression fails before implementation
+        shell: bash
+        run: |
+          set +e
+          python tests/test_tournament_player_banner.py > /tmp/banner-red.log 2>&1
+          code=$?
+          cat /tmp/banner-red.log
+          if [ "$code" -eq 0 ]; then
+            echo 'Expected tournament player banner regression to fail before implementation.'
+            exit 1
+          fi
+          exit 0
