@@ -29,6 +29,13 @@
   html body.home-signed-in .home-hero .home-board-actions>.btn,html body.home-signed-in .home-hero .home-invite-wrap,html body.home-signed-in .home-hero .home-invite-wrap>.btn,html body.home-signed-in .home-hero #homeInviteToggle{height:58px!important;min-height:58px!important;max-height:58px!important}
 }
 
+/* Unified hero stat frames 20260908 */
+html body .home-hero .hero-stat{
+  border:1px solid rgba(216,182,101,.42)!important;
+  border-radius:17px!important;
+  background:linear-gradient(145deg,rgba(216,182,101,.11),rgba(7,52,54,.92))!important;
+}
+
 /* Mobile live stats vertical spacing 20260907 */
 @media(max-width:700px){
   html body .home-hero .hero-stat{
