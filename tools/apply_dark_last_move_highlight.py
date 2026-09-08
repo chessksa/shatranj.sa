@@ -1,7 +1,7 @@
 from pathlib import Path
 
 ROOT = Path(__file__).resolve().parents[1]
-FILES = [ROOT / 'play-v10.html', ROOT / 'play.html']
+FILES = [ROOT / 'play-v10.html']
 
 OLD_STROKE = 'stroke:#ff6b6b!important'
 NEW_STROKE = 'stroke:#b3262e!important'
