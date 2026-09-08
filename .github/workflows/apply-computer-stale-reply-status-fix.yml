@@ -1,6 +1,6 @@
 name: Apply stale computer reply status fix
 
-# Rerun after aligning regression test with the guard helper.
+# Rerun after aligning all cache-bust regression expectations.
 on:
   push:
     branches: [main]
