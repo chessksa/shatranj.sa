@@ -10,6 +10,10 @@ create index if not exists tournaments_finished_ticker_idx
   on public.tournaments(finished_at desc)
   where status = 'finished' and winner_player_id is not null;
 
+create index if not exists tournaments_winner_player_idx
+  on public.tournaments(winner_player_id)
+  where winner_player_id is not null;
+
 create or replace function private.sync_tournament_winner_to_public()
 returns trigger
 language plpgsql
