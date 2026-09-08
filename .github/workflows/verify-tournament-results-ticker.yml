@@ -3,9 +3,11 @@ name: Verify tournament results ticker
 on:
   push:
     branches:
+      - main
       - feature/tournament-results-ticker-20260908
     paths:
       - 'site-notifications.js'
+      - 'supabase/migrations/20260908143000_tournament_results_ticker.sql'
       - 'tests/test_tournament_results_ticker.py'
       - '.github/workflows/verify-tournament-results-ticker.yml'
 
