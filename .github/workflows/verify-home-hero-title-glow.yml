@@ -3,6 +3,7 @@ name: Verify home hero title glow
 on:
   push:
     branches:
+      - main
       - feature/hero-title-glow-20260908
     paths:
       - 'home-theme.css'
