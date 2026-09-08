@@ -19,45 +19,46 @@ jobs:
         run: |
           python - <<'PY'
           from pathlib import Path
+          from textwrap import dedent
 
           css_path = Path('home-theme.css')
           css = css_path.read_text(encoding='utf-8')
           marker = '/* Calm orange-cyan hero title glow 20260908 */'
-          block = r'''
-
-/* Calm orange-cyan hero title glow 20260908 */
-.home-hero h1{
-  background:linear-gradient(90deg,#ffb45c 0%,#79e7ef 50%,#ffb45c 100%)!important;
-  background-size:220% 100%!important;
-  -webkit-background-clip:text!important;
-  background-clip:text!important;
-  -webkit-text-fill-color:transparent!important;
-  color:transparent!important;
-  animation:heroTitleOrangeCyanGlow 6s ease-in-out infinite!important;
-  filter:drop-shadow(0 0 4px rgba(255,180,92,.16));
-}
-.home-hero h1 span{
-  color:transparent!important;
-  -webkit-text-fill-color:transparent!important;
-}
-@keyframes heroTitleOrangeCyanGlow{
-  0%,100%{
-    background-position:0% 50%;
-    filter:drop-shadow(0 0 4px rgba(255,180,92,.18));
-  }
-  50%{
-    background-position:100% 50%;
-    filter:drop-shadow(0 0 7px rgba(121,231,239,.22));
-  }
-}
-@media(prefers-reduced-motion:reduce){
-  .home-hero h1{
-    animation:none!important;
-    background-position:50% 50%!important;
-    filter:none!important;
-  }
-}
-'''
+          block = dedent('''
+          
+          /* Calm orange-cyan hero title glow 20260908 */
+          .home-hero h1{
+            background:linear-gradient(90deg,#ffb45c 0%,#79e7ef 50%,#ffb45c 100%)!important;
+            background-size:220% 100%!important;
+            -webkit-background-clip:text!important;
+            background-clip:text!important;
+            -webkit-text-fill-color:transparent!important;
+            color:transparent!important;
+            animation:heroTitleOrangeCyanGlow 6s ease-in-out infinite!important;
+            filter:drop-shadow(0 0 4px rgba(255,180,92,.16));
+          }
+          .home-hero h1 span{
+            color:transparent!important;
+            -webkit-text-fill-color:transparent!important;
+          }
+          @keyframes heroTitleOrangeCyanGlow{
+            0%,100%{
+              background-position:0% 50%;
+              filter:drop-shadow(0 0 4px rgba(255,180,92,.18));
+            }
+            50%{
+              background-position:100% 50%;
+              filter:drop-shadow(0 0 7px rgba(121,231,239,.22));
+            }
+          }
+          @media(prefers-reduced-motion:reduce){
+            .home-hero h1{
+              animation:none!important;
+              background-position:50% 50%!important;
+              filter:none!important;
+            }
+          }
+          ''')
           if marker not in css:
               css_path.write_text(css.rstrip() + block + '\n', encoding='utf-8')
 
