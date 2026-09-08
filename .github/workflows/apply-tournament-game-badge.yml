@@ -41,4 +41,4 @@ jobs:
           git commit -m 'feat: mark tournament live games with tournament badge'
           git push origin HEAD:main
 
-# rerun after cache expectation update
+# rerun after current marker-test formatting fix
