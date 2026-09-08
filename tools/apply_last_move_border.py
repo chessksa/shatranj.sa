@@ -79,7 +79,7 @@ patch(
     [
         (
             ".last-move-highlight{position:absolute;width:12.5%;height:12.5%;background:rgba(255,180,90,.10);box-shadow:inset 0 0 0 3px rgba(255,180,90,.95),inset 0 0 10px rgba(255,180,90,.18);pointer-events:none;z-index:0}",
-            ".cm-board-host .cm-chessboard .markers .marker.marker-frame-last-move{stroke:#ffb45a!important;stroke-width:3.6px!important;stroke-linecap:round;stroke-linejoin:round;opacity:1!important;fill:none!important;filter:drop-shadow(0 0 1px rgba(255,180,90,.85))}",
+            ".cm-board-host .cm-chessboard .marker.marker-frame-last-move{stroke:#ffb45a!important;stroke-width:3.6px!important;stroke-linecap:round;stroke-linejoin:round;opacity:1!important;fill:none!important;filter:drop-shadow(0 0 1px rgba(255,180,90,.85))}",
             "native marker style",
         ),
         (
