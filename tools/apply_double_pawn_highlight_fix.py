@@ -91,6 +91,8 @@ text = path.read_text(encoding='utf-8')
 text = text.replace('orange = "#ffb347"', 'orange = "#ff8a24"')
 text = text.replace('play-computer.js?v=20260909-stalereply1', 'play-computer.js?v=20260909-pawnhighlight1')
 text = text.replace('play-v8.js?v=20260909-tournamentspectator1', 'play-v8.js?v=20260909-pawnhighlight1')
+text = text.replace('last-move-highlight.mjs?v=20260908-3', 'last-move-highlight.mjs?v=20260909-pawnhighlight1')
+text = text.replace('last-move-highlight.mjs?v=20260908-2', 'last-move-highlight.mjs?v=20260909-pawnhighlight1')
 path.write_text(text, encoding='utf-8')
 
 print('double-pawn last-move persistence and normal orange highlight applied')
