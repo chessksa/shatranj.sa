@@ -1,4 +1,4 @@
-name: Adjust last move marker style
+name: Refresh last move play entry
 
 on:
   push:
@@ -19,32 +19,43 @@ jobs:
         with:
           python-version: '3.12'
 
-      - name: Apply 2px light red marker style
+      - name: Verify stale entry regression is red before patch
+        run: |
+          if python tests/test_play_entry_cache_bust.py; then
+            echo 'Expected fresh play entry test to fail before patch' >&2
+            exit 1
+          fi
+          echo 'RED confirmed: home still opens stale play URL'
+
+      - name: Force fresh play document from home
         run: |
           python - <<'PY'
           from pathlib import Path
 
-          page = Path('play-v10.html')
+          page = Path('index.html')
           text = page.read_text(encoding='utf-8')
-          old = ".cm-board-host .cm-chessboard .marker.marker-frame-last-move{stroke:#ffb45a!important;stroke-width:3.6px!important;stroke-linecap:round;stroke-linejoin:round;opacity:1!important;fill:none!important;filter:drop-shadow(0 0 1px rgba(255,180,90,.85))}"
-          new = ".cm-board-host .cm-chessboard .marker.marker-frame-last-move{stroke:#ff6b6b!important;stroke-width:2px!important;stroke-linecap:round;stroke-linejoin:round;opacity:1!important;fill:none!important;filter:drop-shadow(0 0 1px rgba(255,107,107,.75))}"
-          if old not in text:
-              raise SystemExit('current last-move marker style not found')
-          page.write_text(text.replace(old, new, 1), encoding='utf-8')
+          version = '20260908-red2'
 
-          test = Path('tests/test_last_move_highlight.py')
-          text = test.read_text(encoding='utf-8')
-          text = text.replace('"stroke:#ffb45a",', '"stroke:#ff6b6b",', 1)
-          text = text.replace('"stroke-width:3.6px",', '"stroke-width:2px",', 1)
-          test.write_text(text, encoding='utf-8')
+          replacements = {
+              'href="play-v10.html"><span>العب الآن</span>': f'href="play-v10.html?ui={version}"><span>العب الآن</span>',
+              'href="play-v10.html?computer=1&v=20260907-23"><span>العب ضد الكمبيوتر</span>': f'href="play-v10.html?computer=1&ui={version}"><span>العب ضد الكمبيوتر</span>',
+              'id="homeBoardPreview" class="home-board-preview protected-play" href="play-v10.html"': f'id="homeBoardPreview" class="home-board-preview protected-play" href="play-v10.html?ui={version}"',
+          }
+          for old, new in replacements.items():
+              if old not in text:
+                  raise SystemExit(f'expected entry link not found: {old}')
+              text = text.replace(old, new, 1)
+
+          page.write_text(text, encoding='utf-8')
           PY
 
-      - name: Verify last move marker tests
+      - name: Verify fresh entry and requested marker style
         run: |
+          python tests/test_play_entry_cache_bust.py
           python tests/test_last_move_highlight.py
           python tests/test_live_move_review.py
 
-      - name: Commit style change
+      - name: Commit entry refresh
         run: |
           if git diff --quiet; then
             echo 'No changes to commit'
@@ -52,8 +63,8 @@ jobs:
           fi
           git config user.name 'github-actions[bot]'
           git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
-          git add play-v10.html tests/test_last_move_highlight.py
-          git commit -m 'style: make last move marker thin light red'
+          git add index.html
+          git commit -m 'fix: force fresh red last-move play page'
           git push origin HEAD:main
 
-# style trigger: light-red-2px
+# trigger: fresh-play-red2-v1
