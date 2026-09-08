@@ -1,0 +1,71 @@
+name: Apply home hero title hue cycle
+
+on:
+  push:
+    branches:
+      - feature/hero-title-glow-20260908
+    paths:
+      - '.github/workflows/apply-home-hero-title-hue-cycle.yml'
+
+permissions:
+  contents: write
+
+jobs:
+  apply:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Apply Safari-safe 3-second title color cycle
+        run: |
+          python - <<'PY'
+          from pathlib import Path
+
+          css_path = Path('home-theme.css')
+          css = css_path.read_text(encoding='utf-8')
+          marker = '/* Reliable orange-cyan hero title pulse 20260908 */'
+          if marker not in css:
+              raise SystemExit('hero title pulse marker not found')
+
+          new_effect = r'''/* Reliable orange-cyan hero title pulse 20260908 */
+.home-hero h1,
+.home-hero h1 span{
+  color:#ffad4d!important;
+  -webkit-text-fill-color:#ffad4d!important;
+}
+.home-hero h1{
+  animation:heroTitleOrangeCyanPulse 3s ease-in-out infinite!important;
+  will-change:filter;
+}
+@keyframes heroTitleOrangeCyanPulse{
+  0%,100%{
+    filter:hue-rotate(0deg);
+    -webkit-filter:hue-rotate(0deg);
+    text-shadow:0 0 5px rgba(255,173,77,.18);
+  }
+  50%{
+    filter:hue-rotate(151deg);
+    -webkit-filter:hue-rotate(151deg);
+    text-shadow:0 0 7px rgba(114,227,241,.24);
+  }
+}
+'''
+          css_path.write_text(css[:css.index(marker)].rstrip() + '\n\n' + new_effect, encoding='utf-8')
+
+          page_path = Path('index.html')
+          page = page_path.read_text(encoding='utf-8')
+          old = 'home-theme.css?v=2026090804'
+          new = 'home-theme.css?v=2026090805'
+          if old not in page and new not in page:
+              raise SystemExit('home theme cache key not found')
+          if old in page:
+              page_path.write_text(page.replace(old, new, 1), encoding='utf-8')
+          PY
+      - run: python tests/test_home_hero_title_glow.py
+      - run: git diff --check
+      - name: Commit title color cycle fix
+        run: |
+          git config user.name "chessksa"
+          git config user.email "gmel1199@gmail.com"
+          git add home-theme.css index.html
+          git commit -m "fix: make hero title color cycle visible on Safari"
+          git push
