@@ -1,0 +1,46 @@
+name: Apply trial badge
+
+on:
+  push:
+    branches:
+      - feature/trial-badge-20260908
+    paths:
+      - '.github/workflows/apply-trial-badge.yml'
+
+permissions:
+  contents: write
+
+jobs:
+  apply:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Add trial badge beside platform kicker
+        run: |
+          python - <<'PY'
+          from pathlib import Path
+
+          page_path = Path('index.html')
+          page = page_path.read_text(encoding='utf-8')
+          old = '<span class="hero-kicker">المنصة العربية للشطرنج</span>'
+          new = '<span class="hero-kicker">المنصة العربية للشطرنج <span class="trial-badge">تشغيل تجريبي</span></span>'
+          if old not in page:
+              raise SystemExit('platform kicker not found')
+          page = page.replace(old, new, 1)
+          page = page.replace('home-theme.css?v=2026090805', 'home-theme.css?v=2026090806', 1)
+          page_path.write_text(page, encoding='utf-8')
+
+          css_path = Path('home-theme.css')
+          css = css_path.read_text(encoding='utf-8').rstrip()
+          css += '''\n\n/* Trial badge beside platform kicker 20260908 */\n.hero-kicker .trial-badge{\n  display:inline-block;\n  margin-inline-start:6px;\n  color:#ff4d4f!important;\n  font-size:12px!important;\n  font-weight:900!important;\n  white-space:nowrap;\n}\n@media(max-width:700px){\n  .hero-kicker .trial-badge{\n    font-size:10px!important;\n  }\n}\n'''
+          css_path.write_text(css, encoding='utf-8')
+          PY
+      - run: python tests/test_trial_badge.py
+      - run: git diff --check
+      - name: Commit trial badge
+        run: |
+          git config user.name "chessksa"
+          git config user.email "gmel1199@gmail.com"
+          git add index.html home-theme.css
+          git commit -m "feat: add red trial badge beside platform kicker"
+          git push
