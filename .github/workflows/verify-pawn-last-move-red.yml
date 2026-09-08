@@ -1,0 +1,35 @@
+name: Verify pawn last-move regression RED
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - '.github/workflows/verify-pawn-last-move-red.yml'
+
+permissions:
+  contents: read
+
+jobs:
+  red:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - name: Confirm regression test fails before fix
+        shell: bash
+        run: |
+          set +e
+          python tests/test_last_move_highlight.py > /tmp/last-move-red.log 2>&1
+          status=$?
+          cat /tmp/last-move-red.log
+          if [ "$status" -eq 0 ]; then
+            echo 'Expected pawn last-move regression test to fail before implementation.'
+            exit 1
+          fi
+          grep -Eq "AssertionError|missing:|ERR_ASSERTION" /tmp/last-move-red.log
+          echo 'RED confirmed: pawn last-move regression is reproduced.'
