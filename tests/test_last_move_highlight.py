@@ -94,11 +94,10 @@ def test_computer_game_uses_native_markers():
 def test_native_marker_and_capture_hint_style():
     orange = "#ffb347"
     square_capture = f'.square.capture::after{{content:"";position:absolute;inset:8px;border:2px solid {orange};border-radius:50%}}'
+    marker_selector = f'.cm-chessboard .markers .marker.marker-frame-last-move{{stroke:{orange}!important;stroke-width:2px!important'
     page = require(
         "play-v10.html",
-        ".marker-frame-last-move",
-        f"stroke:{orange}",
-        "stroke-width:2px",
+        marker_selector,
         "opacity:1",
         ".move-hint.capture::after",
         f"border:2px solid {orange}",
@@ -109,6 +108,7 @@ def test_native_marker_and_capture_hint_style():
     legacy_page = require("play.html", square_capture)
     sprite = require("assets/last-move-markers.svg", 'id="markerFrame"', '<rect')
     assert 'width="40"' in sprite
+    assert ".cm-board-host .cm-chessboard .marker.marker-frame-last-move" not in page
     assert "stroke:#ff0000!important;stroke-width:2px" not in page
     assert "border:2px solid #ff0000;box-shadow:none" not in page
     assert '.square.capture::after{content:"";position:absolute;inset:8px;border:2px solid #ff0000;border-radius:50%}' not in page
