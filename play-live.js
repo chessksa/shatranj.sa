@@ -46,6 +46,9 @@ const bottomAvatarEl = $('bottomAvatar');
 const resignBtn = $('resignBtn');
 const flipBoardEl = $('flipBoard');
 const drawOfferBtn = $('drawOffer');
+const tournamentGameBadge = $('tournamentGameBadge');
+const tournamentGameNameEl = $('tournamentGameName');
+const tournamentGameRoundEl = $('tournamentGameRound');
 
 let matchmakingTimer = null;
 let matchmakingPolling = false;
@@ -71,6 +74,34 @@ let gamePollTimer = null;
 
 function firstRow(data){
   return Array.isArray(data) ? (data[0] || null) : data;
+}
+
+
+function tournamentRoundLabel(round,maxRound){
+  const current=Number(round)||1;
+  const last=Number(maxRound)||current;
+  if(current===last) return 'النهائي';
+  if(current===last-1) return 'نصف النهائي';
+  if(current===last-2) return 'ربع النهائي';
+  return `الدور ${current}`;
+}
+
+async function loadTournamentGameContext(){
+  const badge=tournamentGameBadge;
+  if(!badge || !liveGameId || !supabase) return;
+  badge.hidden = true;
+  try{
+    const {data,error}=await supabase.rpc('get_live_game_tournament_context',{p_game_id:liveGameId});
+    if(error) throw error;
+    const row=firstRow(data);
+    if(!row?.tournament_name) return;
+    if(tournamentGameNameEl) tournamentGameNameEl.textContent=String(row.tournament_name);
+    if(tournamentGameRoundEl) tournamentGameRoundEl.textContent=tournamentRoundLabel(row.round_no,row.max_round);
+    badge.hidden = false;
+  }catch(err){
+    console.warn('تعذر تحميل بيانات بطولة المباراة',err);
+    badge.hidden = true;
+  }
 }
 
 function toast(message, ms=2200){
@@ -549,6 +580,7 @@ async function openSpectatorGame(){
   const actionsCard=flipBoardEl.closest('.actions-card');
   if(actionsCard) actionsCard.style.gridTemplateColumns='1fr';
   document.title='مشاهدة مباشرة | شطرنج العرب';
+  await loadTournamentGameContext();
   await refreshLiveGame(true);
   gamePollTimer=setInterval(()=>{
     if(!document.hidden && serverState?.status!=='finished') refreshLiveGame(false);
@@ -564,6 +596,7 @@ async function openLiveGame(){
   }
 
   showGamePage();
+  await loadTournamentGameContext();
   await refreshLiveGame(true);
   gamePollTimer=setInterval(()=>{
     if(!document.hidden && serverState?.status!=='finished') refreshLiveGame(false);

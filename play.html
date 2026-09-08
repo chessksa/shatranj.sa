@@ -5,7 +5,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <title>العب الآن | شطرنج العرب</title>
   <script>
-    const PLAY_CACHE_RESET_VERSION = '20260907-spectator1';
+    const PLAY_CACHE_RESET_VERSION = '20260909-tournamentbadge1';
     (async()=>{
       try{
         const resetKey='shatranj_play_cache_reset_version';
@@ -161,6 +161,11 @@
     .report-message{min-height:20px;margin-top:10px!important;color:#ff9b9b!important}.report-message.ok{color:#78df94!important}
     @media(max-width:600px){.report-modal{padding:10px}.report-card{padding:17px;border-radius:15px}.report-actions{grid-template-columns:1fr}}
 
+
+    .tournament-game-badge{position:absolute;z-index:18;top:8px;left:50%;transform:translateX(-50%);max-width:min(78%,520px);min-height:29px;padding:4px 10px;border:1px solid rgba(224,181,103,.78);border-radius:10px;background:rgba(3,43,48,.95);box-shadow:0 6px 16px rgba(0,0,0,.2);display:flex;align-items:center;justify-content:center;gap:7px;direction:rtl;white-space:nowrap;font-size:11px;line-height:1.15}
+    .tournament-game-badge strong{color:#ffbd73;font-size:11px;font-weight:900}.tournament-game-context{display:flex;align-items:center;gap:5px;min-width:0;color:#f4efe6;font-weight:800}.tournament-game-context #tournamentGameName{max-width:250px;overflow:hidden;text-overflow:ellipsis}.tournament-game-context #tournamentGameRound{color:#efcf7c}
+    @media(max-width:900px){.tournament-game-badge{top:5px;max-width:82%;min-height:25px;padding:3px 8px;font-size:10px}.tournament-game-badge strong{font-size:10px}.tournament-game-context #tournamentGameName{max-width:140px}}
+
   </style>
   <link rel="stylesheet" href="realistic-pieces.css?v=20260905-1" />
 </head>
@@ -201,7 +206,11 @@
 
   <main class="page" id="gamePage" hidden>
     <div class="layout">
-      <section class="board-panel">
+      <section class="board-panel" style="position:relative">
+        <div class="tournament-game-badge" id="tournamentGameBadge" hidden aria-label="مباراة بطولة">
+          <strong>بطولة</strong>
+          <span class="tournament-game-context"><span id="tournamentGameName">—</span><span aria-hidden="true">·</span><span id="tournamentGameRound">—</span></span>
+        </div>
         <div class="board-frame">
           <div class="coords-left" id="coordsLeft"></div>
           <div class="board-shell">
@@ -286,6 +295,6 @@
   <script src="config.js?v=20260903-2"></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/chess.js/0.10.3/chess.min.js"></script>
   <script src="site-notifications.js"></script>
-  <script type="module" src="play-live.js?v=20260907-spectator1"></script>
+  <script type="module" src="play-live.js?v=20260909-tournamentbadge1"></script>
 </body>
 </html>
