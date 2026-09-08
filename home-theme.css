@@ -60,17 +60,20 @@ html body .home-hero .hero-stat{
 .home-hero h1 span{
   color:#ffad4d!important;
   -webkit-text-fill-color:#ffad4d!important;
+}
+.home-hero h1{
   animation:heroTitleOrangeCyanPulse 3s ease-in-out infinite!important;
+  will-change:filter;
 }
 @keyframes heroTitleOrangeCyanPulse{
   0%,100%{
-    color:#ffad4d!important;
-    -webkit-text-fill-color:#ffad4d!important;
+    filter:hue-rotate(0deg);
+    -webkit-filter:hue-rotate(0deg);
     text-shadow:0 0 5px rgba(255,173,77,.18);
   }
   50%{
-    color:#72e3f1!important;
-    -webkit-text-fill-color:#72e3f1!important;
+    filter:hue-rotate(151deg);
+    -webkit-filter:hue-rotate(151deg);
     text-shadow:0 0 7px rgba(114,227,241,.24);
   }
 }
