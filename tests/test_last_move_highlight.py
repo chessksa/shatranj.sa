@@ -68,7 +68,7 @@ def test_live_game_uses_native_markers():
         "let lastMove = null;",
         "latestMoveFromServerMoves(row.moves)",
         "lastMove=serverLastMove || inferredLastMove;",
-        "last-move-highlight.mjs?v=20260908-3",
+        "last-move-highlight.mjs?v=20260909-pawnhighlight1",
     )
     assert "squareOverlayPosition } from './last-move-highlight.mjs" not in live
     assert "document.createElement('span')" not in live[live.index("function renderLastMoveHighlight()") : live.index("function showMoveHints(")]
@@ -85,14 +85,14 @@ def test_computer_game_uses_native_markers():
         "board.addMarker(LAST_MOVE_MARKER, lastMove.to)",
         "let lastMove = null;",
         "inferLastMoveFromFens(previousFen, fen, window.Chess)",
-        "last-move-highlight.mjs?v=20260908-2",
+        "last-move-highlight.mjs?v=20260909-pawnhighlight1",
     )
     assert "squareOverlayPosition } from './last-move-highlight.mjs" not in computer
     assert "document.createElement('span')" not in computer[computer.index("function renderLastMoveHighlight()") : computer.index("function showMoveHints(")]
 
 
 def test_native_marker_and_capture_hint_style():
-    orange = "#ffb347"
+    orange = "#ff8a24"
     square_capture = f'.square.capture::after{{content:"";position:absolute;inset:8px;border:2px solid {orange};border-radius:50%}}'
     marker_selector = f'.cm-chessboard .markers .marker.marker-frame-last-move{{stroke:{orange}!important;stroke-width:2px!important'
     page = require(
@@ -102,8 +102,8 @@ def test_native_marker_and_capture_hint_style():
         ".move-hint.capture::after",
         f"border:2px solid {orange}",
         square_capture,
-        "play-computer.js?v=20260909-stalereply1",
-        "play-v8.js?v=20260909-tournamentspectator1",
+        "play-computer.js?v=20260909-pawnhighlight1",
+        "play-v8.js?v=20260909-pawnhighlight1",
     )
     legacy_page = require("play.html", square_capture)
     sprite = require("assets/last-move-markers.svg", 'id="markerFrame"', '<rect')

@@ -1,7 +1,7 @@
 import { Chessboard, COLOR, INPUT_EVENT_TYPE, BORDER_TYPE } from 'https://cdn.jsdelivr.net/npm/cm-chessboard@8/src/Chessboard.js';
 import { Markers } from 'https://cdn.jsdelivr.net/npm/cm-chessboard@8/src/extensions/markers/Markers.js';
 import { createClient } from 'https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/+esm';
-import { inferLastMoveFromFens } from './last-move-highlight.mjs?v=20260908-2';
+import { fenPositionKey, inferLastMoveFromFens } from './last-move-highlight.mjs?v=20260909-pawnhighlight1';
 
 const LAST_MOVE_MARKER = { class: 'marker-frame-last-move', slice: 'markerFrame', position: 'above' };
 
@@ -298,7 +298,7 @@ function renderBoard(animated = true) {
 function loadComputerFen(fen) {
   if (!fen) return false;
   const previousFen = game.fen();
-  const fenChanged = Boolean(previousFen && previousFen !== fen);
+  const fenChanged = Boolean(previousFen && fenPositionKey(previousFen) !== fenPositionKey(fen));
   const inferredLastMove = fenChanged
     ? inferLastMoveFromFens(previousFen, fen, window.Chess)
     : null;
