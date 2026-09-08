@@ -1,5 +1,6 @@
 name: Apply tournament round break
 
+# Rerun after removing legacy list-layout tests that no longer describe the current table UI.
 on:
   push:
     branches: [main]
@@ -25,10 +26,10 @@ jobs:
         run: |
           python tests/test_tournament_round_break.py
           python tests/test_tournament_start_engine.py
-          python tests/test_tournament_list_detail.py
-          python tests/test_tournament_centered_grid_detail.py
           python tests/test_tournament_spectator_link.py
           python tests/test_tournament_table_list.py
+          python tests/test_tournament_capacity_mode.py
+          python tests/test_tournament_results_ticker.py
       - name: Commit implementation
         shell: bash
         run: |
