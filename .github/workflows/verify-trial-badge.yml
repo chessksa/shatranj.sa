@@ -1,0 +1,23 @@
+name: Verify trial badge
+
+on:
+  push:
+    branches:
+      - feature/trial-badge-20260908
+      - main
+    paths:
+      - 'index.html'
+      - 'home-theme.css'
+      - 'tests/test_trial_badge.py'
+      - '.github/workflows/verify-trial-badge.yml'
+
+permissions:
+  contents: read
+
+jobs:
+  verify:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - run: python tests/test_trial_badge.py
+      - run: git diff --check
