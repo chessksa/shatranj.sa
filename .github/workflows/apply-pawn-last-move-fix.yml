@@ -43,3 +43,5 @@ jobs:
           git add last-move-highlight.mjs play-v8.js play-computer.js play-v10.html
           git commit -m 'fix: highlight opponent pawn moves'
           git push origin HEAD:main
+
+# rerun after updating the cache-bust regression expectation
