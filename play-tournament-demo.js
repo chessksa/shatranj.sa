@@ -5,7 +5,6 @@ const board = $('board');
 const tournamentGameBadge = $('tournamentGameBadge');
 const tournamentGameName = $('tournamentGameName');
 const tournamentGameRound = $('tournamentGameRound');
-const topPlayerCard = $('topPlayerCard');
 const opponentSearchPanel = $('opponentSearchPanel');
 const topPlayerLive = $('topPlayerLive');
 const topName = $('topName');
@@ -24,6 +23,7 @@ const leaveBtn = $('leaveBtn');
 const leaveText = $('leaveText');
 const coordsLeft = $('coordsLeft');
 const coordsBottom = $('coordsBottom');
+const sideHeadStack = document.querySelector('.side-head-stack');
 
 function ensureCmStyles(){
   if(!document.querySelector('link[data-cm-chessboard-core]')){
@@ -55,8 +55,8 @@ function renderCoords(){
   }
 }
 
+if(sideHeadStack && tournamentGameBadge && tournamentGameBadge.parentElement !== sideHeadStack) sideHeadStack.appendChild(tournamentGameBadge);
 if(tournamentGameBadge) tournamentGameBadge.hidden = false;
-if(topPlayerCard) topPlayerCard.classList.add('tournament-match-card');
 if(tournamentGameName) tournamentGameName.textContent = 'البداية';
 if(tournamentGameRound) tournamentGameRound.textContent = 'نصف النهائي';
 if(opponentSearchPanel) opponentSearchPanel.hidden = true;

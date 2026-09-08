@@ -110,9 +110,10 @@ function tournamentRoundLabel(round,maxRound){
 
 async function loadTournamentGameContext(){
   const badge=tournamentGameBadge;
+  const sideHeadStack=document.querySelector('.side-head-stack');
+  if(sideHeadStack && badge && badge.parentElement!==sideHeadStack) sideHeadStack.appendChild(badge);
   if(!badge || !liveGameId || !supabase) return;
   badge.hidden = true;
-  topPlayerCard?.classList.remove('tournament-match-card');
   try{
     const {data,error}=await supabase.rpc('get_live_game_tournament_context',{p_game_id:liveGameId});
     if(error) throw error;
@@ -121,12 +122,10 @@ async function loadTournamentGameContext(){
     if(tournamentGameNameEl) tournamentGameNameEl.textContent=String(row.tournament_name);
     if(tournamentGameRoundEl) tournamentGameRoundEl.textContent=tournamentRoundLabel(row.round_no,row.max_round);
     badge.hidden = false;
-    topPlayerCard?.classList.add('tournament-match-card');
   }catch(err){
     console.warn('تعذر تحميل بيانات بطولة المباراة',err);
     badge.hidden = true;
-    topPlayerCard?.classList.remove('tournament-match-card');
-  }
+    }
 }
 
 function toast(message, ms=2200){
