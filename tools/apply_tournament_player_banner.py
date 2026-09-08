@@ -6,7 +6,7 @@ ROOT = Path(__file__).resolve().parents[1]
 def replace_once(path, old, new):
     p = ROOT / path
     text = p.read_text(encoding='utf-8')
-    if new in text:
+    if new and new in text:
         return
     if old not in text:
         raise SystemExit(f'{path}: expected source block not found')
