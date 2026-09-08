@@ -54,35 +54,23 @@ html body .home-hero .hero-stat{
     font-size:14px!important;
   }
 }
-/* Calm orange-cyan hero title glow 20260908 */
-.home-hero h1{
-  background:linear-gradient(90deg,#ffb45c 0%,#79e7ef 50%,#ffb45c 100%)!important;
-  background-size:220% 100%!important;
-  -webkit-background-clip:text!important;
-  background-clip:text!important;
-  -webkit-text-fill-color:transparent!important;
-  color:transparent!important;
-  animation:heroTitleOrangeCyanGlow 6s ease-in-out infinite!important;
-  filter:drop-shadow(0 0 4px rgba(255,180,92,.16));
-}
+
+/* Reliable orange-cyan hero title pulse 20260908 */
+.home-hero h1,
 .home-hero h1 span{
-  color:transparent!important;
-  -webkit-text-fill-color:transparent!important;
+  color:#ffad4d!important;
+  -webkit-text-fill-color:#ffad4d!important;
+  animation:heroTitleOrangeCyanPulse 3s ease-in-out infinite!important;
 }
-@keyframes heroTitleOrangeCyanGlow{
+@keyframes heroTitleOrangeCyanPulse{
   0%,100%{
-    background-position:0% 50%;
-    filter:drop-shadow(0 0 4px rgba(255,180,92,.18));
+    color:#ffad4d!important;
+    -webkit-text-fill-color:#ffad4d!important;
+    text-shadow:0 0 5px rgba(255,173,77,.18);
   }
   50%{
-    background-position:100% 50%;
-    filter:drop-shadow(0 0 7px rgba(121,231,239,.22));
-  }
-}
-@media(prefers-reduced-motion:reduce){
-  .home-hero h1{
-    animation:none!important;
-    background-position:50% 50%!important;
-    filter:none!important;
+    color:#72e3f1!important;
+    -webkit-text-fill-color:#72e3f1!important;
+    text-shadow:0 0 7px rgba(114,227,241,.24);
   }
 }
