@@ -1,4 +1,4 @@
-name: Apply clear last move border
+name: Apply native last move markers
 
 on:
   push:
@@ -22,18 +22,18 @@ jobs:
         with:
           node-version: '22'
 
-      - name: Verify border test is red before patch
+      - name: Verify native marker regression is red before patch
         run: |
           if python tests/test_last_move_highlight.py; then
-            echo 'Expected clearer border test to fail before patch' >&2
+            echo 'Expected native marker regression to fail before implementation' >&2
             exit 1
           fi
-          echo 'RED confirmed: current border is not clear enough'
+          echo 'RED confirmed: last move is still using the external HTML overlay'
 
-      - name: Apply light-orange border
+      - name: Apply native cm-chessboard markers
         run: python tools/apply_last_move_border.py
 
-      - name: Verify last-move behavior
+      - name: Verify native last-move behavior and related board regressions
         run: |
           python tests/test_last_move_highlight.py
           python tests/test_live_move_review.py
@@ -49,6 +49,6 @@ jobs:
           fi
           git config user.name 'github-actions[bot]'
           git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
-          git add play-v10.html
-          git commit -m 'style: make last move border clearer'
+          git add play-v8.js play-computer.js play-v10.html assets/last-move-markers.svg
+          git commit -m 'fix: render last move with native board markers'
           git push origin HEAD:main
