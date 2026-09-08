@@ -3,6 +3,7 @@ on:
   push:
     paths:
       - 'tools/apply_tournament_modern_layout_everywhere.py'
+      - 'tests/test_tournament_spectator_link.py'
       - '.github/workflows/apply-tournament-modern-layout-everywhere.yml'
 jobs:
   apply:
