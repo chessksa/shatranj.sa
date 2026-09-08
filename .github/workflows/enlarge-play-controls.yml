@@ -1,0 +1,91 @@
+name: Enlarge play header and controls
+
+on:
+  push:
+    paths:
+      - '.github/workflows/enlarge-play-controls.yml'
+
+permissions:
+  contents: write
+
+jobs:
+  apply:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: main
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+
+      - name: Verify new layout test is red before patch
+        run: |
+          if python tests/test_play_controls_fill_space.py; then
+            echo 'Expected play controls layout test to fail before patch' >&2
+            exit 1
+          fi
+          echo 'RED confirmed: play header and controls are still undersized'
+
+      - name: Enlarge header and primary game controls
+        run: |
+          cat >> exact-board-v13.css <<'CSS'
+
+          /* Active play layout: use the available control space more clearly. */
+          @media(min-width:901px){
+            body.live-game .side-header{min-height:74px!important;height:74px!important;padding:10px 12px!important}
+            body.live-game .side-brand{font-size:16px!important;gap:9px!important}
+            body.live-game .side-brand-mark{width:38px!important;height:38px!important;font-size:24px!important}
+            body.live-game .side-icon-btn{width:72px!important;height:46px!important;font-size:12px!important}
+            body.live-game #siteNotificationHost{width:72px!important;min-width:72px!important}
+            body.live-game #siteNotificationHost .site-notification-bell{width:72px!important;height:46px!important}
+            body.live-game #resignBtn .action-icon,body.live-game #drawOffer .action-icon{font-size:38px!important}
+            body.live-game #resignBtn .action-label,body.live-game #drawOffer .action-label{font-size:16px!important}
+            body.live-game #resignBtn,body.live-game #drawOffer{padding:12px 10px!important;gap:8px!important}
+          }
+
+          @media(max-width:900px){
+            body.live-game .side-header{min-height:52px!important;height:52px!important;padding:4px 7px!important}
+            body.live-game .side-brand{font-size:14px!important;gap:6px!important}
+            body.live-game .side-brand-mark{width:32px!important;height:32px!important;font-size:20px!important;border-radius:8px!important}
+            body.live-game .side-header-actions{gap:4px!important}
+            body.live-game .side-icon-btn{height:36px!important;width:60px!important;font-size:10px!important;border-radius:8px!important}
+            body.live-game #siteNotificationHost{width:60px!important;min-width:60px!important}
+            body.live-game #siteNotificationHost .site-notification-bell{width:60px!important;height:36px!important;border-radius:8px!important}
+            body.live-game .board-panel>.actions-card{min-height:54px!important;height:54px!important;flex:0 0 54px!important}
+            body.live-game .board-panel>.actions-card .action-item{min-height:54px!important;height:54px!important;padding:3px 5px!important;gap:3px!important}
+            body.live-game #resignBtn .action-icon,body.live-game #drawOffer .action-icon{font-size:28px!important}
+            body.live-game #resignBtn .action-label,body.live-game #drawOffer .action-label{font-size:11px!important}
+            body.live-game .board-panel>.board-frame,body.live-game .board-panel>.actions-card{width:min(calc(100vw - 10px),calc(100dvh - 330px))!important}
+          }
+          CSS
+
+          python - <<'PY'
+          from pathlib import Path
+          page = Path('play-v10.html')
+          text = page.read_text(encoding='utf-8')
+          old = 'exact-board-v13.css?v=20260903-14'
+          new = 'exact-board-v13.css?v=20260908-playcontrols1'
+          if old not in text:
+              raise SystemExit(f'expected stylesheet version not found: {old}')
+          page.write_text(text.replace(old, new, 1), encoding='utf-8')
+          PY
+
+      - name: Verify requested layout and related controls
+        run: |
+          python tests/test_play_controls_fill_space.py
+          python tests/test_compact_end_review_controls.py
+          python tests/test_live_move_review.py
+          python tests/test_play_v10_cm_preview.py
+
+      - name: Commit implementation
+        run: |
+          if git diff --quiet; then
+            echo 'No changes to commit'
+            exit 0
+          fi
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git add exact-board-v13.css play-v10.html
+          git commit -m 'feat: enlarge play header and controls'
+          git push origin HEAD:main
