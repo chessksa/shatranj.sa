@@ -92,17 +92,23 @@ async function loadTournamentGameContext(){
   const sideHeadStack=document.querySelector('.side-head-stack');
   if(sideHeadStack && badge && badge.parentElement!==sideHeadStack) sideHeadStack.appendChild(badge);
   if(!badge || !liveGameId || !supabase) return;
+  document.documentElement.classList.remove('tournament-match');
+  document.body.classList.remove('tournament-match');
   badge.hidden = true;
   try{
     const {data,error}=await supabase.rpc('get_live_game_tournament_context',{p_game_id:liveGameId});
     if(error) throw error;
     const row=firstRow(data);
     if(!row?.tournament_name) return;
+    document.documentElement.classList.add('tournament-match');
+    document.body.classList.add('tournament-match');
     if(tournamentGameNameEl) tournamentGameNameEl.textContent=String(row.tournament_name);
     if(tournamentGameRoundEl) tournamentGameRoundEl.textContent=tournamentRoundLabel(row.round_no,row.max_round);
     badge.hidden = false;
   }catch(err){
     console.warn('تعذر تحميل بيانات بطولة المباراة',err);
+    document.documentElement.classList.remove('tournament-match');
+    document.body.classList.remove('tournament-match');
     badge.hidden = true;
     }
 }

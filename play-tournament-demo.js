@@ -25,6 +25,9 @@ const coordsLeft = $('coordsLeft');
 const coordsBottom = $('coordsBottom');
 const sideHeadStack = document.querySelector('.side-head-stack');
 
+document.documentElement.classList.add('tournament-match');
+document.body.classList.add('tournament-match');
+
 function ensureCmStyles(){
   if(!document.querySelector('link[data-cm-chessboard-core]')){
     const core=document.createElement('link');
