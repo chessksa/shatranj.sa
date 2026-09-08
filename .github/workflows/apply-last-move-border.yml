@@ -52,3 +52,5 @@ jobs:
           git add play-v8.js play-computer.js play-v10.html assets/last-move-markers.svg
           git commit -m 'fix: render last move with native board markers'
           git push origin HEAD:main
+
+# verification trigger: native-markers-v2
