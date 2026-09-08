@@ -91,19 +91,22 @@ def test_computer_game_uses_native_markers():
     assert "document.createElement('span')" not in computer[computer.index("function renderLastMoveHighlight()") : computer.index("function showMoveHints(")]
 
 
-def test_native_marker_style_sprite_and_cache_bust():
+def test_native_marker_and_capture_hint_style():
     page = require(
         "play-v10.html",
         ".marker-frame-last-move",
-        "stroke:#b3262e",
-        "stroke-width:1px",
+        "stroke:#ff0000",
+        "stroke-width:2px",
         "opacity:1",
+        ".move-hint.capture::after",
+        "border:2px solid #ff0000",
         "play-computer.js?v=20260909-stalereply1",
         "play-v8.js?v=20260909-tournamentspectator1",
     )
     sprite = require("assets/last-move-markers.svg", 'id="markerFrame"', '<rect')
     assert 'width="40"' in sprite
-    assert "stroke:#ff6b6b" not in page
+    assert "stroke:#b3262e" not in page
+    assert "border:4px solid rgba(117,45,36,.58)" not in page
     assert ".last-move-highlight{" not in page
     assert ".move-hint{position:absolute" in page
 
@@ -112,5 +115,5 @@ if __name__ == "__main__":
     test_helper_behavior()
     test_live_game_uses_native_markers()
     test_computer_game_uses_native_markers()
-    test_native_marker_style_sprite_and_cache_bust()
-    print("last-move highlight: PASS")
+    test_native_marker_and_capture_hint_style()
+    print("last-move and capture highlight: PASS")
