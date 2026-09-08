@@ -22,6 +22,6 @@ assert 'if (!isCurrentRatedReply(moveId)) return;' in resume, 'a stale reply loo
 assert resume.index('if (!isCurrentRatedReply(moveId)) return;') < resume.index("setComputerStatus('يفكر…')"), 'stale-loop guard must run before changing the visible status'
 assert 'activeRatedMoveId = moveId;' in submit, 'submitting a new player move must supersede any older reply waiter'
 assert 'retireRatedReply(moveId);' in resume, 'successful computer reply must retire the active waiter'
-assert 'play-computer.js?v=20260909-stalereply1' in page, 'computer script cache must be bumped so mobile Safari gets the fix'
+assert 'play-computer.js?v=20260909-pawnhighlight1' in page, 'computer script cache must be bumped so mobile Safari gets the fix'
 
 print('computer stale reply status guard: PASS')
