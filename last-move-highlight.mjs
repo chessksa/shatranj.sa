@@ -1,5 +1,5 @@
 export function fenPositionKey(fen) {
-  return String(fen || '').trim().split(/\s+/).slice(0, 4).join(' ');
+  return String(fen || '').trim().split(/\s+/).slice(0, 3).join(' ');
 }
 
 export function inferLastMoveFromFens(previousFen, currentFen, ChessCtor) {
