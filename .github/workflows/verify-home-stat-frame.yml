@@ -5,6 +5,7 @@ on:
     branches:
       - feature/unify-stat-card-frame-20260908
     paths:
+      - 'index.html'
       - 'home-theme.css'
       - 'tests/test_home_stat_card_frame.py'
       - '.github/workflows/verify-home-stat-frame.yml'
