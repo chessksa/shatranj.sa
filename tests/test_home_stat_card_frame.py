@@ -1,6 +1,7 @@
 from pathlib import Path
 
 css = Path('home-theme.css').read_text(encoding='utf-8')
+page = Path('index.html').read_text(encoding='utf-8')
 
 required = [
     '/* Unified hero stat frames 20260908 */',
@@ -13,4 +14,6 @@ required = [
 for token in required:
     assert token in css, f'missing unified stat frame rule: {token}'
 
-print('home hero stat cards use the tournament button frame')
+assert 'home-theme.css?v=2026090801' in page, 'home theme cache version must be refreshed'
+
+print('home hero stat cards use the tournament button frame with refreshed CSS cache')
