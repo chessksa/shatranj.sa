@@ -1,0 +1,55 @@
+name: Apply last move highlight
+
+on:
+  push:
+    paths:
+      - '.github/workflows/apply-last-move-highlight.yml'
+
+permissions:
+  contents: write
+
+jobs:
+  apply:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: main
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+
+      - name: Verify regression is red before patch
+        run: |
+          if python tests/test_last_move_highlight.py; then
+            echo 'Expected last-move regression test to fail before implementation' >&2
+            exit 1
+          fi
+          echo 'RED confirmed: last-move highlight is not implemented yet'
+
+      - name: Apply last-move highlight
+        run: python tools/apply_last_move_highlight.py
+
+      - name: Verify last-move behavior and related play regressions
+        run: |
+          python tests/test_last_move_highlight.py
+          python tests/test_live_move_review.py
+          python tests/test_computer_play_mode.py
+          python tests/test_compact_end_review_controls.py
+          python tests/test_play_v10_cm_preview.py
+          python tests/test_computer_move_stability.py
+
+      - name: Commit implementation
+        run: |
+          if git diff --quiet; then
+            echo 'No changes to commit'
+            exit 0
+          fi
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git add last-move-highlight.mjs play-v8.js play-computer.js play-v10.html
+          git commit -m 'feat: highlight the latest chess move'
+          git push origin HEAD:main
