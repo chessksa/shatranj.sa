@@ -40,3 +40,5 @@ jobs:
           git add play-v10.html play-v8.js play.html play-live.js supabase/migrations/20260909213000_tournament_game_badge.sql
           git commit -m 'feat: mark tournament live games with tournament badge'
           git push origin HEAD:main
+
+# rerun after cache expectation update
