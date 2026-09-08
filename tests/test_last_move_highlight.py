@@ -75,6 +75,7 @@ def test_live_game_uses_native_cm_markers_for_last_move():
         "marker-frame-last-move",
         "position: 'above'",
         "autoMarkers:null",
+        "sprite:'last-move-markers.svg'",
         "board.removeMarkers(LAST_MOVE_MARKER)",
         "board.addMarker(LAST_MOVE_MARKER,lastMove.from)",
         "board.addMarker(LAST_MOVE_MARKER,lastMove.to)",
@@ -93,6 +94,7 @@ def test_computer_game_uses_native_cm_markers_for_last_move():
         "marker-frame-last-move",
         "position: 'above'",
         "autoMarkers: null",
+        "sprite: 'last-move-markers.svg'",
         "board.removeMarkers(LAST_MOVE_MARKER)",
         "board.addMarker(LAST_MOVE_MARKER, lastMove.from)",
         "board.addMarker(LAST_MOVE_MARKER, lastMove.to)",
@@ -103,7 +105,7 @@ def test_computer_game_uses_native_cm_markers_for_last_move():
     assert "document.createElement('span')" not in computer[computer.index("function renderLastMoveHighlight()") : computer.index("function showMoveHints(")]
 
 
-def test_native_marker_style_and_cache_bust():
+def test_native_marker_style_sprite_and_cache_bust():
     page = require(
         "play-v10.html",
         ".marker-frame-last-move",
@@ -113,6 +115,8 @@ def test_native_marker_style_and_cache_bust():
         "play-computer.js?v=20260908-lastmove2",
         "play-v8.js?v=20260908-lastmove2",
     )
+    sprite = require("assets/last-move-markers.svg", 'id="markerFrame"', '<rect')
+    assert 'width="40"' in sprite
     assert ".last-move-highlight{" not in page
     assert ".move-hint{position:absolute" in page
 
@@ -121,5 +125,5 @@ if __name__ == "__main__":
     test_helper_behavior()
     test_live_game_uses_native_cm_markers_for_last_move()
     test_computer_game_uses_native_cm_markers_for_last_move()
-    test_native_marker_style_and_cache_bust()
+    test_native_marker_style_sprite_and_cache_bust()
     print("native last-move marker tests passed")
