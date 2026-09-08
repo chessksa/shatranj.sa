@@ -162,10 +162,10 @@
     @media(max-width:600px){.report-modal{padding:10px}.report-card{padding:17px;border-radius:15px}.report-actions{grid-template-columns:1fr}}
 
 
-    #topPlayerCard.tournament-match-card{position:relative;padding-bottom:48px}
-    .tournament-player-banner{position:absolute;z-index:8;left:14px;right:96px;bottom:10px;min-height:36px;padding:5px 12px;border:1px solid rgba(224,181,103,.82);border-radius:18px;background:linear-gradient(90deg,rgba(3,43,48,.98),rgba(5,62,67,.96));box-shadow:0 5px 14px rgba(0,0,0,.22),inset 0 1px 0 rgba(255,255,255,.04);display:flex;align-items:center;gap:10px;direction:ltr;white-space:nowrap;overflow:hidden;line-height:1.1}
-    .tournament-game-cup{flex:0 0 auto;font-size:20px;filter:drop-shadow(0 1px 2px rgba(0,0,0,.35))}.tournament-game-round{flex:0 0 auto;color:#f4efe6;font-size:13px;font-weight:800;direction:rtl}.tournament-game-divider{flex:0 0 1px;width:1px;height:22px;background:rgba(224,181,103,.72)}.tournament-game-title{margin-left:auto;min-width:0;overflow:hidden;text-overflow:ellipsis;color:#f4efe6;font-size:14px;font-weight:900;direction:rtl}.tournament-game-title strong{color:#ffbd73;font-size:14px;font-weight:900}.tournament-game-title #tournamentGameName{color:#ffbd73;max-width:220px;overflow:hidden;text-overflow:ellipsis}
-    @media(max-width:900px){body.live-game #topPlayerCard.tournament-match-card,#topPlayerCard.tournament-match-card{min-height:132px!important;height:132px!important;flex:0 0 132px!important;padding:7px 8px 42px!important}.tournament-player-banner{left:8px;right:98px;bottom:7px;min-height:30px;height:30px;padding:3px 8px;border-radius:15px;gap:7px}.tournament-game-cup{font-size:16px}.tournament-game-round{font-size:11px}.tournament-game-divider{height:18px}.tournament-game-title,.tournament-game-title strong{font-size:11px}.tournament-game-title #tournamentGameName{max-width:115px}}
+    .side-head-stack{display:grid;gap:7px;width:100%}
+    .tournament-player-banner{position:relative;z-index:8;width:100%;min-height:40px;padding:6px 12px;border:1px solid rgba(224,181,103,.82);border-radius:18px;background:linear-gradient(90deg,rgba(3,43,48,.98),rgba(5,62,67,.96));box-shadow:0 5px 14px rgba(0,0,0,.22),inset 0 1px 0 rgba(255,255,255,.04);display:flex;align-items:center;justify-content:center;gap:12px;direction:ltr;text-align:center;white-space:nowrap;overflow:hidden;line-height:1.1}
+    .tournament-game-cup{flex:0 0 auto;font-size:20px;filter:drop-shadow(0 1px 2px rgba(0,0,0,.35))}.tournament-game-round{flex:0 0 auto;color:#f4efe6;font-size:13px;font-weight:800;direction:rtl;text-align:center}.tournament-game-divider{flex:0 0 1px;width:1px;height:22px;background:rgba(224,181,103,.72)}.tournament-game-title{min-width:0;overflow:hidden;text-overflow:ellipsis;color:#f4efe6;font-size:14px;font-weight:900;direction:rtl;text-align:center;display:flex;align-items:center;justify-content:center;gap:4px}.tournament-game-title strong{color:#ffbd73;font-size:14px;font-weight:900}.tournament-game-title #tournamentGameName{color:#ffbd73;max-width:220px;overflow:hidden;text-overflow:ellipsis}
+    @media(max-width:900px){.side-head-stack{order:0;width:100%;gap:5px}.tournament-player-banner{min-height:30px;height:30px;padding:3px 8px;border-radius:15px;gap:7px}.tournament-game-cup{font-size:16px}.tournament-game-round{font-size:11px}.tournament-game-divider{height:18px}.tournament-game-title,.tournament-game-title strong{font-size:11px}.tournament-game-title #tournamentGameName{max-width:135px}}
 
   </style>
   <link rel="stylesheet" href="realistic-pieces.css?v=20260905-1" />
@@ -219,14 +219,23 @@
 
       <aside class="side-panel">
         <div class="panel-stack">
-          <div class="side-header">
-            <div class="side-brand" aria-label="شطرنج العرب"><span class="side-brand-mark">♟</span><span>شطرنج العرب</span></div>
-            <div class="side-header-actions">
-              <button class="side-icon-btn" id="leaveBtn" type="button"><span class="icon">↩</span><span id="leaveText">رجوع</span></button>
-              <div id="siteNotificationHost"></div>
-              <button class="side-icon-btn" id="reportBtn" type="button"><span class="icon">⚑</span><span>إبلاغ</span></button>
+          <div class="side-head-stack">
+            <div class="side-header">
+              <div class="side-brand" aria-label="شطرنج العرب"><span class="side-brand-mark">♟</span><span>شطرنج العرب</span></div>
+              <div class="side-header-actions">
+                <button class="side-icon-btn" id="leaveBtn" type="button"><span class="icon">↩</span><span id="leaveText">رجوع</span></button>
+                <div id="siteNotificationHost"></div>
+                <button class="side-icon-btn" id="reportBtn" type="button"><span class="icon">⚑</span><span>إبلاغ</span></button>
+              </div>
+            </div>
+            <div class="tournament-game-badge tournament-player-banner" id="tournamentGameBadge" hidden aria-label="مباراة بطولة">
+              <span class="tournament-game-cup" aria-hidden="true">🏆</span>
+              <span class="tournament-game-round" id="tournamentGameRound">—</span>
+              <span class="tournament-game-divider" aria-hidden="true"></span>
+              <span class="tournament-game-title"><strong>بطولة</strong> <span id="tournamentGameName">—</span></span>
             </div>
           </div>
+
           <section class="player-card" id="topPlayerCard">
             <div class="avatar" id="topAvatar"></div>
             <div class="player-info">
@@ -239,12 +248,6 @@
               <div class="clock" id="topClock">00:00</div>
               <div class="clock-progress"><span style="width:76%"></span></div>
             </div>
-            <div class="tournament-game-badge tournament-player-banner" id="tournamentGameBadge" hidden aria-label="مباراة بطولة">
-                <span class="tournament-game-cup" aria-hidden="true">🏆</span>
-                <span class="tournament-game-round" id="tournamentGameRound">—</span>
-                <span class="tournament-game-divider" aria-hidden="true"></span>
-                <span class="tournament-game-title"><strong>بطولة</strong> <span id="tournamentGameName">—</span></span>
-              </div>
           </section>
 
           <section class="actions-card">
