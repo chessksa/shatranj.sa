@@ -18,13 +18,30 @@ def test_helper_behavior():
     script = textwrap.dedent(
         r"""
         import assert from 'node:assert/strict';
-        import { fenPositionKey, inferLastMoveFromFens, squareOverlayPosition } from './last-move-highlight.mjs';
+        import { fenPositionKey, inferLastMoveFromFens, latestMoveFromServerMoves, squareOverlayPosition } from './last-move-highlight.mjs';
 
         assert.equal(fenPositionKey('8/8/8/8/8/8/8/8 w - - 0 1'), '8/8/8/8/8/8/8/8 w -');
         assert.deepEqual(squareOverlayPosition('a8', false), {left: 0, top: 0});
         assert.deepEqual(squareOverlayPosition('h1', false), {left: 87.5, top: 87.5});
         assert.deepEqual(squareOverlayPosition('a8', true), {left: 87.5, top: 87.5});
         assert.equal(squareOverlayPosition('z9', false), null);
+
+        assert.deepEqual(
+          latestMoveFromServerMoves([
+            {from: 'e2', to: 'e3', color: 'w'},
+            {from: 'e7', to: 'e5', color: 'b'}
+          ]),
+          {from: 'e7', to: 'e5'}
+        );
+        assert.deepEqual(
+          latestMoveFromServerMoves([
+            {from: 'e2', to: 'e4', color: 'w'},
+            {from: 'c7', to: 'c5', color: 'b'}
+          ]),
+          {from: 'c7', to: 'c5'}
+        );
+        assert.equal(latestMoveFromServerMoves([]), null);
+        assert.equal(latestMoveFromServerMoves([{from: 'bad', to: 'e4'}]), null);
 
         class FakeChess {
           constructor(fen) { this.state = fen; }
@@ -54,8 +71,6 @@ def test_helper_behavior():
           inferLastMoveFromFens('before w KQkq - 0 1', 'after b KQkq e3 8 17', FakeChess),
           {from: 'e2', to: 'e4'}
         );
-        // Some FEN producers normalize a double-pawn push target from e3 to '-'.
-        // The board transition is still uniquely e2-e4 and must remain detectable.
         assert.deepEqual(
           inferLastMoveFromFens('before w KQkq - 0 1', 'after b KQkq - 8 17', FakeChess),
           {from: 'e2', to: 'e4'}
@@ -86,8 +101,11 @@ def test_live_game_uses_native_cm_markers_for_last_move():
         "board.addMarker(LAST_MOVE_MARKER,lastMove.from)",
         "board.addMarker(LAST_MOVE_MARKER,lastMove.to)",
         "let lastMove = null;",
+        "latestMoveFromServerMoves",
+        "const serverLastMove=latestMoveFromServerMoves(row.moves);",
+        "lastMove=serverLastMove || inferredLastMove;",
         "inferLastMoveFromFens(previousFen, row.fen, Chess)",
-        "last-move-highlight.mjs?v=20260908-2",
+        "last-move-highlight.mjs?v=20260908-3",
     )
     assert "squareOverlayPosition } from './last-move-highlight.mjs" not in live
     assert "document.createElement('span')" not in live[live.index("function renderLastMoveHighlight()"):live.index("function showMoveHints(")]
@@ -121,7 +139,7 @@ def test_native_marker_style_sprite_and_cache_bust():
         "stroke-width:1px",
         "opacity:1",
         "play-computer.js?v=20260908-lastmove3",
-        "play-v8.js?v=20260908-lastmove3",
+        "play-v8.js?v=20260908-lastmove4",
     )
     sprite = require("assets/last-move-markers.svg", 'id="markerFrame"', '<rect')
     assert 'width="40"' in sprite
