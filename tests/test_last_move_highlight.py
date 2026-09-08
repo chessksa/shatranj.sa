@@ -102,7 +102,7 @@ def test_live_game_uses_native_cm_markers_for_last_move():
         "board.addMarker(LAST_MOVE_MARKER,lastMove.to)",
         "let lastMove = null;",
         "latestMoveFromServerMoves",
-        "const serverLastMove=latestMoveFromServerMoves(row.moves);",
+        "latestMoveFromServerMoves(row.moves)",
         "lastMove=serverLastMove || inferredLastMove;",
         "inferLastMoveFromFens(previousFen, row.fen, Chess)",
         "last-move-highlight.mjs?v=20260908-3",
