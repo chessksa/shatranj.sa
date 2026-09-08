@@ -97,8 +97,8 @@ def test_live_game_uses_native_markers():
 def test_computer_game_uses_native_markers():
     computer = require(
         "play-computer.js",
-        "class:Markers",
-        "sprite:'last-move-markers.svg'",
+        "class: Markers",
+        "sprite: 'last-move-markers.svg'",
         "board.removeMarkers(LAST_MOVE_MARKER)",
         "board.addMarker(LAST_MOVE_MARKER, lastMove.from)",
         "board.addMarker(LAST_MOVE_MARKER, lastMove.to)",
