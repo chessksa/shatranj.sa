@@ -230,3 +230,9 @@
   body.live-game #resignBtn .action-label,body.live-game #drawOffer .action-label{font-size:11px!important}
   body.live-game .board-panel>.board-frame,body.live-game .board-panel>.actions-card{width:min(calc(100vw - 10px),calc(100dvh - 330px))!important}
 }
+
+/* Keep the live board at its established size when the tournament banner adds vertical UI. */
+@media(max-width:900px){
+  body.live-game .board-panel{flex:0 0 auto!important}
+  body.live-game .board-panel>.board-frame{flex:0 0 auto!important}
+}
