@@ -333,9 +333,16 @@
 
   <script type="module">
     const params = new URLSearchParams(location.search);
+    const demoTournament = params.get('demo_tournament')==='1';
     const computerMode = params.has('computer');
     const hasGame = Boolean(params.get('game'));
-    if(computerMode){
+    if(demoTournament){
+      document.body.classList.add('live-game','tournament-demo');
+      const s=document.createElement('script');
+      s.type='module';
+      s.src='play-tournament-demo.js?v=20260909-1';
+      document.body.appendChild(s);
+    }else if(computerMode){
       document.body.classList.add('pregame','computer-game');
       const s=document.createElement('script');
       s.type='module';
