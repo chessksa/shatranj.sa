@@ -1,0 +1,32 @@
+name: Apply dark last-move highlight
+on:
+  push:
+    branches: [main]
+    paths:
+      - 'tools/apply_dark_last_move_highlight.py'
+      - '.github/workflows/apply-dark-last-move-highlight.yml'
+jobs:
+  apply:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - name: Apply dark red last-move marker
+        run: python tools/apply_dark_last_move_highlight.py
+      - name: Verify last-move highlight regressions
+        run: |
+          python tests/test_last_move_highlight.py
+          python tests/test_tournament_modern_layout_everywhere.py
+          python tests/test_play_v10_cm_preview.py
+      - name: Commit implementation
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add play-v10.html play.html
+          git diff --cached --quiet && exit 0
+          git commit -m "style: darken last-move highlight"
+          git push
