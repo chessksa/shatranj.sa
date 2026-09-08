@@ -43,7 +43,7 @@ def test_new_server_positions_are_recorded_before_live_board_render():
 
 def test_live_script_cache_is_bumped_for_review_feature():
     html = (ROOT / "play-v10.html").read_text(encoding="utf-8")
-    assert "play-v8.js?v=20260908-lastmove3" in html
+    assert "play-v8.js?v=20260908-lastmove4" in html
 
 
 def test_move_review_css_is_well_formed_at_opponent_slot_boundary():
