@@ -17,15 +17,15 @@ jobs:
       - uses: actions/setup-python@v5
         with:
           python-version: '3.12'
-      - name: Confirm header-banner regression fails before implementation
+      - name: Confirm demo-banner regression fails before implementation
         shell: bash
         run: |
           set +e
-          python tests/test_tournament_player_banner.py > /tmp/banner-red.log 2>&1
+          python tests/test_tournament_game_demo.py > /tmp/banner-red.log 2>&1
           code=$?
           cat /tmp/banner-red.log
           if [ "$code" -eq 0 ]; then
-            echo 'Expected tournament header banner regression to fail before implementation.'
+            echo 'Expected tournament demo banner regression to fail before implementation.'
             exit 1
           fi
           exit 0
