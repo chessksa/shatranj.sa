@@ -1,7 +1,7 @@
 import {Chessboard, COLOR, INPUT_EVENT_TYPE, BORDER_TYPE} from 'https://cdn.jsdelivr.net/npm/cm-chessboard@8/src/Chessboard.js';
 import {Markers} from 'https://cdn.jsdelivr.net/npm/cm-chessboard@8/src/extensions/markers/Markers.js';
 import { createClient } from 'https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/+esm';
-import { inferLastMoveFromFens } from './last-move-highlight.mjs?v=20260908-2';
+import { inferLastMoveFromFens, latestMoveFromServerMoves } from './last-move-highlight.mjs?v=20260908-3';
 
 const LAST_MOVE_MARKER = { class: 'marker-frame-last-move', slice: 'markerFrame', position: 'above' };
 
@@ -804,7 +804,10 @@ function applyServerState(row, force=false){
         : latestStoredFen;
     }
     const fenChanged=Boolean(previousFen && previousFen!==row.fen);
-    const inferredLastMove=fenChanged && !ignoreNextLastMoveInference
+    const serverLastMove=fenChanged && !ignoreNextLastMoveInference
+      ? latestMoveFromServerMoves(row.moves)
+      : null;
+    const inferredLastMove=fenChanged && !ignoreNextLastMoveInference && !serverLastMove
       ? inferLastMoveFromFens(previousFen, row.fen, Chess)
       : null;
     try{
@@ -819,7 +822,7 @@ function applyServerState(row, force=false){
       lastMove=null;
       ignoreNextLastMoveInference=false;
     }else if(fenChanged){
-      lastMove=inferredLastMove;
+      lastMove=serverLastMove || inferredLastMove;
     }
     selected=null;
     legalTargets=[];

@@ -2,6 +2,14 @@ export function fenPositionKey(fen) {
   return String(fen || '').trim().split(/\s+/).slice(0, 3).join(' ');
 }
 
+export function latestMoveFromServerMoves(moves) {
+  if (!Array.isArray(moves) || moves.length === 0) return null;
+  const move = moves[moves.length - 1];
+  const isSquare = (value) => /^[a-h][1-8]$/.test(String(value || ''));
+  if (!isSquare(move?.from) || !isSquare(move?.to)) return null;
+  return { from: move.from, to: move.to };
+}
+
 export function inferLastMoveFromFens(previousFen, currentFen, ChessCtor) {
   const before = fenPositionKey(previousFen);
   const after = fenPositionKey(currentFen);
