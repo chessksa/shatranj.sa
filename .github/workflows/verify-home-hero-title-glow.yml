@@ -1,5 +1,6 @@
 name: Verify home hero title glow
 
+# Regression check for the orange-cyan home title effect.
 on:
   push:
     branches:
