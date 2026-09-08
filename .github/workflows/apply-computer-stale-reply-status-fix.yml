@@ -1,5 +1,6 @@
 name: Apply stale computer reply status fix
 
+# Rerun after aligning regression test with the guard helper.
 on:
   push:
     branches: [main]
