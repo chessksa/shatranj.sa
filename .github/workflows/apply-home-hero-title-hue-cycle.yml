@@ -17,6 +17,30 @@ jobs:
       - uses: actions/checkout@v4
       - name: Apply Safari-safe 3-second title color cycle
         run: |
+          cat > /tmp/new_effect.css <<'EOF'
+          /* Reliable orange-cyan hero title pulse 20260908 */
+          .home-hero h1,
+          .home-hero h1 span{
+            color:#ffad4d!important;
+            -webkit-text-fill-color:#ffad4d!important;
+          }
+          .home-hero h1{
+            animation:heroTitleOrangeCyanPulse 3s ease-in-out infinite!important;
+            will-change:filter;
+          }
+          @keyframes heroTitleOrangeCyanPulse{
+            0%,100%{
+              filter:hue-rotate(0deg);
+              -webkit-filter:hue-rotate(0deg);
+              text-shadow:0 0 5px rgba(255,173,77,.18);
+            }
+            50%{
+              filter:hue-rotate(151deg);
+              -webkit-filter:hue-rotate(151deg);
+              text-shadow:0 0 7px rgba(114,227,241,.24);
+            }
+          }
+          EOF
           python - <<'PY'
           from pathlib import Path
 
@@ -25,30 +49,7 @@ jobs:
           marker = '/* Reliable orange-cyan hero title pulse 20260908 */'
           if marker not in css:
               raise SystemExit('hero title pulse marker not found')
-
-          new_effect = r'''/* Reliable orange-cyan hero title pulse 20260908 */
-.home-hero h1,
-.home-hero h1 span{
-  color:#ffad4d!important;
-  -webkit-text-fill-color:#ffad4d!important;
-}
-.home-hero h1{
-  animation:heroTitleOrangeCyanPulse 3s ease-in-out infinite!important;
-  will-change:filter;
-}
-@keyframes heroTitleOrangeCyanPulse{
-  0%,100%{
-    filter:hue-rotate(0deg);
-    -webkit-filter:hue-rotate(0deg);
-    text-shadow:0 0 5px rgba(255,173,77,.18);
-  }
-  50%{
-    filter:hue-rotate(151deg);
-    -webkit-filter:hue-rotate(151deg);
-    text-shadow:0 0 7px rgba(114,227,241,.24);
-  }
-}
-'''
+          new_effect = Path('/tmp/new_effect.css').read_text(encoding='utf-8')
           css_path.write_text(css[:css.index(marker)].rstrip() + '\n\n' + new_effect, encoding='utf-8')
 
           page_path = Path('index.html')
