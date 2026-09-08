@@ -77,3 +77,18 @@ html body .home-hero .hero-stat{
     text-shadow:0 0 7px rgba(114,227,241,.24);
   }
 }
+
+/* Trial badge beside platform kicker 20260908 */
+.hero-kicker .trial-badge{
+  display:inline-block;
+  margin-inline-start:6px;
+  color:#ff4d4f!important;
+  font-size:12px!important;
+  font-weight:900!important;
+  white-space:nowrap;
+}
+@media(max-width:700px){
+  .hero-kicker .trial-badge{
+    font-size:10px!important;
+  }
+}
