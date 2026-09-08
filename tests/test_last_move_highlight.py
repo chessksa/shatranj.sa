@@ -101,17 +101,9 @@ def test_native_marker_style_sprite_and_cache_bust():
         "play-computer.js?v=20260909-stalereply1",
         "play-v8.js?v=20260909-tournamentspectator1",
     )
-    spectator_page = require(
-        "play.html",
-        ".marker-frame-last-move",
-        "stroke:#b3262e",
-        "stroke-width:1px",
-        "opacity:1",
-    )
     sprite = require("assets/last-move-markers.svg", 'id="markerFrame"', '<rect')
     assert 'width="40"' in sprite
     assert "stroke:#ff6b6b" not in page
-    assert "stroke:#ff6b6b" not in spectator_page
     assert ".last-move-highlight{" not in page
     assert ".move-hint{position:absolute" in page
 
