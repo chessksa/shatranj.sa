@@ -1,0 +1,44 @@
+name: Apply server last-move fix
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - '.github/workflows/apply-server-last-move-fix.yml'
+
+permissions:
+  contents: write
+
+jobs:
+  apply:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: main
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - name: Apply authoritative server move history
+        run: python tools/apply_server_last_move_fix.py
+      - name: Verify live last-move behavior
+        run: |
+          python tests/test_last_move_highlight.py
+          python tests/test_live_move_review.py
+          python tests/test_compact_end_review_controls.py
+          python tests/test_play_v10_cm_preview.py
+      - name: Commit implementation
+        shell: bash
+        run: |
+          if git diff --quiet; then
+            echo 'No changes to commit.'
+            exit 0
+          fi
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git add last-move-highlight.mjs play-v8.js play-v10.html
+          git commit -m 'fix: use server move history for live highlight'
+          git push origin HEAD:main
