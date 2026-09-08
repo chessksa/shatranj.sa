@@ -41,3 +41,5 @@ jobs:
           git add tournaments.html play-v10.html play.html play-v8.js play-live.js play-tournament-demo.js
           git commit -m 'fix: keep tournament banner below header'
           git push origin HEAD:main
+
+# rerun-after-cache-test-update
