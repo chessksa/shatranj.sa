@@ -2,12 +2,12 @@ from pathlib import Path
 
 ROOT = Path(__file__).resolve().parents[1]
 
-OLD_MARKER = ".cm-board-host .cm-chessboard .marker.marker-frame-last-move{stroke:#b3262e!important;stroke-width:1px!important;stroke-linecap:round;stroke-linejoin:round;opacity:1!important;fill:none!important;filter:drop-shadow(0 0 1px rgba(179,38,46,.75))}"
-NEW_MARKER = ".cm-board-host .cm-chessboard .marker.marker-frame-last-move{stroke:#ff0000!important;stroke-width:2px!important;stroke-linecap:round;stroke-linejoin:round;opacity:1!important;fill:none!important;filter:drop-shadow(0 0 1px rgba(255,0,0,.75))}"
-OLD_HINT = ".move-hint.capture::after{width:68%;height:68%;background:transparent;border:4px solid rgba(117,45,36,.58);box-shadow:none}"
-NEW_HINT = ".move-hint.capture::after{width:68%;height:68%;background:transparent;border:2px solid #ff0000;box-shadow:none}"
-OLD_SQUARE = '.square.capture::after{content:"";position:absolute;inset:8px;border:4px solid rgba(117,45,36,.55);border-radius:50%}'
-NEW_SQUARE = '.square.capture::after{content:"";position:absolute;inset:8px;border:2px solid #ff0000;border-radius:50%}'
+OLD_MARKER = ".cm-board-host .cm-chessboard .marker.marker-frame-last-move{stroke:#ff0000!important;stroke-width:2px!important;stroke-linecap:round;stroke-linejoin:round;opacity:1!important;fill:none!important;filter:drop-shadow(0 0 1px rgba(255,0,0,.75))}"
+NEW_MARKER = ".cm-board-host .cm-chessboard .marker.marker-frame-last-move{stroke:#ffb347!important;stroke-width:2px!important;stroke-linecap:round;stroke-linejoin:round;opacity:1!important;fill:none!important;filter:drop-shadow(0 0 1px rgba(255,179,71,.75))}"
+OLD_HINT = ".move-hint.capture::after{width:68%;height:68%;background:transparent;border:2px solid #ff0000;box-shadow:none}"
+NEW_HINT = ".move-hint.capture::after{width:68%;height:68%;background:transparent;border:2px solid #ffb347;box-shadow:none}"
+OLD_SQUARE = '.square.capture::after{content:"";position:absolute;inset:8px;border:2px solid #ff0000;border-radius:50%}'
+NEW_SQUARE = '.square.capture::after{content:"";position:absolute;inset:8px;border:2px solid #ffb347;border-radius:50%}'
 
 
 def ensure_replace(text, old, new, label):
@@ -29,4 +29,4 @@ for filename in ('play-v10.html', 'play.html'):
 
     path.write_text(text, encoding='utf-8')
 
-print('red 2px last-move and all capture highlights applied')
+print('light orange 2px last-move and all capture highlights applied')
