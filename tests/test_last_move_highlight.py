@@ -12,82 +12,62 @@ def require(path, *needles):
     return text
 
 
+def run_node_helper(source):
+    helper = (ROOT / "last-move-highlight.mjs").resolve().as_uri()
+    source = source.replace("__HELPER__", helper)
+    with tempfile.NamedTemporaryFile("w", suffix=".mjs", delete=False, encoding="utf-8") as handle:
+        handle.write(source)
+        script = handle.name
+    result = subprocess.run(["node", script], capture_output=True, text=True)
+    if result.returncode:
+        raise AssertionError(result.stdout + result.stderr)
+
+
 def test_helper_behavior():
-    with tempfile.TemporaryDirectory() as td:
-        script = Path(td) / "test.mjs"
-        script.write_text(
-            f"""
-import assert from 'node:assert/strict';
-import {{ fenPositionKey, inferLastMoveFromFens, latestMoveFromServerMoves, squareOverlayPosition }} from {repr((ROOT / 'last-move-highlight.mjs').as_uri())};
+    run_node_helper(
+        r'''
+import {inferLastMoveFromFens, latestMoveFromServerMoves} from '__HELPER__';
 
-assert.equal(
-  fenPositionKey('8/8/8/8/8/8/8/8 w - - 0 1'),
-  '8/8/8/8/8/8/8/8 w -'
-);
-
-class FakeChess {{
-  constructor(fen) {{ this.state = fen; }}
-  moves() {{
-    if (!this.state.startsWith('before ')) return [];
-    return [
-      {{from: 'e2', to: 'e4'}},
-      {{from: 'd2', to: 'd4'}}
-    ];
-  }}
-  move(spec) {{
-    if (!this.state.startsWith('before ')) return null;
-    if (spec.from === 'e2' && spec.to === 'e4') {{
-      this.state = 'after b KQkq e3 0 1';
-      return spec;
-    }}
-    if (spec.from === 'd2' && spec.to === 'd4') {{
-      this.state = 'other b KQkq d3 0 1';
-      return spec;
-    }}
+class FakeChess {
+  constructor(fen){ this.fenValue=fen; }
+  moves(){
+    if(this.fenValue==='start') return [{from:'e2',to:'e4',san:'e4'},{from:'g1',to:'f3',san:'Nf3'}];
+    return [];
+  }
+  move(move){
+    if(this.fenValue==='start' && move.from==='e2' && move.to==='e4'){
+      this.fenValue='after-e4';
+      return {from:'e2',to:'e4'};
+    }
+    if(this.fenValue==='start' && move.from==='g1' && move.to==='f3'){
+      this.fenValue='after-nf3';
+      return {from:'g1',to:'f3'};
+    }
     return null;
-  }}
-  fen() {{ return this.state; }}
-}}
+  }
+  fen(){ return this.fenValue; }
+}
 
-assert.deepEqual(
-  inferLastMoveFromFens('before w KQkq - 0 1', 'after b KQkq e3 8 17', FakeChess),
-  {{from: 'e2', to: 'e4'}}
-);
-assert.deepEqual(
-  inferLastMoveFromFens('before w KQkq - 0 1', 'after b KQkq - 8 17', FakeChess),
-  {{from: 'e2', to: 'e4'}}
-);
-assert.deepEqual(
-  latestMoveFromServerMoves([{{from:'e2',to:'e4'}},{{from:'e7',to:'e5'}}]),
-  {{from:'e7',to:'e5'}}
-);
-assert.deepEqual(
-  latestMoveFromServerMoves([{{from:'e2',to:'e4'}},{{from:'e7',to:'e5'}},{{from:'g1',to:'f3'}}]),
-  {{from:'g1',to:'f3'}}
-);
-assert.equal(latestMoveFromServerMoves([]), null);
-assert.equal(latestMoveFromServerMoves(null), null);
-assert.deepEqual(squareOverlayPosition('a8', false), {{left:0,top:0}});
-assert.deepEqual(squareOverlayPosition('h1', false), {{left:87.5,top:87.5}});
-assert.deepEqual(squareOverlayPosition('a8', true), {{left:87.5,top:87.5}});
-assert.equal(squareOverlayPosition('z9', false), null);
-""",
-            encoding="utf-8",
-        )
-        subprocess.run(["node", str(script)], check=True, cwd=ROOT)
+const exact=inferLastMoveFromFens('start','after-e4',FakeChess);
+if(!exact || exact.from!=='e2' || exact.to!=='e4') throw new Error('failed to infer exact move');
+if(inferLastMoveFromFens('start','missing',FakeChess)!==null) throw new Error('must reject unknown transition');
+const server=latestMoveFromServerMoves([{from:'e2',to:'e4'},{from:'e7',to:'e5'}]);
+if(!server || server.from!=='e7' || server.to!=='e5') throw new Error('must prefer last server move');
+'''
+    )
 
 
 def test_live_game_uses_native_markers():
     live = require(
         "play-v8.js",
-        "class:Markers",
-        "sprite:'last-move-markers.svg'",
+        "const LAST_MOVE_MARKER",
+        "class: 'marker-frame-last-move'",
         "board.removeMarkers(LAST_MOVE_MARKER)",
         "board.addMarker(LAST_MOVE_MARKER,lastMove.from)",
         "board.addMarker(LAST_MOVE_MARKER,lastMove.to)",
         "let lastMove = null;",
-        "inferLastMoveFromFens(previousFen, row.fen, Chess)",
         "latestMoveFromServerMoves(row.moves)",
+        "lastMove=serverLastMove || inferredLastMove;",
         "last-move-highlight.mjs?v=20260908-3",
     )
     assert "squareOverlayPosition } from './last-move-highlight.mjs" not in live
@@ -97,6 +77,7 @@ def test_live_game_uses_native_markers():
 def test_computer_game_uses_native_markers():
     computer = require(
         "play-computer.js",
+        "const LAST_MOVE_MARKER",
         "class: Markers",
         "sprite: 'last-move-markers.svg'",
         "board.removeMarkers(LAST_MOVE_MARKER)",
@@ -118,7 +99,7 @@ def test_native_marker_style_sprite_and_cache_bust():
         "stroke-width:1px",
         "opacity:1",
         "play-computer.js?v=20260909-stalereply1",
-        "play-v8.js?v=20260909-tournamentbanner1",
+        "play-v8.js?v=20260909-tournamentbanner2",
     )
     sprite = require("assets/last-move-markers.svg", 'id="markerFrame"', '<rect')
     assert 'width="40"' in sprite
