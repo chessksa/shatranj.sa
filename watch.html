@@ -8,59 +8,61 @@
 <style>
 *{box-sizing:border-box}
 :root{--green:#0d3b2e;--green2:#176148;--gold:#c5a34d;--cream:#f5f3ed;--text:#14221c;--muted:#6f7773;--line:#ddd7ca;--white:#fff}
-body{margin:0;font-family:Arial,sans-serif;background:var(--cream);color:var(--text)}
-a{text-decoration:none;color:inherit}.wrap{width:min(900px,calc(100% - 24px));margin:auto}
-header{background:var(--green);color:#fff;box-shadow:0 2px 10px rgba(0,0,0,.08)}
-.nav{min-height:58px;display:flex;align-items:center;justify-content:space-between;gap:10px}.brand{font-weight:900;font-size:19px}.back{background:rgba(255,255,255,.08);padding:8px 12px;border-radius:8px;font-size:12px;font-weight:900}
-main{padding:18px 0}.head{display:flex;align-items:end;justify-content:space-between;gap:10px;margin-bottom:10px}.head h1{margin:0;font-size:23px}.head p{margin:3px 0 0;color:var(--muted);font-size:12px}.count{background:var(--green);color:#fff;border-radius:9px;padding:8px 12px;text-align:center}.count strong{display:block;color:#f0d77c;font-size:18px}.count span{font-size:9px}
-.grid{display:grid;grid-template-columns:repeat(2,1fr);gap:8px}.game{background:#fff;border:1px solid var(--line);border-radius:10px;padding:12px}.game-top{display:flex;align-items:center;justify-content:space-between;gap:8px;margin-bottom:9px}.live{display:inline-flex;align-items:center;gap:4px;color:#9b2f2f;font-size:10px;font-weight:900}.id{font-size:10px;color:#888}.players{display:grid;gap:6px}.player{display:flex;align-items:center;justify-content:space-between;background:#faf8f3;border-radius:8px;padding:9px}.player strong{font-size:13px}.player span{font-size:11px;color:#777}.empty{display:none;background:#fff;border:1px solid var(--line);border-radius:10px;padding:30px;text-align:center;color:#777}.loading{text-align:center;padding:24px;color:#777}
+body{margin:0;font-family:Arial,sans-serif;background:var(--cream);color:var(--text)}a{text-decoration:none;color:inherit}.wrap{width:min(900px,calc(100% - 24px));margin:auto}
+header{background:var(--green);color:#fff;box-shadow:0 2px 10px rgba(0,0,0,.08)}.nav{min-height:58px;display:flex;align-items:center;justify-content:space-between;gap:10px}.brand{font-weight:900;font-size:19px}.back{background:rgba(255,255,255,.08);padding:8px 12px;border-radius:8px;font-size:12px;font-weight:900}
+main{padding:18px 0}.head{display:flex;align-items:end;justify-content:space-between;gap:10px;margin-bottom:14px}.head h1{margin:0;font-size:23px}.head p{margin:3px 0 0;color:var(--muted);font-size:12px}.count{background:var(--green);color:#fff;border-radius:9px;padding:8px 12px;text-align:center}.count strong{display:block;color:#f0d77c;font-size:18px}.count span{font-size:9px}
+.section-title{display:flex;align-items:center;justify-content:space-between;gap:8px;margin:18px 2px 8px}.section-title h2{margin:0;font-size:16px}.section-title span{font-size:11px;color:var(--muted)}
+.grid{display:grid;grid-template-columns:repeat(2,1fr);gap:8px}.game{display:block;background:#fff;border:1px solid var(--line);border-radius:10px;padding:12px}.game:hover{border-color:#c8b77d}.game-top{display:flex;align-items:center;justify-content:space-between;gap:8px;margin-bottom:9px}.live{display:inline-flex;align-items:center;gap:4px;color:#9b2f2f;font-size:10px;font-weight:900}.kind{font-size:10px;font-weight:900;color:var(--green2)}.id{font-size:10px;color:#888}.players{display:grid;gap:6px}.player{display:flex;align-items:center;justify-content:space-between;background:#faf8f3;border-radius:8px;padding:9px}.player strong{font-size:13px}.player span{font-size:11px;color:#777}.empty{display:none;background:#fff;border:1px solid var(--line);border-radius:10px;padding:30px;text-align:center;color:#777}.loading{text-align:center;padding:24px;color:#777}
 @media(max-width:620px){.grid{grid-template-columns:1fr}.brand{font-size:16px}.head h1{font-size:20px}}
 </style>
 </head>
 <body>
 <header><div class="wrap nav"><div class="brand">♟ شطرنج العرب</div><a class="back" href="index.html">العودة</a></div></header>
 <main class="wrap">
-  <div class="head"><div><h1>المباريات الحالية</h1><p>المباريات الجارية الآن على المنصة.</p></div><div class="count"><strong id="liveCount">0</strong><span>مباراة جارية</span></div></div>
+  <div class="head"><div><h1>المباريات الحالية</h1><p>شاهد المباريات الجارية مباشرة، بدون الحاجة إلى تسجيل الدخول.</p></div><div class="count"><strong id="liveCount">0</strong><span>مباراة جارية</span></div></div>
   <div id="loading" class="loading">جاري تحميل المباريات...</div>
-  <div id="games" class="grid"></div>
+
+  <div id="liveSection" hidden>
+    <div class="section-title"><h2>بين اللاعبين</h2><span id="humanCount">0 مباراة</span></div>
+    <div id="games" class="grid"></div>
+  </div>
+
+  <div id="computerSection" hidden>
+    <div class="section-title"><h2>ضد الكمبيوتر</h2><span id="computerCount">0 مباراة</span></div>
+    <div id="computerGames" class="grid"></div>
+  </div>
+
   <div id="empty" class="empty">لا توجد مباريات جارية الآن.</div>
 </main>
 <script type="module">
 import { createClient } from 'https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/+esm';
 const supabase=createClient('https://zjxkxhsvltihucdacjrv.supabase.co','sb_publishable_bwFGOiJzT_Xv656pLPR8ww_oJxFzSGJ');
 const liveStatuses=['playing','active','in_progress','started'];
+const levelLabel={easy:'سهل',medium:'متوسط',hard:'صعب'};
 const esc=v=>String(v??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
 function nameOf(g,side){
-  const candidates=side==='white'
-    ? [g.white_name,g.white_player_name,g.player1_name,g.player_white_name,g.white?.name]
-    : [g.black_name,g.black_player_name,g.player2_name,g.player_black_name,g.black?.name];
+  const candidates=side==='white'?[g.white_name,g.white_player_name,g.player1_name,g.player_white_name,g.white?.name]:[g.black_name,g.black_player_name,g.player2_name,g.player_black_name,g.black?.name];
   return candidates.find(Boolean)||'لاعب';
 }
 function ratingOf(g,side){
-  const candidates=side==='white'
-    ? [g.white_rating,g.player1_rating,g.white?.rating]
-    : [g.black_rating,g.player2_rating,g.black?.rating];
+  const candidates=side==='white'?[g.white_rating,g.player1_rating,g.white?.rating]:[g.black_rating,g.player2_rating,g.black?.rating];
   return candidates.find(v=>v!==undefined&&v!==null)||'';
 }
-async function fetchGames(){
+async function fetchHumanGames(){
   try{
-    const {data,error}=await supabase
-      .from('live_games')
-      .select('*')
-      .in('status',liveStatuses)
-      .limit(50);
+    const {data,error}=await supabase.from('live_games').select('*').in('status',liveStatuses).limit(50);
     if(error) throw error;
     return data||[];
-  }catch(error){
-    console.warn('تعذر تحميل المباريات الجارية',error);
-    return [];
-  }
+  }catch(error){console.warn('تعذر تحميل مباريات اللاعبين',error);return []}
 }
-async function load(){
-  const games=await fetchGames();
-  document.querySelector('#loading').style.display='none';
-  document.querySelector('#liveCount').textContent=games.length;
-  document.querySelector('#empty').style.display=games.length?'none':'block';
+async function fetchComputerGames(){
+  try{
+    const {data,error}=await supabase.rpc('list_public_computer_games');
+    if(error) throw error;
+    return data||[];
+  }catch(error){console.warn('تعذر تحميل مباريات الكمبيوتر',error);return []}
+}
+function renderHuman(games){
   document.querySelector('#games').innerHTML=games.map((g,i)=>`
     <a class="game" href="play.html?spectate=${encodeURIComponent(g.id)}" aria-label="مشاهدة المباراة مباشرة">
       <div class="game-top"><span class="live">● مباشر</span><span class="id">مباراة ${esc(g.id??i+1)}</span></div>
@@ -70,7 +72,29 @@ async function load(){
       </div>
     </a>`).join('');
 }
-load();setInterval(load,30000);
+function renderComputer(games){
+  document.querySelector('#computerGames').innerHTML=games.map((g,i)=>`
+    <a class="game" href="computer-watch.html?game=${encodeURIComponent(g.game_id)}" aria-label="مشاهدة مباراة ضد الكمبيوتر مباشرة">
+      <div class="game-top"><span class="live">● مباشر</span><span class="kind">ضد الكمبيوتر</span></div>
+      <div class="players">
+        <div class="player"><strong>♙ ${esc(g.player_name||'لاعب')}</strong><span>${esc(g.player_rating??'')}</span></div>
+        <div class="player"><strong>♟ الكمبيوتر</strong><span>${esc(levelLabel[g.level]||g.level||'')}</span></div>
+      </div>
+    </a>`).join('');
+}
+async function load(){
+  const [human,computer]=await Promise.all([fetchHumanGames(),fetchComputerGames()]);
+  const total=human.length+computer.length;
+  document.querySelector('#loading').style.display='none';
+  document.querySelector('#liveCount').textContent=total;
+  document.querySelector('#humanCount').textContent=`${human.length} مباراة`;
+  document.querySelector('#computerCount').textContent=`${computer.length} مباراة`;
+  document.querySelector('#liveSection').hidden=!human.length;
+  document.querySelector('#computerSection').hidden=!computer.length;
+  document.querySelector('#empty').style.display=total?'none':'block';
+  renderHuman(human);renderComputer(computer);
+}
+load();setInterval(load,15000);
 </script>
 <script type="module" src="site-presence.js?v=20260906-1"></script>
 </body>
