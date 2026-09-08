@@ -138,7 +138,7 @@ def test_native_marker_style_sprite_and_cache_bust():
         "stroke:#ff6b6b",
         "stroke-width:1px",
         "opacity:1",
-        "play-computer.js?v=20260908-lastmove3",
+        "play-computer.js?v=20260909-stalereply1",
         "play-v8.js?v=20260908-lastmove4",
     )
     sprite = require("assets/last-move-markers.svg", 'id="markerFrame"', '<rect')
