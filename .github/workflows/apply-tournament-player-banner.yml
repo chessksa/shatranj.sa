@@ -21,20 +21,6 @@ jobs:
           python-version: '3.12'
       - name: Apply tournament player banner
         run: python tools/apply_tournament_player_banner.py
-      - name: Diagnose banner positions
-        run: |
-          python - <<'PY'
-          from pathlib import Path
-          for name, marker in [('play-v10.html','id="topPlayerCard"'),('play.html','id="topPlayerCard"')]:
-              text=Path(name).read_text(encoding='utf-8')
-              top=text.index(marker)
-              clock=text.index('id="topClock"', top)
-              badge=text.index('id="tournamentGameBadge"')
-              end=text.index('</section>', top)
-              print(name, {'top':top,'clock':clock,'badge':badge,'end':end})
-              lo=max(0,min(clock,badge)-260); hi=min(len(text),max(clock,badge)+520)
-              print(text[lo:hi])
-          PY
       - name: Verify tournament banner and related play regressions
         run: |
           python tests/test_tournament_player_banner.py
