@@ -1,0 +1,33 @@
+name: Apply double pawn highlight fix
+on:
+  push:
+    branches: [main]
+    paths:
+      - 'tools/apply_double_pawn_highlight_fix.py'
+      - '.github/workflows/apply-double-pawn-highlight-fix.yml'
+jobs:
+  apply:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - name: Apply fix
+        run: python tools/apply_double_pawn_highlight_fix.py
+      - name: Verify regressions
+        run: |
+          python tests/test_double_pawn_last_move.py
+          python tests/test_last_move_highlight.py
+          python tests/test_computer_stale_reply_status.py
+          python tests/test_tournament_modern_layout_everywhere.py
+      - name: Commit implementation
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add play-v8.js play-computer.js play-v10.html play.html tests/test_last_move_highlight.py
+          git diff --cached --quiet && exit 0
+          git commit -m "fix: keep double pawn last-move highlight"
+          git push
