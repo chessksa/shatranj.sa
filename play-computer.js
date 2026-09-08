@@ -64,6 +64,7 @@ let ratedAccessToken = null;
 let currentRating = null;
 let leaving = false;
 let ratedTimeoutPending = false;
+let activeRatedMoveId = null;
 let clockTimer = null;
 let playerTimeMs = 0;
 let computerTimeMs = 0;
@@ -435,7 +436,13 @@ async function requestRatedTimeout() {
       renderBoard(false);
     }
     syncRatedClocks(payload);
-    if (payload?.status === 'finished') finishRatedResult(payload);
+    if (payload?.status === 'finished') {
+      activeRatedMoveId = null;
+      finishRatedResult(payload);
+    } else if (ratedPayloadTurn(payload) === 'w') {
+      activeRatedMoveId = null;
+      setComputerStatus('جاهز');
+    }
   } catch (error) {
     console.error(error);
     if (clockActiveSide === 'computer') setComputerStatus('يفكر…');
@@ -488,6 +495,7 @@ function finishGame(message, rating = null, outcome = null) {
   if (finished) return;
   finished = true;
   thinking = false;
+  activeRatedMoveId = null;
   clearInterval(clockTimer);
   clockTimer = null;
   clearInterval(computerGraceTimer);
@@ -699,8 +707,17 @@ function ratedPayloadTurn(payload) {
   }
 }
 
+function isCurrentRatedReply(moveId) {
+  return Boolean(moveId && activeRatedMoveId === moveId && ratedGameId && !finished);
+}
+
+function retireRatedReply(moveId) {
+  if (activeRatedMoveId === moveId) activeRatedMoveId = null;
+}
+
 async function waitForRatedMoveAck(moveId, attempts = 8) {
   for (let attempt = 0; attempt < attempts; attempt += 1) {
+    if (!isCurrentRatedReply(moveId)) return null;
     const payload = await fetchRatedState();
     if (ratedPayloadMatchesMove(payload, moveId)) return payload;
     await new Promise((resolve) => setTimeout(resolve, 250 + attempt * 120));
@@ -711,6 +728,7 @@ async function waitForRatedMoveAck(moveId, attempts = 8) {
 async function waitForRatedComputerReply(moveId, initialPayload = null, attempts = 12) {
   let payload = initialPayload;
   for (let attempt = 0; attempt < attempts && !finished; attempt += 1) {
+    if (!isCurrentRatedReply(moveId)) return null;
     if (ratedPayloadMatchesMove(payload, moveId) && payload?.fen) {
       const turn = ratedPayloadTurn(payload);
       if (payload.status === 'finished' || turn === 'w') return payload;
@@ -740,24 +758,31 @@ function applyRatedComputerReply(payload, computerCapMs = null) {
 }
 
 async function resumeRatedComputerReply(moveId) {
-  if (!ratedGameId || finished) return;
+  if (!isCurrentRatedReply(moveId)) return;
+  if (game.turn() === 'w') {
+    retireRatedReply(moveId);
+    setComputerStatus('جاهز');
+    return;
+  }
   setComputerStatus('يفكر…');
   const finalPayload = await waitForRatedComputerReply(moveId, null, 12);
-  if (finished) return;
+  if (finished || !isCurrentRatedReply(moveId)) return;
   if (finalPayload?.fen && ratedPayloadMatchesMove(finalPayload, moveId)) {
     const finalComputerRemaining = currentClockMs('computer');
+    retireRatedReply(moveId);
     applyRatedComputerReply(finalPayload, finalComputerRemaining);
     return;
   }
   if (clockActiveSide === 'computer' && currentClockMs('computer') <= 0) {
     await requestRatedTimeout();
-    if (finished) return;
+    if (finished || !isCurrentRatedReply(moveId)) return;
   }
-  setTimeout(() => resumeRatedComputerReply(moveId), 650);
+  if (isCurrentRatedReply(moveId)) setTimeout(() => resumeRatedComputerReply(moveId), 650);
 }
 
 async function submitRatedMove(move, moveId) {
   if (!ratedGameId || finished) return;
+  activeRatedMoveId = moveId;
   thinking = true;
   setComputerStatus('يفكر…');
   try {
@@ -771,7 +796,7 @@ async function submitRatedMove(move, moveId) {
 
     if (!ratedPayloadMatchesMove(payload, moveId)) payload = await waitForRatedMoveAck(moveId);
     if (!payload?.fen || !ratedPayloadMatchesMove(payload, moveId)) {
-      setTimeout(() => resumeRatedComputerReply(moveId), 450);
+      if (isCurrentRatedReply(moveId)) setTimeout(() => resumeRatedComputerReply(moveId), 450);
       return;
     }
 
@@ -788,15 +813,20 @@ async function submitRatedMove(move, moveId) {
     if (finished) return;
     if (finalPayload?.fen && ratedPayloadMatchesMove(finalPayload, moveId)) {
       const finalComputerRemaining = currentClockMs('computer');
-    applyRatedComputerReply(finalPayload, finalComputerRemaining);
+      retireRatedReply(moveId);
+      applyRatedComputerReply(finalPayload, finalComputerRemaining);
       return;
     }
-    setComputerStatus('يفكر…');
-    setTimeout(() => resumeRatedComputerReply(moveId), 650);
+    if (isCurrentRatedReply(moveId)) {
+      setComputerStatus('يفكر…');
+      setTimeout(() => resumeRatedComputerReply(moveId), 650);
+    }
   } catch (error) {
     console.error(error);
-    setComputerStatus('يفكر…');
-    setTimeout(() => resumeRatedComputerReply(moveId), 650);
+    if (isCurrentRatedReply(moveId)) {
+      setComputerStatus('يفكر…');
+      setTimeout(() => resumeRatedComputerReply(moveId), 650);
+    }
   } finally {
     thinking = false;
   }
@@ -901,6 +931,7 @@ async function startComputerGame(levelKey, minutes) {
     ratedMode = Boolean(session);
     ratedAccessToken = session?.access_token || null;
     ratedTimeoutPending = false;
+    activeRatedMoveId = null;
 
     if (ratedMode) {
       const started = await invokeComputer({ action: 'start', level: levelKey, minutes });
