@@ -101,7 +101,8 @@ def test_highlight_style_and_cache_bust():
     page = require(
         "play-v10.html",
         ".last-move-highlight{",
-        "background:rgba(240,196,93,.18)",
+        "background:rgba(255,180,90,.10)",
+        "box-shadow:inset 0 0 0 3px rgba(255,180,90,.95)",
         "play-computer.js?v=20260908-lastmove1",
         "play-v8.js?v=20260908-lastmove1",
     )
