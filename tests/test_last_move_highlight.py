@@ -109,8 +109,8 @@ def test_native_marker_style_sprite_and_cache_bust():
     page = require(
         "play-v10.html",
         ".marker-frame-last-move",
-        "stroke:#ffb45a",
-        "stroke-width:3.6px",
+        "stroke:#ff6b6b",
+        "stroke-width:2px",
         "opacity:1",
         "play-computer.js?v=20260908-lastmove2",
         "play-v8.js?v=20260908-lastmove2",
