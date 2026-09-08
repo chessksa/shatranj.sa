@@ -1,0 +1,44 @@
+name: Apply tournament player banner
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - '.github/workflows/apply-tournament-player-banner.yml'
+
+permissions:
+  contents: write
+
+jobs:
+  apply:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: main
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - name: Apply tournament player banner
+        run: python tools/apply_tournament_player_banner.py
+      - name: Verify tournament banner and related play regressions
+        run: |
+          python tests/test_tournament_player_banner.py
+          python tests/test_tournament_game_badge.py
+          python tests/test_tournament_game_demo.py
+          python tests/test_tournament_start_engine.py
+          python tests/test_tournament_spectator_link.py
+          python tests/test_last_move_highlight.py
+          python tests/test_play_v10_cm_preview.py
+      - name: Commit implementation
+        shell: bash
+        run: |
+          if git diff --quiet; then
+            echo 'No changes to commit.'
+            exit 0
+          fi
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git add play-v10.html play.html play-v8.js play-live.js play-tournament-demo.js tests/test_last_move_highlight.py tests/test_tournament_game_demo.py tests/test_tournament_game_badge.py
+          git commit -m 'feat: move tournament banner into player card'
+          git push origin HEAD:main
