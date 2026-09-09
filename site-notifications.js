@@ -25,8 +25,14 @@
     const style = document.createElement('style');
     style.id = 'tournamentTickerMotionStyles';
     style.textContent = `
+      #tournamentResultsTicker .welcome-ticker-track{
+        animation-duration:52s!important;
+      }
       #tournamentResultsTicker .tournament-ticker-single{
-        animation:tournamentTickerSingleMove 18s linear infinite!important;
+        animation-name:tournamentTickerSingleMove!important;
+        animation-duration:52s!important;
+        animation-timing-function:linear!important;
+        animation-iteration-count:infinite!important;
         will-change:transform;
       }
       @keyframes tournamentTickerSingleMove{
@@ -35,6 +41,36 @@
       }
       @media(prefers-reduced-motion:reduce){
         #tournamentResultsTicker .tournament-ticker-single{animation:none!important;transform:none!important}
+      }
+    `;
+    document.head.appendChild(style);
+  }
+
+  function installHeroTitleLineup() {
+    if (document.getElementById('heroTitleLineupStyles')) return;
+    const style = document.createElement('style');
+    style.id = 'heroTitleLineupStyles';
+    style.textContent = `
+      .home-hero h1{
+        width:100%!important;
+        max-width:760px!important;
+        margin-inline:auto!important;
+        text-align:center!important;
+        white-space:nowrap!important;
+        font-size:clamp(30px,4vw,52px)!important;
+        letter-spacing:-.6px!important;
+      }
+      .home-hero h1 span{display:inline!important}
+      .home-hero .hero-live-stats{
+        width:100%!important;
+        max-width:760px!important;
+        margin-inline:auto!important;
+      }
+      @media(max-width:700px){
+        .home-hero h1{
+          font-size:clamp(24px,7.2vw,34px)!important;
+          letter-spacing:-.35px!important;
+        }
       }
     `;
     document.head.appendChild(style);
@@ -163,6 +199,7 @@
   }
 
   installTournamentTickerMotion();
+  installHeroTitleLineup();
   installMobileRankingFrame();
   installRankingObserver();
 
