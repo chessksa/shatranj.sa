@@ -3,7 +3,67 @@ import { Markers } from 'https://cdn.jsdelivr.net/npm/cm-chessboard@8/src/extens
 
 const LAST_MOVE_MARKER = { class: 'marker-frame-last-move', slice: 'markerFrame', position: 'above' };
 
+function applyResultColors() {
+  const resultNode = document.getElementById('gameResult');
+  if (!resultNode) return;
+
+  const cards = [
+    document.getElementById('whiteCard'),
+    document.getElementById('blackCard'),
+    document.getElementById('playerCard'),
+    document.getElementById('computerCard')
+  ].filter(Boolean);
+
+  cards.forEach((card) => card.classList.remove('result-winner', 'result-loser', 'result-draw'));
+
+  const result = String(resultNode.textContent || '').trim();
+  if (!result || result === '—') return;
+
+  if (result.includes('تعادل')) {
+    cards.forEach((card) => card.classList.add('result-draw'));
+    return;
+  }
+
+  let winner = null;
+  let loser = null;
+  if (result.includes('فوز الأبيض')) {
+    winner = document.getElementById('whiteCard');
+    loser = document.getElementById('blackCard');
+  } else if (result.includes('فوز الأسود')) {
+    winner = document.getElementById('blackCard');
+    loser = document.getElementById('whiteCard');
+  } else if (result.includes('فوز اللاعب')) {
+    winner = document.getElementById('playerCard');
+    loser = document.getElementById('computerCard');
+  } else if (result.includes('فوز الكمبيوتر')) {
+    winner = document.getElementById('computerCard');
+    loser = document.getElementById('playerCard');
+  }
+
+  winner?.classList.add('result-winner');
+  loser?.classList.add('result-loser');
+}
+
+function ensureSpectatorLayout() {
+  if (!document.querySelector('link[data-spectator-play-layout]')) {
+    const layout = document.createElement('link');
+    layout.rel = 'stylesheet';
+    layout.href = 'spectator-play-layout.css?v=20260910-playwatch1';
+    layout.dataset.spectatorPlayLayout = '1';
+    document.head.appendChild(layout);
+  }
+  document.body.classList.add('spectator-play-layout');
+
+  const resultNode = document.getElementById('gameResult');
+  if (resultNode && !resultNode.dataset.resultColorObserver) {
+    resultNode.dataset.resultColorObserver = '1';
+    new MutationObserver(applyResultColors).observe(resultNode, { childList: true, characterData: true, subtree: true });
+  }
+  applyResultColors();
+}
+
 function ensureStyles() {
+  ensureSpectatorLayout();
   if (!document.querySelector('link[data-cm-chessboard-core]')) {
     const core = document.createElement('link');
     core.rel = 'stylesheet';
@@ -54,6 +114,7 @@ export class SpectatorBoard {
     forceBoardSquareColors(this.host);
     this.observer = new MutationObserver(() => forceBoardSquareColors(this.host));
     this.observer.observe(this.host, { childList: true, subtree: true });
+    applyResultColors();
   }
 
   setPosition(fen, lastMove = null) {
@@ -65,5 +126,6 @@ export class SpectatorBoard {
       this.board.addMarker?.(LAST_MOVE_MARKER, lastMove.to);
     }
     forceBoardSquareColors(this.host);
+    applyResultColors();
   }
 }
