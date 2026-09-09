@@ -1859,7 +1859,7 @@ footer .wrap{display:flex;justify-content:space-between;align-items:center}
   .home-hero .home-board-actions{
     grid-template-columns:repeat(3,minmax(0,1fr))!important;
     grid-template-rows:repeat(2,60px)!important;
-    gap:10px!important;
+    gap:1px!important;
     align-items:stretch!important;
     direction:rtl!important;
   }
