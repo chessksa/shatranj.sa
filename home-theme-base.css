@@ -440,7 +440,7 @@ footer .wrap{display:flex;justify-content:space-between;align-items:center}
   .hero-stat strong{font-size:22px}
   .hero-stat small{font-size:10px;margin-top:4px;white-space:normal;line-height:1.15}
   .hero-stat-icon{font-size:22px}
-  .home-hero .home-board-actions{width:100%!important;max-width:560px;gap:9px!important}
+  .home-hero .home-board-actions{width:100%!important;max-width:560px;gap:2px!important}
   .home-hero .home-board-actions>.btn,.home-hero .home-board-actions>.home-invite-wrap>.btn{height:56px!important;min-height:56px!important;font-size:15px!important}
   #ranking>.wrap{width:min(100%,720px)!important}
   #ranking .head{min-height:52px;border-width:1px}
@@ -559,7 +559,7 @@ footer .wrap{display:flex;justify-content:space-between;align-items:center}
   body.home-signed-in .hero-stat{min-height:74px;padding:9px 10px;gap:8px;border-radius:15px}
   body.home-signed-in .hero-stat strong{font-size:22px}
   body.home-signed-in .hero-stat-icon{font-size:22px}
-  body.home-signed-in .home-hero .home-board-actions{gap:2px!important}
+  body.home-signed-in .home-hero .home-board-actions{gap:10px!important}
   body.home-signed-in .home-hero .home-board-actions>.btn,
   body.home-signed-in .home-hero .home-board-actions>.home-invite-wrap>.btn{height:52px!important;min-height:52px!important;font-size:16px!important}
   body.home-signed-in .home-features{grid-row:3;padding:7px 0 9px!important;overflow:hidden}
