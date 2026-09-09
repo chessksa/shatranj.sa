@@ -11,7 +11,7 @@ assert "const fallbackOld = `" in wrapper
 assert "const fallbackNew = `" in wrapper
 assert "track.className = 'welcome-ticker-track';" in wrapper
 assert "group.className = 'welcome-ticker-group';" in wrapper
-assert "for (let index = 0; index < 6; index += 1)" in wrapper
+assert "for (let index = 0; index < 10; index += 1)" in wrapper
 assert "track.replaceChildren(buildFallbackGroup(), buildFallbackGroup());" in wrapper
 assert "if (source.includes(fallbackOld)) source = source.replace(fallbackOld, fallbackNew);" in wrapper
 
