@@ -1962,3 +1962,8 @@ footer .wrap{display:flex;justify-content:space-between;align-items:center}
   #ranking .table-card{margin-top:0!important}
 }
 
+/* MOBILE RANKING ROW HEIGHT 35PX 20260909 */
+@media(max-width:600px){
+  #ranking th,#ranking td{height:35px!important}
+}
+
