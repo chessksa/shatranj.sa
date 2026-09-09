@@ -52,4 +52,18 @@ text = text.replace('orange = "#ffa500"', 'orange = "#ff7a00"')
 text = text.replace('position:absolute;inset:2px;border:2px solid {orange}', 'position:absolute;inset:5px;border:2px solid {orange}')
 path.write_text(text, encoding='utf-8')
 
-print('balanced orange #ff7a00 highlight and 82% capture ring applied')
+# Force a fresh play document from the home page so iOS/Safari cannot reuse
+# the previous inline highlight CSS under the old repeated URL.
+path = ROOT / 'index.html'
+text = path.read_text(encoding='utf-8')
+old_ui = 'ui=20260908-red2'
+new_ui = 'ui=20260909-orange82'
+if new_ui not in text:
+    if old_ui not in text:
+        raise SystemExit('home play cache key: expected old key not found')
+    text = text.replace(old_ui, new_ui)
+if old_ui in text:
+    raise SystemExit('home play cache key: stale old key still present')
+path.write_text(text, encoding='utf-8')
+
+print('balanced orange #ff7a00 highlight, 82% capture ring, and fresh play entry cache applied')
