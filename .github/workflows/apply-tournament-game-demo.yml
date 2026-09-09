@@ -5,6 +5,7 @@ on:
     branches: [main]
     paths:
       - '.github/workflows/apply-tournament-game-demo.yml'
+      - 'tests/test_tournament_game_demo.py'
 
 permissions:
   contents: write
@@ -19,8 +20,23 @@ jobs:
       - uses: actions/setup-python@v5
         with:
           python-version: '3.12'
-      - name: Apply tournament game visual demo
-        run: python tools/apply_tournament_game_demo.py
+      - name: Remove public tournament demo link
+        run: |
+          python - <<'PY'
+          from pathlib import Path
+
+          path = Path('tournaments.html')
+          text = path.read_text(encoding='utf-8')
+          links = (
+              '<a class="demo-link" href="play-v10.html?demo_tournament=1&layout=header3">عرض مثال مباراة بطولة</a>',
+              '<a class="demo-link" href="play-v10.html?demo_tournament=1">عرض مثال مباراة بطولة</a>',
+          )
+          for link in links:
+              text = text.replace(link, '')
+          if 'عرض مثال مباراة بطولة' in text or 'play-v10.html?demo_tournament=1' in text:
+              raise SystemExit('tournament demo link is still exposed')
+          path.write_text(text, encoding='utf-8')
+          PY
       - name: Verify tournament demo and related play behavior
         run: |
           python tests/test_tournament_game_demo.py
@@ -38,6 +54,6 @@ jobs:
           fi
           git config user.name 'github-actions[bot]'
           git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
-          git add tournaments.html play-v10.html play-tournament-demo.js
-          git commit -m 'feat: add tournament match visual demo'
+          git add tournaments.html
+          git commit -m 'fix: hide tournament demo link'
           git push origin HEAD:main
