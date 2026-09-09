@@ -102,3 +102,22 @@ html body .welcome-ticker{
   border-top:0!important;
   margin-top:0!important;
 }
+
+/* Mobile phantom bottom-scroll fix 20260909 */
+@media(max-width:900px){
+  html{
+    min-height:100%;
+    overflow-x:hidden!important;
+  }
+  html body{
+    height:auto!important;
+    min-height:100dvh!important;
+    margin-bottom:0!important;
+    padding-bottom:0!important;
+    overflow-x:hidden!important;
+  }
+  html body footer{
+    margin-top:0!important;
+    margin-bottom:0!important;
+  }
+}
