@@ -14,7 +14,7 @@ function ensureStyles() {
   if (!document.querySelector('link[data-cm-chessboard-shatranj]')) {
     const theme = document.createElement('link');
     theme.rel = 'stylesheet';
-    theme.href = 'cm-chessboard-shatranj-v3.css?v=20260909-spectator2';
+    theme.href = 'cm-chessboard-shatranj-v3.css?v=20260909-spectator3';
     theme.dataset.cmChessboardShatranj = '1';
     document.head.appendChild(theme);
   }
@@ -34,6 +34,9 @@ export class SpectatorBoard {
     ensureStyles();
     this.host = host;
     this.host.classList.add('cm-board-host');
+    this.host.style.setProperty('position','relative','important');
+    this.host.style.setProperty('inset','auto','important');
+    this.host.style.setProperty('height','auto','important');
     this.board = new Chessboard(host, {
       position: initialFen || 'start',
       orientation: COLOR.white,
