@@ -71,6 +71,20 @@ function copyRequestHeaders(input, init) {
   return headers;
 }
 
+async function correlateTerminalMoveResponse(response, moveId) {
+  if (!response?.ok || !moveId) return response;
+  const data = await response.clone().json().catch(() => null);
+  if (data?.status !== 'finished' || data.last_player_request_id === moveId) return response;
+
+  const headers = new Headers(response.headers);
+  if (!headers.has('content-type')) headers.set('content-type', 'application/json; charset=utf-8');
+  return new Response(JSON.stringify({ ...data, last_player_request_id: moveId }), {
+    status: response.status,
+    statusText: response.statusText,
+    headers
+  });
+}
+
 async function watchComputerMoveState(originalFetch, url, headers, gameId, moveId) {
   await sleep(450);
   for (let attempt = 0; attempt < COMPUTER_STATE_ATTEMPTS; attempt += 1) {
@@ -87,6 +101,9 @@ async function watchComputerMoveState(originalFetch, url, headers, gameId, moveI
       );
       if (stateResponse?.ok) {
         const data = await stateResponse.clone().json().catch(() => null);
+        if (data?.status === 'finished') {
+          return correlateTerminalMoveResponse(stateResponse, moveId);
+        }
         if (data?.last_player_request_id === moveId) {
           return stateResponse;
         }
@@ -131,7 +148,7 @@ export function installComputerGameNetworkGuard() {
         if (!response?.ok) {
           throw new Error(`computer move HTTP ${response?.status || 'error'}`);
         }
-        return response;
+        return correlateTerminalMoveResponse(response, String(payload.move_id));
       });
       return Promise.any([primaryMove, watchdog]);
     }
