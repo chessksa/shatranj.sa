@@ -103,43 +103,35 @@ html body .welcome-ticker{
   margin-top:0!important;
 }
 
-/* Mobile bottom overflow root fix 20260909 */
+/* Mobile page flow: natural page scrolling, no horizontal overflow */
 @media(max-width:900px){
   html{
     height:auto!important;
     min-height:0!important;
     overflow-x:hidden!important;
-    overscroll-behavior-y:none!important;
+    overflow-y:auto!important;
+    overscroll-behavior-y:auto!important;
   }
   html body{
     height:auto!important;
     min-height:0!important;
+    max-height:none!important;
     margin-bottom:0!important;
     padding-bottom:0!important;
     overflow-x:hidden!important;
-    overscroll-behavior-y:none!important;
-  }
-}
-
-/* Signed-in mobile home must not create phantom vertical scroll */
-@media(max-width:600px){
-  html:has(body.home-signed-in){
-    height:100dvh!important;
-    min-height:100dvh!important;
-    overflow-y:hidden!important;
-  }
-  html body.home-signed-in{
-    height:100dvh!important;
-    min-height:100dvh!important;
-    max-height:100dvh!important;
-    overflow-y:hidden!important;
-    overscroll-behavior-y:none!important;
+    overflow-y:visible!important;
+    overscroll-behavior-y:auto!important;
   }
 }
 
 /* Mobile ranking: fixed frame, ten players via internal scroll */
 @media(max-width:800px){
+  #ranking{
+    flex:0 0 auto!important;
+    overflow:visible!important;
+  }
   #ranking .table-card{
+    position:relative!important;
     height:210px!important;
     min-height:210px!important;
     max-height:210px!important;
