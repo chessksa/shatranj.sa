@@ -1,13 +1,15 @@
 (() => {
   'use strict';
 
-  const ORIGINAL_SRC = 'site-notifications-original.js?v=20260909-ranking10';
+  const ORIGINAL_SRC = 'site-notifications-original.js?v=20260909-ranking10b';
   const MOBILE_BREAKPOINT = 800;
   const MOBILE_RANKING_LIMIT = 10;
   const SAUDI_REGIONS = new Set([
     'الرياض','مكة المكرمة','المدينة المنورة','القصيم','المنطقة الشرقية','عسير',
     'تبوك','حائل','الحدود الشمالية','جازان','نجران','الباحة','الجوف'
   ]);
+
+  let renderingMobileTen = false;
 
   const escapeHTML = (text) => String(text ?? '').replace(/[&<>"']/g, c => ({
     '&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'
@@ -17,6 +19,39 @@
     const value = String(region || '').trim();
     return SAUDI_REGIONS.has(value) ? 'السعودية' : value;
   };
+
+  function installMobileRankingFrame() {
+    if (document.getElementById('mobileRankingTenFixedFrame')) return;
+    const style = document.createElement('style');
+    style.id = 'mobileRankingTenFixedFrame';
+    style.textContent = `
+      @media(max-width:${MOBILE_BREAKPOINT}px){
+        #ranking .table-card{
+          height:210px!important;
+          min-height:210px!important;
+          max-height:210px!important;
+          overflow:hidden!important;
+        }
+        #ranking .table-wrap{
+          height:100%!important;
+          min-height:0!important;
+          max-height:100%!important;
+          overflow-y:auto!important;
+          overflow-x:hidden!important;
+          -webkit-overflow-scrolling:touch;
+          overscroll-behavior:contain!important;
+        }
+        #ranking table{height:auto!important;min-height:0!important}
+        #ranking thead th{
+          position:sticky!important;
+          top:0!important;
+          z-index:6!important;
+          background:#0b4143!important;
+        }
+      }
+    `;
+    document.head.appendChild(style);
+  }
 
   function mobileFilteredPlayers() {
     const players = Array.isArray(window.__HOME_PLAYERS__) ? window.__HOME_PLAYERS__ : [];
@@ -34,9 +69,11 @@
     if (!window.matchMedia(`(max-width:${MOBILE_BREAKPOINT}px)`).matches) return;
 
     const tbody = document.getElementById('tbody');
-    if (!tbody) return;
+    if (!tbody || renderingMobileTen) return;
 
     const players = mobileFilteredPlayers().slice(0, MOBILE_RANKING_LIMIT);
+    if (!window.__HOME_PLAYERS__ || !Array.isArray(window.__HOME_PLAYERS__)) return;
+
     const rows = [];
 
     for (let index = 0; index < MOBILE_RANKING_LIMIT; index += 1) {
@@ -63,13 +100,28 @@
         </tr>`);
     }
 
+    renderingMobileTen = true;
     tbody.innerHTML = rows.join('');
     const results = document.getElementById('results');
     if (results) results.textContent = `${players.length} لاعب`;
+    renderingMobileTen = false;
   }
 
   function queueMobileRender() {
     requestAnimationFrame(() => requestAnimationFrame(renderMobileTen));
+  }
+
+  function installRankingObserver() {
+    const tbody = document.getElementById('tbody');
+    if (!tbody || tbody.dataset.tenPlayerObserver === '1') return;
+    tbody.dataset.tenPlayerObserver = '1';
+
+    new MutationObserver(() => {
+      if (renderingMobileTen) return;
+      if (!window.matchMedia(`(max-width:${MOBILE_BREAKPOINT}px)`).matches) return;
+      const rowCount = tbody.querySelectorAll(':scope > tr').length;
+      if (rowCount !== MOBILE_RANKING_LIMIT) queueMobileRender();
+    }).observe(tbody, { childList:true });
   }
 
   async function loadOriginalPatched() {
@@ -86,11 +138,20 @@
     }
   }
 
-  window.addEventListener('home-players-loaded', queueMobileRender);
+  installMobileRankingFrame();
+  installRankingObserver();
+
+  window.addEventListener('home-players-loaded', () => {
+    installRankingObserver();
+    queueMobileRender();
+  });
   document.addEventListener('change', event => {
     if (event.target?.id === 'regionFilter' || event.target?.id === 'cityFilter') queueMobileRender();
   });
   window.addEventListener('resize', queueMobileRender, { passive: true });
 
-  loadOriginalPatched().finally(queueMobileRender);
+  loadOriginalPatched().finally(() => {
+    installRankingObserver();
+    queueMobileRender();
+  });
 })();
