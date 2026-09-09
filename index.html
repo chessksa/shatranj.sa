@@ -901,7 +901,7 @@ footer{
   }
 }
 </style>
-<link rel="stylesheet" href="home-theme.css?v=20260909-tickerlabel6">
+<link rel="stylesheet" href="home-theme.css?v=20260909-tickerrestore7">
 <style id="mobileHeroTitleOneLine">
 @media(max-width:600px){
   .home-hero h1{
@@ -920,7 +920,7 @@ footer{
 </style>
 <style id="welcomeTickerInlineStyles">
 .welcome-ticker{width:100%;height:34px;display:flex;align-items:center;overflow:hidden;background:#0a302f;color:#f7f3e7;border-top:0;border-bottom:1px solid rgba(197,163,77,.55);position:relative;z-index:19;flex:none;direction:rtl}
-.welcome-ticker-label{flex:0 0 auto;height:24px;display:flex;align-items:center;margin:0 7px;padding:0 14px;white-space:nowrap;background:rgba(255,255,255,.035);color:#efcf7c;border:1px solid rgba(216,182,101,.26);border-radius:8px;font-size:12px;font-weight:900;line-height:1;position:relative;z-index:2;box-shadow:inset 0 1px 0 rgba(255,255,255,.02)}
+.welcome-ticker-label{flex:0 0 auto;height:100%;display:flex;align-items:center;padding:0 18px;white-space:nowrap;background:#0d3b39;color:#efcf7c;border-left:1px solid rgba(197,163,77,.5);font-size:12px;font-weight:900;line-height:1;position:relative;z-index:2;box-shadow:-8px 0 18px rgba(0,0,0,.12)}
 .welcome-ticker-viewport{min-width:0;flex:1;overflow:hidden;height:100%;display:flex;align-items:center;direction:ltr}
 .welcome-ticker-track{display:flex;align-items:center;width:max-content;min-width:max-content;will-change:transform;animation:welcomeTickerInlineMove 60s linear infinite;direction:ltr}
 .welcome-ticker-group{display:flex;align-items:center;flex:none}
@@ -971,8 +971,8 @@ footer{
 </style>
 <style id="welcomeTickerSeamFix20260909">
 .home-header{border-bottom:0!important;box-shadow:none!important;margin-bottom:0!important}
-.welcome-ticker{border-top:0!important;margin-top:0!important;box-shadow:none!important}
-.home-header + .welcome-ticker{margin-top:0!important}
+.welcome-ticker{border-top:0!important;margin-top:0!important}
+.home-header + .welcome-ticker{margin-top:-1px!important}
 @media(min-width:901px){body{row-gap:0!important}}
 </style>
 
