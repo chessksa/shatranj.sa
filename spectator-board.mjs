@@ -48,10 +48,11 @@ function ensureSpectatorLayout() {
   if (!document.querySelector('link[data-spectator-play-layout]')) {
     const layout = document.createElement('link');
     layout.rel = 'stylesheet';
-    layout.href = 'spectator-play-layout.css?v=20260910-playwatch1';
+    layout.href = 'spectator-play-layout.css?v=20260910-viewfit1';
     layout.dataset.spectatorPlayLayout = '1';
     document.head.appendChild(layout);
   }
+  document.documentElement.classList.add('spectator-play-layout-root');
   document.body.classList.add('spectator-play-layout');
 
   const resultNode = document.getElementById('gameResult');
