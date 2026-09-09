@@ -1,11 +1,9 @@
 from pathlib import Path
 
-css = Path('home-theme.css').read_text(encoding='utf-8')
 wrapper = Path('site-notifications.js').read_text(encoding='utf-8')
 
-assert '/* Welcome ticker top gold divider */' in css
-assert '#welcomeTicker{' in css
-assert 'border-top:1px solid rgba(197,163,77,.55)!important;' in css
+assert '/* Welcome ticker top gold divider */' in wrapper
+assert '#welcomeTicker{border-top:1px solid rgba(197,163,77,.55)!important;}' in wrapper
 
 assert "const fallbackOld = `" in wrapper
 assert "const fallbackNew = `" in wrapper
