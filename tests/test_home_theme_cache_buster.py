@@ -3,7 +3,9 @@ from pathlib import Path
 
 def test_home_theme_cache_buster_matches_latest_header_layout():
     html = Path('index.html').read_text(encoding='utf-8')
-    css = Path('home-theme.css').read_text(encoding='utf-8')
+    theme_css = Path('home-theme.css').read_text(encoding='utf-8')
+    base_css = Path('home-theme-base.css').read_text(encoding='utf-8')
+    css = theme_css + '\n' + base_css
 
     assert "const runtimeVersion=stamp+'-'+Date.now();" in html, 'homepage assets need a fresh runtime version on every load'
     assert 'home-theme\\.css\\?v=' in html, 'home theme URL must be rewritten regardless of its previous version'
