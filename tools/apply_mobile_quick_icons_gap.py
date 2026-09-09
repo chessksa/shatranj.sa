@@ -1,7 +1,8 @@
 from pathlib import Path
 
 ROOT = Path(__file__).resolve().parents[1]
-VERSION = "20260909-playgap1"
+VERSION = "20260909-mobileallgap3"
+MARKER = "/* MOBILE ALL INTERFACE GAPS 3PX 20260909 */"
 
 
 def replace_once(text, old, new, label):
@@ -12,35 +13,39 @@ def replace_once(text, old, new, label):
     return text.replace(old, new, 1)
 
 
-# The visible four play controls on mobile are the three static buttons inside
-# #homeBoardActions plus the invite button injected by home-invite.js. The
-# effective spacing is controlled by the LAST 60px mobile action-grid rule,
-# not by the older generic/mobile rules above it.
+# Put one final mobile override at the end of the theme. This is intentional:
+# the stylesheet has several historical mobile rules with different gaps, so
+# a final authoritative block prevents any older 1/6/8/10px rule winning the
+# cascade. Only spacing between interface groups changes; card/icon sizes stay.
 path = ROOT / "home-theme-base.css"
 text = path.read_text(encoding="utf-8")
-start = "/* MOBILE PLAY ACTIONS 60PX 18PX 20260906 */"
-end = "/* MOBILE INVITE BUTTON MATCH 20260906 */"
-head, sep, rest = text.partition(start)
-if not sep:
-    raise SystemExit("final mobile play action section not found")
-section, sep2, tail = rest.partition(end)
-if not sep2:
-    raise SystemExit("mobile invite section marker not found")
-section = replace_once(
-    section,
-    "gap:10px!important;",
-    "gap:1px!important;",
-    "final mobile four-action gap",
-)
-text = head + sep + section + sep2 + tail
+block = f"""
+
+{MARKER}
+@media(max-width:900px){{
+  .hero-live-stats{{column-gap:3px!important;row-gap:3px!important}}
+  .home-feature-grid{{column-gap:3px!important;row-gap:3px!important}}
+  .quick-icons{{column-gap:3px!important;row-gap:3px!important}}
+  .header-live{{column-gap:3px!important;row-gap:3px!important}}
+}}
+@media(max-width:700px){{
+  .home-hero .home-board-actions{{column-gap:3px!important;row-gap:3px!important}}
+}}
+@media(max-width:600px){{
+  .compact-member-nav .nav-user{{column-gap:3px!important;row-gap:3px!important}}
+  body.home-signed-in .compact-member-nav .nav-user{{column-gap:3px!important;row-gap:3px!important}}
+}}
+"""
+if MARKER not in text:
+    text = text.rstrip() + block + "\n"
 path.write_text(text, encoding="utf-8")
 
-# Force iOS/Safari to fetch the corrected stylesheet.
+# Force iOS/Safari to fetch the unified stylesheet.
 path = ROOT / "home-theme.css"
 text = path.read_text(encoding="utf-8")
 text = replace_once(
     text,
-    '@import url("./home-theme-base.css?v=20260909-featuregap1");',
+    '@import url("./home-theme-base.css?v=20260909-playgap1");',
     f'@import url("./home-theme-base.css?v={VERSION}");',
     "home theme base cache",
 )
@@ -50,10 +55,10 @@ path = ROOT / "index.html"
 text = path.read_text(encoding="utf-8")
 text = replace_once(
     text,
-    'href="home-theme.css?v=20260909-featuregap1"',
+    'href="home-theme.css?v=20260909-playgap1"',
     f'href="home-theme.css?v={VERSION}"',
     "home theme cache",
 )
 path.write_text(text, encoding="utf-8")
 
-print("final visible mobile four-action grid gap set to 1px on both axes; caches refreshed")
+print("all mobile interface group gaps unified to 3px on both axes; sizes unchanged; caches refreshed")
