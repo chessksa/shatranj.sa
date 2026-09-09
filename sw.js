@@ -1,4 +1,4 @@
-const CACHE="shatranj-arab-v10";
+const CACHE="shatranj-arab-v11";
 const ASSETS=["./","./index.html","./styles.css","./app.js","./config.js","./manifest.webmanifest","./arab-cities.js"];
 const PLAY_PATHS=["/play.html","/play-v8.html","/play-live.js","/play-v8.js","/realistic-pieces.css","/play-v8.css","/play-v10.html","/play-v10-match.js","/play-computer.js","/human-watch.html","/computer-watch.html","/spectator-board.mjs","/last-move-highlight.mjs","/cm-chessboard-shatranj-v3.css","/assets/last-move-markers.svg","/exact-board-v13.css","/assets/pieces/"];
 const ADMIN_PATHS=["/admin.html","/admin.js"];
