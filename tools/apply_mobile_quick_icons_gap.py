@@ -1,7 +1,7 @@
 from pathlib import Path
 
 ROOT = Path(__file__).resolve().parents[1]
-VERSION = "20260909-mobilegap2"
+VERSION = "20260909-mobilegap3"
 
 
 def replace_once(text, old, new, label):
@@ -12,38 +12,52 @@ def replace_once(text, old, new, label):
     return text.replace(old, new, 1)
 
 
-# The visible mobile 2x2 action buttons live in home-theme-base.css,
-# not in the older inline .quick-icons block in index.html.
 path = ROOT / "home-theme-base.css"
 text = path.read_text(encoding="utf-8")
+
+# The visible play/action tiles use .home-board-actions. Set the mobile/tablet
+# spacing itself to 2px so both horizontal and vertical gaps are 2px.
 text = replace_once(
     text,
-    ".home-hero .home-board-actions{grid-template-columns:1fr 1fr!important}",
-    ".home-hero .home-board-actions{grid-template-columns:1fr 1fr!important;gap:2px!important}",
-    "mobile visible action grid",
+    ".home-hero .home-board-actions{width:100%!important;max-width:560px;gap:9px!important}",
+    ".home-hero .home-board-actions{width:100%!important;max-width:560px;gap:2px!important}",
+    "mobile visible action grid gap",
 )
+
+# Keep the 2-column phone layout explicitly at the same 2px gap.
+phone_grid = ".home-hero .home-board-actions{grid-template-columns:1fr 1fr!important;gap:2px!important}"
+if phone_grid not in text:
+    raise SystemExit("phone visible action grid 2px rule not found")
+
+# Restore the desktop signed-in spacing; the request is mobile only.
 text = replace_once(
     text,
-    "body.home-signed-in .home-hero .home-board-actions{gap:10px!important}",
     "body.home-signed-in .home-hero .home-board-actions{gap:2px!important}",
-    "signed-in mobile action grid",
+    "body.home-signed-in .home-hero .home-board-actions{gap:10px!important}",
+    "desktop signed-in action grid gap",
 )
 path.write_text(text, encoding="utf-8")
 
-# Bust the imported base stylesheet cache.
+# Force iOS/Safari to fetch the changed base stylesheet.
 path = ROOT / "home-theme.css"
 text = path.read_text(encoding="utf-8")
-old_import = '@import url("./home-theme-base.css?v=20260906-desktopfit1");'
-new_import = f'@import url("./home-theme-base.css?v={VERSION}");'
-text = replace_once(text, old_import, new_import, "home theme base cache")
+text = replace_once(
+    text,
+    '@import url("./home-theme-base.css?v=20260909-mobilegap2");',
+    f'@import url("./home-theme-base.css?v={VERSION}");',
+    "home theme base cache",
+)
 path.write_text(text, encoding="utf-8")
 
-# Bust the top-level home theme cache too so iOS/Safari fetches the new import.
+# Force the top-level theme stylesheet to refresh as well.
 path = ROOT / "index.html"
 text = path.read_text(encoding="utf-8")
-old_link = 'href="home-theme.css?v=2026090806"'
-new_link = f'href="home-theme.css?v={VERSION}"'
-text = replace_once(text, old_link, new_link, "home theme cache")
+text = replace_once(
+    text,
+    'href="home-theme.css?v=20260909-mobilegap2"',
+    f'href="home-theme.css?v={VERSION}"',
+    "home theme cache",
+)
 path.write_text(text, encoding="utf-8")
 
-print("visible mobile home action gaps set to 2px on both axes with fresh stylesheet cache")
+print("visible mobile home action gaps set to 2px on both axes; desktop unchanged; caches refreshed")
