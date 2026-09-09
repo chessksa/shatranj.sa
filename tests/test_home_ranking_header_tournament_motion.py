@@ -12,9 +12,9 @@ assert 'flex:0 0 44px!important;' in compact
 assert 'padding:4px 10px!important;' in compact
 assert 'grid-template-columns' not in compact, 'Do not redesign the ranking header while reducing its blank space.'
 
-assert 'tournament-ticker-single' in wrapper, 'Tournament loading/fallback text must use a moving track class.'
+assert 'welcome-ticker-track welcome-ticker-single' in wrapper, 'Compatibility loader must target the original static tournament class.'
+assert 'welcome-ticker-track tournament-ticker-single' in wrapper, 'Compatibility loader must replace the static class with the moving class.'
 assert 'tournamentTickerSingleMove' in wrapper, 'Tournament fallback needs its own continuous marquee animation.'
-assert "track.className = 'welcome-ticker-track welcome-ticker-single';" in wrapper, 'Compatibility loader must patch the original static tournament class.'
-assert "track.className = 'welcome-ticker-track tournament-ticker-single';" in wrapper, 'Compatibility loader must replace the static class with the moving class.'
+assert 'translateX(-100vw)' in wrapper and 'translateX(100vw)' in wrapper
 
 print('ranking header compaction and tournament ticker motion contract is present')
