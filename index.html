@@ -16,7 +16,7 @@ html,body{margin:0;min-height:100%;background:#042628;color:#f4eddc;font-family:
 <div class="loader"><div><strong>جاري فتح شطرنج العرب</strong><small>تحديث الواجهة…</small></div></div>
 <script>
 (async()=>{
-  const stamp='20260910-ranking-scroll5';
+  const stamp='20260910-ticker-layout1';
   const runtimeVersion=stamp+'-'+Date.now();
   const response=await fetch('./index-app.html?v='+runtimeVersion,{cache:'no-store'});
   if(!response.ok) throw new Error('index source '+response.status);
@@ -73,7 +73,7 @@ html,body{margin:0;min-height:100%;background:#042628;color:#f4eddc;font-family:
   }
 
   const bottomGapStylePattern=/<style id="homeBottomGapFix[^"]*">[\s\S]*?<\/style>/i;
-  const newInline=`<style id="homeBottomGapFix20260910e">
+  const newInline=`<style id="homeBottomGapFix20260910f">
 @media(min-width:901px){
   html:has(body.home-signed-in){
     height:100dvh!important;
@@ -86,12 +86,13 @@ html,body{margin:0;min-height:100%;background:#042628;color:#f4eddc;font-family:
     min-height:0!important;
     max-height:100dvh!important;
     overflow:hidden!important;
-    grid-template-rows:64px 34px minmax(0,1fr)!important;
+    grid-template-rows:64px 34px 34px minmax(0,1fr)!important;
   }
   html body.home-signed-in .home-header{grid-row:1!important}
   html body.home-signed-in .welcome-ticker{grid-row:2!important}
-  html body.home-signed-in .home-hero{grid-row:3!important}
-  html body.home-signed-in #ranking{grid-row:3!important}
+  html body.home-signed-in #tournamentResultsTicker{grid-column:1/-1!important;grid-row:3!important}
+  html body.home-signed-in .home-hero{grid-row:4!important}
+  html body.home-signed-in #ranking{grid-row:4!important}
 }
 @media(max-width:900px){
   html{
