@@ -1,4 +1,4 @@
-name: Apply welcome ticker gold border 20260909
+name: Match welcome ticker border to header tiles 20260909
 
 on:
   push:
@@ -13,41 +13,41 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
-      - name: Apply gold top border and cache bust
+      - name: Match ticker top border to header tile style
         run: |
           python - <<'PY'
           from pathlib import Path
           p = Path('index.html')
           text = p.read_text(encoding='utf-8')
 
-          old_ver = 'home-theme.css?v=20260909-tickerseam2'
-          new_ver = 'home-theme.css?v=20260909-tickergold3'
+          old_ver = 'home-theme.css?v=20260909-tickergold3'
+          new_ver = 'home-theme.css?v=20260909-tickerframe4'
           if old_ver not in text:
               raise SystemExit('expected current home theme cache version not found')
           text = text.replace(old_ver, new_ver, 1)
 
-          old_inline = 'border-top:0;border-bottom:1px solid rgba(197,163,77,.55);'
-          new_inline = 'border-top:2px solid #c5a34d;border-bottom:1px solid rgba(197,163,77,.55);'
+          old_inline = 'border-top:2px solid #c5a34d;border-bottom:1px solid rgba(197,163,77,.55);'
+          new_inline = 'border-top:1px solid rgba(216,182,101,.26);border-bottom:1px solid rgba(197,163,77,.55);'
           if old_inline not in text:
-              raise SystemExit('expected ticker inline border rule not found')
+              raise SystemExit('expected current ticker inline border rule not found')
           text = text.replace(old_inline, new_inline, 1)
 
-          old_seam = '.welcome-ticker{border-top:0!important;margin-top:0!important}\n.home-header + .welcome-ticker{margin-top:-1px!important}'
-          new_seam = '.welcome-ticker{border-top:2px solid #c5a34d!important;margin-top:0!important}\n.home-header + .welcome-ticker{margin-top:0!important}'
+          old_seam = '.welcome-ticker{border-top:2px solid #c5a34d!important;margin-top:0!important}'
+          new_seam = '.welcome-ticker{border-top:1px solid rgba(216,182,101,.26)!important;margin-top:0!important}'
           if old_seam not in text:
-              raise SystemExit('expected ticker seam override not found')
+              raise SystemExit('expected current ticker seam rule not found')
           text = text.replace(old_seam, new_seam, 1)
 
           p.write_text(text, encoding='utf-8')
           updated = p.read_text(encoding='utf-8')
           assert new_ver in updated
-          assert 'border-top:2px solid #c5a34d' in updated
-          assert '.home-header + .welcome-ticker{margin-top:0!important}' in updated
+          assert 'border-top:1px solid rgba(216,182,101,.26)' in updated
+          assert 'border-top:2px solid #c5a34d' not in updated
           PY
-      - name: Commit ticker gold border
+      - name: Commit ticker frame match
         run: |
           git config user.name 'github-actions[bot]'
           git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
           git add index.html
-          git commit -m 'style: add gold top border to welcome ticker'
+          git commit -m 'style: match welcome ticker border to header tiles'
           git push
