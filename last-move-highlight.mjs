@@ -2,7 +2,7 @@ const COMPUTER_REQUEST_TIMEOUT_MS = 4500;
 const COMPUTER_STATE_REQUEST_TIMEOUT_MS = 2500;
 const COMPUTER_STATE_POLL_MS = 550;
 const COMPUTER_STATE_ATTEMPTS = 7;
-const COMPUTER_NETWORK_GUARD_KEY = '__shatranjComputerGameNetworkGuardV1';
+const COMPUTER_NETWORK_GUARD_KEY = '__shatranjComputerGameNetworkGuardV2';
 
 function sleep(ms) {
   return new Promise((resolve) => setTimeout(resolve, ms));
@@ -127,7 +127,13 @@ export function installComputerGameNetworkGuard() {
         String(payload.game_id),
         String(payload.move_id)
       );
-      return Promise.race([primary, watchdog]);
+      const primaryMove = primary.then((response) => {
+        if (!response?.ok) {
+          throw new Error(`computer move HTTP ${response?.status || 'error'}`);
+        }
+        return response;
+      });
+      return Promise.any([primaryMove, watchdog]);
     }
 
     return primary;
