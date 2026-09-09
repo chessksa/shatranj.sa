@@ -33,7 +33,7 @@
 <script src="config.js"></script>
 <script type="module">
 import { createClient } from 'https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/+esm';
-import { SpectatorBoard } from './spectator-board.mjs?v=20260910-playwatch1';
+import { SpectatorBoard } from './spectator-board.mjs?v=20260910-viewfit1';
 const cfg=window.SHATRANJ_CONFIG?.supabase||{};
 const supabase=cfg.enabled&&cfg.url&&cfg.anonKey?createClient(cfg.url,cfg.anonKey):null;
 const $=id=>document.getElementById(id);
