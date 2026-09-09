@@ -48,56 +48,46 @@ text = replace_once(
 )
 path.write_text(text, encoding='utf-8')
 
-# Modern page: normal orange, 2px, for both last-move frames and captures.
+# Standard orange (#FFA500), 2px. The capture ring is enlarged to 92% so it
+# visibly surrounds/covers the target piece instead of sitting inside it.
 path = ROOT / 'play-v10.html'
 text = path.read_text(encoding='utf-8')
 text = replace_once(
     text,
-    '.square.capture::after{content:"";position:absolute;inset:8px;border:2px solid #ffb347;border-radius:50%}',
     '.square.capture::after{content:"";position:absolute;inset:8px;border:2px solid #ff8a24;border-radius:50%}',
-    'modern square capture orange',
+    '.square.capture::after{content:"";position:absolute;inset:2px;border:2px solid #ffa500;border-radius:50%}',
+    'modern square capture standard orange',
 )
 text = replace_once(
     text,
-    '.move-hint.capture::after{width:68%;height:68%;background:transparent;border:2px solid #ffb347;box-shadow:none}',
     '.move-hint.capture::after{width:68%;height:68%;background:transparent;border:2px solid #ff8a24;box-shadow:none}',
-    'modern move hint orange',
+    '.move-hint.capture::after{width:92%;height:92%;background:transparent;border:2px solid #ffa500;box-shadow:none}',
+    'modern large capture ring',
 )
 text = replace_once(
     text,
-    '.cm-chessboard .markers .marker.marker-frame-last-move{stroke:#ffb347!important;stroke-width:2px!important;stroke-linecap:round;stroke-linejoin:round;opacity:1!important;fill:none!important;filter:drop-shadow(0 0 1px rgba(255,179,71,.75))}',
     '.cm-chessboard .markers .marker.marker-frame-last-move{stroke:#ff8a24!important;stroke-width:2px!important;stroke-linecap:round;stroke-linejoin:round;opacity:1!important;fill:none!important;filter:drop-shadow(0 0 1px rgba(255,138,36,.75))}',
-    'modern last move orange',
+    '.cm-chessboard .markers .marker.marker-frame-last-move{stroke:#ffa500!important;stroke-width:2px!important;stroke-linecap:round;stroke-linejoin:round;opacity:1!important;fill:none!important;filter:drop-shadow(0 0 1px rgba(255,165,0,.75))}',
+    'modern last move standard orange',
 )
-text = text.replace('play-computer.js?v=20260909-stalereply1', 'play-computer.js?v=20260909-pawnhighlight1')
-text = text.replace('play-v8.js?v=20260909-tournamentspectator1', 'play-v8.js?v=20260909-pawnhighlight1')
 path.write_text(text, encoding='utf-8')
 
-# Legacy page capture indicator follows the same approved color.
+# Legacy page capture indicator follows the same color and enlarged radius.
 path = ROOT / 'play.html'
 text = path.read_text(encoding='utf-8')
 text = replace_once(
     text,
-    '.square.capture::after{content:"";position:absolute;inset:8px;border:2px solid #ffb347;border-radius:50%}',
     '.square.capture::after{content:"";position:absolute;inset:8px;border:2px solid #ff8a24;border-radius:50%}',
-    'legacy square capture orange',
+    '.square.capture::after{content:"";position:absolute;inset:2px;border:2px solid #ffa500;border-radius:50%}',
+    'legacy large capture ring',
 )
 path.write_text(text, encoding='utf-8')
 
-# Keep the existing regression suites aligned with the newly approved orange
-# and cache markers so they continue guarding the actual production behavior.
+# Keep existing regression suites aligned with the approved standard orange.
 path = ROOT / 'tests/test_last_move_highlight.py'
 text = path.read_text(encoding='utf-8')
-text = text.replace('orange = "#ffb347"', 'orange = "#ff8a24"')
-text = text.replace('play-computer.js?v=20260909-stalereply1', 'play-computer.js?v=20260909-pawnhighlight1')
-text = text.replace('play-v8.js?v=20260909-tournamentspectator1', 'play-v8.js?v=20260909-pawnhighlight1')
-text = text.replace('last-move-highlight.mjs?v=20260908-3', 'last-move-highlight.mjs?v=20260909-pawnhighlight1')
-text = text.replace('last-move-highlight.mjs?v=20260908-2', 'last-move-highlight.mjs?v=20260909-pawnhighlight1')
+text = text.replace('orange = "#ff8a24"', 'orange = "#ffa500"')
+text = text.replace('position:absolute;inset:8px;border:2px solid {orange}', 'position:absolute;inset:2px;border:2px solid {orange}')
 path.write_text(text, encoding='utf-8')
 
-path = ROOT / 'tests/test_computer_stale_reply_status.py'
-text = path.read_text(encoding='utf-8')
-text = text.replace('play-computer.js?v=20260909-stalereply1', 'play-computer.js?v=20260909-pawnhighlight1')
-path.write_text(text, encoding='utf-8')
-
-print('double-pawn last-move persistence and normal orange highlight applied')
+print('standard orange 2px highlight and enlarged capture ring applied')
