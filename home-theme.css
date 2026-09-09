@@ -99,6 +99,6 @@ html body .home-hero .hero-stat{
   box-shadow:none!important;
 }
 html body .welcome-ticker{
-  border-top:2px solid #c5a34d!important;
+  border-top:0!important;
   margin-top:0!important;
 }
