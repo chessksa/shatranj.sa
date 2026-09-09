@@ -16,7 +16,7 @@ html,body{margin:0;min-height:100%;background:#042628;color:#f4eddc;font-family:
 <div class="loader"><div><strong>جاري فتح شطرنج العرب</strong><small>تحديث الواجهة…</small></div></div>
 <script>
 (async()=>{
-  const stamp='20260909-rankingtop3-1';
+  const stamp='20260909-rankingtop3dark1';
   const response=await fetch('./index-app.html?v='+stamp,{cache:'no-store'});
   if(!response.ok) throw new Error('index source '+response.status);
   let html=await response.text();
