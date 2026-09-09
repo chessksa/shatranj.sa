@@ -1,0 +1,34 @@
+/* Ranking top three: subtle full-row distinction, no icons */
+#ranking tbody tr:not(.ranking-placeholder):nth-child(1) > td{
+  background:#fff7dc!important;
+}
+#ranking tbody tr:not(.ranking-placeholder):nth-child(2) > td{
+  background:#f2f3f5!important;
+}
+#ranking tbody tr:not(.ranking-placeholder):nth-child(3) > td{
+  background:#f6e5d5!important;
+}
+
+#ranking tbody tr:not(.ranking-placeholder):nth-child(-n+3) .rank-number{
+  font-weight:900!important;
+  font-size:1.08em!important;
+}
+#ranking tbody tr:not(.ranking-placeholder):nth-child(1) .rank-number{
+  color:#8b6a12!important;
+}
+#ranking tbody tr:not(.ranking-placeholder):nth-child(2) .rank-number{
+  color:#69717a!important;
+}
+#ranking tbody tr:not(.ranking-placeholder):nth-child(3) .rank-number{
+  color:#9a5f38!important;
+}
+
+#ranking tbody tr:not(.ranking-placeholder):nth-child(1):hover > td{
+  background:#ffefb8!important;
+}
+#ranking tbody tr:not(.ranking-placeholder):nth-child(2):hover > td{
+  background:#e8eaed!important;
+}
+#ranking tbody tr:not(.ranking-placeholder):nth-child(3):hover > td{
+  background:#f0d8c3!important;
+}
