@@ -103,21 +103,18 @@ html body .welcome-ticker{
   margin-top:0!important;
 }
 
-/* Mobile phantom bottom-scroll fix 20260909 */
+/* Mobile bottom overflow root fix 20260909 */
 @media(max-width:900px){
   html{
-    min-height:100%;
+    height:auto!important;
+    min-height:0!important;
     overflow-x:hidden!important;
   }
   html body{
     height:auto!important;
-    min-height:100dvh!important;
+    min-height:0!important;
     margin-bottom:0!important;
     padding-bottom:0!important;
     overflow-x:hidden!important;
-  }
-  html body footer{
-    margin-top:0!important;
-    margin-bottom:0!important;
   }
 }
