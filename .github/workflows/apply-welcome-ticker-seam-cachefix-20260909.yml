@@ -1,4 +1,4 @@
-name: Restore original welcome ticker styling 20260909
+name: Remove remaining welcome ticker 2px border 20260909
 
 on:
   push:
@@ -13,43 +13,37 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
-      - name: Restore original ticker styling and remove highlight
+      - name: Remove remaining 2px border and bust cache
         run: |
           python - <<'PY'
           from pathlib import Path
-          p = Path('index.html')
-          text = p.read_text(encoding='utf-8')
 
-          old_ver = 'home-theme.css?v=20260909-tickerlabel6'
-          new_ver = 'home-theme.css?v=20260909-tickerrestore7'
-          if old_ver not in text:
+          css = Path('home-theme.css')
+          c = css.read_text(encoding='utf-8')
+          old_css = 'html body .welcome-ticker{\n  border-top:2px solid #c5a34d!important;\n  margin-top:0!important;\n}'
+          new_css = 'html body .welcome-ticker{\n  border-top:0!important;\n  margin-top:0!important;\n}'
+          if old_css not in c:
+              raise SystemExit('expected remaining 2px ticker border rule not found')
+          css.write_text(c.replace(old_css, new_css, 1), encoding='utf-8')
+
+          html = Path('index.html')
+          h = html.read_text(encoding='utf-8')
+          old_ver = 'home-theme.css?v=20260909-tickerrestore7'
+          new_ver = 'home-theme.css?v=20260909-tickergap8'
+          if old_ver not in h:
               raise SystemExit('expected current home theme cache version not found')
-          text = text.replace(old_ver, new_ver, 1)
+          html.write_text(h.replace(old_ver, new_ver, 1), encoding='utf-8')
 
-          old_label = '.welcome-ticker-label{flex:0 0 auto;height:24px;display:flex;align-items:center;margin:0 7px;padding:0 14px;white-space:nowrap;background:rgba(255,255,255,.035);color:#efcf7c;border:1px solid rgba(216,182,101,.26);border-radius:8px;font-size:12px;font-weight:900;line-height:1;position:relative;z-index:2;box-shadow:inset 0 1px 0 rgba(255,255,255,.02)}'
-          original_label = '.welcome-ticker-label{flex:0 0 auto;height:100%;display:flex;align-items:center;padding:0 18px;white-space:nowrap;background:#0d3b39;color:#efcf7c;border-left:1px solid rgba(197,163,77,.5);font-size:12px;font-weight:900;line-height:1;position:relative;z-index:2;box-shadow:-8px 0 18px rgba(0,0,0,.12)}'
-          if old_label not in text:
-              raise SystemExit('expected framed latest-registrants label not found')
-          text = text.replace(old_label, original_label, 1)
-
-          old_seam = '.welcome-ticker{border-top:0!important;margin-top:0!important;box-shadow:none!important}\n.home-header + .welcome-ticker{margin-top:0!important}'
-          original_seam = '.welcome-ticker{border-top:0!important;margin-top:0!important}\n.home-header + .welcome-ticker{margin-top:-1px!important}'
-          if old_seam not in text:
-              raise SystemExit('expected current ticker seam rule not found')
-          text = text.replace(old_seam, original_seam, 1)
-
-          p.write_text(text, encoding='utf-8')
-          updated = p.read_text(encoding='utf-8')
-          assert new_ver in updated
-          assert original_label in updated
-          assert 'border-top:2px' not in updated
-          assert 'box-shadow:inset 0 1px 0 rgba(216,182,101,.5)' not in updated
-          assert '.home-header + .welcome-ticker{margin-top:-1px!important}' in updated
+          updated_css = css.read_text(encoding='utf-8')
+          updated_html = html.read_text(encoding='utf-8')
+          assert 'border-top:2px solid #c5a34d!important' not in updated_css
+          assert 'border-top:0!important' in updated_css
+          assert new_ver in updated_html
           PY
-      - name: Commit restored ticker styling
+      - name: Commit seam fix
         run: |
           git config user.name 'github-actions[bot]'
           git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
-          git add index.html
-          git commit -m 'style: restore original welcome ticker styling'
+          git add home-theme.css index.html
+          git commit -m 'fix: remove remaining 2px between header and ticker'
           git push
