@@ -11,5 +11,9 @@ assert '.registration-message:empty{display:none}' in html, 'empty registration 
 assert '.tournament-table th,.tournament-table td{padding:13px 14px;border-bottom:1px solid rgba(216,182,101,.18);text-align:center;' in html, 'tournament table headers and cells must be centered'
 assert 'countEl.textContent=`${list.length}`;' in html, 'dynamic tournament count must stay numeric only'
 assert 'اختر البطولة لعرض تفاصيلها والتسجيل فيها.' not in html, 'old tournament subtitle must be removed'
+assert '.page-head-title{display:grid;grid-template-columns:1fr 1fr;' in html, 'tournament header must be split into two equal halves'
+assert '.page-head-title::after{content:"";position:absolute;top:0;bottom:0;left:50%;width:1px;' in html, 'tournament header needs a centered vertical divider'
+assert '.count{color:var(--hero-gold-2);font-size:22px;' in html, 'tournament count must be 22px'
+assert '.page-head h1{' in html and 'text-align:center' in html, 'tournament title must remain centered in the right half'
 
 print('tournament header compact layout checks passed')
