@@ -8,8 +8,8 @@ demo_path = ROOT / 'play-tournament-demo.js'
 play = (ROOT / 'play-v8.js').read_text(encoding='utf-8')
 spectator_play = (ROOT / 'play-live.js').read_text(encoding='utf-8')
 
-assert 'play-v10.html?demo_tournament=1&layout=header3' in tournaments, 'demo link must bust the old cached layout'
-assert 'عرض مثال مباراة بطولة' in tournaments, 'demo link must be clearly labelled'
+assert 'play-v10.html?demo_tournament=1&layout=header3' not in tournaments, 'tournaments page must not expose the tournament demo link'
+assert 'عرض مثال مباراة بطولة' not in tournaments, 'tournaments page must not show a tournament demo example'
 assert "const demoTournament = params.get('demo_tournament')==='1';" in page, 'play page must recognize demo mode'
 assert 'play-tournament-demo.js?v=20260909-3' in page, 'play page must load the fixed isolated demo module'
 assert demo_path.exists(), 'isolated tournament demo module must exist'
