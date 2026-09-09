@@ -40,17 +40,17 @@ def test_live_and_computer_compare_position_keys_not_full_fen():
         'computer game must ignore server-only en-passant FEN normalization'
 
 
-def test_normal_orange_highlight_everywhere():
-    orange = '#ff8a24'
+def test_standard_orange_highlight_and_full_capture_ring_everywhere():
+    orange = '#ffa500'
     page = (ROOT / 'play-v10.html').read_text(encoding='utf-8')
     legacy = (ROOT / 'play.html').read_text(encoding='utf-8')
 
     assert f'stroke:{orange}!important;stroke-width:2px!important' in page
-    assert f'border:2px solid {orange};box-shadow:none' in page
-    square = f'.square.capture::after{{content:"";position:absolute;inset:8px;border:2px solid {orange};border-radius:50%}}'
+    assert f'.move-hint.capture::after{{width:92%;height:92%;background:transparent;border:2px solid {orange};box-shadow:none}}' in page
+    square = f'.square.capture::after{{content:"";position:absolute;inset:2px;border:2px solid {orange};border-radius:50%}}'
     assert square in page
     assert square in legacy
-    assert '#ffb347' not in page[page.index('.move-hint.capture::after'):page.index('@media(max-width:900px)', page.index('.move-hint.capture::after'))]
+    assert '#ff8a24' not in page[page.index('.move-hint.capture::after'):page.index('@media(max-width:900px)', page.index('.move-hint.capture::after'))]
 
 
 def test_cache_busts_for_fen_fix():
@@ -62,6 +62,6 @@ def test_cache_busts_for_fen_fix():
 if __name__ == '__main__':
     test_double_pawn_server_normalization_is_same_position()
     test_live_and_computer_compare_position_keys_not_full_fen()
-    test_normal_orange_highlight_everywhere()
+    test_standard_orange_highlight_and_full_capture_ring_everywhere()
     test_cache_busts_for_fen_fix()
-    print('double pawn last-move highlight and orange style: PASS')
+    print('double pawn persistence, standard orange, full capture ring: PASS')
