@@ -136,3 +136,32 @@ html body .welcome-ticker{
     overscroll-behavior-y:none!important;
   }
 }
+
+/* Mobile ranking: fixed frame, ten players via internal scroll */
+@media(max-width:800px){
+  #ranking .table-card{
+    height:210px!important;
+    min-height:210px!important;
+    max-height:210px!important;
+    overflow:hidden!important;
+  }
+  #ranking .table-wrap{
+    height:100%!important;
+    min-height:0!important;
+    max-height:100%!important;
+    overflow-y:auto!important;
+    overflow-x:hidden!important;
+    -webkit-overflow-scrolling:touch;
+    overscroll-behavior:contain!important;
+  }
+  #ranking table{
+    height:auto!important;
+    min-height:0!important;
+  }
+  #ranking thead th{
+    position:sticky!important;
+    top:0!important;
+    z-index:5!important;
+    background:#0b4143!important;
+  }
+}
