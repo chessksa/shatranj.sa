@@ -92,8 +92,8 @@ def test_computer_game_uses_native_markers():
 
 
 def test_native_marker_and_capture_hint_style():
-    orange = "#ffa500"
-    square_capture = f'.square.capture::after{{content:"";position:absolute;inset:2px;border:2px solid {orange};border-radius:50%}}'
+    orange = "#ff7a00"
+    square_capture = f'.square.capture::after{{content:"";position:absolute;inset:5px;border:2px solid {orange};border-radius:50%}}'
     marker_selector = f'.cm-chessboard .markers .marker.marker-frame-last-move{{stroke:{orange}!important;stroke-width:2px!important'
     page = require(
         "play-v10.html",
