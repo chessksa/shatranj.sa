@@ -103,6 +103,18 @@ html body .welcome-ticker{
   margin-top:0!important;
 }
 
+/* Keep both stacked ticker labels exactly aligned */
+#welcomeTicker .welcome-ticker-label,
+#tournamentResultsTicker .welcome-ticker-label{
+  flex:0 0 160px!important;
+  width:160px!important;
+  min-width:160px!important;
+  max-width:160px!important;
+  justify-content:center!important;
+  padding:0 10px!important;
+  box-sizing:border-box!important;
+}
+
 /* Mobile page flow: natural page scrolling, no horizontal overflow */
 @media(max-width:900px){
   html{
