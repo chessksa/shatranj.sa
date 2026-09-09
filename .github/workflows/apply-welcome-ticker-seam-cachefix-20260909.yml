@@ -1,4 +1,4 @@
-name: Render welcome ticker top frame inside strip 20260909
+name: Frame latest registrants label like header tiles 20260909
 
 on:
   push:
@@ -13,41 +13,49 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
-      - name: Render visible inset top frame and cache bust
+      - name: Frame latest registrants label and cache bust
         run: |
           python - <<'PY'
           from pathlib import Path
           p = Path('index.html')
           text = p.read_text(encoding='utf-8')
 
-          old_ver = 'home-theme.css?v=20260909-tickerframe4'
-          new_ver = 'home-theme.css?v=20260909-tickerinset5'
+          old_ver = 'home-theme.css?v=20260909-tickerinset5'
+          new_ver = 'home-theme.css?v=20260909-tickerlabel6'
           if old_ver not in text:
               raise SystemExit('expected current home theme cache version not found')
           text = text.replace(old_ver, new_ver, 1)
 
-          old_inline = 'border-top:1px solid rgba(216,182,101,.26);border-bottom:1px solid rgba(197,163,77,.55);position:relative;z-index:19;'
-          new_inline = 'border-top:0;border-bottom:1px solid rgba(197,163,77,.55);position:relative;z-index:19;box-shadow:inset 0 1px 0 rgba(216,182,101,.5);'
-          if old_inline not in text:
-              raise SystemExit('expected ticker inline frame rule not found')
-          text = text.replace(old_inline, new_inline, 1)
+          old_ticker = 'border-top:0;border-bottom:1px solid rgba(197,163,77,.55);position:relative;z-index:19;box-shadow:inset 0 1px 0 rgba(216,182,101,.5);flex:none;direction:rtl'
+          new_ticker = 'border-top:0;border-bottom:1px solid rgba(197,163,77,.55);position:relative;z-index:19;flex:none;direction:rtl'
+          if old_ticker not in text:
+              raise SystemExit('expected current ticker inset rule not found')
+          text = text.replace(old_ticker, new_ticker, 1)
 
-          old_seam = '.welcome-ticker{border-top:1px solid rgba(216,182,101,.26)!important;margin-top:0!important}'
-          new_seam = '.welcome-ticker{border-top:0!important;margin-top:0!important;box-shadow:inset 0 1px 0 rgba(216,182,101,.5)!important}'
+          old_label = '.welcome-ticker-label{flex:0 0 auto;height:100%;display:flex;align-items:center;padding:0 18px;white-space:nowrap;background:#0d3b39;color:#efcf7c;border-left:1px solid rgba(197,163,77,.5);font-size:12px;font-weight:900;line-height:1;position:relative;z-index:2;box-shadow:-8px 0 18px rgba(0,0,0,.12)}'
+          new_label = '.welcome-ticker-label{flex:0 0 auto;height:24px;display:flex;align-items:center;margin:0 7px;padding:0 14px;white-space:nowrap;background:rgba(255,255,255,.035);color:#efcf7c;border:1px solid rgba(216,182,101,.26);border-radius:8px;font-size:12px;font-weight:900;line-height:1;position:relative;z-index:2;box-shadow:inset 0 1px 0 rgba(255,255,255,.02)}'
+          if old_label not in text:
+              raise SystemExit('expected current latest-registrants label rule not found')
+          text = text.replace(old_label, new_label, 1)
+
+          old_seam = '.welcome-ticker{border-top:0!important;margin-top:0!important;box-shadow:inset 0 1px 0 rgba(216,182,101,.5)!important}'
+          new_seam = '.welcome-ticker{border-top:0!important;margin-top:0!important;box-shadow:none!important}'
           if old_seam not in text:
-              raise SystemExit('expected ticker seam frame override not found')
+              raise SystemExit('expected current ticker seam rule not found')
           text = text.replace(old_seam, new_seam, 1)
 
           p.write_text(text, encoding='utf-8')
           updated = p.read_text(encoding='utf-8')
           assert new_ver in updated
-          assert 'box-shadow:inset 0 1px 0 rgba(216,182,101,.5)' in updated
-          assert 'border-top:1px solid rgba(216,182,101,.26)' not in updated
+          assert 'height:24px' in updated
+          assert 'border:1px solid rgba(216,182,101,.26)' in updated
+          assert 'border-radius:8px' in updated
+          assert 'box-shadow:none!important' in updated
           PY
-      - name: Commit visible ticker frame
+      - name: Commit latest registrants label frame
         run: |
           git config user.name 'github-actions[bot]'
           git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
           git add index.html
-          git commit -m 'style: render welcome ticker top frame inside strip'
+          git commit -m 'style: frame latest registrants label like header tiles'
           git push
