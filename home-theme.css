@@ -109,6 +109,7 @@ html body .welcome-ticker{
     height:auto!important;
     min-height:0!important;
     overflow-x:hidden!important;
+    overscroll-behavior-y:none!important;
   }
   html body{
     height:auto!important;
@@ -116,5 +117,22 @@ html body .welcome-ticker{
     margin-bottom:0!important;
     padding-bottom:0!important;
     overflow-x:hidden!important;
+    overscroll-behavior-y:none!important;
+  }
+}
+
+/* Signed-in mobile home must not create phantom vertical scroll */
+@media(max-width:600px){
+  html:has(body.home-signed-in){
+    height:100dvh!important;
+    min-height:100dvh!important;
+    overflow-y:hidden!important;
+  }
+  html body.home-signed-in{
+    height:100dvh!important;
+    min-height:100dvh!important;
+    max-height:100dvh!important;
+    overflow-y:hidden!important;
+    overscroll-behavior-y:none!important;
   }
 }
