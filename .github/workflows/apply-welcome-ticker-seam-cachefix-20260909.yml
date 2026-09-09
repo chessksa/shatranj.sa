@@ -1,4 +1,4 @@
-name: Apply welcome ticker seam cache fix 20260909
+name: Apply welcome ticker gold border 20260909
 
 on:
   push:
@@ -13,42 +13,41 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
-      - name: Apply ticker seam fix and cache bust
+      - name: Apply gold top border and cache bust
         run: |
           python - <<'PY'
           from pathlib import Path
           p = Path('index.html')
           text = p.read_text(encoding='utf-8')
 
-          old_ver = 'home-theme.css?v=20260909-rankingrow35'
-          new_ver = 'home-theme.css?v=20260909-tickerseam2'
+          old_ver = 'home-theme.css?v=20260909-tickerseam2'
+          new_ver = 'home-theme.css?v=20260909-tickergold3'
           if old_ver not in text:
-              raise SystemExit('expected home theme cache version not found')
+              raise SystemExit('expected current home theme cache version not found')
           text = text.replace(old_ver, new_ver, 1)
 
-          old_border = 'border-top:1px solid rgba(197,163,77,.55);border-bottom:1px solid rgba(197,163,77,.55);'
-          new_border = 'border-top:0;border-bottom:1px solid rgba(197,163,77,.55);'
-          if old_border not in text:
-              raise SystemExit('expected ticker border rule not found')
-          text = text.replace(old_border, new_border, 1)
+          old_inline = 'border-top:0;border-bottom:1px solid rgba(197,163,77,.55);'
+          new_inline = 'border-top:2px solid #c5a34d;border-bottom:1px solid rgba(197,163,77,.55);'
+          if old_inline not in text:
+              raise SystemExit('expected ticker inline border rule not found')
+          text = text.replace(old_inline, new_inline, 1)
 
-          marker = '</style>\n\n</head>'
-          seam_style = '''</style>\n<style id="welcomeTickerSeamFix20260909">\n.home-header{border-bottom:0!important;box-shadow:none!important;margin-bottom:0!important}\n.welcome-ticker{border-top:0!important;margin-top:0!important}\n.home-header + .welcome-ticker{margin-top:-1px!important}\n@media(min-width:901px){body{row-gap:0!important}}\n</style>\n\n</head>'''
-          if 'welcomeTickerSeamFix20260909' not in text:
-              if marker not in text:
-                  raise SystemExit('head style insertion marker not found')
-              text = text.replace(marker, seam_style, 1)
+          old_seam = '.welcome-ticker{border-top:0!important;margin-top:0!important}\n.home-header + .welcome-ticker{margin-top:-1px!important}'
+          new_seam = '.welcome-ticker{border-top:2px solid #c5a34d!important;margin-top:0!important}\n.home-header + .welcome-ticker{margin-top:0!important}'
+          if old_seam not in text:
+              raise SystemExit('expected ticker seam override not found')
+          text = text.replace(old_seam, new_seam, 1)
 
           p.write_text(text, encoding='utf-8')
           updated = p.read_text(encoding='utf-8')
           assert new_ver in updated
-          assert 'welcomeTickerSeamFix20260909' in updated
-          assert old_border not in updated
+          assert 'border-top:2px solid #c5a34d' in updated
+          assert '.home-header + .welcome-ticker{margin-top:0!important}' in updated
           PY
-      - name: Commit ticker seam fix
+      - name: Commit ticker gold border
         run: |
           git config user.name 'github-actions[bot]'
           git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
           git add index.html
-          git commit -m 'fix: remove ticker seam and refresh home CSS cache'
+          git commit -m 'style: add gold top border to welcome ticker'
           git push
