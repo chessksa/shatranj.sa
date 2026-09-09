@@ -157,3 +157,12 @@ html body .welcome-ticker{
     background:#0b4143!important;
   }
 }
+
+/* Final mobile recovery: beats an older cached loader that disabled native pull-to-refresh. */
+@media(max-width:900px){
+  html:has(body.home-signed-in):root{overscroll-behavior-y:auto!important}
+  html body.home-signed-in.home-signed-in{overscroll-behavior-y:auto!important}
+}
+@media(max-width:600px){
+  html body footer{margin-top:0!important}
+}
