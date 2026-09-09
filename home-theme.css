@@ -166,3 +166,48 @@ html body .welcome-ticker{
 @media(max-width:600px){
   html body footer{margin-top:0!important}
 }
+
+/* Signed-in mobile: fill the viewport with the ranking instead of leaving an empty tail. */
+@media(max-width:900px){
+  html body.home-signed-in.home-signed-in{
+    height:auto!important;
+    min-height:100dvh!important;
+    max-height:none!important;
+    margin-bottom:0!important;
+    padding-bottom:0!important;
+    overflow-x:hidden!important;
+    overflow-y:visible!important;
+    overscroll-behavior-y:auto!important;
+  }
+  html body.home-signed-in #ranking{
+    flex:1 0 auto!important;
+    display:flex!important;
+    flex-direction:column!important;
+    overflow:visible!important;
+  }
+  html body.home-signed-in #ranking>.wrap{
+    flex:1 0 auto!important;
+    min-height:0!important;
+    display:flex!important;
+    flex-direction:column!important;
+  }
+  html body.home-signed-in #ranking .table-card{
+    flex:1 1 auto!important;
+    height:auto!important;
+    min-height:210px!important;
+    max-height:none!important;
+    display:flex!important;
+    flex-direction:column!important;
+    overflow:hidden!important;
+  }
+  html body.home-signed-in #ranking .table-wrap{
+    flex:1 1 auto!important;
+    height:auto!important;
+    min-height:0!important;
+    max-height:none!important;
+    overflow-y:auto!important;
+    overflow-x:hidden!important;
+    -webkit-overflow-scrolling:touch;
+  }
+}
+
