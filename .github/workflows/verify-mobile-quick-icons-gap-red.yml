@@ -1,4 +1,4 @@
-name: Verify mobile quick icons gap RED
+name: Verify mobile action gap RED
 on:
   push:
     branches: [main]
@@ -13,10 +13,10 @@ jobs:
       - uses: actions/setup-python@v5
         with:
           python-version: '3.12'
-      - name: Confirm regression test fails before implementation
+      - name: Confirm 1px regression test fails before implementation
         run: |
           if python tests/test_mobile_quick_icons_gap.py; then
             echo 'Regression test unexpectedly passed before implementation.'
             exit 1
           fi
-          echo 'RED confirmed: mobile quick icon gap test fails before implementation.'
+          echo 'RED confirmed: 1px mobile action gap test fails before implementation.'
