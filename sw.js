@@ -1,7 +1,8 @@
-const CACHE="shatranj-arab-v5";
+const CACHE="shatranj-arab-v6";
 const ASSETS=["./","./index.html","./styles.css","./app.js","./config.js","./manifest.webmanifest","./arab-cities.js"];
 const PLAY_PATHS=["/play.html","/play-v8.html","/play-live.js","/play-v8.js","/realistic-pieces.css","/play-v8.css","/play-v10.html","/play-v10-match.js","/exact-board-v13.css","/assets/pieces/"];
 const ADMIN_PATHS=["/admin.html","/admin.js"];
+const FRESH_HOME_ASSETS=["/home-theme.css","/site-notifications.js","/site-notifications-original.js","/home-invite.js","/site-presence.js"];
 
 self.addEventListener("install",e=>{
   self.skipWaiting();
@@ -33,7 +34,8 @@ self.addEventListener("fetch",e=>{
     return;
   }
 
-  if(url.pathname.endsWith("/home-theme.css")){
+  const isFreshHomeAsset=FRESH_HOME_ASSETS.some(path=>url.pathname.endsWith(path));
+  if(isFreshHomeAsset){
     e.respondWith(fetch(new Request(e.request,{cache:"no-store"})).catch(()=>caches.match(e.request)));
     return;
   }
