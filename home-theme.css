@@ -93,12 +93,12 @@ html body .home-hero .hero-stat{
   }
 }
 
-/* Seamless header / latest-members ticker junction 20260909 */
+/* Header / latest-members ticker junction 20260909 */
 .home-header{
   border-bottom:0!important;
   box-shadow:none!important;
 }
-.welcome-ticker{
-  border-top:0!important;
+html body .welcome-ticker{
+  border-top:2px solid #c5a34d!important;
   margin-top:0!important;
 }
