@@ -16,7 +16,7 @@ html,body{margin:0;min-height:100%;background:#042628;color:#f4eddc;font-family:
 <div class="loader"><div><strong>جاري فتح شطرنج العرب</strong><small>تحديث الواجهة…</small></div></div>
 <script>
 (async()=>{
-  const stamp='20260909-ranking10flow-final4';
+  const stamp='20260909-currentgames1';
   const response=await fetch('./index-app.html?v='+stamp,{cache:'no-store'});
   if(!response.ok) throw new Error('index source '+response.status);
   let html=await response.text();
@@ -25,6 +25,8 @@ html,body{margin:0;min-height:100%;background:#042628;color:#f4eddc;font-family:
     .replace('home-theme.css?v=20260909-tickergap8','home-theme.css?v='+stamp)
     .replace("const rankingLimit=window.matchMedia('(max-width:800px)').matches?5:10;","const rankingLimit=10;")
     .replace('site-notifications.js?v=20260906-ticker-hyphen1','site-notifications.js?v='+stamp);
+
+  html=html.split('href="watch.html"').join('href="watch.html?v='+stamp+'"');
 
   const oldInline='<style id="homeBottomGapFix20260909">\n@media(max-width:800px){body{padding-bottom:0!important}}\n</style>';
   const newInline=`<style id="homeBottomGapFix20260909">
@@ -43,6 +45,10 @@ html,body{margin:0;min-height:100%;background:#042628;color:#f4eddc;font-family:
 }
 </style>`;
   if(html.includes(oldInline)) html=html.replace(oldInline,newInline);
+
+  if(!html.includes('home-current-games.mjs')){
+    html=html.replace('</body>','<script type="module" src="home-current-games.mjs?v='+stamp+'"><\/script></body>');
+  }
 
   document.open();
   document.write(html);
