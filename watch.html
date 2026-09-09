@@ -64,7 +64,7 @@ async function fetchComputerGames(){
 }
 function renderHuman(games){
   document.querySelector('#games').innerHTML=games.map((g,i)=>`
-    <a class="game" href="play.html?spectate=${encodeURIComponent(g.id)}" aria-label="مشاهدة المباراة مباشرة">
+    <a class="game" href="human-watch.html?game=${encodeURIComponent(g.id)}" aria-label="مشاهدة المباراة مباشرة">
       <div class="game-top"><span class="live">● مباشر</span><span class="id">مباراة ${esc(g.id??i+1)}</span></div>
       <div class="players">
         <div class="player"><strong>♙ ${esc(nameOf(g,'white'))}</strong><span>${esc(ratingOf(g,'white'))}</span></div>
