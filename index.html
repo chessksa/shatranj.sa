@@ -16,7 +16,7 @@ html,body{margin:0;min-height:100%;background:#042628;color:#f4eddc;font-family:
 <div class="loader"><div><strong>جاري فتح شطرنج العرب</strong><small>تحديث الواجهة…</small></div></div>
 <script>
 (async()=>{
-  const stamp='20260910-pullrefresh-gap3';
+  const stamp='20260910-mobilefill4';
   const runtimeVersion=stamp+'-'+Date.now();
   const response=await fetch('./index-app.html?v='+runtimeVersion,{cache:'no-store'});
   if(!response.ok) throw new Error('index source '+response.status);
@@ -73,7 +73,7 @@ html,body{margin:0;min-height:100%;background:#042628;color:#f4eddc;font-family:
   }
 
   const bottomGapStylePattern=/<style id="homeBottomGapFix[^"]*">[\s\S]*?<\/style>/i;
-  const newInline=`<style id="homeBottomGapFix20260910c">
+  const newInline=`<style id="homeBottomGapFix20260910d">
 @media(min-width:901px){
   html:has(body.home-signed-in){
     height:100dvh!important;
@@ -101,7 +101,7 @@ html,body{margin:0;min-height:100%;background:#042628;color:#f4eddc;font-family:
     overflow-y:auto!important;
     overscroll-behavior-y:auto!important;
   }
-  html body,html body.home-signed-in{
+  html body{
     height:auto!important;
     min-height:0!important;
     max-height:none!important;
@@ -111,7 +111,39 @@ html,body{margin:0;min-height:100%;background:#042628;color:#f4eddc;font-family:
     overflow-y:visible!important;
     overscroll-behavior-y:auto!important;
   }
-  #ranking{flex:0 0 auto!important;overflow:visible!important}
+  html body.home-signed-in{
+    min-height:100dvh!important;
+  }
+  html body.home-signed-in #ranking{
+    flex:1 0 auto!important;
+    display:flex!important;
+    flex-direction:column!important;
+    overflow:visible!important;
+  }
+  html body.home-signed-in #ranking>.wrap{
+    flex:1 0 auto!important;
+    min-height:0!important;
+    display:flex!important;
+    flex-direction:column!important;
+  }
+  html body.home-signed-in #ranking .table-card{
+    flex:1 1 auto!important;
+    height:auto!important;
+    min-height:210px!important;
+    max-height:none!important;
+    display:flex!important;
+    flex-direction:column!important;
+    overflow:hidden!important;
+  }
+  html body.home-signed-in #ranking .table-wrap{
+    flex:1 1 auto!important;
+    height:auto!important;
+    min-height:0!important;
+    max-height:none!important;
+    overflow-y:auto!important;
+    overflow-x:hidden!important;
+    -webkit-overflow-scrolling:touch;
+  }
 }
 @media(max-width:800px){
   #ranking .table-card{position:relative!important;height:210px!important;min-height:210px!important;max-height:210px!important;overflow:hidden!important}
