@@ -16,18 +16,19 @@ html,body{margin:0;min-height:100%;background:#042628;color:#f4eddc;font-family:
 <div class="loader"><div><strong>جاري فتح شطرنج العرب</strong><small>تحديث الواجهة…</small></div></div>
 <script>
 (async()=>{
-  const stamp='20260910-bottomgap1';
-  const response=await fetch('./index-app.html?v='+stamp,{cache:'no-store'});
+  const stamp='20260910-refresh-scroll2';
+  const runtimeVersion=stamp+'-'+Date.now();
+  const response=await fetch('./index-app.html?v='+runtimeVersion,{cache:'no-store'});
   if(!response.ok) throw new Error('index source '+response.status);
   let html=await response.text();
 
   html=html
-    .replace('home-theme.css?v=20260909-tickergap8','home-theme.css?v='+stamp)
+    .replace(/home-theme\.css\?v=[A-Za-z0-9._-]+/g,'home-theme.css?v='+runtimeVersion)
+    .replace(/site-notifications\.js\?v=[A-Za-z0-9._-]+/g,'site-notifications.js?v='+runtimeVersion)
     .replace("const rankingLimit=window.matchMedia('(max-width:800px)').matches?5:10;","const rankingLimit=10;")
-    .replace('site-notifications.js?v=20260906-ticker-hyphen1','site-notifications.js?v='+stamp)
     .replace('setInterval(loadCurrentMatchesCount,30000);','setInterval(loadCurrentMatchesCount,3000);');
 
-  html=html.split('href="watch.html"').join('href="watch.html?v='+stamp+'"');
+  html=html.replace(/href="watch\.html(?:\?[^\"]*)?"/g,'href="watch.html?v='+runtimeVersion+'"');
 
   const oldMatchesCount=`async function loadCurrentMatchesCount(){
   const el=document.querySelector('#headerMatchesCount');
@@ -67,14 +68,24 @@ html,body{margin:0;min-height:100%;background:#042628;color:#f4eddc;font-family:
   }else{
     console.warn('تعذر استبدال عداد المباريات الأصلي');
     if(!html.includes('home-current-games.mjs')){
-      html=html.replace('</body>','<script type="module" src="home-current-games.mjs?v='+stamp+'"><\/script></body>');
+      html=html.replace('</body>','<script type="module" src="home-current-games.mjs?v='+runtimeVersion+'"><\/script></body>');
     }
   }
 
-  const oldInline='<style id="homeBottomGapFix20260909">\n@media(max-width:800px){body{padding-bottom:0!important}}\n</style>';
-  const newInline=`<style id="homeBottomGapFix20260910">
+  const bottomGapStylePattern=/<style id="homeBottomGapFix[^"]*">[\s\S]*?<\/style>/i;
+  const newInline=`<style id="homeBottomGapFix20260910b">
 @media(min-width:901px){
+  html:has(body.home-signed-in){
+    height:100dvh!important;
+    min-height:100dvh!important;
+    max-height:100dvh!important;
+    overflow:hidden!important;
+  }
   html body.home-signed-in{
+    height:100dvh!important;
+    min-height:0!important;
+    max-height:100dvh!important;
+    overflow:hidden!important;
     grid-template-rows:64px 34px minmax(0,1fr)!important;
   }
   html body.home-signed-in .home-header{grid-row:1!important}
@@ -82,15 +93,7 @@ html,body{margin:0;min-height:100%;background:#042628;color:#f4eddc;font-family:
   html body.home-signed-in .home-hero{grid-row:3!important}
   html body.home-signed-in #ranking{grid-row:3!important}
 }
-@media(min-width:901px) and (max-height:700px){
-  html body.home-signed-in{
-    height:auto!important;
-    min-height:100dvh!important;
-    overflow-y:auto!important;
-    grid-template-rows:64px 34px auto!important;
-  }
-}
-@media(max-width:800px){
+@media(max-width:900px){
   html{
     height:auto!important;
     min-height:100%!important;
@@ -109,14 +112,23 @@ html,body{margin:0;min-height:100%;background:#042628;color:#f4eddc;font-family:
   }
   html body.home-signed-in{overscroll-behavior-y:none!important}
   #ranking{flex:0 0 auto!important;overflow:visible!important}
+}
+@media(max-width:800px){
   #ranking .table-card{position:relative!important;height:210px!important;min-height:210px!important;max-height:210px!important;overflow:hidden!important}
   #ranking .table-wrap{height:100%!important;min-height:0!important;max-height:100%!important;overflow-y:auto!important;overflow-x:hidden!important;-webkit-overflow-scrolling:touch}
 }
 </style>`;
-  if(html.includes(oldInline)) html=html.replace(oldInline,newInline);
+
+  if(bottomGapStylePattern.test(html)){
+    html=html.replace(bottomGapStylePattern,newInline);
+  }else{
+    html=html.replace('</head>',newInline+'\n</head>');
+  }
 
   if(!html.includes('ranking-top-three.css')){
-    html=html.replace('</head>','<link rel="stylesheet" href="ranking-top-three.css?v='+stamp+'"></head>');
+    html=html.replace('</head>','<link rel="stylesheet" href="ranking-top-three.css?v='+runtimeVersion+'"></head>');
+  }else{
+    html=html.replace(/ranking-top-three\.css\?v=[A-Za-z0-9._-]+/g,'ranking-top-three.css?v='+runtimeVersion);
   }
 
   document.open();
