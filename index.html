@@ -16,7 +16,7 @@ html,body{margin:0;min-height:100%;background:#042628;color:#f4eddc;font-family:
 <div class="loader"><div><strong>جاري فتح شطرنج العرب</strong><small>تحديث الواجهة…</small></div></div>
 <script>
 (async()=>{
-  const stamp='20260910-ticker-layout1';
+  const stamp='20260910-ranking-compact-ticker2';
   const runtimeVersion=stamp+'-'+Date.now();
   const response=await fetch('./index-app.html?v='+runtimeVersion,{cache:'no-store'});
   if(!response.ok) throw new Error('index source '+response.status);
@@ -73,7 +73,7 @@ html,body{margin:0;min-height:100%;background:#042628;color:#f4eddc;font-family:
   }
 
   const bottomGapStylePattern=/<style id="homeBottomGapFix[^"]*">[\s\S]*?<\/style>/i;
-  const newInline=`<style id="homeBottomGapFix20260910f">
+  const newInline=`<style id="homeBottomGapFix20260910g">
 @media(min-width:901px){
   html:has(body.home-signed-in){
     height:100dvh!important;
@@ -93,6 +93,47 @@ html,body{margin:0;min-height:100%;background:#042628;color:#f4eddc;font-family:
   html body.home-signed-in #tournamentResultsTicker{grid-column:1/-1!important;grid-row:3!important}
   html body.home-signed-in .home-hero{grid-row:4!important}
   html body.home-signed-in #ranking{grid-row:4!important}
+  html body.home-signed-in #ranking .head{
+    min-height:96px!important;
+    height:96px!important;
+    padding:8px 14px!important;
+    display:grid!important;
+    grid-template-columns:minmax(0,1fr) minmax(420px,44%)!important;
+    gap:14px!important;
+    align-items:center!important;
+  }
+  html body.home-signed-in #ranking .head>div:first-child{
+    width:100%!important;
+    text-align:center!important;
+  }
+  html body.home-signed-in #ranking .ranking-filters{
+    width:100%!important;
+    max-width:none!important;
+    display:grid!important;
+    grid-template-columns:1fr 1fr!important;
+    gap:10px!important;
+    align-items:center!important;
+  }
+  html body.home-signed-in #ranking .ranking-filters select{
+    height:48px!important;
+    min-height:48px!important;
+  }
+}
+#tournamentResultsTicker .welcome-ticker-track{
+  animation:welcomeTickerInlineMove 42s linear infinite!important;
+  animation-play-state:running!important;
+}
+#tournamentResultsTicker:hover .welcome-ticker-track,
+#tournamentResultsTicker:focus-within .welcome-ticker-track{
+  animation-play-state:running!important;
+}
+#tournamentResultsTicker .welcome-ticker-track.welcome-ticker-single{
+  animation:tournamentFallbackMove 12s linear infinite!important;
+  will-change:transform!important;
+}
+@keyframes tournamentFallbackMove{
+  from{transform:translateX(-100vw)}
+  to{transform:translateX(100vw)}
 }
 @media(max-width:900px){
   html{
