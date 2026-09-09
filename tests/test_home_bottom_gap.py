@@ -16,4 +16,10 @@ assert 'html body.home-signed-in{overscroll-behavior-y:none!important}' not in h
 assert 'html:has(body.home-signed-in):root{overscroll-behavior-y:auto!important}' in theme_css, 'fresh theme must override stale loader rules and restore pull-to-refresh'
 assert 'html body footer{margin-top:0!important}' in theme_css, 'fresh theme must cancel the artificial mobile footer gap'
 
-print('mobile pull refresh and bottom gap checks passed')
+# The mobile ranking viewport must remain fixed and internally scrollable.
+assert 'html body.home-signed-in #ranking .table-card{\n    position:relative!important;\n    flex:0 0 210px!important;\n    height:210px!important;\n    min-height:210px!important;\n    max-height:210px!important;' in theme_css, 'signed-in mobile ranking card must stay 210px tall'
+assert 'html body.home-signed-in #ranking .table-wrap{\n    height:100%!important;' in theme_css, 'ranking rows must scroll inside the fixed card'
+assert 'html body.home-signed-in #ranking .table-card{\n    flex:1 1 auto!important;\n    height:auto!important;' not in theme_css, 'ranking card must not stretch to reveal all ten rows'
+assert 'html body.home-signed-in #ranking{\n    flex:1 0 auto!important;' in theme_css, 'only the outer ranking section may absorb leftover viewport space'
+
+print('mobile pull refresh, fixed ranking viewport, and bottom gap checks passed')
