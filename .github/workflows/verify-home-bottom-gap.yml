@@ -1,0 +1,16 @@
+name: Verify home bottom gap
+
+on:
+  push:
+    paths:
+      - 'index.html'
+      - 'tests/test_home_bottom_gap.py'
+      - '.github/workflows/verify-home-bottom-gap.yml'
+
+jobs:
+  verify:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Verify mobile bottom gap
+        run: python tests/test_home_bottom_gap.py
