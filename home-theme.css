@@ -92,3 +92,13 @@ html body .home-hero .hero-stat{
     font-size:10px!important;
   }
 }
+
+/* Seamless header / latest-members ticker junction 20260909 */
+.home-header{
+  border-bottom:0!important;
+  box-shadow:none!important;
+}
+.welcome-ticker{
+  border-top:0!important;
+  margin-top:0!important;
+}
