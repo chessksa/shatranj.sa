@@ -4,6 +4,7 @@ on:
     branches: [main]
     paths:
       - 'tests/test_double_pawn_last_move.py'
+      - 'tests/test_play_entry_cache_bust.py'
       - '.github/workflows/verify-double-pawn-highlight-red.yml'
 jobs:
   red:
@@ -15,8 +16,8 @@ jobs:
           python-version: '3.12'
       - name: Confirm regression test fails before fix
         run: |
-          if python tests/test_double_pawn_last_move.py; then
+          if python tests/test_play_entry_cache_bust.py; then
             echo 'Regression test unexpectedly passed before implementation.'
             exit 1
           fi
-          echo 'RED confirmed: regression test fails before implementation.'
+          echo 'RED confirmed: play entry cache regression fails before implementation.'
