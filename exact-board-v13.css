@@ -252,3 +252,11 @@
   body.live-game.tournament-match #gamePage .layout{height:auto!important;min-height:100dvh!important;overflow:visible!important}
 }
 
+/* Last move: transparent red full-square highlight */
+.cm-chessboard .markers .marker.marker-frame-last-move{
+  fill:rgba(255,0,0,.28)!important;
+  stroke:rgba(255,0,0,.28)!important;
+  stroke-width:4px!important;
+  opacity:1!important;
+  filter:none!important;
+}
