@@ -16,7 +16,7 @@ html,body{margin:0;min-height:100%;background:#042628;color:#f4eddc;font-family:
 <div class="loader"><div><strong>جاري فتح شطرنج العرب</strong><small>تحديث الواجهة…</small></div></div>
 <script>
 (async()=>{
-  const stamp='20260909-currentgames1';
+  const stamp='20260909-currentgames2';
   const response=await fetch('./index-app.html?v='+stamp,{cache:'no-store'});
   if(!response.ok) throw new Error('index source '+response.status);
   let html=await response.text();
@@ -24,9 +24,52 @@ html,body{margin:0;min-height:100%;background:#042628;color:#f4eddc;font-family:
   html=html
     .replace('home-theme.css?v=20260909-tickergap8','home-theme.css?v='+stamp)
     .replace("const rankingLimit=window.matchMedia('(max-width:800px)').matches?5:10;","const rankingLimit=10;")
-    .replace('site-notifications.js?v=20260906-ticker-hyphen1','site-notifications.js?v='+stamp);
+    .replace('site-notifications.js?v=20260906-ticker-hyphen1','site-notifications.js?v='+stamp)
+    .replace('setInterval(loadCurrentMatchesCount,30000);','setInterval(loadCurrentMatchesCount,3000);');
 
   html=html.split('href="watch.html"').join('href="watch.html?v='+stamp+'"');
+
+  const oldMatchesCount=`async function loadCurrentMatchesCount(){
+  const el=document.querySelector('#headerMatchesCount');
+  if(!el) return;
+
+  const liveStatuses=['playing','active','in_progress','started'];
+
+  try{
+    const {count,error}=await supabase
+      .from('live_games')
+      .select('*',{count:'exact',head:true})
+      .in('status',liveStatuses);
+
+    if(error) throw error;
+    el.textContent=String(typeof count==='number'?count:0);
+  }catch(error){
+    console.warn('تعذر تحميل عدد المباريات الجارية',error);
+    el.textContent='0';
+  }
+}`;
+
+  const newMatchesCount=`async function loadCurrentMatchesCount(){
+  const el=document.querySelector('#headerMatchesCount');
+  if(!el) return;
+
+  try{
+    const {data,error}=await supabase.rpc('list_public_current_games');
+    if(error) throw error;
+    el.textContent=String(Array.isArray(data)?data.length:0);
+  }catch(error){
+    console.warn('تعذر تحميل عدد المباريات الجارية',error);
+  }
+}`;
+
+  if(html.includes(oldMatchesCount)){
+    html=html.replace(oldMatchesCount,newMatchesCount);
+  }else{
+    console.warn('تعذر استبدال عداد المباريات الأصلي');
+    if(!html.includes('home-current-games.mjs')){
+      html=html.replace('</body>','<script type="module" src="home-current-games.mjs?v='+stamp+'"><\/script></body>');
+    }
+  }
 
   const oldInline='<style id="homeBottomGapFix20260909">\n@media(max-width:800px){body{padding-bottom:0!important}}\n</style>';
   const newInline=`<style id="homeBottomGapFix20260909">
@@ -45,10 +88,6 @@ html,body{margin:0;min-height:100%;background:#042628;color:#f4eddc;font-family:
 }
 </style>`;
   if(html.includes(oldInline)) html=html.replace(oldInline,newInline);
-
-  if(!html.includes('home-current-games.mjs')){
-    html=html.replace('</body>','<script type="module" src="home-current-games.mjs?v='+stamp+'"><\/script></body>');
-  }
 
   document.open();
   document.write(html);
