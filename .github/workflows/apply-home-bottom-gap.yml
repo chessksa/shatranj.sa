@@ -1,0 +1,43 @@
+name: Apply home bottom gap fix
+
+on:
+  push:
+    paths:
+      - '.github/workflows/apply-home-bottom-gap.yml'
+
+permissions:
+  contents: write
+
+jobs:
+  apply:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Remove obsolete mobile bottom reserve
+        run: |
+          python - <<'PY'
+          from pathlib import Path
+          path = Path('index.html')
+          html = path.read_text(encoding='utf-8')
+          old = '@media(max-width:800px){\n  body{padding-bottom:61px}'
+          if old not in html:
+              raise SystemExit('obsolete mobile bottom reserve not found')
+          html = html.replace(old, '@media(max-width:800px){\n  body{padding-bottom:0}', 1)
+          marker = '''<style id="homeBottomGapFix20260909">
+@media(max-width:800px){body{padding-bottom:0!important}}
+</style>
+'''
+          if 'id="homeBottomGapFix20260909"' not in html:
+              html = html.replace('</head>', marker + '\n</head>', 1)
+          path.write_text(html, encoding='utf-8')
+          PY
+      - name: Verify bottom gap fix
+        run: python tests/test_home_bottom_gap.py
+      - name: Commit change
+        run: |
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git add index.html
+          git diff --cached --quiet && exit 0
+          git commit -m 'fix: remove obsolete mobile bottom gap'
+          git push
