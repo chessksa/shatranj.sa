@@ -20,6 +20,26 @@
     return SAUDI_REGIONS.has(value) ? 'السعودية' : value;
   };
 
+  function installTournamentTickerMotion() {
+    if (document.getElementById('tournamentTickerMotionStyles')) return;
+    const style = document.createElement('style');
+    style.id = 'tournamentTickerMotionStyles';
+    style.textContent = `
+      #tournamentResultsTicker .tournament-ticker-single{
+        animation:tournamentTickerSingleMove 18s linear infinite!important;
+        will-change:transform;
+      }
+      @keyframes tournamentTickerSingleMove{
+        from{transform:translateX(-100vw)}
+        to{transform:translateX(100vw)}
+      }
+      @media(prefers-reduced-motion:reduce){
+        #tournamentResultsTicker .tournament-ticker-single{animation:none!important;transform:none!important}
+      }
+    `;
+    document.head.appendChild(style);
+  }
+
   function installMobileRankingFrame() {
     if (document.getElementById('mobileRankingTenFixedFrame')) return;
     const style = document.createElement('style');
@@ -131,13 +151,18 @@
       let source = await response.text();
       source = source
         .replace('const MOBILE_RANKING_LIMIT = 5;', 'const MOBILE_RANKING_LIMIT = 10;')
-        .replace("style.id = 'mobileRankingFiveStyles';", "style.id = 'mobileRankingTenStyles';");
+        .replace("style.id = 'mobileRankingFiveStyles';", "style.id = 'mobileRankingTenStyles';")
+        .replace(
+          /track\.className = 'welcome-ticker-track welcome-ticker-single';/g,
+          "track.className = 'welcome-ticker-track tournament-ticker-single';"
+        );
       (0, eval)(source);
     } catch (error) {
       console.error('site notifications compatibility loader failed', error);
     }
   }
 
+  installTournamentTickerMotion();
   installMobileRankingFrame();
   installRankingObserver();
 
