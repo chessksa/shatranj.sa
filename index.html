@@ -16,7 +16,7 @@ html,body{margin:0;min-height:100%;background:#042628;color:#f4eddc;font-family:
 <div class="loader"><div><strong>جاري فتح شطرنج العرب</strong><small>تحديث الواجهة…</small></div></div>
 <script>
 (async()=>{
-  const stamp='20260910-refresh-scroll2';
+  const stamp='20260910-pullrefresh-gap3';
   const runtimeVersion=stamp+'-'+Date.now();
   const response=await fetch('./index-app.html?v='+runtimeVersion,{cache:'no-store'});
   if(!response.ok) throw new Error('index source '+response.status);
@@ -73,7 +73,7 @@ html,body{margin:0;min-height:100%;background:#042628;color:#f4eddc;font-family:
   }
 
   const bottomGapStylePattern=/<style id="homeBottomGapFix[^"]*">[\s\S]*?<\/style>/i;
-  const newInline=`<style id="homeBottomGapFix20260910b">
+  const newInline=`<style id="homeBottomGapFix20260910c">
 @media(min-width:901px){
   html:has(body.home-signed-in){
     height:100dvh!important;
@@ -99,8 +99,8 @@ html,body{margin:0;min-height:100%;background:#042628;color:#f4eddc;font-family:
     min-height:100%!important;
     overflow-x:hidden!important;
     overflow-y:auto!important;
+    overscroll-behavior-y:auto!important;
   }
-  html:has(body.home-signed-in){overscroll-behavior-y:none!important}
   html body,html body.home-signed-in{
     height:auto!important;
     min-height:0!important;
@@ -109,8 +109,8 @@ html,body{margin:0;min-height:100%;background:#042628;color:#f4eddc;font-family:
     padding-bottom:0!important;
     overflow-x:hidden!important;
     overflow-y:visible!important;
+    overscroll-behavior-y:auto!important;
   }
-  html body.home-signed-in{overscroll-behavior-y:none!important}
   #ranking{flex:0 0 auto!important;overflow:visible!important}
 }
 @media(max-width:800px){
