@@ -6,7 +6,7 @@
 <meta name="theme-color" content="#0d3b2e">
 <title>شاهد المباريات | شطرنج العرب</title>
 <style>
-*{box-sizing:border-box}
+*{box-sizing:border-box}[hidden]{display:none!important}
 :root{--green:#0d3b2e;--green2:#176148;--gold:#c5a34d;--cream:#f5f3ed;--text:#14221c;--muted:#6f7773;--line:#ddd7ca;--white:#fff}
 body{margin:0;font-family:Arial,sans-serif;background:var(--cream);color:var(--text)}a{text-decoration:none;color:inherit}.wrap{width:min(900px,calc(100% - 24px));margin:auto}
 header{background:var(--green);color:#fff;box-shadow:0 2px 10px rgba(0,0,0,.08)}.nav{min-height:58px;display:flex;align-items:center;justify-content:space-between;gap:10px}.brand{font-weight:900;font-size:19px}.back{background:rgba(255,255,255,.08);padding:8px 12px;border-radius:8px;font-size:12px;font-weight:900}
@@ -19,82 +19,70 @@ main{padding:18px 0}.head{display:flex;align-items:end;justify-content:space-bet
 <body>
 <header><div class="wrap nav"><div class="brand">♟ شطرنج العرب</div><a class="back" href="index.html">العودة</a></div></header>
 <main class="wrap">
-  <div class="head"><div><h1>المباريات الحالية</h1><p>شاهد المباريات الجارية مباشرة، بدون الحاجة إلى تسجيل الدخول.</p></div><div class="count"><strong id="liveCount">0</strong><span>مباراة جارية</span></div></div>
+  <div class="head"><div><h1>المباريات الحالية</h1><p>شاهد المباريات الجارية مباشرة، بما فيها اللعب ضد الكمبيوتر.</p></div><div class="count"><strong id="liveCount">0</strong><span>مباراة جارية</span></div></div>
   <div id="loading" class="loading">جاري تحميل المباريات...</div>
-
   <div id="liveSection" hidden>
     <div class="section-title"><h2>بين اللاعبين</h2><span id="humanCount">0 مباراة</span></div>
     <div id="games" class="grid"></div>
   </div>
-
   <div id="computerSection" hidden>
     <div class="section-title"><h2>ضد الكمبيوتر</h2><span id="computerCount">0 مباراة</span></div>
     <div id="computerGames" class="grid"></div>
   </div>
-
   <div id="empty" class="empty">لا توجد مباريات جارية الآن.</div>
 </main>
+<script src="config.js"></script>
 <script type="module">
 import { createClient } from 'https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/+esm';
-const supabase=createClient('https://zjxkxhsvltihucdacjrv.supabase.co','sb_publishable_bwFGOiJzT_Xv656pLPR8ww_oJxFzSGJ');
-const liveStatuses=['playing','active','in_progress','started'];
+const cfg=window.SHATRANJ_CONFIG?.supabase||{};
+const supabase=cfg.enabled&&cfg.url&&cfg.anonKey?createClient(cfg.url,cfg.anonKey):null;
 const levelLabel={easy:'سهل',medium:'متوسط',hard:'صعب'};
 const esc=v=>String(v??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
-function nameOf(g,side){
-  const candidates=side==='white'?[g.white_name,g.white_player_name,g.player1_name,g.player_white_name,g.white?.name]:[g.black_name,g.black_player_name,g.player2_name,g.player_black_name,g.black?.name];
-  return candidates.find(Boolean)||'لاعب';
-}
-function ratingOf(g,side){
-  const candidates=side==='white'?[g.white_rating,g.player1_rating,g.white?.rating]:[g.black_rating,g.player2_rating,g.black?.rating];
-  return candidates.find(v=>v!==undefined&&v!==null)||'';
-}
-async function fetchHumanGames(){
-  try{
-    const {data,error}=await supabase.from('live_games').select('*').in('status',liveStatuses).limit(50);
-    if(error) throw error;
-    return data||[];
-  }catch(error){console.warn('تعذر تحميل مباريات اللاعبين',error);return []}
-}
-async function fetchComputerGames(){
-  try{
-    const {data,error}=await supabase.rpc('list_public_computer_games');
-    if(error) throw error;
-    return data||[];
-  }catch(error){console.warn('تعذر تحميل مباريات الكمبيوتر',error);return []}
-}
+let loading=false;
+
 function renderHuman(games){
   document.querySelector('#games').innerHTML=games.map((g,i)=>`
-    <a class="game" href="human-watch.html?game=${encodeURIComponent(g.id)}" aria-label="مشاهدة المباراة مباشرة">
-      <div class="game-top"><span class="live">● مباشر</span><span class="id">مباراة ${esc(g.id??i+1)}</span></div>
+    <a class="game" href="human-watch.html?game=${encodeURIComponent(g.game_id)}" aria-label="مشاهدة المباراة مباشرة">
+      <div class="game-top"><span class="live">● مباشر</span><span class="id">مباراة ${i+1}</span></div>
       <div class="players">
-        <div class="player"><strong>♙ ${esc(nameOf(g,'white'))}</strong><span>${esc(ratingOf(g,'white'))}</span></div>
-        <div class="player"><strong>♟ ${esc(nameOf(g,'black'))}</strong><span>${esc(ratingOf(g,'black'))}</span></div>
+        <div class="player"><strong>♙ ${esc(g.white_name||'الأبيض')}</strong><span>${esc(g.white_rating??'')}</span></div>
+        <div class="player"><strong>♟ ${esc(g.black_name||'الأسود')}</strong><span>${esc(g.black_rating??'')}</span></div>
       </div>
     </a>`).join('');
 }
 function renderComputer(games){
-  document.querySelector('#computerGames').innerHTML=games.map((g,i)=>`
+  document.querySelector('#computerGames').innerHTML=games.map(g=>`
     <a class="game" href="computer-watch.html?game=${encodeURIComponent(g.game_id)}" aria-label="مشاهدة مباراة ضد الكمبيوتر مباشرة">
-      <div class="game-top"><span class="live">● مباشر</span><span class="kind">ضد الكمبيوتر</span></div>
+      <div class="game-top"><span class="live">● مباشر</span><span class="kind">ضد الكمبيوتر · ${esc(levelLabel[g.level]||g.level||'')}</span></div>
       <div class="players">
-        <div class="player"><strong>♙ ${esc(g.player_name||'لاعب')}</strong><span>${esc(g.player_rating??'')}</span></div>
+        <div class="player"><strong>♙ ${esc(g.white_name||'لاعب')}</strong><span>${esc(g.white_rating??'')}</span></div>
         <div class="player"><strong>♟ الكمبيوتر</strong><span>${esc(levelLabel[g.level]||g.level||'')}</span></div>
       </div>
     </a>`).join('');
 }
 async function load(){
-  const [human,computer]=await Promise.all([fetchHumanGames(),fetchComputerGames()]);
-  const total=human.length+computer.length;
-  document.querySelector('#loading').style.display='none';
-  document.querySelector('#liveCount').textContent=total;
-  document.querySelector('#humanCount').textContent=`${human.length} مباراة`;
-  document.querySelector('#computerCount').textContent=`${computer.length} مباراة`;
-  document.querySelector('#liveSection').hidden=!human.length;
-  document.querySelector('#computerSection').hidden=!computer.length;
-  document.querySelector('#empty').style.display=total?'none':'block';
-  renderHuman(human);renderComputer(computer);
+  if(!supabase||loading)return;
+  loading=true;
+  try{
+    const {data,error}=await supabase.rpc('list_public_current_games');
+    if(error)throw error;
+    const all=Array.isArray(data)?data:[];
+    const human=all.filter(g=>g.game_type==='human');
+    const computer=all.filter(g=>g.game_type==='computer');
+    document.querySelector('#loading').style.display='none';
+    document.querySelector('#liveCount').textContent=String(all.length);
+    document.querySelector('#humanCount').textContent=`${human.length} مباراة`;
+    document.querySelector('#computerCount').textContent=`${computer.length} مباراة`;
+    document.querySelector('#liveSection').hidden=!human.length;
+    document.querySelector('#computerSection').hidden=!computer.length;
+    document.querySelector('#empty').style.display=all.length?'none':'block';
+    renderHuman(human);renderComputer(computer);
+  }catch(error){
+    console.warn('تعذر تحميل المباريات الحالية',error);
+    document.querySelector('#loading').textContent='تعذر تحميل المباريات. أعد المحاولة.';
+  }finally{loading=false}
 }
-load();setInterval(load,15000);
+load();setInterval(load,3000);
 </script>
 <script type="module" src="site-presence.js?v=20260906-1"></script>
 </body>
