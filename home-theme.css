@@ -167,7 +167,7 @@ html body .welcome-ticker{
   html body footer{margin-top:0!important}
 }
 
-/* Signed-in mobile: fill the viewport with the ranking instead of leaving an empty tail. */
+/* Signed-in mobile: outer ranking fills the viewport; the table itself stays fixed and scrolls internally. */
 @media(max-width:900px){
   html body.home-signed-in.home-signed-in{
     height:auto!important;
@@ -191,23 +191,23 @@ html body .welcome-ticker{
     display:flex!important;
     flex-direction:column!important;
   }
+}
+@media(max-width:800px){
   html body.home-signed-in #ranking .table-card{
-    flex:1 1 auto!important;
-    height:auto!important;
+    position:relative!important;
+    flex:0 0 210px!important;
+    height:210px!important;
     min-height:210px!important;
-    max-height:none!important;
-    display:flex!important;
-    flex-direction:column!important;
+    max-height:210px!important;
     overflow:hidden!important;
   }
   html body.home-signed-in #ranking .table-wrap{
-    flex:1 1 auto!important;
-    height:auto!important;
+    height:100%!important;
     min-height:0!important;
-    max-height:none!important;
+    max-height:100%!important;
     overflow-y:auto!important;
     overflow-x:hidden!important;
     -webkit-overflow-scrolling:touch;
+    overscroll-behavior:contain!important;
   }
 }
-
