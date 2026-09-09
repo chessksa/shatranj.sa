@@ -16,7 +16,7 @@ html,body{margin:0;min-height:100%;background:#042628;color:#f4eddc;font-family:
 <div class="loader"><div><strong>جاري فتح شطرنج العرب</strong><small>تحديث الواجهة…</small></div></div>
 <script>
 (async()=>{
-  const stamp='20260909-rankingtop3dark1';
+  const stamp='20260910-bottomgap1';
   const response=await fetch('./index-app.html?v='+stamp,{cache:'no-store'});
   if(!response.ok) throw new Error('index source '+response.status);
   let html=await response.text();
@@ -72,16 +72,42 @@ html,body{margin:0;min-height:100%;background:#042628;color:#f4eddc;font-family:
   }
 
   const oldInline='<style id="homeBottomGapFix20260909">\n@media(max-width:800px){body{padding-bottom:0!important}}\n</style>';
-  const newInline=`<style id="homeBottomGapFix20260909">
+  const newInline=`<style id="homeBottomGapFix20260910">
+@media(min-width:901px){
+  html body.home-signed-in{
+    grid-template-rows:64px 34px minmax(0,1fr)!important;
+  }
+  html body.home-signed-in .home-header{grid-row:1!important}
+  html body.home-signed-in .welcome-ticker{grid-row:2!important}
+  html body.home-signed-in .home-hero{grid-row:3!important}
+  html body.home-signed-in #ranking{grid-row:3!important}
+}
+@media(min-width:901px) and (max-height:700px){
+  html body.home-signed-in{
+    height:auto!important;
+    min-height:100dvh!important;
+    overflow-y:auto!important;
+    grid-template-rows:64px 34px auto!important;
+  }
+}
 @media(max-width:800px){
-  html:has(body.home-signed-in),html,html body,html body.home-signed-in{
+  html{
+    height:auto!important;
+    min-height:100%!important;
+    overflow-x:hidden!important;
+    overflow-y:auto!important;
+  }
+  html:has(body.home-signed-in){overscroll-behavior-y:none!important}
+  html body,html body.home-signed-in{
     height:auto!important;
     min-height:0!important;
     max-height:none!important;
-    overflow-y:auto!important;
-    overscroll-behavior-y:auto!important;
+    margin-bottom:0!important;
+    padding-bottom:0!important;
+    overflow-x:hidden!important;
+    overflow-y:visible!important;
   }
-  html body,html body.home-signed-in{padding-bottom:0!important}
+  html body.home-signed-in{overscroll-behavior-y:none!important}
   #ranking{flex:0 0 auto!important;overflow:visible!important}
   #ranking .table-card{position:relative!important;height:210px!important;min-height:210px!important;max-height:210px!important;overflow:hidden!important}
   #ranking .table-wrap{height:100%!important;min-height:0!important;max-height:100%!important;overflow-y:auto!important;overflow-x:hidden!important;-webkit-overflow-scrolling:touch}
