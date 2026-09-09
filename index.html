@@ -16,7 +16,7 @@ html,body{margin:0;min-height:100%;background:#042628;color:#f4eddc;font-family:
 <div class="loader"><div><strong>جاري فتح شطرنج العرب</strong><small>تحديث الواجهة…</small></div></div>
 <script>
 (async()=>{
-  const stamp='20260910-mobilefill4';
+  const stamp='20260910-ranking-scroll5';
   const runtimeVersion=stamp+'-'+Date.now();
   const response=await fetch('./index-app.html?v='+runtimeVersion,{cache:'no-store'});
   if(!response.ok) throw new Error('index source '+response.status);
@@ -73,7 +73,7 @@ html,body{margin:0;min-height:100%;background:#042628;color:#f4eddc;font-family:
   }
 
   const bottomGapStylePattern=/<style id="homeBottomGapFix[^"]*">[\s\S]*?<\/style>/i;
-  const newInline=`<style id="homeBottomGapFix20260910d">
+  const newInline=`<style id="homeBottomGapFix20260910e">
 @media(min-width:901px){
   html:has(body.home-signed-in){
     height:100dvh!important;
@@ -126,28 +126,25 @@ html,body{margin:0;min-height:100%;background:#042628;color:#f4eddc;font-family:
     display:flex!important;
     flex-direction:column!important;
   }
+}
+@media(max-width:800px){
   html body.home-signed-in #ranking .table-card{
-    flex:1 1 auto!important;
-    height:auto!important;
+    position:relative!important;
+    flex:0 0 210px!important;
+    height:210px!important;
     min-height:210px!important;
-    max-height:none!important;
-    display:flex!important;
-    flex-direction:column!important;
+    max-height:210px!important;
     overflow:hidden!important;
   }
   html body.home-signed-in #ranking .table-wrap{
-    flex:1 1 auto!important;
-    height:auto!important;
+    height:100%!important;
     min-height:0!important;
-    max-height:none!important;
+    max-height:100%!important;
     overflow-y:auto!important;
     overflow-x:hidden!important;
     -webkit-overflow-scrolling:touch;
+    overscroll-behavior:contain!important;
   }
-}
-@media(max-width:800px){
-  #ranking .table-card{position:relative!important;height:210px!important;min-height:210px!important;max-height:210px!important;overflow:hidden!important}
-  #ranking .table-wrap{height:100%!important;min-height:0!important;max-height:100%!important;overflow-y:auto!important;overflow-x:hidden!important;-webkit-overflow-scrolling:touch}
 }
 </style>`;
 
