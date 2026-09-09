@@ -1955,3 +1955,10 @@ footer .wrap{display:flex;justify-content:space-between;align-items:center}
   footer{margin-top:4px!important}
 }
 
+/* MOBILE RANKING TITLE + JOINED HEAD 20260909 */
+@media(max-width:600px){
+  #rankingTitle{overflow:visible!important;text-overflow:clip!important;line-height:1.45!important;padding-block:2px!important}
+  #ranking .head{margin:0!important}
+  #ranking .table-card{margin-top:0!important}
+}
+
