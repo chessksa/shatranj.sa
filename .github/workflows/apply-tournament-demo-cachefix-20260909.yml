@@ -1,0 +1,57 @@
+name: Remove tournament demo link and bust page cache 20260909
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - '.github/workflows/apply-tournament-demo-cachefix-20260909.yml'
+
+permissions:
+  contents: write
+
+jobs:
+  apply:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: main
+      - name: Remove demo link and version tournament navigation
+        run: |
+          python - <<'PY'
+          from pathlib import Path
+
+          tournaments = Path('tournaments.html')
+          t = tournaments.read_text(encoding='utf-8')
+          demo = '<a class="demo-link" href="play-v10.html?demo_tournament=1&layout=header3">عرض مثال مباراة بطولة</a>'
+          if demo in t:
+              t = t.replace(demo, '', 1)
+          if 'عرض مثال مباراة بطولة' in t or 'class="demo-link" href="play-v10.html?demo_tournament=1' in t:
+              raise SystemExit('tournament demo link still present')
+          tournaments.write_text(t, encoding='utf-8')
+
+          index = Path('index.html')
+          h = index.read_text(encoding='utf-8')
+          old = '<a class="btn light hero-tournaments-btn" href="tournaments.html"><span>البطولات</span></a>'
+          new = '<a class="btn light hero-tournaments-btn" href="tournaments.html?v=20260909-hide-demo2"><span>البطولات</span></a>'
+          if new not in h:
+              if old not in h:
+                  raise SystemExit('home tournaments link anchor not found')
+              h = h.replace(old, new, 1)
+          index.write_text(h, encoding='utf-8')
+
+          assert 'عرض مثال مباراة بطولة' not in tournaments.read_text(encoding='utf-8')
+          assert 'tournaments.html?v=20260909-hide-demo2' in index.read_text(encoding='utf-8')
+          print('tournament demo link removed and cache-busted navigation applied')
+          PY
+      - name: Commit tournament cache fix
+        run: |
+          if git diff --quiet; then
+            echo 'No changes to commit.'
+            exit 0
+          fi
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git add tournaments.html index.html
+          git commit -m 'fix: bust tournament page cache after hiding demo link'
+          git push origin HEAD:main
