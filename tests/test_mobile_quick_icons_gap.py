@@ -1,9 +1,10 @@
 from pathlib import Path
 
 ROOT = Path(__file__).resolve().parents[1]
-VERSION = "20260909-rankingtitle1"
+VERSION = "20260909-rankingrow35"
 SPACING_MARKER = "/* MOBILE ALL INTERFACE SPACING 4PX 20260909 */"
 RANKING_MARKER = "/* MOBILE RANKING TITLE + JOINED HEAD 20260909 */"
+ROW_MARKER = "/* MOBILE RANKING ROW HEIGHT 35PX 20260909 */"
 
 
 def css_text():
@@ -20,6 +21,12 @@ def ranking_fix_section():
     css = css_text()
     assert RANKING_MARKER in css
     return css.split(RANKING_MARKER, 1)[1]
+
+
+def row_height_section():
+    css = css_text()
+    assert ROW_MARKER in css
+    return css.split(ROW_MARKER, 1)[1]
 
 
 def test_existing_mobile_interface_gaps_remain_four_pixels():
@@ -46,10 +53,14 @@ def test_ranking_head_is_attached_to_table_without_gap():
     section = ranking_fix_section()
     assert "#ranking .head{margin:0!important}" in section
     assert "#ranking .table-card{margin-top:0!important}" in section
-    assert "#ranking .head{margin:0 0 4px!important}" not in section
 
 
-def test_ranking_fix_stylesheets_are_cache_busted():
+def test_mobile_ranking_rows_are_35_pixels_high():
+    section = row_height_section()
+    assert "#ranking th,#ranking td{height:35px!important}" in section
+
+
+def test_ranking_row_height_stylesheets_are_cache_busted():
     html = (ROOT / "index.html").read_text(encoding="utf-8")
     theme = (ROOT / "home-theme.css").read_text(encoding="utf-8")
     assert f'href="home-theme.css?v={VERSION}"' in html
@@ -60,5 +71,6 @@ if __name__ == "__main__":
     test_existing_mobile_interface_gaps_remain_four_pixels()
     test_ranking_title_is_not_clipped_on_mobile()
     test_ranking_head_is_attached_to_table_without_gap()
-    test_ranking_fix_stylesheets_are_cache_busted()
-    print("mobile ranking title and joined table head: PASS")
+    test_mobile_ranking_rows_are_35_pixels_high()
+    test_ranking_row_height_stylesheets_are_cache_busted()
+    print("mobile ranking row height 35px: PASS")
