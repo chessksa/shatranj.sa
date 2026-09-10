@@ -1,0 +1,165 @@
+/* Mobile-only color palette aligned with the administration dashboard.
+   Color overrides only: no sizing, spacing, positioning, or layout changes. */
+@media(max-width:900px){
+  :root{
+    --hero-deep:#04353a;
+    --hero-deeper:#02282d;
+    --hero-panel:#073a40;
+    --hero-panel-2:#0a454c;
+    --hero-gold:#ddb96d;
+    --hero-gold-2:#f0ce86;
+    --hero-cream:#f3eee3;
+    --hero-muted:#9fb6b2;
+    --hero-line:rgba(221,185,109,.20);
+    --hero-cyan-line:rgba(255,255,255,.07);
+  }
+
+  html{background:#02282d!important}
+  body{
+    background:linear-gradient(145deg,#02282d 0%,#04353a 45%,#064047 100%)!important;
+    color:var(--hero-cream)!important;
+  }
+
+  .home-header{
+    background:rgba(2,35,39,.96)!important;
+    border-bottom-color:rgba(255,255,255,.07)!important;
+  }
+  .home-header .brand,
+  .nav-account,
+  .nav-logout,
+  .header-member-link{color:var(--hero-cream)!important}
+  .brand-mark,
+  .header-member-fallback,
+  .header-member-copy b,
+  .nav-account{color:var(--hero-gold-2)!important}
+  .nav-account,
+  .nav-logout,
+  .header-member-link{
+    background:rgba(255,255,255,.025)!important;
+    border-color:rgba(255,255,255,.07)!important;
+  }
+  .header-member-avatar{background:#073a40!important;border-color:rgba(221,185,109,.28)!important}
+  .header-member-copy small{color:#9fb6b2!important}
+
+  .welcome-ticker,
+  #welcomeTicker,
+  #tournamentResultsTicker{
+    background:#073a40!important;
+    border-color:rgba(255,255,255,.07)!important;
+    color:var(--hero-cream)!important;
+  }
+  #welcomeTicker .welcome-ticker-label,
+  #tournamentResultsTicker .welcome-ticker-label{color:var(--hero-gold-2)!important}
+
+  .hero-kicker{
+    background:rgba(221,185,109,.08)!important;
+    border-color:rgba(221,185,109,.20)!important;
+    color:var(--hero-gold-2)!important;
+  }
+  .home-hero h1,
+  .home-hero h1 span{
+    color:var(--hero-gold-2)!important;
+    -webkit-text-fill-color:var(--hero-gold-2)!important;
+    animation:none!important;
+    filter:none!important;
+    -webkit-filter:none!important;
+  }
+  .home-hero p{color:#dce7e4!important}
+
+  html body .home-hero .hero-stat{
+    background:linear-gradient(180deg,rgba(9,65,72,.78),rgba(5,50,56,.78))!important;
+    border-color:rgba(255,255,255,.07)!important;
+    color:var(--hero-cream)!important;
+  }
+  .hero-stat-icon{color:var(--hero-gold)!important}
+  .hero-stat strong{color:#fff!important}
+  .hero-stat small{color:#a7b9b6!important}
+
+  .btn{
+    background:#073a40!important;
+    border-color:rgba(255,255,255,.07)!important;
+    color:#e7efed!important;
+  }
+  .home-hero .hero-play-btn,
+  .btn.gold{
+    background:linear-gradient(135deg,var(--hero-gold-2),#d5aa4d)!important;
+    border-color:#eed284!important;
+    color:#173536!important;
+  }
+  .home-hero .home-invite-wrap>.btn{
+    background:rgba(7,58,64,.92)!important;
+    border-color:rgba(221,185,109,.28)!important;
+    color:#e7efed!important;
+  }
+
+  input,
+  select,
+  .home-invite-search,
+  .home-invite-result{
+    background:#052f34!important;
+    border-color:rgba(255,255,255,.07)!important;
+    color:#fff!important;
+  }
+  input::placeholder{color:#8fa7a3!important}
+  select option{background:#073a40!important;color:#fff!important}
+  .home-invite-panel{
+    background:#06373d!important;
+    border-color:rgba(221,185,109,.20)!important;
+  }
+  .home-invite-title,
+  .home-invite-name,
+  .home-invite-result{color:#e7efed!important}
+  .home-invite-meta,
+  .home-invite-empty{color:#8fa7a3!important}
+  .home-invite-send{color:var(--hero-gold-2)!important}
+
+  #ranking .head,
+  #ranking .table-card{
+    background:rgba(6,52,58,.68)!important;
+    border-color:rgba(255,255,255,.07)!important;
+  }
+  #ranking .table-card{border-top-color:rgba(221,185,109,.14)!important}
+  #rankingTitle{color:var(--hero-gold-2)!important}
+  #ranking thead th{background:#07383e!important;color:#cfb579!important}
+  #ranking th,
+  #ranking td{
+    color:var(--hero-cream)!important;
+    border-bottom-color:rgba(255,255,255,.07)!important;
+  }
+  #ranking .player-name{color:var(--hero-cream)!important}
+  #ranking .rating{color:var(--hero-gold-2)!important}
+
+  .home-features,
+  #register{background:rgba(2,40,45,.38)!important}
+  .home-feature-card,
+  #register .form-card,
+  .account-stat{
+    background:rgba(6,52,58,.68)!important;
+    border-color:rgba(255,255,255,.07)!important;
+    color:var(--hero-cream)!important;
+  }
+  .feature-icon,
+  .account-stat strong{color:var(--hero-gold-2)!important}
+  .home-feature-card small,
+  .form-info p,
+  .auth-note,
+  .username-status,
+  .account-stat small{color:#9fb6b2!important}
+  .auth-tab{
+    background:rgba(255,255,255,.025)!important;
+    border-color:rgba(255,255,255,.07)!important;
+    color:#e7efed!important;
+  }
+  .auth-tab.active{
+    background:var(--hero-gold)!important;
+    border-color:var(--hero-gold)!important;
+    color:#173536!important;
+  }
+
+  footer{
+    background:#02282d!important;
+    border-top-color:rgba(221,185,109,.14)!important;
+    color:var(--hero-cream)!important;
+  }
+  .footer-tagline{color:#cfb579!important}
+}
