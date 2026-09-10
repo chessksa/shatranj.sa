@@ -100,4 +100,4 @@ import('./admin-pro.js?v=20260910-2').catch((error) => console.error('تعذر �
 import('./admin-responsive-tables.js?v=20260910-4').catch((error) => console.error('تعذر تحميل استجابة جداول الإدارة', error));
 import('./admin-player-list.js?v=20260910-2').catch((error) => console.error('تعذر تحميل قائمة اللاعبين المختصرة', error));
 import('./admin-view-state.js?v=20260910-1').catch((error) => console.error('تعذر حفظ قسم لوحة الإدارة', error));
-import('./admin-unified-games.js?v=20260910-3').catch((error) => console.error('تعذر تحميل جدول المباريات الموحد', error));
+import('./admin-unified-games.js?v=20260910-4').catch((error) => console.error('تعذر تحميل جدول المباريات الموحد', error));
