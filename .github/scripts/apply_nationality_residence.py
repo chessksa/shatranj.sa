@@ -124,4 +124,15 @@ if 'populateRankingCountries();' not in text:
     text = text.replace(ranking_call, "populateRankingCountries();\n" + ranking_call, 1)
 
 path.write_text(text, encoding='utf-8')
-print('worldwide nationality and global ranking applied')
+
+# Remove the excluded country from the shared world catalog used by signup,
+# residence, city lookup, and ranking filters.
+world_path = Path('world-locations.js')
+world_text = world_path.read_text(encoding='utf-8')
+if "iso2:'IL'" in world_text:
+    world_text = world_text.replace(" {iso2:'IL'},", "", 1)
+if "iso2:'IL'" in world_text:
+    raise SystemExit('excluded country code still present in world catalog')
+world_path.write_text(world_text, encoding='utf-8')
+
+print('worldwide nationality, global ranking, and country exclusion applied')
