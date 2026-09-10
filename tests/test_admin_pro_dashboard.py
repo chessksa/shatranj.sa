@@ -97,12 +97,11 @@ def test_admin_games_are_one_scrollable_table_with_player_pairs():
         "unified-games-source",
         "max-height",
         "overflow:auto",
-        "MutationObserver",
     ]:
         assert token in js, token
 
     assert "unifiedGamesTableBody" in responsive
-    assert "admin-unified-games.js?v=20260910-3" in loader
+    assert "admin-unified-games.js?v=20260910-4" in loader
 
 
 def test_unified_games_table_drops_code_adds_numbering_and_focuses_core_columns():
@@ -136,6 +135,23 @@ def test_unified_games_time_is_stable_and_columns_have_gold_separators():
         assert token in js, token
 
 
+def test_unified_games_sort_by_real_created_at_before_numbering_and_use_raw_time_value():
+    js = (ROOT / "admin-unified-games.js").read_text(encoding="utf-8")
+    for token in [
+        "admin_list_games_v2",
+        ".from('computer_games')",
+        "admin_list_players_v3",
+        "createdAt",
+        "timeControl",
+        "sortUnifiedGames",
+        "new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime()",
+        "timeCell(game.timeControl)",
+        "numberUnifiedRows(target)",
+    ]:
+        assert token in js, token
+    assert "raw.match(" not in js
+
+
 def test_computer_games_resolve_real_player_names_through_admin_rpc():
     js = (ROOT / "admin-computer-games.js").read_text(encoding="utf-8")
     assert "admin_list_players_v3" in js
@@ -153,5 +169,6 @@ if __name__ == "__main__":
     test_admin_games_are_one_scrollable_table_with_player_pairs()
     test_unified_games_table_drops_code_adds_numbering_and_focuses_core_columns()
     test_unified_games_time_is_stable_and_columns_have_gold_separators()
+    test_unified_games_sort_by_real_created_at_before_numbering_and_use_raw_time_value()
     test_computer_games_resolve_real_player_names_through_admin_rpc()
     print("Enhanced admin dashboard tests passed")
