@@ -123,13 +123,13 @@ function initTournamentLayoutPolish() {
         text-align:center;
         color:#d9c58f;
         background:rgba(4,38,40,.42);
-        font-size:11px;
+        font-size:14px;
         font-weight:900;
       }
       .tournament-detail-table td{
         text-align:center;
         color:var(--hero-cream,#f4eddc);
-        font-size:12px;
+        font-size:14px;
         font-weight:800;
         overflow-wrap:anywhere;
       }
