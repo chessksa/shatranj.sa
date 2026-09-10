@@ -11,13 +11,13 @@ body.admin-home-compact-ready .nav-btn{
 
 .admin-section-icon{
   display:block;
-  font-size:21px;
+  font-size:25px;
   line-height:1;
 }
 
 .admin-section-label{
   display:block;
-  font-size:8px;
+  font-size:9px;
   line-height:1.15;
   white-space:nowrap;
 }
@@ -88,11 +88,11 @@ body.admin-home-compact-ready .stat-card.pro-stat strong{
 
 @media(min-width:761px){
   body.admin-home-compact-ready .admin-shell{
-    grid-template-columns:76px minmax(0,1fr)!important;
+    grid-template-columns:92px minmax(0,1fr)!important;
   }
 
   body.admin-home-compact-ready .sidebar{
-    width:76px;
+    width:92px;
     height:100dvh;
     padding:12px 8px;
     align-items:center;
@@ -101,6 +101,97 @@ body.admin-home-compact-ready .stat-card.pro-stat strong{
   body.admin-home-compact-ready .brand{
     width:100%;
     padding:7px 0 12px;
+    text-align:center;
+  }
+
+  body.admin-home-compact-ready .brand strong{
+    font-size:0;
+  }
+
+  body.admin-home-compact-ready .brand strong::before{
+    content:'♛';
+    font-size:29px;
+    color:var(--pro-gold-2);
+  }
+
+  body.admin-home-compact-ready .brand>span,
+  body.admin-home-compact-ready .pro-role-badge,
+  body.admin-home-compact-ready .pro-nav-caption,
+  body.admin-home-compact-ready .admin-name{
+    display:none!important;
+  }
+
+  body.admin-home-compact-ready .nav-list{
+    width:100%;
+    overflow:visible;
+    gap:6px;
+  }
+
+  body.admin-home-compact-ready .nav-btn{
+    width:70px;
+    height:60px;
+    min-height:60px;
+    margin:0 auto;
+    padding:6px 3px;
+    flex-direction:column;
+    gap:5px;
+    justify-content:center;
+  }
+
+  body.admin-home-compact-ready .sidebar-foot{
+    width:100%;
+  }
+
+  body.admin-home-compact-ready .back-site{
+    width:66px;
+    min-height:46px;
+    margin:0 auto;
+    padding:0;
+    display:grid;
+    place-items:center;
+    font-size:0;
+  }
+
+  body.admin-home-compact-ready .back-site::before{
+    content:'↩';
+    font-size:23px;
+  }
+}
+
+@media(max-width:1260px) and (min-width:761px){
+  body.admin-home-compact-ready .stats-grid.pro-stats-grid{
+    grid-template-columns:repeat(3,minmax(0,1fr))!important;
+  }
+  body.admin-home-compact-ready .stat-card.pro-stat:nth-child(4){
+    border-inline-start:0!important;
+  }
+  body.admin-home-compact-ready .stat-card.pro-stat:nth-child(n+4){
+    border-top:1px solid var(--pro-line-soft)!important;
+  }
+}
+
+@media(max-width:760px){
+  body.admin-home-compact-ready .admin-shell{
+    display:block;
+    padding-right:72px;
+  }
+
+  body.admin-home-compact-ready .sidebar,
+  body.admin-home-compact-ready .sidebar.open{
+    position:fixed;
+    top:0;
+    right:0;
+    width:72px;
+    height:100dvh;
+    padding:9px 5px;
+    transform:none!important;
+    align-items:center;
+    overflow:hidden;
+  }
+
+  body.admin-home-compact-ready .brand{
+    width:100%;
+    padding:5px 0 9px;
     text-align:center;
   }
 
@@ -123,114 +214,23 @@ body.admin-home-compact-ready .stat-card.pro-stat strong{
 
   body.admin-home-compact-ready .nav-list{
     width:100%;
-    overflow:visible;
-    gap:5px;
+    overflow-y:auto;
+    gap:4px;
   }
 
   body.admin-home-compact-ready .nav-btn{
-    width:56px;
-    height:52px;
-    min-height:52px;
-    margin:0 auto;
+    width:60px;
+    height:56px;
+    min-height:56px;
     padding:5px 2px;
+    margin:0 auto;
     flex-direction:column;
     gap:4px;
     justify-content:center;
   }
 
-  body.admin-home-compact-ready .sidebar-foot{
-    width:100%;
-  }
-
-  body.admin-home-compact-ready .back-site{
-    width:52px;
-    min-height:42px;
-    margin:0 auto;
-    padding:0;
-    display:grid;
-    place-items:center;
-    font-size:0;
-  }
-
-  body.admin-home-compact-ready .back-site::before{
-    content:'↩';
-    font-size:20px;
-  }
-}
-
-@media(max-width:1260px) and (min-width:761px){
-  body.admin-home-compact-ready .stats-grid.pro-stats-grid{
-    grid-template-columns:repeat(3,minmax(0,1fr))!important;
-  }
-  body.admin-home-compact-ready .stat-card.pro-stat:nth-child(4){
-    border-inline-start:0!important;
-  }
-  body.admin-home-compact-ready .stat-card.pro-stat:nth-child(n+4){
-    border-top:1px solid var(--pro-line-soft)!important;
-  }
-}
-
-@media(max-width:760px){
-  body.admin-home-compact-ready .admin-shell{
-    display:block;
-    padding-right:58px;
-  }
-
-  body.admin-home-compact-ready .sidebar,
-  body.admin-home-compact-ready .sidebar.open{
-    position:fixed;
-    top:0;
-    right:0;
-    width:58px;
-    height:100dvh;
-    padding:9px 5px;
-    transform:none!important;
-    align-items:center;
-    overflow:hidden;
-  }
-
-  body.admin-home-compact-ready .brand{
-    width:100%;
-    padding:5px 0 9px;
-    text-align:center;
-  }
-
-  body.admin-home-compact-ready .brand strong{
-    font-size:0;
-  }
-
-  body.admin-home-compact-ready .brand strong::before{
-    content:'♛';
-    font-size:22px;
-    color:var(--pro-gold-2);
-  }
-
-  body.admin-home-compact-ready .brand>span,
-  body.admin-home-compact-ready .pro-role-badge,
-  body.admin-home-compact-ready .pro-nav-caption,
-  body.admin-home-compact-ready .admin-name{
-    display:none!important;
-  }
-
-  body.admin-home-compact-ready .nav-list{
-    width:100%;
-    overflow-y:auto;
-    gap:3px;
-  }
-
-  body.admin-home-compact-ready .nav-btn{
-    width:48px;
-    height:48px;
-    min-height:48px;
-    padding:4px 1px;
-    margin:0 auto;
-    flex-direction:column;
-    gap:3px;
-    justify-content:center;
-  }
-
-  body.admin-home-compact-ready .admin-section-icon{font-size:18px}
-  body.admin-home-compact-ready .admin-section-label{font-size:7px}
+  body.admin-home-compact-ready .admin-section-icon{font-size:22px}
+  body.admin-home-compact-ready .admin-section-label{font-size:8px}
 
   body.admin-home-compact-ready .sidebar-foot{
     width:100%;
@@ -238,8 +238,8 @@ body.admin-home-compact-ready .stat-card.pro-stat strong{
   }
 
   body.admin-home-compact-ready .back-site{
-    width:46px;
-    min-height:38px;
+    width:58px;
+    min-height:42px;
     padding:0;
     display:grid;
     place-items:center;
@@ -248,7 +248,7 @@ body.admin-home-compact-ready .stat-card.pro-stat strong{
 
   body.admin-home-compact-ready .back-site::before{
     content:'↩';
-    font-size:18px;
+    font-size:21px;
   }
 
   body.admin-home-compact-ready .mobile-top{
