@@ -5,12 +5,12 @@ on:
     branches:
       - main
     paths:
-      - 'home-theme.css'
+      - 'home-mobile-admin-colors.css'
       - 'tests/test_mobile_home_frames.py'
       - '.github/workflows/verify-mobile-home-frames.yml'
   pull_request:
     paths:
-      - 'home-theme.css'
+      - 'home-mobile-admin-colors.css'
       - 'tests/test_mobile_home_frames.py'
       - '.github/workflows/verify-mobile-home-frames.yml'
 
