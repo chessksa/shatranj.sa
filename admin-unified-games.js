@@ -1,5 +1,9 @@
+import { createClient } from 'https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/+esm';
+
 const STYLE_ID = 'admin-unified-games-style';
-let rebuildTimer = 0;
+const cfg = window.SHATRANJ_CONFIG?.supabase || {};
+const supabase = cfg.enabled && cfg.url && cfg.anonKey ? createClient(cfg.url, cfg.anonKey) : null;
+let loading = false;
 
 function mountStyles() {
   if (document.getElementById(STYLE_ID)) return;
@@ -35,9 +39,9 @@ function mountStyles() {
       border-inline-start:1px solid rgba(216,181,106,.34);
     }
     body.admin-pro-ready #gamesView .unified-games-wrap th:nth-child(1),
-    body.admin-pro-ready #gamesView .unified-games-wrap td:nth-child(1){width:52px}
+    body.admin-pro-ready #gamesView .unified-games-wrap td:nth-child(1){width:48px}
     body.admin-pro-ready #gamesView .unified-games-wrap th:nth-child(3),
-    body.admin-pro-ready #gamesView .unified-games-wrap td:nth-child(3){width:92px}
+    body.admin-pro-ready #gamesView .unified-games-wrap td:nth-child(3){width:86px}
     body.admin-pro-ready #gamesView .unified-games-wrap th:nth-child(4),
     body.admin-pro-ready #gamesView .unified-games-wrap td:nth-child(4){width:104px}
     body.admin-pro-ready #gamesView .unified-games-wrap tbody td{
@@ -53,9 +57,12 @@ function mountStyles() {
       background:rgba(221,185,109,.055);
     }
     #gamesView .unified-row-number{
-      color:var(--muted);
+      color:var(--text);
       font-weight:800;
       font-variant-numeric:tabular-nums;
+      direction:ltr;
+      unicode-bidi:isolate;
+      white-space:nowrap;
     }
     #gamesView .unified-player-pair{
       font-weight:800;
@@ -79,15 +86,22 @@ function mountStyles() {
       display:inline-flex;
       align-items:center;
       justify-content:center;
-      gap:3px;
+      gap:4px;
       direction:ltr;
       unicode-bidi:isolate;
       white-space:nowrap;
       font-variant-numeric:tabular-nums;
       line-height:1;
+      min-width:42px;
     }
-    #gamesView .unified-time-value{font-weight:800}
-    #gamesView .unified-time-unit{font-size:.9em;color:var(--muted)}
+    #gamesView .unified-time-value,
+    #gamesView .unified-time-unit{
+      display:inline-block;
+      line-height:1;
+      font-size:12px;
+    }
+    #gamesView .unified-time-value{font-weight:900;color:var(--text)}
+    #gamesView .unified-time-unit{font-weight:700;color:var(--muted)}
     #gamesView .unified-hidden-trigger{display:none!important}
 
     @media(max-width:760px){
@@ -111,16 +125,18 @@ function mountStyles() {
       body.admin-pro-ready #gamesView .unified-games-wrap thead tr,
       body.admin-pro-ready #gamesView .unified-games-wrap tbody tr.compact-admin-row{
         display:grid!important;
-        grid-template-columns:38px minmax(0,1fr) 64px 76px;
+        grid-template-columns:42px minmax(0,1fr) 72px 82px;
         width:100%!important;
-        align-items:center;
+        align-items:stretch;
       }
       body.admin-pro-ready #gamesView .unified-games-wrap thead th,
       body.admin-pro-ready #gamesView .unified-games-wrap tbody td{
-        display:block!important;
+        display:flex!important;
+        align-items:center;
+        justify-content:center;
         width:auto!important;
         min-width:0;
-        padding:10px 4px;
+        padding:10px 5px;
         text-align:center!important;
         white-space:nowrap;
         overflow:hidden;
@@ -145,7 +161,7 @@ function mountStyles() {
         font-size:9px;
       }
       body.admin-pro-ready #gamesView .unified-games-wrap tbody td.empty{
-        display:block!important;
+        display:flex!important;
         grid-column:1/-1;
         width:100%!important;
         padding:24px 10px;
@@ -156,22 +172,16 @@ function mountStyles() {
     @media(max-width:420px){
       body.admin-pro-ready #gamesView .unified-games-wrap thead tr,
       body.admin-pro-ready #gamesView .unified-games-wrap tbody tr.compact-admin-row{
-        grid-template-columns:34px minmax(0,1fr) 62px 70px;
+        grid-template-columns:40px minmax(0,1fr) 68px 78px;
       }
       body.admin-pro-ready #gamesView .unified-games-wrap thead th,
-      body.admin-pro-ready #gamesView .unified-games-wrap tbody td{padding:9px 3px}
+      body.admin-pro-ready #gamesView .unified-games-wrap tbody td{padding:9px 4px}
       body.admin-pro-ready #gamesView .unified-games-wrap tbody td.unified-player-pair{font-size:11px}
+      #gamesView .unified-time-value,
+      #gamesView .unified-time-unit{font-size:11px}
     }
   `;
   document.head.appendChild(style);
-}
-
-function textOf(cell) {
-  return String(cell?.textContent || '').replace(/\s+/g, ' ').trim();
-}
-
-function playerNameOfComputerRow(cell) {
-  return String(cell?.querySelector('strong')?.textContent || textOf(cell) || '—').trim();
 }
 
 function cellWithText(text, className = '') {
@@ -183,29 +193,6 @@ function cellWithText(text, className = '') {
 
 function rowNumberCell() {
   return cellWithText('', 'unified-row-number');
-}
-
-function timeCell(sourceCell) {
-  const cell = document.createElement('td');
-  cell.className = 'unified-time-cell';
-  const raw = textOf(sourceCell);
-  const match = raw.match(/\d+(?:[.,]\d+)?/);
-  if (!match) {
-    cell.textContent = raw || '—';
-    return cell;
-  }
-
-  const time = document.createElement('span');
-  time.className = 'unified-time';
-  const value = document.createElement('span');
-  value.className = 'unified-time-value';
-  value.textContent = match[0].replace(',', '.');
-  const unit = document.createElement('span');
-  unit.className = 'unified-time-unit';
-  unit.textContent = 'د';
-  time.append(value, unit);
-  cell.appendChild(time);
-  return cell;
 }
 
 function pairCell(left, right) {
@@ -222,55 +209,75 @@ function pairCell(left, right) {
   return cell;
 }
 
-function cloneCell(cell) {
-  return cell ? cell.cloneNode(true) : cellWithText('—');
+function timeCell(value) {
+  const cell = document.createElement('td');
+  cell.className = 'unified-time-cell';
+  if (value === null || value === undefined || value === '') {
+    cell.textContent = '—';
+    return cell;
+  }
+
+  const time = document.createElement('span');
+  time.className = 'unified-time';
+  const number = document.createElement('span');
+  number.className = 'unified-time-value';
+  number.textContent = String(value);
+  const unit = document.createElement('span');
+  unit.className = 'unified-time-unit';
+  unit.textContent = 'د';
+  time.append(number, unit);
+  cell.appendChild(time);
+  return cell;
 }
 
-function isDataRow(row, minimumCells) {
-  const cells = [...row.children].filter((cell) => cell.tagName === 'TD');
-  if (cells.length < minimumCells) return false;
-  if (cells.length === 1 && Number(cells[0].getAttribute('colspan') || 1) > 1) return false;
-  return true;
+function statusCell(status) {
+  const cell = document.createElement('td');
+  const labels = {
+    active: 'نشطة',
+    waiting: 'انتظار',
+    finished: 'منتهية',
+    abandoned: 'متروكة',
+  };
+  const cls = status === 'active' ? 'status-active' : status === 'waiting' ? 'status-waiting' : 'status-finished';
+  const pill = document.createElement('span');
+  pill.className = `status-pill ${cls}`;
+  pill.textContent = labels[status] || status || '—';
+  cell.appendChild(pill);
+  return cell;
 }
 
-function preserveRowTrigger(sourceRow, playerCell) {
-  const trigger = sourceRow.querySelector('[data-game],a[href*="computer-watch.html"]');
-  if (!trigger) return;
-  const clone = trigger.cloneNode(true);
-  clone.classList.add('unified-hidden-trigger');
-  clone.tabIndex = -1;
-  clone.setAttribute('aria-hidden', 'true');
-  playerCell.appendChild(clone);
+function hiddenTrigger(game) {
+  if (game.kind === 'computer') {
+    const link = document.createElement('a');
+    link.className = 'unified-hidden-trigger';
+    link.href = `computer-watch.html?game=${encodeURIComponent(game.id)}`;
+    link.tabIndex = -1;
+    link.setAttribute('aria-hidden', 'true');
+    link.textContent = 'متابعة';
+    return link;
+  }
+
+  const button = document.createElement('button');
+  button.type = 'button';
+  button.className = 'unified-hidden-trigger';
+  button.dataset.game = game.id;
+  button.tabIndex = -1;
+  button.setAttribute('aria-hidden', 'true');
+  button.textContent = 'تفاصيل';
+  return button;
 }
 
-function humanUnifiedRow(sourceRow) {
-  if (!isDataRow(sourceRow, 8)) return null;
-  const cells = [...sourceRow.children];
+function unifiedRow(game) {
   const row = document.createElement('tr');
-  row.dataset.unifiedGameKind = 'human';
-  const players = pairCell(textOf(cells[1]), textOf(cells[2]));
-  preserveRowTrigger(sourceRow, players);
+  row.dataset.unifiedGameKind = game.kind;
+  row.dataset.createdAt = game.createdAt || '';
+  const players = pairCell(game.left, game.right);
+  players.appendChild(hiddenTrigger(game));
   row.append(
     rowNumberCell(),
     players,
-    timeCell(cells[3]),
-    cloneCell(cells[4]),
-  );
-  return row;
-}
-
-function computerUnifiedRow(sourceRow) {
-  if (!isDataRow(sourceRow, 8)) return null;
-  const cells = [...sourceRow.children];
-  const row = document.createElement('tr');
-  row.dataset.unifiedGameKind = 'computer';
-  const players = pairCell(playerNameOfComputerRow(cells[1]), 'الكمبيوتر');
-  preserveRowTrigger(sourceRow, players);
-  row.append(
-    rowNumberCell(),
-    players,
-    timeCell(cells[3]),
-    cloneCell(cells[4]),
+    timeCell(game.timeControl),
+    statusCell(game.status),
   );
   return row;
 }
@@ -282,7 +289,11 @@ function numberUnifiedRows(body) {
   });
 }
 
-function createUnifiedTable(view, humanWrap) {
+function sortUnifiedGames(games) {
+  return [...games].sort((a, b) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime());
+}
+
+function createUnifiedTable(humanWrap) {
   let wrap = document.getElementById('unifiedGamesTable');
   if (wrap) return wrap;
 
@@ -303,51 +314,105 @@ function createUnifiedTable(view, humanWrap) {
   return wrap;
 }
 
-function rebuildUnifiedGames() {
-  const humanBody = document.getElementById('gamesTableBody');
-  const computerBody = document.getElementById('computerGamesTableBody');
-  const target = document.getElementById('unifiedGamesTableBody');
-  if (!humanBody || !computerBody || !target) return;
-
-  const fragment = document.createDocumentFragment();
-  let count = 0;
-
-  humanBody.querySelectorAll('tr').forEach((sourceRow) => {
-    const row = humanUnifiedRow(sourceRow);
-    if (!row) return;
-    fragment.appendChild(row);
-    count += 1;
-  });
-
-  computerBody.querySelectorAll('tr').forEach((sourceRow) => {
-    const row = computerUnifiedRow(sourceRow);
-    if (!row) return;
-    fragment.appendChild(row);
-    count += 1;
-  });
-
-  target.replaceChildren(fragment);
-  numberUnifiedRows(target);
-
-  if (!count) {
-    const row = document.createElement('tr');
-    const cell = cellWithText('لا توجد مباريات ضمن الفلتر الحالي', 'empty');
-    cell.colSpan = 4;
-    row.appendChild(cell);
-    target.appendChild(row);
-  }
+async function fetchHumanGames(status) {
+  const { data, error } = await supabase.rpc('admin_list_games_v2', { p_status: status || null });
+  if (error) throw error;
+  return (data || []).map((game) => ({
+    kind: 'human',
+    id: game.game_id,
+    left: game.white_name || '—',
+    right: game.black_name || '—',
+    timeControl: game.time_control_minutes,
+    status: game.status,
+    createdAt: game.created_at,
+  }));
 }
 
-function scheduleRebuild() {
-  clearTimeout(rebuildTimer);
-  rebuildTimer = setTimeout(rebuildUnifiedGames, 30);
+async function fetchComputerGames(status) {
+  if (status === 'waiting') return [];
+
+  let query = supabase
+    .from('computer_games')
+    .select('id,player_id,status,time_control_minutes,created_at')
+    .order('created_at', { ascending: false })
+    .limit(100);
+  if (status === 'active' || status === 'finished') query = query.eq('status', status);
+
+  const { data: games, error } = await query;
+  if (error) throw error;
+  const rows = games || [];
+  const playerIds = new Set(rows.map((game) => game.player_id).filter(Boolean));
+  const players = new Map();
+
+  if (playerIds.size) {
+    const { data: playerRows, error: playerError } = await supabase.rpc('admin_list_players_v3', {
+      p_search: null,
+      p_status: null,
+      p_country: null,
+      p_city: null,
+    });
+    if (playerError) throw playerError;
+    (playerRows || []).forEach((player) => {
+      if (playerIds.has(player.id)) players.set(player.id, player);
+    });
+  }
+
+  return rows.map((game) => ({
+    kind: 'computer',
+    id: game.id,
+    left: players.get(game.player_id)?.name || 'عضو غير معروف',
+    right: 'الكمبيوتر',
+    timeControl: game.time_control_minutes,
+    status: game.status,
+    createdAt: game.created_at,
+  }));
+}
+
+async function rebuildUnifiedGames() {
+  const target = document.getElementById('unifiedGamesTableBody');
+  if (!target || !supabase || loading) return;
+
+  loading = true;
+  try {
+    const status = document.getElementById('gameStatusFilter')?.value || '';
+    const [humanGames, computerGames] = await Promise.all([
+      fetchHumanGames(status),
+      fetchComputerGames(status),
+    ]);
+    const games = sortUnifiedGames([...humanGames, ...computerGames]);
+    const fragment = document.createDocumentFragment();
+
+    games.forEach((game) => fragment.appendChild(unifiedRow(game)));
+    target.replaceChildren(fragment);
+    numberUnifiedRows(target);
+
+    if (!games.length) {
+      const row = document.createElement('tr');
+      const cell = cellWithText('لا توجد مباريات ضمن الفلتر الحالي', 'empty');
+      cell.colSpan = 4;
+      row.appendChild(cell);
+      target.appendChild(row);
+    }
+  } catch (error) {
+    console.error('تعذر تحميل جدول المباريات الموحد', error);
+    const row = document.createElement('tr');
+    const cell = cellWithText('تعذر تحميل المباريات.', 'empty');
+    cell.colSpan = 4;
+    row.appendChild(cell);
+    target.replaceChildren(row);
+  } finally {
+    loading = false;
+  }
 }
 
 function startUnifiedGames() {
   const view = document.getElementById('gamesView');
   const humanBody = document.getElementById('gamesTableBody');
   const computerBody = document.getElementById('computerGamesTableBody');
-  if (!view || !humanBody || !computerBody) return;
+  if (!view || !humanBody || !computerBody) {
+    setTimeout(startUnifiedGames, 120);
+    return;
+  }
 
   mountStyles();
   const humanWrap = humanBody.closest('.table-wrap');
@@ -360,12 +425,16 @@ function startUnifiedGames() {
     .find((element) => element.textContent.includes('مباريات ضد الكمبيوتر'));
   computerTitle?.classList.add('unified-games-source-title');
 
-  createUnifiedTable(view, humanWrap);
+  createUnifiedTable(humanWrap);
   rebuildUnifiedGames();
 
-  const observer = new MutationObserver(scheduleRebuild);
-  observer.observe(humanBody, { childList:true, subtree:true });
-  observer.observe(computerBody, { childList:true, subtree:true });
+  document.getElementById('gameStatusFilter')?.addEventListener('change', rebuildUnifiedGames);
+  document.getElementById('refreshBtn')?.addEventListener('click', () => {
+    if (view.classList.contains('active')) rebuildUnifiedGames();
+  });
+  setInterval(() => {
+    if (view.classList.contains('active')) rebuildUnifiedGames();
+  }, 5000);
 }
 
 if (document.readyState === 'loading') {
@@ -374,4 +443,4 @@ if (document.readyState === 'loading') {
   startUnifiedGames();
 }
 
-export { rebuildUnifiedGames, numberUnifiedRows, timeCell };
+export { rebuildUnifiedGames, numberUnifiedRows, sortUnifiedGames, timeCell };
