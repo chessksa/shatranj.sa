@@ -45,7 +45,38 @@ def test_admin_tables_are_fully_visible_on_mobile():
         "content:attr(data-label)",
     ]:
         assert token in responsive, token
-    assert "admin-responsive-tables.js?v=20260910-1" in loader
+    assert "admin-responsive-tables.js?v=20260910-1" in loader or "admin-responsive-tables.js?v=20260910-2" in loader
+
+
+def test_players_mobile_list_is_compact_clickable_and_keeps_other_tables_as_cards():
+    admin = (ROOT / "admin.js").read_text(encoding="utf-8")
+    responsive = (ROOT / "admin-responsive-tables.js").read_text(encoding="utf-8")
+    loader = (ROOT / "admin-computer-games.js").read_text(encoding="utf-8")
+
+    for token in [
+        "player-list-row",
+        "data-player-row",
+        "player-control-grid",
+        "player-control-icon",
+        "closest('[data-player-row]')",
+    ]:
+        assert token in admin, token
+
+    for token in [
+        "#playersView .table-wrap table",
+        "#playersView .table-wrap thead",
+        "#playersView .table-wrap tbody tr.player-list-row",
+        "#playersView .table-wrap th:nth-child(4)",
+        "#playersView .table-wrap td:nth-child(4)",
+        "#playersView .table-wrap th:nth-child(6)",
+        "#playersView .table-wrap td:nth-child(6)",
+        "#playersView .table-wrap th:nth-child(7)",
+        "#playersView .table-wrap td:nth-child(7)",
+        "#playersView .table-wrap tbody td::before",
+    ]:
+        assert token in responsive, token
+
+    assert "admin-responsive-tables.js?v=20260910-2" in loader
 
 
 if __name__ == "__main__":
@@ -53,4 +84,5 @@ if __name__ == "__main__":
     test_enhanced_admin_dashboard_refreshes_recent_activity_itself()
     test_enhanced_admin_layer_is_loaded_from_admin_page_pipeline()
     test_admin_tables_are_fully_visible_on_mobile()
+    test_players_mobile_list_is_compact_clickable_and_keeps_other_tables_as_cards()
     print("Enhanced admin dashboard tests passed")
