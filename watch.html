@@ -58,15 +58,26 @@ const finishedCount=document.getElementById('finishedCount');
 const currentTableBody=document.getElementById('currentTableBody');
 const finishedTableBody=document.getElementById('finishedTableBody');
 let loading=false;
+let currentSignature='';
+let finishedSignature='';
 
 function watchHref(game){
   const id=encodeURIComponent(game.game_id||'');
   return game.game_type==='computer'?`computer-watch.html?v=20260910-clockfix1&game=${id}`:`human-watch.html?v=20260910-clockfix1&game=${id}`;
 }
 
+function gamesSignature(games){
+  return JSON.stringify((Array.isArray(games)?games:[]).map(game=>[
+    game.game_id||'',game.game_type||'',game.white_name||'',game.black_name||''
+  ]));
+}
+
 function renderRows(body,games,emptyMessage){
+  const wrap=body.closest('.table-wrap');
+  const scrollTop=wrap?.scrollTop||0;
   if(!games.length){
     body.innerHTML=`<tr class="empty-row"><td colspan="3">${emptyMessage}</td></tr>`;
+    if(wrap)wrap.scrollTop=scrollTop;
     return;
   }
   body.innerHTML=games.map((game,index)=>{
@@ -78,6 +89,7 @@ function renderRows(body,games,emptyMessage){
       <td class="col-watch"><a class="watch-btn" href="${watchHref(game)}" aria-label="مشاهدة مباراة ${white} ضد ${black}">مشاهدة</a></td>
     </tr>`;
   }).join('');
+  if(wrap)wrap.scrollTop=scrollTop;
 }
 
 async function load(){
@@ -95,8 +107,16 @@ async function load(){
     currentCount.textContent=String(currentGames.length);
     const totalFinished=Number(finishedGames[0]?.total_count??finishedGames.length);
     finishedCount.textContent=String(Number.isFinite(totalFinished)?totalFinished:finishedGames.length);
-    renderRows(currentTableBody,currentGames,'لا توجد مباريات جارية الآن.');
-    renderRows(finishedTableBody,finishedGames,'لا توجد مباريات منتهية.');
+    const currentKey=gamesSignature(currentGames);
+    const finishedKey=gamesSignature(finishedGames);
+    if(currentKey!==currentSignature){
+      currentSignature=currentKey;
+      renderRows(currentTableBody,currentGames,'لا توجد مباريات جارية الآن.');
+    }
+    if(finishedKey!==finishedSignature){
+      finishedSignature=finishedKey;
+      renderRows(finishedTableBody,finishedGames,'لا توجد مباريات منتهية.');
+    }
   }catch(error){
     console.warn('تعذر تحميل قائمة المباريات',error);
     currentTableBody.innerHTML='<tr class="empty-row"><td colspan="3">تعذر تحميل المباريات.</td></tr>';
