@@ -1,0 +1,33 @@
+from pathlib import Path
+
+ROOT = Path(__file__).resolve().parents[1]
+
+
+def test_mobile_home_frames_share_one_visual_contract():
+    css = (ROOT / "home-theme.css").read_text(encoding="utf-8")
+
+    assert "Mobile unified interface frames 20260911" in css
+    assert "@media(max-width:900px)" in css
+    assert "--mobile-frame-border:1px solid rgba(216,182,101,.42)" in css
+    assert "--mobile-frame-bg:linear-gradient(145deg,rgba(8,62,64,.86),rgba(7,49,51,.82))" in css
+    assert "--mobile-frame-radius:14px" in css
+    assert "--mobile-frame-shadow:0 8px 20px rgba(0,0,0,.14),inset 0 1px 0 rgba(255,255,255,.025)" in css
+
+    for selector in [
+        ".compact-member-nav .header-tile",
+        ".compact-member-nav .site-notification-bell",
+        ".home-hero .hero-stat",
+        ".home-feature-card",
+        "#ranking .head",
+        "#ranking .table-card",
+    ]:
+        assert selector in css
+
+    assert "border:var(--mobile-frame-border)!important" in css
+    assert "background:var(--mobile-frame-bg)!important" in css
+    assert "box-shadow:var(--mobile-frame-shadow)!important" in css
+
+
+if __name__ == "__main__":
+    test_mobile_home_frames_share_one_visual_contract()
+    print("Mobile home frame tests passed")
