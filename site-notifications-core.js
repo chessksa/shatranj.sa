@@ -107,22 +107,112 @@
   }
 
   async function ensureAdminLink() {
-    if (!document.getElementById('profileApp')) return;
+    const navUser = document.querySelector('.home-header .compact-member-nav .nav-user');
+    if (!navUser) return;
+
     const { data, error } = await client.rpc('is_admin');
     if (error || data !== true) return;
     if (document.getElementById('siteAdminLink')) return;
 
-    const topActions = document.querySelector('#profileApp .top-actions');
-    if (!topActions) return;
+    if (!document.getElementById('homeAdminEntryStyles')) {
+      const style = document.createElement('style');
+      style.id = 'homeAdminEntryStyles';
+      style.textContent = `
+        .compact-member-nav .home-admin-link{
+          order:3;
+          min-width:96px!important;
+          height:50px!important;
+          min-height:50px!important;
+          padding:0 12px!important;
+          display:inline-flex!important;
+          align-items:center!important;
+          justify-content:center!important;
+          gap:6px!important;
+          border:1px solid rgba(216,182,101,.26)!important;
+          border-radius:14px!important;
+          background:rgba(255,255,255,.035)!important;
+          color:#f4eddc!important;
+          font:800 12px Arial,sans-serif!important;
+          white-space:nowrap;
+          text-decoration:none;
+        }
+        .compact-member-nav .home-admin-link:hover{background:rgba(216,182,101,.08)!important;color:#efcf7c!important}
+        .compact-member-nav .home-admin-link .header-tile-icon{color:#efcf7c!important}
+        .compact-member-nav .header-notification-host{order:4}
+        .compact-member-nav .nav-logout{order:5}
+        .compact-member-nav .nav-account{order:6}
+        @media(max-width:900px){
+          .compact-member-nav .home-admin-link{
+            min-width:84px!important;
+            height:44px!important;
+            min-height:44px!important;
+            padding:0 9px!important;
+            font-size:11px!important;
+          }
+        }
+        @media(max-width:600px){
+          body.home-signed-in.home-admin-enabled .compact-member-nav .nav-user{
+            grid-template-columns:repeat(4,minmax(0,1fr))!important;
+          }
+          body.home-signed-in.home-admin-enabled .compact-member-nav .mobile-dashboard-link{
+            grid-column:1!important;
+            grid-row:2!important;
+          }
+          body.home-signed-in.home-admin-enabled .compact-member-nav .home-admin-link{
+            grid-column:2!important;
+            grid-row:2!important;
+            order:0!important;
+            width:100%!important;
+            min-width:0!important;
+            max-width:none!important;
+            height:44px!important;
+            min-height:44px!important;
+            padding:0 5px!important;
+            gap:4px!important;
+            font-size:11px!important;
+          }
+          body.home-signed-in.home-admin-enabled .compact-member-nav .header-notification-host{
+            grid-column:3!important;
+            grid-row:2!important;
+            order:0!important;
+          }
+          body.home-signed-in.home-admin-enabled .compact-member-nav .nav-logout{
+            grid-column:4!important;
+            grid-row:2!important;
+            order:0!important;
+          }
+          body.home-signed-in.home-admin-enabled.home-admin-no-dashboard .compact-member-nav .nav-user{
+            grid-template-columns:repeat(3,minmax(0,1fr))!important;
+          }
+          body.home-signed-in.home-admin-enabled.home-admin-no-dashboard .compact-member-nav .home-admin-link{
+            grid-column:1!important;
+          }
+          body.home-signed-in.home-admin-enabled.home-admin-no-dashboard .compact-member-nav .header-notification-host{
+            grid-column:2!important;
+          }
+          body.home-signed-in.home-admin-enabled.home-admin-no-dashboard .compact-member-nav .nav-logout{
+            grid-column:3!important;
+          }
+          body.home-signed-in.home-admin-enabled .compact-member-nav .home-admin-link>span:not(.header-tile-icon){display:inline!important}
+        }
+      `;
+      document.head.appendChild(style);
+    }
 
     const link = document.createElement('a');
     link.id = 'siteAdminLink';
-    link.className = 'btn';
+    link.className = 'header-action header-tile home-admin-link';
     link.href = 'admin.html';
-    link.textContent = '🛡 الإدارة';
+    link.innerHTML = '<span class="header-tile-icon" aria-hidden="true">🛡</span><span>الإدارة</span>';
 
-    const logout = document.getElementById('logoutBtn');
-    topActions.insertBefore(link, logout || null);
+    const mobileDashboard = document.getElementById('mobileDashboardNav');
+    const dashboard = document.getElementById('dashboardNav');
+    const dashboardAnchor = mobileDashboard || dashboard;
+    if (dashboardAnchor) dashboardAnchor.insertAdjacentElement('afterend', link);
+    else navUser.insertBefore(link, document.getElementById('siteNotificationHost') || null);
+
+    document.body.classList.add('home-admin-enabled');
+    if (!dashboardAnchor) document.body.classList.add('home-admin-no-dashboard');
   }
 
   async function refreshCount() {
