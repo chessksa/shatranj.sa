@@ -42,3 +42,5 @@ if __name__ == "__main__":
     test_world_country_catalog_and_city_loader_are_wired_to_signup()
     test_world_signup_keeps_city_entry_usable_as_fallback()
     print("World signup locations tests passed")
+
+# Contract intentionally runs before implementation to verify the RED stage.
