@@ -1,0 +1,41 @@
+name: Apply nationality residence signup
+
+on:
+  push:
+    branches:
+      - main
+    paths:
+      - '.github/scripts/apply_nationality_residence.py'
+      - '.github/workflows/apply-nationality-residence.yml'
+
+permissions:
+  contents: write
+
+jobs:
+  apply:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - name: Apply nationality and residence integration
+        run: python .github/scripts/apply_nationality_residence.py
+      - name: Verify integration before commit
+        run: |
+          python tests/test_nationality_residence_signup.py
+          python tests/test_world_signup_locations.py
+          git diff --check
+      - name: Commit generated integration
+        run: |
+          if git diff --quiet -- index-app.html; then
+            echo 'No integration changes required.'
+            exit 0
+          fi
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git add index-app.html
+          git commit -m 'feat: separate nationality from residence country'
+          git push
