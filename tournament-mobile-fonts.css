@@ -1,0 +1,8 @@
+@media(max-width:700px){
+  .tournament-table th{font-size:11px!important}
+  .tournament-table td{font-size:12px!important}
+  .tournament-name{font-size:12px!important}
+  .tournament-date{font-size:10px!important}
+  .status{font-size:9px!important}
+  .champion-name{font-size:12px!important}
+}
