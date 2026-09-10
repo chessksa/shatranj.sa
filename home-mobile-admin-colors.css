@@ -60,9 +60,6 @@
   .home-hero h1 span{
     color:var(--hero-gold-2)!important;
     -webkit-text-fill-color:var(--hero-gold-2)!important;
-    animation:none!important;
-    filter:none!important;
-    -webkit-filter:none!important;
   }
   .home-hero p{color:#dce7e4!important}
 
