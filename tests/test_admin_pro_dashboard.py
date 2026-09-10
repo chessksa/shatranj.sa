@@ -32,18 +32,20 @@ def test_enhanced_admin_layer_is_loaded_from_admin_page_pipeline():
 
 
 def test_admin_tables_are_fully_visible_on_mobile():
-    js = (ROOT / "admin-pro.js").read_text(encoding="utf-8")
-    css = (ROOT / "admin-pro.css").read_text(encoding="utf-8")
-    for token in ["enhanceResponsiveTables", "data-label", "MutationObserver"]:
-        assert token in js, token
+    responsive = (ROOT / "admin-responsive-tables.js").read_text(encoding="utf-8")
+    loader = (ROOT / "admin-computer-games.js").read_text(encoding="utf-8")
     for token in [
+        "enhanceResponsiveTables",
+        "data-label",
+        "MutationObserver",
         "@media(max-width:760px)",
         ".table-wrap table",
         ".table-wrap thead",
         "td::before",
         "content:attr(data-label)",
     ]:
-        assert token in css, token
+        assert token in responsive, token
+    assert "admin-responsive-tables.js?v=20260910-1" in loader
 
 
 if __name__ == "__main__":
