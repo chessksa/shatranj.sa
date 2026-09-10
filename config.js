@@ -1,5 +1,5 @@
 (() => {
-  const version = '20260910-pull-gold2';
+  const version = '20260910-pull-dots1';
   const baseSrc = `config-base.js?v=${version}`;
   const refreshSrc = `pull-to-refresh.js?v=${version}`;
 
