@@ -16,7 +16,7 @@ html,body{margin:0;min-height:100%;background:#042628;color:#f4eddc;font-family:
 <div class="loader"><div><strong>جاري فتح شطرنج العرب</strong><small>تحديث الواجهة…</small></div></div>
 <script>
 (async()=>{
-  const stamp='20260910-ticker-layout1';
+  const stamp='20260911-mobile-admin-colors1';
   const runtimeVersion=stamp+'-'+Date.now();
   const response=await fetch('./index-app.html?v='+runtimeVersion,{cache:'no-store'});
   if(!response.ok) throw new Error('index source '+response.status);
@@ -160,6 +160,12 @@ html,body{margin:0;min-height:100%;background:#042628;color:#f4eddc;font-family:
     html=html.replace('</head>','<link rel="stylesheet" href="ranking-top-three.css?v='+runtimeVersion+'"></head>');
   }else{
     html=html.replace(/ranking-top-three\.css\?v=[A-Za-z0-9._-]+/g,'ranking-top-three.css?v='+runtimeVersion);
+  }
+
+  if(!html.includes('home-mobile-admin-colors.css')){
+    html=html.replace('</head>','<link rel="stylesheet" href="home-mobile-admin-colors.css?v='+runtimeVersion+'"></head>');
+  }else{
+    html=html.replace(/home-mobile-admin-colors\.css\?v=[A-Za-z0-9._-]+/g,'home-mobile-admin-colors.css?v='+runtimeVersion);
   }
 
   document.open();
