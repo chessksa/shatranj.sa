@@ -53,7 +53,7 @@ def test_all_admin_mobile_tables_are_compact_centered_rows():
     ]:
         assert token in responsive, token
 
-    assert "admin-responsive-tables.js?v=20260910-3" in loader or "admin-responsive-tables.js?v=20260910-4" in loader
+    assert "admin-responsive-tables.js?v=20260910-3" in loader or "admin-responsive-tables.js?v=20260910-4" in loader or "admin-responsive-tables.js?v=20260910-5" in loader
 
 
 def test_player_detail_controls_keep_icons():
@@ -61,7 +61,26 @@ def test_player_detail_controls_keep_icons():
     loader = (ROOT / "admin-computer-games.js").read_text(encoding="utf-8")
     for token in ["player-control-grid", "player-control-icon", "editPlayer", "ban", "unban", "deletePlayer"]:
         assert token in layer, token
-    assert "admin-player-list.js?v=20260910-2" in loader
+    assert "admin-player-list.js?v=20260910-2" in loader or "admin-player-list.js?v=20260910-3" in loader
+
+
+def test_players_table_is_numbered_and_scrolls_inside_view():
+    layer = (ROOT / "admin-player-list.js").read_text(encoding="utf-8")
+    responsive = (ROOT / "admin-responsive-tables.js").read_text(encoding="utf-8")
+    loader = (ROOT / "admin-computer-games.js").read_text(encoding="utf-8")
+    for token in [
+        "player-table-scroll",
+        "player-row-number",
+        "numberPlayerRows",
+        "playersTableBody",
+        "max-height",
+        "overflow:auto",
+        "position:sticky",
+    ]:
+        assert token in layer, token
+    assert "playersTableBody: { visible:[0,1,2,3,5]" in responsive
+    assert "admin-player-list.js?v=20260910-3" in loader
+    assert "admin-responsive-tables.js?v=20260910-5" in loader
 
 
 def test_admin_view_survives_page_refresh():
@@ -165,6 +184,7 @@ if __name__ == "__main__":
     test_enhanced_admin_layer_is_loaded_from_admin_page_pipeline()
     test_all_admin_mobile_tables_are_compact_centered_rows()
     test_player_detail_controls_keep_icons()
+    test_players_table_is_numbered_and_scrolls_inside_view()
     test_admin_view_survives_page_refresh()
     test_admin_games_are_one_scrollable_table_with_player_pairs()
     test_unified_games_table_drops_code_adds_numbering_and_focuses_core_columns()
