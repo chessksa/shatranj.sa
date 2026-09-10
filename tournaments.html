@@ -6,23 +6,27 @@
 <meta name="theme-color" content="#042628">
 <title>البطولات | شطرنج العرب</title>
 <style>
-*{box-sizing:border-box}
-:root{--hero-deep:#062f31;--hero-deeper:#042628;--hero-panel:#0b4143;--hero-panel-2:#083638;--hero-gold:#d8b665;--hero-gold-2:#efcf7c;--hero-cream:#f4eddc;--hero-muted:#b7c7c2;--hero-line:rgba(216,182,101,.26);--hero-cyan-line:rgba(46,147,147,.42)}
+*{box-sizing:border-box}[hidden]{display:none!important}
+:root{--hero-deep:#062f31;--hero-deeper:#042628;--hero-panel:#0b4143;--hero-panel-2:#083638;--hero-gold:#d8b665;--hero-gold-2:#efcf7c;--hero-cream:#f4eddc;--hero-muted:#b7c7c2;--hero-line:rgba(216,182,101,.26);--hero-cyan-line:rgba(46,147,147,.42);--tournament-row-h:42px;--table-title-h:46px;--column-head-h:38px}
+html,body{height:100dvh;min-height:100dvh;max-height:100dvh;overflow:hidden}
 html{background:var(--hero-deeper);color-scheme:dark}
-body{margin:0;min-height:100vh;font-family:Arial,sans-serif;background:radial-gradient(circle at 18% 34%,rgba(26,104,105,.23),transparent 29%),radial-gradient(circle at 78% 13%,rgba(216,182,101,.06),transparent 22%),linear-gradient(145deg,var(--hero-deeper),var(--hero-deep) 50%,#07383a);color:var(--hero-cream)}
+body{margin:0;display:flex;flex-direction:column;font-family:Arial,sans-serif;background:radial-gradient(circle at 18% 34%,rgba(26,104,105,.23),transparent 29%),radial-gradient(circle at 78% 13%,rgba(216,182,101,.06),transparent 22%),linear-gradient(145deg,var(--hero-deeper),var(--hero-deep) 50%,#07383a);color:var(--hero-cream)}
 a{text-decoration:none;color:inherit}.wrap{width:min(1180px,calc(100% - 34px));margin:auto}
-header{position:sticky;top:0;z-index:20;background:rgba(4,39,41,.94);border-bottom:1px solid rgba(216,182,101,.2);box-shadow:0 10px 30px rgba(0,0,0,.14);backdrop-filter:blur(14px)}
-.nav{min-height:74px;display:flex;align-items:center;justify-content:space-between;gap:14px}.brand{font-size:23px;font-weight:900}.back{min-height:44px;padding:0 14px;border:1px solid var(--hero-line);border-radius:14px;background:rgba(255,255,255,.035);display:inline-flex;align-items:center;justify-content:center;color:var(--hero-gold);font-size:12px;font-weight:900}.back:hover{background:rgba(216,182,101,.08)}
-main{padding:34px 0 48px}.page-head{display:flex;align-items:center;margin-bottom:4px;padding:0;border:1px solid var(--hero-cyan-line);border-radius:18px;background:linear-gradient(145deg,rgba(8,62,64,.86),rgba(7,49,51,.8));box-shadow:0 13px 30px rgba(0,0,0,.15),inset 0 1px 0 rgba(255,255,255,.025);overflow:hidden}.page-head-title{display:grid;grid-template-columns:1fr 1fr;align-items:stretch;width:100%;position:relative;min-height:66px}.page-head-title::after{content:"";position:absolute;top:0;bottom:0;left:50%;width:1px;background:rgba(216,182,101,.28);transform:translateX(-.5px)}.page-head h1{margin:0;color:var(--hero-gold);font-size:30px;display:flex;align-items:center;justify-content:center;text-align:center}.count{color:var(--hero-gold-2);font-size:22px;font-weight:900;white-space:nowrap;display:flex;align-items:center;justify-content:center;text-align:center}.tournament-intro-strip{width:100%;margin:0 0 4px;padding:12px 16px;border:1px solid rgba(46,147,147,.34);border-radius:14px;background:linear-gradient(90deg,rgba(7,49,51,.82),rgba(8,62,64,.68));color:var(--hero-muted);font-size:13px;font-weight:800;text-align:center}
-.registration-message{min-height:22px;margin:0 0 12px;padding:0 4px;color:var(--hero-muted);font-size:14px;font-weight:800}.registration-message:empty{display:none}.registration-message.ok{color:#a7e7bd}.registration-message.error{color:#ffb2a8}
-.tournament-table-shell{border:1px solid var(--hero-cyan-line);border-radius:18px;overflow:hidden;background:linear-gradient(145deg,rgba(8,62,64,.86),rgba(7,49,51,.8));box-shadow:0 13px 30px rgba(0,0,0,.15),inset 0 1px 0 rgba(255,255,255,.025)}
-.tournament-table{width:100%;border-collapse:collapse;table-layout:fixed}.tournament-table th,.tournament-table td{padding:13px 14px;border-bottom:1px solid rgba(216,182,101,.18);text-align:center;vertical-align:middle}.tournament-table th{background:rgba(4,38,40,.62);color:#d9c58f;font-size:13px;font-weight:900}.tournament-table td{font-size:14px}.tournament-table th:not(:last-child),.tournament-table td:not(:last-child){border-left:1px solid rgba(216,182,101,.14)}
-.tournament-table .num{width:66px;text-align:center;color:var(--hero-gold-2);font-weight:900}.tournament-table .name-col{width:auto}.tournament-table .date-col{width:240px}.tournament-table .status-col{width:130px;text-align:center}.tournament-row{cursor:pointer;transition:.15s ease}.tournament-row:hover,.tournament-row:focus{background:rgba(255,255,255,.045);outline:none}.tournament-row.finished-row{background:rgba(255,255,255,.015)}.tournament-row.finished-row .tournament-name{color:#cbd3cf}.tournament-name{font-size:15px;font-weight:900;color:var(--hero-cream)}.tournament-date{color:var(--hero-muted);font-size:13px}
+header{flex:0 0 74px;overflow:hidden;background:rgba(4,39,41,.94);border-bottom:1px solid rgba(216,182,101,.2);box-shadow:0 10px 30px rgba(0,0,0,.14);backdrop-filter:blur(14px)}
+.nav{height:74px;min-height:74px;display:flex;align-items:center;justify-content:space-between;gap:14px}.brand{font-size:23px;font-weight:900}.back{min-height:44px;padding:0 14px;border:1px solid var(--hero-line);border-radius:14px;background:rgba(255,255,255,.035);display:inline-flex;align-items:center;justify-content:center;color:var(--hero-gold);font-size:12px;font-weight:900}.back:hover{background:rgba(216,182,101,.08)}
+main{flex:1 1 auto;min-height:0;overflow:hidden;padding:14px 0}main>.wrap{height:100%;min-height:0;display:grid;grid-template-rows:auto auto auto minmax(0,1fr);gap:4px}
+.page-head{display:flex;align-items:center;margin-bottom:4px;padding:0;border:1px solid var(--hero-cyan-line);border-radius:18px;background:linear-gradient(145deg,rgba(8,62,64,.86),rgba(7,49,51,.8));box-shadow:0 13px 30px rgba(0,0,0,.15),inset 0 1px 0 rgba(255,255,255,.025);overflow:hidden}.page-head-title{display:grid;grid-template-columns:1fr 1fr;align-items:stretch;width:100%;position:relative;min-height:58px}.page-head-title::after{content:"";position:absolute;top:0;bottom:0;left:50%;width:1px;background:rgba(216,182,101,.28);transform:translateX(-.5px)}.page-head h1{margin:0;color:var(--hero-gold);font-size:26px;display:flex;align-items:center;justify-content:center;text-align:center}.count{color:var(--hero-gold-2);font-size:22px;font-weight:900;white-space:nowrap;display:flex;align-items:center;justify-content:center;text-align:center}.tournament-intro-strip{width:100%;margin:0 0 4px;padding:9px 14px;border:1px solid rgba(46,147,147,.34);border-radius:12px;background:linear-gradient(90deg,rgba(7,49,51,.82),rgba(8,62,64,.68));color:var(--hero-muted);font-size:12px;font-weight:800;text-align:center}
+.registration-message{min-height:20px;margin:0;padding:0 4px;color:var(--hero-muted);font-size:13px;font-weight:800}.registration-message:empty{display:none}.registration-message.ok{color:#a7e7bd}.registration-message.error{color:#ffb2a8}
+.tournament-list-view{min-height:0;overflow:hidden}.tournament-tables-grid{height:100%;min-height:0;display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:16px;align-items:start}
+.tournament-table-shell{height:min(calc(var(--table-title-h) + var(--column-head-h) + (var(--tournament-row-h) * 10) + 2px),100%);max-height:100%;min-height:0;border:1px solid var(--hero-cyan-line);border-radius:16px;overflow:hidden;display:flex;flex-direction:column;background:linear-gradient(145deg,rgba(8,62,64,.86),rgba(7,49,51,.8));box-shadow:0 13px 30px rgba(0,0,0,.15),inset 0 1px 0 rgba(255,255,255,.025)}
+.tournament-table-head{height:var(--table-title-h);flex:0 0 var(--table-title-h);display:flex;align-items:center;justify-content:center;gap:9px;border-bottom:1px solid rgba(216,182,101,.22);background:rgba(4,39,41,.76);color:var(--hero-cream);font-size:15px;font-weight:900}.tournament-table-head strong{min-width:28px;color:var(--hero-gold-2);font-size:18px;text-align:center}.current-tournaments .tournament-table-head{background:linear-gradient(135deg,rgba(216,182,101,.14),rgba(4,39,41,.8))}
+.tournament-table-scroll{flex:1 1 auto;min-height:0;overflow-y:auto;overflow-x:hidden;overscroll-behavior:contain;scrollbar-width:thin;scrollbar-color:rgba(216,182,101,.55) rgba(4,39,41,.45)}.tournament-table-scroll::-webkit-scrollbar{width:7px}.tournament-table-scroll::-webkit-scrollbar-track{background:rgba(4,39,41,.45)}.tournament-table-scroll::-webkit-scrollbar-thumb{background:rgba(216,182,101,.48);border-radius:999px}
+.tournament-table{width:100%;border-collapse:collapse;table-layout:fixed}.tournament-table th,.tournament-table td{height:var(--tournament-row-h);padding:5px 7px;border-bottom:1px solid rgba(216,182,101,.18);text-align:center;vertical-align:middle}.tournament-table th{height:var(--column-head-h);position:sticky;top:0;z-index:2;background:#07383a;color:#d9c58f;font-size:11px;font-weight:900}.tournament-table td{font-size:12px}.tournament-table th:not(:last-child),.tournament-table td:not(:last-child){border-left:1px solid rgba(216,182,101,.16)}
+.tournament-table .num{width:42px;text-align:center;color:var(--hero-gold-2);font-weight:900}.tournament-table .name-col{width:auto}.tournament-table .date-col{width:150px}.tournament-table .status-col{width:82px;text-align:center}.tournament-table .champion-col{width:125px;text-align:center}.tournament-row{cursor:pointer;transition:.15s ease}.tournament-row:hover,.tournament-row:focus{background:rgba(255,255,255,.045);outline:none}.tournament-row.finished-row{background:rgba(255,255,255,.015)}.tournament-row.finished-row .tournament-name{color:#cbd3cf}.tournament-name{font-size:13px;font-weight:900;color:var(--hero-cream);display:block;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}.tournament-date{color:var(--hero-muted);font-size:11px;display:block;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}.champion-name{color:var(--hero-gold-2);font-weight:900;display:block;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}.status{display:inline-flex;align-items:center;justify-content:center;border-radius:999px;padding:4px 7px;border:1px solid var(--hero-line);font-size:10px;font-weight:900}.status-open{background:rgba(84,178,132,.11);color:#8fe0b1}.status-running{background:rgba(216,182,101,.11);color:var(--hero-gold-2)}.status-finished{background:rgba(255,255,255,.06);color:#cbd3cf}.empty-row td{text-align:center!important;color:var(--hero-muted)!important}.empty{padding:22px;text-align:center;color:var(--hero-muted);font-size:13px;border:1px solid var(--hero-cyan-line);border-radius:14px;background:rgba(7,49,51,.62)}.error{color:#ffabab}
 .page-head-actions{display:flex;align-items:center;gap:10px}.demo-link{min-height:38px;padding:0 12px;border:1px solid rgba(216,182,101,.42);border-radius:11px;background:rgba(216,182,101,.08);color:var(--hero-gold-2);display:inline-flex;align-items:center;justify-content:center;font-size:12px;font-weight:900;white-space:nowrap}.demo-link:hover{background:rgba(216,182,101,.14)}
-.status{display:inline-flex;border-radius:999px;padding:6px 10px;border:1px solid var(--hero-line);font-size:13px;font-weight:900}.status-open{background:rgba(84,178,132,.11);color:#8fe0b1}.status-running{background:rgba(216,182,101,.11);color:var(--hero-gold-2)}.status-finished{background:rgba(255,255,255,.06);color:#cbd3cf}.empty{padding:32px;text-align:center;color:var(--hero-muted);font-size:15px;border:1px solid var(--hero-cyan-line);border-radius:16px;background:rgba(7,49,51,.62)}.error{color:#ffabab}
-.detail-shell{border:1px solid var(--hero-cyan-line);border-radius:18px;background:linear-gradient(145deg,rgba(8,62,64,.88),rgba(7,49,51,.82));box-shadow:0 13px 30px rgba(0,0,0,.15);overflow:hidden}.detail-toolbar{padding:13px 16px;border-bottom:1px solid rgba(216,182,101,.18);background:rgba(4,38,40,.35)}.detail-back{min-height:40px;padding:0 13px;border:1px solid var(--hero-line);border-radius:11px;background:rgba(255,255,255,.035);color:var(--hero-gold);font:900 13px Arial,sans-serif;cursor:pointer}.detail-card{padding:20px}.detail-title-row{display:flex;justify-content:space-between;align-items:center;gap:14px;margin-bottom:18px}.detail-title{margin:0;color:var(--hero-gold);font-size:25px}.detail-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px}.detail-item{padding:12px 14px;border:1px solid rgba(216,182,101,.18);border-radius:12px;background:rgba(3,38,40,.33)}.detail-label{display:block;margin-bottom:5px;color:#d9c58f;font-size:11px;font-weight:900}.detail-value{font-size:15px;font-weight:800}.detail-register{margin-top:16px;padding-top:16px;border-top:1px solid rgba(216,182,101,.18);display:flex;justify-content:flex-start}.register-btn{min-width:132px;min-height:44px;padding:0 15px;border:0;border-radius:11px;background:#f6b26b;color:#3c2614;font:900 14px Arial,sans-serif;cursor:pointer;box-shadow:0 5px 12px rgba(0,0,0,.16)}.register-btn:hover:not(:disabled){background:#ffc27d}.register-btn:disabled{opacity:.55;cursor:not-allowed;box-shadow:none}.register-btn.registered{background:#b9c7c2;color:#163537;opacity:1}
-.bracket-shell{margin-top:18px;padding-top:18px;border-top:1px solid rgba(216,182,101,.18)}.bracket-title{margin:0 0 12px;color:var(--hero-gold);font-size:18px}.bracket-round{margin-top:13px}.bracket-round-title{margin:0 0 7px;color:#d9c58f;font-size:12px;font-weight:900}.bracket-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:8px}.bracket-match{padding:11px 12px;border:1px solid rgba(216,182,101,.18);border-radius:12px;background:rgba(3,38,40,.33)}.bracket-match.mine{border-color:rgba(239,207,124,.68);box-shadow:inset 0 0 0 1px rgba(239,207,124,.12)}.bracket-player{display:flex;align-items:center;justify-content:space-between;gap:8px;min-height:25px;font-size:13px;font-weight:800}.bracket-player+.bracket-player{border-top:1px solid rgba(216,182,101,.12)}.bracket-player.winner{color:#a7e7bd}.bracket-meta{display:flex;align-items:center;justify-content:space-between;gap:8px;margin-top:8px;color:var(--hero-muted);font-size:10px}.tournament-enter-btn{min-height:36px;min-width:112px;font-size:12px}.tournament-enter-btn.round-break-countdown{min-width:158px;opacity:1!important;background:rgba(216,182,101,.14);color:var(--hero-gold-2);cursor:default;box-shadow:none}.bracket-empty{padding:14px;border:1px dashed rgba(216,182,101,.25);border-radius:11px;color:var(--hero-muted);font-size:12px;text-align:center}
-@media(max-width:700px){.wrap{width:min(100% - 18px,1180px)}.page-head-actions{width:100%;justify-content:space-between}.demo-link{min-height:36px;padding:0 10px;font-size:11px}.nav{min-height:62px}.brand{font-size:18px}.back{min-height:39px;padding:0 11px}.page-head{padding:0}.page-head-title{min-height:58px}.page-head h1{font-size:24px}.count{font-size:22px}.tournament-intro-strip{padding:10px 12px;font-size:12px}main{padding-top:18px}.tournament-table th,.tournament-table td{padding:10px 7px}.tournament-table th{font-size:11px}.tournament-table td{font-size:12px}.tournament-table .num{width:40px}.tournament-table .date-col{width:120px}.tournament-table .status-col{width:88px}.tournament-name{font-size:13px}.tournament-date{font-size:11px}.status{padding:5px 7px;font-size:11px}.detail-card{padding:15px}.detail-title-row{align-items:flex-start;flex-direction:column}.detail-title{font-size:21px}.detail-grid{grid-template-columns:1fr}.detail-register{justify-content:stretch}.register-btn{width:100%}.bracket-grid{grid-template-columns:1fr}.tournament-enter-btn{width:auto}}
+.detail-shell{height:100%;max-height:100%;min-height:0;border:1px solid var(--hero-cyan-line);border-radius:18px;background:linear-gradient(145deg,rgba(8,62,64,.88),rgba(7,49,51,.82));box-shadow:0 13px 30px rgba(0,0,0,.15);overflow:hidden;display:flex;flex-direction:column}.detail-toolbar{flex:0 0 auto;padding:9px 13px;border-bottom:1px solid rgba(216,182,101,.18);background:rgba(4,38,40,.35)}.detail-back{min-height:38px;padding:0 13px;border:1px solid var(--hero-line);border-radius:11px;background:rgba(255,255,255,.035);color:var(--hero-gold);font:900 12px Arial,sans-serif;cursor:pointer}.detail-card{flex:1 1 auto;min-height:0;overflow-y:auto;overflow-x:hidden;overscroll-behavior:contain;padding:18px}.detail-title-row{display:flex;justify-content:space-between;align-items:center;gap:14px;margin-bottom:15px}.detail-title{margin:0;color:var(--hero-gold);font-size:23px}.detail-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:9px}.detail-item{padding:10px 12px;border:1px solid rgba(216,182,101,.18);border-radius:12px;background:rgba(3,38,40,.33)}.detail-label{display:block;margin-bottom:4px;color:#d9c58f;font-size:10px;font-weight:900}.detail-value{font-size:14px;font-weight:800}.detail-register{margin-top:14px;padding-top:14px;border-top:1px solid rgba(216,182,101,.18);display:flex;justify-content:flex-start}.register-btn{min-width:132px;min-height:42px;padding:0 15px;border:0;border-radius:11px;background:#f6b26b;color:#3c2614;font:900 13px Arial,sans-serif;cursor:pointer;box-shadow:0 5px 12px rgba(0,0,0,.16)}.register-btn:hover:not(:disabled){background:#ffc27d}.register-btn:disabled{opacity:.55;cursor:not-allowed;box-shadow:none}.register-btn.registered{background:#b9c7c2;color:#163537;opacity:1}
+.bracket-shell{margin-top:16px;padding-top:16px;border-top:1px solid rgba(216,182,101,.18)}.bracket-title{margin:0 0 11px;color:var(--hero-gold);font-size:17px}.bracket-round{margin-top:12px}.bracket-round-title{margin:0 0 7px;color:#d9c58f;font-size:12px;font-weight:900}.bracket-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:8px}.bracket-match{padding:10px 11px;border:1px solid rgba(216,182,101,.18);border-radius:12px;background:rgba(3,38,40,.33)}.bracket-match.mine{border-color:rgba(239,207,124,.68);box-shadow:inset 0 0 0 1px rgba(239,207,124,.12)}.bracket-player{display:flex;align-items:center;justify-content:space-between;gap:8px;min-height:25px;font-size:13px;font-weight:800}.bracket-player+.bracket-player{border-top:1px solid rgba(216,182,101,.12)}.bracket-player.winner{color:#a7e7bd}.bracket-meta{display:flex;align-items:center;justify-content:space-between;gap:8px;margin-top:8px;color:var(--hero-muted);font-size:10px}.tournament-enter-btn{min-height:36px;min-width:112px;font-size:12px}.tournament-enter-btn.round-break-countdown{min-width:158px;opacity:1!important;background:rgba(216,182,101,.14);color:var(--hero-gold-2);cursor:default;box-shadow:none}.bracket-empty{padding:14px;border:1px dashed rgba(216,182,101,.25);border-radius:11px;color:var(--hero-muted);font-size:12px;text-align:center}
+@media(max-width:700px){:root{--tournament-row-h:38px;--table-title-h:38px;--column-head-h:32px}.wrap{width:min(100% - 14px,1180px)}header{flex-basis:62px}.nav{height:62px;min-height:62px}.brand{font-size:18px}.back{min-height:38px;padding:0 10px}.page-head-title{min-height:46px}.page-head h1{font-size:20px}.count{font-size:18px}.tournament-intro-strip{padding:6px 8px;font-size:10px}main{padding:6px 0}main>.wrap{gap:3px}.tournament-tables-grid{grid-template-columns:1fr;grid-template-rows:repeat(2,minmax(0,1fr));gap:6px;align-items:stretch}.tournament-table-shell{height:100%;max-height:100%}.tournament-table-head{font-size:12px;gap:5px}.tournament-table-head strong{font-size:14px}.tournament-table th,.tournament-table td{padding:3px 4px}.tournament-table th{font-size:9px}.tournament-table td{font-size:10px}.tournament-table .num{width:30px}.tournament-table .date-col{width:86px}.tournament-table .status-col{width:59px}.tournament-table .champion-col{width:76px}.tournament-name{font-size:10px}.tournament-date{font-size:9px}.status{padding:3px 4px;font-size:8px}.champion-name{font-size:9px}.detail-card{padding:12px}.detail-title-row{align-items:flex-start;flex-direction:column}.detail-title{font-size:20px}.detail-grid{grid-template-columns:1fr}.detail-register{justify-content:stretch}.register-btn{width:100%}.bracket-grid{grid-template-columns:1fr}.tournament-enter-btn{width:auto}}
 </style>
 <script src="config.js"></script>
 </head>
@@ -32,14 +36,28 @@ main{padding:34px 0 48px}.page-head{display:flex;align-items:center;margin-botto
   <div class="page-head"><div class="page-head-title"><h1>البطولات</h1><div id="tournamentCount" class="count">0</div></div></div>
   <div class="tournament-intro-strip">اختر البطولة للتسجيل والمشاركة والمشاهدة</div>
   <div id="registrationMsg" class="registration-message" role="status" aria-live="polite"></div>
-  <section id="tournamentListView" aria-label="قائمة البطولات">
-    <div class="tournament-table-shell">
-      <table class="tournament-table" aria-label="قائمة البطولات">
-        <thead><tr><th class="num">#</th><th class="name-col">اسم البطولة</th><th class="date-col">الموعد</th><th class="status-col">الحالة</th></tr></thead>
-        <tbody id="tournamentList"></tbody>
-      </table>
+  <section id="tournamentListView" class="tournament-list-view" aria-label="قائمة البطولات">
+    <div class="tournament-tables-grid">
+      <section class="tournament-table-shell current-tournaments" aria-label="البطولات الحالية">
+        <div class="tournament-table-head">البطولات الحالية <strong id="currentTournamentCount">0</strong></div>
+        <div class="tournament-table-scroll">
+          <table class="tournament-table" aria-label="البطولات الحالية">
+            <thead><tr><th class="num">#</th><th class="name-col">اسم البطولة</th><th class="date-col">الموعد</th><th class="status-col">الحالة</th></tr></thead>
+            <tbody id="currentTournamentList"><tr class="empty-row"><td colspan="4">جاري تحميل البطولات...</td></tr></tbody>
+          </table>
+        </div>
+      </section>
+      <section class="tournament-table-shell finished-tournaments" aria-label="البطولات المنتهية">
+        <div class="tournament-table-head">البطولات المنتهية <strong id="finishedTournamentCount">0</strong></div>
+        <div class="tournament-table-scroll">
+          <table class="tournament-table" aria-label="البطولات المنتهية">
+            <thead><tr><th class="num">#</th><th class="name-col">اسم البطولة</th><th class="date-col">الموعد</th><th class="status-col">الحالة</th><th class="champion-col">البطل</th></tr></thead>
+            <tbody id="finishedTournamentList"><tr class="empty-row"><td colspan="5">جاري تحميل البطولات...</td></tr></tbody>
+          </table>
+        </div>
+      </section>
     </div>
-    <div id="tournamentEmpty" class="empty">جاري تحميل البطولات...</div>
+    <div id="tournamentEmpty" class="empty" hidden></div>
   </section>
   <section id="tournamentDetailView" class="detail-shell" hidden aria-label="تفاصيل البطولة">
     <div class="detail-toolbar"><button id="backToTournamentList" class="detail-back" type="button">العودة إلى قائمة البطولات</button></div>
@@ -53,7 +71,10 @@ const cfg=window.SHATRANJ_CONFIG?.supabase||{};
 const supabase=createClient(cfg.url,cfg.anonKey);
 const listView=document.getElementById('tournamentListView');
 const detailView=document.getElementById('tournamentDetailView');
-const listEl=document.getElementById('tournamentList');
+const currentListEl=document.getElementById('currentTournamentList');
+const finishedListEl=document.getElementById('finishedTournamentList');
+const currentCountEl=document.getElementById('currentTournamentCount');
+const finishedCountEl=document.getElementById('finishedTournamentCount');
 const detailCard=document.getElementById('tournamentDetailCard');
 const emptyEl=document.getElementById('tournamentEmpty');
 const countEl=document.getElementById('tournamentCount');
@@ -65,7 +86,7 @@ let tournamentMatchPollTimer=null;
 let tournamentRoundCountdownTimer=null;
 let tournamentBracketRefreshTimer=null;
 
-function esc(value){return String(value??'').replace(/[&<>"']/g,ch=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[ch]))}
+function esc(value){return String(value??'').replace(/[&<>"']/g,ch=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot',"'":'&#39;'}[ch]))}
 function scopeLabel(row){if(row.scope_type==='global')return 'عامة';if(row.scope_type==='country')return 'دولة';if(row.scope_type==='city')return 'مدينة';return row.scope_type||'—'}
 function statusLabel(value){return ({open:'مفتوحة',running:'جارية',finished:'منتهية'})[value]||value||'—'}
 function formatDate(value){if(!value)return 'يحدد لاحقًا';return new Intl.DateTimeFormat('ar-SA',{dateStyle:'medium',timeStyle:'short'}).format(new Date(value))}
@@ -84,12 +105,34 @@ function tournamentSort(a,b){
   return aTime-bTime;
 }
 
+function renderTournamentRows(list,finished=false){
+  return list.map((row,index)=>`<tr class="tournament-row${finished?' finished-row':''}" tabindex="0" data-tournament-id="${esc(row.id)}" aria-label="عرض تفاصيل ${esc(row.name)}"><td class="num">${index+1}</td><td><span class="tournament-name">${esc(row.name)}</span></td><td><span class="tournament-date">${esc(formatDate(row.starts_at))}</span></td><td class="status-col"><span class="status status-${esc(row.status)}">${esc(statusLabel(row.status))}</span></td>${finished?`<td class="champion-col"><span class="champion-name">${esc(row.champion_name||'—')}</span></td>`:''}</tr>`).join('');
+}
+
 function renderTournamentList(rows){
   const list=(Array.isArray(rows)?rows:[]).slice().sort(tournamentSort);
+  const current=list.filter(row=>row.status!=='finished');
+  const finished=list.filter(row=>row.status==='finished');
   countEl.textContent=`${list.length}`;
-  if(!list.length){listEl.innerHTML='';emptyEl.hidden=false;emptyEl.textContent='لا توجد بطولات معلنة حاليًا.';return}
+  currentCountEl.textContent=String(current.length);
+  finishedCountEl.textContent=String(finished.length);
   emptyEl.hidden=true;
-  listEl.innerHTML=list.map((row,index)=>`<tr class="tournament-row${row.status==='finished'?' finished-row':''}" tabindex="0" data-tournament-id="${esc(row.id)}" aria-label="عرض تفاصيل ${esc(row.name)}"><td class="num">${index+1}</td><td><span class="tournament-name">${esc(row.name)}</span></td><td><span class="tournament-date">${esc(formatDate(row.starts_at))}</span></td><td class="status-col"><span class="status status-${esc(row.status)}">${esc(statusLabel(row.status))}</span></td></tr>`).join('');
+  currentListEl.innerHTML=current.length?renderTournamentRows(current,false):'<tr class="empty-row"><td colspan="4">لا توجد بطولات حالية.</td></tr>';
+  finishedListEl.innerHTML=finished.length?renderTournamentRows(finished,true):'<tr class="empty-row"><td colspan="5">لا توجد بطولات منتهية.</td></tr>';
+}
+
+async function loadTournamentChampion(row){
+  if(row.status!=='finished')return row;
+  try{
+    const {data,error}=await supabase.rpc('get_tournament_bracket',{p_tournament_id:row.id});
+    if(error)throw error;
+    const matches=Array.isArray(data)?data:[];
+    if(!matches.length){row.champion_name='—';return row}
+    const maxRound=Math.max(...matches.map(match=>Number(match.round_no)||1));
+    const finalMatch=matches.find(match=>Number(match.round_no)===maxRound&&Number(match.match_no)===1)||matches.find(match=>Number(match.round_no)===maxRound);
+    row.champion_name=finalMatch?.winner_name||'—';
+  }catch(error){console.warn('تعذر تحميل بطل البطولة',row.id,error);row.champion_name='—'}
+  return row;
 }
 
 function registrationControl(row){if(tournamentIsFull(row))return '<button class="register-btn" type="button" disabled>اكتمل العدد</button>';return registrationOpen(row)?`<button class="register-btn" type="button" data-tournament-id="${esc(row.id)}">سجّل الآن</button>`:'<button class="register-btn" type="button" disabled>التسجيل مغلق</button>'}
@@ -108,6 +151,7 @@ function renderTournamentDetail(row){
       <div class="detail-item"><span class="detail-label">المسجلون</span><span class="detail-value" data-registration-count data-count="${registeredCount}">${registeredCount} لاعب</span></div>
       <div class="detail-item"><span class="detail-label">السعة</span><span class="detail-value">${row.max_players?esc(row.max_players)+' لاعب':'مفتوحة'}</span></div>
       <div class="detail-item"><span class="detail-label">الحالة</span><span class="detail-value">${esc(statusLabel(row.status))}</span></div>
+      ${row.status==='finished'?`<div class="detail-item"><span class="detail-label">البطل</span><span class="detail-value">${esc(row.champion_name||'—')}</span></div>`:''}
     </div>
     <div class="detail-register">${registrationControl(row)}</div>
     <section class="bracket-shell" aria-label="مواجهات البطولة"><h3 class="bracket-title">مواجهات البطولة</h3><div id="tournamentBracket" class="bracket-empty">${['running','finished'].includes(row.status)?'جاري تحميل المواجهات...':'تظهر المواجهات بعد بدء البطولة.'}</div></section>`;
@@ -244,8 +288,9 @@ async function registerForTournament(button,tournamentId){
   }catch(error){console.error(error);button.disabled=false;button.textContent=originalText;setRegistrationMessage('تعذر إتمام التسجيل الآن. حاول مرة أخرى.','error')}
 }
 
-listEl.addEventListener('click',event=>{const row=event.target.closest('.tournament-row[data-tournament-id]');if(row)openTournamentDetail(row.dataset.tournamentId)});
-listEl.addEventListener('keydown',event=>{if(event.key!=='Enter'&&event.key!==' ')return;const row=event.target.closest('.tournament-row[data-tournament-id]');if(!row)return;event.preventDefault();openTournamentDetail(row.dataset.tournamentId)});
+function tournamentRowFromEvent(event){return event.target.closest('.tournament-row[data-tournament-id]')}
+listView.addEventListener('click',event=>{const row=tournamentRowFromEvent(event);if(row)openTournamentDetail(row.dataset.tournamentId)});
+listView.addEventListener('keydown',event=>{if(event.key!=='Enter'&&event.key!==' ')return;const row=tournamentRowFromEvent(event);if(!row)return;event.preventDefault();openTournamentDetail(row.dataset.tournamentId)});
 detailCard.addEventListener('click',event=>{const matchButton=event.target.closest('[data-tournament-match]');if(matchButton&&!matchButton.disabled){enterTournamentMatch(matchButton,matchButton.dataset.tournamentMatch);return}const button=event.target.closest('.register-btn[data-tournament-id]');if(!button||button.disabled)return;registerForTournament(button,button.dataset.tournamentId)});
 backToTournamentList.addEventListener('click',showTournamentList);
 
@@ -257,9 +302,11 @@ async function loadTournaments(){
     ]);
     if(error)throw error;if(countError)console.warn('تعذر تحميل عدد المسجلين',countError);
     const countMap=new Map((countRows||[]).map(row=>[String(row.tournament_id),Number(row.registered_count||0)]));
-    tournaments=(data||[]).map(row=>({...row,registered_count:countMap.get(String(row.id))||0}));
+    tournaments=(data||[]).map(row=>({...row,registered_count:countMap.get(String(row.id))||0,champion_name:'—'}));
     renderTournamentList(tournaments);
-  }catch(error){console.error(error);listEl.innerHTML='';emptyEl.hidden=false;emptyEl.classList.add('error');emptyEl.textContent='تعذر تحميل البطولات الآن.'}
+    await Promise.all(tournaments.filter(row=>row.status==='finished').map(loadTournamentChampion));
+    renderTournamentList(tournaments);
+  }catch(error){console.error(error);currentListEl.innerHTML='<tr class="empty-row"><td colspan="4">تعذر تحميل البطولات.</td></tr>';finishedListEl.innerHTML='<tr class="empty-row"><td colspan="5">تعذر تحميل البطولات.</td></tr>';emptyEl.hidden=true}
 }
 
 loadTournaments();
