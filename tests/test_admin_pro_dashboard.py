@@ -102,7 +102,7 @@ def test_admin_games_are_one_scrollable_table_with_player_pairs():
         assert token in js, token
 
     assert "unifiedGamesTableBody" in responsive
-    assert "admin-unified-games.js?v=20260910-2" in loader
+    assert "admin-unified-games.js?v=20260910-3" in loader
 
 
 def test_unified_games_table_drops_code_adds_numbering_and_focuses_core_columns():
@@ -117,6 +117,21 @@ def test_unified_games_table_drops_code_adds_numbering_and_focuses_core_columns(
         "numberUnifiedRows",
         "grid-template-columns",
         "colSpan = 4",
+    ]:
+        assert token in js, token
+
+
+def test_unified_games_time_is_stable_and_columns_have_gold_separators():
+    js = (ROOT / "admin-unified-games.js").read_text(encoding="utf-8")
+    for token in [
+        "function timeCell",
+        "unified-time",
+        "unified-time-value",
+        "unified-time-unit",
+        "unicode-bidi:isolate",
+        "white-space:nowrap",
+        "border-inline-start:1px solid",
+        "rgba(216,181,106",
     ]:
         assert token in js, token
 
@@ -137,5 +152,6 @@ if __name__ == "__main__":
     test_admin_view_survives_page_refresh()
     test_admin_games_are_one_scrollable_table_with_player_pairs()
     test_unified_games_table_drops_code_adds_numbering_and_focuses_core_columns()
+    test_unified_games_time_is_stable_and_columns_have_gold_separators()
     test_computer_games_resolve_real_player_names_through_admin_rpc()
     print("Enhanced admin dashboard tests passed")
