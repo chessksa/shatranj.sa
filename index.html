@@ -25,6 +25,7 @@ html,body{margin:0;min-height:100%;background:#042628;color:#f4eddc;font-family:
   html=html
     .replace(/home-theme\.css\?v=[A-Za-z0-9._-]+/g,'home-theme.css?v='+runtimeVersion)
     .replace(/site-notifications\.js\?v=[A-Za-z0-9._-]+/g,'site-notifications.js?v='+runtimeVersion)
+    .replace(/site-presence\.js\?v=[A-Za-z0-9._-]+/g,'site-presence.js?v='+runtimeVersion)
     .replace("const rankingLimit=window.matchMedia('(max-width:800px)').matches?5:10;","const rankingLimit=10;")
     .replace('setInterval(loadCurrentMatchesCount,30000);','setInterval(loadCurrentMatchesCount,3000);');
 
