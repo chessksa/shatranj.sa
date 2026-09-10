@@ -105,6 +105,22 @@ def test_admin_games_are_one_scrollable_table_with_player_pairs():
     assert "admin-unified-games.js?v=20260910-1" in loader
 
 
+def test_unified_games_table_drops_code_adds_numbering_and_focuses_core_columns():
+    js = (ROOT / "admin-unified-games.js").read_text(encoding="utf-8")
+    assert "<th>الرمز</th>" not in js
+    for token in [
+        "<th>م</th>",
+        "<th>اللاعبين</th>",
+        "<th>الزمن</th>",
+        "<th>الحالة</th>",
+        "unified-row-number",
+        "numberUnifiedRows",
+        "grid-template-columns",
+        "colSpan = 4",
+    ]:
+        assert token in js, token
+
+
 def test_computer_games_resolve_real_player_names_through_admin_rpc():
     js = (ROOT / "admin-computer-games.js").read_text(encoding="utf-8")
     assert "admin_list_players_v3" in js
@@ -120,5 +136,6 @@ if __name__ == "__main__":
     test_player_detail_controls_keep_icons()
     test_admin_view_survives_page_refresh()
     test_admin_games_are_one_scrollable_table_with_player_pairs()
+    test_unified_games_table_drops_code_adds_numbering_and_focuses_core_columns()
     test_computer_games_resolve_real_player_names_through_admin_rpc()
     print("Enhanced admin dashboard tests passed")
