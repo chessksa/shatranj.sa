@@ -5,6 +5,6 @@
 .status{font-size:14px!important}
 .champion-name{font-size:14px!important}
 .detail-toolbar-title,.detail-title,.bracket-title{font-size:20px!important}
-.detail-label,.bracket-round-title{font-size:16px!important}
-.detail-value{font-size:14px!important}
+.detail-label,.bracket-round-title{font-size:16px!important;font-weight:900!important}
+.detail-value{font-size:14px!important;font-weight:700!important}
 .detail-shell .status,.bracket-player,.bracket-meta,.bracket-empty{font-size:14px!important}
