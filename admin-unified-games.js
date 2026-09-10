@@ -26,7 +26,6 @@ function mountStyles() {
     }
     #gamesView .unified-player-pair .versus{
       display:inline-block;
-      margin-inline:5px;
       color:var(--gold2);
       font-weight:900;
     }
@@ -67,7 +66,7 @@ function pairCell(left, right) {
   first.textContent = left || '—';
   const versus = document.createElement('span');
   versus.className = 'versus';
-  versus.textContent = '×';
+  versus.textContent = ' × ';
   const second = document.createElement('span');
   second.textContent = right || '—';
   cell.append(first, versus, second);
