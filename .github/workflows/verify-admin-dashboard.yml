@@ -7,6 +7,8 @@ on:
     paths:
       - 'admin-pro.js'
       - 'admin-pro.css'
+      - 'admin-home-compact.js'
+      - 'admin-home-compact.css'
       - 'admin-responsive-tables.js'
       - 'admin-player-list.js'
       - 'admin-view-state.js'
@@ -14,11 +16,14 @@ on:
       - 'admin-computer-games.js'
       - 'admin.html'
       - 'tests/test_admin_pro_dashboard.py'
+      - 'tests/test_admin_home_compact.py'
       - '.github/workflows/verify-admin-dashboard.yml'
   pull_request:
     paths:
       - 'admin-pro.js'
       - 'admin-pro.css'
+      - 'admin-home-compact.js'
+      - 'admin-home-compact.css'
       - 'admin-responsive-tables.js'
       - 'admin-player-list.js'
       - 'admin-view-state.js'
@@ -26,6 +31,7 @@ on:
       - 'admin-computer-games.js'
       - 'admin.html'
       - 'tests/test_admin_pro_dashboard.py'
+      - 'tests/test_admin_home_compact.py'
       - '.github/workflows/verify-admin-dashboard.yml'
 
 permissions:
@@ -40,10 +46,13 @@ jobs:
         with:
           node-version: '22'
       - name: Verify enhanced admin dashboard contract
-        run: python tests/test_admin_pro_dashboard.py
+        run: |
+          python tests/test_admin_pro_dashboard.py
+          python tests/test_admin_home_compact.py
       - name: Verify admin JavaScript syntax
         run: |
           node --input-type=module --check < admin-pro.js
+          node --input-type=module --check < admin-home-compact.js
           node --input-type=module --check < admin-responsive-tables.js
           node --input-type=module --check < admin-player-list.js
           node --input-type=module --check < admin-view-state.js
