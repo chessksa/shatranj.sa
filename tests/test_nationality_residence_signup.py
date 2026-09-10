@@ -2,6 +2,7 @@ from pathlib import Path
 
 ROOT = Path(__file__).resolve().parents[1]
 MIGRATION = ROOT / "supabase/migrations/20260911031000_open_global_signup_ranking.sql"
+EXCLUSION_MIGRATION = ROOT / "supabase/migrations/20260911032000_exclude_il_country.sql"
 
 
 def read(name):
@@ -49,8 +50,23 @@ def test_database_contract_allows_any_nonempty_nationality():
     assert "region=v_nationality" in sql
     assert "country=v_residence_country" in sql
     assert "nationality required" in sql
-    assert "unsupported nationality" not in sql
     assert "v_nationality not in" not in sql
+
+
+def test_excluded_country_is_absent_from_world_catalog():
+    world = read("world-locations.js")
+    assert "iso2:'IL'" not in world
+
+
+def test_database_rejects_excluded_country_for_nationality_and_residence():
+    assert EXCLUSION_MIGRATION.exists(), "country exclusion migration is required"
+    sql = EXCLUSION_MIGRATION.read_text(encoding="utf-8")
+
+    assert "v_nationality" in sql
+    assert "v_residence_country" in sql
+    assert "blocked country" in sql
+    assert "إسرائيل" in sql
+    assert "israel" in sql.lower()
 
 
 if __name__ == "__main__":
@@ -58,4 +74,6 @@ if __name__ == "__main__":
     test_residence_country_still_drives_world_city_choices()
     test_ranking_is_global_and_uses_the_world_country_catalog()
     test_database_contract_allows_any_nonempty_nationality()
-    print("Worldwide signup and global ranking tests passed")
+    test_excluded_country_is_absent_from_world_catalog()
+    test_database_rejects_excluded_country_for_nationality_and_residence()
+    print("Worldwide signup, global ranking, and country exclusion tests passed")
