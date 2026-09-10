@@ -22,7 +22,7 @@ function mountCompactStylesheet() {
   if (document.querySelector('link[data-admin-home-compact]')) return;
   const link = document.createElement('link');
   link.rel = 'stylesheet';
-  link.href = 'admin-home-compact.css?v=20260911-2';
+  link.href = 'admin-home-compact.css?v=20260911-3';
   link.dataset.adminHomeCompact = '1';
   document.head.appendChild(link);
 }
