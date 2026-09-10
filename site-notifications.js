@@ -111,6 +111,13 @@
     document.head.appendChild(style);
   }
 
+  function installRankingPullGuard() {
+    const rankingWrap = document.querySelector('#ranking .table-wrap');
+    if (!rankingWrap) return;
+    rankingWrap.dataset.noPullRefresh = '1';
+    rankingWrap.style.touchAction = 'pan-y';
+  }
+
   function installCompactProfileIconGrid() {
     if (document.getElementById('compactProfileIconGridStyles')) return;
     if (!document.querySelector('.dashboard-icon-row')) return;
@@ -281,10 +288,12 @@
   installTournamentTickerMotion();
   installHeroTitleLineup();
   installMobileRankingFrame();
+  installRankingPullGuard();
   installCompactProfileIconGrid();
   installRankingObserver();
 
   window.addEventListener('home-players-loaded', () => {
+    installRankingPullGuard();
     installRankingObserver();
     queueMobileRender();
   });
@@ -294,6 +303,7 @@
   window.addEventListener('resize', queueMobileRender, { passive: true });
 
   loadOriginalPatched().finally(() => {
+    installRankingPullGuard();
     installRankingObserver();
     queueMobileRender();
   });
