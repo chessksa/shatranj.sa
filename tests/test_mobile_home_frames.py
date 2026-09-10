@@ -4,7 +4,7 @@ ROOT = Path(__file__).resolve().parents[1]
 
 
 def test_mobile_home_frames_share_one_visual_contract():
-    css = (ROOT / "home-theme.css").read_text(encoding="utf-8")
+    css = (ROOT / "home-mobile-admin-colors.css").read_text(encoding="utf-8")
 
     assert "Mobile unified interface frames 20260911" in css
     assert "@media(max-width:900px)" in css
