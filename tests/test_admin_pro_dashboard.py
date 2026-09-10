@@ -61,7 +61,7 @@ def test_player_detail_controls_keep_icons():
     loader = (ROOT / "admin-computer-games.js").read_text(encoding="utf-8")
     for token in ["player-control-grid", "player-control-icon", "editPlayer", "ban", "unban", "deletePlayer"]:
         assert token in layer, token
-    assert "admin-player-list.js?v=20260910-1" in loader
+    assert "admin-player-list.js?v=20260910-2" in loader
 
 
 def test_admin_view_survives_page_refresh():
