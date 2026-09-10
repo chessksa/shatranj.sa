@@ -111,6 +111,43 @@
     document.head.appendChild(style);
   }
 
+  function installCompactProfileIconGrid() {
+    if (document.getElementById('compactProfileIconGridStyles')) return;
+    if (!document.querySelector('.dashboard-icon-row')) return;
+    const style = document.createElement('style');
+    style.id = 'compactProfileIconGridStyles';
+    style.textContent = `
+      @media(max-width:820px){
+        .dashboard-icon-row{
+          grid-template-columns:repeat(5,minmax(0,1fr))!important;
+          overflow-x:hidden!important;
+          gap:5px!important;
+          padding-bottom:0!important;
+        }
+        .dashboard-icon-item{
+          min-width:0!important;
+          min-height:64px!important;
+          padding:6px 3px!important;
+          gap:4px!important;
+        }
+        .dashboard-icon-label{
+          white-space:normal!important;
+          overflow:visible!important;
+          text-overflow:clip!important;
+          font-size:11px!important;
+          line-height:1.15!important;
+          text-align:center!important;
+        }
+      }
+      @media(max-width:380px){
+        .dashboard-icon-row{gap:4px!important;}
+        .dashboard-icon-item{min-height:62px!important;padding:5px 2px!important;}
+        .dashboard-icon-label{font-size:10px!important;}
+      }
+    `;
+    document.head.appendChild(style);
+  }
+
   function mobileFilteredPlayers() {
     const players = Array.isArray(window.__HOME_PLAYERS__) ? window.__HOME_PLAYERS__ : [];
     const country = document.getElementById('regionFilter')?.value?.trim() || '';
@@ -244,6 +281,7 @@
   installTournamentTickerMotion();
   installHeroTitleLineup();
   installMobileRankingFrame();
+  installCompactProfileIconGrid();
   installRankingObserver();
 
   window.addEventListener('home-players-loaded', () => {
