@@ -12,12 +12,27 @@ def test_enhanced_admin_dashboard_refreshes_core_stats_itself():
         assert field in js
 
 
+def test_enhanced_admin_dashboard_refreshes_recent_activity_itself():
+    js = (ROOT / "admin-pro.js").read_text(encoding="utf-8")
+    for token in [
+        "admin_list_players_v3",
+        "admin_list_games_v2",
+        "admin_list_reports_v2",
+        "admin_list_actions_v2",
+        "renderRecentPlayers",
+        "renderRecentGames",
+        "renderRecentReports",
+    ]:
+        assert token in js, token
+
+
 def test_enhanced_admin_layer_is_loaded_from_admin_page_pipeline():
     loader = (ROOT / "admin-computer-games.js").read_text(encoding="utf-8")
-    assert "admin-pro.js?v=20260910-1" in loader
+    assert "admin-pro.js?v=20260910-2" in loader
 
 
 if __name__ == "__main__":
     test_enhanced_admin_dashboard_refreshes_core_stats_itself()
+    test_enhanced_admin_dashboard_refreshes_recent_activity_itself()
     test_enhanced_admin_layer_is_loaded_from_admin_page_pipeline()
     print("Enhanced admin dashboard tests passed")
