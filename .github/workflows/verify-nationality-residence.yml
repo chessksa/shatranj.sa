@@ -1,0 +1,31 @@
+name: Verify nationality residence signup
+
+on:
+  push:
+    branches:
+      - main
+    paths:
+      - 'index-app.html'
+      - 'supabase/migrations/20260911020000_nationality_residence.sql'
+      - 'tests/test_nationality_residence_signup.py'
+      - '.github/workflows/verify-nationality-residence.yml'
+  pull_request:
+    paths:
+      - 'index-app.html'
+      - 'supabase/migrations/20260911020000_nationality_residence.sql'
+      - 'tests/test_nationality_residence_signup.py'
+      - '.github/workflows/verify-nationality-residence.yml'
+
+permissions:
+  contents: read
+
+jobs:
+  verify:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - name: Verify nationality and residence signup contract
+        run: python tests/test_nationality_residence_signup.py
