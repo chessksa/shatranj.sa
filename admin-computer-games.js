@@ -3,7 +3,7 @@ import { createClient } from 'https://cdn.jsdelivr.net/npm/@supabase/supabase-js
 const cfg = window.SHATRANJ_CONFIG?.supabase || {};
 const supabase = cfg.enabled && cfg.url && cfg.anonKey ? createClient(cfg.url, cfg.anonKey) : null;
 const $ = (id) => document.getElementById(id);
-const esc = (value) => String(value ?? '').replace(/[&<>'"]/g, (ch) => ({'&':'&amp;','<':'&lt;','>':'&gt',"'":'&#39;','"':'&quot;'}[ch]));
+const esc = (value) => String(value ?? '').replace(/[&<>'"]/g, (ch) => ({'&':'&amp;','<':'&lt;','>':'&gt;',"'":'&#39;','"':'&quot;'}[ch]));
 const levelLabel = { easy: 'سهل', medium: 'متوسط', hard: 'صعب' };
 const statusLabel = { active: 'نشطة', finished: 'منتهية', abandoned: 'متروكة' };
 const resultLabel = { win: 'فوز اللاعب', loss: 'فوز الكمبيوتر', draw: 'تعادل' };
