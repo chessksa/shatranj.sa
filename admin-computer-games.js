@@ -90,3 +90,5 @@ function startWhenAdminReady() {
 }
 
 startWhenAdminReady();
+
+import('./admin-pro.js?v=20260910-1').catch((error) => console.error('تعذر تحميل تطوير لوحة الإدارة', error));
