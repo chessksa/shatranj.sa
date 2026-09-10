@@ -31,23 +31,33 @@ def test_admin_sections_become_a_fixed_compact_right_icon_rail_on_desktop():
         "aria-label",
         "title",
         "@media(min-width:761px)",
-        "grid-template-columns:76px minmax(0,1fr)",
+        "grid-template-columns:92px minmax(0,1fr)",
+        "width:92px",
+        "width:70px",
+        "height:60px",
+        "font-size:25px",
+        "font-size:9px",
         "position:sticky",
         "right:0",
         "justify-content:center",
     ]:
         assert token in (js + css), token
 
-    assert "admin-home-compact.js?v=20260911-1" in loader
+    assert "admin-home-compact.css?v=20260911-2" in js
+    assert "admin-home-compact.js?v=20260911-2" in loader
 
 
-def test_admin_section_rail_stays_fixed_on_the_right_on_mobile_too():
+def test_admin_section_rail_stays_fixed_and_larger_on_mobile_too():
     css = read("admin-home-compact.css")
     for token in [
         "@media(max-width:760px)",
         "position:fixed",
-        "width:58px",
-        "padding-right:58px",
+        "width:72px",
+        "padding-right:72px",
+        "width:60px",
+        "height:56px",
+        ".admin-section-icon{font-size:22px}",
+        ".admin-section-label{font-size:8px}",
         "transform:none!important",
         ".menu-btn",
         "display:none!important",
@@ -81,6 +91,6 @@ def test_dashboard_stats_are_compact_icon_metrics_instead_of_large_cards():
 
 if __name__ == "__main__":
     test_admin_sections_become_a_fixed_compact_right_icon_rail_on_desktop()
-    test_admin_section_rail_stays_fixed_on_the_right_on_mobile_too()
+    test_admin_section_rail_stays_fixed_and_larger_on_mobile_too()
     test_dashboard_stats_are_compact_icon_metrics_instead_of_large_cards()
     print("Compact admin home tests passed")
