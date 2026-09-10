@@ -34,6 +34,7 @@
 <script type="module">
 import { createClient } from 'https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/+esm';
 import { SpectatorBoard } from './spectator-board.mjs?v=20260910-viewfit1';
+import { createSpectatorClock } from './spectator-clock.mjs?v=20260910-clockfix1';
 const cfg=window.SHATRANJ_CONFIG?.supabase||{};
 const supabase=cfg.enabled&&cfg.url&&cfg.anonKey?createClient(cfg.url,cfg.anonKey):null;
 const $=id=>document.getElementById(id);
@@ -41,24 +42,21 @@ const gameId=new URLSearchParams(location.search).get('game');
 const levelLabel={easy:'سهل',medium:'متوسط',hard:'صعب'};
 const statusLabel={active:'جارية',finished:'منتهية'};
 const resultLabel={win:'فوز اللاعب',loss:'فوز الكمبيوتر',draw:'تعادل'};
+const clockAnchor=createSpectatorClock({whiteField:'player_time_ms',blackField:'computer_time_ms'});
 let current=null;
 let spectatorBoard=null;
-let serverFetchedAt=Date.now();
+let refreshTimer=null;
+let clockFrame=null;
+let refreshInFlight=false;
 function showLoading(){ $('loading').hidden=false;$('viewer').hidden=true;$('denied').hidden=true; }
 function showDenied(){ $('loading').hidden=true;$('viewer').hidden=true;$('denied').hidden=false; }
 function showViewer(){ $('loading').hidden=true;$('denied').hidden=true;$('viewer').hidden=false; }
 function msText(ms){const total=Math.max(0,Math.ceil(Number(ms||0)/1000));const m=Math.floor(total/60);const s=total%60;return `${String(m).padStart(2,'0')}:${String(s).padStart(2,'0')}`;}
-function effectiveClocks(){
-  if(!current)return {player:0,computer:0};
-  let p=Number(current.player_time_ms||0),c=Number(current.computer_time_ms||0);
-  if(current.status==='active'&&current.turn_started_at){
-    const elapsed=Math.max(0,Date.now()-serverFetchedAt);
-    const turn=String(current.fen||'').split(/\s+/)[1];
-    if(turn==='w')p=Math.max(0,p-elapsed);else if(turn==='b')c=Math.max(0,c-elapsed);
-  }
-  return {player:p,computer:c};
+function effectiveClocks(){const t=clockAnchor.read();return {player:t.white,computer:t.black};}
+function renderClocks(){
+  if(!current)return;
+  const t=effectiveClocks();$('playerClock').textContent=msText(t.player);$('computerClock').textContent=msText(t.computer);const turn=String(current?.fen||'').split(/\s+/)[1];$('playerCard').classList.toggle('active',current?.status==='active'&&turn==='w');$('computerCard').classList.toggle('active',current?.status==='active'&&turn==='b');
 }
-function renderClocks(){const t=effectiveClocks();$('playerClock').textContent=msText(t.player);$('computerClock').textContent=msText(t.computer);const turn=String(current?.fen||'').split(/\s+/)[1];$('playerCard').classList.toggle('active',current?.status==='active'&&turn==='w');$('computerCard').classList.toggle('active',current?.status==='active'&&turn==='b');}
 function latestMove(){const moves=Array.isArray(current?.moves)?current.moves:[];const last=moves[moves.length-1];return last?.from&&last?.to?{from:last.from,to:last.to}:null;}
 function syncBoard(){if(!current?.fen)return;if(!spectatorBoard)spectatorBoard=new SpectatorBoard($('board'),current.fen);spectatorBoard.setPosition(current.fen,latestMove());}
 function renderMoves(moves){$('moves').innerHTML=(Array.isArray(moves)?moves:[]).map((m,i)=>`<span class="move">${i+1}. ${String(m?.san||m?.to||'—')}</span>`).join('')||'<span class="meta">لم تبدأ النقلات بعد.</span>';}
@@ -71,14 +69,34 @@ function render(){
 }
 async function fetchGame(){
   if(!supabase||!gameId){showDenied();return false;}
+  if(refreshInFlight)return true;
+  refreshInFlight=true;
   try{
     const {data,error}=await supabase.rpc('get_public_computer_game',{p_game_id:gameId});
     const row=Array.isArray(data)?data[0]:data;
-    if(error||!row){showDenied();return false;}
-    current=row;serverFetchedAt=Date.now();render();return true;
-  }catch(error){console.warn('تعذر فتح مباراة الكمبيوتر للمشاهدة',error);showDenied();return false;}
+    if(error||!row){if(!current)showDenied();return false;}
+    current=row;clockAnchor.sync(current);render();return true;
+  }catch(error){console.warn('تعذر فتح مباراة الكمبيوتر للمشاهدة',error);if(!current)showDenied();return false;}
+  finally{refreshInFlight=false;}
 }
-async function init(){showLoading();if(!await fetchGame())return;setInterval(renderClocks,250);setInterval(fetchGame,1200);}
+function startClockLoop(){
+  const tick=()=>{renderClocks();clockFrame=requestAnimationFrame(tick);};
+  if(clockFrame!==null)cancelAnimationFrame(clockFrame);
+  tick();
+}
+function scheduleRefresh(delay=700){
+  clearTimeout(refreshTimer);
+  refreshTimer=setTimeout(async()=>{
+    await fetchGame();
+    scheduleRefresh(document.hidden?2500:(current?.status==='active'?700:2500));
+  },delay);
+}
+async function init(){
+  showLoading();if(!await fetchGame())return;
+  startClockLoop();scheduleRefresh(500);
+  document.addEventListener('visibilitychange',()=>{if(!document.hidden)fetchGame();});
+  window.addEventListener('beforeunload',()=>{clearTimeout(refreshTimer);if(clockFrame!==null)cancelAnimationFrame(clockFrame);},{once:true});
+}
 init();
 </script>
 </body>
