@@ -29,3 +29,5 @@ jobs:
           python-version: '3.12'
       - name: Verify nationality and residence signup contract
         run: python tests/test_nationality_residence_signup.py
+
+# Final verification trigger after generated UI integration.
