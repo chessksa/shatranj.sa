@@ -53,20 +53,37 @@
         pointer-events:none;
         transition:top 160ms cubic-bezier(.2,.8,.2,1),opacity 120ms ease;
       }
-      #shatranj-pull-refresh-indicator .pull-refresh-ring{
-        width:27px;
-        height:27px;
-        border:3px solid rgba(216,182,101,.24);
-        border-top-color:#d8b665;
-        border-right-color:#d8b665;
-        border-radius:50%;
-        box-sizing:border-box;
+      #shatranj-pull-refresh-indicator .pull-refresh-dots{
+        position:relative;
+        width:28px;
+        height:28px;
         will-change:transform;
       }
-      #shatranj-pull-refresh-indicator.refreshing .pull-refresh-ring{
-        animation:shatranjPullSpin .68s linear infinite;
+      #shatranj-pull-refresh-indicator .pull-refresh-dot{
+        position:absolute;
+        left:50%;
+        top:50%;
+        width:5px;
+        height:5px;
+        margin:-2.5px 0 0 -2.5px;
+        border-radius:50%;
+        background:#d8b665;
+        box-shadow:0 0 5px rgba(216,182,101,.38);
+        transform:rotate(var(--dot-angle)) translateY(-10.5px);
+        transform-origin:2.5px 2.5px;
       }
-      @keyframes shatranjPullSpin{to{transform:rotate(360deg)}}
+      #shatranj-pull-refresh-indicator .pull-refresh-dot:nth-child(1){--dot-angle:0deg;opacity:1}
+      #shatranj-pull-refresh-indicator .pull-refresh-dot:nth-child(2){--dot-angle:45deg;opacity:.92}
+      #shatranj-pull-refresh-indicator .pull-refresh-dot:nth-child(3){--dot-angle:90deg;opacity:.84}
+      #shatranj-pull-refresh-indicator .pull-refresh-dot:nth-child(4){--dot-angle:135deg;opacity:.76}
+      #shatranj-pull-refresh-indicator .pull-refresh-dot:nth-child(5){--dot-angle:180deg;opacity:.68}
+      #shatranj-pull-refresh-indicator .pull-refresh-dot:nth-child(6){--dot-angle:225deg;opacity:.60}
+      #shatranj-pull-refresh-indicator .pull-refresh-dot:nth-child(7){--dot-angle:270deg;opacity:.52}
+      #shatranj-pull-refresh-indicator .pull-refresh-dot:nth-child(8){--dot-angle:315deg;opacity:.44}
+      #shatranj-pull-refresh-indicator.refreshing .pull-refresh-dots{
+        animation:shatranjPullDotsSpin .72s linear infinite;
+      }
+      @keyframes shatranjPullDotsSpin{to{transform:rotate(360deg)}}
     `;
     document.head.appendChild(style);
   }
@@ -74,9 +91,9 @@
   const refreshIndicator = document.createElement('div');
   refreshIndicator.id = 'shatranj-pull-refresh-indicator';
   refreshIndicator.setAttribute('aria-hidden', 'true');
-  refreshIndicator.innerHTML = '<span class="pull-refresh-ring"></span>';
+  refreshIndicator.innerHTML = '<span class="pull-refresh-dots"><i class="pull-refresh-dot"></i><i class="pull-refresh-dot"></i><i class="pull-refresh-dot"></i><i class="pull-refresh-dot"></i><i class="pull-refresh-dot"></i><i class="pull-refresh-dot"></i><i class="pull-refresh-dot"></i><i class="pull-refresh-dot"></i></span>';
   document.documentElement.appendChild(refreshIndicator);
-  const refreshRing = refreshIndicator.querySelector('.pull-refresh-ring');
+  const refreshDots = refreshIndicator.querySelector('.pull-refresh-dots');
 
   const setIndicatorProgress = (offset, rawDistance = 0) => {
     clearTimeout(indicatorTimer);
@@ -86,7 +103,7 @@
     refreshIndicator.style.transition = 'none';
     refreshIndicator.style.top = `${top}px`;
     refreshIndicator.style.opacity = offset > 3 ? String(Math.min(1, 0.2 + progress * 0.8)) : '0';
-    if (refreshRing) refreshRing.style.transform = `rotate(${Math.round(progress * 420)}deg)`;
+    if (refreshDots) refreshDots.style.transform = `rotate(${Math.round(progress * 420)}deg)`;
   };
 
   const hideRefreshIndicator = (animate = true) => {
@@ -98,13 +115,14 @@
     refreshIndicator.style.top = '-48px';
     refreshIndicator.style.opacity = '0';
     indicatorTimer = setTimeout(() => {
-      if (active || !refreshRing) return;
-      refreshRing.style.removeProperty('transform');
+      if (active || !refreshDots) return;
+      refreshDots.style.removeProperty('transform');
     }, 200);
   };
 
   const showRefreshingIndicator = () => {
     clearTimeout(indicatorTimer);
+    if (refreshDots) refreshDots.style.removeProperty('transform');
     refreshIndicator.style.transition = 'top 160ms cubic-bezier(.2,.8,.2,1),opacity 100ms ease';
     refreshIndicator.style.top = '14px';
     refreshIndicator.style.opacity = '1';
