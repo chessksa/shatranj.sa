@@ -40,24 +40,29 @@ async function loadComputerGames() {
     const { data: games, error } = await query;
     if (error) throw error;
     const rows = games || [];
-    const playerIds = [...new Set(rows.map((g) => g.player_id).filter(Boolean))];
+    const playerIds = new Set(rows.map((g) => g.player_id).filter(Boolean));
     const players = new Map();
 
-    if (playerIds.length) {
-      const { data: playerRows, error: playerError } = await supabase
-        .from('players')
-        .select('id,name,rating,country,city')
-        .in('id', playerIds);
-      if (!playerError) (playerRows || []).forEach((p) => players.set(p.id, p));
+    if (playerIds.size) {
+      const { data: playerRows, error: playerError } = await supabase.rpc('admin_list_players_v3', {
+        p_search: null,
+        p_status: null,
+        p_country: null,
+        p_city: null,
+      });
+      if (playerError) throw playerError;
+      (playerRows || []).forEach((p) => {
+        if (playerIds.has(p.id)) players.set(p.id, p);
+      });
     }
 
     body.innerHTML = rows.map((g) => {
       const player = players.get(g.player_id) || {};
       const location = [player.city, player.country].filter(Boolean).join(' · ');
       const code = String(g.id || '').slice(0, 8).toUpperCase();
-      return `<tr>
+      return `<tr data-created-at="${esc(g.created_at || '')}">
         <td>${esc(code || '—')}</td>
-        <td><strong>${esc(player.name || 'لاعب')}</strong>${location ? `<div style="margin-top:3px;color:var(--muted);font-size:11px">${esc(location)}</div>` : ''}</td>
+        <td><strong>${esc(player.name || 'عضو غير معروف')}</strong>${location ? `<div style="margin-top:3px;color:var(--muted);font-size:11px">${esc(location)}</div>` : ''}</td>
         <td><span style="color:var(--gold2);font-weight:900">ضد الكمبيوتر</span><div style="margin-top:3px;color:var(--muted);font-size:11px">${esc(levelLabel[g.level] || g.level || '—')}</div></td>
         <td>${esc(g.time_control_minutes || '—')} د</td>
         <td>${statusPill(g.status)}</td>
@@ -92,6 +97,7 @@ function startWhenAdminReady() {
 startWhenAdminReady();
 
 import('./admin-pro.js?v=20260910-2').catch((error) => console.error('تعذر تحميل تطوير لوحة الإدارة', error));
-import('./admin-responsive-tables.js?v=20260910-3').catch((error) => console.error('تعذر تحميل استجابة جداول الإدارة', error));
-import('./admin-player-list.js?v=20260910-2').catch((error) => console.error('تعذر تحميل أدوات اللاعب', error));
+import('./admin-responsive-tables.js?v=20260910-4').catch((error) => console.error('تعذر تحميل استجابة جداول الإدارة', error));
+import('./admin-player-list.js?v=20260910-2').catch((error) => console.error('تعذر تحميل قائمة اللاعبين المختصرة', error));
 import('./admin-view-state.js?v=20260910-1').catch((error) => console.error('تعذر حفظ قسم لوحة الإدارة', error));
+import('./admin-unified-games.js?v=20260910-1').catch((error) => console.error('تعذر تحميل جدول المباريات الموحد', error));
