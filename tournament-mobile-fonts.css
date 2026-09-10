@@ -4,4 +4,7 @@
 .tournament-date{font-size:14px!important}
 .status{font-size:14px!important}
 .champion-name{font-size:14px!important}
-.detail-label,.detail-value{font-size:12px!important}
+.detail-toolbar-title,.detail-title,.bracket-title{font-size:16px!important}
+.detail-label,.bracket-round-title{font-size:14px!important}
+.detail-value{font-size:12px!important}
+.detail-shell .status,.bracket-player,.bracket-meta,.bracket-empty{font-size:12px!important}
