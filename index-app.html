@@ -1190,7 +1190,14 @@ footer{
           </label>
 
           <label>
-            <span>الدولة</span>
+            <span>الجنسية</span>
+            <select id="signupNationality" required>
+              <option value="">اختر الجنسية</option>
+            </select>
+          </label>
+
+          <label>
+            <span>دولة الإقامة</span>
             <select id="signupRegion" required>
               <option value="">اختر الدولة</option>
               <option value="السعودية">السعودية</option>
@@ -1613,6 +1620,50 @@ document.querySelectorAll('.show-pass').forEach(button=>{
 
 /* الدولة والمدينة */
 /* التسجيل العالمي: الدول ثابتة داخل الموقع والمدن تُحمّل حسب الدولة */
+const ARAB_NATIONALITIES=[
+  {value:'السعودية',label:'سعودي / سعودية'},
+  {value:'الإمارات',label:'إماراتي / إماراتية'},
+  {value:'الكويت',label:'كويتي / كويتية'},
+  {value:'البحرين',label:'بحريني / بحرينية'},
+  {value:'قطر',label:'قطري / قطرية'},
+  {value:'عُمان',label:'عُماني / عُمانية'},
+  {value:'اليمن',label:'يمني / يمنية'},
+  {value:'العراق',label:'عراقي / عراقية'},
+  {value:'الأردن',label:'أردني / أردنية'},
+  {value:'فلسطين',label:'فلسطيني / فلسطينية'},
+  {value:'لبنان',label:'لبناني / لبنانية'},
+  {value:'سوريا',label:'سوري / سورية'},
+  {value:'مصر',label:'مصري / مصرية'},
+  {value:'السودان',label:'سوداني / سودانية'},
+  {value:'ليبيا',label:'ليبي / ليبية'},
+  {value:'تونس',label:'تونسي / تونسية'},
+  {value:'الجزائر',label:'جزائري / جزائرية'},
+  {value:'المغرب',label:'مغربي / مغربية'},
+  {value:'موريتانيا',label:'موريتاني / موريتانية'},
+  {value:'الصومال',label:'صومالي / صومالية'},
+  {value:'جيبوتي',label:'جيبوتي / جيبوتية'},
+  {value:'جزر القمر',label:'قمري / قمرية'}
+];
+
+function populateSignupNationalities(){
+  const select=$('#signupNationality');
+  if(!select) return;
+
+  const placeholder=document.createElement('option');
+  placeholder.value='';
+  placeholder.textContent='اختر الجنسية';
+
+  const options=ARAB_NATIONALITIES.map(nationality=>{
+    const option=document.createElement('option');
+    option.value=nationality.value;
+    option.textContent=nationality.label;
+    return option;
+  });
+
+  select.replaceChildren(placeholder,...options);
+  select.value='';
+}
+
 function populateSignupCountries(){
   const select=$('#signupRegion');
   if(!select) return;
@@ -1665,6 +1716,7 @@ async function populateSignupCities(clearInput=true){
     : 'اكتب المدينة';
 }
 
+populateSignupNationalities();
 populateSignupCountries();
 
 function populateCityList(country,listSelector,inputSelector,allWhenEmpty=false,clearInput=true){
@@ -1855,7 +1907,8 @@ async function claimOrCreateProfile(profileData){
     p_mobile:profileData.mobile,
     p_region:profileData.region,
     p_city:profileData.city,
-    p_category:profileData.category||'open'
+    p_category:profileData.category||'open',
+    p_residence_country:profileData.country
   });
 
   if(error) throw error;
@@ -1887,6 +1940,7 @@ async function ensureProfile(){
     username:metadata.username||'',
     mobile:metadata.mobile||'',
     region:metadata.region||'السعودية',
+    country:metadata.country||metadata.region||'السعودية',
     city:metadata.city||'الرياض',
     category:metadata.category||'open'
   };
@@ -2112,8 +2166,12 @@ $('#signupForm').addEventListener('submit',async event=>{
     return setAuthMsg('كلمتا المرور غير متطابقتين.','err');
   }
 
+  if(!$('#signupNationality').value){
+    return setAuthMsg('اختر الجنسية.','err');
+  }
+
   if(!$('#signupRegion').value){
-    return setAuthMsg('اختر الدولة.','err');
+    return setAuthMsg('اختر دولة الإقامة.','err');
   }
 
   if(!$('#signupCity').value){
@@ -2128,7 +2186,8 @@ $('#signupForm').addEventListener('submit',async event=>{
     name:displayName,
     username:username,
     mobile:mobile.local,
-    region:$('#signupRegion').value,
+    region:$('#signupNationality').value,
+    country:$('#signupRegion').value,
     city:$('#signupCity').value,
     gender:$('#signupGender').value,
     category:$('#signupCategory').value
