@@ -1073,12 +1073,12 @@ footer{
 
     <div class="head">
       <div>
-        <h2 id="rankingTitle">ترتيب اللاعبين على مستوى العالم العربي</h2>
+        <h2 id="rankingTitle">ترتيب اللاعبين عالميًا</h2>
       </div>
 
       <div class="filters ranking-filters">
         <select id="regionFilter">
-          <option value="">الدولة</option>
+          <option value="">الجنسية</option>
           <option value="السعودية">السعودية</option>
           <option value="الإمارات">الإمارات</option>
           <option value="الكويت">الكويت</option>
@@ -1620,31 +1620,6 @@ document.querySelectorAll('.show-pass').forEach(button=>{
 
 /* الدولة والمدينة */
 /* التسجيل العالمي: الدول ثابتة داخل الموقع والمدن تُحمّل حسب الدولة */
-const ARAB_NATIONALITIES=[
-  {value:'السعودية',label:'سعودي / سعودية'},
-  {value:'الإمارات',label:'إماراتي / إماراتية'},
-  {value:'الكويت',label:'كويتي / كويتية'},
-  {value:'البحرين',label:'بحريني / بحرينية'},
-  {value:'قطر',label:'قطري / قطرية'},
-  {value:'عُمان',label:'عُماني / عُمانية'},
-  {value:'اليمن',label:'يمني / يمنية'},
-  {value:'العراق',label:'عراقي / عراقية'},
-  {value:'الأردن',label:'أردني / أردنية'},
-  {value:'فلسطين',label:'فلسطيني / فلسطينية'},
-  {value:'لبنان',label:'لبناني / لبنانية'},
-  {value:'سوريا',label:'سوري / سورية'},
-  {value:'مصر',label:'مصري / مصرية'},
-  {value:'السودان',label:'سوداني / سودانية'},
-  {value:'ليبيا',label:'ليبي / ليبية'},
-  {value:'تونس',label:'تونسي / تونسية'},
-  {value:'الجزائر',label:'جزائري / جزائرية'},
-  {value:'المغرب',label:'مغربي / مغربية'},
-  {value:'موريتانيا',label:'موريتاني / موريتانية'},
-  {value:'الصومال',label:'صومالي / صومالية'},
-  {value:'جيبوتي',label:'جيبوتي / جيبوتية'},
-  {value:'جزر القمر',label:'قمري / قمرية'}
-];
-
 function populateSignupNationalities(){
   const select=$('#signupNationality');
   if(!select) return;
@@ -1653,10 +1628,11 @@ function populateSignupNationalities(){
   placeholder.value='';
   placeholder.textContent='اختر الجنسية';
 
-  const options=ARAB_NATIONALITIES.map(nationality=>{
+  const options=WORLD_COUNTRIES.map(country=>{
     const option=document.createElement('option');
-    option.value=nationality.value;
-    option.textContent=nationality.label;
+    option.value=country.nameAr;
+    option.textContent=country.nameAr;
+    option.dataset.iso2=country.iso2;
     return option;
   });
 
@@ -1735,6 +1711,25 @@ function populateCityList(country,listSelector,inputSelector,allWhenEmpty=false,
   if(clearInput) input.value='';
 }
 
+function populateRankingCountries(){
+  const select=$('#regionFilter');
+  if(!select) return;
+
+  const placeholder=document.createElement('option');
+  placeholder.value='';
+  placeholder.textContent='الجنسية';
+
+  const options=WORLD_COUNTRIES.map(country=>{
+    const option=document.createElement('option');
+    option.value=country.nameAr;
+    option.textContent=country.nameAr;
+    return option;
+  });
+
+  select.replaceChildren(placeholder,...options);
+  select.value='';
+}
+
 function populateRankingCitySelect(country){
   const cityFilter=$('#cityFilter');
   const cities=ARAB_CITIES[country]||[];
@@ -1761,6 +1756,7 @@ $('#regionFilter').addEventListener('change',()=>{
   applyFilter();
 });
 $('#cityFilter').addEventListener('change',applyFilter);
+populateRankingCountries();
 populateRankingCitySelect('');
 
 async function loadPlayers(){
@@ -1836,7 +1832,7 @@ function updateRankingTitle(country,city){
     return;
   }
 
-  title.textContent='ترتيب اللاعبين على مستوى العالم العربي';
+  title.textContent='ترتيب اللاعبين عالميًا';
 }
 
 function applyFilter(){
@@ -1908,6 +1904,7 @@ async function claimOrCreateProfile(profileData){
     p_region:profileData.region,
     p_city:profileData.city,
     p_category:profileData.category||'open',
+    p_residence_country:profileData.country,
     p_residence_country:profileData.country
   });
 
