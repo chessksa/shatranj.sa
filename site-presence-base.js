@@ -250,8 +250,8 @@ function initTournamentLayoutPolish() {
         .tournament-panel-title{flex-basis:34px;min-height:34px;font-size:11px}
         .tournament-detail-table th,
         .tournament-detail-table td{height:27px;padding:3px 5px}
-        .tournament-detail-table th{width:36%;font-size:9px}
-        .tournament-detail-table td{font-size:10px}
+        .tournament-detail-table th{width:36%;font-size:16px;font-weight:900}
+        .tournament-detail-table td{font-size:14px;font-weight:700}
         .tournament-info-panel .detail-register{padding:6px!important}
         .tournament-info-panel .register-btn{min-height:31px}
         .tournament-matches-table th,
