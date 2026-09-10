@@ -8,37 +8,133 @@ function mountStyles() {
   style.textContent = `
     #gamesView .unified-games-source,
     #gamesView .unified-games-source-title{display:none!important}
+
     body.admin-pro-ready #gamesView .unified-games-wrap{
-      max-height:min(62vh,620px);
+      max-height:min(64vh,680px);
       overflow:auto!important;
       overscroll-behavior:contain;
       -webkit-overflow-scrolling:touch;
+      scrollbar-gutter:stable;
+      border-radius:14px;
+    }
+    body.admin-pro-ready #gamesView .unified-games-wrap table{
+      width:100%;
+      min-width:0!important;
+      table-layout:fixed;
     }
     body.admin-pro-ready #gamesView .unified-games-wrap thead th{
       position:sticky;
       top:0;
-      z-index:4;
+      z-index:5;
+      text-align:center!important;
+      padding:11px 8px;
+      background:#07383e;
+    }
+    body.admin-pro-ready #gamesView .unified-games-wrap th:nth-child(1),
+    body.admin-pro-ready #gamesView .unified-games-wrap td:nth-child(1){width:52px}
+    body.admin-pro-ready #gamesView .unified-games-wrap th:nth-child(3),
+    body.admin-pro-ready #gamesView .unified-games-wrap td:nth-child(3){width:92px}
+    body.admin-pro-ready #gamesView .unified-games-wrap th:nth-child(4),
+    body.admin-pro-ready #gamesView .unified-games-wrap td:nth-child(4){width:104px}
+    body.admin-pro-ready #gamesView .unified-games-wrap tbody td{
+      text-align:center!important;
+      vertical-align:middle;
+      padding:12px 8px;
+    }
+    body.admin-pro-ready #gamesView .unified-games-wrap tbody tr:nth-child(even){
+      background:rgba(255,255,255,.018);
+    }
+    body.admin-pro-ready #gamesView .unified-games-wrap tbody tr[data-row-open]{cursor:pointer}
+    body.admin-pro-ready #gamesView .unified-games-wrap tbody tr[data-row-open]:hover{
+      background:rgba(221,185,109,.055);
+    }
+    #gamesView .unified-row-number{
+      color:var(--muted);
+      font-weight:800;
+      font-variant-numeric:tabular-nums;
     }
     #gamesView .unified-player-pair{
       font-weight:800;
-      white-space:normal;
-      line-height:1.45;
+      white-space:normal!important;
+      line-height:1.5;
+      overflow:visible!important;
+      text-overflow:clip!important;
     }
     #gamesView .unified-player-pair .versus{
       display:inline-block;
       color:var(--gold2);
       font-weight:900;
+      padding-inline:3px;
     }
+    #gamesView .unified-hidden-trigger{display:none!important}
+
     @media(max-width:760px){
       body.admin-pro-ready #gamesView .unified-games-wrap{
-        max-height:58vh;
+        max-height:60vh;
         overflow:auto!important;
+        border-radius:12px;
+      }
+      body.admin-pro-ready #gamesView .unified-games-wrap table,
+      body.admin-pro-ready #gamesView .unified-games-wrap thead,
+      body.admin-pro-ready #gamesView .unified-games-wrap tbody{
+        display:block!important;
+        width:100%!important;
+      }
+      body.admin-pro-ready #gamesView .unified-games-wrap thead{
+        position:sticky;
+        top:0;
+        z-index:6;
+        background:#07383e;
+      }
+      body.admin-pro-ready #gamesView .unified-games-wrap thead tr,
+      body.admin-pro-ready #gamesView .unified-games-wrap tbody tr.compact-admin-row{
+        display:grid!important;
+        grid-template-columns:38px minmax(0,1fr) 64px 76px;
+        width:100%!important;
+        align-items:center;
+      }
+      body.admin-pro-ready #gamesView .unified-games-wrap thead th,
+      body.admin-pro-ready #gamesView .unified-games-wrap tbody td{
+        display:block!important;
+        width:auto!important;
+        min-width:0;
+        padding:10px 4px;
+        text-align:center!important;
+        white-space:nowrap;
+        overflow:hidden;
+        text-overflow:ellipsis;
       }
       body.admin-pro-ready #gamesView .unified-games-wrap thead th{
-        position:sticky!important;
-        top:0;
+        position:static!important;
+        font-size:10px;
       }
-      #gamesView .unified-player-pair{font-size:11px}
+      body.admin-pro-ready #gamesView .unified-games-wrap tbody td.unified-player-pair{
+        white-space:normal!important;
+        overflow:visible!important;
+        font-size:11.5px;
+        line-height:1.45;
+      }
+      body.admin-pro-ready #gamesView .unified-games-wrap .status-pill{
+        padding:4px 6px;
+        font-size:9px;
+      }
+      body.admin-pro-ready #gamesView .unified-games-wrap tbody td.empty{
+        display:block!important;
+        grid-column:1/-1;
+        width:100%!important;
+        padding:24px 10px;
+        white-space:normal;
+      }
+    }
+
+    @media(max-width:420px){
+      body.admin-pro-ready #gamesView .unified-games-wrap thead tr,
+      body.admin-pro-ready #gamesView .unified-games-wrap tbody tr.compact-admin-row{
+        grid-template-columns:34px minmax(0,1fr) 58px 70px;
+      }
+      body.admin-pro-ready #gamesView .unified-games-wrap thead th,
+      body.admin-pro-ready #gamesView .unified-games-wrap tbody td{padding:9px 3px}
+      body.admin-pro-ready #gamesView .unified-games-wrap tbody td.unified-player-pair{font-size:11px}
     }
   `;
   document.head.appendChild(style);
@@ -57,6 +153,10 @@ function cellWithText(text, className = '') {
   if (className) cell.className = className;
   cell.textContent = text;
   return cell;
+}
+
+function rowNumberCell() {
+  return cellWithText('', 'unified-row-number');
 }
 
 function pairCell(left, right) {
@@ -84,19 +184,28 @@ function isDataRow(row, minimumCells) {
   return true;
 }
 
+function preserveRowTrigger(sourceRow, playerCell) {
+  const trigger = sourceRow.querySelector('[data-game],a[href*="computer-watch.html"]');
+  if (!trigger) return;
+  const clone = trigger.cloneNode(true);
+  clone.classList.add('unified-hidden-trigger');
+  clone.tabIndex = -1;
+  clone.setAttribute('aria-hidden', 'true');
+  playerCell.appendChild(clone);
+}
+
 function humanUnifiedRow(sourceRow) {
   if (!isDataRow(sourceRow, 8)) return null;
   const cells = [...sourceRow.children];
   const row = document.createElement('tr');
   row.dataset.unifiedGameKind = 'human';
+  const players = pairCell(textOf(cells[1]), textOf(cells[2]));
+  preserveRowTrigger(sourceRow, players);
   row.append(
-    cloneCell(cells[0]),
-    pairCell(textOf(cells[1]), textOf(cells[2])),
+    rowNumberCell(),
+    players,
     cloneCell(cells[3]),
     cloneCell(cells[4]),
-    cloneCell(cells[5]),
-    cloneCell(cells[6]),
-    cloneCell(cells[7]),
   );
   return row;
 }
@@ -106,16 +215,22 @@ function computerUnifiedRow(sourceRow) {
   const cells = [...sourceRow.children];
   const row = document.createElement('tr');
   row.dataset.unifiedGameKind = 'computer';
+  const players = pairCell(playerNameOfComputerRow(cells[1]), 'الكمبيوتر');
+  preserveRowTrigger(sourceRow, players);
   row.append(
-    cloneCell(cells[0]),
-    pairCell(playerNameOfComputerRow(cells[1]), 'الكمبيوتر'),
+    rowNumberCell(),
+    players,
     cloneCell(cells[3]),
     cloneCell(cells[4]),
-    cloneCell(cells[5]),
-    cloneCell(cells[6]),
-    cloneCell(cells[7]),
   );
   return row;
+}
+
+function numberUnifiedRows(body) {
+  body.querySelectorAll('tr[data-unified-game-kind]').forEach((row, index) => {
+    const cell = row.querySelector('.unified-row-number');
+    if (cell) cell.textContent = String(index + 1);
+  });
 }
 
 function createUnifiedTable(view, humanWrap) {
@@ -128,13 +243,10 @@ function createUnifiedTable(view, humanWrap) {
   wrap.innerHTML = `
     <table aria-label="جميع المباريات">
       <thead><tr>
-        <th>الرمز</th>
+        <th>م</th>
         <th>اللاعبين</th>
         <th>الزمن</th>
         <th>الحالة</th>
-        <th>النتيجة</th>
-        <th>البداية</th>
-        <th></th>
       </tr></thead>
       <tbody id="unifiedGamesTableBody"></tbody>
     </table>`;
@@ -166,10 +278,12 @@ function rebuildUnifiedGames() {
   });
 
   target.replaceChildren(fragment);
+  numberUnifiedRows(target);
+
   if (!count) {
     const row = document.createElement('tr');
     const cell = cellWithText('لا توجد مباريات ضمن الفلتر الحالي', 'empty');
-    cell.colSpan = 7;
+    cell.colSpan = 4;
     row.appendChild(cell);
     target.appendChild(row);
   }
@@ -211,4 +325,4 @@ if (document.readyState === 'loading') {
   startUnifiedGames();
 }
 
-export { rebuildUnifiedGames };
+export { rebuildUnifiedGames, numberUnifiedRows };
