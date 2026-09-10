@@ -1,0 +1,38 @@
+name: Verify world signup locations
+
+on:
+  push:
+    branches:
+      - main
+    paths:
+      - 'index-app.html'
+      - 'index.html'
+      - 'world-locations.js'
+      - 'arab-cities.js'
+      - 'tests/test_world_signup_locations.py'
+      - '.github/workflows/verify-world-signup.yml'
+  pull_request:
+    paths:
+      - 'index-app.html'
+      - 'index.html'
+      - 'world-locations.js'
+      - 'arab-cities.js'
+      - 'tests/test_world_signup_locations.py'
+      - '.github/workflows/verify-world-signup.yml'
+
+permissions:
+  contents: read
+
+jobs:
+  verify:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - name: Verify worldwide signup locations contract
+        run: python tests/test_world_signup_locations.py
+      - name: Verify world locations JavaScript syntax
+        if: hashFiles('world-locations.js') != ''
+        run: node --input-type=module --check < world-locations.js
