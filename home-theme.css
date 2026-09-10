@@ -103,16 +103,29 @@ html body .welcome-ticker{
   margin-top:0!important;
 }
 
-/* Keep both stacked ticker labels exactly aligned */
+/* Keep both stacked ticker titles matched and tight to their text */
 #welcomeTicker .welcome-ticker-label,
 #tournamentResultsTicker .welcome-ticker-label{
-  flex:0 0 160px!important;
-  width:160px!important;
-  min-width:160px!important;
-  max-width:160px!important;
+  flex:0 0 auto!important;
+  width:auto!important;
+  min-width:0!important;
+  max-width:none!important;
   justify-content:center!important;
-  padding:0 10px!important;
+  padding:0 2px!important;
   box-sizing:border-box!important;
+  font-size:12px!important;
+}
+@media(max-width:800px){
+  #welcomeTicker .welcome-ticker-label,
+  #tournamentResultsTicker .welcome-ticker-label{
+    font-size:10px!important;
+  }
+}
+@media(max-width:430px){
+  #welcomeTicker .welcome-ticker-label,
+  #tournamentResultsTicker .welcome-ticker-label{
+    font-size:9px!important;
+  }
 }
 
 /* Mobile page flow: natural page scrolling, no horizontal overflow */
