@@ -34,30 +34,27 @@
 <script type="module">
 import { createClient } from 'https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/+esm';
 import { SpectatorBoard } from './spectator-board.mjs?v=20260910-viewfit1';
+import { createSpectatorClock } from './spectator-clock.mjs?v=20260910-clockfix1';
 const cfg=window.SHATRANJ_CONFIG?.supabase||{};
 const supabase=cfg.enabled&&cfg.url&&cfg.anonKey?createClient(cfg.url,cfg.anonKey):null;
 const $=id=>document.getElementById(id);
 const gameId=new URLSearchParams(location.search).get('game');
 const statusLabel={playing:'جارية',active:'جارية',in_progress:'جارية',started:'جارية',finished:'منتهية',abandoned:'ملغاة'};
 const resultLabel={'1-0':'فوز الأبيض','0-1':'فوز الأسود','1/2-1/2':'تعادل'};
+const clockAnchor=createSpectatorClock();
 let current=null;
 let spectatorBoard=null;
+let refreshTimer=null;
+let clockFrame=null;
+let refreshInFlight=false;
 function showLoading(){ $('loading').hidden=false;$('viewer').hidden=true;$('denied').hidden=true; }
 function showDenied(){ $('loading').hidden=true;$('viewer').hidden=true;$('denied').hidden=false; }
 function showViewer(){ $('loading').hidden=true;$('denied').hidden=true;$('viewer').hidden=false; }
 function msText(ms){const total=Math.max(0,Math.ceil(Number(ms||0)/1000));const m=Math.floor(total/60);const s=total%60;return `${String(m).padStart(2,'0')}:${String(s).padStart(2,'0')}`;}
 function isActive(){return ['playing','active','in_progress','started'].includes(String(current?.status||''));}
-function effectiveClocks(){
-  if(!current)return {white:0,black:0};
-  let white=Number(current.white_time_ms||0),black=Number(current.black_time_ms||0);
-  if(isActive()&&current.turn_started_at){
-    const elapsed=Math.max(0,Date.now()-Date.parse(current.turn_started_at));
-    const turn=String(current.fen||'').split(/\s+/)[1];
-    if(turn==='w')white=Math.max(0,white-elapsed);else if(turn==='b')black=Math.max(0,black-elapsed);
-  }
-  return {white,black};
-}
+function effectiveClocks(){return clockAnchor.read();}
 function renderClocks(){
+  if(!current)return;
   const t=effectiveClocks();$('whiteClock').textContent=msText(t.white);$('blackClock').textContent=msText(t.black);
   const turn=String(current?.fen||'').split(/\s+/)[1];$('whiteCard').classList.toggle('active',isActive()&&turn==='w');$('blackCard').classList.toggle('active',isActive()&&turn==='b');
 }
@@ -72,13 +69,33 @@ function render(){
 }
 async function fetchGame(){
   if(!supabase||!gameId){showDenied();return false;}
+  if(refreshInFlight)return true;
+  refreshInFlight=true;
   try{
     const {data,error}=await supabase.from('live_games').select('id,white_name,black_name,fen,moves,status,result,white_time_ms,black_time_ms,turn_started_at,time_control_minutes,updated_at').eq('id',gameId).maybeSingle();
-    if(error||!data){showDenied();return false;}
-    current=data;render();return true;
-  }catch(error){console.warn('تعذر فتح مباراة المشاهدة',error);showDenied();return false;}
+    if(error||!data){if(!current)showDenied();return false;}
+    current=data;clockAnchor.sync(current);render();return true;
+  }catch(error){console.warn('تعذر فتح مباراة المشاهدة',error);if(!current)showDenied();return false;}
+  finally{refreshInFlight=false;}
 }
-async function init(){showLoading();if(!await fetchGame())return;setInterval(renderClocks,250);setInterval(fetchGame,1200);}
+function startClockLoop(){
+  const tick=()=>{renderClocks();clockFrame=requestAnimationFrame(tick);};
+  if(clockFrame!==null)cancelAnimationFrame(clockFrame);
+  tick();
+}
+function scheduleRefresh(delay=700){
+  clearTimeout(refreshTimer);
+  refreshTimer=setTimeout(async()=>{
+    await fetchGame();
+    scheduleRefresh(document.hidden?2500:(isActive()?700:2500));
+  },delay);
+}
+async function init(){
+  showLoading();if(!await fetchGame())return;
+  startClockLoop();scheduleRefresh(500);
+  document.addEventListener('visibilitychange',()=>{if(!document.hidden)fetchGame();});
+  window.addEventListener('beforeunload',()=>{clearTimeout(refreshTimer);if(clockFrame!==null)cancelAnimationFrame(clockFrame);},{once:true});
+}
 init();
 </script>
 </body>
