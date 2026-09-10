@@ -17,7 +17,7 @@ body.admin-home-compact-ready .nav-btn{
 
 .admin-section-label{
   display:block;
-  font-size:9px;
+  font-size:11px;
   line-height:1.15;
   white-space:nowrap;
 }
@@ -230,7 +230,7 @@ body.admin-home-compact-ready .stat-card.pro-stat strong{
   }
 
   body.admin-home-compact-ready .admin-section-icon{font-size:22px}
-  body.admin-home-compact-ready .admin-section-label{font-size:8px}
+  body.admin-home-compact-ready .admin-section-label{font-size:10px}
 
   body.admin-home-compact-ready .sidebar-foot{
     width:100%;
