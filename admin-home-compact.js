@@ -6,6 +6,7 @@ const ADMIN_SECTION_SHORTCUTS = Object.freeze({
   reportsView: { icon: '⚑', label: 'البلاغات' },
   moderatorsView: { icon: '♜', label: 'المشرفون' },
   actionsView: { icon: '≡', label: 'السجل' },
+  proSettingsNav: { icon: '⚙', label: 'الإعدادات' },
 });
 
 const ADMIN_STAT_ICONS = Object.freeze({
@@ -27,14 +28,20 @@ function mountCompactStylesheet() {
 }
 
 function compactSectionRail() {
-  document.querySelectorAll('.nav-btn[data-view]').forEach((button) => {
-    const shortcut = ADMIN_SECTION_SHORTCUTS[button.dataset.view];
+  const buttons = [...document.querySelectorAll('.nav-btn[data-view]')];
+  const settings = document.getElementById('proSettingsNav');
+  if (settings) buttons.push(settings);
+
+  buttons.forEach((button) => {
+    const key = button.id === 'proSettingsNav' ? 'proSettingsNav' : button.dataset.view;
+    const shortcut = ADMIN_SECTION_SHORTCUTS[key];
     if (!shortcut) return;
     button.title = shortcut.label;
     button.setAttribute('aria-label', shortcut.label);
-    if (button.dataset.compactSectionReady) return;
+    if (!button.querySelector('.admin-section-icon')) {
+      button.innerHTML = `<span class="admin-section-icon" aria-hidden="true">${shortcut.icon}</span><span class="admin-section-label">${shortcut.label}</span>`;
+    }
     button.dataset.compactSectionReady = '1';
-    button.innerHTML = `<span class="admin-section-icon" aria-hidden="true">${shortcut.icon}</span><span class="admin-section-label">${shortcut.label}</span>`;
   });
 }
 
