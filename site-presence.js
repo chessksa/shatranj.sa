@@ -66,6 +66,7 @@ function initTournamentLayoutPolish() {
         text-align:center!important;
         vertical-align:middle!important;
       }
+      #registrationMsg.ok{display:none!important}
       #tournamentDetailCard{
         padding:4px!important;
         overflow:hidden!important;
@@ -266,7 +267,27 @@ function initTournamentLayoutPolish() {
 
   const detailCard = document.getElementById('tournamentDetailCard');
   if (!detailCard) return;
+  const registrationMsg = document.getElementById('registrationMsg');
   let bracketObserver = null;
+  let registrationObserver = null;
+
+  function syncRegistrationFeedback() {
+    if (!registrationMsg?.classList.contains('ok')) return;
+    const button = detailCard.querySelector('.detail-register .register-btn.registered');
+    if (button?.textContent?.trim() === 'مسجل') button.textContent = 'أنت مسجل بالفعل';
+  }
+
+  if (registrationMsg && typeof MutationObserver !== 'undefined') {
+    registrationObserver = new MutationObserver(syncRegistrationFeedback);
+    registrationObserver.observe(registrationMsg, {
+      childList: true,
+      characterData: true,
+      subtree: true,
+      attributes: true,
+      attributeFilter: ['class']
+    });
+    syncRegistrationFeedback();
+  }
 
   function transformTournamentMatches(bracketHost) {
     if (!bracketHost || bracketHost.classList.contains('bracket-empty')) return;
@@ -393,6 +414,7 @@ function initTournamentLayoutPolish() {
 
     detailCard.replaceChildren(layout);
     watchTournamentBracket(bracketShell.querySelector('#tournamentBracket'));
+    syncRegistrationFeedback();
   }
 
   const observer = new MutationObserver(transformTournamentDetail);
