@@ -9,6 +9,7 @@ on:
       - 'admin-pro.css'
       - 'admin-responsive-tables.js'
       - 'admin-player-list.js'
+      - 'admin-view-state.js'
       - 'admin-computer-games.js'
       - 'admin.html'
       - 'tests/test_admin_pro_dashboard.py'
@@ -19,6 +20,7 @@ on:
       - 'admin-pro.css'
       - 'admin-responsive-tables.js'
       - 'admin-player-list.js'
+      - 'admin-view-state.js'
       - 'admin-computer-games.js'
       - 'admin.html'
       - 'tests/test_admin_pro_dashboard.py'
@@ -42,4 +44,5 @@ jobs:
           node --input-type=module --check < admin-pro.js
           node --input-type=module --check < admin-responsive-tables.js
           node --input-type=module --check < admin-player-list.js
+          node --input-type=module --check < admin-view-state.js
           node --input-type=module --check < admin-computer-games.js
