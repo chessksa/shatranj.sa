@@ -24,3 +24,9 @@ def test_mobile_admin_header_uses_four_balanced_actions():
     assert "grid-column:2!important" in core
     assert "grid-column:3!important" in core
     assert "grid-column:4!important" in core
+
+
+def test_compat_loader_busts_admin_core_cache():
+    loader = read("site-notifications.js")
+    assert "20260910-admin-home1" in loader
+    assert "site-notifications-core.js?v=" in loader
