@@ -34,6 +34,28 @@ function mountPlayerControlStyles() {
   font-weight:900;
   line-height:1;
 }
+body.admin-pro-ready #playersView .player-table-scroll{
+  max-height:min(64vh,680px);
+  overflow:auto!important;
+  overscroll-behavior:contain;
+  -webkit-overflow-scrolling:touch;
+  scrollbar-gutter:stable;
+}
+body.admin-pro-ready #playersView .player-table-scroll thead th{
+  position:sticky!important;
+  top:0;
+  z-index:7;
+  background:#07383e;
+}
+#playersView .player-row-number,
+#playersView .player-row-number-header{
+  text-align:center!important;
+  font-variant-numeric:tabular-nums;
+}
+#playersView .player-row-number{
+  color:var(--muted);
+  font-weight:800;
+}
 @media(max-width:760px){
   .player-control-grid{grid-template-columns:1fr 1fr}
   .player-control-grid .player-control-button{
@@ -41,10 +63,75 @@ function mountPlayerControlStyles() {
     padding:8px;
     font-size:12px;
   }
+  body.admin-pro-ready #playersView .player-table-scroll{
+    max-height:60vh;
+    overflow:auto!important;
+    border-radius:12px;
+  }
+  body.admin-pro-ready #playersView .player-table-scroll table{
+    width:100%!important;
+    table-layout:fixed;
+  }
+  body.admin-pro-ready #playersView .player-table-scroll th:nth-child(1),
+  body.admin-pro-ready #playersView .player-table-scroll td:nth-child(1){width:8%!important}
+  body.admin-pro-ready #playersView .player-table-scroll th:nth-child(2),
+  body.admin-pro-ready #playersView .player-table-scroll td:nth-child(2){width:30%!important}
+  body.admin-pro-ready #playersView .player-table-scroll th:nth-child(3),
+  body.admin-pro-ready #playersView .player-table-scroll td:nth-child(3){width:18%!important}
+  body.admin-pro-ready #playersView .player-table-scroll th:nth-child(4),
+  body.admin-pro-ready #playersView .player-table-scroll td:nth-child(4){width:26%!important}
+  body.admin-pro-ready #playersView .player-table-scroll th:nth-child(6),
+  body.admin-pro-ready #playersView .player-table-scroll td:nth-child(6){width:18%!important}
 }
-@media(max-width:420px){.player-control-grid{grid-template-columns:1fr}}
+@media(max-width:420px){
+  .player-control-grid{grid-template-columns:1fr}
+  body.admin-pro-ready #playersView .player-table-scroll th,
+  body.admin-pro-ready #playersView .player-table-scroll td{padding-inline:3px!important}
+}
 `;
   document.head.appendChild(style);
+}
+
+function ensurePlayerNumberHeader(table) {
+  const headerRow = table?.querySelector('thead tr');
+  if (!headerRow) return;
+  let header = headerRow.querySelector('.player-row-number-header');
+  if (header) return;
+  header = document.createElement('th');
+  header.className = 'player-row-number-header';
+  header.scope = 'col';
+  header.textContent = 'م';
+  headerRow.prepend(header);
+}
+
+function numberPlayerRows() {
+  const body = document.getElementById('playersTableBody');
+  const table = body?.closest('table');
+  const wrap = table?.closest('.table-wrap');
+  if (!body || !table || !wrap) return;
+
+  wrap.classList.add('player-table-scroll');
+  ensurePlayerNumberHeader(table);
+  const columnCount = table.querySelectorAll('thead th').length;
+  let number = 0;
+
+  body.querySelectorAll(':scope > tr').forEach((row) => {
+    const cells = [...row.children].filter((cell) => cell.tagName === 'TD');
+    if (cells.length === 1 && Number(cells[0].getAttribute('colspan') || 1) > 1) {
+      if (cells[0].colSpan !== columnCount) cells[0].colSpan = columnCount;
+      return;
+    }
+
+    number += 1;
+    let numberCell = row.querySelector(':scope > .player-row-number');
+    if (!numberCell) {
+      numberCell = document.createElement('td');
+      numberCell.className = 'player-row-number';
+      row.prepend(numberCell);
+    }
+    const value = String(number);
+    if (numberCell.textContent !== value) numberCell.textContent = value;
+  });
 }
 
 function decoratePlayerControls() {
@@ -78,18 +165,23 @@ function decoratePlayerControls() {
   });
 }
 
+function enhancePlayerUi() {
+  numberPlayerRows();
+  decoratePlayerControls();
+}
+
 function scheduleEnhancement() {
   if (scheduled) return;
   scheduled = true;
   requestAnimationFrame(() => {
     scheduled = false;
-    decoratePlayerControls();
+    enhancePlayerUi();
   });
 }
 
 function startPlayerControlEnhancement() {
   mountPlayerControlStyles();
-  decoratePlayerControls();
+  enhancePlayerUi();
 
   const observer = new MutationObserver((mutations) => {
     if (mutations.some((mutation) => mutation.addedNodes.length || mutation.removedNodes.length)) scheduleEnhancement();
@@ -102,3 +194,5 @@ if (document.readyState === 'loading') {
 } else {
   startPlayerControlEnhancement();
 }
+
+export { numberPlayerRows };
