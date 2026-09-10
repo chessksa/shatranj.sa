@@ -1,0 +1,39 @@
+name: Verify admin dashboard
+
+on:
+  push:
+    branches:
+      - main
+    paths:
+      - 'admin-pro.js'
+      - 'admin-pro.css'
+      - 'admin-computer-games.js'
+      - 'admin.html'
+      - 'tests/test_admin_pro_dashboard.py'
+      - '.github/workflows/verify-admin-dashboard.yml'
+  pull_request:
+    paths:
+      - 'admin-pro.js'
+      - 'admin-pro.css'
+      - 'admin-computer-games.js'
+      - 'admin.html'
+      - 'tests/test_admin_pro_dashboard.py'
+      - '.github/workflows/verify-admin-dashboard.yml'
+
+permissions:
+  contents: read
+
+jobs:
+  verify:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - name: Verify enhanced admin dashboard contract
+        run: python tests/test_admin_pro_dashboard.py
+      - name: Verify admin JavaScript syntax
+        run: |
+          node --input-type=module --check < admin-pro.js
+          node --input-type=module --check < admin-computer-games.js
