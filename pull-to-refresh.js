@@ -8,6 +8,7 @@
 
   const PULL_THRESHOLD = 78;
   const PULL_START_DISTANCE = 10;
+  const MAX_PAGE_OFFSET = 74;
   const BLOCK_SELECTOR = [
     'input',
     'textarea',
@@ -26,13 +27,42 @@
   let pullDistance = 0;
   let active = false;
   let sourceTarget = null;
+  let settleTimer = 0;
 
-  const reset = () => {
+  const clearGestureState = () => {
     startX = 0;
     startY = 0;
     pullDistance = 0;
     active = false;
     sourceTarget = null;
+  };
+
+  const setPageOffset = (distance, animate = false) => {
+    if (!document.body) return;
+    clearTimeout(settleTimer);
+    const offset = Math.max(0, Math.min(MAX_PAGE_OFFSET, distance));
+    document.body.style.willChange = 'transform';
+    document.body.style.transition = animate ? 'transform 180ms cubic-bezier(.2,.8,.2,1)' : 'none';
+    document.body.style.transform = `translate3d(0, ${offset}px, 0)`;
+  };
+
+  const restorePagePosition = () => {
+    if (!document.body) return;
+    clearTimeout(settleTimer);
+    document.body.style.willChange = 'transform';
+    document.body.style.transition = 'transform 180ms cubic-bezier(.2,.8,.2,1)';
+    document.body.style.transform = 'translate3d(0, 0, 0)';
+    settleTimer = setTimeout(() => {
+      if (active || !document.body) return;
+      document.body.style.removeProperty('transform');
+      document.body.style.removeProperty('transition');
+      document.body.style.removeProperty('will-change');
+    }, 210);
+  };
+
+  const cancelPull = () => {
+    clearGestureState();
+    restorePagePosition();
   };
 
   const elementTarget = (target) => target instanceof Element ? target : target?.parentElement || null;
@@ -59,11 +89,16 @@
     Boolean(document.getElementById('mobilePullRefresh') && document.body?.classList.contains('pregame'));
 
   document.addEventListener('touchstart', (event) => {
-    reset();
-    if (existingPregameRefreshOwnsGesture()) return;
+    clearGestureState();
     if (event.touches.length !== 1) return;
     if (startsInBlockedArea(event.target)) return;
     if (!scrollContextAtTop(event.target)) return;
+
+    clearTimeout(settleTimer);
+    if (document.body) {
+      document.body.style.transition = 'none';
+      document.body.style.transform = 'translate3d(0, 0, 0)';
+    }
 
     sourceTarget = event.target;
     startX = event.touches[0].clientX;
@@ -73,22 +108,32 @@
 
   document.addEventListener('touchmove', (event) => {
     if (!active || event.touches.length !== 1) return;
-    if (!scrollContextAtTop(sourceTarget)) return reset();
+    if (!scrollContextAtTop(sourceTarget)) return cancelPull();
 
     const dx = event.touches[0].clientX - startX;
     const dy = event.touches[0].clientY - startY;
-    if (dy <= 0) return reset();
-    if (Math.abs(dx) > dy * 0.72) return;
+    if (dy <= 0) return cancelPull();
+    if (Math.abs(dx) > dy * 0.72) return cancelPull();
 
     pullDistance = dy;
-    if (dy >= PULL_START_DISTANCE && event.cancelable) event.preventDefault();
+    if (dy < PULL_START_DISTANCE) return;
+
+    const elasticDistance = Math.min(MAX_PAGE_OFFSET, (dy - PULL_START_DISTANCE) * 0.62);
+    setPageOffset(elasticDistance);
+    if (event.cancelable) event.preventDefault();
   }, { passive: false });
 
   document.addEventListener('touchend', () => {
-    const shouldRefresh = active && pullDistance >= PULL_THRESHOLD && scrollContextAtTop(sourceTarget);
-    reset();
-    if (shouldRefresh) location.reload();
+    const legacyPregameRefresh = existingPregameRefreshOwnsGesture();
+    const threshold = legacyPregameRefresh ? 72 : PULL_THRESHOLD;
+    const shouldRefresh = active && pullDistance >= threshold && scrollContextAtTop(sourceTarget);
+
+    clearGestureState();
+    if (!shouldRefresh) return restorePagePosition();
+
+    setPageOffset(42, true);
+    if (!legacyPregameRefresh) setTimeout(() => location.reload(), 90);
   }, { passive: true });
 
-  document.addEventListener('touchcancel', reset, { passive: true });
+  document.addEventListener('touchcancel', cancelPull, { passive: true });
 })();
