@@ -31,53 +31,60 @@ def test_enhanced_admin_layer_is_loaded_from_admin_page_pipeline():
     assert "admin-pro.js?v=20260910-2" in loader
 
 
-def test_admin_tables_are_fully_visible_on_mobile():
+def test_all_admin_mobile_tables_are_compact_centered_rows():
     responsive = (ROOT / "admin-responsive-tables.js").read_text(encoding="utf-8")
     loader = (ROOT / "admin-computer-games.js").read_text(encoding="utf-8")
+
     for token in [
-        "enhanceResponsiveTables",
-        "data-label",
-        "MutationObserver",
+        "COMPACT_TABLES",
+        "playersTableBody",
+        "gamesTableBody",
+        "computerGamesTableBody",
+        "reportsTableBody",
+        "actionsTableBody",
+        "moderatorsTableBody",
+        "tournamentsTableBody",
+        "compact-admin-row",
+        "compact-admin-hidden",
+        "data-row-open",
+        "text-align:center",
         "@media(max-width:760px)",
-        ".table-wrap table",
-        ".table-wrap thead",
-        "td::before",
-        "content:attr(data-label)",
+        "MutationObserver",
     ]:
         assert token in responsive, token
-    assert "admin-responsive-tables.js?v=20260910-1" in loader or "admin-responsive-tables.js?v=20260910-2" in loader
+
+    assert "admin-responsive-tables.js?v=20260910-3" in loader
 
 
-def test_players_mobile_list_is_compact_clickable_and_keeps_other_tables_as_cards():
+def test_player_detail_controls_keep_icons():
     layer = (ROOT / "admin-player-list.js").read_text(encoding="utf-8")
     loader = (ROOT / "admin-computer-games.js").read_text(encoding="utf-8")
-
-    for token in [
-        "player-list-row",
-        "data-player-row",
-        "player-control-grid",
-        "player-control-icon",
-        "#playersView .table-wrap table",
-        "#playersView .table-wrap thead",
-        "#playersView .table-wrap tbody tr.player-list-row",
-        "#playersView .table-wrap th:nth-child(4)",
-        "#playersView .table-wrap td:nth-child(4)",
-        "#playersView .table-wrap th:nth-child(6)",
-        "#playersView .table-wrap td:nth-child(6)",
-        "#playersView .table-wrap th:nth-child(7)",
-        "#playersView .table-wrap td:nth-child(7)",
-        "#playersView .table-wrap tbody td::before",
-        "MutationObserver",
-    ]:
+    for token in ["player-control-grid", "player-control-icon", "editPlayer", "ban", "unban", "deletePlayer"]:
         assert token in layer, token
-
     assert "admin-player-list.js?v=20260910-1" in loader
+
+
+def test_admin_view_survives_page_refresh():
+    path = ROOT / "admin-view-state.js"
+    assert path.exists(), "admin-view-state.js"
+    js = path.read_text(encoding="utf-8")
+    loader = (ROOT / "admin-computer-games.js").read_text(encoding="utf-8")
+    for token in [
+        "restoreAdminView",
+        "location.hash",
+        "history.replaceState",
+        "data-view",
+        "hashchange",
+    ]:
+        assert token in js, token
+    assert "admin-view-state.js?v=20260910-1" in loader
 
 
 if __name__ == "__main__":
     test_enhanced_admin_dashboard_refreshes_core_stats_itself()
     test_enhanced_admin_dashboard_refreshes_recent_activity_itself()
     test_enhanced_admin_layer_is_loaded_from_admin_page_pipeline()
-    test_admin_tables_are_fully_visible_on_mobile()
-    test_players_mobile_list_is_compact_clickable_and_keeps_other_tables_as_cards()
+    test_all_admin_mobile_tables_are_compact_centered_rows()
+    test_player_detail_controls_keep_icons()
+    test_admin_view_survives_page_refresh()
     print("Enhanced admin dashboard tests passed")
