@@ -61,7 +61,7 @@ let loading=false;
 
 function watchHref(game){
   const id=encodeURIComponent(game.game_id||'');
-  return game.game_type==='computer'?`computer-watch.html?game=${id}`:`human-watch.html?game=${id}`;
+  return game.game_type==='computer'?`computer-watch.html?v=20260910-clockfix1&game=${id}`:`human-watch.html?v=20260910-clockfix1&game=${id}`;
 }
 
 function renderRows(body,games,emptyMessage){
