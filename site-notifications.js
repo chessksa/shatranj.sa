@@ -230,6 +230,7 @@
       source = source
         .replace('const MOBILE_RANKING_LIMIT = 5;', 'const MOBILE_RANKING_LIMIT = 10;')
         .replace("style.id = 'mobileRankingFiveStyles';", "style.id = 'mobileRankingTenStyles';")
+        .replace(/site-notifications-core\.js\?v=[A-Za-z0-9._-]+/g, 'site-notifications-core.js?v=20260910-admin-home1')
         .replace(
           /track\.className = 'welcome-ticker-track welcome-ticker-single';/g,
           "track.className = 'welcome-ticker-track tournament-ticker-single';"
