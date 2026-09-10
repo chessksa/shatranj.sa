@@ -6,13 +6,19 @@ on:
       - main
     paths:
       - 'index-app.html'
+      - 'world-locations.js'
       - 'supabase/migrations/20260911020000_nationality_residence.sql'
+      - 'supabase/migrations/20260911031000_open_global_signup_ranking.sql'
+      - 'supabase/migrations/20260911032000_exclude_il_country.sql'
       - 'tests/test_nationality_residence_signup.py'
       - '.github/workflows/verify-nationality-residence.yml'
   pull_request:
     paths:
       - 'index-app.html'
+      - 'world-locations.js'
       - 'supabase/migrations/20260911020000_nationality_residence.sql'
+      - 'supabase/migrations/20260911031000_open_global_signup_ranking.sql'
+      - 'supabase/migrations/20260911032000_exclude_il_country.sql'
       - 'tests/test_nationality_residence_signup.py'
       - '.github/workflows/verify-nationality-residence.yml'
 
@@ -27,7 +33,5 @@ jobs:
       - uses: actions/setup-python@v5
         with:
           python-version: '3.12'
-      - name: Verify nationality and residence signup contract
+      - name: Verify worldwide signup, ranking, and exclusions
         run: python tests/test_nationality_residence_signup.py
-
-# Final verification trigger after generated UI integration.
