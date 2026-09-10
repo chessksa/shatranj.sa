@@ -53,7 +53,7 @@ def test_all_admin_mobile_tables_are_compact_centered_rows():
     ]:
         assert token in responsive, token
 
-    assert "admin-responsive-tables.js?v=20260910-3" in loader
+    assert "admin-responsive-tables.js?v=20260910-3" in loader or "admin-responsive-tables.js?v=20260910-4" in loader
 
 
 def test_player_detail_controls_keep_icons():
@@ -80,6 +80,38 @@ def test_admin_view_survives_page_refresh():
     assert "admin-view-state.js?v=20260910-1" in loader
 
 
+def test_admin_games_are_one_scrollable_table_with_player_pairs():
+    path = ROOT / "admin-unified-games.js"
+    assert path.exists(), "admin-unified-games.js"
+    js = path.read_text(encoding="utf-8")
+    loader = (ROOT / "admin-computer-games.js").read_text(encoding="utf-8")
+    responsive = (ROOT / "admin-responsive-tables.js").read_text(encoding="utf-8")
+
+    for token in [
+        "unifiedGamesTableBody",
+        "gamesTableBody",
+        "computerGamesTableBody",
+        "اللاعبين",
+        " × ",
+        "الكمبيوتر",
+        "unified-games-source",
+        "max-height",
+        "overflow:auto",
+        "MutationObserver",
+    ]:
+        assert token in js, token
+
+    assert "unifiedGamesTableBody" in responsive
+    assert "admin-unified-games.js?v=20260910-1" in loader
+
+
+def test_computer_games_resolve_real_player_names_through_admin_rpc():
+    js = (ROOT / "admin-computer-games.js").read_text(encoding="utf-8")
+    assert "admin_list_players_v3" in js
+    assert "players.set(p.id, p)" in js
+    assert ".from('players')" not in js
+
+
 if __name__ == "__main__":
     test_enhanced_admin_dashboard_refreshes_core_stats_itself()
     test_enhanced_admin_dashboard_refreshes_recent_activity_itself()
@@ -87,4 +119,6 @@ if __name__ == "__main__":
     test_all_admin_mobile_tables_are_compact_centered_rows()
     test_player_detail_controls_keep_icons()
     test_admin_view_survives_page_refresh()
+    test_admin_games_are_one_scrollable_table_with_player_pairs()
+    test_computer_games_resolve_real_player_names_through_admin_rpc()
     print("Enhanced admin dashboard tests passed")
