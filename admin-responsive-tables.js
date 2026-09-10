@@ -2,7 +2,7 @@ const STYLE_ID = 'admin-responsive-tables-style';
 let scheduled = false;
 
 const COMPACT_TABLES = {
-  playersTableBody: { visible:[0,1,2,4], openSelector:'[data-player]' },
+  playersTableBody: { visible:[0,1,2,3,5], openSelector:'[data-player]' },
   gamesTableBody: { visible:[0,1,2,4], openSelector:'[data-game]' },
   computerGamesTableBody: { visible:[0,1,2,4], openSelector:'a[href*="computer-watch.html"]' },
   unifiedGamesTableBody: { visible:[0,1,2,3], openSelector:'[data-game],a[href*="computer-watch.html"]' },
