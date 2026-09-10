@@ -1,0 +1,37 @@
+name: Patch transformed tournament detail typography
+
+on:
+  push:
+    branches:
+      - fix-transformed-tournament-detail-table-type-20260910
+
+permissions:
+  contents: write
+
+jobs:
+  patch:
+    if: github.event.head_commit.message == 'chore: add transformed tournament typography patcher'
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Patch actual transformed table typography and verify
+        run: |
+          python - <<'PY'
+          from pathlib import Path
+          p = Path('site-presence-base.js')
+          s = p.read_text(encoding='utf-8')
+          old = ".tournament-detail-table th{width:36%;font-size:9px}\n        .tournament-detail-table td{font-size:10px}"
+          new = ".tournament-detail-table th{width:36%;font-size:16px;font-weight:900}\n        .tournament-detail-table td{font-size:14px;font-weight:700}"
+          assert old in s, 'expected mobile transformed-table typography block not found'
+          p.write_text(s.replace(old, new, 1), encoding='utf-8')
+
+          import runpy
+          ns = runpy.run_path('tests/test_tournament_detail_type_scale.py')
+          ns['test_transformed_tournament_detail_table_keeps_label_larger_than_value_on_mobile']()
+          PY
+          git config user.name chessksa
+          git config user.email gmel1199@gmail.com
+          git add site-presence-base.js
+          git rm .github/workflows/patch-transformed-tournament-detail-type.yml
+          git commit -m "fix: correct transformed tournament detail typography"
+          git push
