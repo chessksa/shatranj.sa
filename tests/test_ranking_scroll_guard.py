@@ -8,9 +8,11 @@ def read(name):
 
 
 def test_ranking_scroll_area_is_excluded_from_pull_to_refresh():
-    html = read("index-app.html")
+    notifications = read("site-notifications.js")
     pull = read("pull-to-refresh.js")
-    assert '<div class="table-wrap" data-no-pull-refresh>' in html
+    assert "function installRankingPullGuard()" in notifications
+    assert "dataset.noPullRefresh = '1'" in notifications
+    assert "installRankingPullGuard();" in notifications
     assert "'[data-no-pull-refresh]'" in pull
 
 
