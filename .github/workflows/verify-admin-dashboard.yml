@@ -7,6 +7,7 @@ on:
     paths:
       - 'admin-pro.js'
       - 'admin-pro.css'
+      - 'admin-responsive-tables.js'
       - 'admin-computer-games.js'
       - 'admin.html'
       - 'tests/test_admin_pro_dashboard.py'
@@ -15,6 +16,7 @@ on:
     paths:
       - 'admin-pro.js'
       - 'admin-pro.css'
+      - 'admin-responsive-tables.js'
       - 'admin-computer-games.js'
       - 'admin.html'
       - 'tests/test_admin_pro_dashboard.py'
@@ -36,4 +38,5 @@ jobs:
       - name: Verify admin JavaScript syntax
         run: |
           node --input-type=module --check < admin-pro.js
+          node --input-type=module --check < admin-responsive-tables.js
           node --input-type=module --check < admin-computer-games.js
