@@ -1,0 +1,41 @@
+name: Apply world signup locations
+
+on:
+  push:
+    branches:
+      - main
+    paths:
+      - '.github/scripts/apply_world_signup.py'
+      - '.github/workflows/apply-world-signup.yml'
+
+permissions:
+  contents: write
+
+jobs:
+  apply:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - name: Apply worldwide signup integration
+        run: python .github/scripts/apply_world_signup.py
+      - name: Verify integration before commit
+        run: |
+          python tests/test_world_signup_locations.py
+          node --input-type=module --check < world-locations.js
+          git diff --check
+      - name: Commit generated integration
+        run: |
+          if git diff --quiet -- index-app.html; then
+            echo 'No integration changes required.'
+            exit 0
+          fi
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git add index-app.html
+          git commit -m 'feat: open signup to worldwide countries and cities'
+          git push
