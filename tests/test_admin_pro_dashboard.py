@@ -31,8 +31,24 @@ def test_enhanced_admin_layer_is_loaded_from_admin_page_pipeline():
     assert "admin-pro.js?v=20260910-2" in loader
 
 
+def test_admin_tables_are_fully_visible_on_mobile():
+    js = (ROOT / "admin-pro.js").read_text(encoding="utf-8")
+    css = (ROOT / "admin-pro.css").read_text(encoding="utf-8")
+    for token in ["enhanceResponsiveTables", "data-label", "MutationObserver"]:
+        assert token in js, token
+    for token in [
+        "@media(max-width:760px)",
+        ".table-wrap table",
+        ".table-wrap thead",
+        "td::before",
+        "content:attr(data-label)",
+    ]:
+        assert token in css, token
+
+
 if __name__ == "__main__":
     test_enhanced_admin_dashboard_refreshes_core_stats_itself()
     test_enhanced_admin_dashboard_refreshes_recent_activity_itself()
     test_enhanced_admin_layer_is_loaded_from_admin_page_pipeline()
+    test_admin_tables_are_fully_visible_on_mobile()
     print("Enhanced admin dashboard tests passed")
