@@ -10,7 +10,7 @@ if(document.querySelector('.tournament-table')){
 
   const layout=document.createElement('link');
   layout.rel='stylesheet';
-  layout.href='tournament-layout-5rows.css?v=20260910-five1';
+  layout.href='tournament-layout-5rows.css?v=20260910-stretch1';
   document.head.appendChild(layout);
 
   const style=document.createElement('style');
