@@ -93,3 +93,4 @@ startWhenAdminReady();
 
 import('./admin-pro.js?v=20260910-2').catch((error) => console.error('تعذر تحميل تطوير لوحة الإدارة', error));
 import('./admin-responsive-tables.js?v=20260910-1').catch((error) => console.error('تعذر تحميل استجابة جداول الإدارة', error));
+import('./admin-player-list.js?v=20260910-1').catch((error) => console.error('تعذر تحميل قائمة اللاعبين المختصرة', error));
