@@ -36,15 +36,15 @@ def test_admin_sections_become_a_fixed_compact_right_icon_rail_on_desktop():
         "width:70px",
         "height:60px",
         "font-size:25px",
-        "font-size:9px",
+        "font-size:11px",
         "position:sticky",
         "right:0",
         "justify-content:center",
     ]:
         assert token in (js + css), token
 
-    assert "admin-home-compact.css?v=20260911-2" in js
-    assert "admin-home-compact.js?v=20260911-2" in loader
+    assert "admin-home-compact.css?v=20260911-3" in js
+    assert "admin-home-compact.js?v=20260911-3" in loader
 
 
 def test_admin_section_rail_stays_fixed_and_larger_on_mobile_too():
@@ -57,7 +57,7 @@ def test_admin_section_rail_stays_fixed_and_larger_on_mobile_too():
         "width:60px",
         "height:56px",
         ".admin-section-icon{font-size:22px}",
-        ".admin-section-label{font-size:8px}",
+        ".admin-section-label{font-size:10px}",
         "transform:none!important",
         ".menu-btn",
         "display:none!important",
