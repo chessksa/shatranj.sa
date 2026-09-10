@@ -20,6 +20,8 @@ def test_tournament_detail_typography_is_enlarged_to_20_16_14():
 
 def test_transformed_tournament_detail_table_keeps_label_larger_than_value_on_mobile():
     base = (ROOT / "site-presence-base.js").read_text(encoding="utf-8")
+    loader = (ROOT / "site-presence.js").read_text(encoding="utf-8")
 
     assert ".tournament-detail-table th{width:36%;font-size:16px;font-weight:900}" in base
     assert ".tournament-detail-table td{font-size:14px;font-weight:700}" in base
+    assert "site-presence-base.js?v=20260910-tournament-detail-table2" in loader
