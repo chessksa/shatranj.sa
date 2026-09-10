@@ -67,6 +67,7 @@ function initTournamentLayoutPolish() {
         vertical-align:middle!important;
       }
       #tournamentDetailCard{
+        padding:4px!important;
         overflow:hidden!important;
       }
       .tournament-detail-layout{
