@@ -81,6 +81,7 @@ const pageHeadTitle=document.getElementById('tournamentPageHeadTitle');
 const pageTitle=document.getElementById('tournamentPageTitle');
 const registrationMsg=document.getElementById('registrationMsg');
 const backToTournamentList=document.getElementById('backToTournamentList');
+const TOURNAMENT_QUERY_KEY='tournament';
 let tournaments=[];
 let selectedTournamentId=null;
 let tournamentMatchPollTimer=null;
@@ -274,8 +275,26 @@ function resetTournamentHeader(){
   pageHeadTitle.classList.remove('detail-mode');
   pageTitle.textContent='البطولات';
 }
-function openTournamentDetail(tournamentId){const row=tournaments.find(item=>String(item.id)===String(tournamentId));if(!row)return;selectedTournamentId=String(row.id);setRegistrationMessage('');setTournamentDetailHeader(row);renderTournamentDetail(row);listView.hidden=true;detailView.hidden=false;loadTournamentBracket(row.id);if(row.status==='running')scheduleTournamentBracketRefresh()}
-function showTournamentList(){clearTimeout(tournamentMatchPollTimer);clearInterval(tournamentRoundCountdownTimer);clearInterval(tournamentBracketRefreshTimer);selectedTournamentId=null;setRegistrationMessage('');resetTournamentHeader();detailView.hidden=true;listView.hidden=false}
+function persistTournamentInUrl(tournamentId){
+  const url=new URL(location.href);
+  url.searchParams.set(TOURNAMENT_QUERY_KEY,String(tournamentId));
+  history.replaceState(null,'',url);
+}
+function clearTournamentFromUrl(){
+  const url=new URL(location.href);
+  url.searchParams.delete(TOURNAMENT_QUERY_KEY);
+  history.replaceState(null,'',url);
+}
+function restoreTournamentFromUrl(){
+  const tournamentId=new URLSearchParams(location.search).get(TOURNAMENT_QUERY_KEY);
+  if(!tournamentId)return false;
+  const exists=tournaments.some(item=>String(item.id)===String(tournamentId));
+  if(!exists){clearTournamentFromUrl();return false}
+  openTournamentDetail(tournamentId);
+  return true;
+}
+function openTournamentDetail(tournamentId){const row=tournaments.find(item=>String(item.id)===String(tournamentId));if(!row)return;persistTournamentInUrl(row.id);selectedTournamentId=String(row.id);setRegistrationMessage('');setTournamentDetailHeader(row);renderTournamentDetail(row);listView.hidden=true;detailView.hidden=false;loadTournamentBracket(row.id);if(row.status==='running')scheduleTournamentBracketRefresh()}
+function showTournamentList(){clearTimeout(tournamentMatchPollTimer);clearInterval(tournamentRoundCountdownTimer);clearInterval(tournamentBracketRefreshTimer);selectedTournamentId=null;clearTournamentFromUrl();setRegistrationMessage('');resetTournamentHeader();detailView.hidden=true;listView.hidden=false}
 
 async function registerForTournament(button,tournamentId){
   setRegistrationMessage('');
@@ -314,6 +333,7 @@ async function loadTournaments(){
     renderTournamentList(tournaments);
     await Promise.all(tournaments.filter(row=>row.status==='finished').map(loadTournamentChampion));
     renderTournamentList(tournaments);
+    restoreTournamentFromUrl();
   }catch(error){console.error(error);currentListEl.innerHTML='<tr class="empty-row"><td colspan="4">تعذر تحميل البطولات.</td></tr>';finishedListEl.innerHTML='<tr class="empty-row"><td colspan="3">تعذر تحميل البطولات.</td></tr>';emptyEl.hidden=true}
 }
 
