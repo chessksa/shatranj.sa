@@ -30,7 +30,7 @@ main{flex:1 1 auto;min-height:0;overflow:hidden;padding:18px 0}
   <div class="tables-grid">
     <section class="match-shell current-shell" aria-label="المباريات الحالية">
       <div class="table-head">المباريات الحالية <strong id="currentCount">0</strong></div>
-      <div class="table-wrap">
+      <div class="table-wrap" data-no-pull-refresh>
         <table class="match-table" aria-live="polite">
           <tbody id="currentTableBody"><tr class="loading-row"><td colspan="3">جاري تحميل المباريات...</td></tr></tbody>
         </table>
@@ -39,7 +39,7 @@ main{flex:1 1 auto;min-height:0;overflow:hidden;padding:18px 0}
 
     <section class="match-shell finished-shell" aria-label="المباريات المنتهية">
       <div class="table-head">المباريات المنتهية <strong id="finishedCount">0</strong></div>
-      <div class="table-wrap">
+      <div class="table-wrap" data-no-pull-refresh>
         <table class="match-table" aria-live="polite">
           <tbody id="finishedTableBody"><tr class="loading-row"><td colspan="3">جاري تحميل المباريات...</td></tr></tbody>
         </table>
