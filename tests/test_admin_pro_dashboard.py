@@ -102,7 +102,7 @@ def test_admin_games_are_one_scrollable_table_with_player_pairs():
         assert token in js, token
 
     assert "unifiedGamesTableBody" in responsive
-    assert "admin-unified-games.js?v=20260910-1" in loader
+    assert "admin-unified-games.js?v=20260910-2" in loader
 
 
 def test_unified_games_table_drops_code_adds_numbering_and_focuses_core_columns():
