@@ -3,7 +3,7 @@ import { createClient } from 'https://cdn.jsdelivr.net/npm/@supabase/supabase-js
 const cfg = window.SHATRANJ_CONFIG?.supabase || {};
 const supabase = cfg.enabled && cfg.url && cfg.anonKey ? createClient(cfg.url, cfg.anonKey) : null;
 const $ = (id) => document.getElementById(id);
-const esc = (value) => String(value ?? '').replace(/[&<>'"]/g, (ch) => ({'&':'&amp;','<':'&lt;','>':'&gt;',"'":'&#39;','"':'&quot;'}[ch]));
+const esc = (value) => String(value ?? '').replace(/[&<>'"]/g, (ch) => ({'&':'&amp;','<':'&lt;','>':'&gt',"'":'&#39;','"':'&quot;'}[ch]));
 const levelLabel = { easy: 'سهل', medium: 'متوسط', hard: 'صعب' };
 const statusLabel = { active: 'نشطة', finished: 'منتهية', abandoned: 'متروكة' };
 const resultLabel = { win: 'فوز اللاعب', loss: 'فوز الكمبيوتر', draw: 'تعادل' };
@@ -101,3 +101,4 @@ import('./admin-responsive-tables.js?v=20260910-5').catch((error) => console.err
 import('./admin-player-list.js?v=20260910-3').catch((error) => console.error('تعذر تحميل قائمة اللاعبين المختصرة', error));
 import('./admin-view-state.js?v=20260910-1').catch((error) => console.error('تعذر حفظ قسم لوحة الإدارة', error));
 import('./admin-unified-games.js?v=20260910-4').catch((error) => console.error('تعذر تحميل جدول المباريات الموحد', error));
+import('./admin-home-compact.js?v=20260911-1').catch((error) => console.error('تعذر تحميل شريط أقسام الإدارة المختصر', error));
