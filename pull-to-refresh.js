@@ -6,9 +6,9 @@
   const mobileViewport = window.matchMedia?.('(max-width: 1024px)').matches ?? true;
   if (!touchDevice || !mobileViewport) return;
 
-  const PULL_THRESHOLD = 78;
+  const PULL_THRESHOLD = 132;
   const PULL_START_DISTANCE = 10;
-  const MAX_PAGE_OFFSET = 74;
+  const MAX_PAGE_OFFSET = 132;
   const BLOCK_SELECTOR = [
     'input',
     'textarea',
@@ -28,6 +28,88 @@
   let active = false;
   let sourceTarget = null;
   let settleTimer = 0;
+  let indicatorTimer = 0;
+
+  const indicatorStyleId = 'shatranj-pull-refresh-style';
+  if (!document.getElementById(indicatorStyleId)) {
+    const style = document.createElement('style');
+    style.id = indicatorStyleId;
+    style.textContent = `
+      #shatranj-pull-refresh-indicator{
+        position:fixed;
+        z-index:2147483000;
+        top:-48px;
+        left:50%;
+        width:42px;
+        height:42px;
+        margin-left:-21px;
+        display:grid;
+        place-items:center;
+        border-radius:50%;
+        background:rgba(4,39,41,.96);
+        border:1px solid rgba(216,182,101,.62);
+        box-shadow:0 6px 18px rgba(0,0,0,.28);
+        opacity:0;
+        pointer-events:none;
+        transition:top 160ms cubic-bezier(.2,.8,.2,1),opacity 120ms ease;
+      }
+      #shatranj-pull-refresh-indicator .pull-refresh-ring{
+        width:27px;
+        height:27px;
+        border:3px solid rgba(216,182,101,.24);
+        border-top-color:#d8b665;
+        border-right-color:#d8b665;
+        border-radius:50%;
+        box-sizing:border-box;
+        will-change:transform;
+      }
+      #shatranj-pull-refresh-indicator.refreshing .pull-refresh-ring{
+        animation:shatranjPullSpin .68s linear infinite;
+      }
+      @keyframes shatranjPullSpin{to{transform:rotate(360deg)}}
+    `;
+    document.head.appendChild(style);
+  }
+
+  const refreshIndicator = document.createElement('div');
+  refreshIndicator.id = 'shatranj-pull-refresh-indicator';
+  refreshIndicator.setAttribute('aria-hidden', 'true');
+  refreshIndicator.innerHTML = '<span class="pull-refresh-ring"></span>';
+  document.documentElement.appendChild(refreshIndicator);
+  const refreshRing = refreshIndicator.querySelector('.pull-refresh-ring');
+
+  const setIndicatorProgress = (offset, rawDistance = 0) => {
+    clearTimeout(indicatorTimer);
+    refreshIndicator.classList.remove('refreshing');
+    const progress = Math.max(0, Math.min(1, rawDistance / PULL_THRESHOLD));
+    const top = Math.min(16, -46 + offset * 0.62);
+    refreshIndicator.style.transition = 'none';
+    refreshIndicator.style.top = `${top}px`;
+    refreshIndicator.style.opacity = offset > 3 ? String(Math.min(1, 0.2 + progress * 0.8)) : '0';
+    if (refreshRing) refreshRing.style.transform = `rotate(${Math.round(progress * 420)}deg)`;
+  };
+
+  const hideRefreshIndicator = (animate = true) => {
+    clearTimeout(indicatorTimer);
+    refreshIndicator.classList.remove('refreshing');
+    refreshIndicator.style.transition = animate
+      ? 'top 180ms cubic-bezier(.2,.8,.2,1),opacity 150ms ease'
+      : 'none';
+    refreshIndicator.style.top = '-48px';
+    refreshIndicator.style.opacity = '0';
+    indicatorTimer = setTimeout(() => {
+      if (active || !refreshRing) return;
+      refreshRing.style.removeProperty('transform');
+    }, 200);
+  };
+
+  const showRefreshingIndicator = () => {
+    clearTimeout(indicatorTimer);
+    refreshIndicator.style.transition = 'top 160ms cubic-bezier(.2,.8,.2,1),opacity 100ms ease';
+    refreshIndicator.style.top = '14px';
+    refreshIndicator.style.opacity = '1';
+    refreshIndicator.classList.add('refreshing');
+  };
 
   const clearGestureState = () => {
     startX = 0;
@@ -38,26 +120,28 @@
   };
 
   const setPageOffset = (distance, animate = false) => {
-    if (!document.body) return;
+    if (!document.body) return 0;
     clearTimeout(settleTimer);
     const offset = Math.max(0, Math.min(MAX_PAGE_OFFSET, distance));
     document.body.style.willChange = 'transform';
-    document.body.style.transition = animate ? 'transform 180ms cubic-bezier(.2,.8,.2,1)' : 'none';
+    document.body.style.transition = animate ? 'transform 190ms cubic-bezier(.2,.8,.2,1)' : 'none';
     document.body.style.transform = `translate3d(0, ${offset}px, 0)`;
+    return offset;
   };
 
   const restorePagePosition = () => {
     if (!document.body) return;
     clearTimeout(settleTimer);
     document.body.style.willChange = 'transform';
-    document.body.style.transition = 'transform 180ms cubic-bezier(.2,.8,.2,1)';
+    document.body.style.transition = 'transform 190ms cubic-bezier(.2,.8,.2,1)';
     document.body.style.transform = 'translate3d(0, 0, 0)';
+    hideRefreshIndicator(true);
     settleTimer = setTimeout(() => {
       if (active || !document.body) return;
       document.body.style.removeProperty('transform');
       document.body.style.removeProperty('transition');
       document.body.style.removeProperty('will-change');
-    }, 210);
+    }, 220);
   };
 
   const cancelPull = () => {
@@ -85,9 +169,6 @@
     return window.scrollY <= 1 && (!root || root.scrollTop <= 1);
   };
 
-  const existingPregameRefreshOwnsGesture = () =>
-    Boolean(document.getElementById('mobilePullRefresh') && document.body?.classList.contains('pregame'));
-
   document.addEventListener('touchstart', (event) => {
     clearGestureState();
     if (event.touches.length !== 1) return;
@@ -95,6 +176,7 @@
     if (!scrollContextAtTop(event.target)) return;
 
     clearTimeout(settleTimer);
+    hideRefreshIndicator(false);
     if (document.body) {
       document.body.style.transition = 'none';
       document.body.style.transform = 'translate3d(0, 0, 0)';
@@ -104,7 +186,7 @@
     startX = event.touches[0].clientX;
     startY = event.touches[0].clientY;
     active = true;
-  }, { passive: true });
+  }, { passive: true, capture: true });
 
   document.addEventListener('touchmove', (event) => {
     if (!active || event.touches.length !== 1) return;
@@ -118,22 +200,29 @@
     pullDistance = dy;
     if (dy < PULL_START_DISTANCE) return;
 
-    const elasticDistance = Math.min(MAX_PAGE_OFFSET, (dy - PULL_START_DISTANCE) * 0.62);
-    setPageOffset(elasticDistance);
+    const elasticDistance = Math.min(MAX_PAGE_OFFSET, (dy - PULL_START_DISTANCE) * 0.78);
+    const offset = setPageOffset(elasticDistance);
+    setIndicatorProgress(offset, dy);
     if (event.cancelable) event.preventDefault();
-  }, { passive: false });
+    event.stopImmediatePropagation();
+  }, { passive: false, capture: true });
 
-  document.addEventListener('touchend', () => {
-    const legacyPregameRefresh = existingPregameRefreshOwnsGesture();
-    const threshold = legacyPregameRefresh ? 72 : PULL_THRESHOLD;
-    const shouldRefresh = active && pullDistance >= threshold && scrollContextAtTop(sourceTarget);
+  document.addEventListener('touchend', (event) => {
+    if (!active) return;
+    const shouldRefresh = pullDistance >= PULL_THRESHOLD && scrollContextAtTop(sourceTarget);
+    const ownedPullGesture = pullDistance >= PULL_START_DISTANCE;
 
     clearGestureState();
+    if (ownedPullGesture) event.stopImmediatePropagation();
     if (!shouldRefresh) return restorePagePosition();
 
-    setPageOffset(42, true);
-    if (!legacyPregameRefresh) setTimeout(() => location.reload(), 90);
-  }, { passive: true });
+    setPageOffset(74, true);
+    showRefreshingIndicator();
+    setTimeout(() => location.reload(), 120);
+  }, { passive: true, capture: true });
 
-  document.addEventListener('touchcancel', cancelPull, { passive: true });
+  document.addEventListener('touchcancel', (event) => {
+    if (active && pullDistance >= PULL_START_DISTANCE) event.stopImmediatePropagation();
+    cancelPull();
+  }, { passive: true, capture: true });
 })();
