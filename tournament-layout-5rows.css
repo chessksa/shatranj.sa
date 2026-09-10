@@ -1,0 +1,15 @@
+:root{--visible-tournament-rows:5}
+
+main>.wrap:not(.detail-active){display:block!important;height:100%!important;min-height:0!important}
+main>.wrap:not(.detail-active)>.registration-message{margin-bottom:4px}
+.tournament-list-view{height:auto!important;min-height:0!important;overflow:visible!important}
+.tournament-tables-grid{height:auto!important;min-height:0!important;display:grid!important;grid-template-columns:repeat(2,minmax(0,1fr))!important;gap:16px!important;align-items:start!important}
+.tournament-table-shell{height:calc(var(--table-title-h) + var(--column-head-h) + (var(--tournament-row-h) * var(--visible-tournament-rows)) + 2px)!important;max-height:none!important;min-height:0!important}
+.tournament-table-scroll{overflow-y:auto!important;overflow-x:hidden!important;overscroll-behavior:contain!important;-webkit-overflow-scrolling:touch}
+
+@media(max-width:700px){
+  main{overflow:hidden!important}
+  main>.wrap:not(.detail-active){overflow:hidden!important}
+  .tournament-tables-grid{grid-template-columns:1fr!important;grid-template-rows:none!important;gap:6px!important;align-content:start!important;align-items:start!important}
+  .tournament-table-shell{height:calc(var(--table-title-h) + var(--column-head-h) + (var(--tournament-row-h) * var(--visible-tournament-rows)) + 2px)!important;max-height:none!important}
+}
