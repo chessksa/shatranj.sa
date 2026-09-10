@@ -30,6 +30,10 @@ function mountStyles() {
       padding:11px 8px;
       background:#07383e;
     }
+    body.admin-pro-ready #gamesView .unified-games-wrap th:not(:first-child),
+    body.admin-pro-ready #gamesView .unified-games-wrap td:not(:first-child){
+      border-inline-start:1px solid rgba(216,181,106,.34);
+    }
     body.admin-pro-ready #gamesView .unified-games-wrap th:nth-child(1),
     body.admin-pro-ready #gamesView .unified-games-wrap td:nth-child(1){width:52px}
     body.admin-pro-ready #gamesView .unified-games-wrap th:nth-child(3),
@@ -66,6 +70,24 @@ function mountStyles() {
       font-weight:900;
       padding-inline:3px;
     }
+    #gamesView .unified-time-cell{
+      white-space:nowrap!important;
+      overflow:visible!important;
+      text-overflow:clip!important;
+    }
+    #gamesView .unified-time{
+      display:inline-flex;
+      align-items:center;
+      justify-content:center;
+      gap:3px;
+      direction:ltr;
+      unicode-bidi:isolate;
+      white-space:nowrap;
+      font-variant-numeric:tabular-nums;
+      line-height:1;
+    }
+    #gamesView .unified-time-value{font-weight:800}
+    #gamesView .unified-time-unit{font-size:.9em;color:var(--muted)}
     #gamesView .unified-hidden-trigger{display:none!important}
 
     @media(max-width:760px){
@@ -114,6 +136,10 @@ function mountStyles() {
         font-size:11.5px;
         line-height:1.45;
       }
+      body.admin-pro-ready #gamesView .unified-games-wrap tbody td.unified-time-cell{
+        overflow:visible!important;
+        white-space:nowrap!important;
+      }
       body.admin-pro-ready #gamesView .unified-games-wrap .status-pill{
         padding:4px 6px;
         font-size:9px;
@@ -130,7 +156,7 @@ function mountStyles() {
     @media(max-width:420px){
       body.admin-pro-ready #gamesView .unified-games-wrap thead tr,
       body.admin-pro-ready #gamesView .unified-games-wrap tbody tr.compact-admin-row{
-        grid-template-columns:34px minmax(0,1fr) 58px 70px;
+        grid-template-columns:34px minmax(0,1fr) 62px 70px;
       }
       body.admin-pro-ready #gamesView .unified-games-wrap thead th,
       body.admin-pro-ready #gamesView .unified-games-wrap tbody td{padding:9px 3px}
@@ -157,6 +183,29 @@ function cellWithText(text, className = '') {
 
 function rowNumberCell() {
   return cellWithText('', 'unified-row-number');
+}
+
+function timeCell(sourceCell) {
+  const cell = document.createElement('td');
+  cell.className = 'unified-time-cell';
+  const raw = textOf(sourceCell);
+  const match = raw.match(/\d+(?:[.,]\d+)?/);
+  if (!match) {
+    cell.textContent = raw || '—';
+    return cell;
+  }
+
+  const time = document.createElement('span');
+  time.className = 'unified-time';
+  const value = document.createElement('span');
+  value.className = 'unified-time-value';
+  value.textContent = match[0].replace(',', '.');
+  const unit = document.createElement('span');
+  unit.className = 'unified-time-unit';
+  unit.textContent = 'د';
+  time.append(value, unit);
+  cell.appendChild(time);
+  return cell;
 }
 
 function pairCell(left, right) {
@@ -204,7 +253,7 @@ function humanUnifiedRow(sourceRow) {
   row.append(
     rowNumberCell(),
     players,
-    cloneCell(cells[3]),
+    timeCell(cells[3]),
     cloneCell(cells[4]),
   );
   return row;
@@ -220,7 +269,7 @@ function computerUnifiedRow(sourceRow) {
   row.append(
     rowNumberCell(),
     players,
-    cloneCell(cells[3]),
+    timeCell(cells[3]),
     cloneCell(cells[4]),
   );
   return row;
@@ -325,4 +374,4 @@ if (document.readyState === 'loading') {
   startUnifiedGames();
 }
 
-export { rebuildUnifiedGames, numberUnifiedRows };
+export { rebuildUnifiedGames, numberUnifiedRows, timeCell };
