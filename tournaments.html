@@ -317,8 +317,9 @@ async function registerForTournament(button,tournamentId){
     if(error)throw error;
     const result=data||{};
     if(result.ok||result.code==='already_registered'){
-      button.textContent=result.code==='already_registered'?'مسجل':'تم التسجيل';button.classList.add('registered');button.disabled=true;
-      setRegistrationMessage(result.code==='already_registered'?'أنت مسجل بالفعل في هذه البطولة.':'تم تسجيلك في البطولة بنجاح.','ok');
+      const alreadyRegistered=result.code==='already_registered';
+      button.textContent=alreadyRegistered?'أنت مسجل بالفعل':'تم التسجيل';button.classList.add('registered');button.disabled=true;
+      setRegistrationMessage('');
       if(result.ok){const row=tournaments.find(item=>String(item.id)===String(tournamentId));if(row)row.registered_count=Number(row.registered_count||0)+1;const countCell=detailCard.querySelector('[data-registration-count]');if(countCell&&row){countCell.dataset.count=String(row.registered_count);countCell.textContent=`${row.registered_count} لاعب`}}
       return;
     }
@@ -350,6 +351,6 @@ async function loadTournaments(){
 
 loadTournaments();
 </script>
-<script type="module" src="site-presence.js?v=20260910-detail-split1"></script>
+<script type="module" src="site-presence.js?v=20260910-registration-button2"></script>
 </body>
 </html>
