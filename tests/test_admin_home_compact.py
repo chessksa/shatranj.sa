@@ -43,26 +43,30 @@ def test_admin_sections_become_a_fixed_compact_right_icon_rail_on_desktop():
     ]:
         assert token in (js + css), token
 
-    assert "admin-home-compact.css?v=20260911-3" in js
-    assert "admin-home-compact.js?v=20260911-3" in loader
+    assert "admin-home-compact.css?v=20260911-4" in js
+    assert "admin-home-compact.js?v=20260911-4" in loader
 
 
-def test_admin_section_rail_stays_fixed_and_larger_on_mobile_too():
+def test_mobile_admin_uses_overlay_drawer_without_reserving_content_width():
+    js = read("admin-home-compact.js")
     css = read("admin-home-compact.css")
+    mobile = css.split("@media(max-width:760px){", 1)[1]
+
+    assert "padding-right:72px" not in mobile
+    assert "width:min(82vw,310px)" in mobile
+    assert "transform:translateX(105%)!important" in mobile
+    assert "body.admin-home-compact-ready .sidebar.open" in mobile
+    assert "transform:translateX(0)!important" in mobile
+    assert ".menu-btn" in mobile
+    assert "display:grid!important" in mobile
+
     for token in [
-        "@media(max-width:760px)",
-        "position:fixed",
-        "width:72px",
-        "padding-right:72px",
-        "width:60px",
-        "height:56px",
-        ".admin-section-icon{font-size:22px}",
-        ".admin-section-label{font-size:10px}",
-        "transform:none!important",
-        ".menu-btn",
-        "display:none!important",
+        "admin-mobile-backdrop",
+        "admin-mobile-drawer-open",
+        "Escape",
+        "remove('open')",
     ]:
-        assert token in css, token
+        assert token in (js + css), token
 
 
 def test_dashboard_stats_are_compact_icon_metrics_instead_of_large_cards():
@@ -91,6 +95,6 @@ def test_dashboard_stats_are_compact_icon_metrics_instead_of_large_cards():
 
 if __name__ == "__main__":
     test_admin_sections_become_a_fixed_compact_right_icon_rail_on_desktop()
-    test_admin_section_rail_stays_fixed_and_larger_on_mobile_too()
+    test_mobile_admin_uses_overlay_drawer_without_reserving_content_width()
     test_dashboard_stats_are_compact_icon_metrics_instead_of_large_cards()
     print("Compact admin home tests passed")
