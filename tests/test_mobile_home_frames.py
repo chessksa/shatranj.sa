@@ -28,6 +28,37 @@ def test_mobile_home_frames_share_one_visual_contract():
     assert "box-shadow:var(--mobile-frame-shadow)!important" in css
 
 
+def test_signed_in_mobile_header_has_four_equal_controls_under_member_name():
+    css = (ROOT / "home-mobile-admin-colors.css").read_text(encoding="utf-8")
+    html = (ROOT / "index-app.html").read_text(encoding="utf-8")
+
+    assert "Mobile signed-in header four equal controls 20260911" in css
+    assert "grid-template-columns:repeat(4,minmax(0,1fr))!important" in css
+
+    for selector in [
+        "body.home-signed-in .compact-member-nav .mobile-dashboard-link",
+        "body.home-signed-in .compact-member-nav .header-notification-host",
+        "body.home-signed-in .compact-member-nav .header-tournaments",
+        "body.home-signed-in .compact-member-nav .nav-logout",
+    ]:
+        assert selector in css
+
+    for token in [
+        "height:44px!important",
+        "min-height:44px!important",
+        "width:100%!important",
+        "border-radius:14px!important",
+        "font-size:11px!important",
+        "font-size:18px!important",
+        "gap:6px!important",
+    ]:
+        assert token in css
+
+    assert 'class="header-tournaments header-tile"' in html
+    assert 'href="tournaments.html' in html
+
+
 if __name__ == "__main__":
     test_mobile_home_frames_share_one_visual_contract()
+    test_signed_in_mobile_header_has_four_equal_controls_under_member_name()
     print("Mobile home frame tests passed")
