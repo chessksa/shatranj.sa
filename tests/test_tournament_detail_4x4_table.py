@@ -1,19 +1,22 @@
 from pathlib import Path
-import re
 
 ROOT = Path(__file__).resolve().parents[1]
-HTML = (ROOT / 'tournaments.html').read_text(encoding='utf-8')
+LOADER = (ROOT / 'tournaments.html').read_text(encoding='utf-8')
+FIX = ROOT / 'tournament-detail-4x4.js'
 
-start = HTML.index('function renderTournamentDetail(row)')
-end = HTML.index('\nfunction firstRow', start)
-render = HTML[start:end]
+assert 'tournaments-app.html' in LOADER, 'tournaments loader must fetch the uncached app source'
+assert 'tournament-detail-4x4.js' in LOADER, 'tournaments loader must inject the final detail-table module'
+assert FIX.exists(), 'final tournament detail module must exist'
 
-assert '<table class="tournament-detail-table"' in render, 'tournament detail must render a real table'
-assert render.count('<tr>') == 4, 'tournament detail table must have exactly 4 rows'
-assert render.count('<th') == 8, '4x4 detail table needs 8 label cells'
-assert render.count('<td') == 8, '4x4 detail table needs 8 value cells'
-assert 'data-registration-count' in render, 'live registration counter must remain in the table'
-assert re.search(r'\.tournament-detail-table th\s*\{[^}]*font-size:12px!important', HTML, re.S), 'detail labels must be 12px'
-assert re.search(r'\.tournament-detail-table td\s*\{[^}]*font-size:10px!important', HTML, re.S), 'detail values must be 10px'
+source = FIX.read_text(encoding='utf-8')
+assert "slice(0,8)" in source, 'the table must use exactly the eight base detail fields'
+assert "for(let i=0;i<8;i+=2)" in source, 'eight fields must be paired into four rows'
+assert "table.className='tournament-detail-table'" in source
+assert "document.createElement('tr')" in source
+assert source.count("document.createElement('th')") >= 2, 'each row needs two label cells'
+assert source.count("document.createElement('td')") >= 2, 'each row needs two value cells'
+assert 'font-size:12px!important' in source, 'detail labels must be 12px'
+assert 'font-size:10px!important' in source, 'detail values must be 10px'
+assert "td.appendChild(value)" in source, 'live registration value must be preserved while moving cells'
 
 print('tournament detail is exactly 4 rows x 4 columns with 12/10 fonts: PASS')
