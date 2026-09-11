@@ -71,6 +71,23 @@
     display:none!important;
   }
 
+  /* Beat older !important icon rules with higher specificity. */
+  html body.home-signed-in .compact-member-nav .mobile-dashboard-link .header-tile-icon,
+  html body.home-signed-in .compact-member-nav .site-notification-bell .header-tile-icon,
+  html body.home-signed-in.home-admin-enabled .compact-member-nav .home-admin-link .header-tile-icon{
+    display:none!important;
+    width:0!important;
+    height:0!important;
+    flex:0 0 0!important;
+    margin:0!important;
+  }
+
+  html body.home-signed-in .compact-member-nav .site-notification-bell::before,
+  html body.home-signed-in .compact-member-nav .site-notification-bell::after{
+    content:none!important;
+    display:none!important;
+  }
+
   body.home-signed-in .compact-member-nav .site-notification-badge{
     box-sizing:border-box!important;
     z-index:2!important;
