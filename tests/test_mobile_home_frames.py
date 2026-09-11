@@ -66,7 +66,6 @@ def test_mobile_header_controls_are_balanced_and_readable():
     assert "body.home-signed-in.home-admin-enabled .compact-member-nav .nav-user" in core
     assert "grid-template-columns:repeat(4,minmax(0,1fr))!important" in core
     assert "html body.home-signed-in.home-admin-enabled .compact-member-nav .home-admin-link" in svg_css
-    assert "home-header-svg.css?v=20260911-1" in core
 
     # Runtime decoration replaces platform-dependent emoji with one SVG system.
     for token in [
@@ -83,8 +82,30 @@ def test_mobile_header_controls_are_balanced_and_readable():
     assert '🔔' not in core
 
 
+def test_mobile_header_nested_assets_use_the_runtime_cache_buster():
+    loader = (ROOT / "index.html").read_text(encoding="utf-8")
+    wrapper = (ROOT / "site-notifications.js").read_text(encoding="utf-8")
+    core = (ROOT / "site-notifications-core.js").read_text(encoding="utf-8")
+
+    # The page loader already gives site-notifications.js a fresh runtime version.
+    assert "site-notifications.js?v='+runtimeVersion" in loader
+
+    # That same version must propagate to the nested core script rather than a fixed old URL.
+    assert "document.currentScript" in wrapper
+    assert "RUNTIME_VERSION" in wrapper
+    assert "site-notifications-core.js?v=${encodeURIComponent(RUNTIME_VERSION)}" in wrapper
+    assert "site-notifications-core.js?v=20260910-admin-home1" not in wrapper
+
+    # The core must propagate its version to the dedicated SVG stylesheet too.
+    assert "document.currentScript" in core
+    assert "HEADER_ASSET_VERSION" in core
+    assert "home-header-svg.css?v=${encodeURIComponent(HEADER_ASSET_VERSION)}" in core
+    assert "home-header-svg.css?v=20260911-1" not in core
+
+
 if __name__ == "__main__":
     test_mobile_home_frames_share_one_visual_contract()
     test_tournaments_are_not_injected_into_the_mobile_header()
     test_mobile_header_controls_are_balanced_and_readable()
+    test_mobile_header_nested_assets_use_the_runtime_cache_buster()
     print("Mobile home frame tests passed")
