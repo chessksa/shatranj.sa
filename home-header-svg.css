@@ -161,7 +161,6 @@
   html body.home-signed-in #ranking .head{
     gap:var(--mobile-gap)!important;
     padding:var(--mobile-gap)!important;
-    margin-bottom:var(--mobile-gap)!important;
   }
 
   html body.home-signed-in #ranking .ranking-filters{
@@ -219,7 +218,7 @@
     font:inherit!important;
   }
 
-  html body.home-signed-in #ranking{padding:var(--mobile-gap) 0!important}
+  html body.home-signed-in #ranking{padding:0 0 var(--mobile-gap)!important}
   html body.home-signed-in #ranking>.wrap{width:calc(100% - 8px)!important}
   html body.home-signed-in #ranking>.wrap{margin-inline:auto!important}
 }
