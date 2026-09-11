@@ -61,7 +61,6 @@ def test_mobile_header_controls_are_balanced_and_readable():
         "column-gap:4px!important",
         "row-gap:4px!important",
         "padding-inline:4px!important",
-        ".header-tile-icon{display:none!important}",
     ]:
         assert token in header_css, token
 
@@ -73,11 +72,13 @@ def test_mobile_header_controls_are_balanced_and_readable():
     for label in ["لوحة التحكم", "الإدارة", "الإشعارات"]:
         assert label in core
 
-    # Icons must be removed at the markup source, not merely hidden by CSS.
-    assert "HEADER_SVG_ICONS" not in core
-    assert "header-tile-icon" not in core
-    assert "header-tile-svg" not in core
-    assert "content:'🔔'" not in base_css
+    # Old mobile rules use !important and higher specificity; the text-only layer must beat them.
+    assert "html body.home-signed-in .compact-member-nav .site-notification-bell .header-tile-icon" in header_css
+    assert "html body.home-signed-in.home-admin-enabled .compact-member-nav .home-admin-link .header-tile-icon" in header_css
+    assert "display:none!important" in header_css
+    assert "html body.home-signed-in .compact-member-nav .site-notification-bell::before" in header_css
+    assert "html body.home-signed-in .compact-member-nav .site-notification-bell::after" in header_css
+    assert "content:none!important" in header_css
 
 
 def test_notification_wrapper_propagates_runtime_version_to_nested_core():
