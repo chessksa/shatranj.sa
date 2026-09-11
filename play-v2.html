@@ -17,7 +17,7 @@
       <div class="v2-board-column">
         <div id="v2-opponent" class="v2-player-card v2-opponent">
           <div class="v2-player-copy">
-            <span class="v2-player-name">بانتظار الخصم</span>
+            <a id="v2-opponent-name" class="v2-player-name v2-player-link">بانتظار الخصم</a>
             <span id="v2-search-status" class="v2-search-status" aria-live="polite">جاهز للبحث</span>
           </div>
           <time id="v2-clock-black" class="v2-clock" datetime="PT10M">10:00</time>
@@ -27,8 +27,8 @@
 
         <div id="v2-player" class="v2-player-card v2-current-player">
           <div class="v2-player-copy">
-            <span class="v2-player-name">أنت</span>
-            <span class="v2-player-meta">النقاط —</span>
+            <a id="v2-player-name" class="v2-player-name v2-player-link">أنت</a>
+            <span id="v2-player-meta" class="v2-player-meta">النقاط —</span>
           </div>
           <time id="v2-clock-white" class="v2-clock" datetime="PT10M">10:00</time>
         </div>
@@ -36,6 +36,12 @@
 
       <aside class="v2-side-panel" aria-label="أدوات المباراة">
         <div class="v2-side-title">مباراة مباشرة</div>
+        <div id="v2-quick-times" class="v2-quick-times" aria-label="زمن المباراة">
+          <button type="button" data-minutes="5">5</button>
+          <button type="button" data-minutes="10">10</button>
+          <button type="button" data-minutes="15">15</button>
+        </div>
+        <button id="v2-search" class="v2-search-button" type="button">ابحث عن خصم</button>
         <div class="v2-actions">
           <button id="v2-grace-end" class="v2-action v2-grace" type="button" hidden>إنهاء <span>5</span></button>
           <button id="v2-draw" class="v2-action" type="button" disabled>تعادل</button>
@@ -47,7 +53,6 @@
 
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
   <script src="config-base.js"></script>
-  <script src="config.js"></script>
   <script type="module" src="v2/play/app.js"></script>
 </body>
 </html>
