@@ -30,7 +30,8 @@ def test_mobile_home_frames_share_one_visual_contract():
 
 def test_signed_in_mobile_header_has_four_equal_controls_under_member_name():
     css = (ROOT / "home-mobile-admin-colors.css").read_text(encoding="utf-8")
-    html = (ROOT / "index-app.html").read_text(encoding="utf-8")
+    js = (ROOT / "home-header-controls.js").read_text(encoding="utf-8")
+    loader = (ROOT / "index.html").read_text(encoding="utf-8")
 
     assert "Mobile signed-in header four equal controls 20260911" in css
     assert "grid-template-columns:repeat(4,minmax(0,1fr))!important" in css
@@ -54,8 +55,9 @@ def test_signed_in_mobile_header_has_four_equal_controls_under_member_name():
     ]:
         assert token in css
 
-    assert 'class="header-tournaments header-tile"' in html
-    assert 'href="tournaments.html' in html
+    assert "header-tournaments header-tile" in js
+    assert "tournaments.html" in js
+    assert "home-header-controls.js" in loader
 
 
 if __name__ == "__main__":
