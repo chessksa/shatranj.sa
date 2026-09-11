@@ -374,3 +374,64 @@
     color:var(--hero-gold-2)!important;
   }
 }
+
+/* Final mobile header balance: admin + notification label */
+@media(max-width:600px){
+  html body.home-signed-in.home-admin-enabled .compact-member-nav .nav-user{
+    grid-template-columns:repeat(4,minmax(0,1fr))!important;
+    column-gap:7px!important;
+  }
+
+  html body.home-signed-in.home-admin-enabled .compact-member-nav .home-admin-link{
+    width:100%!important;
+    min-width:0!important;
+    max-width:none!important;
+    height:48px!important;
+    min-height:48px!important;
+    margin:0!important;
+    padding:0 8px!important;
+    display:inline-flex!important;
+    align-items:center!important;
+    justify-content:center!important;
+    gap:6px!important;
+    border:var(--mobile-frame-border)!important;
+    border-radius:14px!important;
+    background:var(--mobile-frame-bg)!important;
+    box-shadow:var(--mobile-frame-shadow)!important;
+    color:var(--hero-cream)!important;
+    font:800 14px/1 Arial,sans-serif!important;
+    white-space:nowrap!important;
+  }
+
+  html body.home-signed-in.home-admin-enabled .compact-member-nav .home-admin-link .header-tile-icon{
+    width:22px!important;
+    height:22px!important;
+    flex:0 0 22px!important;
+    display:inline-grid!important;
+    place-items:center!important;
+    font-size:21px!important;
+    line-height:1!important;
+  }
+
+  body.home-signed-in .compact-member-nav .site-notification-bell{
+    font-size:0!important;
+  }
+
+  body.home-signed-in .compact-member-nav .site-notification-bell::before{
+    content:'🔔';
+    display:inline-grid;
+    place-items:center;
+    width:22px;
+    height:22px;
+    flex:0 0 22px;
+    font-size:21px!important;
+    line-height:1;
+  }
+
+  body.home-signed-in .compact-member-nav .site-notification-bell::after{
+    content:'الإشعارات';
+    font:800 14px/1 Arial,sans-serif;
+    color:var(--hero-cream);
+    white-space:nowrap;
+  }
+}
