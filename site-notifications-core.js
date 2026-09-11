@@ -34,6 +34,39 @@
   let open = false;
   let pollingTimer = null;
 
+  const HEADER_SVG_ICONS = Object.freeze({
+    dashboard: '<svg class="header-tile-svg" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><rect x="3" y="3" width="7" height="7" rx="1"></rect><rect x="14" y="3" width="7" height="7" rx="1"></rect><rect x="3" y="14" width="7" height="7" rx="1"></rect><rect x="14" y="14" width="7" height="7" rx="1"></rect></svg>',
+    admin: '<svg class="header-tile-svg" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M12 3 19 6v5c0 4.8-2.8 8.3-7 10-4.2-1.7-7-5.2-7-10V6l7-3Z"></path><path d="m9.3 12 1.8 1.8 3.8-4"></path></svg>',
+    notifications: '<svg class="header-tile-svg" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M18 8a6 6 0 0 0-12 0c0 7-3 7-3 9h18c0-2-3-2-3-9"></path><path d="M10 21h4"></path></svg>'
+  });
+
+  function headerIconMarkup(icon, label) {
+    return `<span class="header-tile-icon" aria-hidden="true">${HEADER_SVG_ICONS[icon]}</span><span class="header-tile-label">${label}</span>`;
+  }
+
+  function ensureHeaderStylesheet() {
+    if (document.querySelector('link[data-home-header-svg]')) return;
+    const link = document.createElement('link');
+    link.rel = 'stylesheet';
+    link.href = 'home-header-svg.css?v=20260911-1';
+    link.dataset.homeHeaderSvg = '1';
+    document.head.appendChild(link);
+  }
+
+  function decorateHeaderIcons() {
+    const dashboard = document.getElementById('mobileDashboardNav');
+    if (dashboard && dashboard.dataset.svgHeaderReady !== '1') {
+      dashboard.innerHTML = headerIconMarkup('dashboard', 'لوحة التحكم');
+      dashboard.dataset.svgHeaderReady = '1';
+    }
+
+    const admin = document.getElementById('siteAdminLink');
+    if (admin && admin.dataset.svgHeaderReady !== '1') {
+      admin.innerHTML = headerIconMarkup('admin', 'الإدارة');
+      admin.dataset.svgHeaderReady = '1';
+    }
+  }
+
   const labels = {
     friend_request: (n) => `${n.actor_name || 'لاعب'} أرسل لك طلب صداقة`,
     friend_accepted: (n) => `${n.actor_name || 'لاعب'} قبل طلب الصداقة`,
@@ -97,7 +130,8 @@
 
   function buildUI(host) {
     host.innerHTML = `
-      <button class="site-notification-bell" id="siteNotificationBell" type="button" aria-label="الإشعارات">🔔
+      <button class="site-notification-bell" id="siteNotificationBell" type="button" aria-label="الإشعارات">
+        <span class="header-tile-icon" aria-hidden="true">${HEADER_SVG_ICONS.notifications}</span><span class="header-tile-label">الإشعارات</span>
         <span class="site-notification-badge" id="siteNotificationBadge" hidden>0</span>
       </button>
       <div class="site-notification-menu" id="siteNotificationMenu" hidden>
@@ -203,7 +237,7 @@
     link.id = 'siteAdminLink';
     link.className = 'header-action header-tile home-admin-link';
     link.href = 'admin.html';
-    link.innerHTML = '<span class="header-tile-icon" aria-hidden="true">🛡</span><span>الإدارة</span>';
+    link.innerHTML = headerIconMarkup('admin', 'الإدارة');
 
     const mobileDashboard = document.getElementById('mobileDashboardNav');
     const dashboard = document.getElementById('dashboardNav');
@@ -213,6 +247,7 @@
 
     document.body.classList.add('home-admin-enabled');
     if (!dashboardAnchor) document.body.classList.add('home-admin-no-dashboard');
+    decorateHeaderIcons();
   }
 
   async function refreshCount() {
@@ -335,10 +370,12 @@
     const { data } = await client.auth.getSession();
     session = data.session;
     if (!session) return;
+    ensureHeaderStylesheet();
     ensureStyles();
     const host = ensureHost();
     if (!host) return;
     buildUI(host);
+    decorateHeaderIcons();
     bindUI();
     await ensureAdminLink();
     await refreshCount();
