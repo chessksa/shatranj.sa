@@ -93,3 +93,12 @@
     z-index:2!important;
   }
 }
+
+/* Final mobile header inter-control gap 4px */
+@media(max-width:600px){
+  html body.home-signed-in .compact-member-nav .nav-user,
+  html body.home-signed-in.home-admin-enabled .compact-member-nav .nav-user{
+    gap:4px!important;
+    column-gap:4px!important;
+  }
+}
