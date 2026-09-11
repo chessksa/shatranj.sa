@@ -22,7 +22,7 @@ function mountCompactStylesheet() {
   if (document.querySelector('link[data-admin-home-compact]')) return;
   const link = document.createElement('link');
   link.rel = 'stylesheet';
-  link.href = 'admin-home-compact.css?v=20260911-3';
+  link.href = 'admin-home-compact.css?v=20260911-4';
   link.dataset.adminHomeCompact = '1';
   document.head.appendChild(link);
 }
@@ -56,6 +56,67 @@ function compactDashboardStats() {
   });
 }
 
+function isMobileAdmin() {
+  return window.matchMedia('(max-width:760px)').matches;
+}
+
+function mountMobileDrawerBackdrop() {
+  let backdrop = document.querySelector('.admin-mobile-backdrop');
+  if (backdrop) return backdrop;
+  backdrop = document.createElement('button');
+  backdrop.type = 'button';
+  backdrop.className = 'admin-mobile-backdrop';
+  backdrop.setAttribute('aria-label', 'إغلاق قائمة الإدارة');
+  backdrop.setAttribute('aria-hidden', 'true');
+  document.body.appendChild(backdrop);
+  return backdrop;
+}
+
+function syncMobileDrawerState() {
+  const sidebar = document.getElementById('adminSidebar');
+  const menuButton = document.getElementById('mobileMenuBtn');
+  const backdrop = document.querySelector('.admin-mobile-backdrop');
+  const open = Boolean(sidebar?.classList.contains('open') && isMobileAdmin());
+  document.body.classList.toggle('admin-mobile-drawer-open', open);
+  menuButton?.setAttribute('aria-expanded', open ? 'true' : 'false');
+  backdrop?.setAttribute('aria-hidden', open ? 'false' : 'true');
+}
+
+function closeMobileDrawer() {
+  document.getElementById('adminSidebar')?.classList.remove('open');
+  syncMobileDrawerState();
+}
+
+function wireMobileDrawer() {
+  const sidebar = document.getElementById('adminSidebar');
+  const menuButton = document.getElementById('mobileMenuBtn');
+  const backdrop = mountMobileDrawerBackdrop();
+  if (!sidebar || !menuButton) return;
+
+  menuButton.setAttribute('aria-controls', 'adminSidebar');
+  menuButton.setAttribute('aria-expanded', 'false');
+
+  const sidebarObserver = new MutationObserver(syncMobileDrawerState);
+  sidebarObserver.observe(sidebar, { attributes: true, attributeFilter: ['class'] });
+
+  backdrop.addEventListener('click', closeMobileDrawer);
+  sidebar.addEventListener('click', (event) => {
+    if (!isMobileAdmin()) return;
+    if (event.target.closest('.nav-btn,[data-view],#proSettingsNav,.back-site')) closeMobileDrawer();
+  });
+  document.addEventListener('keydown', (event) => {
+    if (event.key === 'Escape' && document.body.classList.contains('admin-mobile-drawer-open')) closeMobileDrawer();
+  });
+
+  const mobileQuery = window.matchMedia('(max-width:760px)');
+  mobileQuery.addEventListener?.('change', () => {
+    if (!isMobileAdmin()) closeMobileDrawer();
+    else syncMobileDrawerState();
+  });
+
+  syncMobileDrawerState();
+}
+
 function applyCompactAdminHome() {
   mountCompactStylesheet();
   compactSectionRail();
@@ -65,6 +126,7 @@ function applyCompactAdminHome() {
 
 function startCompactAdminHome() {
   applyCompactAdminHome();
+  wireMobileDrawer();
   const observer = new MutationObserver(() => {
     compactSectionRail();
     compactDashboardStats();
