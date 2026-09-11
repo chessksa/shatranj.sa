@@ -1,0 +1,1 @@
+V2 live play implementation starts from the approved 2026-09-12 design and implementation plan. Production human-vs-human play is currently non-functional; legacy play code is reference only.
