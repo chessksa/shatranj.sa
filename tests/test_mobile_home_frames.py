@@ -104,6 +104,37 @@ def test_signed_in_mobile_home_uses_4px_between_major_blocks():
     assert "padding:var(--mobile-gap) 0!important" in css
 
 
+def test_mobile_header_tiles_match_and_ranking_aligns_with_content_above():
+    css = (ROOT / "home-header-svg.css").read_text(encoding="utf-8")
+
+    assert "Final equal mobile header tiles and ranking width 20260911" in css
+    for selector in [
+        "html body.home-signed-in .compact-member-nav .mobile-dashboard-link",
+        "html body.home-signed-in.home-admin-enabled .compact-member-nav .home-admin-link",
+        "html body.home-signed-in .compact-member-nav .header-notification-host",
+        "html body.home-signed-in .compact-member-nav .nav-logout",
+    ]:
+        assert selector in css, selector
+
+    for token in [
+        "height:48px!important",
+        "min-height:48px!important",
+        "border:var(--mobile-frame-border)!important",
+        "border-radius:14px!important",
+        "background:var(--mobile-frame-bg)!important",
+        "box-shadow:var(--mobile-frame-shadow)!important",
+        "font-size:14px!important",
+    ]:
+        assert token in css, token
+
+    assert "html body.home-signed-in .compact-member-nav .header-notification-host .site-notification-bell" in css
+    assert "border:0!important" in css
+    assert "background:transparent!important" in css
+    assert "box-shadow:none!important" in css
+    assert "html body.home-signed-in #ranking{padding:var(--mobile-gap) 0!important}" in css
+    assert "html body.home-signed-in #ranking>.wrap{width:calc(100% - 8px)!important}" in css
+
+
 def test_notification_wrapper_propagates_runtime_version_to_nested_core():
     loader = (ROOT / "index.html").read_text(encoding="utf-8")
     wrapper = (ROOT / "site-notifications.js").read_text(encoding="utf-8")
@@ -120,5 +151,6 @@ if __name__ == "__main__":
     test_tournaments_are_not_injected_into_the_mobile_header()
     test_mobile_header_controls_are_balanced_and_readable()
     test_signed_in_mobile_home_uses_4px_between_major_blocks()
+    test_mobile_header_tiles_match_and_ranking_aligns_with_content_above()
     test_notification_wrapper_propagates_runtime_version_to_nested_core()
     print("Mobile home frame tests passed")
