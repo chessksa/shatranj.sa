@@ -67,7 +67,7 @@ def test_mobile_header_controls_are_balanced_and_readable():
     assert "body.home-signed-in.home-admin-enabled .compact-member-nav .nav-user" in core
     assert "grid-template-columns:repeat(4,minmax(0,1fr))!important" in core
     assert "html body.home-signed-in.home-admin-enabled .compact-member-nav .home-admin-link" in header_css
-    assert "home-header-svg.css?v=20260911-1" in core
+    assert "home-header-svg.css?v=20260911-2" in core
 
     for label in ["لوحة التحكم", "الإدارة", "الإشعارات"]:
         assert label in core
@@ -135,6 +135,15 @@ def test_mobile_header_tiles_match_and_ranking_aligns_with_content_above():
     assert "html body.home-signed-in #ranking>.wrap{width:calc(100% - 8px)!important}" in css
 
 
+def test_mobile_hero_to_ranking_visible_gap_is_single_4px():
+    css = (ROOT / "home-header-svg.css").read_text(encoding="utf-8")
+
+    assert "Final mobile hero-to-ranking gap 4px 20260911" in css
+    assert "html body.home-signed-in .home-hero .home-board-actions{margin-bottom:0!important}" in css
+    assert "html body.home-signed-in .home-hero{padding:var(--mobile-gap) 0!important}" in css
+    assert "html body.home-signed-in #ranking{padding:0 0 var(--mobile-gap)!important}" in css
+
+
 def test_notification_wrapper_propagates_runtime_version_to_nested_core():
     loader = (ROOT / "index.html").read_text(encoding="utf-8")
     wrapper = (ROOT / "site-notifications.js").read_text(encoding="utf-8")
@@ -152,5 +161,6 @@ if __name__ == "__main__":
     test_mobile_header_controls_are_balanced_and_readable()
     test_signed_in_mobile_home_uses_4px_between_major_blocks()
     test_mobile_header_tiles_match_and_ranking_aligns_with_content_above()
+    test_mobile_hero_to_ranking_visible_gap_is_single_4px()
     test_notification_wrapper_propagates_runtime_version_to_nested_core()
     print("Mobile home frame tests passed")
