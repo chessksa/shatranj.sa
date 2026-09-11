@@ -72,7 +72,6 @@ def test_mobile_header_controls_are_balanced_and_readable():
     for label in ["لوحة التحكم", "الإدارة", "الإشعارات"]:
         assert label in core
 
-    # Old mobile rules use !important and higher specificity; the text-only layer must beat them.
     assert "html body.home-signed-in .compact-member-nav .site-notification-bell .header-tile-icon" in header_css
     assert "html body.home-signed-in.home-admin-enabled .compact-member-nav .home-admin-link .header-tile-icon" in header_css
     assert "display:none!important" in header_css
@@ -80,10 +79,29 @@ def test_mobile_header_controls_are_balanced_and_readable():
     assert "html body.home-signed-in .compact-member-nav .site-notification-bell::after" in header_css
     assert "content:none!important" in header_css
 
-    # The final cascade rule must pin the space between header controls at exactly 4px.
     assert "Final mobile header inter-control gap 4px" in header_css
-    assert "html body.home-signed-in .compact-member-nav .nav-user" in header_css
-    assert "gap:4px!important" in header_css
+    assert "column-gap:4px!important" in header_css
+    assert "row-gap:4px!important" in header_css
+
+
+def test_signed_in_mobile_home_uses_4px_between_major_blocks():
+    css = (ROOT / "home-header-svg.css").read_text(encoding="utf-8")
+
+    assert "Mobile signed-in universal 4px spacing 20260911" in css
+    assert "--mobile-gap:4px" in css
+    for selector in [
+        "html body.home-signed-in .home-header .compact-member-nav",
+        "html body.home-signed-in .hero-live-stats",
+        "html body.home-signed-in .home-hero .home-board-actions",
+        "html body.home-signed-in #ranking",
+        "html body.home-signed-in #ranking .head",
+        "html body.home-signed-in #ranking .ranking-filters",
+    ]:
+        assert selector in css, selector
+
+    assert "gap:var(--mobile-gap)!important" in css
+    assert "margin-bottom:var(--mobile-gap)!important" in css
+    assert "padding:var(--mobile-gap) 0!important" in css
 
 
 def test_notification_wrapper_propagates_runtime_version_to_nested_core():
@@ -101,5 +119,6 @@ if __name__ == "__main__":
     test_mobile_home_frames_share_one_visual_contract()
     test_tournaments_are_not_injected_into_the_mobile_header()
     test_mobile_header_controls_are_balanced_and_readable()
+    test_signed_in_mobile_home_uses_4px_between_major_blocks()
     test_notification_wrapper_propagates_runtime_version_to_nested_core()
     print("Mobile home frame tests passed")
