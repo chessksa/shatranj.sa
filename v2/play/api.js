@@ -113,6 +113,10 @@ export async function graceEnd(gameId) {
   return invokeGameAction({ action: 'grace_end', gameId });
 }
 
+export async function timeoutGame(gameId) {
+  return invokeGameAction({ action: 'timeout', gameId });
+}
+
 export function subscribeGame(gameId, onHint) {
   const client = supabaseClient();
   const channel = client
