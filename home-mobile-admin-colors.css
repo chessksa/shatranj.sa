@@ -199,3 +199,102 @@
     box-shadow:var(--mobile-frame-shadow)!important;
   }
 }
+
+/* Mobile signed-in header four equal controls 20260911 */
+.compact-member-nav .header-tournaments{display:none!important}
+@media(max-width:600px){
+  body.home-signed-in .compact-member-nav .nav-user{
+    width:100%!important;
+    display:grid!important;
+    grid-template-columns:repeat(4,minmax(0,1fr))!important;
+    column-gap:6px!important;
+    row-gap:6px!important;
+    align-items:stretch!important;
+    overflow:visible!important;
+    direction:rtl!important;
+  }
+
+  body.home-signed-in .compact-member-nav .header-member{
+    grid-column:1/-1!important;
+    grid-row:1!important;
+    width:100%!important;
+    min-width:0!important;
+  }
+
+  body.home-signed-in .compact-member-nav .dashboard-link,
+  body.home-signed-in .compact-member-nav .nav-account{
+    display:none!important;
+  }
+
+  body.home-signed-in .compact-member-nav .mobile-dashboard-link,
+  body.home-signed-in .compact-member-nav .header-notification-host,
+  body.home-signed-in .compact-member-nav .header-tournaments,
+  body.home-signed-in .compact-member-nav .nav-logout{
+    width:100%!important;
+    min-width:0!important;
+    max-width:none!important;
+    height:44px!important;
+    min-height:44px!important;
+    margin:0!important;
+  }
+
+  body.home-signed-in .compact-member-nav .mobile-dashboard-link{
+    display:inline-flex!important;
+    grid-column:1!important;
+    grid-row:2!important;
+  }
+  body.home-signed-in .compact-member-nav .header-notification-host{
+    display:flex!important;
+    grid-column:2!important;
+    grid-row:2!important;
+  }
+  body.home-signed-in .compact-member-nav .header-tournaments{
+    display:inline-flex!important;
+    grid-column:3!important;
+    grid-row:2!important;
+  }
+  body.home-signed-in .compact-member-nav .nav-logout{
+    display:inline-flex!important;
+    grid-column:4!important;
+    grid-row:2!important;
+  }
+
+  body.home-signed-in .compact-member-nav .mobile-dashboard-link,
+  body.home-signed-in .compact-member-nav .header-tournaments,
+  body.home-signed-in .compact-member-nav .nav-logout,
+  body.home-signed-in .compact-member-nav .site-notification-bell{
+    align-items:center!important;
+    justify-content:center!important;
+    gap:6px!important;
+    padding:0 6px!important;
+    border:var(--mobile-frame-border)!important;
+    border-radius:14px!important;
+    background:var(--mobile-frame-bg)!important;
+    box-shadow:var(--mobile-frame-shadow)!important;
+    color:var(--hero-cream)!important;
+    font-family:Arial,sans-serif!important;
+    font-size:11px!important;
+    font-weight:800!important;
+    line-height:1!important;
+  }
+
+  body.home-signed-in .compact-member-nav .site-notification-bell{
+    width:100%!important;
+    height:44px!important;
+    min-height:44px!important;
+  }
+
+  body.home-signed-in .compact-member-nav .header-tile-icon,
+  body.home-signed-in .compact-member-nav .site-notification-bell{
+    font-size:18px!important;
+  }
+
+  body.home-signed-in .compact-member-nav .header-tile-icon{
+    width:20px!important;
+    height:20px!important;
+    flex:0 0 20px!important;
+    display:inline-grid!important;
+    place-items:center!important;
+    color:var(--hero-gold-2)!important;
+  }
+}
