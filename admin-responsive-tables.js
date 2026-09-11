@@ -8,7 +8,7 @@ const COMPACT_TABLES = {
   unifiedGamesTableBody: { visible:[0,1,2,3], openSelector:'[data-game],a[href*="computer-watch.html"]' },
   reportsTableBody: { visible:[0,1,2,4], openSelector:'[data-report]' },
   actionsTableBody: { visible:[0,1,6,7] },
-  moderatorsTableBody: { visible:[0,1,2,3] },
+  moderatorsTableBody: { visible:[0,1,3,5] },
   tournamentsTableBody: { visible:[0,1,4,5], openSelector:'[data-action="editTournament"]' }
 };
 
@@ -85,6 +85,7 @@ function mountResponsiveTableStyles() {
     text-overflow:ellipsis;
     white-space:nowrap;
   }
+  body.admin-pro-ready .table-wrap [data-action="removeModerator"]{color:#ffaaaa!important}
   body.admin-pro-ready .table-wrap .status-pill{
     max-width:100%;
     justify-content:center;
@@ -158,6 +159,14 @@ function compactTable(tbody, config) {
       visibleOrder += 1;
       cell.classList.add(`compact-col-${visibleOrder}`);
     });
+
+    if (tbody.id === 'moderatorsTableBody') {
+      const button = row.querySelector('[data-action="removeModerator"]');
+      if (button) {
+        button.textContent = 'حذف';
+        button.setAttribute('aria-label', 'حذف المشرف');
+      }
+    }
 
     const trigger = config.openSelector ? row.querySelector(config.openSelector) : null;
     if (trigger) {
