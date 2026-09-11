@@ -32,8 +32,18 @@ main{flex:1 1 auto;min-height:0;overflow:hidden;padding:14px 0}main>.wrap{height
 .detail-toolbar-title,.detail-title,.bracket-title{font-size:16px!important}
 .detail-label,.bracket-round-title{font-size:14px!important}
 .detail-value,.detail-shell .status,.bracket-player,.bracket-meta,.bracket-empty{font-size:12px!important}
+
+/* tournament-detail-4x4-table */
+.detail-grid{display:grid!important;grid-template-columns:repeat(2,minmax(0,1fr))!important;gap:0!important;overflow:hidden!important;border:1px solid rgba(216,182,101,.22)!important;border-radius:12px!important;background:rgba(3,38,40,.24)!important;direction:rtl!important}
+.detail-grid>.detail-item{display:grid!important;grid-template-columns:minmax(66px,.9fr) minmax(0,1.35fr)!important;min-width:0!important;padding:0!important;border:0!important;border-bottom:1px solid rgba(216,182,101,.18)!important;border-radius:0!important;background:transparent!important;direction:rtl!important}
+.detail-grid>.detail-item:nth-child(odd){border-left:1px solid rgba(216,182,101,.18)!important}
+.detail-grid>.detail-item:nth-last-child(-n+2){border-bottom:0!important}
+.detail-grid>.detail-item>.detail-label,.detail-grid>.detail-item>.detail-value{min-width:0!important;min-height:34px!important;margin:0!important;padding:5px 4px!important;display:flex!important;align-items:center!important;justify-content:center!important;text-align:center!important;line-height:1.2!important;overflow-wrap:anywhere!important}
+.detail-grid>.detail-item>.detail-label{border-left:1px solid rgba(216,182,101,.18)!important;background:rgba(216,182,101,.045)!important;color:#d9c58f!important;font-size:12px!important;font-weight:900!important}
+.detail-grid>.detail-item>.detail-value{background:rgba(3,38,40,.18)!important;color:var(--hero-cream)!important;font-size:10px!important;font-weight:700!important}
+@media(max-width:700px){.detail-grid{grid-template-columns:repeat(2,minmax(0,1fr))!important}.detail-grid>.detail-item{grid-template-columns:minmax(62px,.9fr) minmax(0,1.25fr)!important}.detail-grid>.detail-item>.detail-label,.detail-grid>.detail-item>.detail-value{min-height:32px!important;padding:4px 3px!important}}
 </style>
-<script src="config.js"></script>
+<script src="config.js?v=20260911-grid2"></script>
 </head>
 <body>
 <header><div class="wrap nav"><div class="brand">شطرنج العرب</div><div id="tournamentHeaderActions" class="nav-actions"><button id="backToTournamentList" class="back header-list-back" type="button" hidden>العودة إلى قائمة البطولات</button><a class="back" href="index.html">العودة للرئيسية</a></div></div></header>
