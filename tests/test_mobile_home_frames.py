@@ -56,7 +56,6 @@ def test_mobile_header_controls_are_balanced_and_readable():
     for token in [
         "height:48px!important",
         "min-height:48px!important",
-        "font-size:15px!important",
         "box-sizing:border-box!important",
         ".header-tile-svg",
         "content:none!important",
@@ -82,6 +81,25 @@ def test_mobile_header_controls_are_balanced_and_readable():
     assert '🔔' not in core
 
 
+def test_mobile_header_labels_fit_with_two_pixel_spacing_and_fresh_css():
+    svg_css = (ROOT / "home-header-svg.css").read_text(encoding="utf-8")
+    loader = (ROOT / "index.html").read_text(encoding="utf-8")
+
+    for token in [
+        "column-gap:2px!important",
+        "padding-inline:2px!important",
+        "gap:2px!important",
+        "width:16px!important",
+        "height:16px!important",
+        "font-size:14px!important",
+    ]:
+        assert token in svg_css, token
+
+    assert "text-overflow:clip!important" in svg_css
+    assert "home-header-svg.css?v='+runtimeVersion" in loader
+    assert "data-home-header-svg" in loader
+
+
 def test_notification_wrapper_propagates_runtime_version_to_nested_core():
     loader = (ROOT / "index.html").read_text(encoding="utf-8")
     wrapper = (ROOT / "site-notifications.js").read_text(encoding="utf-8")
@@ -97,5 +115,6 @@ if __name__ == "__main__":
     test_mobile_home_frames_share_one_visual_contract()
     test_tournaments_are_not_injected_into_the_mobile_header()
     test_mobile_header_controls_are_balanced_and_readable()
+    test_mobile_header_labels_fit_with_two_pixel_spacing_and_fresh_css()
     test_notification_wrapper_propagates_runtime_version_to_nested_core()
     print("Mobile home frame tests passed")
