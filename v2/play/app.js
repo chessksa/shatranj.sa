@@ -1,4 +1,18 @@
-import { getSession, getCurrentPlayer, startMatchmaking, pollMatchmaking, cancelMatchmaking, getGameState, submitMove, subscribeGame } from './api.js';
+import {
+  getSession,
+  getCurrentPlayer,
+  startMatchmaking,
+  pollMatchmaking,
+  cancelMatchmaking,
+  getGameState,
+  submitMove,
+  subscribeGame,
+  graceEnd,
+  resignGame,
+  offerDraw,
+  respondDraw,
+  timeoutGame,
+} from './api.js';
 import { remainingAt, formatClock, isFinalMinute } from './clock.mjs';
 import { normalizeGameState } from './state.mjs';
 
@@ -36,8 +50,12 @@ let unsubscribeGame = null;
 let refreshPromise = null;
 let clockTimer = null;
 let submittingMove = false;
+let actionInFlight = false;
+let timeoutRequested = false;
 
-function pieceAsset(color, type) { return `${PIECE_ROOT}${color}${type}.png`; }
+function pieceAsset(color, type) {
+  return `${PIECE_ROOT}${color}${type}.png`;
+}
 
 export function parseFen(fen) {
   const placement = String(fen || START_FEN).split(/\s+/)[0];
@@ -47,7 +65,10 @@ export function parseFen(fen) {
   rows.forEach((row, rowIndex) => {
     let file = 0;
     for (const token of row) {
-      if (/\d/.test(token)) { file += Number(token); continue; }
+      if (/\d/.test(token)) {
+        file += Number(token);
+        continue;
+      }
       const color = token === token.toUpperCase() ? 'w' : 'b';
       const type = token.toLowerCase();
       if (!'pnbrqk'.includes(type) || file > 7) throw new Error('Invalid FEN');
@@ -84,8 +105,6 @@ export function renderPosition(fen = START_FEN, color = orientation) {
       image.src = pieceAsset(piece.color, piece.type);
       image.alt = '';
       image.draggable = false;
-      image.dataset.color = piece.color;
-      image.dataset.type = piece.type;
       square.appendChild(image);
     }
     fragment.appendChild(square);
@@ -102,7 +121,9 @@ function setStatus(message, { searching = false, error = false } = {}) {
 
 function setSelectedMinutes(minutes) {
   selectedMinutes = validMinutes.includes(Number(minutes)) ? Number(minutes) : 10;
-  quickTimeButtons.forEach((button) => button.classList.toggle('active', Number(button.dataset.minutes) === selectedMinutes));
+  quickTimeButtons.forEach((button) => {
+    button.classList.toggle('active', Number(button.dataset.minutes) === selectedMinutes);
+  });
   if (!currentGame) {
     const value = selectedMinutes * 60 * 1000;
     topClock.textContent = formatClock(value);
@@ -124,6 +145,16 @@ function gameColor() {
   return null;
 }
 
+function updateCurrentRatingFromGame() {
+  if (!currentPlayer || !currentGame) return;
+  const mine = gameColor();
+  const rating = mine === 'w' ? currentGame.white_rating : mine === 'b' ? currentGame.black_rating : null;
+  if (Number.isFinite(Number(rating))) {
+    currentPlayer.rating = Number(rating);
+    updateIdentity();
+  }
+}
+
 function updateOpponent() {
   if (!currentGame || !currentPlayer) return;
   const mine = gameColor();
@@ -134,12 +165,46 @@ function updateOpponent() {
   opponentName.href = `player.html?id=${encodeURIComponent(id)}`;
 }
 
+function opponentOfferedDraw() {
+  return Boolean(currentGame?.draw_offered_by && currentPlayer && currentGame.draw_offered_by !== currentPlayer.id);
+}
+
+function ownDrawOfferPending() {
+  return Boolean(currentGame?.draw_offered_by && currentPlayer && currentGame.draw_offered_by === currentPlayer.id);
+}
+
 function updateControls() {
-  const playable = currentGame && ['matched', 'active'].includes(currentGame.status);
-  resignButton.disabled = !playable;
-  drawButton.disabled = !playable;
-  searchButton.disabled = Boolean(currentGame);
+  const playable = Boolean(currentGame && ['matched', 'active'].includes(currentGame.status));
+  resignButton.disabled = !playable || actionInFlight;
+  drawButton.disabled = !playable || actionInFlight || ownDrawOfferPending();
+  drawButton.textContent = opponentOfferedDraw() ? 'رد على التعادل' : ownDrawOfferPending() ? 'تم عرض التعادل' : 'تعادل';
+  searchButton.disabled = Boolean(currentGame) || actionInFlight;
   if (currentGame) searchButton.hidden = true;
+}
+
+function gameFinishedMessage() {
+  if (!currentGame) return '';
+  if (currentGame.status === 'cancelled') return 'تم إنهاء المباراة بلا خصم نقاط';
+  if (currentGame.status !== 'finished') return '';
+  if (currentGame.result === '1/2-1/2') return 'انتهت المباراة بالتعادل';
+  const mine = gameColor();
+  const won = (mine === 'w' && currentGame.result === '1-0') || (mine === 'b' && currentGame.result === '0-1');
+  return won ? 'فزت بالمباراة' : 'انتهت المباراة بالخسارة';
+}
+
+async function requestTimeout() {
+  if (timeoutRequested || !currentGame || !['matched', 'active'].includes(currentGame.status)) return;
+  timeoutRequested = true;
+  try {
+    await timeoutGame(currentGame.id);
+    await refreshGame();
+    const message = gameFinishedMessage();
+    if (message) setStatus(message);
+  } catch (error) {
+    setStatus(error.message || 'تعذر حسم انتهاء الوقت', { error: true });
+  } finally {
+    if (currentGame && ['matched', 'active'].includes(currentGame.status)) timeoutRequested = false;
+  }
 }
 
 function renderClocks() {
@@ -152,9 +217,17 @@ function renderClocks() {
   bottomClock.textContent = formatClock(bottomValue);
   topClock.classList.toggle('final-minute', isFinalMinute(topValue));
   bottomClock.classList.toggle('final-minute', isFinalMinute(bottomValue));
-  const graceRemaining = currentGame.status === 'matched' && currentGame.grace_until_ms ? Math.max(0, currentGame.grace_until_ms - Date.now()) : 0;
-  graceButton.hidden = graceRemaining <= 0;
+
+  const graceRemaining = currentGame.status === 'matched' && currentGame.grace_until_ms
+    ? Math.max(0, currentGame.grace_until_ms - Date.now())
+    : 0;
+  graceButton.hidden = graceRemaining <= 0 || currentGame.ply > 0;
   if (!graceButton.hidden) graceButton.querySelector('span').textContent = String(Math.max(1, Math.ceil(graceRemaining / 1000)));
+
+  if (['matched', 'active'].includes(currentGame.status)) {
+    const activeRemaining = currentGame.turn === 'w' ? clocks.white : clocks.black;
+    if (activeRemaining <= 0) void requestTimeout();
+  }
 }
 
 function startClockLoop() {
@@ -165,7 +238,7 @@ function startClockLoop() {
 
 function updateSelectableSquares() {
   const myColor = gameColor();
-  const canMove = Boolean(currentGame && myColor && currentGame.turn === myColor && ['matched','active'].includes(currentGame.status) && !submittingMove);
+  const canMove = Boolean(currentGame && myColor && currentGame.turn === myColor && ['matched','active'].includes(currentGame.status) && !submittingMove && !actionInFlight);
   board.querySelectorAll('.v2-square').forEach((square) => {
     const piece = renderedPosition.get(square.dataset.square);
     square.classList.toggle('selected', square.dataset.square === selectedSquare);
@@ -179,10 +252,13 @@ async function refreshGame() {
   refreshPromise = (async () => {
     currentGame = normalizeGameState(await getGameState(currentGame.id));
     orientation = gameColor() || orientation;
+    updateCurrentRatingFromGame();
     updateOpponent();
     renderPosition(currentGame.fen, orientation);
     updateControls();
     renderClocks();
+    const message = gameFinishedMessage();
+    if (message) setStatus(message);
     return currentGame;
   })().finally(() => { refreshPromise = null; });
   return refreshPromise;
@@ -190,7 +266,9 @@ async function refreshGame() {
 
 function beginSubscription(gameId) {
   if (unsubscribeGame) unsubscribeGame();
-  unsubscribeGame = subscribeGame(gameId, () => refreshGame().catch(() => setStatus('تعذر تحديث المباراة', { error: true })));
+  unsubscribeGame = subscribeGame(gameId, () => {
+    refreshGame().catch(() => setStatus('تعذر تحديث المباراة', { error: true }));
+  });
 }
 
 async function openGame(gameId) {
@@ -199,6 +277,7 @@ async function openGame(gameId) {
   orientation = gameColor() || 'w';
   history.replaceState({}, '', `play-v2.html?game=${encodeURIComponent(gameId)}`);
   setStatus('تم العثور على الخصم');
+  updateCurrentRatingFromGame();
   updateOpponent();
   renderPosition(currentGame.fen, orientation);
   updateControls();
@@ -215,7 +294,10 @@ function stopPolling() {
 }
 
 async function handleMatchResult(result) {
-  if (result?.queue_status === 'matched' && result?.game_id) { await openGame(result.game_id); return true; }
+  if (result?.queue_status === 'matched' && result?.game_id) {
+    await openGame(result.game_id);
+    return true;
+  }
   return false;
 }
 
@@ -256,7 +338,7 @@ async function toggleSearch() {
 
 async function handleSquareClick(event) {
   const square = event.target.closest('.v2-square');
-  if (!square || submittingMove || !currentGame) return;
+  if (!square || submittingMove || actionInFlight || !currentGame) return;
   const myColor = gameColor();
   if (!myColor || currentGame.turn !== myColor || !['matched','active'].includes(currentGame.status)) return;
   const target = square.dataset.square;
@@ -267,8 +349,17 @@ async function handleSquareClick(event) {
     updateSelectableSquares();
     return;
   }
-  if (target === selectedSquare) { selectedSquare = null; updateSelectableSquares(); return; }
-  if (targetPiece?.color === myColor) { selectedSquare = target; updateSelectableSquares(); return; }
+  if (target === selectedSquare) {
+    selectedSquare = null;
+    updateSelectableSquares();
+    return;
+  }
+  if (targetPiece?.color === myColor) {
+    selectedSquare = target;
+    updateSelectableSquares();
+    return;
+  }
+
   const source = selectedSquare;
   const sourcePiece = renderedPosition.get(source);
   selectedSquare = null;
@@ -277,9 +368,15 @@ async function handleSquareClick(event) {
   updateSelectableSquares();
   const reachesPromotionRank = sourcePiece?.type === 'p' && (target.endsWith('8') || target.endsWith('1'));
   try {
-    await submitMove({ gameId: currentGame.id, expectedPly: currentGame.ply, from: source, to: target, promotion: reachesPromotionRank ? 'q' : null });
+    await submitMove({
+      gameId: currentGame.id,
+      expectedPly: currentGame.ply,
+      from: source,
+      to: target,
+      promotion: reachesPromotionRank ? 'q' : null,
+    });
     await refreshGame();
-    setStatus(currentGame.status === 'finished' ? 'انتهت المباراة' : 'المباراة جارية');
+    if (currentGame.status !== 'finished') setStatus('المباراة جارية');
   } catch (error) {
     await refreshGame().catch(() => {});
     setStatus(error.code === 'illegal_move' ? 'نقلة غير قانونية' : (error.message || 'تعذر تنفيذ النقلة'), { error: true });
@@ -290,25 +387,103 @@ async function handleSquareClick(event) {
   }
 }
 
+async function handleGraceEnd() {
+  if (!currentGame || actionInFlight || graceButton.hidden) return;
+  actionInFlight = true;
+  updateControls();
+  try {
+    await graceEnd(currentGame.id);
+    await refreshGame();
+    if (currentGame.status === 'cancelled') location.href = 'index.html';
+  } catch (error) {
+    setStatus(error.message || 'انتهت مهلة الإنهاء', { error: true });
+    await refreshGame().catch(() => {});
+  } finally {
+    actionInFlight = false;
+    updateControls();
+  }
+}
+
+async function handleResign() {
+  if (!currentGame || actionInFlight || resignButton.disabled) return;
+  if (!window.confirm('هل تريد الاستسلام؟')) return;
+  actionInFlight = true;
+  updateControls();
+  try {
+    await resignGame(currentGame.id);
+    await refreshGame();
+  } catch (error) {
+    setStatus(error.message || 'تعذر الاستسلام', { error: true });
+  } finally {
+    actionInFlight = false;
+    updateControls();
+  }
+}
+
+async function handleDraw() {
+  if (!currentGame || actionInFlight || drawButton.disabled) return;
+  actionInFlight = true;
+  updateControls();
+  try {
+    if (opponentOfferedDraw()) {
+      const accept = window.confirm('هل تريد قبول عرض التعادل؟\nاختر إلغاء لرفض العرض.');
+      await respondDraw(currentGame.id, accept);
+      setStatus(accept ? 'تم قبول التعادل' : 'تم رفض التعادل');
+    } else {
+      await offerDraw(currentGame.id);
+      setStatus('تم إرسال عرض التعادل');
+    }
+    await refreshGame();
+  } catch (error) {
+    setStatus(error.message || 'تعذر تنفيذ طلب التعادل', { error: true });
+  } finally {
+    actionInFlight = false;
+    updateControls();
+  }
+}
+
 async function initialize() {
   setSelectedMinutes(selectedMinutes);
   renderPosition(START_FEN, orientation);
   board.addEventListener('click', handleSquareClick);
   searchButton.addEventListener('click', toggleSearch);
+  graceButton.addEventListener('click', handleGraceEnd);
+  resignButton.addEventListener('click', handleResign);
+  drawButton.addEventListener('click', handleDraw);
   quickTimeButtons.forEach((button) => button.addEventListener('click', () => setSelectedMinutes(Number(button.dataset.minutes))));
+
   let session;
-  try { session = await getSession(); }
-  catch (error) { setStatus(error.message || 'تعذر التحقق من تسجيل الدخول', { error: true }); return; }
-  if (!session) { setStatus('سجل الدخول أولًا لبدء اللعب', { error: true }); searchButton.disabled = true; return; }
-  try { currentPlayer = await getCurrentPlayer(); }
-  catch (error) { setStatus(error.message || 'تعذر تحميل بيانات اللاعب', { error: true }); return; }
-  if (!currentPlayer || currentPlayer.is_synthetic) { setStatus('يلزم حساب لاعب صالح', { error: true }); searchButton.disabled = true; return; }
+  try {
+    session = await getSession();
+  } catch (error) {
+    setStatus(error.message || 'تعذر التحقق من تسجيل الدخول', { error: true });
+    return;
+  }
+  if (!session) {
+    setStatus('سجل الدخول أولًا لبدء اللعب', { error: true });
+    searchButton.disabled = true;
+    return;
+  }
+
+  try {
+    currentPlayer = await getCurrentPlayer();
+  } catch (error) {
+    setStatus(error.message || 'تعذر تحميل بيانات اللاعب', { error: true });
+    return;
+  }
+  if (!currentPlayer || currentPlayer.is_synthetic) {
+    setStatus('يلزم حساب لاعب صالح', { error: true });
+    searchButton.disabled = true;
+    return;
+  }
   updateIdentity();
+
   if (requestedGameId) {
     try { await openGame(requestedGameId); }
     catch (error) { setStatus(error.message || 'تعذر فتح المباراة', { error: true }); }
     return;
   }
+
   if (shouldAutoSearch) await beginSearch(selectedMinutes);
 }
 
