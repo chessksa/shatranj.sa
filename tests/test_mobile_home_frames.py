@@ -45,6 +45,7 @@ def test_mobile_header_controls_are_balanced_and_readable():
     header_css = header_css_path.read_text(encoding="utf-8")
     css = base_css + "\n" + header_css
     core = (ROOT / "site-notifications-core.js").read_text(encoding="utf-8")
+    loader = (ROOT / "index.html").read_text(encoding="utf-8")
 
     assert "Mobile signed-in header compact controls 20260911" in base_css
     assert "Text-only mobile header controls 20260911" in header_css
@@ -67,7 +68,7 @@ def test_mobile_header_controls_are_balanced_and_readable():
     assert "body.home-signed-in.home-admin-enabled .compact-member-nav .nav-user" in core
     assert "grid-template-columns:repeat(4,minmax(0,1fr))!important" in core
     assert "html body.home-signed-in.home-admin-enabled .compact-member-nav .home-admin-link" in header_css
-    assert "home-header-svg.css?v=20260911-2" in core
+    assert "home-header-svg.css?v='+runtimeVersion" in loader
 
     for label in ["لوحة التحكم", "الإدارة", "الإشعارات"]:
         assert label in core
