@@ -6,11 +6,15 @@ on:
       - main
     paths:
       - 'home-mobile-admin-colors.css'
+      - 'home-header-controls.js'
+      - 'index.html'
       - 'tests/test_mobile_home_frames.py'
       - '.github/workflows/verify-mobile-home-frames.yml'
   pull_request:
     paths:
       - 'home-mobile-admin-colors.css'
+      - 'home-header-controls.js'
+      - 'index.html'
       - 'tests/test_mobile_home_frames.py'
       - '.github/workflows/verify-mobile-home-frames.yml'
 
@@ -25,5 +29,10 @@ jobs:
       - uses: actions/setup-python@v5
         with:
           python-version: '3.12'
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
       - name: Verify mobile home frame contract
         run: python tests/test_mobile_home_frames.py
+      - name: Verify mobile header controls JavaScript
+        run: node --check home-header-controls.js
