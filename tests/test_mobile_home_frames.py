@@ -29,7 +29,6 @@ def test_mobile_home_frames_share_one_visual_contract():
 
 
 def test_tournaments_are_not_injected_into_the_mobile_header():
-    css = (ROOT / "home-mobile-admin-colors.css").read_text(encoding="utf-8")
     loader = (ROOT / "index.html").read_text(encoding="utf-8")
     app = (ROOT / "index-app.html").read_text(encoding="utf-8")
 
@@ -40,16 +39,39 @@ def test_tournaments_are_not_injected_into_the_mobile_header():
     assert "hero-tournaments-btn" in app
     assert 'href="tournaments.html' in app
 
-    # The signed-in mobile header still uses the compact four-column layout for
-    # dashboard, admin, notifications, and logout.
-    assert "Mobile signed-in header four equal controls 20260911" in css
-    assert "grid-template-columns:repeat(4,minmax(0,1fr))!important" in css
+
+def test_mobile_header_controls_are_balanced_and_readable():
+    css = (ROOT / "home-mobile-admin-colors.css").read_text(encoding="utf-8")
+    core = (ROOT / "site-notifications-core.js").read_text(encoding="utf-8")
+
+    assert "Mobile signed-in header compact controls 20260911" in css
+    assert "grid-template-columns:repeat(3,minmax(0,1fr))!important" in css
     assert "body.home-signed-in .compact-member-nav .mobile-dashboard-link" in css
     assert "body.home-signed-in .compact-member-nav .header-notification-host" in css
     assert "body.home-signed-in .compact-member-nav .nav-logout" in css
+    assert ".header-tournaments{display:inline-flex!important" not in css
+
+    for token in [
+        "height:48px!important",
+        "min-height:48px!important",
+        "font-size:14px!important",
+        "font-size:21px!important",
+        "gap:6px!important",
+    ]:
+        assert token in css
+
+    # Admins get the same controls plus the administration entry in a four-column row.
+    assert "body.home-signed-in.home-admin-enabled .compact-member-nav .nav-user" in core
+    assert "grid-template-columns:repeat(4,minmax(0,1fr))!important" in core
+    assert "height:48px!important" in core
+    assert "font-size:14px!important" in core
+
+    # Notifications use the same icon + label structure as the other header controls.
+    assert '<span class="header-tile-icon" aria-hidden="true">🔔</span><span>الإشعارات</span>' in core
 
 
 if __name__ == "__main__":
     test_mobile_home_frames_share_one_visual_contract()
     test_tournaments_are_not_injected_into_the_mobile_header()
+    test_mobile_header_controls_are_balanced_and_readable()
     print("Mobile home frame tests passed")
