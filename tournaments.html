@@ -15,7 +15,7 @@ html,body{margin:0;min-height:100%;background:#042628;color:#f4eddc;font-family:
 <div class="loader"><div><strong>جاري فتح البطولات</strong><small>تحديث بيانات البطولة…</small></div></div>
 <script>
 (async()=>{
-  const stamp='20260911-tournament-4x4-final1';
+  const stamp='20260911-tournament-4x4-final2';
   const runtimeVersion=stamp+'-'+Date.now();
   const response=await fetch('./tournaments-app.html?v='+runtimeVersion,{cache:'no-store'});
   if(!response.ok)throw new Error('tournaments source '+response.status);
@@ -24,7 +24,7 @@ html,body{margin:0;min-height:100%;background:#042628;color:#f4eddc;font-family:
   html=html
     .replace(/config\.js\?v=[A-Za-z0-9._-]+/g,'config.js?v='+runtimeVersion)
     .replace(/site-presence\.js\?v=[A-Za-z0-9._-]+/g,'site-presence.js?v='+runtimeVersion)
-    .replace('</body>','<script type="module" src="tournament-detail-4x4.js?v='+runtimeVersion+'"><\\/script></body>');
+    .replace('</body>','<script type="module" src="tournament-detail-4x4.js?v='+runtimeVersion+'"><\/script></body>');
 
   document.open();
   document.write(html);
