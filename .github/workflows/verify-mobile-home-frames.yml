@@ -6,6 +6,8 @@ on:
       - main
     paths:
       - 'home-mobile-admin-colors.css'
+      - 'home-header-svg.css'
+      - 'site-notifications-core.js'
       - 'index.html'
       - 'index-app.html'
       - 'tests/test_mobile_home_frames.py'
@@ -14,6 +16,8 @@ on:
   pull_request:
     paths:
       - 'home-mobile-admin-colors.css'
+      - 'home-header-svg.css'
+      - 'site-notifications-core.js'
       - 'index.html'
       - 'index-app.html'
       - 'tests/test_mobile_home_frames.py'
@@ -35,3 +39,5 @@ jobs:
         run: python tests/test_mobile_home_frames.py
       - name: Verify tournaments are absent from the header
         run: python tests/test_home_tournaments_header_center.py
+      - name: Verify notification JavaScript syntax
+        run: node --check site-notifications-core.js
