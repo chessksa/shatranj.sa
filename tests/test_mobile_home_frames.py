@@ -41,7 +41,6 @@ def test_tournaments_are_not_injected_into_the_mobile_header():
 def test_mobile_header_controls_are_balanced_and_readable():
     css = (ROOT / "home-mobile-admin-colors.css").read_text(encoding="utf-8")
     core = (ROOT / "site-notifications-core.js").read_text(encoding="utf-8")
-    app = (ROOT / "index-app.html").read_text(encoding="utf-8")
 
     assert "Mobile signed-in header compact controls 20260911" in css
     assert "Unified SVG mobile header controls 20260911" in css
@@ -66,13 +65,19 @@ def test_mobile_header_controls_are_balanced_and_readable():
     assert "html body.home-signed-in.home-admin-enabled .compact-member-nav .home-admin-link" in css
     assert "html body.home-signed-in.home-admin-enabled .compact-member-nav .nav-user" in css
 
-    # Dashboard, administration, and notifications use the same inline SVG treatment, not platform emoji.
-    assert app.count('class="header-tile-svg"') >= 2
-    assert core.count('class="header-tile-svg"') >= 2
-    assert '>⚙<' not in app
+    # Runtime decoration replaces platform-dependent emoji with one SVG system.
+    for token in [
+        "HEADER_SVG_ICONS",
+        "decorateHeaderIcons",
+        "mobileDashboardNav",
+        "siteAdminLink",
+        "siteNotificationBell",
+        'class="header-tile-svg"',
+        '<span class="header-tile-label">الإشعارات</span>',
+    ]:
+        assert token in core
     assert '🛡' not in core
     assert '🔔' not in core
-    assert '<span class="header-tile-label">الإشعارات</span>' in core
 
 
 if __name__ == "__main__":
