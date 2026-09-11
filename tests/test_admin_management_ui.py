@@ -51,17 +51,16 @@ def test_refresh_button_forces_real_reload_and_has_feedback():
     assert "addEventListener('click',handleRefresh)" in js
 
 
-def test_moderator_can_be_deleted_permanently_but_owner_is_protected():
+def test_moderator_removal_deletes_access_row_but_owner_is_protected():
     js = read("admin.js")
-    assert 'data-action="deleteModerator"' in js
-    assert "admin_delete_moderator" in js
-    assert "حذف المشرف" in js
+    assert 'data-action="removeModerator"' in js
+    assert "admin_remove_moderator" in js
 
     migrations = "\n".join(
         path.read_text(encoding="utf-8")
         for path in (ROOT / "supabase" / "migrations").glob("*.sql")
     ).lower()
-    assert "create or replace function public.admin_delete_moderator" in migrations
+    assert "create or replace function public.admin_remove_moderator" in migrations
     assert "delete from private.admin_users" in migrations
     assert "owner cannot be removed" in migrations
 
@@ -154,7 +153,7 @@ if __name__ == "__main__":
     test_country_city_catalog_is_reused()
     test_admin_sidebar_keeps_return_link_visible()
     test_refresh_button_forces_real_reload_and_has_feedback()
-    test_moderator_can_be_deleted_permanently_but_owner_is_protected()
+    test_moderator_removal_deletes_access_row_but_owner_is_protected()
     test_tournaments_button_moves_from_header_beside_computer_play()
     test_home_does_not_render_duplicate_tournaments_section()
     test_tournaments_page_has_numbered_table_and_registration_column()
