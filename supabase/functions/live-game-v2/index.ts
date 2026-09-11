@@ -94,7 +94,38 @@ Deno.serve(async (req: Request) => {
     return reply({ error: 'Invalid request' }, 400);
   }
 
-  if (String(body.action ?? '') !== 'move') return reply({ error: 'Unsupported action' }, 400);
+  const action = String(body.action ?? '');
+
+  async function executeGameAction(actionValue: string, gameIdValue: string, acceptValue: boolean | null = null) {
+    const { data, error } = await admin.rpc('v2_game_action_server', {
+      action_value: actionValue,
+      game_id: gameIdValue,
+      player_id: player.id,
+      accept_value: acceptValue,
+    });
+    if (error) throw error;
+    return Array.isArray(data) ? data[0] ?? null : data;
+  }
+
+  const serverActions = new Set(['grace_end', 'resign', 'offer_draw', 'respond_draw', 'timeout']);
+  if (action !== 'move') {
+    if (!serverActions.has(action)) return reply({ error: 'Unsupported action' }, 400);
+    const actionGameId = typeof body.gameId === 'string' ? body.gameId : '';
+    if (!actionGameId) return reply({ error: 'Invalid game request' }, 400);
+    try {
+      const actedGame = await executeGameAction(
+        action,
+        actionGameId,
+        action === 'respond_draw' ? Boolean(body.accept) : null,
+      );
+      return reply({ game: actedGame, serverNow: new Date().toISOString() });
+    } catch (error) {
+      const message = error instanceof Error ? error.message : String(error);
+      const conflict = /grace_|game_not_active|draw_offer|no_opponent|unsupported_game_action/i.test(message);
+      console.error('V2 game action failed', message);
+      return reply({ error: conflict ? 'تعذر تنفيذ الإجراء الآن' : 'Could not update game', code: 'game_action_failed' }, conflict ? 409 : 500);
+    }
+  }
 
   const gameId = typeof body.gameId === 'string' ? body.gameId : '';
   const expectedPly = asInteger(body.expectedPly);
@@ -138,7 +169,14 @@ Deno.serve(async (req: Request) => {
   else blackMs = Math.max(0, blackMs - elapsedMs);
 
   if ((moverColor === 'w' ? whiteMs : blackMs) <= 0) {
-    return reply({ error: 'Clock expired', code: 'clock_expired' }, 409);
+    try {
+      const timedOutGame = await executeGameAction('timeout', gameId);
+      return reply({ game: timedOutGame, serverNow: new Date(nowMs).toISOString() });
+    } catch (error) {
+      const message = error instanceof Error ? error.message : String(error);
+      console.error('V2 timeout settlement failed', message);
+      return reply({ error: 'Clock expired', code: 'clock_expired' }, 409);
+    }
   }
 
   let chess: Chess;
