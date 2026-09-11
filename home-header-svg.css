@@ -161,6 +161,7 @@
   html body.home-signed-in #ranking .head{
     gap:var(--mobile-gap)!important;
     padding:var(--mobile-gap)!important;
+    margin-bottom:var(--mobile-gap)!important;
   }
 
   html body.home-signed-in #ranking .ranking-filters{
