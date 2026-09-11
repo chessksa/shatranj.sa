@@ -70,9 +70,14 @@ def test_mobile_header_controls_are_balanced_and_readable():
     assert "html body.home-signed-in.home-admin-enabled .compact-member-nav .home-admin-link" in header_css
     assert "home-header-svg.css?v=20260911-1" in core
 
-    # Runtime may retain semantic icon markup for compatibility, but it must be hidden visibly.
     for label in ["لوحة التحكم", "الإدارة", "الإشعارات"]:
         assert label in core
+
+    # Icons must be removed at the markup source, not merely hidden by CSS.
+    assert "HEADER_SVG_ICONS" not in core
+    assert "header-tile-icon" not in core
+    assert "header-tile-svg" not in core
+    assert "content:'🔔'" not in base_css
 
 
 def test_notification_wrapper_propagates_runtime_version_to_nested_core():
