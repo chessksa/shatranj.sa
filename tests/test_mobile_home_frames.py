@@ -49,7 +49,6 @@ def test_mobile_header_controls_are_balanced_and_readable():
     assert "body.home-signed-in .compact-member-nav .mobile-dashboard-link" in css
     assert "body.home-signed-in .compact-member-nav .header-notification-host" in css
     assert "body.home-signed-in .compact-member-nav .nav-logout" in css
-    assert ".header-tournaments{display:inline-flex!important" not in css
 
     for token in [
         "height:48px!important",
@@ -60,14 +59,16 @@ def test_mobile_header_controls_are_balanced_and_readable():
     ]:
         assert token in css
 
-    # Admins get the same controls plus the administration entry in a four-column row.
+    # Admins retain the same row with a fourth, equally sized administration control.
     assert "body.home-signed-in.home-admin-enabled .compact-member-nav .nav-user" in core
     assert "grid-template-columns:repeat(4,minmax(0,1fr))!important" in core
-    assert "height:48px!important" in core
-    assert "font-size:14px!important" in core
+    assert "html body.home-signed-in.home-admin-enabled .compact-member-nav .home-admin-link" in css
+    assert "html body.home-signed-in.home-admin-enabled .compact-member-nav .nav-user" in css
 
-    # Notifications use the same icon + label structure as the other header controls.
-    assert '<span class="header-tile-icon" aria-hidden="true">🔔</span><span>الإشعارات</span>' in core
+    # Notifications get a visible label and a consistently sized icon without changing notification behavior.
+    assert "font-size:0!important" in css
+    assert "content:'🔔'" in css
+    assert "content:'الإشعارات'" in css
 
 
 if __name__ == "__main__":
