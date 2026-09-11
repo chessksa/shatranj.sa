@@ -131,7 +131,7 @@ def test_mobile_header_tiles_match_and_ranking_aligns_with_content_above():
     assert "border:0!important" in css
     assert "background:transparent!important" in css
     assert "box-shadow:none!important" in css
-    assert "html body.home-signed-in #ranking{padding:var(--mobile-gap) 0!important}" in css
+    assert "html body.home-signed-in #ranking{padding:0 0 var(--mobile-gap)!important}" in css
     assert "html body.home-signed-in #ranking>.wrap{width:calc(100% - 8px)!important}" in css
 
 
