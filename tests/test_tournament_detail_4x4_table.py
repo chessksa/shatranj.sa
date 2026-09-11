@@ -18,5 +18,9 @@ assert source.count("document.createElement('td')") >= 2, 'each row needs two va
 assert 'font-size:12px!important' in source, 'detail labels must be 12px'
 assert 'font-size:10px!important' in source, 'detail values must be 10px'
 assert "td.appendChild(value)" in source, 'live registration value must be preserved while moving cells'
+assert "host.querySelector('.tournament-detail-table')" in source, 'final module must also compact the table created by site-presence-base'
+assert "rows.slice(0,8)" in source, 'existing transformed table must use the same eight base fields'
+assert "tr.append(firstCells[0],firstCells[1],secondCells[0],secondCells[1])" in source, 'two 2-cell rows must become one 4-cell row'
+assert '.tournament-detail-table td .detail-value' in source, '10px must override the old detail-value font override too'
 
 print('tournament detail is exactly 4 rows x 4 columns with 12/10 fonts: PASS')
