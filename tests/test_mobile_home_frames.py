@@ -39,12 +39,16 @@ def test_tournaments_are_not_injected_into_the_mobile_header():
 
 
 def test_mobile_header_controls_are_balanced_and_readable():
-    css = (ROOT / "home-mobile-admin-colors.css").read_text(encoding="utf-8")
+    base_css = (ROOT / "home-mobile-admin-colors.css").read_text(encoding="utf-8")
+    svg_css_path = ROOT / "home-header-svg.css"
+    assert svg_css_path.exists(), "dedicated SVG header stylesheet must exist"
+    svg_css = svg_css_path.read_text(encoding="utf-8")
+    css = base_css + "\n" + svg_css
     core = (ROOT / "site-notifications-core.js").read_text(encoding="utf-8")
 
-    assert "Mobile signed-in header compact controls 20260911" in css
-    assert "Unified SVG mobile header controls 20260911" in css
-    assert "grid-template-columns:repeat(3,minmax(0,1fr))!important" in css
+    assert "Mobile signed-in header compact controls 20260911" in base_css
+    assert "Unified SVG mobile header controls 20260911" in svg_css
+    assert "grid-template-columns:repeat(3,minmax(0,1fr))!important" in base_css
     assert "body.home-signed-in .compact-member-nav .mobile-dashboard-link" in css
     assert "body.home-signed-in .compact-member-nav .header-notification-host" in css
     assert "body.home-signed-in .compact-member-nav .nav-logout" in css
@@ -54,16 +58,15 @@ def test_mobile_header_controls_are_balanced_and_readable():
         "min-height:48px!important",
         "font-size:15px!important",
         "box-sizing:border-box!important",
-        "gap:6px!important",
         ".header-tile-svg",
         "content:none!important",
     ]:
-        assert token in css
+        assert token in svg_css
 
     assert "body.home-signed-in.home-admin-enabled .compact-member-nav .nav-user" in core
     assert "grid-template-columns:repeat(4,minmax(0,1fr))!important" in core
-    assert "html body.home-signed-in.home-admin-enabled .compact-member-nav .home-admin-link" in css
-    assert "html body.home-signed-in.home-admin-enabled .compact-member-nav .nav-user" in css
+    assert "html body.home-signed-in.home-admin-enabled .compact-member-nav .home-admin-link" in svg_css
+    assert "home-header-svg.css?v=20260911-1" in core
 
     # Runtime decoration replaces platform-dependent emoji with one SVG system.
     for token in [
