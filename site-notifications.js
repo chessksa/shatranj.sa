@@ -1,6 +1,15 @@
 (() => {
   'use strict';
 
+  const RUNTIME_VERSION = (() => {
+    try {
+      const src = document.currentScript?.src || location.href;
+      return new URL(src, location.href).searchParams.get('v') || String(Date.now());
+    } catch {
+      return String(Date.now());
+    }
+  })();
+
   const ORIGINAL_SRC = 'site-notifications-original.js?v=20260909-ranking10b';
   const MOBILE_BREAKPOINT = 800;
   const MOBILE_RANKING_LIMIT = 10;
@@ -274,7 +283,7 @@
       source = source
         .replace('const MOBILE_RANKING_LIMIT = 5;', 'const MOBILE_RANKING_LIMIT = 10;')
         .replace("style.id = 'mobileRankingFiveStyles';", "style.id = 'mobileRankingTenStyles';")
-        .replace(/site-notifications-core\.js\?v=[A-Za-z0-9._-]+/g, 'site-notifications-core.js?v=20260910-admin-home1')
+        .replace(/site-notifications-core\.js\?v=[A-Za-z0-9._-]+/g, `site-notifications-core.js?v=${encodeURIComponent(RUNTIME_VERSION)}`)
         .replace(
           /track\.className = 'welcome-ticker-track welcome-ticker-single';/g,
           "track.className = 'welcome-ticker-track tournament-ticker-single';"
