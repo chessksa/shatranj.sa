@@ -40,14 +40,14 @@ def test_tournaments_are_not_injected_into_the_mobile_header():
 
 def test_mobile_header_controls_are_balanced_and_readable():
     base_css = (ROOT / "home-mobile-admin-colors.css").read_text(encoding="utf-8")
-    svg_css_path = ROOT / "home-header-svg.css"
-    assert svg_css_path.exists(), "dedicated SVG header stylesheet must exist"
-    svg_css = svg_css_path.read_text(encoding="utf-8")
-    css = base_css + "\n" + svg_css
+    header_css_path = ROOT / "home-header-svg.css"
+    assert header_css_path.exists(), "dedicated mobile header stylesheet must exist"
+    header_css = header_css_path.read_text(encoding="utf-8")
+    css = base_css + "\n" + header_css
     core = (ROOT / "site-notifications-core.js").read_text(encoding="utf-8")
 
     assert "Mobile signed-in header compact controls 20260911" in base_css
-    assert "Unified SVG mobile header controls 20260911" in svg_css
+    assert "Text-only mobile header controls 20260911" in header_css
     assert "grid-template-columns:repeat(3,minmax(0,1fr))!important" in base_css
     assert "body.home-signed-in .compact-member-nav .mobile-dashboard-link" in css
     assert "body.home-signed-in .compact-member-nav .header-notification-host" in css
@@ -57,47 +57,29 @@ def test_mobile_header_controls_are_balanced_and_readable():
         "height:48px!important",
         "min-height:48px!important",
         "box-sizing:border-box!important",
-        ".header-tile-svg",
-        "content:none!important",
+        "font-size:14px!important",
+        "column-gap:4px!important",
+        "row-gap:4px!important",
+        "padding-inline:4px!important",
+        ".header-tile-icon{display:none!important}",
     ]:
-        assert token in svg_css
+        assert token in header_css, token
 
     assert "body.home-signed-in.home-admin-enabled .compact-member-nav .nav-user" in core
     assert "grid-template-columns:repeat(4,minmax(0,1fr))!important" in core
-    assert "html body.home-signed-in.home-admin-enabled .compact-member-nav .home-admin-link" in svg_css
+    assert "html body.home-signed-in.home-admin-enabled .compact-member-nav .home-admin-link" in header_css
     assert "home-header-svg.css?v=20260911-1" in core
 
+    # Header controls are text-only: no decorative SVG/icon markup remains in runtime UI.
     for token in [
         "HEADER_SVG_ICONS",
-        "decorateHeaderIcons",
-        "mobileDashboardNav",
-        "siteAdminLink",
-        "siteNotificationBell",
+        "headerIconMarkup",
         'class="header-tile-svg"',
-        '<span class="header-tile-label">الإشعارات</span>',
+        'class="header-tile-icon"',
     ]:
-        assert token in core
-    assert '🛡' not in core
-    assert '🔔' not in core
-
-
-def test_mobile_header_labels_fit_with_two_pixel_spacing_and_fresh_css():
-    svg_css = (ROOT / "home-header-svg.css").read_text(encoding="utf-8")
-    loader = (ROOT / "index.html").read_text(encoding="utf-8")
-
-    for token in [
-        "column-gap:2px!important",
-        "padding-inline:2px!important",
-        "gap:2px!important",
-        "width:16px!important",
-        "height:16px!important",
-        "font-size:14px!important",
-    ]:
-        assert token in svg_css, token
-
-    assert "text-overflow:clip!important" in svg_css
-    assert "home-header-svg.css?v='+runtimeVersion" in loader
-    assert "data-home-header-svg" in loader
+        assert token not in core, token
+    for label in ["لوحة التحكم", "الإدارة", "الإشعارات"]:
+        assert label in core
 
 
 def test_notification_wrapper_propagates_runtime_version_to_nested_core():
@@ -115,6 +97,5 @@ if __name__ == "__main__":
     test_mobile_home_frames_share_one_visual_contract()
     test_tournaments_are_not_injected_into_the_mobile_header()
     test_mobile_header_controls_are_balanced_and_readable()
-    test_mobile_header_labels_fit_with_two_pixel_spacing_and_fresh_css()
     test_notification_wrapper_propagates_runtime_version_to_nested_core()
     print("Mobile home frame tests passed")
