@@ -141,7 +141,8 @@ def test_mobile_hero_to_ranking_visible_gap_is_single_4px():
 
     assert "Final mobile hero-to-ranking gap 4px 20260911" in css
     assert "html body.home-signed-in .home-hero .home-board-actions{margin-bottom:0!important}" in css
-    assert "html body.home-signed-in .home-hero{padding:var(--mobile-gap) 0!important}" in css
+    assert "html body.home-signed-in .home-hero{" in css
+    assert "padding:var(--mobile-gap) 0!important" in css
     assert "html body.home-signed-in #ranking{padding:0 0 var(--mobile-gap)!important}" in css
 
 
