@@ -80,6 +80,11 @@ def test_mobile_header_controls_are_balanced_and_readable():
     assert "html body.home-signed-in .compact-member-nav .site-notification-bell::after" in header_css
     assert "content:none!important" in header_css
 
+    # The final cascade rule must pin the space between header controls at exactly 4px.
+    assert "Final mobile header inter-control gap 4px" in header_css
+    assert "html body.home-signed-in .compact-member-nav .nav-user" in header_css
+    assert "gap:4px!important" in header_css
+
 
 def test_notification_wrapper_propagates_runtime_version_to_nested_core():
     loader = (ROOT / "index.html").read_text(encoding="utf-8")
