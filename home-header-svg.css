@@ -222,3 +222,8 @@
   html body.home-signed-in #ranking>.wrap{width:calc(100% - 8px)!important}
   html body.home-signed-in #ranking>.wrap{margin-inline:auto!important}
 }
+
+/* Final mobile hero-to-ranking gap 4px 20260911 */
+@media(max-width:600px){
+  html body.home-signed-in .home-hero .home-board-actions{margin-bottom:0!important}
+}
