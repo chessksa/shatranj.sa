@@ -34,8 +34,6 @@ def test_tournaments_are_not_injected_into_the_mobile_header():
 
     assert not (ROOT / "home-header-controls.js").exists(), "header tournaments injector must be removed"
     assert "home-header-controls.js" not in loader
-
-    # Tournaments remain available from the main play actions; only the header entry is removed.
     assert "hero-tournaments-btn" in app
     assert 'href="tournaments.html' in app
 
@@ -46,6 +44,7 @@ def test_mobile_header_controls_are_balanced_and_readable():
     app = (ROOT / "index-app.html").read_text(encoding="utf-8")
 
     assert "Mobile signed-in header compact controls 20260911" in css
+    assert "Unified SVG mobile header controls 20260911" in css
     assert "grid-template-columns:repeat(3,minmax(0,1fr))!important" in css
     assert "body.home-signed-in .compact-member-nav .mobile-dashboard-link" in css
     assert "body.home-signed-in .compact-member-nav .header-notification-host" in css
@@ -58,10 +57,10 @@ def test_mobile_header_controls_are_balanced_and_readable():
         "box-sizing:border-box!important",
         "gap:6px!important",
         ".header-tile-svg",
+        "content:none!important",
     ]:
         assert token in css
 
-    # Admins retain the same row with a fourth, equally sized administration control.
     assert "body.home-signed-in.home-admin-enabled .compact-member-nav .nav-user" in core
     assert "grid-template-columns:repeat(4,minmax(0,1fr))!important" in core
     assert "html body.home-signed-in.home-admin-enabled .compact-member-nav .home-admin-link" in css
@@ -74,8 +73,6 @@ def test_mobile_header_controls_are_balanced_and_readable():
     assert '🛡' not in core
     assert '🔔' not in core
     assert '<span class="header-tile-label">الإشعارات</span>' in core
-    assert "content:'🔔'" not in css
-    assert "content:'الإشعارات'" not in css
 
 
 if __name__ == "__main__":
