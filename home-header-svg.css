@@ -169,3 +169,55 @@
     column-gap:var(--mobile-gap)!important;
   }
 }
+
+/* Final equal mobile header tiles and ranking width 20260911 */
+@media(max-width:600px){
+  html body.home-signed-in .compact-member-nav .mobile-dashboard-link,
+  html body.home-signed-in.home-admin-enabled .compact-member-nav .home-admin-link,
+  html body.home-signed-in .compact-member-nav .header-notification-host,
+  html body.home-signed-in .compact-member-nav .nav-logout{
+    width:100%!important;
+    min-width:0!important;
+    max-width:none!important;
+    height:48px!important;
+    min-height:48px!important;
+    margin:0!important;
+    padding:0 4px!important;
+    box-sizing:border-box!important;
+    display:flex!important;
+    align-items:center!important;
+    justify-content:center!important;
+    border:var(--mobile-frame-border)!important;
+    border-radius:14px!important;
+    background:var(--mobile-frame-bg)!important;
+    box-shadow:var(--mobile-frame-shadow)!important;
+    color:var(--hero-cream)!important;
+    font-family:Arial,sans-serif!important;
+    font-size:14px!important;
+    font-weight:800!important;
+    line-height:1!important;
+    text-align:center!important;
+    white-space:nowrap!important;
+  }
+
+  html body.home-signed-in .compact-member-nav .header-notification-host{
+    padding:0!important;
+  }
+
+  html body.home-signed-in .compact-member-nav .header-notification-host .site-notification-bell{
+    width:100%!important;
+    height:100%!important;
+    min-height:0!important;
+    margin:0!important;
+    padding:0 4px!important;
+    border:0!important;
+    border-radius:14px!important;
+    background:transparent!important;
+    box-shadow:none!important;
+    color:inherit!important;
+    font:inherit!important;
+  }
+
+  html body.home-signed-in #ranking{padding:var(--mobile-gap) 0!important}
+  html body.home-signed-in #ranking>.wrap{width:calc(100% - 8px)!important;margin-inline:auto!important}
+}
