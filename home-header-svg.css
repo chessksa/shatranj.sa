@@ -219,5 +219,6 @@
   }
 
   html body.home-signed-in #ranking{padding:var(--mobile-gap) 0!important}
-  html body.home-signed-in #ranking>.wrap{width:calc(100% - 8px)!important;margin-inline:auto!important}
+  html body.home-signed-in #ranking>.wrap{width:calc(100% - 8px)!important}
+  html body.home-signed-in #ranking>.wrap{margin-inline:auto!important}
 }
