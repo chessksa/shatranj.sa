@@ -1,0 +1,43 @@
+name: Phase 4 Verification
+
+on:
+  pull_request:
+    branches: [main]
+    paths:
+      - 'v3/**'
+      - 'v2/stats/**'
+      - 'v2/site/**'
+      - 'supabase/functions/advanced-variant-v4/**'
+      - 'supabase/migrations/20260912_phase4_*'
+      - 'tests/test_v4_*'
+      - 'tests/v4-*'
+      - 'variants.html'
+      - '.github/workflows/phase4-verify.yml'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  phase4:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - run: python -m pip install --disable-pip-version-check pytest
+      - name: Phase 4 Python contracts
+        run: python -m pytest -q tests/test_v4_*.py
+      - name: Phase 4 Node contracts
+        run: |
+          shopt -s nullglob
+          files=(tests/v4-*.test.mjs)
+          if ((${#files[@]})); then node --test "${files[@]}"; fi
+      - name: Phase 4 frontend syntax
+        run: |
+          node --check v3/variants/app.mjs
+          node --check v2/stats/app.mjs
