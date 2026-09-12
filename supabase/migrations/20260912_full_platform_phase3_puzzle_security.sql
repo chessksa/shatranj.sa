@@ -1,7 +1,4 @@
--- Phase 3 puzzle security: hide solution arrays and make attempt scoring server-authoritative.
-
-revoke select on table public.v2_puzzles from anon,authenticated;
-revoke all on function public.v2_submit_puzzle_attempt(uuid,boolean,integer,integer,boolean) from public,anon,authenticated;
+-- Phase 3 puzzle security stage 1: add server-authoritative puzzle sessions without breaking the current client.
 
 create table if not exists private.v3_puzzle_sessions (
   id uuid primary key default extensions.gen_random_uuid(),
