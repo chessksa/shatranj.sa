@@ -46,6 +46,28 @@ jobs:
           shopt -s nullglob
           files=(tests/v5-*.test.mjs)
           if ((${#files[@]})); then node --test "${files[@]}"; fi
+      - name: Phase 4 variant regression contracts
+        run: |
+          python -m pytest -q tests/test_v4_*.py
+          shopt -s nullglob
+          files=(tests/v4-*.test.mjs)
+          if ((${#files[@]})); then node --test "${files[@]}"; fi
+      - name: Phase 3 variant and platform regression contracts
+        run: >-
+          python -m pytest -q
+          tests/test_full_platform_phase3_schema.py
+          tests/test_v3_platform_services.py
+          tests/test_v3_puzzle_battle_schema.py
+          tests/test_v3_puzzle_solution_security.py
+          tests/test_v3_standard_variants.py
+          tests/test_v3_tournament_formats.py
+          tests/test_v3_variant_edge_function.py
+      - name: Phase 3 Node regression contracts
+        run: >-
+          node --test
+          tests/v3-game-review.test.mjs
+          tests/v3-puzzle-battle.test.mjs
+          tests/v3-variants.test.mjs
       - name: V2 live-play regression contracts
         run: |
           python tests/test_v2_edge_function.py
