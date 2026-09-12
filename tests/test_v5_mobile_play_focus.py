@@ -25,7 +25,7 @@ def test_focus_mode_tracks_game_lifecycle():
     script = read("v2/play/mobile-focus.mjs")
     assert "v2-game-active" in script
     assert "MutationObserver" in script
-    assert "history" in script
+    assert "URLSearchParams" in script
     assert "terminal" in script.lower()
 
 
