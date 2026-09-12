@@ -38,7 +38,8 @@ function dashboardHost(){
   host.id='v5-home-dashboard';
   host.hidden=true;
   host.setAttribute('aria-label','لوحة العضو');
-  copy.appendChild(host);
+  if(window.matchMedia('(max-width:900px)').matches) copy.prepend(host);
+  else copy.appendChild(host);
   return host;
 }
 
@@ -58,10 +59,33 @@ function renderPayload(host,data){
 
   const head=node('div','v5-home-head');
   const identity=node('div');
-  identity.append(node('strong','',player.name||'العضو'),node('span','',` · النقاط ${Number(player.rating??1500)} · ${Number(player.games_count||0)} مباراة`));
+  identity.append(
+    node('strong','',player.name||'العضو'),
+    node('span','',` · النقاط ${Number(player.rating??1500)} · ${Number(player.games_count||0)} مباراة`),
+    node('span','v5-home-online',' · ● متصل الآن')
+  );
   const playLink=node('a','btn gold',active_game?'متابعة المباراة':'العب الآن');
   playLink.href=active_game?`play-v2.html?game=${encodeURIComponent(active_game.id)}`:'play-v2.html?auto=1';
   head.append(identity,playLink);
+
+  const mobileStrip=node('div','v5-home-mobile-strip');
+  mobileStrip.append(
+    linkCard({
+      href:recent_game?'analysis.html':'stats.html',
+      label:'آخر مباراة',
+      value:recent_game?`${resultLabel(recent_game)} · ${recent_game.opponent_name||'الخصم'}`:'لا توجد'
+    }),
+    linkCard({
+      href:'community.html',
+      label:'الأصدقاء',
+      value:`${Number(data?.online_friends||0)} / ${Number(data?.friends_count||0)}`
+    }),
+    linkCard({
+      href:'notifications.html',
+      label:'الإشعارات',
+      value:Number(data?.unread_notifications||0)
+    })
+  );
 
   const quick=node('div','v5-home-quick');
   quick.append(
@@ -93,7 +117,7 @@ function renderPayload(host,data){
     )
   );
 
-  host.replaceChildren(head,quick,cards);
+  host.replaceChildren(head,mobileStrip,quick,cards);
   host.hidden=false;
   document.body.classList.add('v5-home-dashboard-active');
 }
