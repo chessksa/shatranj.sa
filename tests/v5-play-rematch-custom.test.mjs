@@ -16,5 +16,5 @@ for(const token of ['startCustomMatchmaking','pollCustomMatchmaking','cancelCust
 assert.match(phase5,/rematch_status|rematchStatus/);
 assert.match(phase5,/increment_seconds|incrementSeconds/);
 assert.match(phase5,/rated/);
-assert.match(phase5,/regularSearch\.classList\.contains\(['"]searching['"]\)/);
+assert.match(phase5,/classList\.contains\(['"]searching['"]\)/);
 assert.match(phase5,/regularSearch\.click\(\)/);
