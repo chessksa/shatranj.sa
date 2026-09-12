@@ -9,8 +9,8 @@ def read(path: str) -> str:
 
 def test_mobile_focus_assets_are_wired_into_play_page():
     html = read("play-v2.html")
-    assert 'href="v2/play/mobile-focus.css"' in html
-    assert 'src="v2/play/mobile-focus.mjs"' in html
+    assert 'href="v2/play/mobile-focus.css?v=20260912-global3"' in html
+    assert 'src="v2/play/mobile-focus.mjs?v=20260912-global3"' in html
 
 
 def test_live_game_focus_hides_mobile_navigation_and_recovers_space():
