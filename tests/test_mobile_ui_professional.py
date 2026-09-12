@@ -52,3 +52,18 @@ def test_signed_in_mobile_home_is_one_screen_without_page_scroll():
     assert "label:'Chess960'" in shell
     assert "label:'Puzzle Battle'" in shell
     assert "if(window.matchMedia('(max-width:900px)').matches)return;" in shell
+
+
+def test_mobile_member_card_moves_to_top_and_exposes_three_compact_statuses():
+    css = (ROOT / 'v2/site/mobile-home-no-scroll.css').read_text(encoding='utf-8')
+    dashboard = (ROOT / 'v2/home/dashboard.mjs').read_text(encoding='utf-8')
+
+    assert 'body.v2-route-home.home-signed-in .v5-home-dashboard{' in css
+    assert 'order:-20!important' in css
+    assert 'body.v2-route-home.home-signed-in .v5-home-mobile-strip{' in css
+    assert 'grid-template-columns:repeat(3,minmax(0,1fr))!important' in css
+    assert "const mobileStrip=node('div','v5-home-mobile-strip');" in dashboard
+    assert "label:'آخر مباراة'" in dashboard
+    assert "label:'الأصدقاء'" in dashboard
+    assert "label:'الإشعارات'" in dashboard
+    assert 'متصل الآن' in dashboard
