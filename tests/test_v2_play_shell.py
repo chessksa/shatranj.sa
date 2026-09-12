@@ -1,4 +1,5 @@
 from pathlib import Path
+import re
 
 root = Path(__file__).resolve().parents[1]
 html = (root / 'play-v2.html').read_text(encoding='utf-8') if (root / 'play-v2.html').exists() else ''
@@ -14,5 +15,5 @@ assert 'assets/pieces/' in js
 assert '--v2-petrol' in css
 assert '--v2-light-square' in css
 assert '--v2-dark-square' in css
-assert '@media (max-width: 760px)' in css
+assert re.search(r'@media\s*\(\s*max-width\s*:\s*760px\s*\)', css)
 print('V2 play shell: PASS')
