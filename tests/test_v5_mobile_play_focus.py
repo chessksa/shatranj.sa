@@ -57,3 +57,9 @@ def test_play_page_always_hides_bottom_nav_and_compacts_lower_area():
     assert "margin:4px auto 0!important" in css
     assert "min-height:56px!important" in css
     assert "min-height:34px!important" in css
+
+
+def test_play_page_hides_time_increment_and_rated_row():
+    css = read("v2/play/mobile-focus.css")
+    assert "body.v2-shell-active.v2-route-play .v5-custom-box" in css
+    assert "display:none!important" in css
