@@ -42,10 +42,7 @@ function elapsedForTurn(game: Record<string, unknown>, nowMs: number) {
 
 function terminalState(chess: Chess, moverColor: 'w' | 'b') {
   if (chess.isCheckmate()) {
-    return {
-      result: moverColor === 'w' ? '1-0' : '0-1',
-      termination: 'checkmate',
-    };
+    return { result: moverColor === 'w' ? '1-0' : '0-1', termination: 'checkmate' };
   }
   if (chess.isStalemate()) return { result: '1/2-1/2', termination: 'stalemate' };
   if (chess.isDraw()) return { result: '1/2-1/2', termination: 'draw' };
@@ -60,48 +57,39 @@ Deno.serve(async (req: Request) => {
   const anonKey = Deno.env.get('SUPABASE_ANON_KEY');
   const serviceRoleKey = Deno.env.get('SUPABASE_SERVICE_ROLE_KEY');
   const authorization = req.headers.get('Authorization') || req.headers.get('authorization') || '';
-
-  if (!supabaseUrl || !anonKey || !serviceRoleKey || !authorization) {
-    return reply({ error: 'Authentication required' }, 401);
-  }
+  if (!supabaseUrl || !anonKey || !serviceRoleKey || !authorization) return reply({ error: 'Authentication required' }, 401);
 
   const userClient = createClient(supabaseUrl, anonKey, {
     global: { headers: { Authorization: authorization } },
     auth: { persistSession: false, autoRefreshToken: false },
   });
-  const admin = createClient(supabaseUrl, serviceRoleKey, {
-    auth: { persistSession: false, autoRefreshToken: false },
-  });
+  const admin = createClient(supabaseUrl, serviceRoleKey, { auth: { persistSession: false, autoRefreshToken: false } });
 
   const { data: authData, error: authError } = await userClient.auth.getUser();
   const user = authData?.user;
   if (authError || !user) return reply({ error: 'Authentication required' }, 401);
 
   const { data: player, error: playerError } = await admin
-    .from('players')
-    .select('id,status,is_synthetic')
-    .eq('auth_user_id', user.id)
-    .maybeSingle();
-
+    .from('players').select('id,status,is_synthetic').eq('auth_user_id', user.id).maybeSingle();
   if (playerError || !player || player.is_synthetic || ['banned', 'suspended', 'inactive'].includes(String(player.status ?? ''))) {
     return reply({ error: 'Player profile required' }, 403);
   }
 
   let body: Record<string, unknown>;
-  try {
-    body = await req.json();
-  } catch {
-    return reply({ error: 'Invalid request' }, 400);
-  }
-
+  try { body = await req.json(); } catch { return reply({ error: 'Invalid request' }, 400); }
   const action = String(body.action ?? '');
+
+  async function checkRateLimit(bucket: string, maxHits: number, windowSeconds: number) {
+    const { data, error } = await admin.rpc('v6_consume_rate_limit_server', {
+      p_player_id: player.id, p_bucket: bucket, p_max_hits: maxHits, p_window_seconds: windowSeconds,
+    });
+    if (error) throw error;
+    return Array.isArray(data) ? data[0] ?? null : data;
+  }
 
   async function executeGameAction(actionValue: string, gameIdValue: string, acceptValue: boolean | null = null) {
     const { data, error } = await admin.rpc('v2_game_action_server', {
-      action_value: actionValue,
-      game_id: gameIdValue,
-      player_id: player.id,
-      accept_value: acceptValue,
+      action_value: actionValue, game_id: gameIdValue, player_id: player.id, accept_value: acceptValue,
     });
     if (error) throw error;
     return Array.isArray(data) ? data[0] ?? null : data;
@@ -113,11 +101,9 @@ Deno.serve(async (req: Request) => {
     const actionGameId = typeof body.gameId === 'string' ? body.gameId : '';
     if (!actionGameId) return reply({ error: 'Invalid game request' }, 400);
     try {
-      const actedGame = await executeGameAction(
-        action,
-        actionGameId,
-        action === 'respond_draw' ? Boolean(body.accept) : null,
-      );
+      const rate = await checkRateLimit('live_action', 30, 60);
+      if (rate?.allowed === false) return reply({ error: 'Too many requests', code: 'rate_limited', retryAfterMs: rate.retry_after_ms }, 429);
+      const actedGame = await executeGameAction(action, actionGameId, action === 'respond_draw' ? Boolean(body.accept) : null);
       return reply({ game: actedGame, serverNow: new Date().toISOString() });
     } catch (error) {
       const message = error instanceof Error ? error.message : String(error);
@@ -132,31 +118,28 @@ Deno.serve(async (req: Request) => {
   const from = body.from;
   const to = body.to;
   const promotion = body.promotion == null || body.promotion === '' ? null : String(body.promotion);
-
   if (!gameId || expectedPly == null || expectedPly < 0 || !isSquare(from) || !isSquare(to) || !validPromotion(promotion)) {
     return reply({ error: 'Invalid move request' }, 400);
   }
 
+  try {
+    const rate = await checkRateLimit('live_move', 12, 2);
+    if (rate?.allowed === false) return reply({ error: 'Too many requests', code: 'rate_limited', retryAfterMs: rate.retry_after_ms }, 429);
+  } catch (error) {
+    console.error('V2 rate limit failed', error);
+    return reply({ error: 'Rate limit unavailable' }, 503);
+  }
+
   const { data: game, error: gameError } = await admin
     .from('v2_games')
-    .select('id,white_player_id,black_player_id,fen,turn,ply,white_ms,black_ms,clock_anchor_at,grace_until,status,result')
-    .eq('id', gameId)
-    .maybeSingle();
-
-  if (gameError) {
-    console.error('V2 game lookup failed', gameError.message);
-    return reply({ error: 'Could not load game' }, 500);
-  }
+    .select('id,white_player_id,black_player_id,fen,turn,ply,white_ms,black_ms,clock_anchor_at,grace_until,status,result,rated,variant,increment_seconds')
+    .eq('id', gameId).maybeSingle();
+  if (gameError) return reply({ error: 'Could not load game' }, 500);
   if (!game) return reply({ error: 'Game not found' }, 404);
   if (!['matched', 'active'].includes(game.status)) return reply({ error: 'Game is not active' }, 409);
   if (game.ply !== expectedPly) return reply({ error: 'Game state changed', code: 'stale_state' }, 409);
 
-  const moverColor: 'w' | 'b' | null = game.white_player_id === player.id
-    ? 'w'
-    : game.black_player_id === player.id
-      ? 'b'
-      : null;
-
+  const moverColor: 'w' | 'b' | null = game.white_player_id === player.id ? 'w' : game.black_player_id === player.id ? 'b' : null;
   if (!moverColor) return reply({ error: 'Game not accessible' }, 403);
   if (game.turn !== moverColor) return reply({ error: 'Not your turn' }, 409);
 
@@ -164,59 +147,44 @@ Deno.serve(async (req: Request) => {
   const elapsedMs = elapsedForTurn(game, nowMs);
   let whiteMs = Number(game.white_ms);
   let blackMs = Number(game.black_ms);
-
-  if (moverColor === 'w') whiteMs = Math.max(0, whiteMs - elapsedMs);
-  else blackMs = Math.max(0, blackMs - elapsedMs);
-
+  if (moverColor === 'w') whiteMs = Math.max(0, whiteMs - elapsedMs); else blackMs = Math.max(0, blackMs - elapsedMs);
   if ((moverColor === 'w' ? whiteMs : blackMs) <= 0) {
     try {
       const timedOutGame = await executeGameAction('timeout', gameId);
       return reply({ game: timedOutGame, serverNow: new Date(nowMs).toISOString() });
-    } catch (error) {
-      const message = error instanceof Error ? error.message : String(error);
-      console.error('V2 timeout settlement failed', message);
+    } catch {
       return reply({ error: 'Clock expired', code: 'clock_expired' }, 409);
     }
   }
 
   let chess: Chess;
-  try {
-    chess = new Chess(game.fen);
-  } catch {
-    return reply({ error: 'Invalid authoritative position' }, 500);
-  }
-
+  try { chess = new Chess(game.fen); } catch { return reply({ error: 'Invalid authoritative position' }, 500); }
   let move;
-  try {
-    move = chess.move({ from, to, ...(promotion ? { promotion } : {}) });
-  } catch {
-    return reply({ error: 'Illegal move', code: 'illegal_move' }, 409);
-  }
+  try { move = chess.move({ from, to, ...(promotion ? { promotion } : {}) }); } catch { return reply({ error: 'Illegal move', code: 'illegal_move' }, 409); }
   if (!move) return reply({ error: 'Illegal move', code: 'illegal_move' }, 409);
+
+  const incrementMs = Math.max(0, Number(game.increment_seconds || 0)) * 1000;
+  if (moverColor === 'w') whiteMs += incrementMs;
+  else blackMs += incrementMs;
 
   const terminal = terminalState(chess, moverColor);
   const { data: committedData, error: commitError } = await admin.rpc('commit_v2_move_server', {
-    game_id: gameId,
-    mover_player_id: player.id,
-    expected_ply: expectedPly,
-    from_square: from,
-    to_square: to,
-    promotion,
-    san_value: move.san,
-    fen_value: chess.fen(),
-    next_turn: chess.turn(),
-    white_ms_value: Math.round(whiteMs),
-    black_ms_value: Math.round(blackMs),
-    result_value: terminal.result,
-    termination_value: terminal.termination,
+    game_id: gameId, mover_player_id: player.id, expected_ply: expectedPly,
+    from_square: from, to_square: to, promotion, san_value: move.san, fen_value: chess.fen(),
+    next_turn: chess.turn(), white_ms_value: Math.round(whiteMs), black_ms_value: Math.round(blackMs),
+    result_value: terminal.result, termination_value: terminal.termination,
   });
-
   if (commitError) {
     const stale = /stale_game_version|wrong_turn|game_not_active/i.test(commitError.message ?? '');
-    console.error('V2 move commit failed', commitError.message);
     return reply({ error: stale ? 'Game state changed' : 'Could not save move', code: stale ? 'stale_state' : 'commit_failed' }, stale ? 409 : 500);
   }
 
   const committed = Array.isArray(committedData) ? committedData[0] ?? null : committedData;
+  const telemetry = await admin.rpc('v6_record_move_event_server', {
+    p_source_type: 'standard', p_game_id: gameId, p_player_id: player.id, p_ply: expectedPly + 1,
+    p_move_uci: `${from}${to}${promotion || ''}`, p_san: move.san, p_server_move_ms: Math.round(elapsedMs),
+    p_remaining_ms: Math.round(moverColor === 'w' ? whiteMs : blackMs), p_rated: Boolean(game.rated),
+  });
+  if (telemetry.error) console.error('Fair Play telemetry failed', telemetry.error.message);
   return reply({ game: committed, serverNow: new Date(nowMs).toISOString() });
 });

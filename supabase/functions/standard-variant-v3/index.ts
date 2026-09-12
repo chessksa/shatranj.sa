@@ -35,6 +35,14 @@ Deno.serve(async(req:Request)=>{
   let body:Record<string,unknown>;try{body=await req.json()}catch{return reply({error:'Invalid request'},400)}
   const action=String(body.action??'');
 
+  async function checkRateLimit(bucket:string,maxHits:number,windowSeconds:number){
+    const {data,error}=await admin.rpc('v6_consume_rate_limit_server',{
+      p_player_id:player.id,p_bucket:bucket,p_max_hits:maxHits,p_window_seconds:windowSeconds,
+    });
+    if(error)throw error;
+    return Array.isArray(data)?data[0]??null:data;
+  }
+
   if(action==='queue'){
     const variant=String(body.variant??'');
     if(!SUPPORTED.has(variant))return reply({error:'Unsupported variant'},400);
@@ -64,6 +72,10 @@ Deno.serve(async(req:Request)=>{
   if(![game.white_player_id,game.black_player_id].includes(player.id))return reply({error:'Game not accessible'},403);
 
   if(['resign','offer_draw','respond_draw','timeout'].includes(action)){
+    try{
+      const rate=await checkRateLimit('variant_action',30,60);
+      if(rate?.allowed===false)return reply({error:'Too many requests',code:'rate_limited',retryAfterMs:rate.retry_after_ms},429);
+    }catch(error){console.error('Variant rate limit failed',error);return reply({error:'Rate limit unavailable'},503)}
     const {data,error}=await admin.rpc('v3_variant_action_server',{
       p_game_id:gameId,p_player_id:player.id,p_action:action,p_accept:action==='respond_draw'?Boolean(body.accept):null,
     });
@@ -78,6 +90,11 @@ Deno.serve(async(req:Request)=>{
   const to=typeof body.to==='string'?body.to:'';
   const promotion=typeof body.promotion==='string'?body.promotion:'';
   if(!Number.isInteger(expectedPly)||expectedPly<0||game.ply!==expectedPly||!/^[a-h][1-8]$/.test(from)||!/^[a-h][1-8]$/.test(to))return reply({error:'Game state changed',code:'stale_state'},409);
+  try{
+    const rate=await checkRateLimit('variant_move',12,2);
+    if(rate?.allowed===false)return reply({error:'Too many requests',code:'rate_limited',retryAfterMs:rate.retry_after_ms},429);
+  }catch(error){console.error('Variant rate limit failed',error);return reply({error:'Rate limit unavailable'},503)}
+
   const mover: 'w'|'b'=game.white_player_id===player.id?'w':'b';
   if(game.turn!==mover)return reply({error:'Not your turn'},409);
 
@@ -116,5 +133,11 @@ Deno.serve(async(req:Request)=>{
     p_white_checks:whiteChecks,p_black_checks:blackChecks,p_result:result,p_termination:termination,
   });
   if(commitError)return reply({error:'Game state changed',code:commitError.message},409);
+  const telemetry=await admin.rpc('v6_record_move_event_server',{
+    p_source_type:game.variant,p_game_id:gameId,p_player_id:player.id,p_ply:expectedPly+1,
+    p_move_uci:uci,p_san:move.san,p_server_move_ms:Math.round(elapsed),
+    p_remaining_ms:Math.round(mover==='w'?whiteMs:blackMs),p_rated:Boolean(game.rated),
+  });
+  if(telemetry.error)console.error('Fair Play telemetry failed',telemetry.error.message);
   return reply({game:committed,serverNow:new Date(now).toISOString()});
 });

@@ -103,3 +103,4 @@ import('./admin-view-state.js?v=20260910-1').catch((error) => console.error('ت�
 import('./admin-unified-games.js?v=20260910-4').catch((error) => console.error('تعذر تحميل جدول المباريات الموحد', error));
 import('./admin-home-compact.js?v=20260911-4').catch((error) => console.error('تعذر تحميل شريط أقسام الإدارة المختصر', error));
 import('./v3/admin/phase3.mjs?v=20260912-1').catch((error) => console.error('تعذر تحميل إدارة Phase 3', error));
+import('./v6/admin/fairplay.mjs?v=20260912-1').catch((error) => console.error('تعذر تحميل مراجعة Fair Play', error));
