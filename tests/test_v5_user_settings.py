@@ -26,6 +26,8 @@ def test_privacy_is_enforced_in_challenges_and_messages():
         'create or replace function public.v2_send_challenge',
         'create or replace function public.v2_send_message',
         'challenge_not_allowed','message_not_allowed','v2_friendships',
-        "allow_challenges='friends'", "allow_messages='friends'"
+        'select s.allow_challenges,s.site_notifications',
+        'select s.allow_messages into v_policy',
+        "if v_policy='friends'"
     ]:
         assert token in text
