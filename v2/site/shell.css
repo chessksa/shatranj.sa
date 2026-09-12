@@ -12,6 +12,7 @@
 html{background:var(--shell-bg)}
 body.v2-shell-active{padding-right:var(--shell-width)!important;background:radial-gradient(circle at 15% 18%,rgba(12,110,120,.20),transparent 26%),linear-gradient(135deg,var(--shell-bg),var(--shell-bg-2) 52%,#0b4850)!important;color:var(--shell-cream)}
 body.v2-shell-active.home-signed-in>.home-header,body.v2-shell-active.home-signed-in>header.home-header{display:none!important}
+body.v2-shell-active.v2-route-watch>header,body.v2-shell-active.v2-route-tournaments>header{display:none!important}
 .v2-global-sidebar{position:fixed;z-index:9999;inset:0 0 0 auto;width:var(--shell-width);padding:12px 10px;background:linear-gradient(180deg,#022f33,#063a40);border-left:1px solid var(--shell-line);display:flex;flex-direction:column;gap:8px;box-shadow:-8px 0 24px rgba(0,0,0,.16);font-family:Arial,sans-serif;direction:rtl}
 .v2-global-brand{display:flex;align-items:center;gap:9px;min-height:54px;padding:8px;border-bottom:1px solid var(--shell-line);margin-bottom:2px;color:var(--shell-cream);font-weight:900;text-decoration:none}
 .v2-global-brand-mark{width:38px;height:38px;border-radius:10px;display:grid;place-items:center;background:var(--shell-gold);color:#173536;font-size:22px;font-weight:900}
@@ -28,6 +29,7 @@ body.v2-shell-active .wrap,body.v2-shell-active .shell{max-width:1180px}
 body.v2-shell-active .home-hero,body.v2-shell-active #ranking{margin-right:0!important}
 body.v2-shell-active .table-card,body.v2-shell-active .profile-card,body.v2-shell-active .panel,body.v2-shell-active .card{border-color:var(--shell-line);box-shadow:0 10px 26px rgba(0,0,0,.16)}
 body.v2-shell-active .btn.gold,body.v2-shell-active .primary,body.v2-shell-active button.primary{background:var(--shell-gold)!important;color:#173536!important;border-color:transparent!important}
+body.v2-shell-active.v2-route-watch main,body.v2-shell-active.v2-route-tournaments main{padding-top:14px!important}
 @media(min-width:901px){
   body.v2-shell-active.home-signed-in{grid-template-rows:34px 34px minmax(0,1fr)!important}
   body.v2-shell-active.home-signed-in .welcome-ticker{grid-row:1!important}
