@@ -13,7 +13,7 @@ def test_v5_matchmaking_supports_custom_clock_and_rated_state():
     text=sql_text()
     for token in [
         'base_seconds','increment_seconds','rated',
-        'start_v5_matchmaking','poll_v5_matchmaking',
+        'start_v5_matchmaking','poll_v5_matchmaking','cancel_v5_matchmaking',
         'for update skip locked','matched_game_id'
     ]:
         assert token in text
@@ -21,13 +21,12 @@ def test_v5_matchmaking_supports_custom_clock_and_rated_state():
     assert 'p_increment_seconds between 0 and 60' in text
 
 
-def test_rematch_is_linked_locked_and_swaps_colors():
+def test_rematch_is_linked_locked_and_swaps_source_colors():
     text=sql_text()
     for token in [
         'challenge_type','source_game_id','rematch',
         'v5_request_rematch','v5_get_rematch_state',
-        'for update','white_player_id=v_ch.challenged_id',
-        'black_player_id=v_ch.challenger_id'
+        'for update','v_source.black_player_id','v_source.white_player_id'
     ]:
         assert token in text
     assert 'unique' in text
