@@ -28,15 +28,6 @@ const observer = new MutationObserver(syncMobileGameFocus);
 if (statusHost) observer.observe(statusHost, { childList: true, characterData: true, subtree: true });
 if (rematchButton) observer.observe(rematchButton, { attributes: true, attributeFilter: ['hidden'] });
 
-for (const method of ['pushState', 'replaceState']) {
-  const original = history[method].bind(history);
-  history[method] = (...args) => {
-    const result = original(...args);
-    queueMicrotask(syncMobileGameFocus);
-    return result;
-  };
-}
-
 window.addEventListener('popstate', syncMobileGameFocus);
 window.addEventListener('pageshow', syncMobileGameFocus);
 syncMobileGameFocus();
