@@ -132,7 +132,7 @@ Deno.serve(async (req: Request) => {
 
   const { data: game, error: gameError } = await admin
     .from('v2_games')
-    .select('id,white_player_id,black_player_id,fen,turn,ply,white_ms,black_ms,clock_anchor_at,grace_until,status,result,rated,variant')
+    .select('id,white_player_id,black_player_id,fen,turn,ply,white_ms,black_ms,clock_anchor_at,grace_until,status,result,rated,variant,increment_seconds')
     .eq('id', gameId).maybeSingle();
   if (gameError) return reply({ error: 'Could not load game' }, 500);
   if (!game) return reply({ error: 'Game not found' }, 404);
@@ -162,6 +162,10 @@ Deno.serve(async (req: Request) => {
   let move;
   try { move = chess.move({ from, to, ...(promotion ? { promotion } : {}) }); } catch { return reply({ error: 'Illegal move', code: 'illegal_move' }, 409); }
   if (!move) return reply({ error: 'Illegal move', code: 'illegal_move' }, 409);
+
+  const incrementMs = Math.max(0, Number(game.increment_seconds || 0)) * 1000;
+  if (moverColor === 'w') whiteMs += incrementMs;
+  else blackMs += incrementMs;
 
   const terminal = terminalState(chess, moverColor);
   const { data: committedData, error: commitError } = await admin.rpc('commit_v2_move_server', {
