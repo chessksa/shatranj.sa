@@ -43,6 +43,6 @@ jobs:
           if ((${#files[@]})); then node --test "${files[@]}"; fi
       - name: Phase 5 frontend syntax
         run: |
-          for file in v2/play/*.js v2/play/*.mjs v2/home/*.mjs v2/settings/*.mjs; do
-            [ -f "$file" ] && node --check "$file"
-          done
+          shopt -s nullglob
+          files=(v2/play/*.js v2/play/*.mjs v2/home/*.mjs v2/settings/*.mjs)
+          for file in "${files[@]}"; do node --check "$file"; done
