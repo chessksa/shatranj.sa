@@ -1,6 +1,15 @@
 import './pull-to-refresh.js?v=20260910-tournament-pull1';
 import './site-presence-base.js?v=20260910-tournament-detail-table2';
 
+if(!document.querySelector('link[data-v2-shell]')){
+  const shellStyle=document.createElement('link');
+  shellStyle.rel='stylesheet';
+  shellStyle.href='v2/site/shell.css?v=20260912-v2-shell1';
+  shellStyle.dataset.v2Shell='1';
+  document.head.appendChild(shellStyle);
+}
+void import('./v2/site/shell.mjs?v=20260912-v2-shell1');
+
 const tournamentLinkVersion=`20260911-grid5-${Date.now()}`;
 document.querySelectorAll('a[href*="tournaments.html"]').forEach(link=>{
   try{
