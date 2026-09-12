@@ -9,10 +9,10 @@ import {
 } from './api.js';
 
 const $ = (id) => document.getElementById(id);
-const customBase = $('v5-custom-base');
-const customIncrement = $('v5-custom-increment');
-const customRated = $('v5-custom-rated');
-const customSearch = $('v5-custom-search');
+const timePickerButton = $('v5-time-picker-button');
+const timePickerMenu = $('v5-time-picker-menu');
+const timePickerLabel = $('v5-time-picker-label');
+const timeButtons = [...document.querySelectorAll('#v5-time-picker-menu [data-base-seconds]')];
 const regularSearch = $('v2-search');
 const rematchButton = $('v5-rematch');
 const rematchStateHost = $('v5-rematch-state');
@@ -22,6 +22,7 @@ const gameId = new URLSearchParams(location.search).get('game');
 let customPolling = false;
 let customTimer = null;
 let rematchTimer = null;
+let selectedBaseSeconds = null;
 
 function setStatus(message, error = false) {
   if (!statusHost) return;
@@ -33,13 +34,31 @@ function openGame(id) {
   location.href = `play-v2.html?game=${encodeURIComponent(id)}`;
 }
 
+function minutesLabel(seconds) {
+  return `${Math.round(Number(seconds) / 60)} د`;
+}
+
+function closeTimeMenu() {
+  if (!timePickerMenu || !timePickerButton) return;
+  timePickerMenu.hidden = true;
+  timePickerButton.setAttribute('aria-expanded', 'false');
+}
+
+function renderTimePicker() {
+  if (!timePickerLabel) return;
+  if (customPolling) {
+    timePickerLabel.textContent = `${minutesLabel(selectedBaseSeconds)} · إلغاء`;
+    return;
+  }
+  timePickerLabel.textContent = selectedBaseSeconds ? minutesLabel(selectedBaseSeconds) : 'اختر الوقت';
+}
+
 function setCustomBusy(busy) {
   customPolling = busy;
-  if (customSearch) customSearch.textContent = busy ? 'إلغاء البحث المخصص' : 'بحث مخصص';
-  if (customBase) customBase.disabled = busy;
-  if (customIncrement) customIncrement.disabled = busy;
-  if (customRated) customRated.disabled = busy;
+  timeButtons.forEach((button) => { button.disabled = busy; });
+  if (timePickerButton) timePickerButton.classList.toggle('searching', busy);
   if (regularSearch) regularSearch.disabled = busy || Boolean(gameId);
+  renderTimePicker();
 }
 
 async function handleCustomResult(result) {
@@ -58,21 +77,23 @@ async function pollCustom() {
     if (await handleCustomResult(await pollCustomMatchmaking())) return;
   } catch (error) {
     setCustomBusy(false);
-    setStatus(error.message || 'تعذر متابعة البحث المخصص', true);
+    setStatus(error.message || 'تعذر متابعة البحث', true);
     return;
   }
   customTimer = setTimeout(pollCustom, 1200);
 }
 
-async function toggleCustomSearch() {
-  if (!customSearch || gameId) return;
-  if (customPolling) {
-    try { await cancelCustomMatchmaking(); } catch {}
-    clearTimeout(customTimer);
-    setCustomBusy(false);
-    setStatus('تم إلغاء البحث المخصص');
-    return;
-  }
+async function cancelTimeSearch() {
+  try { await cancelCustomMatchmaking(); } catch {}
+  clearTimeout(customTimer);
+  setCustomBusy(false);
+  setStatus('تم إلغاء البحث');
+}
+
+async function startTimeSearch(baseSeconds) {
+  if (gameId || customPolling) return;
+  selectedBaseSeconds = Number(baseSeconds);
+  closeTimeMenu();
 
   if (regularSearch?.classList.contains('searching')) {
     regularSearch.click();
@@ -82,21 +103,34 @@ async function toggleCustomSearch() {
   const session = await getSession().catch(() => null);
   if (!session) {
     setStatus('سجل الدخول أولًا لبدء اللعب', true);
+    renderTimePicker();
     return;
   }
 
-  const baseSeconds = Number(customBase?.value || 600);
-  const incrementSeconds = Number(customIncrement?.value || 0);
-  const rated = Boolean(customRated?.checked);
   setCustomBusy(true);
-  setStatus(`جاري البحث · ${Math.round(baseSeconds / 60)} د +${incrementSeconds} · ${rated ? 'نقاط' : 'ودي'}`);
+  setStatus(`جاري البحث · ${minutesLabel(selectedBaseSeconds)} · نقاط`);
   try {
-    if (await handleCustomResult(await startCustomMatchmaking({ baseSeconds, incrementSeconds, rated }))) return;
+    if (await handleCustomResult(await startCustomMatchmaking({
+      baseSeconds: selectedBaseSeconds,
+      incrementSeconds: 0,
+      rated: true,
+    }))) return;
     customTimer = setTimeout(pollCustom, 1000);
   } catch (error) {
     setCustomBusy(false);
-    setStatus(error.message || 'تعذر بدء البحث المخصص', true);
+    setStatus(error.message || 'تعذر بدء البحث', true);
   }
+}
+
+function toggleTimePicker() {
+  if (!timePickerButton || !timePickerMenu || gameId) return;
+  if (customPolling) {
+    void cancelTimeSearch();
+    return;
+  }
+  const willOpen = timePickerMenu.hidden;
+  timePickerMenu.hidden = !willOpen;
+  timePickerButton.setAttribute('aria-expanded', String(willOpen));
 }
 
 function rematchLabel(state) {
@@ -165,13 +199,28 @@ async function initRematch() {
   }
 }
 
-if (customSearch) customSearch.addEventListener('click', toggleCustomSearch);
+if (timePickerButton) timePickerButton.addEventListener('click', toggleTimePicker);
+timeButtons.forEach((button) => {
+  button.addEventListener('click', () => void startTimeSearch(Number(button.dataset.baseSeconds)));
+});
 if (rematchButton) rematchButton.addEventListener('click', handleRematch);
+
+document.addEventListener('click', (event) => {
+  if (!timePickerMenu || timePickerMenu.hidden || !timePickerButton) return;
+  if (timePickerMenu.contains(event.target) || timePickerButton.contains(event.target)) return;
+  closeTimeMenu();
+});
+
+document.addEventListener('keydown', (event) => {
+  if (event.key === 'Escape') closeTimeMenu();
+});
+
 if (gameId) {
-  for (const element of [customBase, customIncrement, customRated, customSearch]) {
-    if (element) element.disabled = true;
-  }
+  const picker = $('v5-time-picker');
+  if (picker) picker.hidden = true;
 }
+
+renderTimePicker();
 
 window.addEventListener('pagehide', () => {
   clearTimeout(customTimer);
