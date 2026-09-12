@@ -1,0 +1,12 @@
+import fs from 'node:fs';
+import assert from 'node:assert/strict';
+const html=fs.readFileSync('variants.html','utf8');
+const app=fs.readFileSync('v3/variants/app.mjs','utf8');
+assert.match(html,/Chess960/);
+assert.match(html,/variantBoard/);
+assert.match(app,/cm-chess@4\.0\.0/);
+assert.match(app,/GAME_VARIANT\.chess960/);
+assert.match(app,/variant-game-v3/);
+assert.match(app,/assets\/pieces\/\$\{p\.color\}\$\{p\.type\}\.png/);
+assert.match(app,/offer_draw/);
+assert.match(app,/resign/);
