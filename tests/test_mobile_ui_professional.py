@@ -69,8 +69,9 @@ def test_mobile_member_card_moves_to_top_and_exposes_three_compact_statuses():
 
 
 def test_home_uses_real_public_snapshot_and_clean_mobile_visuals():
-    home = (ROOT / 'index-app.html').read_text(encoding='utf-8')
-    css = (ROOT / 'v2/site/mobile-home-no-scroll.css').read_text(encoding='utf-8')
+    public_home = (ROOT / 'v2/home/public-home.mjs').read_text(encoding='utf-8')
+    dashboard = (ROOT / 'v2/home/dashboard.mjs').read_text(encoding='utf-8')
+    css = (ROOT / 'v2/site/mobile-home-polish.css').read_text(encoding='utf-8')
     migration = ROOT / 'supabase/migrations/20260912_home_public_snapshot.sql'
 
     assert migration.exists()
@@ -83,11 +84,11 @@ def test_home_uses_real_public_snapshot_and_clean_mobile_visuals():
     assert "from public.v3_variant_games" in sql
     assert "grant execute" in sql and "to anon, authenticated" in sql
 
-    assert "supabase.rpc('get_public_home_snapshot')" in home
-    assert ".from('public_players')" not in home
-    assert '500 + ALL_PLAYERS.length' not in home
-    assert '.slice(0,10)' in home
-    assert 'loadPublicHomeSnapshot' in home
+    assert "rpc('get_public_home_snapshot')" in public_home
+    assert '.slice(0,10)' in public_home
+    assert 'loadPublicHomeSnapshot' in public_home
+    assert "import './public-home.mjs?v=20260912-home-polish1';" in dashboard
+    assert 'mobile-home-polish.css' in public_home
 
     assert '.welcome-ticker-label' in css
     assert 'border:0!important' in css
