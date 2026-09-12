@@ -2,6 +2,9 @@ import { loadBoardPreferences, saveBoardPreferences, applyBoardPreferences, rend
 import { getGameState } from './api.js';
 
 const board = document.getElementById('v2-board');
+const boardColumn = board?.closest('.v2-board-column');
+const opponentCard = document.getElementById('v2-opponent');
+const playerCard = document.getElementById('v2-player');
 const openButton = document.getElementById('v2-board-settings');
 const modal = document.getElementById('v2-settings-modal');
 const closeButtons = [...document.querySelectorAll('[data-close-v2-settings]')];
@@ -17,6 +20,8 @@ let dragSource = null;
 let allowSyntheticClick = false;
 let legalGeneration = 0;
 let ChessClass = null;
+let appOrientation = 'w';
+let ignoreInternalMutation = false;
 
 async function loadChess(){
   if (ChessClass) return ChessClass;
@@ -27,6 +32,30 @@ async function loadChess(){
 
 function gameId(){ return new URLSearchParams(location.search).get('game'); }
 function visualOrientation(){ return board?.firstElementChild?.dataset.square === 'h1' ? 'b' : 'w'; }
+function orderedSquares(color){
+  const files=color==='b'?['h','g','f','e','d','c','b','a']:['a','b','c','d','e','f','g','h'];
+  const ranks=color==='b'?[1,2,3,4,5,6,7,8]:[8,7,6,5,4,3,2,1];
+  return ranks.flatMap(rank=>files.map(file=>`${file}${rank}`));
+}
+
+function applyOrientation(){
+  if(!board || !board.children.length) return;
+  const desired=prefs.whiteAlwaysBottom?'w':appOrientation;
+  if(visualOrientation()!==desired){
+    const byName=new Map([...board.children].map(square=>[square.dataset.square,square]));
+    ignoreInternalMutation=true;
+    board.replaceChildren(...orderedSquares(desired).map(name=>byName.get(name)).filter(Boolean));
+  }
+  if(boardColumn && opponentCard && playerCard){
+    const swap=prefs.whiteAlwaysBottom && appOrientation==='b';
+    const top=swap?playerCard:opponentCard;
+    const bottom=swap?opponentCard:playerCard;
+    if(board.previousElementSibling!==top || board.nextElementSibling!==bottom){
+      boardColumn.insertBefore(top,board);
+      boardColumn.appendChild(bottom);
+    }
+  }
+}
 
 function decorateCoordinates(){
   if (!board) return;
@@ -42,9 +71,7 @@ function decorateCoordinates(){
   }
 }
 
-function clearLegalTargets(){
-  board?.querySelectorAll('.legal-target').forEach((square)=>square.classList.remove('legal-target'));
-}
+function clearLegalTargets(){ board?.querySelectorAll('.legal-target').forEach(square=>square.classList.remove('legal-target')); }
 
 async function refreshLegalTargets(){
   const generation=++legalGeneration;
@@ -60,9 +87,7 @@ async function refreshLegalTargets(){
     for (const move of chess.moves({square:selected,verbose:true})) {
       board.querySelector(`.v2-square[data-square="${move.to}"]`)?.classList.add('legal-target');
     }
-  } catch {
-    clearLegalTargets();
-  }
+  } catch { clearLegalTargets(); }
 }
 
 function syncControls(){
@@ -72,40 +97,36 @@ function syncControls(){
   if(moveMethod) moveMethod.value=prefs.moveMethod;
   if(legal) legal.checked=prefs.showLegalMoves;
   if(whiteBottom) whiteBottom.checked=prefs.whiteAlwaysBottom;
+  applyOrientation();
   decorateCoordinates();
   void refreshLegalTargets();
 }
 
-function renderPicker(){
-  if (!picker) return;
-  renderThemePicker(picker,prefs.theme,(theme)=>persist({theme}));
-}
-function persist(patch){
-  prefs=saveBoardPreferences({...prefs,...patch});
-  syncControls();renderPicker();
-}
+function renderPicker(){ if (picker) renderThemePicker(picker,prefs.theme,theme=>persist({theme})); }
+function persist(patch){ prefs=saveBoardPreferences({...prefs,...patch}); syncControls(); renderPicker(); }
 function openModal(){ if(modal){modal.hidden=false;renderPicker();syncControls();} }
 function closeModal(){ if(modal) modal.hidden=true; }
 
 openButton?.addEventListener('click',openModal);
-closeButtons.forEach((button)=>button.addEventListener('click',closeModal));
-modal?.addEventListener('click',(event)=>{if(event.target===modal)closeModal()});
-document.addEventListener('keydown',(event)=>{if(event.key==='Escape')closeModal()});
+closeButtons.forEach(button=>button.addEventListener('click',closeModal));
+modal?.addEventListener('click',event=>{if(event.target===modal)closeModal()});
+document.addEventListener('keydown',event=>{if(event.key==='Escape')closeModal()});
 coordinates?.addEventListener('change',()=>persist({coordinates:coordinates.value}));
 animation?.addEventListener('change',()=>persist({animation:animation.value}));
 moveMethod?.addEventListener('change',()=>persist({moveMethod:moveMethod.value}));
 legal?.addEventListener('change',()=>persist({showLegalMoves:legal.checked}));
 whiteBottom?.addEventListener('change',()=>persist({whiteAlwaysBottom:whiteBottom.checked}));
 
-board?.addEventListener('click',(event)=>{
-  if(prefs.moveMethod==='drag' && !allowSyntheticClick){event.preventDefault();event.stopImmediatePropagation()}
+board?.addEventListener('click',event=>{
+  if(prefs.moveMethod==='drag' && !allowSyntheticClick){event.preventDefault();event.stopImmediatePropagation();return;}
+  queueMicrotask(()=>void refreshLegalTargets());
 },true);
-board?.addEventListener('pointerdown',(event)=>{
+board?.addEventListener('pointerdown',event=>{
   if(prefs.moveMethod==='click') return;
   const square=event.target.closest('.v2-square');
   if(square) dragSource=square.dataset.square;
 });
-board?.addEventListener('pointerup',(event)=>{
+board?.addEventListener('pointerup',event=>{
   if(prefs.moveMethod==='click' || !dragSource) return;
   const target=event.target.closest('.v2-square')?.dataset.square;
   const source=dragSource;dragSource=null;
@@ -115,13 +136,18 @@ board?.addEventListener('pointerup',(event)=>{
   if(!sourceEl||!targetEl) return;
   allowSyntheticClick=true;
   sourceEl.click();targetEl.click();
-  queueMicrotask(()=>{allowSyntheticClick=false});
+  queueMicrotask(()=>{allowSyntheticClick=false;void refreshLegalTargets()});
 });
 
 if(board){
-  observer=new MutationObserver(()=>{decorateCoordinates();void refreshLegalTargets()});
-  observer.observe(board,{subtree:true,childList:true,attributes:true,attributeFilter:['class']});
+  appOrientation=visualOrientation();
+  observer=new MutationObserver(records=>{
+    if(ignoreInternalMutation){ignoreInternalMutation=false;decorateCoordinates();return;}
+    if(records.some(record=>record.type==='childList' && record.target===board)) appOrientation=visualOrientation();
+    applyOrientation();decorateCoordinates();
+  });
+  observer.observe(board,{childList:true});
 }
 syncControls();renderPicker();
-window.addEventListener('storage',(event)=>{if(event.key==='shatranj:v2:board-preferences'){prefs=loadBoardPreferences();syncControls();renderPicker()}});
+window.addEventListener('storage',event=>{if(event.key==='shatranj:v2:board-preferences'){prefs=loadBoardPreferences();syncControls();renderPicker()}});
 window.addEventListener('pagehide',()=>observer?.disconnect());
