@@ -9,7 +9,7 @@ def sql_text():
     return SQL.read_text(encoding='utf-8').lower()
 
 
-def test_legacy_signed_in_rpcs_revoke_anon():
+def test_legacy_signed_in_rpcs_revoke_public_and_anon():
     text = sql_text()
     targets = [
         'cancel_matchmaking()',
@@ -25,14 +25,16 @@ def test_legacy_signed_in_rpcs_revoke_anon():
         'start_matchmaking_v2(integer,text)',
     ]
     for signature in targets:
-        assert f'revoke execute on function public.{signature} from anon' in text
+        assert f'revoke execute on function public.{signature} from public, anon' in text
         assert f'grant execute on function public.{signature} to authenticated' in text
 
 
-def test_public_players_view_is_security_invoker():
+def test_public_players_view_is_security_invoker_and_not_client_dml():
     text = sql_text()
     assert 'create or replace view public.public_players' in text
     assert "with (security_invoker = true)" in text
     for column in ['id','name','region','city','category','rating','rating_status','games_count','wins','draws','losses','created_at','is_synthetic']:
         assert column in text
     assert "where status = 'active'" in text or "where p.status = 'active'" in text
+    assert 'revoke all on public.public_players from public, anon, authenticated' in text
+    assert 'grant select on public.public_players to service_role' in text
