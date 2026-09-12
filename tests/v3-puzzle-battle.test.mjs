@@ -1,0 +1,11 @@
+import fs from 'node:fs';
+import assert from 'node:assert/strict';
+const html=fs.readFileSync('puzzle-battle.html','utf8');
+const app=fs.readFileSync('v3/puzzles/battle.mjs','utf8');
+assert.match(html,/Puzzle Battle/);
+assert.match(html,/battleBoard/);
+assert.match(app,/v3_join_puzzle_battle/);
+assert.match(app,/v3_get_puzzle_battle_state/);
+assert.match(app,/v3_puzzle_battle_move/);
+assert.match(app,/endsAt/);
+assert.match(app,/assets\/pieces\/\$\{p\.color\}\$\{p\.type\}\.png/);
