@@ -129,6 +129,65 @@ function hideDashboard(){
   document.body.classList.remove('v5-home-dashboard-active');
 }
 
+const SAUDI_TICKER_REGIONS=new Set([
+  'الرياض','مكة المكرمة','المدينة المنورة','القصيم','الشرقية','عسير','تبوك',
+  'حائل','الحدود الشمالية','جازان','نجران','الباحة','الجوف'
+]);
+
+function tickerCountry(value){
+  const region=String(value||'').trim();
+  return SAUDI_TICKER_REGIONS.has(region)?'السعودية':region;
+}
+
+function renderWelcomeSubscribers(rows){
+  const players=Array.isArray(rows)?rows:[];
+  const headerPlayers=document.getElementById('headerPlayersCount');
+  if(headerPlayers) headerPlayers.textContent=String(players.length);
+
+  const track=document.getElementById('welcomeTickerTrack');
+  if(!track) return;
+
+  const members=[...players]
+    .filter(player=>player&&player.created_at)
+    .sort((a,b)=>new Date(b.created_at)-new Date(a.created_at))
+    .slice(0,10);
+
+  if(!members.length){
+    track.className='welcome-ticker-track welcome-ticker-single';
+    track.replaceChildren(node('span','welcome-ticker-loading','مرحبًا بأول أعضاء شطرنج العرب'));
+    return;
+  }
+
+  const makeGroup=()=>{
+    const group=node('span','welcome-ticker-group');
+    members.forEach(player=>{
+      const country=tickerCountry(player.region)||'شطرنج العرب';
+      const place=player.city?`${country} · ${player.city}`:country;
+      group.append(
+        node('span','welcome-ticker-item',`${player.name||'عضو جديد'} — ${place}`),
+        node('span','welcome-ticker-separator','')
+      );
+    });
+    return group;
+  };
+
+  const group=makeGroup();
+  track.className='welcome-ticker-track';
+  track.replaceChildren(group,group.cloneNode(true));
+}
+
+function scheduleWelcomeSubscribers(rows){
+  queueMicrotask(()=>renderWelcomeSubscribers(rows));
+}
+
+window.addEventListener('home-players-loaded',event=>{
+  scheduleWelcomeSubscribers(event.detail);
+});
+
+if(Array.isArray(window.__HOME_PLAYERS__)){
+  scheduleWelcomeSubscribers(window.__HOME_PLAYERS__);
+}
+
 async function renderDashboard(){
   const token=++renderToken;
   const host=dashboardHost();
