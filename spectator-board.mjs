@@ -1,5 +1,7 @@
 import { Chessboard, COLOR, BORDER_TYPE } from 'https://cdn.jsdelivr.net/npm/cm-chessboard@8/src/Chessboard.js';
 import { Markers } from 'https://cdn.jsdelivr.net/npm/cm-chessboard@8/src/extensions/markers/Markers.js';
+import { loadBoardPreferences } from './v2/board/controller.mjs';
+import { getBoardThemeSolidPair } from './v2/board/themes.mjs';
 
 const LAST_MOVE_MARKER = { class: 'marker-frame-last-move', slice: 'markerFrame', position: 'above' };
 
@@ -82,11 +84,13 @@ function ensureStyles() {
 }
 
 function forceBoardSquareColors(host) {
+  const { theme } = loadBoardPreferences();
+  const colors = getBoardThemeSolidPair(theme);
   host.querySelectorAll('.cm-chessboard .square.white').forEach((square) => {
-    square.style.setProperty('fill','#d6cfbf','important');
+    square.style.setProperty('fill',colors.light,'important');
   });
   host.querySelectorAll('.cm-chessboard .square.black').forEach((square) => {
-    square.style.setProperty('fill','#246f77','important');
+    square.style.setProperty('fill',colors.dark,'important');
   });
 }
 
@@ -115,6 +119,10 @@ export class SpectatorBoard {
     forceBoardSquareColors(this.host);
     this.observer = new MutationObserver(() => forceBoardSquareColors(this.host));
     this.observer.observe(this.host, { childList: true, subtree: true });
+    this.storageHandler = (event) => {
+      if (event.key === 'shatranj:v2:board-preferences') forceBoardSquareColors(this.host);
+    };
+    window.addEventListener('storage', this.storageHandler);
     applyResultColors();
   }
 
