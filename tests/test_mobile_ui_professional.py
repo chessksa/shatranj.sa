@@ -66,3 +66,31 @@ def test_mobile_member_card_moves_to_top_and_exposes_three_compact_statuses():
     assert "label:'الأصدقاء'" in dashboard
     assert "label:'الإشعارات'" in dashboard
     assert 'متصل الآن' in dashboard
+
+
+def test_home_uses_real_public_snapshot_and_clean_mobile_visuals():
+    home = (ROOT / 'index-app.html').read_text(encoding='utf-8')
+    css = (ROOT / 'v2/site/mobile-home-no-scroll.css').read_text(encoding='utf-8')
+    migration = ROOT / 'supabase/migrations/20260912_home_public_snapshot.sql'
+
+    assert migration.exists()
+    sql = migration.read_text(encoding='utf-8').lower()
+    assert 'get_public_home_snapshot' in sql
+    assert "auth_user_id is not null" in sql
+    assert "coalesce(p.is_synthetic, false) = false" in sql
+    assert "limit 10" in sql
+    assert "from public.v2_games" in sql and "status = 'active'" in sql
+    assert "from public.v3_variant_games" in sql
+    assert "grant execute" in sql and "to anon, authenticated" in sql
+
+    assert "supabase.rpc('get_public_home_snapshot')" in home
+    assert ".from('public_players')" not in home
+    assert '500 + ALL_PLAYERS.length' not in home
+    assert '.slice(0,10)' in home
+    assert 'loadPublicHomeSnapshot' in home
+
+    assert '.welcome-ticker-label' in css
+    assert 'border:0!important' in css
+    assert '.hero-stat' in css
+    assert 'box-shadow:none!important' in css
+    assert '.home-board-actions' in css
