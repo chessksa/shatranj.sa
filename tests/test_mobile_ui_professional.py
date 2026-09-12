@@ -5,7 +5,7 @@ ROOT = Path(__file__).resolve().parents[1]
 
 def test_mobile_navigation_is_five_slots_with_more():
     shell = (ROOT / 'v2/site/shell.mjs').read_text(encoding='utf-8')
-    assert "const coreIds = ['home','play','puzzles','profile'];" in shell
+    assert "const coreIds = ['home','play','computer','profile'];" in shell
     assert "mobile.appendChild(moreButton)" in shell
     assert "mobile-ui-professional.css" in shell
 
@@ -50,7 +50,7 @@ def test_signed_in_mobile_home_is_one_screen_without_page_scroll():
     assert 'body.v2-route-home.home-signed-in .v5-home-cards' in css
     assert 'mobile-home-no-scroll.css' in shell
     assert "label:'Chess960'" in shell
-    assert "label:'Puzzle Battle'" in shell
+    assert "label:'Puzzle Battle'" not in shell
     assert "if(window.matchMedia('(max-width:900px)').matches)return;" in shell
 
 
