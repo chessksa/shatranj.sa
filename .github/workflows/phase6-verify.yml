@@ -1,0 +1,45 @@
+name: Phase 6 Verification
+
+on:
+  push:
+    branches:
+      - feature/full-platform-parity-phase6-security-fairplay
+  pull_request:
+    branches: [main]
+    paths:
+      - 'supabase/migrations/20260912_phase6_*'
+      - 'supabase/functions/**'
+      - 'v2/admin/**'
+      - 'admin.html'
+      - 'tests/test_v6_*'
+      - 'tests/v6-*'
+      - '.github/workflows/phase6-verify.yml'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  phase6:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - run: python -m pip install --disable-pip-version-check pytest
+      - name: Phase 6 Python contracts
+        run: python -m pytest -q tests/test_v6_*.py
+      - name: Phase 6 Node contracts
+        run: |
+          shopt -s nullglob
+          files=(tests/v6-*.test.mjs)
+          if ((${#files[@]})); then node --test "${files[@]}"; fi
+      - name: Phase 6 frontend and edge syntax
+        run: |
+          shopt -s nullglob
+          files=(v2/admin/*.mjs supabase/functions/*/*.ts)
+          for file in "${files[@]}"; do node --check "$file"; done
