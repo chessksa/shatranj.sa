@@ -31,9 +31,12 @@ def test_mobile_layer_does_not_override_desktop_breakpoint():
 
 
 def test_signed_in_mobile_home_is_one_screen_without_page_scroll():
-    css = (ROOT / 'v2/site/mobile-ui-professional.css').read_text(encoding='utf-8')
+    compact_path = ROOT / 'v2/site/mobile-home-no-scroll.css'
+    assert compact_path.exists()
+    css = compact_path.read_text(encoding='utf-8')
     shell = (ROOT / 'v2/site/shell.mjs').read_text(encoding='utf-8')
 
+    assert '@media(max-width:900px)' in css
     assert 'body.v2-route-home.home-signed-in{' in css
     assert 'height:100dvh!important' in css
     assert 'overflow:hidden!important' in css
@@ -45,6 +48,7 @@ def test_signed_in_mobile_home_is_one_screen_without_page_scroll():
     assert 'body.v2-route-home.home-signed-in .home-board-preview' in css
     assert 'body.v2-route-home.home-signed-in .v5-home-quick' in css
     assert 'body.v2-route-home.home-signed-in .v5-home-cards' in css
+    assert 'mobile-home-no-scroll.css' in shell
     assert "label:'Chess960'" in shell
     assert "label:'Puzzle Battle'" in shell
     assert "if(window.matchMedia('(max-width:900px)').matches)return;" in shell
