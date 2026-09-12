@@ -66,3 +66,32 @@ def test_mobile_member_card_moves_to_top_and_exposes_three_compact_statuses():
     assert "label:'الأصدقاء'" in dashboard
     assert "label:'الإشعارات'" in dashboard
     assert 'متصل الآن' in dashboard
+
+
+def test_home_uses_real_public_snapshot_and_clean_mobile_visuals():
+    public_home = (ROOT / 'v2/home/public-home.mjs').read_text(encoding='utf-8')
+    dashboard = (ROOT / 'v2/home/dashboard.mjs').read_text(encoding='utf-8')
+    css = (ROOT / 'v2/site/mobile-home-polish.css').read_text(encoding='utf-8')
+    migration = ROOT / 'supabase/migrations/20260912_home_public_snapshot.sql'
+
+    assert migration.exists()
+    sql = migration.read_text(encoding='utf-8').lower()
+    assert 'get_public_home_snapshot' in sql
+    assert "auth_user_id is not null" in sql
+    assert "coalesce(p.is_synthetic, false) = false" in sql
+    assert "limit 10" in sql
+    assert "from public.v2_games" in sql and "status = 'active'" in sql
+    assert "from public.v3_variant_games" in sql
+    assert "grant execute" in sql and "to anon, authenticated" in sql
+
+    assert "rpc('get_public_home_snapshot')" in public_home
+    assert '.slice(0,10)' in public_home
+    assert 'loadPublicHomeSnapshot' in public_home
+    assert "import './public-home.mjs?v=20260912-home-polish1';" in dashboard
+    assert 'mobile-home-polish.css' in public_home
+
+    assert '.welcome-ticker-label' in css
+    assert 'border:0!important' in css
+    assert '.hero-stat' in css
+    assert 'box-shadow:none!important' in css
+    assert '.home-board-actions' in css
