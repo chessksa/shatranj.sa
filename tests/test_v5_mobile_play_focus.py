@@ -9,8 +9,8 @@ def read(path: str) -> str:
 
 def test_mobile_focus_assets_are_wired_into_play_page():
     html = read("play-v2.html")
-    assert 'href="v2/play/mobile-focus.css?v=20260912-global4"' in html
-    assert 'src="v2/play/mobile-focus.mjs?v=20260912-global4"' in html
+    assert 'href="v2/play/mobile-focus.css?v=20260912-global5"' in html
+    assert 'src="v2/play/mobile-focus.mjs?v=20260912-global5"' in html
 
 
 def test_live_game_focus_hides_mobile_navigation_and_recovers_space():
@@ -60,6 +60,6 @@ def test_play_page_always_hides_bottom_nav_and_compacts_lower_area():
 
 
 def test_play_page_hides_time_increment_and_rated_row():
-    css = read("v2/play/mobile-focus.css")
-    assert "body.v2-shell-active.v2-route-play .v5-custom-box" in css
-    assert "display:none!important" in css
+    html = read("play-v2.html")
+    assert "body.v2-shell-active.v2-route-play .v5-custom-box" in html
+    assert "display:none!important" in html
