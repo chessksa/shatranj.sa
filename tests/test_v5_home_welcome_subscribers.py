@@ -19,6 +19,6 @@ def test_home_restores_welcome_ticker_and_counts_loaded_subscribers():
     assert "home-players-loaded" in dashboard
     assert ".slice(0,10)" in dashboard
     assert "headerPlayersCount" in dashboard
-    assert "rows.length" in dashboard
+    assert "players.length" in dashboard
     assert "welcome-ticker-track" in dashboard
     assert "cloneNode(true)" in dashboard
