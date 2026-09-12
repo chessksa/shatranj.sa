@@ -59,10 +59,12 @@ def test_play_page_always_hides_bottom_nav_and_compacts_lower_area():
     assert "min-height:34px!important" in css
 
 
-def test_play_page_hides_time_increment_and_rated_row():
+def test_play_page_removes_old_time_increment_and_rated_row():
     html = read("play-v2.html")
-    assert "body.v2-shell-active.v2-route-play .v5-custom-box" in html
-    assert "display:none!important" in html
+    assert 'class="v5-custom-box"' not in html
+    assert 'id="v5-custom-increment"' not in html
+    assert "الزيادة" not in html
+    assert "مباراة نقاط" not in html
 
 
 def test_top_time_picker_starts_matchmaking_without_increment_option():
@@ -72,8 +74,7 @@ def test_top_time_picker_starts_matchmaking_without_increment_option():
     assert 'id="v5-time-picker-menu"' in html
     for seconds in (60, 180, 300, 600, 900, 1800):
         assert f'data-base-seconds="{seconds}"' in html
-    assert 'id="v5-custom-increment"' not in html
-    assert "الزيادة" not in html
-    assert "مباراة نقاط" not in html
     assert "incrementSeconds: 0" in script
     assert "rated: true" in script
+    assert "startTimeSearch" in script
+    assert "url.searchParams.delete('auto')" in html
