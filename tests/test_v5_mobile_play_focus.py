@@ -38,3 +38,13 @@ def test_mobile_board_is_explicitly_centered_and_controls_have_icon_treatment():
     assert "#v2-resign::before" in css
     assert "#v2-draw::before" in css
     assert "#v2-board-settings::before" in css
+
+
+def test_mobile_live_game_matches_global_site_structure():
+    css = read("v2/play/mobile-focus.css")
+    assert "#24231f" in css
+    assert "#6f8d53" in css
+    assert "grid-template-columns:repeat(3,minmax(0,1fr))" in css
+    assert "calc(100dvh - 300px)" in css
+    assert "body.v2-game-active .v2-side-panel>.v5-custom-box" not in css
+    assert "body.v2-game-active .v5-custom-box :disabled" in css
