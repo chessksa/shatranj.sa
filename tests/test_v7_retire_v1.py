@@ -41,9 +41,7 @@ def test_v1_retirement_migration_revokes_legacy_execution_and_cleans_stale_queue
         assert signature in sql, f"missing legacy signature: {signature}"
 
     assert "revoke execute" in sql
-    assert "from public" in sql
-    assert "from anon" in sql
-    assert "from authenticated" in sql
+    assert "from public, anon, authenticated" in sql
     assert "private.matchmaking_queue" in sql
     assert "status = 'cancelled'" in sql or "status='cancelled'" in sql
     assert "status = 'waiting'" in sql or "status='waiting'" in sql
