@@ -1,0 +1,27 @@
+name: Mobile UI Verification
+
+on:
+  push:
+    branches:
+      - feature/mobile-ui-professional
+  pull_request:
+    paths:
+      - 'v2/site/**'
+      - 'index.html'
+      - 'tests/test_mobile_ui_professional.py'
+      - '.github/workflows/mobile-ui-verify.yml'
+
+jobs:
+  mobile-ui:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - name: Mobile UI contract
+        run: python -m pytest -q tests/test_mobile_ui_professional.py
+      - name: Existing admin nav regression
+        run: python -m pytest -q tests/test_admin_nav_visibility.py
+      - name: Shell syntax
+        run: node --check v2/site/shell.mjs
