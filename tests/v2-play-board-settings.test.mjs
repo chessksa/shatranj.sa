@@ -1,0 +1,10 @@
+import assert from 'node:assert/strict';
+import fs from 'node:fs';
+const modulePath = new URL('../v2/play/board-settings.mjs', import.meta.url);
+assert.equal(fs.existsSync(modulePath), true, 'play board settings module must exist');
+const source=fs.readFileSync(modulePath,'utf8');
+assert.match(source,/loadBoardPreferences/);
+assert.match(source,/applyBoardPreferences/);
+assert.match(source,/renderThemePicker/);
+assert.match(source,/MutationObserver/);
+console.log('play board settings integration ok');

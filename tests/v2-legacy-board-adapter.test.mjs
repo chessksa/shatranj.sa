@@ -1,0 +1,10 @@
+import assert from 'node:assert/strict';
+import fs from 'node:fs';
+const p=new URL('../v2/board/legacy-adapter.mjs',import.meta.url);
+assert.equal(fs.existsSync(p),true,'legacy adapter must exist');
+const s=fs.readFileSync(p,'utf8');
+assert.match(s,/loadBoardPreferences/);
+assert.match(s,/getBoardTheme/);
+assert.match(s,/MutationObserver/);
+assert.match(s,/settings-v2\.html/);
+console.log('legacy board adapter ok');

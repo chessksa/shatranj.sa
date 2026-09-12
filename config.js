@@ -1,9 +1,24 @@
 (() => {
-  const version = '20260911-tournament-grid1';
+  const version = '20260912-v2-shell1';
   const baseSrc = `config-base.js?v=${version}`;
   const refreshSrc = `pull-to-refresh.js?v=${version}`;
 
   if (typeof document === 'undefined') return;
+
+  if (!document.querySelector('link[data-v2-shell]')) {
+    const shellStyle = document.createElement('link');
+    shellStyle.rel = 'stylesheet';
+    shellStyle.href = `v2/site/shell.css?v=${version}`;
+    shellStyle.dataset.v2Shell = '1';
+    document.head.appendChild(shellStyle);
+  }
+  if (!document.querySelector('script[data-v2-shell]')) {
+    const shellScript = document.createElement('script');
+    shellScript.type = 'module';
+    shellScript.src = `v2/site/shell.mjs?v=${version}`;
+    shellScript.dataset.v2Shell = '1';
+    document.head.appendChild(shellScript);
+  }
 
   if (/\/tournaments\.html$/.test(location.pathname)) {
     const style = document.createElement('style');

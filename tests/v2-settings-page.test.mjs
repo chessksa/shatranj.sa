@@ -1,0 +1,14 @@
+import assert from 'node:assert/strict';
+import fs from 'node:fs';
+const htmlPath = new URL('../settings-v2.html', import.meta.url);
+const modulePath = new URL('../v2/board/settings-page.mjs', import.meta.url);
+assert.equal(fs.existsSync(htmlPath), true, 'settings-v2.html must exist');
+assert.equal(fs.existsSync(modulePath), true, 'settings page module must exist');
+const html = fs.readFileSync(htmlPath,'utf8');
+assert.match(html,/id="v2-settings-theme-picker"/);
+assert.match(html,/id="v2-settings-preview-board"/);
+assert.match(html,/v2\/site\/shell\.mjs/);
+const js = fs.readFileSync(modulePath,'utf8');
+assert.match(js,/renderThemePicker/);
+assert.match(js,/saveBoardPreferences/);
+console.log('settings page integration ok');
