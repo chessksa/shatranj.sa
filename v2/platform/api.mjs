@@ -19,11 +19,9 @@ export async function getSessionPlayer(){
   if(!supabase) return {session:null,player:null};
   const {data:{session}}=await supabase.auth.getSession();
   if(!session) return {session:null,player:null};
-  const {data,error}=await supabase.from('players')
-    .select('id,name,country,region,city,rating,games_count,wins,draws,losses,status,auth_user_id')
-    .eq('auth_user_id',session.user.id).order('created_at',{ascending:true}).limit(1).maybeSingle();
-  if(error) throw error;
-  return {session,player:data||null};
+  const data=await rpc('v2_get_my_profile');
+  const player=Array.isArray(data)?data[0]||null:data||null;
+  return {session,player};
 }
 
 export async function requirePlayer(){
