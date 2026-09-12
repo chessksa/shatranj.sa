@@ -2,6 +2,14 @@ import { SITE_NAV } from './nav.mjs';
 
 const skip = /(?:^|\/)(?:admin|profile-section)\.html$/;
 if (!skip.test(location.pathname)) {
+  if (!document.querySelector('link[data-v2-mobile-ui]')) {
+    const mobileUi = document.createElement('link');
+    mobileUi.rel = 'stylesheet';
+    mobileUi.dataset.v2MobileUi = 'professional';
+    mobileUi.href = new URL('./mobile-ui-professional.css', import.meta.url).href;
+    document.head.appendChild(mobileUi);
+  }
+
   document.querySelectorAll('a[href]').forEach((anchor)=>{
     const raw=anchor.getAttribute('href')||'';
     if(!/(?:^|\/)play(?:-v10)?\.html/i.test(raw)) return;
@@ -51,7 +59,7 @@ if (!skip.test(location.pathname)) {
   }
 
   if (!document.querySelector('.v2-mobile-nav')) {
-    const coreIds = ['home','play','puzzles','community','profile'];
+    const coreIds = ['home','play','puzzles','profile'];
     const mobile = document.createElement('nav');
     mobile.className = 'v2-mobile-nav';
     mobile.setAttribute('aria-label','التنقل السريع');

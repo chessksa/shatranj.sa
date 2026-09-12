@@ -1,0 +1,628 @@
+/* Professional mobile UI layer. Intentionally scoped to mobile only. */
+@media(max-width:900px){
+  :root{
+    --mobile-nav-h:72px;
+    --mobile-radius:18px;
+    --mobile-gap:10px;
+  }
+
+  html,
+  body{
+    width:100%;
+    max-width:100%;
+    overflow-x:hidden!important;
+    -webkit-text-size-adjust:100%;
+  }
+
+  body.v2-shell-active{
+    padding-right:0!important;
+    padding-bottom:calc(var(--mobile-nav-h) + env(safe-area-inset-bottom) + 8px)!important;
+  }
+
+  body.v2-shell-active:not(.v2-route-play):not(.v2-route-computer) .wrap,
+  body.v2-shell-active:not(.v2-route-play):not(.v2-route-computer) .shell{
+    width:min(100% - 24px,1180px)!important;
+    max-width:100%!important;
+  }
+
+  /* App-like bottom navigation */
+  .v2-mobile-nav{
+    position:fixed!important;
+    z-index:10001!important;
+    left:8px!important;
+    right:8px!important;
+    bottom:max(6px,env(safe-area-inset-bottom))!important;
+    height:64px!important;
+    padding:5px!important;
+    display:grid!important;
+    grid-template-columns:repeat(5,1fr)!important;
+    gap:4px!important;
+    border:1px solid rgba(224,181,103,.28)!important;
+    border-radius:20px!important;
+    background:linear-gradient(180deg,rgba(7,54,61,.97),rgba(2,47,51,.98))!important;
+    box-shadow:0 16px 38px rgba(0,0,0,.34),inset 0 1px 0 rgba(255,255,255,.04)!important;
+    backdrop-filter:blur(18px)!important;
+    -webkit-backdrop-filter:blur(18px)!important;
+  }
+
+  .v2-mobile-link{
+    min-width:0!important;
+    min-height:52px!important;
+    border:0!important;
+    border-radius:15px!important;
+    padding:5px 2px!important;
+    display:flex!important;
+    flex-direction:column!important;
+    align-items:center!important;
+    justify-content:center!important;
+    gap:4px!important;
+    background:transparent!important;
+    color:#d6cfbf!important;
+    font:800 10px/1 Arial,sans-serif!important;
+    text-decoration:none!important;
+    transition:transform .14s ease,background .14s ease,color .14s ease!important;
+    -webkit-tap-highlight-color:transparent;
+  }
+
+  .v2-mobile-link .v2-global-icon{
+    width:auto!important;
+    font-size:21px!important;
+    line-height:1!important;
+  }
+
+  .v2-mobile-link.active{
+    color:#173536!important;
+    background:linear-gradient(145deg,#efc878,#dca957)!important;
+    box-shadow:0 6px 14px rgba(0,0,0,.18)!important;
+  }
+
+  .v2-mobile-link:active{
+    transform:scale(.96)!important;
+  }
+
+  /* Professional bottom sheet for More */
+  .v2-mobile-more{
+    position:fixed!important;
+    z-index:10000!important;
+    inset:0!important;
+    display:grid!important;
+    align-items:end!important;
+    justify-items:stretch!important;
+    padding:18px 10px calc(var(--mobile-nav-h) + env(safe-area-inset-bottom) + 10px)!important;
+    background:rgba(0,20,22,.72)!important;
+    backdrop-filter:blur(8px)!important;
+    -webkit-backdrop-filter:blur(8px)!important;
+  }
+
+  .v2-mobile-more[hidden]{display:none!important}
+
+  .v2-mobile-more-card{
+    width:min(100%,560px)!important;
+    max-height:min(72dvh,620px)!important;
+    margin:0 auto!important;
+    overflow:auto!important;
+    overscroll-behavior:contain!important;
+    border:1px solid rgba(224,181,103,.28)!important;
+    border-radius:24px!important;
+    padding:14px!important;
+    background:linear-gradient(180deg,#0a4349,#052f34 66%,#02292d)!important;
+    box-shadow:0 28px 70px rgba(0,0,0,.46)!important;
+  }
+
+  .v2-mobile-more-head{
+    position:sticky!important;
+    top:0!important;
+    z-index:2!important;
+    display:flex!important;
+    align-items:center!important;
+    justify-content:space-between!important;
+    min-height:50px!important;
+    margin:-4px -2px 10px!important;
+    padding:4px 4px 10px!important;
+    color:#f4efe6!important;
+    background:#0a4349!important;
+    border-bottom:1px solid rgba(224,181,103,.18)!important;
+  }
+
+  .v2-mobile-more-head strong{
+    font-size:16px!important;
+    font-weight:900!important;
+  }
+
+  .v2-mobile-more-head button{
+    width:40px!important;
+    height:40px!important;
+    border:1px solid rgba(224,181,103,.25)!important;
+    border-radius:13px!important;
+    background:rgba(255,255,255,.045)!important;
+    color:#f4efe6!important;
+    font-size:24px!important;
+  }
+
+  .v2-mobile-more-grid{
+    display:grid!important;
+    grid-template-columns:repeat(2,minmax(0,1fr))!important;
+    gap:9px!important;
+    padding:0!important;
+  }
+
+  .v2-mobile-more-link{
+    min-height:64px!important;
+    padding:10px 12px!important;
+    border:1px solid rgba(224,181,103,.16)!important;
+    border-radius:16px!important;
+    background:rgba(255,255,255,.045)!important;
+    display:flex!important;
+    flex-direction:row!important;
+    align-items:center!important;
+    justify-content:flex-start!important;
+    gap:10px!important;
+    color:#f4efe6!important;
+    font-size:12px!important;
+    font-weight:900!important;
+    text-align:right!important;
+    text-decoration:none!important;
+    box-shadow:inset 0 1px 0 rgba(255,255,255,.025)!important;
+  }
+
+  .v2-mobile-more-link .v2-global-icon{
+    width:38px!important;
+    height:38px!important;
+    flex:0 0 38px!important;
+    border-radius:12px!important;
+    display:grid!important;
+    place-items:center!important;
+    background:rgba(224,181,103,.12)!important;
+    color:#e0b567!important;
+    font-size:20px!important;
+  }
+
+  .v2-mobile-more-link.active{
+    background:linear-gradient(145deg,#efc878,#dca957)!important;
+    color:#173536!important;
+    border-color:transparent!important;
+  }
+
+  .v2-mobile-more-link.active .v2-global-icon{
+    color:#173536!important;
+    background:rgba(23,53,54,.10)!important;
+  }
+
+  /* Home: compact premium hierarchy */
+  body.v2-route-home .home-header{
+    min-height:52px!important;
+    border-bottom:1px solid rgba(224,181,103,.16)!important;
+    background:rgba(2,47,51,.96)!important;
+  }
+
+  body.v2-route-home .home-header .wrap{
+    min-height:52px!important;
+  }
+
+  body.v2-route-home .welcome-ticker,
+  body.v2-route-home #tournamentResultsTicker{
+    height:28px!important;
+    min-height:28px!important;
+  }
+
+  body.v2-route-home .welcome-ticker-label{
+    padding-inline:8px!important;
+    font-size:9px!important;
+  }
+
+  body.v2-route-home .welcome-ticker-item{
+    padding-inline:12px!important;
+    font-size:10px!important;
+  }
+
+  body.v2-route-home .home-hero{
+    padding:14px 0 10px!important;
+  }
+
+  body.v2-route-home .home-hero-grid{
+    display:grid!important;
+    grid-template-columns:1fr!important;
+    gap:12px!important;
+    align-items:start!important;
+  }
+
+  body.v2-route-home .home-hero-copy{
+    min-width:0!important;
+    text-align:right!important;
+  }
+
+  body.v2-route-home .hero-kicker{
+    display:flex!important;
+    align-items:center!important;
+    gap:5px!important;
+    flex-wrap:wrap!important;
+    margin-bottom:4px!important;
+    font-size:12px!important;
+  }
+
+  body.v2-route-home .home-hero h1{
+    margin:4px 0 9px!important;
+    padding:0!important;
+    white-space:normal!important;
+    text-align:right!important;
+    font-size:clamp(23px,7vw,30px)!important;
+    line-height:1.18!important;
+    letter-spacing:-.25px!important;
+  }
+
+  body.v2-route-home .hero-live-stats{
+    width:100%!important;
+    display:grid!important;
+    grid-template-columns:repeat(3,minmax(0,1fr))!important;
+    gap:7px!important;
+    margin:0 0 10px!important;
+  }
+
+  body.v2-route-home .hero-stat{
+    min-width:0!important;
+    min-height:58px!important;
+    padding:7px 5px!important;
+    border-radius:15px!important;
+    display:grid!important;
+    place-items:center!important;
+    text-align:center!important;
+    box-shadow:0 8px 18px rgba(0,0,0,.12)!important;
+  }
+
+  body.v2-route-home .hero-stat small{
+    display:block!important;
+    margin-bottom:3px!important;
+    color:#d6cfbf!important;
+    font-size:9px!important;
+    line-height:1.15!important;
+  }
+
+  body.v2-route-home .hero-stat strong{
+    display:block!important;
+    color:#f1c879!important;
+    font-size:18px!important;
+    line-height:1!important;
+  }
+
+  body.v2-route-home .home-board-actions{
+    width:100%!important;
+    display:grid!important;
+    grid-template-columns:repeat(2,minmax(0,1fr))!important;
+    gap:8px!important;
+    margin:0!important;
+  }
+
+  body.v2-route-home .home-board-actions>.btn,
+  body.v2-route-home .home-board-actions .home-invite-wrap,
+  body.v2-route-home .home-board-actions .home-invite-wrap>.btn,
+  body.v2-route-home .home-board-actions #homeInviteToggle{
+    width:100%!important;
+    min-width:0!important;
+    min-height:46px!important;
+    height:auto!important;
+    margin:0!important;
+    border-radius:14px!important;
+    padding:9px 10px!important;
+    font-size:12px!important;
+    line-height:1.15!important;
+    box-shadow:0 8px 18px rgba(0,0,0,.12)!important;
+  }
+
+  body.v2-route-home .home-board-actions .hero-play-btn{
+    grid-column:1/-1!important;
+    min-height:52px!important;
+    font-size:14px!important;
+  }
+
+  body.v2-route-home .home-board-preview{
+    width:min(46vw,176px)!important;
+    max-width:176px!important;
+    aspect-ratio:1!important;
+    margin:2px auto 0!important;
+    border-radius:18px!important;
+    overflow:hidden!important;
+    box-shadow:0 14px 34px rgba(0,0,0,.28)!important;
+  }
+
+  /* Ranking becomes app-style player cards instead of a squeezed table. */
+  body.v2-route-home #ranking{
+    padding:8px 0 14px!important;
+    overflow:visible!important;
+  }
+
+  body.v2-route-home #ranking>.wrap{
+    display:block!important;
+    min-height:0!important;
+  }
+
+  body.v2-route-home #ranking .head{
+    margin-bottom:8px!important;
+    gap:8px!important;
+  }
+
+  body.v2-route-home #ranking .head h2{
+    font-size:18px!important;
+  }
+
+  body.v2-route-home #ranking .filters{
+    display:grid!important;
+    grid-template-columns:repeat(2,minmax(0,1fr))!important;
+    gap:7px!important;
+    width:100%!important;
+  }
+
+  body.v2-route-home #ranking .filters select{
+    min-width:0!important;
+    min-height:46px!important;
+    height:46px!important;
+    border-radius:13px!important;
+    font-size:13px!important;
+  }
+
+  body.v2-route-home #ranking .table-card,
+  body.v2-route-home.home-signed-in #ranking .table-card{
+    height:auto!important;
+    min-height:0!important;
+    max-height:none!important;
+    overflow:visible!important;
+    border:0!important;
+    background:transparent!important;
+    box-shadow:none!important;
+  }
+
+  body.v2-route-home #ranking .table-head{
+    min-height:38px!important;
+    margin-bottom:7px!important;
+    padding:0 2px!important;
+    border:0!important;
+    background:transparent!important;
+    color:#d6cfbf!important;
+  }
+
+  body.v2-route-home #ranking .table-wrap,
+  body.v2-route-home.home-signed-in #ranking .table-wrap{
+    height:auto!important;
+    min-height:0!important;
+    max-height:none!important;
+    overflow:visible!important;
+  }
+
+  body.v2-route-home #ranking table{
+    display:block!important;
+    width:100%!important;
+    min-width:0!important;
+    height:auto!important;
+    border-collapse:separate!important;
+  }
+
+  body.v2-route-home #ranking thead{
+    display:none!important;
+  }
+
+  body.v2-route-home #ranking tbody{
+    display:grid!important;
+    gap:8px!important;
+    width:100%!important;
+  }
+
+  body.v2-route-home #ranking tbody tr{
+    display:grid!important;
+    grid-template-columns:38px minmax(0,1fr) minmax(72px,.72fr) auto!important;
+    grid-template-areas:
+      'rank player player rating'
+      'rank country city rating'!important;
+    gap:3px 8px!important;
+    align-items:center!important;
+    width:100%!important;
+    min-height:72px!important;
+    padding:9px!important;
+    border:1px solid rgba(224,181,103,.16)!important;
+    border-radius:16px!important;
+    background:linear-gradient(145deg,rgba(11,72,80,.92),rgba(7,54,61,.96))!important;
+    box-shadow:0 8px 20px rgba(0,0,0,.14)!important;
+  }
+
+  body.v2-route-home #ranking tbody td{
+    min-width:0!important;
+    padding:0!important;
+    border:0!important;
+    background:transparent!important;
+    color:#f4efe6!important;
+    font-size:11px!important;
+    overflow:hidden!important;
+    text-overflow:ellipsis!important;
+    white-space:nowrap!important;
+  }
+
+  body.v2-route-home #ranking tbody td:nth-child(1){
+    grid-area:rank!important;
+    width:38px!important;
+    height:48px!important;
+    display:grid!important;
+    place-items:center!important;
+    border-radius:12px!important;
+    background:rgba(224,181,103,.10)!important;
+    color:#e0b567!important;
+    font-size:13px!important;
+    font-weight:900!important;
+  }
+
+  body.v2-route-home #ranking tbody td:nth-child(2){
+    grid-area:player!important;
+    font-size:13px!important;
+    font-weight:900!important;
+  }
+
+  body.v2-route-home #ranking tbody td:nth-child(3){
+    grid-area:country!important;
+    color:#c9d3cf!important;
+  }
+
+  body.v2-route-home #ranking tbody td:nth-child(4){
+    grid-area:city!important;
+    color:#9fb4ae!important;
+  }
+
+  body.v2-route-home #ranking tbody td:nth-child(5){
+    grid-area:rating!important;
+    align-self:center!important;
+    min-width:60px!important;
+    min-height:38px!important;
+    padding:0 8px!important;
+    display:grid!important;
+    place-items:center!important;
+    border-radius:12px!important;
+    background:linear-gradient(145deg,#efc878,#dca957)!important;
+    color:#173536!important;
+    font-size:13px!important;
+    font-weight:900!important;
+  }
+
+  body.v2-route-home #ranking .player-username{
+    margin-top:2px!important;
+    color:#9fb4ae!important;
+    font-size:9px!important;
+  }
+
+  /* Registration and login: one clear touch-first column. */
+  body.v2-route-home .register{
+    padding:10px 0 16px!important;
+    border:0!important;
+    background:transparent!important;
+  }
+
+  body.v2-route-home .form-card{
+    padding:13px!important;
+    border:1px solid rgba(224,181,103,.18)!important;
+    border-radius:18px!important;
+    background:linear-gradient(145deg,rgba(11,72,80,.88),rgba(7,54,61,.95))!important;
+    box-shadow:0 12px 28px rgba(0,0,0,.18)!important;
+  }
+
+  body.v2-route-home .auth-tabs{
+    gap:7px!important;
+    margin-bottom:12px!important;
+  }
+
+  body.v2-route-home .auth-tab{
+    min-height:46px!important;
+    height:46px!important;
+    border-radius:13px!important;
+  }
+
+  body.v2-route-home form,
+  body.v2-route-home .auth-form{
+    display:grid!important;
+    grid-template-columns:1fr!important;
+    gap:10px!important;
+  }
+
+  body.v2-route-home form .full,
+  body.v2-route-home .auth-form .full,
+  body.v2-route-home .check{
+    grid-column:auto!important;
+  }
+
+  body.v2-route-home input,
+  body.v2-route-home select,
+  body.v2-route-home textarea{
+    min-height:46px!important;
+    height:46px!important;
+    border-radius:12px!important;
+    font-size:16px!important;
+  }
+
+  body.v2-route-home textarea{
+    height:auto!important;
+    min-height:96px!important;
+  }
+
+  body.v2-route-home label{
+    font-size:12px!important;
+  }
+
+  body.v2-route-home .show-pass{
+    top:24px!important;
+    min-height:34px!important;
+    height:34px!important;
+    border-radius:10px!important;
+  }
+
+  body.v2-route-home .form-card .btn,
+  body.v2-route-home .account-actions .btn{
+    min-height:46px!important;
+    border-radius:13px!important;
+  }
+
+  body.v2-route-home .account-card{
+    grid-template-columns:repeat(2,minmax(0,1fr))!important;
+    gap:8px!important;
+  }
+
+  body.v2-route-home .account-stat{
+    min-height:64px!important;
+    border-radius:14px!important;
+  }
+
+  /* The bottom app navigation already provides Play; remove duplicate floating CTA. */
+  body.v2-shell-active .mobile-play{
+    display:none!important;
+  }
+
+  /* Generic mobile polish outside the approved play/computer boards. */
+  body.v2-shell-active:not(.v2-route-play):not(.v2-route-computer) :is(button,.btn,.platform-btn){
+    min-height:46px;
+    -webkit-tap-highlight-color:transparent;
+  }
+
+  body.v2-shell-active:not(.v2-route-play):not(.v2-route-computer) :is(.card,.panel,.profile-card,.table-card){
+    border-radius:16px;
+  }
+}
+
+@media(max-width:430px){
+  .v2-mobile-nav{
+    left:6px!important;
+    right:6px!important;
+  }
+
+  .v2-mobile-link{
+    font-size:9px!important;
+  }
+
+  .v2-mobile-link .v2-global-icon{
+    font-size:20px!important;
+  }
+
+  .v2-mobile-more-card{
+    padding:12px!important;
+    border-radius:22px!important;
+  }
+
+  .v2-mobile-more-grid{
+    grid-template-columns:repeat(2,minmax(0,1fr))!important;
+    gap:7px!important;
+  }
+
+  .v2-mobile-more-link{
+    min-height:60px!important;
+    padding:8px 9px!important;
+    gap:8px!important;
+    font-size:11px!important;
+  }
+
+  body.v2-route-home .home-hero h1{
+    font-size:clamp(22px,7.4vw,27px)!important;
+  }
+
+  body.v2-route-home .home-board-preview{
+    width:min(44vw,164px)!important;
+  }
+
+  body.v2-route-home #ranking tbody tr{
+    grid-template-columns:34px minmax(0,1fr) minmax(62px,.62fr) auto!important;
+    min-height:68px!important;
+    padding:8px!important;
+    gap:2px 6px!important;
+  }
+}
