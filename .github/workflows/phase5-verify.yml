@@ -1,0 +1,57 @@
+name: Phase 5 Verification
+
+on:
+  push:
+    branches:
+      - feature/full-platform-parity-phase5-core-ux
+  pull_request:
+    branches: [main]
+    paths:
+      - 'v2/play/**'
+      - 'v2/home/**'
+      - 'v2/settings/**'
+      - 'supabase/migrations/20260912_phase5_*'
+      - 'tests/test_v5_*'
+      - 'tests/v5-*'
+      - 'play-v2.html'
+      - 'settings-v2.html'
+      - 'index.html'
+      - '.github/workflows/phase5-verify.yml'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  phase5:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - run: python -m pip install --disable-pip-version-check pytest
+      - name: Phase 5 Python contracts
+        run: python -m pytest -q tests/test_v5_*.py
+      - name: Phase 5 Node contracts
+        run: |
+          shopt -s nullglob
+          files=(tests/v5-*.test.mjs)
+          if ((${#files[@]})); then node --test "${files[@]}"; fi
+      - name: V2 live-play regression contracts
+        run: |
+          python tests/test_v2_edge_function.py
+          python tests/test_v2_live_actions.py
+          python tests/test_v2_live_schema.py
+          python tests/test_v2_matchmaking_ui.py
+          python tests/test_v2_play_api.py
+          python tests/test_v2_play_shell.py
+          node --test tests/v2-play-clock.test.mjs
+      - name: Phase 5 frontend syntax
+        run: |
+          shopt -s nullglob
+          files=(v2/play/*.js v2/play/*.mjs v2/home/*.mjs v2/settings/*.mjs)
+          for file in "${files[@]}"; do node --check "$file"; done

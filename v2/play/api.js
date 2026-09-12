@@ -70,6 +70,40 @@ export async function cancelMatchmaking() {
   return Boolean(data);
 }
 
+export async function startCustomMatchmaking({ baseSeconds, incrementSeconds = 0, rated = true }) {
+  const { data, error } = await supabaseClient().rpc('start_v5_matchmaking', {
+    p_base_seconds: Number(baseSeconds),
+    p_increment_seconds: Number(incrementSeconds),
+    p_rated: Boolean(rated),
+  });
+  throwIfError(error, 'تعذر بدء البحث المخصص');
+  return firstRow(data);
+}
+
+export async function pollCustomMatchmaking() {
+  const { data, error } = await supabaseClient().rpc('poll_v5_matchmaking');
+  throwIfError(error, 'تعذر متابعة البحث المخصص');
+  return firstRow(data);
+}
+
+export async function cancelCustomMatchmaking() {
+  const { data, error } = await supabaseClient().rpc('cancel_v5_matchmaking');
+  throwIfError(error, 'تعذر إلغاء البحث المخصص');
+  return Boolean(data);
+}
+
+export async function requestRematch(gameId) {
+  const { data, error } = await supabaseClient().rpc('v5_request_rematch', { p_source_game_id: gameId });
+  throwIfError(error, 'تعذر طلب إعادة المباراة');
+  return firstRow(data);
+}
+
+export async function getRematchState(gameId) {
+  const { data, error } = await supabaseClient().rpc('v5_get_rematch_state', { p_source_game_id: gameId });
+  throwIfError(error, 'تعذر تحميل حالة إعادة المباراة');
+  return firstRow(data);
+}
+
 export async function getGameState(gameId) {
   const { data, error } = await supabaseClient().rpc('get_v2_game_state', { p_game_id: gameId });
   throwIfError(error, 'تعذر تحميل المباراة');

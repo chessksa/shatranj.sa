@@ -16,7 +16,7 @@ html,body{margin:0;min-height:100%;background:#042628;color:#f4eddc;font-family:
 <div class="loader"><div><strong>جاري فتح شطرنج العرب</strong><small>تحديث الواجهة…</small></div></div>
 <script>
 (async()=>{
-  const stamp='20260911-header-label-fit2';
+  const stamp='20260912-phase5-home1';
   const runtimeVersion=stamp+'-'+Date.now();
   const response=await fetch('./index-app.html?v='+runtimeVersion,{cache:'no-store'});
   if(!response.ok) throw new Error('index source '+response.status);
@@ -174,9 +174,17 @@ html,body{margin:0;min-height:100%;background:#042628;color:#f4eddc;font-family:
     html=html.replace(/home-header-svg\.css\?v=[A-Za-z0-9._-]+/g,'home-header-svg.css?v='+runtimeVersion);
   }
 
-  // Mount the V2 platform shell on the dynamically loaded home page.
   if(!html.includes('v2/site/shell.css')){
     html=html.replace('</head>','<link rel="stylesheet" href="v2/site/shell.css?v='+runtimeVersion+'"></head>');
+  }
+  if(!html.includes('v2/home/dashboard.css')){
+    html=html.replace('</head>','<link rel="stylesheet" href="v2/home/dashboard.css?v='+runtimeVersion+'"></head>');
+  }
+  if(!html.includes('config-base.js')){
+    html=html.replace('</body>','<script src="config-base.js?v='+runtimeVersion+'"><\/script></body>');
+  }
+  if(!html.includes('v2/home/dashboard.mjs')){
+    html=html.replace('</body>','<script type="module" src="v2/home/dashboard.mjs?v='+runtimeVersion+'"><\/script></body>');
   }
   if(!html.includes('v2/site/shell.mjs')){
     html=html.replace('</body>','<script type="module" src="v2/site/shell.mjs?v='+runtimeVersion+'"><\/script></body>');
