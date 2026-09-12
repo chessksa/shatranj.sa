@@ -30,7 +30,7 @@ if (!skip.test(location.pathname)) {
   const current = location.pathname.split('/').pop() || 'index.html';
   const query = location.search;
   const routeMap = {
-    'learn.html':'learn','train.html':'train','analysis.html':'analysis',
+    'puzzles.html':'puzzles','learn.html':'learn','train.html':'train','analysis.html':'analysis',
     'daily.html':'daily','variants.html':'variants','community.html':'community','clubs.html':'clubs',
     'club.html':'clubs','stats.html':'stats','notifications.html':'notifications'
   };
@@ -66,7 +66,7 @@ if (!skip.test(location.pathname)) {
   }
 
   if (!document.querySelector('.v2-mobile-nav')) {
-    const coreIds = ['home','play','computer','profile'];
+    const coreIds = ['home','play','puzzles','profile'];
     const mobile = document.createElement('nav');
     mobile.className = 'v2-mobile-nav';
     mobile.setAttribute('aria-label','التنقل السريع');
