@@ -4,6 +4,15 @@ const sleep=(ms)=>new Promise(resolve=>setTimeout(resolve,ms));
 let latestSnapshot=null;
 let renderingTicker=false;
 
+function ensurePolishStyles(){
+  if(document.querySelector('link[data-mobile-home-polish]')) return;
+  const link=document.createElement('link');
+  link.rel='stylesheet';
+  link.href='v2/site/mobile-home-polish.css?v=20260912-home-polish1';
+  link.dataset.mobileHomePolish='1';
+  document.head.appendChild(link);
+}
+
 function countryForRegion(value){
   return String(value||'').trim()||'دولة غير محددة';
 }
@@ -93,6 +102,7 @@ export async function loadPublicHomeSnapshot(){
 
 async function boot(){
   if(!document.querySelector('#homeHero')) return;
+  ensurePolishStyles();
   for(let i=0;i<20&&!document.querySelector('#welcomeTickerTrack');i++) await sleep(50);
   protectLiveValues();
   await loadPublicHomeSnapshot();
