@@ -2,6 +2,16 @@ import { SITE_NAV } from './nav.mjs';
 
 const skip = /(?:^|\/)(?:admin|profile-section)\.html$/;
 if (!skip.test(location.pathname)) {
+  document.querySelectorAll('a[href]').forEach((anchor)=>{
+    const raw=anchor.getAttribute('href')||'';
+    if(!/(?:^|\/)play(?:-v10)?\.html/i.test(raw)) return;
+    try{
+      const url=new URL(raw,location.href);
+      if(url.searchParams.get('computer')==='1') return;
+      anchor.setAttribute('href','play-v2.html?auto=1');
+    }catch{}
+  });
+
   const current = location.pathname.split('/').pop() || 'index.html';
   const query = location.search;
   const activeId = current === 'play-v2.html' ? 'play'
