@@ -10,6 +10,7 @@ const reply = (payload: Record<string, unknown>, status = 200) => new Response(J
 const knightPatterns = [[0,1],[0,2],[0,3],[0,4],[1,2],[1,3],[1,4],[2,3],[2,4],[3,4]] as const;
 
 export function generateChess960(index: number) {
+  // Scharnagl constraints: opposite-colored bishops, then queen/knights, then king between rooks.
   if (!Number.isInteger(index) || index < 0 || index > 959) throw new Error('Invalid Chess960 index');
   let n=index; const rank=Array<string>(8).fill(''); const light=[1,3,5,7],dark=[0,2,4,6];
   rank[light[n%4]]='B'; n=Math.floor(n/4); rank[dark[n%4]]='B'; n=Math.floor(n/4);
