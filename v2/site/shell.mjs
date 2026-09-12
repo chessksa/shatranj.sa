@@ -90,6 +90,53 @@ if (!skip.test(location.pathname)) {
     document.body.append(more,mobile);
   }
 
+  function setAdminNavigation(visible){
+    document.querySelectorAll('[data-v2-admin-link]').forEach(node=>node.remove());
+    if(!visible)return;
+
+    const desktop=document.querySelector('.v2-global-nav');
+    if(desktop){
+      const link=document.createElement('a');
+      link.className='v2-global-link';
+      link.href='admin.html';
+      link.dataset.v2AdminLink='1';
+      link.innerHTML='<span class="v2-global-icon">♜</span><span>لوحة الإدارة</span>';
+      desktop.appendChild(link);
+    }
+
+    const grid=document.querySelector('.v2-mobile-more-grid');
+    if(grid){
+      const link=document.createElement('a');
+      link.className='v2-mobile-more-link';
+      link.href='admin.html';
+      link.dataset.v2AdminLink='1';
+      link.innerHTML='<span class="v2-global-icon">♜</span><span>لوحة الإدارة</span>';
+      grid.appendChild(link);
+    }
+  }
+
+  async function setupAdminNavigation(){
+    try{
+      const api=await import('../platform/api.mjs');
+      if(!api.supabase){setAdminNavigation(false);return;}
+      const refresh=async()=>{
+        try{
+          const {data:{session}}=await api.supabase.auth.getSession();
+          if(!session){setAdminNavigation(false);return;}
+          const access=await api.rpc('admin_get_access');
+          const allowed=Array.isArray(access)?Boolean(access[0]):Boolean(access);
+          setAdminNavigation(allowed);
+        }catch{
+          setAdminNavigation(false);
+        }
+      };
+      await refresh();
+      api.supabase.auth.onAuthStateChange(()=>{void refresh();});
+    }catch{
+      setAdminNavigation(false);
+    }
+  }
+
   function addPhase3Links(){
     if(activeId==='home'){
       const actions=document.querySelector('.home-board-actions');
@@ -120,5 +167,6 @@ if (!skip.test(location.pathname)) {
   }
 
   addPhase3Links();
+  void setupAdminNavigation();
   void refreshPhase3Progress();
 }
