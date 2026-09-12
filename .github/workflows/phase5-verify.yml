@@ -41,6 +41,15 @@ jobs:
           shopt -s nullglob
           files=(tests/v5-*.test.mjs)
           if ((${#files[@]})); then node --test "${files[@]}"; fi
+      - name: V2 live-play regression contracts
+        run: |
+          python tests/test_v2_edge_function.py
+          python tests/test_v2_live_actions.py
+          python tests/test_v2_live_schema.py
+          python tests/test_v2_matchmaking_ui.py
+          python tests/test_v2_play_api.py
+          python tests/test_v2_play_shell.py
+          node --test tests/v2-play-clock.test.mjs
       - name: Phase 5 frontend syntax
         run: |
           shopt -s nullglob
