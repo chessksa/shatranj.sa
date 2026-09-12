@@ -30,7 +30,7 @@ if (!skip.test(location.pathname)) {
   const current = location.pathname.split('/').pop() || 'index.html';
   const query = location.search;
   const routeMap = {
-    'puzzles.html':'puzzles','puzzle-battle.html':'puzzles','learn.html':'learn','train.html':'train','analysis.html':'analysis',
+    'learn.html':'learn','train.html':'train','analysis.html':'analysis',
     'daily.html':'daily','variants.html':'variants','community.html':'community','clubs.html':'clubs',
     'club.html':'clubs','stats.html':'stats','notifications.html':'notifications'
   };
@@ -66,7 +66,7 @@ if (!skip.test(location.pathname)) {
   }
 
   if (!document.querySelector('.v2-mobile-nav')) {
-    const coreIds = ['home','play','puzzles','profile'];
+    const coreIds = ['home','play','computer','profile'];
     const mobile = document.createElement('nav');
     mobile.className = 'v2-mobile-nav';
     mobile.setAttribute('aria-label','التنقل السريع');
@@ -99,8 +99,7 @@ if (!skip.test(location.pathname)) {
       grid.appendChild(link);
     }
     const phase3MobileLinks=[
-      {id:'chess960',label:'Chess960',icon:'♞',href:'variants.html'},
-      {id:'battle',label:'Puzzle Battle',icon:'◆',href:'puzzle-battle.html'}
+      {id:'chess960',label:'Chess960',icon:'♞',href:'variants.html'}
     ];
     for(const item of phase3MobileLinks){
       const link=document.createElement('a');
@@ -170,14 +169,7 @@ if (!skip.test(location.pathname)) {
       const actions=document.querySelector('.home-board-actions');
       if(actions&&!actions.querySelector('[data-phase3="variants"]')){
         const variants=document.createElement('a');variants.className='btn light';variants.href='variants.html';variants.dataset.phase3='variants';variants.textContent='Chess960';
-        const battle=document.createElement('a');battle.className='btn light';battle.href='puzzle-battle.html';battle.dataset.phase3='battle';battle.textContent='Puzzle Battle';
-        actions.append(variants,battle);
-      }
-    }
-    if(activeId==='puzzles'){
-      const head=document.querySelector('.platform-head');
-      if(head&&!head.querySelector('[data-phase3="battle"]')){
-        const link=document.createElement('a');link.className='platform-btn';link.href='puzzle-battle.html';link.dataset.phase3='battle';link.textContent=current==='puzzle-battle.html'?'الألغاز':'Puzzle Battle';head.appendChild(link);
+        actions.append(variants);
       }
     }
   }
