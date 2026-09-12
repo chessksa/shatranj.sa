@@ -1,4 +1,4 @@
-import { SITE_NAV } from './nav.mjs';
+import { SITE_NAV } from './nav.mjs?v=20260913-puzzles2';
 
 const skip = /(?:^|\/)(?:admin|profile-section)\.html$/;
 if (!skip.test(location.pathname)) {
