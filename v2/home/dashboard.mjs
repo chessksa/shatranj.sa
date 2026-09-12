@@ -1,4 +1,5 @@
 import { getSessionPlayer, rpc, supabase } from '../platform/api.mjs';
+import './public-home.mjs?v=20260912-home-polish1';
 
 const sleep=(ms)=>new Promise(resolve=>setTimeout(resolve,ms));
 let renderToken=0;
