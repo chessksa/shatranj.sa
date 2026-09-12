@@ -2,6 +2,7 @@ export const SITE_NAV = Object.freeze([
   {id:'home',label:'الرئيسية',icon:'⌂',href:'index.html'},
   {id:'play',label:'العب',icon:'♟',href:'play-v2.html?auto=1'},
   {id:'computer',label:'الكمبيوتر',icon:'▣',href:'play-v10.html?computer=1'},
+  {id:'puzzles',label:'الألغاز',icon:'◆',href:'puzzles.html'},
   {id:'learn',label:'تعلّم',icon:'▤',href:'learn.html'},
   {id:'train',label:'تدرّب',icon:'◎',href:'train.html'},
   {id:'analysis',label:'التحليل',icon:'⌁',href:'analysis.html'},

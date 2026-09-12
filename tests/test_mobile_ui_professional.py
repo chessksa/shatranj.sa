@@ -5,7 +5,7 @@ ROOT = Path(__file__).resolve().parents[1]
 
 def test_mobile_navigation_is_five_slots_with_more():
     shell = (ROOT / 'v2/site/shell.mjs').read_text(encoding='utf-8')
-    assert "const coreIds = ['home','play','computer','profile'];" in shell
+    assert "const coreIds = ['home','play','puzzles','profile'];" in shell
     assert "mobile.appendChild(moreButton)" in shell
     assert "mobile-ui-professional.css" in shell
 
