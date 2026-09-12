@@ -14,7 +14,7 @@ def test_v5_matchmaking_supports_custom_clock_and_rated_state():
     for token in [
         'base_seconds','increment_seconds','rated',
         'start_v5_matchmaking','poll_v5_matchmaking','cancel_v5_matchmaking',
-        'for update skip locked','matched_game_id'
+        'for update of q skip locked','matched_game_id'
     ]:
         assert token in text
     assert 'p_base_seconds between 30 and 3600' in text
