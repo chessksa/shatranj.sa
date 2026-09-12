@@ -7,6 +7,11 @@
   <title>اللعب المباشر | شطرنج العرب</title>
   <link rel="stylesheet" href="v2/site/shell.css">
   <link rel="stylesheet" href="v2/play/play.css">
+  <style>
+    .v5-custom-box{display:grid;gap:7px;padding:9px;border:1px solid rgba(224,181,103,.2);border-radius:11px;background:rgba(0,0,0,.09)}
+    .v5-custom-grid{display:grid;grid-template-columns:1fr 1fr;gap:7px}.v5-custom-box label{display:grid;gap:4px;font-size:11px;color:#d6cfbf}.v5-custom-box select{height:36px;border:1px solid rgba(224,181,103,.28);border-radius:8px;background:#022f33;color:#f4efe6;padding:0 7px}.v5-rated{display:flex!important;grid-column:1/-1;align-items:center;justify-content:space-between;gap:8px;padding:6px 2px}.v5-rated input{width:18px;height:18px;accent-color:#e0b567}.v5-rematch-state{min-height:16px;font-size:11px;color:#d6cfbf;text-align:center}.v5-rematch[hidden]{display:none!important}
+    @media(max-width:760px){.v5-custom-grid{grid-template-columns:1fr 1fr}.v5-custom-box{padding:7px}}
+  </style>
 </head>
 <body>
   <main class="v2-play-shell" aria-label="اللعب المباشر">
@@ -39,12 +44,24 @@
           <button type="button" data-minutes="15">15</button>
         </div>
         <button id="v2-search" class="v2-search-button" type="button">ابحث عن خصم</button>
+
+        <div class="v5-custom-box" aria-label="بحث مخصص">
+          <div class="v5-custom-grid">
+            <label><span>الوقت</span><select id="v5-custom-base"><option value="60">1 دقيقة</option><option value="180">3 دقائق</option><option value="300">5 دقائق</option><option value="600" selected>10 دقائق</option><option value="900">15 دقيقة</option><option value="1800">30 دقيقة</option><option value="3600">60 دقيقة</option></select></label>
+            <label><span>الزيادة</span><select id="v5-custom-increment"><option value="0" selected>0 ثانية</option><option value="1">1 ثانية</option><option value="2">2 ثانية</option><option value="5">5 ثوانٍ</option><option value="10">10 ثوانٍ</option><option value="30">30 ثانية</option></select></label>
+            <label class="v5-rated"><span>مباراة نقاط</span><input id="v5-custom-rated" type="checkbox" checked></label>
+          </div>
+          <button id="v5-custom-search" class="v2-settings-button" type="button">بحث مخصص</button>
+        </div>
+
         <button id="v2-board-settings" class="v2-settings-button" type="button">⚙ إعدادات الرقعة</button>
         <div class="v2-actions">
           <button id="v2-grace-end" class="v2-action v2-grace" type="button" hidden>إنهاء <span>5</span></button>
           <button id="v2-draw" class="v2-action" type="button" disabled>تعادل</button>
           <button id="v2-resign" class="v2-action v2-danger" type="button" disabled>استسلام</button>
+          <button id="v5-rematch" class="v2-action v5-rematch" type="button" hidden>إعادة مباراة</button>
         </div>
+        <div id="v5-rematch-state" class="v5-rematch-state" aria-live="polite"></div>
       </aside>
     </section>
   </main>
@@ -67,6 +84,7 @@
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
   <script src="config-base.js"></script>
   <script type="module" src="v2/play/app.js"></script>
+  <script type="module" src="v2/play/phase5.mjs"></script>
   <script type="module" src="v2/play/board-settings.mjs"></script>
   <script type="module" src="v2/site/shell.mjs"></script>
 </body>
