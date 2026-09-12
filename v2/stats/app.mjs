@@ -9,17 +9,18 @@ function phaseRow(label,value){return `<div class="platform-row"><span>${escapeH
 
 async function phase3Stats(){
   const safe=async promise=>{try{return await promise}catch{return null}};
-  const [activity,variant,battle,reviews]=await Promise.all([
+  const [activity,variantRows,battle,reviews]=await Promise.all([
     safe(rpc('v3_touch_activity')),
-    safe(supabase.from('v3_variant_ratings').select('rating,games_count').eq('player_id',player.id).maybeSingle().then(({data,error})=>{if(error)throw error;return data})),
+    safe(supabase.from('v3_variant_ratings').select('variant,rating,games_count').eq('player_id',player.id).then(({data,error})=>{if(error)throw error;return data||[]})),
     safe(supabase.from('v3_puzzle_battle_ratings').select('rating,games_count').eq('player_id',player.id).maybeSingle().then(({data,error})=>{if(error)throw error;return data})),
     safe(supabase.from('v3_game_reviews').select('id,accuracy_white,accuracy_black,critical_count,updated_at').eq('owner_player_id',player.id).order('updated_at',{ascending:false}).limit(20).then(({data,error})=>{if(error)throw error;return data||[]}))
   ]);
   const a=Array.isArray(activity)?activity[0]:activity;
+  const variants=Object.fromEntries((Array.isArray(variantRows)?variantRows:[]).map(row=>[row.variant,row]));
   const reviewRows=Array.isArray(reviews)?reviews:[];
   const accuracyValues=reviewRows.flatMap(r=>[r.accuracy_white,r.accuracy_black]).map(Number).filter(Number.isFinite);
   const avgAccuracy=accuracyValues.length?Math.round(accuracyValues.reduce((x,y)=>x+y,0)/accuracyValues.length):null;
-  return {activity:a||{},variant:variant||{},battle:battle||{},reviewCount:reviewRows.length,avgAccuracy,critical:reviewRows.reduce((sum,r)=>sum+Number(r.critical_count||0),0)};
+  return {activity:a||{},variants,battle:battle||{},reviewCount:reviewRows.length,avgAccuracy,critical:reviewRows.reduce((sum,r)=>sum+Number(r.critical_count||0),0)};
 }
 
 async function load(){
@@ -56,8 +57,13 @@ async function load(){
     if(!phaseCard){
       phaseCard=document.createElement('article');phaseCard.id='phase3Stats';phaseCard.className='platform-card full';phaseCard.innerHTML='<h2>Phase 3</h2><div id="phase3StatsBody" class="platform-grid" style="grid-template-columns:repeat(2,minmax(0,1fr))"></div>';host?.insertBefore(phaseCard,$('statsStatus'));
     }
+    const chess960=p3.variants.chess960||{};
+    const threecheck=p3.variants.threecheck||{};
+    const koth=p3.variants.kingofthehill||{};
     $('phase3StatsBody').innerHTML=
-      `<div>${phaseRow('نقاط Chess960',p3.variant.rating??1200)}${phaseRow('مباريات Chess960',p3.variant.games_count??0)}</div>`+
+      `<div>${phaseRow('نقاط Chess960',chess960.rating??1500)}${phaseRow('مباريات Chess960',chess960.games_count??0)}</div>`+
+      `<div>${phaseRow('نقاط Three-Check',threecheck.rating??1500)}${phaseRow('مباريات Three-Check',threecheck.games_count??0)}</div>`+
+      `<div>${phaseRow('نقاط King of the Hill',koth.rating??1500)}${phaseRow('مباريات King of the Hill',koth.games_count??0)}</div>`+
       `<div>${phaseRow('نقاط Puzzle Battle',p3.battle.rating??1200)}${phaseRow('مباريات Battle',p3.battle.games_count??0)}</div>`+
       `<div>${phaseRow('مراجعات محفوظة',p3.reviewCount)}${phaseRow('متوسط الدقة',p3.avgAccuracy==null?'—':`${p3.avgAccuracy}%`)}</div>`+
       `<div>${phaseRow('لحظات حرجة راجعتها',p3.critical)}${phaseRow('إنجازات مفتوحة',s.achievements_unlocked||0)}</div>`;
