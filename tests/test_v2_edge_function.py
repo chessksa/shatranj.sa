@@ -23,7 +23,12 @@ assert 'private.commit_v2_move' in server_sql.lower()
 assert 'grant execute on function public.commit_v2_move_server' in server_sql.lower()
 assert 'to service_role' in server_sql.lower()
 
-for forbidden in ['p_new_fen', 'p_san', 'p_result']:
+# The client must never supply authoritative position/SAN/result values.
+# Server-derived SAN may legitimately be forwarded to service-role-only telemetry.
+for forbidden in [
+    'body.newFen', 'body.fen', 'body.san', 'body.result',
+    'body.p_new_fen', 'body.p_san', 'body.p_result',
+]:
     assert forbidden not in edge, forbidden
 
 assert (root / 'supabase/functions/live-game-v2/deno.json').exists()
