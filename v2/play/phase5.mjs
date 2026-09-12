@@ -74,6 +74,11 @@ async function toggleCustomSearch() {
     return;
   }
 
+  if (regularSearch?.classList.contains('searching')) {
+    regularSearch.click();
+    await new Promise((resolve) => setTimeout(resolve, 180));
+  }
+
   const session = await getSession().catch(() => null);
   if (!session) {
     setStatus('سجل الدخول أولًا لبدء اللعب', true);
