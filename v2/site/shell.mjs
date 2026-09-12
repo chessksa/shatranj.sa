@@ -21,9 +21,9 @@ if (!skip.test(location.pathname)) {
     : current === 'profile.html' || current === 'player.html' ? 'profile'
     : current === 'settings-v2.html' ? 'settings'
     : current === 'index.html' || current === 'index-app.html' || !current ? 'home'
-    : '';
+    : 'other';
 
-  document.body.classList.add('v2-shell-active');
+  document.body.classList.add('v2-shell-active',`v2-route-${activeId}`);
   if (!document.querySelector('.v2-global-sidebar')) {
     const sidebar = document.createElement('aside');
     sidebar.className = 'v2-global-sidebar';
