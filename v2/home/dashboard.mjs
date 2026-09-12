@@ -38,7 +38,8 @@ function dashboardHost(){
   host.id='v5-home-dashboard';
   host.hidden=true;
   host.setAttribute('aria-label','لوحة العضو');
-  copy.appendChild(host);
+  if(window.matchMedia('(max-width:900px)').matches) copy.prepend(host);
+  else copy.appendChild(host);
   return host;
 }
 
