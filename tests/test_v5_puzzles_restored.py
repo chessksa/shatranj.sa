@@ -16,6 +16,11 @@ def test_puzzles_are_back_in_primary_navigation():
     assert "const coreIds = ['home','play','puzzles','profile'];" in shell
 
 
+def test_shell_cache_busts_the_navigation_module():
+    shell = read("v2/site/shell.mjs")
+    assert "./nav.mjs?v=20260913-puzzles2" in shell
+
+
 def test_puzzle_page_has_a_real_puzzle_pack_and_daily_fallback():
     migration = ROOT / "supabase/migrations/20260913_puzzle_pack.sql"
     assert migration.exists()
