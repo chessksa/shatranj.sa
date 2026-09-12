@@ -1,6 +1,6 @@
 import { Chess } from 'https://cdn.jsdelivr.net/npm/chess.js@1.4.0/+esm';
 import { supabase, getSessionPlayer, rpc } from '../platform/api.mjs';
-import { loadBoardPreferences } from '../board/preferences.mjs';
+import { loadBoardPreferences } from '../board/controller.mjs';
 import { getBoardTheme } from '../board/themes.mjs';
 
 const $=id=>document.getElementById(id);

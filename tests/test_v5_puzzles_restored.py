@@ -21,6 +21,21 @@ def test_shell_cache_busts_the_navigation_module():
     assert "./nav.mjs?v=20260913-puzzles2" in shell
 
 
+def test_puzzle_app_imports_preferences_loader_from_the_module_that_exports_it():
+    app = read("v2/puzzles/app.mjs")
+    controller = read("v2/board/controller.mjs")
+    preferences = read("v2/board/preferences.mjs")
+
+    assert "import { loadBoardPreferences } from '../board/controller.mjs';" in app
+    assert "export function loadBoardPreferences" in controller
+    assert "export function loadBoardPreferences" not in preferences
+
+
+def test_puzzle_page_cache_busts_the_fixed_runtime_module():
+    html = read("puzzles.html")
+    assert 'src="v2/puzzles/app.mjs?v=20260913-puzzles3"' in html
+
+
 def test_puzzle_page_has_a_real_puzzle_pack_and_daily_fallback():
     migration = ROOT / "supabase/migrations/20260913_puzzle_pack.sql"
     assert migration.exists()
