@@ -47,3 +47,17 @@ export function normalizeBoardTheme(value){
 export function getBoardTheme(value){
   return BOARD_THEMES[normalizeBoardTheme(value)];
 }
+
+function solidColor(value, fallback){
+  const text=String(value||'').trim();
+  if (/^(?:#[0-9a-f]{3,8}|rgba?\()/i.test(text)) return text;
+  return text.match(/#[0-9a-f]{6}\b/i)?.[0] || fallback;
+}
+
+export function getBoardThemeSolidPair(value){
+  const theme=getBoardTheme(value);
+  return {
+    light:solidColor(theme.light,'#e8dec8'),
+    dark:solidColor(theme.dark,'#87966a')
+  };
+}
