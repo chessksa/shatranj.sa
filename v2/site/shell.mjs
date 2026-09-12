@@ -14,14 +14,18 @@ if (!skip.test(location.pathname)) {
 
   const current = location.pathname.split('/').pop() || 'index.html';
   const query = location.search;
+  const routeMap = {
+    'puzzles.html':'puzzles','learn.html':'learn','train.html':'train','analysis.html':'analysis',
+    'daily.html':'daily','variants.html':'variants','community.html':'community','clubs.html':'clubs',
+    'club.html':'clubs','stats.html':'stats','notifications.html':'notifications'
+  };
   const activeId = current === 'play-v2.html' ? 'play'
     : current === 'play-v10.html' && new URLSearchParams(query).get('computer') === '1' ? 'computer'
     : current === 'watch.html' || current.endsWith('-watch.html') ? 'watch'
     : current === 'tournaments.html' || current === 'tournaments-app.html' ? 'tournaments'
     : current === 'profile.html' || current === 'player.html' ? 'profile'
     : current === 'settings-v2.html' ? 'settings'
-    : current === 'index.html' || current === 'index-app.html' || !current ? 'home'
-    : 'other';
+    : routeMap[current] || (current === 'index.html' || current === 'index-app.html' || !current ? 'home' : 'other');
 
   document.body.classList.add('v2-shell-active',`v2-route-${activeId}`);
   if (!document.querySelector('.v2-global-sidebar')) {
@@ -41,18 +45,17 @@ if (!skip.test(location.pathname)) {
       link.innerHTML = `<span class="v2-global-icon">${item.icon}</span><span>${item.label}</span>`;
       nav.appendChild(link);
     }
-    const spacer = document.createElement('div'); spacer.className = 'v2-global-spacer';
     const note = document.createElement('div'); note.className = 'v2-global-note'; note.textContent = 'شطرنج العرب';
-    sidebar.append(brand, nav, spacer, note);
+    sidebar.append(brand, nav, note);
     document.body.prepend(sidebar);
   }
 
   if (!document.querySelector('.v2-mobile-nav')) {
-    const ids = ['home','play','watch','tournaments','profile'];
+    const coreIds = ['home','play','puzzles','community','profile'];
     const mobile = document.createElement('nav');
     mobile.className = 'v2-mobile-nav';
     mobile.setAttribute('aria-label','التنقل السريع');
-    for (const id of ids) {
+    for (const id of coreIds) {
       const item = SITE_NAV.find(entry => entry.id === id);
       const link = document.createElement('a');
       link.className = `v2-mobile-link ${id === activeId ? 'active' : ''}`;
@@ -60,6 +63,30 @@ if (!skip.test(location.pathname)) {
       link.innerHTML = `<span class="v2-global-icon">${item.icon}</span><span>${item.label}</span>`;
       mobile.appendChild(link);
     }
-    document.body.appendChild(mobile);
+    const moreIds = SITE_NAV.filter(item=>!coreIds.includes(item.id));
+    const moreButton=document.createElement('button');
+    moreButton.type='button';
+    moreButton.className=`v2-mobile-link v2-mobile-more-button ${moreIds.some(item=>item.id===activeId)?'active':''}`;
+    moreButton.innerHTML='<span class="v2-global-icon">☰</span><span>المزيد</span>';
+    moreButton.setAttribute('aria-expanded','false');
+    mobile.appendChild(moreButton);
+
+    const more=document.createElement('div');
+    more.className='v2-mobile-more';
+    more.hidden=true;
+    more.innerHTML=`<div class="v2-mobile-more-card"><div class="v2-mobile-more-head"><strong>كل الأقسام</strong><button type="button" aria-label="إغلاق">×</button></div><div class="v2-mobile-more-grid"></div></div>`;
+    const grid=more.querySelector('.v2-mobile-more-grid');
+    for(const item of moreIds){
+      const link=document.createElement('a');
+      link.className=`v2-mobile-more-link ${item.id===activeId?'active':''}`;
+      link.href=item.href;
+      link.innerHTML=`<span class="v2-global-icon">${item.icon}</span><span>${item.label}</span>`;
+      grid.appendChild(link);
+    }
+    const close=()=>{more.hidden=true;moreButton.setAttribute('aria-expanded','false')};
+    moreButton.addEventListener('click',()=>{const opening=more.hidden;more.hidden=!opening;moreButton.setAttribute('aria-expanded',String(opening))});
+    more.querySelector('.v2-mobile-more-head button').addEventListener('click',close);
+    more.addEventListener('click',(event)=>{if(event.target===more)close()});
+    document.body.append(more,mobile);
   }
 }
