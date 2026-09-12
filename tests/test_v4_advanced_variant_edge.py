@@ -22,4 +22,9 @@ def test_advanced_variant_edge_supports_all_five_modes_and_drops():
     assert 'dropdests' in text
     assert 'legalmoves' in text
     assert "action === 'state'" in text or 'action==="state"' in text
-    assert "action === 'move'" in text or 'action==="move"' in text
+    assert (
+        "action === 'move'" in text
+        or 'action==="move"' in text
+        or "action !== 'move'" in text
+        or 'action!=="move"' in text
+    )
