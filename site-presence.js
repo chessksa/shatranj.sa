@@ -9,6 +9,7 @@ if(!document.querySelector('link[data-v2-shell]')){
   document.head.appendChild(shellStyle);
 }
 void import('./v2/site/shell.mjs?v=20260912-v2-shell1');
+void import('./v2/board/legacy-adapter.mjs?v=20260912-board-themes1');
 
 const tournamentLinkVersion=`20260911-grid5-${Date.now()}`;
 document.querySelectorAll('a[href*="tournaments.html"]').forEach(link=>{
