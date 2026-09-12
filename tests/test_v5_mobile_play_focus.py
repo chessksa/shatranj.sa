@@ -9,8 +9,8 @@ def read(path: str) -> str:
 
 def test_mobile_focus_assets_are_wired_into_play_page():
     html = read("play-v2.html")
-    assert 'href="v2/play/mobile-focus.css?v=20260912-global3"' in html
-    assert 'src="v2/play/mobile-focus.mjs?v=20260912-global3"' in html
+    assert 'href="v2/play/mobile-focus.css?v=20260912-global4"' in html
+    assert 'src="v2/play/mobile-focus.mjs?v=20260912-global4"' in html
 
 
 def test_live_game_focus_hides_mobile_navigation_and_recovers_space():
@@ -45,6 +45,15 @@ def test_mobile_live_game_matches_global_site_structure():
     assert "#24231f" in css
     assert "#6f8d53" in css
     assert "grid-template-columns:repeat(3,minmax(0,1fr))" in css
-    assert "calc(100dvh - 300px)" in css
     assert "body.v2-game-active .v2-side-panel>.v5-custom-box" not in css
     assert "body.v2-game-active .v5-custom-box :disabled" in css
+
+
+def test_play_page_always_hides_bottom_nav_and_compacts_lower_area():
+    css = read("v2/play/mobile-focus.css")
+    assert "body.v2-shell-active.v2-route-play .v2-mobile-nav" in css
+    assert "body.v2-shell-active.v2-route-play .v2-mobile-more" in css
+    assert "padding-bottom:0!important" in css
+    assert "margin:4px auto 0!important" in css
+    assert "min-height:56px!important" in css
+    assert "min-height:34px!important" in css
