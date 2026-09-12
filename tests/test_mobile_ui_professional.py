@@ -28,3 +28,23 @@ def test_mobile_stylesheet_is_mobile_scoped_and_professional():
 def test_mobile_layer_does_not_override_desktop_breakpoint():
     css = (ROOT / 'v2/site/mobile-ui-professional.css').read_text(encoding='utf-8')
     assert '@media(min-width:901px)' not in css
+
+
+def test_signed_in_mobile_home_is_one_screen_without_page_scroll():
+    css = (ROOT / 'v2/site/mobile-ui-professional.css').read_text(encoding='utf-8')
+    shell = (ROOT / 'v2/site/shell.mjs').read_text(encoding='utf-8')
+
+    assert 'body.v2-route-home.home-signed-in{' in css
+    assert 'height:100dvh!important' in css
+    assert 'overflow:hidden!important' in css
+    assert 'body.v2-route-home.home-signed-in #ranking' in css and 'display:none!important' in css
+    assert 'body.v2-route-home.home-signed-in .home-features' in css
+    assert 'body.v2-route-home.home-signed-in #register' in css
+    assert 'body.v2-route-home.home-signed-in footer' in css
+    assert 'body.v2-route-home.home-signed-in #tournamentResultsTicker' in css
+    assert 'body.v2-route-home.home-signed-in .home-board-preview' in css
+    assert 'body.v2-route-home.home-signed-in .v5-home-quick' in css
+    assert 'body.v2-route-home.home-signed-in .v5-home-cards' in css
+    assert "label:'Chess960'" in shell
+    assert "label:'Puzzle Battle'" in shell
+    assert "if(window.matchMedia('(max-width:900px)').matches)return;" in shell
