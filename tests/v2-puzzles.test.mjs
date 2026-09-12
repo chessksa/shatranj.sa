@@ -1,0 +1,10 @@
+import fs from 'node:fs';
+const htmlPath=new URL('../puzzles.html',import.meta.url);
+const appPath=new URL('../v2/puzzles/app.mjs',import.meta.url);
+if(!fs.existsSync(htmlPath)) throw new Error('puzzles page missing');
+if(!fs.existsSync(appPath)) throw new Error('puzzles app missing');
+const html=fs.readFileSync(htmlPath,'utf8');
+const app=fs.readFileSync(appPath,'utf8');
+for(const token of ['data-mode="rated"','data-mode="daily"','data-mode="custom"','data-mode="rush"','puzzleBoard','puzzleRating','puzzleHearts']) if(!html.includes(token)) throw new Error(token);
+for(const token of ['v2_puzzles','v2_submit_puzzle_attempt','solution_uci','Chess','loadPuzzle','finishPuzzle','rush']) if(!app.includes(token)) throw new Error(token);
+console.log('V2 puzzles: PASS');

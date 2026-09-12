@@ -1,0 +1,7 @@
+import { requirePlayer, rpc, escapeHtml, relativeTime } from '../platform/api.mjs';
+const $=id=>document.getElementById(id);await requirePlayer();
+const icons={friend_request:'●',friend_accepted:'✓',challenge:'♟',challenge_accepted:'♜',club:'♙',message:'✉',system:'◈'};
+async function load(){try{const rows=await rpc('v2_list_notifications',{p_limit:100});$('notificationList').innerHTML=(rows||[]).map(n=>`<a class="notice ${n.read_at?'':'unread'}" href="${escapeHtml(n.href||'#')}" data-notification="${n.id}"><span class="notice-icon">${icons[n.kind]||'◈'}</span><span><span class="notice-title">${escapeHtml(n.title)}</span><span class="notice-body">${escapeHtml(n.body)}</span></span><span class="notice-time">${relativeTime(n.created_at)}</span></a>`).join('')||'<div class="platform-empty">لا توجد إشعارات.</div>';$('notificationStatus').textContent=''}catch(e){console.error(e);$('notificationStatus').textContent='تعذر تحميل الإشعارات.'}}
+$('notificationList').addEventListener('click',e=>{const a=e.target.closest('[data-notification]');if(!a)return;void rpc('v2_mark_notification_read',{p_notification_id:a.dataset.notification}).catch(()=>{})});
+$('markAllRead').addEventListener('click',async()=>{try{await rpc('v2_mark_notification_read',{p_notification_id:null});await load();$('notificationStatus').textContent='تم تحديد الإشعارات كمقروءة.'}catch(e){console.error(e);$('notificationStatus').textContent='تعذر تحديث الإشعارات.'}});
+await load();
