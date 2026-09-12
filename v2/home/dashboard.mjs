@@ -77,7 +77,7 @@ function renderPayload(host,data){
       'البطولة',
       upcoming_tournament?.name||'استعرض البطولات',
       upcoming_tournament?`${upcoming_tournament.status==='running'?'جارية':'مفتوحة'} · ${upcoming_tournament.time_control||''}`:'',
-      upcoming_tournament?`tournament.html?id=${encodeURIComponent(upcoming_tournament.id)}`:'tournaments.html'
+      'tournaments.html'
     ),
     compactCard(
       'لغز اليوم',
@@ -89,7 +89,7 @@ function renderPayload(host,data){
       'آخر مباراة',
       recent_game?.opponent_name?`ضد ${recent_game.opponent_name}`:'لا توجد مباراة حديثة',
       recent_game?`${resultLabel(recent_game)} · ${timeControl(recent_game.base_seconds,recent_game.increment_seconds)}`:'',
-      recent_game?`analysis-v2.html?game=${encodeURIComponent(recent_game.id)}`:'stats.html'
+      recent_game?'analysis.html':'stats.html'
     )
   );
 
