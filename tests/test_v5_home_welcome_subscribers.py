@@ -9,13 +9,16 @@ def read(path: str) -> str:
 
 def test_home_restores_welcome_ticker_and_counts_loaded_subscribers():
     html = read("index-app.html")
+    dashboard = read("v2/home/dashboard.mjs")
 
     assert '<small>المشتركين</small>' in html
     assert 'id="welcomeTicker"' in html
     assert 'id="welcomeTickerTrack"' in html
-    assert 'renderWelcomeTicker(ALL_PLAYERS);' in html
+    assert "home-players-loaded" in html
 
-    assert '.slice(0,10)' in html
-    assert "track.className='welcome-ticker-track';" in html
-    assert 'headerPlayers.textContent=ALL_PLAYERS.length' in html
-    assert '500 + ALL_PLAYERS.length' not in html
+    assert "home-players-loaded" in dashboard
+    assert ".slice(0,10)" in dashboard
+    assert "headerPlayersCount" in dashboard
+    assert "rows.length" in dashboard
+    assert "welcome-ticker-track" in dashboard
+    assert "cloneNode(true)" in dashboard
