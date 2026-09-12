@@ -1,6 +1,7 @@
 import { rpc } from '../platform/api.mjs';
 
 const sleep=(ms)=>new Promise(resolve=>setTimeout(resolve,ms));
+const SAUDI_REGIONS=new Set(['الرياض','مكة المكرمة','المدينة المنورة','القصيم','المنطقة الشرقية','عسير','تبوك','حائل','الحدود الشمالية','جازان','نجران','الباحة','الجوف']);
 let latestSnapshot=null;
 let renderingTicker=false;
 
@@ -14,7 +15,9 @@ function ensurePolishStyles(){
 }
 
 function countryForRegion(value){
-  return String(value||'').trim()||'دولة غير محددة';
+  const region=String(value||'').trim();
+  if(!region) return 'دولة غير محددة';
+  return SAUDI_REGIONS.has(region)?'السعودية':region;
 }
 
 function buildTickerGroup(members){
