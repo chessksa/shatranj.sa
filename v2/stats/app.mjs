@@ -55,15 +55,15 @@ async function load(){
     const host=document.querySelector('.platform-grid');
     let phaseCard=$('phase3Stats');
     if(!phaseCard){
-      phaseCard=document.createElement('article');phaseCard.id='phase3Stats';phaseCard.className='platform-card full';phaseCard.innerHTML='<h2>Phase 3</h2><div id="phase3StatsBody" class="platform-grid" style="grid-template-columns:repeat(2,minmax(0,1fr))"></div>';host?.insertBefore(phaseCard,$('statsStatus'));
+      phaseCard=document.createElement('article');phaseCard.id='phase3Stats';phaseCard.className='platform-card full';phaseCard.innerHTML='<h2>الأنماط وPuzzle Battle</h2><div id="phase3StatsBody" class="platform-grid" style="grid-template-columns:repeat(2,minmax(0,1fr))"></div>';host?.insertBefore(phaseCard,$('statsStatus'));
     }
-    const chess960=p3.variants.chess960||{};
-    const threecheck=p3.variants.threecheck||{};
-    const koth=p3.variants.kingofthehill||{};
+    const variantDisplay=[
+      ['chess960','Chess960'],['threecheck','Three-Check'],['kingofthehill','King of the Hill'],
+      ['crazyhouse','Crazyhouse'],['atomic','Atomic'],['antichess','Antichess'],['horde','Horde'],['racingkings','Racing Kings']
+    ];
+    const variantBlocks=variantDisplay.map(([key,label])=>{const row=p3.variants[key]||{};return `<div>${phaseRow(`نقاط ${label}`,row.rating??1500)}${phaseRow(`مباريات ${label}`,row.games_count??0)}</div>`}).join('');
     $('phase3StatsBody').innerHTML=
-      `<div>${phaseRow('نقاط Chess960',chess960.rating??1500)}${phaseRow('مباريات Chess960',chess960.games_count??0)}</div>`+
-      `<div>${phaseRow('نقاط Three-Check',threecheck.rating??1500)}${phaseRow('مباريات Three-Check',threecheck.games_count??0)}</div>`+
-      `<div>${phaseRow('نقاط King of the Hill',koth.rating??1500)}${phaseRow('مباريات King of the Hill',koth.games_count??0)}</div>`+
+      variantBlocks+
       `<div>${phaseRow('نقاط Puzzle Battle',p3.battle.rating??1200)}${phaseRow('مباريات Battle',p3.battle.games_count??0)}</div>`+
       `<div>${phaseRow('مراجعات محفوظة',p3.reviewCount)}${phaseRow('متوسط الدقة',p3.avgAccuracy==null?'—':`${p3.avgAccuracy}%`)}</div>`+
       `<div>${phaseRow('لحظات حرجة راجعتها',p3.critical)}${phaseRow('إنجازات مفتوحة',s.achievements_unlocked||0)}</div>`;
