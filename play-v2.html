@@ -3,16 +3,13 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+  <meta name="theme-color" content="#082d2f">
   <title>اللعب المباشر | شطرنج العرب</title>
+  <link rel="stylesheet" href="v2/site/shell.css">
   <link rel="stylesheet" href="v2/play/play.css">
 </head>
 <body>
   <main class="v2-play-shell" aria-label="اللعب المباشر">
-    <header class="v2-topbar">
-      <a class="v2-back" href="index.html" aria-label="العودة للرئيسية">الرئيسية</a>
-      <strong>شطرنج العرب</strong>
-    </header>
-
     <section class="v2-game-layout">
       <div class="v2-board-column">
         <div id="v2-opponent" class="v2-player-card v2-opponent">
@@ -35,13 +32,14 @@
       </div>
 
       <aside class="v2-side-panel" aria-label="أدوات المباراة">
-        <div class="v2-side-title">مباراة مباشرة</div>
+        <div class="v2-side-title">اللعب</div>
         <div id="v2-quick-times" class="v2-quick-times" aria-label="زمن المباراة">
           <button type="button" data-minutes="5">5</button>
           <button type="button" data-minutes="10">10</button>
           <button type="button" data-minutes="15">15</button>
         </div>
         <button id="v2-search" class="v2-search-button" type="button">ابحث عن خصم</button>
+        <button id="v2-board-settings" class="v2-settings-button" type="button">⚙ إعدادات الرقعة</button>
         <div class="v2-actions">
           <button id="v2-grace-end" class="v2-action v2-grace" type="button" hidden>إنهاء <span>5</span></button>
           <button id="v2-draw" class="v2-action" type="button" disabled>تعادل</button>
@@ -51,8 +49,25 @@
     </section>
   </main>
 
+  <div id="v2-settings-modal" class="v2-settings-modal" hidden>
+    <section class="v2-settings-card" role="dialog" aria-modal="true" aria-labelledby="v2-settings-title">
+      <div class="v2-settings-head"><h2 id="v2-settings-title">إعدادات الرقعة</h2><button type="button" data-close-v2-settings aria-label="إغلاق">×</button></div>
+      <div id="v2-play-theme-picker" class="v2-theme-grid" aria-label="ألوان الرقعة"></div>
+      <div class="v2-play-setting-grid">
+        <label><span>الإحداثيات</span><select id="v2-play-coordinates"><option value="inside">داخل الرقعة</option><option value="outside">خارج الرقعة</option><option value="off">بدون</option></select></label>
+        <label><span>حركة القطع</span><select id="v2-play-animation"><option value="none">بدون</option><option value="slow">بطيئة</option><option value="medium">متوسطة</option><option value="fast">سريعة</option><option value="natural">طبيعية</option><option value="arcade">Arcade</option></select></label>
+        <label><span>طريقة النقل</span><select id="v2-play-move-method"><option value="both">النقر والسحب</option><option value="click">النقر</option><option value="drag">السحب</option></select></label>
+        <label class="v2-setting-toggle"><span>إظهار النقلات القانونية</span><input id="v2-play-legal" type="checkbox"></label>
+        <label class="v2-setting-toggle"><span>الأبيض دائمًا أسفل</span><input id="v2-play-white-bottom" type="checkbox"></label>
+      </div>
+      <div class="v2-settings-footer"><a href="settings-v2.html">كل إعدادات الرقعة</a><button type="button" data-close-v2-settings>تم</button></div>
+    </section>
+  </div>
+
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
   <script src="config-base.js"></script>
   <script type="module" src="v2/play/app.js"></script>
+  <script type="module" src="v2/play/board-settings.mjs"></script>
+  <script type="module" src="v2/site/shell.mjs"></script>
 </body>
 </html>
