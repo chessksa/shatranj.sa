@@ -1,0 +1,312 @@
+/* Signed-in mobile home: one viewport, no page scrolling. */
+@media(max-width:900px){
+  html:has(body.v2-route-home.home-signed-in){
+    width:100%!important;
+    height:100dvh!important;
+    min-height:100dvh!important;
+    max-height:100dvh!important;
+    overflow:hidden!important;
+    overscroll-behavior:none!important;
+  }
+
+  body.v2-route-home.home-signed-in{
+    width:100%!important;
+    height:100dvh!important;
+    min-height:100dvh!important;
+    max-height:100dvh!important;
+    margin:0!important;
+    padding:0 0 calc(72px + env(safe-area-inset-bottom))!important;
+    display:grid!important;
+    grid-template-columns:1fr!important;
+    grid-template-rows:26px minmax(0,1fr)!important;
+    gap:0!important;
+    overflow:hidden!important;
+    overscroll-behavior:none!important;
+  }
+
+  /* Keep one slim ticker only. */
+  body.v2-route-home.home-signed-in .home-header,
+  body.v2-route-home.home-signed-in #tournamentResultsTicker{
+    display:none!important;
+  }
+
+  body.v2-route-home.home-signed-in #welcomeTicker{
+    grid-row:1!important;
+    width:100%!important;
+    height:26px!important;
+    min-height:26px!important;
+    max-height:26px!important;
+    margin:0!important;
+    overflow:hidden!important;
+  }
+
+  body.v2-route-home.home-signed-in #welcomeTicker .welcome-ticker-label{
+    padding:0 7px!important;
+    font-size:9px!important;
+  }
+
+  body.v2-route-home.home-signed-in #welcomeTicker .welcome-ticker-item,
+  body.v2-route-home.home-signed-in #welcomeTicker .welcome-ticker-loading{
+    padding-inline:10px!important;
+    font-size:10px!important;
+  }
+
+  /* Remove long home sections. They remain available from navigation. */
+  body.v2-route-home.home-signed-in #ranking,
+  body.v2-route-home.home-signed-in .home-features,
+  body.v2-route-home.home-signed-in #register,
+  body.v2-route-home.home-signed-in footer{
+    display:none!important;
+  }
+
+  body.v2-route-home.home-signed-in .home-hero{
+    grid-row:2!important;
+    width:100%!important;
+    height:100%!important;
+    min-height:0!important;
+    max-height:100%!important;
+    margin:0!important;
+    padding:7px 0 4px!important;
+    overflow:hidden!important;
+  }
+
+  body.v2-route-home.home-signed-in .home-hero>.wrap,
+  body.v2-route-home.home-signed-in .home-hero-grid{
+    width:min(100% - 20px,680px)!important;
+    height:100%!important;
+    min-height:0!important;
+    max-height:100%!important;
+    margin:0 auto!important;
+    padding:0!important;
+    display:block!important;
+    overflow:hidden!important;
+  }
+
+  body.v2-route-home.home-signed-in .home-hero-copy{
+    width:100%!important;
+    height:100%!important;
+    min-height:0!important;
+    display:flex!important;
+    flex-direction:column!important;
+    align-items:stretch!important;
+    justify-content:flex-start!important;
+    gap:0!important;
+    overflow:hidden!important;
+    text-align:center!important;
+  }
+
+  body.v2-route-home.home-signed-in .hero-kicker{
+    align-self:center!important;
+    margin:0 0 2px!important;
+    padding:4px 10px!important;
+    border-radius:999px!important;
+    font-size:11px!important;
+    line-height:1.1!important;
+    white-space:nowrap!important;
+  }
+
+  body.v2-route-home.home-signed-in .hero-kicker .trial-badge{
+    font-size:9px!important;
+  }
+
+  body.v2-route-home.home-signed-in .home-hero h1{
+    width:100%!important;
+    margin:4px 0 5px!important;
+    padding:0!important;
+    white-space:nowrap!important;
+    text-align:center!important;
+    font-size:clamp(23px,7vw,30px)!important;
+    line-height:1.08!important;
+  }
+
+  body.v2-route-home.home-signed-in .home-hero-copy>p{
+    display:none!important;
+  }
+
+  body.v2-route-home.home-signed-in .hero-live-stats{
+    width:100%!important;
+    display:grid!important;
+    grid-template-columns:repeat(3,minmax(0,1fr))!important;
+    gap:6px!important;
+    margin:0 0 7px!important;
+  }
+
+  body.v2-route-home.home-signed-in .hero-stat{
+    min-width:0!important;
+    height:46px!important;
+    min-height:46px!important;
+    max-height:46px!important;
+    padding:4px 3px!important;
+    border-radius:14px!important;
+  }
+
+  body.v2-route-home.home-signed-in .hero-stat small{
+    margin:0 0 1px!important;
+    font-size:8px!important;
+    line-height:1!important;
+  }
+
+  body.v2-route-home.home-signed-in .hero-stat strong{
+    font-size:19px!important;
+    line-height:1!important;
+  }
+
+  /* Four primary actions only: play, invite, computer, tournaments. */
+  body.v2-route-home.home-signed-in .home-board-actions{
+    width:100%!important;
+    display:grid!important;
+    grid-template-columns:repeat(2,minmax(0,1fr))!important;
+    grid-template-areas:
+      'play invite'
+      'computer tournaments'!important;
+    gap:6px!important;
+    margin:0!important;
+  }
+
+  body.v2-route-home.home-signed-in .home-board-actions>.btn,
+  body.v2-route-home.home-signed-in .home-board-actions .home-invite-wrap,
+  body.v2-route-home.home-signed-in .home-board-actions .home-invite-wrap>.btn,
+  body.v2-route-home.home-signed-in .home-board-actions #homeInviteToggle{
+    width:100%!important;
+    min-width:0!important;
+    height:44px!important;
+    min-height:44px!important;
+    max-height:44px!important;
+    margin:0!important;
+    padding:5px 8px!important;
+    border-radius:14px!important;
+    font-size:12px!important;
+    line-height:1.05!important;
+  }
+
+  body.v2-route-home.home-signed-in .hero-play-btn{
+    grid-area:play!important;
+  }
+
+  body.v2-route-home.home-signed-in .home-invite-wrap{
+    grid-area:invite!important;
+  }
+
+  body.v2-route-home.home-signed-in .hero-computer-btn{
+    grid-area:computer!important;
+  }
+
+  body.v2-route-home.home-signed-in .hero-tournaments-btn{
+    grid-area:tournaments!important;
+  }
+
+  body.v2-route-home.home-signed-in .home-board-actions>[data-phase3],
+  body.v2-route-home.home-signed-in .home-board-preview{
+    display:none!important;
+  }
+
+  /* Compact member card: identity + one play/resume action only. */
+  body.v2-route-home.home-signed-in .v5-home-dashboard{
+    width:100%!important;
+    margin:7px 0 0!important;
+    padding:7px 9px!important;
+    border-radius:16px!important;
+    flex:0 0 auto!important;
+    overflow:hidden!important;
+  }
+
+  body.v2-route-home.home-signed-in .v5-home-head{
+    min-height:48px!important;
+    margin:0!important;
+    display:grid!important;
+    grid-template-columns:minmax(0,1fr) auto!important;
+    align-items:center!important;
+    gap:8px!important;
+  }
+
+  body.v2-route-home.home-signed-in .v5-home-head>div{
+    min-width:0!important;
+    overflow:hidden!important;
+    white-space:nowrap!important;
+    text-overflow:ellipsis!important;
+  }
+
+  body.v2-route-home.home-signed-in .v5-home-head strong{
+    display:inline!important;
+    font-size:14px!important;
+  }
+
+  body.v2-route-home.home-signed-in .v5-home-head span{
+    display:inline!important;
+    font-size:10px!important;
+  }
+
+  body.v2-route-home.home-signed-in .v5-home-head>.btn{
+    width:auto!important;
+    min-width:92px!important;
+    height:40px!important;
+    min-height:40px!important;
+    padding:0 12px!important;
+    border-radius:13px!important;
+    font-size:12px!important;
+  }
+
+  body.v2-route-home.home-signed-in .v5-home-quick,
+  body.v2-route-home.home-signed-in .v5-home-cards{
+    display:none!important;
+  }
+
+  /* No duplicate floating CTA and no accidental scroll containers. */
+  body.v2-route-home.home-signed-in .mobile-play{
+    display:none!important;
+  }
+
+  body.v2-route-home.home-signed-in :is(.home-hero,.home-hero-grid,.home-hero-copy){
+    overscroll-behavior:none!important;
+    scrollbar-width:none!important;
+  }
+}
+
+@media(max-width:430px){
+  body.v2-route-home.home-signed-in{
+    grid-template-rows:24px minmax(0,1fr)!important;
+  }
+
+  body.v2-route-home.home-signed-in #welcomeTicker{
+    height:24px!important;
+    min-height:24px!important;
+    max-height:24px!important;
+  }
+
+  body.v2-route-home.home-signed-in .home-hero{
+    padding-top:5px!important;
+  }
+
+  body.v2-route-home.home-signed-in .hero-kicker{
+    font-size:10px!important;
+  }
+
+  body.v2-route-home.home-signed-in .home-hero h1{
+    margin:3px 0 4px!important;
+    font-size:clamp(21px,6.8vw,27px)!important;
+  }
+
+  body.v2-route-home.home-signed-in .hero-stat{
+    height:43px!important;
+    min-height:43px!important;
+    max-height:43px!important;
+  }
+
+  body.v2-route-home.home-signed-in .home-board-actions>.btn,
+  body.v2-route-home.home-signed-in .home-board-actions .home-invite-wrap,
+  body.v2-route-home.home-signed-in .home-board-actions .home-invite-wrap>.btn,
+  body.v2-route-home.home-signed-in .home-board-actions #homeInviteToggle{
+    height:42px!important;
+    min-height:42px!important;
+    max-height:42px!important;
+  }
+
+  body.v2-route-home.home-signed-in .v5-home-dashboard{
+    margin-top:6px!important;
+    padding:6px 8px!important;
+  }
+
+  body.v2-route-home.home-signed-in .v5-home-head{
+    min-height:44px!important;
+  }
+}

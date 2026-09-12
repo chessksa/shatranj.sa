@@ -9,6 +9,13 @@ if (!skip.test(location.pathname)) {
     mobileUi.href = new URL('./mobile-ui-professional.css', import.meta.url).href;
     document.head.appendChild(mobileUi);
   }
+  if (!document.querySelector('link[data-v2-mobile-home]')) {
+    const mobileHome = document.createElement('link');
+    mobileHome.rel = 'stylesheet';
+    mobileHome.dataset.v2MobileHome = 'no-scroll';
+    mobileHome.href = new URL('./mobile-home-no-scroll.css', import.meta.url).href;
+    document.head.appendChild(mobileHome);
+  }
 
   document.querySelectorAll('a[href]').forEach((anchor)=>{
     const raw=anchor.getAttribute('href')||'';
@@ -91,6 +98,18 @@ if (!skip.test(location.pathname)) {
       link.innerHTML=`<span class="v2-global-icon">${item.icon}</span><span>${item.label}</span>`;
       grid.appendChild(link);
     }
+    const phase3MobileLinks=[
+      {id:'chess960',label:'Chess960',icon:'♞',href:'variants.html'},
+      {id:'battle',label:'Puzzle Battle',icon:'◆',href:'puzzle-battle.html'}
+    ];
+    for(const item of phase3MobileLinks){
+      const link=document.createElement('a');
+      link.className='v2-mobile-more-link';
+      link.href=item.href;
+      link.dataset.phase3Mobile=item.id;
+      link.innerHTML=`<span class="v2-global-icon">${item.icon}</span><span>${item.label}</span>`;
+      grid.appendChild(link);
+    }
     const close=()=>{more.hidden=true;moreButton.setAttribute('aria-expanded','false')};
     moreButton.addEventListener('click',()=>{const opening=more.hidden;more.hidden=!opening;moreButton.setAttribute('aria-expanded',String(opening))});
     more.querySelector('.v2-mobile-more-head button').addEventListener('click',close);
@@ -147,6 +166,7 @@ if (!skip.test(location.pathname)) {
 
   function addPhase3Links(){
     if(activeId==='home'){
+      if(window.matchMedia('(max-width:900px)').matches)return;
       const actions=document.querySelector('.home-board-actions');
       if(actions&&!actions.querySelector('[data-phase3="variants"]')){
         const variants=document.createElement('a');variants.className='btn light';variants.href='variants.html';variants.dataset.phase3='variants';variants.textContent='Chess960';
