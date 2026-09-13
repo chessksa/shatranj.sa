@@ -49,13 +49,15 @@ def test_public_snapshot_includes_all_active_subscribers_including_synthetic():
     assert "coalesce(p.is_synthetic, false) = false" not in migration
 
 
-def test_tournament_strip_exists_in_home_html_before_runtime_javascript():
-    html = read("index-app.html")
+def test_tournament_strip_is_bootstrapped_before_dashboard_runtime():
+    loader = read("index.html")
+    bootstrap = read("home-tickers-bootstrap.js")
 
-    welcome_at = html.index('id="welcomeTicker"')
-    tournament_at = html.index('id="tournamentResultsTicker"')
-    hero_at = html.index('id="homeHero"')
+    bootstrap_at = loader.index("home-tickers-bootstrap.js")
+    dashboard_at = loader.index("v2/home/dashboard.mjs")
 
-    assert welcome_at < tournament_at < hero_at
-    assert 'id="tournamentResultsTickerTrack"' in html
-    assert 'نتائج البطولات' in html
+    assert bootstrap_at < dashboard_at
+    assert "tournamentResultsTicker" in bootstrap
+    assert "tournamentResultsTickerTrack" in bootstrap
+    assert "نتائج البطولات" in bootstrap
+    assert "/rest/v1/tournaments" in bootstrap
