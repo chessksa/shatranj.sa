@@ -2,6 +2,7 @@ from pathlib import Path
 
 ROOT = Path(__file__).resolve().parents[1]
 
+# Regression contract for the approved desktop header/ticker design.
 
 def test_desktop_header_shows_member_identity_with_square_avatar():
     css = (ROOT / 'home-header-svg.css').read_text(encoding='utf-8')
