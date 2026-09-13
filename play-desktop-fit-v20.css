@@ -158,6 +158,25 @@
 
   #gamePage .player-card{
     overflow:hidden!important;
+    grid-template-columns:108px minmax(0,1fr) 82px!important;
+    grid-template-areas:"clock info avatar"!important;
+    direction:ltr!important;
+  }
+
+  #gamePage .player-card .avatar{
+    grid-area:avatar!important;
+  }
+
+  #gamePage .player-card .player-info{
+    grid-area:info!important;
+    direction:rtl!important;
+    text-align:right!important;
+  }
+
+  #gamePage .player-card .clock-box{
+    grid-area:clock!important;
+    justify-self:stretch!important;
+    direction:ltr!important;
   }
 
   #gamePage .player-card .player-info,
