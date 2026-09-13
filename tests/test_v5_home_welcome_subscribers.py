@@ -23,13 +23,13 @@ def test_home_restores_welcome_ticker_and_counts_loaded_subscribers():
     assert "cloneNode(true)" in dashboard
 
 
-def test_home_ticker_explicitly_loads_synthetic_members_and_restores_tournaments_strip():
+def test_home_ticker_loads_all_active_members_via_public_snapshot_and_restores_tournaments_strip():
     dashboard = read("v2/home/dashboard.mjs")
 
-    assert ".from('public_players')" in dashboard
-    assert "is_synthetic" in dashboard
-    assert ".order('created_at',{ascending:false})" in dashboard
-    assert ".limit(20)" in dashboard
+    assert "rpc('get_public_home_snapshot')" in dashboard
+    assert ".from('public_players')" not in dashboard
+    assert "latest_members" in dashboard
+    assert "registered_count" in dashboard
     assert "renderWelcomeSubscribers" in dashboard
 
     assert "tournamentResultsTicker" in dashboard
