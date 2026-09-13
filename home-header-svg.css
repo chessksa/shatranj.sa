@@ -227,3 +227,35 @@
 @media(max-width:600px){
   html body.home-signed-in .home-hero .home-board-actions{margin-bottom:0!important}
 }
+
+/* Home header cleanup 20260914 */
+#headerMember{display:none!important}
+
+@media(min-width:901px){
+  html body.home-signed-in .compact-member-nav .dashboard-link .header-tile-icon,
+  html body.home-signed-in .compact-member-nav .home-admin-link .header-tile-icon,
+  html body.home-signed-in .compact-member-nav .site-notification-bell .header-tile-icon{
+    width:22px!important;
+    height:22px!important;
+    flex:0 0 22px!important;
+    display:inline-grid!important;
+    place-items:center!important;
+    color:var(--hero-gold)!important;
+    font-size:16px!important;
+    line-height:1!important;
+  }
+
+  html body.home-signed-in .compact-member-nav .header-tile-svg{
+    width:22px!important;
+    height:22px!important;
+    min-width:22px!important;
+    max-width:22px!important;
+    display:block!important;
+    fill:none!important;
+    stroke:currentColor!important;
+    stroke-width:2!important;
+    stroke-linecap:round!important;
+    stroke-linejoin:round!important;
+    overflow:visible!important;
+  }
+}
