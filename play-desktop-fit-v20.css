@@ -163,6 +163,10 @@
     direction:ltr!important;
   }
 
+  #gamePage .opponent-search-panel{
+    direction:rtl!important;
+  }
+
   #gamePage .player-card .avatar{
     grid-area:avatar!important;
   }
