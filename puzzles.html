@@ -10,13 +10,14 @@
   <style>
     .puzzle-layout{display:grid;grid-template-columns:minmax(0,1fr) clamp(300px,28vw,380px);grid-template-rows:minmax(0,1fr);gap:14px;align-items:stretch;direction:ltr;min-height:0}
     .puzzle-board-wrap{grid-column:1;grid-row:1;direction:rtl;display:grid;place-items:center;min-width:0;min-height:0;overflow:hidden}
-    .puzzle-board{width:min(100%,calc(100dvh - 116px),780px);max-width:100%;max-height:100%;aspect-ratio:1;display:grid;grid-template-columns:repeat(8,1fr);border:3px solid #66503b;box-shadow:0 16px 32px rgba(0,0,0,.24);direction:ltr}
-    .puzzle-square{position:relative;border:0;padding:0;display:grid;place-items:center;min-width:0;min-height:0}
-    .puzzle-square.light{background:var(--board-light,#e8dec8)}
-    .puzzle-square.dark{background:var(--board-dark,#87966a)}
-    .puzzle-square.selected{box-shadow:inset 0 0 0 4px rgba(239,207,124,.95)}
-    .puzzle-square.target::after{content:"";width:22%;height:22%;border-radius:50%;background:rgba(13,59,53,.52);position:absolute}
-    .puzzle-piece{width:86%;height:86%;object-fit:contain;pointer-events:none}
+    .puzzle-board-frame{position:relative;width:min(100%,calc(100dvh - 116px),780px);max-width:100%;padding:10px 10px 18px;border-radius:14px;background:linear-gradient(145deg,#07363d,#022f33);border:1px solid rgba(224,181,103,.72);box-shadow:0 14px 34px rgba(0,0,0,.30),inset 0 1px 0 rgba(255,255,255,.05)}
+    .puzzle-board{width:100%;max-width:100%;max-height:100%;aspect-ratio:1;display:grid;grid-template-columns:repeat(8,1fr);border:0;border-radius:2px;overflow:hidden;box-shadow:inset 0 0 0 1px rgba(0,0,0,.55);direction:ltr}
+    .puzzle-square{position:relative;border:0;border-right:1px solid rgba(2,47,51,.34);border-bottom:1px solid rgba(2,47,51,.34);padding:0;display:grid;place-items:center;min-width:0;min-height:0}
+    .puzzle-square.light{background:#d6cfbf}
+    .puzzle-square.dark{background:#246f77}
+    .puzzle-square.selected{box-shadow:inset 0 0 0 5px rgba(238,190,74,.95)}
+    .puzzle-square.target::after{content:"";width:22%;height:22%;border-radius:50%;background:rgba(20,62,48,.55);position:absolute}
+    .puzzle-piece{width:96%;height:96%;object-fit:contain;pointer-events:none;filter:drop-shadow(0 4px 3px rgba(0,0,0,.30))}
     .puzzle-side{grid-column:2;grid-row:1;direction:rtl;min-height:0;overflow:hidden;display:flex;flex-direction:column;padding:14px}
     .puzzle-score-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:8px}
     .puzzle-score{padding:9px;border:1px solid var(--p-line);border-radius:11px;text-align:center;background:rgba(255,255,255,.025)}
@@ -42,6 +43,22 @@
     body.platform-page.puzzle-fit-page .puzzle-side .platform-actions{margin-top:auto!important;padding-top:10px;flex-wrap:nowrap}
     body.platform-page.puzzle-fit-page .puzzle-side .platform-actions .platform-btn{flex:1 1 0}
 
+    /* Puzzle play-layout alignment 20260914 */
+    @media(min-width:901px){
+      body.platform-page.puzzle-fit-page .platform-shell{width:min(100%,1600px);max-width:100%;height:100dvh;margin:0 auto;padding:12px 24px 14px;display:grid;grid-template-columns:minmax(0,1fr) clamp(340px,29vw,440px);grid-template-rows:auto auto minmax(0,1fr);column-gap:clamp(10px,1.25vw,18px);row-gap:8px;align-items:center;direction:ltr}
+      body.platform-page.puzzle-fit-page .platform-head{grid-column:2;grid-row:1;direction:rtl;min-width:0;margin:0}
+      body.platform-page.puzzle-fit-page .platform-head>div{min-width:0}
+      body.platform-page.puzzle-fit-page .platform-head h1{font-size:20px}
+      body.platform-page.puzzle-fit-page .platform-head p{white-space:normal}
+      body.platform-page.puzzle-fit-page .platform-tabs{grid-column:2;grid-row:2;direction:rtl;display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:6px;width:100%;margin:0}
+      body.platform-page.puzzle-fit-page .platform-tab{min-width:0;min-height:34px;padding:5px 7px;overflow:hidden;text-overflow:ellipsis}
+      body.platform-page.puzzle-fit-page .puzzle-layout{display:contents!important}
+      body.platform-page.puzzle-fit-page .puzzle-board-wrap{grid-column:1;grid-row:1/4;height:100%;min-width:0;min-height:0;place-items:center end;overflow:hidden}
+      body.platform-page.puzzle-fit-page .puzzle-board-frame{width:min(100%,calc(100dvh - 34px),920px);max-width:100%;justify-self:end}
+      body.platform-page.puzzle-fit-page .puzzle-board{width:100%;max-width:100%;max-height:100%}
+      body.platform-page.puzzle-fit-page .puzzle-side{grid-column:2;grid-row:3;width:100%;height:100%;min-width:0;min-height:0;overflow:hidden}
+    }
+
     @media(max-width:900px){
       body.platform-page.puzzle-fit-page{height:100dvh;min-height:0;overflow:hidden!important}
       body.platform-page.puzzle-fit-page.v2-shell-active{padding-bottom:66px!important}
@@ -54,7 +71,8 @@
       body.platform-page.puzzle-fit-page .platform-tab{min-width:0;min-height:30px;padding:4px 3px;font-size:10px;overflow:hidden;text-overflow:ellipsis}
       body.platform-page.puzzle-fit-page .puzzle-layout{grid-row:2;grid-template-columns:1fr;grid-template-rows:minmax(0,1fr) auto;gap:5px;height:100%;min-height:0;overflow:hidden!important}
       body.platform-page.puzzle-fit-page .puzzle-board-wrap{grid-column:1;grid-row:1;order:1;height:100%;min-height:0;overflow:hidden;align-items:center}
-      body.platform-page.puzzle-fit-page .puzzle-board{width:min(100%,calc(100dvh - 250px));max-height:min(58dvh,100%);margin:auto;border-width:2px;box-shadow:0 8px 18px rgba(0,0,0,.2)}
+      body.platform-page.puzzle-fit-page .puzzle-board-frame{width:min(100%,calc(100dvh - 250px));max-height:min(58dvh,100%);margin:auto;padding:4px 4px 8px;border-radius:9px;box-shadow:0 8px 18px rgba(0,0,0,.2)}
+      body.platform-page.puzzle-fit-page .puzzle-board{width:100%;max-height:100%;margin:auto}
       body.platform-page.puzzle-fit-page .puzzle-side{grid-column:1;grid-row:2;order:2;min-height:0;overflow:hidden;padding:7px 8px;border-radius:12px;display:grid;grid-template-columns:1fr;gap:5px}
       body.platform-page.puzzle-fit-page .puzzle-score-grid{gap:4px}
       body.platform-page.puzzle-fit-page .puzzle-score{padding:4px 3px;border-radius:8px}
@@ -91,7 +109,9 @@
 
     <section class="puzzle-layout">
       <div class="puzzle-board-wrap">
-        <div id="puzzleBoard" class="puzzle-board" aria-label="رقعة اللغز"></div>
+        <div class="puzzle-board-frame">
+          <div id="puzzleBoard" class="puzzle-board" aria-label="رقعة اللغز"></div>
+        </div>
       </div>
 
       <aside class="platform-card puzzle-side">
