@@ -38,3 +38,19 @@ def test_puzzle_side_stays_in_second_desktop_grid_column():
     mobile = html.split('@media(max-width:900px)', 1)[1]
     assert '.puzzle-board-wrap{grid-column:1;grid-row:1' in mobile
     assert '.puzzle-side{grid-column:1;grid-row:2' in mobile
+
+
+def test_puzzles_desktop_matches_play_board_geometry_and_style():
+    html = (ROOT / 'puzzles.html').read_text(encoding='utf-8')
+
+    desktop = html.split('Puzzle play-layout alignment 20260914', 1)[1]
+    desktop = desktop.split('@media(max-width:900px)', 1)[0]
+
+    assert 'grid-template-columns:minmax(0,1fr) clamp(340px,29vw,440px)' in desktop
+    assert '.puzzle-layout{display:contents!important}' in desktop
+    assert '.puzzle-board-wrap{grid-column:1;grid-row:1/4' in desktop
+    assert 'place-items:center end' in desktop
+    assert '.puzzle-board-frame{width:min(100%,calc(100dvh - 34px),920px)' in desktop
+    assert '<div class="puzzle-board-frame">' in html
+    assert '.puzzle-square.light{background:#d6cfbf}' in html
+    assert '.puzzle-square.dark{background:#246f77}' in html
