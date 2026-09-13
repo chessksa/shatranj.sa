@@ -38,3 +38,26 @@ def test_home_ticker_explicitly_loads_synthetic_members_and_restores_tournaments
     assert "loadTournamentTicker" in dashboard
     assert "status==='running'" in dashboard
     assert "status==='open'" in dashboard
+
+
+def test_public_snapshot_includes_all_active_subscribers_including_synthetic():
+    migration = read("supabase/migrations/20260913_home_public_snapshot_all_subscribers.sql")
+
+    assert "create or replace function public.get_public_home_snapshot()" in migration
+    assert "where p.status = 'active'" in migration
+    assert "p.auth_user_id is not null" not in migration
+    assert "coalesce(p.is_synthetic, false) = false" not in migration
+
+
+def test_tournament_strip_is_bootstrapped_before_dashboard_runtime():
+    loader = read("index.html")
+    bootstrap = read("home-tickers-bootstrap.js")
+
+    bootstrap_at = loader.index("home-tickers-bootstrap.js")
+    dashboard_at = loader.index("v2/home/dashboard.mjs")
+
+    assert bootstrap_at < dashboard_at
+    assert "tournamentResultsTicker" in bootstrap
+    assert "tournamentResultsTickerTrack" in bootstrap
+    assert "نتائج البطولات" in bootstrap
+    assert "/rest/v1/tournaments" in bootstrap
