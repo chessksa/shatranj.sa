@@ -16,7 +16,7 @@ html,body{margin:0;min-height:100%;background:#042628;color:#f4eddc;font-family:
 <div class="loader"><div><strong>جاري فتح شطرنج العرب</strong><small>تحديث الواجهة…</small></div></div>
 <script>
 (async()=>{
-  const stamp='20260913-play-reference16';
+  const stamp='20260913-home-header-ranking-tickers1';
   const runtimeVersion=stamp+'-'+Date.now();
   const response=await fetch('./index-app.html?v='+runtimeVersion,{cache:'no-store'});
   if(!response.ok) throw new Error('index source '+response.status);
@@ -27,10 +27,36 @@ html,body{margin:0;min-height:100%;background:#042628;color:#f4eddc;font-family:
     .replace(/site-notifications\.js\?v=[A-Za-z0-9._-]+/g,'site-notifications.js?v='+runtimeVersion)
     .replace(/site-presence\.js\?v=[A-Za-z0-9._-]+/g,'site-presence.js?v='+runtimeVersion)
     .replace("const rankingLimit=window.matchMedia('(max-width:800px)').matches?5:10;","const rankingLimit=10;")
+    .replace('animation:welcomeTickerInlineMove 60s linear infinite','animation:welcomeTickerInlineMove 52s linear infinite')
     .replace('setInterval(loadCurrentMatchesCount,30000);','setInterval(loadCurrentMatchesCount,3000);');
 
   html=html.replace(/href="watch\.html(?:\?[^\"]*)?"/g,'href="watch.html?v='+runtimeVersion+'"');
   html=html.replace(/play-v10\.html/g,'play-entry-v16.html');
+
+  const playersLoaderPattern=/async function loadPlayers\(\)\{[\s\S]*?\n\}\n\nasync function loadCurrentMatchesCount\(\)\{/;
+  const newPlayersLoader=`async function loadPlayers(){
+  const {data,error}=await supabase.rpc('get_public_ranked_players',{p_gender:null});
+  if(error) throw error;
+
+  ALL_PLAYERS=Array.isArray(data)?data:[];
+
+  renderWelcomeTicker(ALL_PLAYERS);
+  window.__HOME_PLAYERS__=ALL_PLAYERS;
+  window.dispatchEvent(new CustomEvent('home-players-loaded',{detail:ALL_PLAYERS}));
+
+  const headerPlayers=document.querySelector('#headerPlayersCount');
+  if(headerPlayers) headerPlayers.textContent=String(ALL_PLAYERS.length);
+
+  applyFilter();
+}
+
+async function loadCurrentMatchesCount(){`;
+
+  if(playersLoaderPattern.test(html)){
+    html=html.replace(playersLoaderPattern,newPlayersLoader);
+  }else{
+    console.warn('تعذر استبدال مصدر جدول الترتيب');
+  }
 
   const oldMatchesCount=`async function loadCurrentMatchesCount(){
   const el=document.querySelector('#headerMatchesCount');
