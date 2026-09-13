@@ -118,7 +118,11 @@ function renderPayload(host,data){
     )
   );
 
-  host.replaceChildren(head,mobileStrip,quick,cards);
+  const desktop=window.matchMedia('(min-width:901px)').matches;
+  const content=[];
+  if(!desktop) content.push(head);
+  content.push(mobileStrip,quick,cards);
+  host.replaceChildren(...content);
   host.hidden=false;
   document.body.classList.add('v5-home-dashboard-active');
 }
@@ -193,13 +197,9 @@ if(Array.isArray(window.__HOME_PLAYERS__)){
 
 async function loadWelcomeSubscribers(){
   try{
-    const {data,error,count}=await supabase
-      .from('public_players')
-      .select('id,name,region,city,created_at,is_synthetic',{count:'exact'})
-      .order('created_at',{ascending:false})
-      .limit(20);
-    if(error) throw error;
-    renderWelcomeSubscribers(data||[],typeof count==='number'?count:(data||[]).length);
+    const snapshot=await rpc('get_public_home_snapshot');
+    const data=Array.isArray(snapshot)?snapshot[0]||{}:snapshot||{};
+    renderWelcomeSubscribers(data.latest_members||[],data.registered_count);
   }catch(error){
     console.warn('تعذر تحميل آخر المسجلين',error);
   }
