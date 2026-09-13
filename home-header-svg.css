@@ -306,3 +306,93 @@
     font:800 12px/1 Arial,sans-serif!important;
   }
 }
+
+/* Desktop member identity and ticker polish 20260914 */
+@media(min-width:901px){
+  html body.home-signed-in .compact-member-nav #headerMember:not([hidden]){
+    display:flex!important;
+    order:1!important;
+    flex:0 0 auto!important;
+    align-items:center!important;
+  }
+
+  html body.home-signed-in .compact-member-nav #headerMember .header-member-link.header-tile{
+    min-width:198px!important;
+    max-width:250px!important;
+    height:52px!important;
+    min-height:52px!important;
+    padding:4px 10px!important;
+    gap:10px!important;
+    justify-content:flex-start!important;
+  }
+
+  html body.home-signed-in .compact-member-nav #headerMember .header-member-avatar-wrap,
+  html body.home-signed-in .compact-member-nav #headerMember .header-member-avatar{
+    width:42px!important;
+    height:42px!important;
+    flex:0 0 42px!important;
+  }
+
+  html body.home-signed-in .compact-member-nav #headerMember .header-member-avatar{
+    border-radius:6px!important;
+    object-fit:cover!important;
+  }
+
+  html body.home-signed-in .compact-member-nav #headerMember .header-member-fallback{
+    border-radius:6px!important;
+  }
+
+  html body.home-signed-in .compact-member-nav #headerMember .header-member-copy{
+    min-width:0!important;
+    align-items:flex-start!important;
+    text-align:right!important;
+  }
+
+  html body.home-signed-in .compact-member-nav #headerMember .header-member-copy strong{
+    max-width:170px!important;
+    font-size:13px!important;
+    line-height:1.15!important;
+  }
+
+  html body.home-signed-in .compact-member-nav #headerMember .header-member-points{
+    display:flex!important;
+    align-items:center!important;
+    gap:4px!important;
+    margin-top:4px!important;
+  }
+}
+
+@media(max-width:900px){
+  #headerMember{display:none!important}
+}
+
+#welcomeTicker .welcome-ticker-label,
+#tournamentResultsTicker .welcome-ticker-label{
+  min-width:118px!important;
+  width:118px!important;
+  justify-content:center!important;
+  padding:0 12px!important;
+  border-left:1px solid rgba(216,182,101,.52)!important;
+  background:linear-gradient(180deg,rgba(216,182,101,.13),rgba(13,59,57,.96))!important;
+  color:var(--hero-gold-2)!important;
+  font-size:13px!important;
+  font-weight:900!important;
+  line-height:1!important;
+  text-align:center!important;
+  box-shadow:-7px 0 16px rgba(0,0,0,.14)!important;
+}
+
+#welcomeTicker .welcome-ticker-track,
+#tournamentResultsTicker .welcome-ticker-track{
+  animation-duration:38s!important;
+}
+
+@media(max-width:800px){
+  #welcomeTicker .welcome-ticker-label,
+  #tournamentResultsTicker .welcome-ticker-label{
+    min-width:94px!important;
+    width:94px!important;
+    padding:0 8px!important;
+    font-size:10px!important;
+  }
+}
