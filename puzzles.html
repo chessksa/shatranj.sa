@@ -1,3 +1,129 @@
-<!doctype html><html lang="ar" dir="rtl"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover"><meta name="theme-color" content="#022f33"><title>الألغاز | شطرنج العرب</title><link rel="stylesheet" href="v2/site/shell.css"><link rel="stylesheet" href="v2/platform/page.css"><style>
-.puzzle-layout{display:grid;grid-template-columns:minmax(320px,680px) minmax(260px,1fr);gap:16px;align-items:start;direction:ltr}.puzzle-board-wrap{direction:rtl}.puzzle-board{width:min(100%,70dvh);aspect-ratio:1;display:grid;grid-template-columns:repeat(8,1fr);border:3px solid #66503b;box-shadow:0 16px 32px rgba(0,0,0,.24);direction:ltr}.puzzle-square{position:relative;border:0;padding:0;display:grid;place-items:center;min-width:0;min-height:0}.puzzle-square.light{background:var(--board-light,#e8dec8)}.puzzle-square.dark{background:var(--board-dark,#87966a)}.puzzle-square.selected{box-shadow:inset 0 0 0 4px rgba(239,207,124,.95)}.puzzle-square.target::after{content:"";width:22%;height:22%;border-radius:50%;background:rgba(13,59,53,.52);position:absolute}.puzzle-piece{width:86%;height:86%;object-fit:contain;pointer-events:none}.puzzle-side{direction:rtl}.puzzle-score-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:8px}.puzzle-score{padding:10px;border:1px solid var(--p-line);border-radius:11px;text-align:center;background:rgba(255,255,255,.025)}.puzzle-score small{display:block;color:var(--p-muted);font-size:10px}.puzzle-score strong{display:block;margin-top:4px;color:var(--p-gold2);font-size:20px}.puzzle-status{min-height:48px;padding:12px;border:1px solid var(--p-line);border-radius:11px;background:rgba(0,0,0,.12);line-height:1.5}.puzzle-board.busy{pointer-events:none;opacity:.92}@media(max-width:900px){.puzzle-layout{grid-template-columns:1fr}.puzzle-board{width:min(100%,calc(100dvh - 250px));margin:auto}.puzzle-side{order:-1}.puzzle-score-grid{grid-template-columns:repeat(3,1fr)}}
-</style></head><body class="platform-page"><main class="platform-shell"><header class="platform-head"><div><h1>الألغاز</h1><p>تكتيك مصنّف، لغز يومي، تدريب مخصص وRush.</p></div><a class="platform-btn" href="stats.html">إحصائياتي</a></header><div class="platform-tabs" id="puzzleModes"><button class="platform-tab active" data-mode="rated">مصنّف</button><button class="platform-tab" data-mode="daily">اليومي</button><button class="platform-tab" data-mode="custom">مخصص</button><button class="platform-tab" data-mode="rush">Rush 3 دقائق</button></div><section class="puzzle-layout"><div class="puzzle-board-wrap"><div id="puzzleBoard" class="puzzle-board" aria-label="رقعة اللغز"></div></div><aside class="platform-card puzzle-side"><div class="puzzle-score-grid"><div class="puzzle-score"><small>تقييم الألغاز</small><strong id="puzzleRating">—</strong></div><div class="puzzle-score"><small>القلوب</small><strong id="puzzleHearts">5</strong></div><div class="puzzle-score"><small>النتيجة/الوقت</small><strong id="puzzleRush">—</strong></div></div><div style="height:12px"></div><div id="puzzleTitle" class="platform-badge">جارٍ التحميل</div><h2 id="puzzlePrompt">ابحث عن أفضل نقلة</h2><div id="puzzleStatus" class="puzzle-status platform-muted">جارٍ تجهيز اللغز…</div><div style="height:12px"></div><label id="customThemeWrap" hidden><span class="platform-muted">موضوع التدريب</span><select id="customTheme" class="platform-select"><option value="">كل المواضيع</option><option value="mate">مات</option><option value="attack">هجوم</option><option value="queen">الوزير</option></select></label><div class="platform-actions" style="margin-top:12px"><button id="nextPuzzle" class="platform-btn primary" type="button">لغز جديد</button><button id="resetPuzzle" class="platform-btn" type="button">إعادة الوضع</button></div></aside></section></main><script src="config-base.js"></script><script type="module" src="v2/puzzles/app.mjs?v=20260913-puzzles3"></script><script type="module" src="v2/site/shell.mjs"></script></body></html>
+<!doctype html>
+<html lang="ar" dir="rtl">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+  <meta name="theme-color" content="#022f33">
+  <title>الألغاز | شطرنج العرب</title>
+  <link rel="stylesheet" href="v2/site/shell.css">
+  <link rel="stylesheet" href="v2/platform/page.css">
+  <style>
+    .puzzle-layout{display:grid;grid-template-columns:minmax(0,1fr) clamp(300px,28vw,380px);grid-template-rows:minmax(0,1fr);gap:14px;align-items:stretch;direction:ltr;min-height:0}
+    .puzzle-board-wrap{direction:rtl;display:grid;place-items:center;min-width:0;min-height:0;overflow:hidden}
+    .puzzle-board{width:min(100%,calc(100dvh - 116px),780px);max-width:100%;max-height:100%;aspect-ratio:1;display:grid;grid-template-columns:repeat(8,1fr);border:3px solid #66503b;box-shadow:0 16px 32px rgba(0,0,0,.24);direction:ltr}
+    .puzzle-square{position:relative;border:0;padding:0;display:grid;place-items:center;min-width:0;min-height:0}
+    .puzzle-square.light{background:var(--board-light,#e8dec8)}
+    .puzzle-square.dark{background:var(--board-dark,#87966a)}
+    .puzzle-square.selected{box-shadow:inset 0 0 0 4px rgba(239,207,124,.95)}
+    .puzzle-square.target::after{content:"";width:22%;height:22%;border-radius:50%;background:rgba(13,59,53,.52);position:absolute}
+    .puzzle-piece{width:86%;height:86%;object-fit:contain;pointer-events:none}
+    .puzzle-side{direction:rtl;min-height:0;overflow:hidden;display:flex;flex-direction:column;padding:14px}
+    .puzzle-score-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:8px}
+    .puzzle-score{padding:9px;border:1px solid var(--p-line);border-radius:11px;text-align:center;background:rgba(255,255,255,.025)}
+    .puzzle-score small{display:block;color:var(--p-muted);font-size:10px}
+    .puzzle-score strong{display:block;margin-top:3px;color:var(--p-gold2);font-size:19px}
+    .puzzle-status{min-height:44px;padding:10px;border:1px solid var(--p-line);border-radius:11px;background:rgba(0,0,0,.12);line-height:1.45}
+    .puzzle-board.busy{pointer-events:none;opacity:.92}
+
+    /* Puzzle viewport fit 20260914 */
+    html{height:100%}
+    body.platform-page.puzzle-fit-page{height:100dvh;min-height:0;overflow:hidden!important}
+    body.platform-page.puzzle-fit-page .platform-shell{height:100%;min-height:0;width:min(1240px,calc(100% - 24px));padding:10px 0 12px;display:grid;grid-template-rows:auto auto minmax(0,1fr);gap:8px}
+    body.platform-page.puzzle-fit-page .platform-head{margin:0;align-items:center}
+    body.platform-page.puzzle-fit-page .platform-head h1{font-size:22px;line-height:1.1}
+    body.platform-page.puzzle-fit-page .platform-head p{margin-top:3px;font-size:11px;line-height:1.2}
+    body.platform-page.puzzle-fit-page .platform-btn{min-height:34px;padding-inline:10px}
+    body.platform-page.puzzle-fit-page .platform-tabs{margin:0;gap:6px;flex-wrap:nowrap;min-width:0}
+    body.platform-page.puzzle-fit-page .platform-tab{min-height:32px;padding:5px 10px;white-space:nowrap}
+    body.platform-page.puzzle-fit-page .puzzle-layout{height:100%;min-height:0;overflow:hidden}
+    body.platform-page.puzzle-fit-page .puzzle-board-wrap{height:100%;min-height:0}
+    body.platform-page.puzzle-fit-page .puzzle-board{max-height:100%}
+    body.platform-page.puzzle-fit-page .puzzle-side h2{font-size:19px;line-height:1.25;margin:9px 0}
+    body.platform-page.puzzle-fit-page .puzzle-side .platform-actions{margin-top:auto!important;padding-top:10px;flex-wrap:nowrap}
+    body.platform-page.puzzle-fit-page .puzzle-side .platform-actions .platform-btn{flex:1 1 0}
+
+    @media(max-width:900px){
+      body.platform-page.puzzle-fit-page{height:100dvh;min-height:0;overflow:hidden!important}
+      body.platform-page.puzzle-fit-page.v2-shell-active{padding-bottom:66px!important}
+      body.platform-page.puzzle-fit-page .platform-shell{width:calc(100% - 10px);height:100%;min-height:0;padding:5px 0 4px;grid-template-columns:1fr;grid-template-rows:auto minmax(0,1fr) auto;gap:5px}
+      body.platform-page.puzzle-fit-page .platform-head{grid-row:1;flex-direction:row;align-items:center;gap:7px;min-height:32px}
+      body.platform-page.puzzle-fit-page .platform-head h1{font-size:18px}
+      body.platform-page.puzzle-fit-page .platform-head p{display:none}
+      body.platform-page.puzzle-fit-page .platform-head .platform-btn{min-height:30px;font-size:11px;padding-inline:8px}
+      body.platform-page.puzzle-fit-page .platform-tabs{grid-row:3;display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:4px;width:100%;overflow:hidden!important}
+      body.platform-page.puzzle-fit-page .platform-tab{min-width:0;min-height:30px;padding:4px 3px;font-size:10px;overflow:hidden;text-overflow:ellipsis}
+      body.platform-page.puzzle-fit-page .puzzle-layout{grid-row:2;grid-template-columns:1fr;grid-template-rows:minmax(0,1fr) auto;gap:5px;height:100%;min-height:0;overflow:hidden!important}
+      body.platform-page.puzzle-fit-page .puzzle-board-wrap{order:1;height:100%;min-height:0;overflow:hidden;align-items:center}
+      body.platform-page.puzzle-fit-page .puzzle-board{width:min(100%,calc(100dvh - 250px));max-height:min(58dvh,100%);margin:auto;border-width:2px;box-shadow:0 8px 18px rgba(0,0,0,.2)}
+      body.platform-page.puzzle-fit-page .puzzle-side{order:2;min-height:0;overflow:hidden;padding:7px 8px;border-radius:12px;display:grid;grid-template-columns:1fr;gap:5px}
+      body.platform-page.puzzle-fit-page .puzzle-score-grid{gap:4px}
+      body.platform-page.puzzle-fit-page .puzzle-score{padding:4px 3px;border-radius:8px}
+      body.platform-page.puzzle-fit-page .puzzle-score small{font-size:8px;line-height:1.1}
+      body.platform-page.puzzle-fit-page .puzzle-score strong{font-size:14px;margin-top:1px}
+      body.platform-page.puzzle-fit-page .puzzle-side>div[style="height:12px"]{display:none}
+      body.platform-page.puzzle-fit-page .platform-badge{min-height:20px;font-size:9px;padding:0 6px;justify-self:start}
+      body.platform-page.puzzle-fit-page .puzzle-side h2{font-size:13px;line-height:1.15;margin:0}
+      body.platform-page.puzzle-fit-page .puzzle-status{min-height:30px;padding:5px 7px;font-size:11px;line-height:1.25}
+      body.platform-page.puzzle-fit-page #customThemeWrap{display:grid;grid-template-columns:auto 1fr;align-items:center;gap:6px}
+      body.platform-page.puzzle-fit-page #customThemeWrap[hidden]{display:none!important}
+      body.platform-page.puzzle-fit-page #customThemeWrap .platform-select{min-height:30px;padding:4px 7px;font-size:10px}
+      body.platform-page.puzzle-fit-page .puzzle-side .platform-actions{margin-top:0!important;padding-top:0;gap:5px;flex-wrap:nowrap}
+      body.platform-page.puzzle-fit-page .puzzle-side .platform-actions .platform-btn{min-height:30px;font-size:10px;padding:0 6px}
+    }
+  </style>
+</head>
+<body class="platform-page puzzle-fit-page">
+  <main class="platform-shell">
+    <header class="platform-head">
+      <div>
+        <h1>الألغاز</h1>
+        <p>تكتيك مصنّف، لغز يومي، تدريب مخصص وRush.</p>
+      </div>
+      <a class="platform-btn" href="stats.html">إحصائياتي</a>
+    </header>
+
+    <div class="platform-tabs" id="puzzleModes">
+      <button class="platform-tab active" data-mode="rated">مصنّف</button>
+      <button class="platform-tab" data-mode="daily">اليومي</button>
+      <button class="platform-tab" data-mode="custom">مخصص</button>
+      <button class="platform-tab" data-mode="rush">Rush 3 دقائق</button>
+    </div>
+
+    <section class="puzzle-layout">
+      <div class="puzzle-board-wrap">
+        <div id="puzzleBoard" class="puzzle-board" aria-label="رقعة اللغز"></div>
+      </div>
+
+      <aside class="platform-card puzzle-side">
+        <div class="puzzle-score-grid">
+          <div class="puzzle-score"><small>تقييم الألغاز</small><strong id="puzzleRating">—</strong></div>
+          <div class="puzzle-score"><small>القلوب</small><strong id="puzzleHearts">5</strong></div>
+          <div class="puzzle-score"><small>النتيجة/الوقت</small><strong id="puzzleRush">—</strong></div>
+        </div>
+        <div style="height:12px"></div>
+        <div id="puzzleTitle" class="platform-badge">جارٍ التحميل</div>
+        <h2 id="puzzlePrompt">ابحث عن أفضل نقلة</h2>
+        <div id="puzzleStatus" class="puzzle-status platform-muted">جارٍ تجهيز اللغز…</div>
+        <div style="height:12px"></div>
+        <label id="customThemeWrap" hidden>
+          <span class="platform-muted">موضوع التدريب</span>
+          <select id="customTheme" class="platform-select">
+            <option value="">كل المواضيع</option>
+            <option value="mate">مات</option>
+            <option value="attack">هجوم</option>
+            <option value="queen">الوزير</option>
+          </select>
+        </label>
+        <div class="platform-actions" style="margin-top:12px">
+          <button id="nextPuzzle" class="platform-btn primary" type="button">لغز جديد</button>
+          <button id="resetPuzzle" class="platform-btn" type="button">إعادة الوضع</button>
+        </div>
+      </aside>
+    </section>
+  </main>
+
+  <script src="config-base.js"></script>
+  <script type="module" src="v2/puzzles/app.mjs?v=20260913-puzzles3"></script>
+  <script type="module" src="v2/site/shell.mjs"></script>
+</body>
+</html>
