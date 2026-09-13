@@ -38,3 +38,24 @@ def test_home_ticker_explicitly_loads_synthetic_members_and_restores_tournaments
     assert "loadTournamentTicker" in dashboard
     assert "status==='running'" in dashboard
     assert "status==='open'" in dashboard
+
+
+def test_public_snapshot_includes_all_active_subscribers_including_synthetic():
+    migration = read("supabase/migrations/20260913_home_public_snapshot_all_subscribers.sql")
+
+    assert "create or replace function public.get_public_home_snapshot()" in migration
+    assert "where p.status = 'active'" in migration
+    assert "p.auth_user_id is not null" not in migration
+    assert "coalesce(p.is_synthetic, false) = false" not in migration
+
+
+def test_tournament_strip_exists_in_home_html_before_runtime_javascript():
+    html = read("index-app.html")
+
+    welcome_at = html.index('id="welcomeTicker"')
+    tournament_at = html.index('id="tournamentResultsTicker"')
+    hero_at = html.index('id="homeHero"')
+
+    assert welcome_at < tournament_at < hero_at
+    assert 'id="tournamentResultsTickerTrack"' in html
+    assert 'نتائج البطولات' in html
