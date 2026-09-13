@@ -39,6 +39,14 @@ def test_ranking_runtime_uses_scoped_public_rpc():
     assert "ALL_PLAYERS=Array.isArray(data)?data:[];" in loader
 
 
+def test_ranking_loader_pattern_matches_current_index_app():
+    source = read("index-app.html")
+    pattern = re.compile(
+        r"async function loadPlayers\(\)\{[\s\S]*?\n\}\n\nasync function loadCurrentMatchesCount\(\)\{"
+    )
+    assert pattern.search(source), "runtime ranking replacement must match index-app.html"
+
+
 def test_latest_members_uses_public_snapshot():
     dashboard = read("v2/home/dashboard.mjs")
     start = dashboard.index("async function loadWelcomeSubscribers(){")
