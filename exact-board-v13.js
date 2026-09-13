@@ -1,5 +1,5 @@
 // cm-chessboard owns the board rendering. This file controls responsive layout flow
-// and applies the approved mobile live-game presentation.
+// and applies the approved mobile play-page presentation.
 (() => {
   const layout = document.querySelector('.layout');
   const side = document.querySelector('.side-panel');
@@ -9,16 +9,25 @@
 
   const mobileQuery = window.matchMedia('(max-width: 900px)');
   const referenceCssId = 'playReferenceMobileV14';
+  const pregameCssId = 'playReferencePregameV15';
   const historyScriptId = 'playReferenceHistoryV14';
   let boardObserver = null;
 
   function ensureReferenceStyles() {
-    if (document.getElementById(referenceCssId)) return;
-    const link = document.createElement('link');
-    link.id = referenceCssId;
-    link.rel = 'stylesheet';
-    link.href = 'play-reference-mobile-v14.css?v=20260913-1';
-    document.head.appendChild(link);
+    if (!document.getElementById(referenceCssId)) {
+      const link = document.createElement('link');
+      link.id = referenceCssId;
+      link.rel = 'stylesheet';
+      link.href = 'play-reference-mobile-v14.css?v=20260913-2';
+      document.head.appendChild(link);
+    }
+    if (!document.getElementById(pregameCssId)) {
+      const link = document.createElement('link');
+      link.id = pregameCssId;
+      link.rel = 'stylesheet';
+      link.href = 'play-reference-pregame-v15.css?v=20260913-1';
+      document.head.appendChild(link);
+    }
   }
 
   function clearMobileInlineLayout() {
@@ -33,6 +42,14 @@
 
   function isLiveMobile() {
     return mobileQuery.matches && document.body.classList.contains('live-game');
+  }
+
+  function isPregameMobile() {
+    return mobileQuery.matches && document.body.classList.contains('pregame');
+  }
+
+  function isReferenceMobile() {
+    return isLiveMobile() || isPregameMobile();
   }
 
   function ensureMoveStrip() {
@@ -57,12 +74,12 @@
     const script = document.createElement('script');
     script.id = historyScriptId;
     script.type = 'module';
-    script.src = 'play-reference-history-v14.mjs?v=20260913-1';
+    script.src = 'play-reference-history-v14.mjs?v=20260913-2';
     document.body.appendChild(script);
   }
 
   function applyReferenceBoardPalette() {
-    if (!isLiveMobile()) return;
+    if (!isReferenceMobile()) return;
     const board = document.getElementById('board');
     if (!board) return;
     board.querySelectorAll('.cm-chessboard .square.white').forEach((square) => {
@@ -74,7 +91,7 @@
   }
 
   function watchReferenceBoardPalette() {
-    if (!isLiveMobile()) return;
+    if (!isReferenceMobile()) return;
     const board = document.getElementById('board');
     if (!board || boardObserver) {
       applyReferenceBoardPalette();
@@ -93,17 +110,23 @@
     applyReferenceBoardPalette();
   }
 
-  function arrangeLiveMobile() {
-    if (!isLiveMobile()) return;
-    document.body.classList.add('reference-live-layout');
+  function arrangeReferenceMobile() {
+    if (!isReferenceMobile()) {
+      document.body.classList.remove('reference-play-layout');
+      return;
+    }
+
+    document.body.classList.add('reference-play-layout');
 
     const gameActions = document.getElementById('gameActions');
     if (gameActions && gameActions.parentElement !== stack) stack.appendChild(gameActions);
 
-    ensureMoveStrip();
-    ensureHistoryModule();
-    watchReferenceBoardPalette();
+    if (isLiveMobile()) {
+      ensureMoveStrip();
+      ensureHistoryModule();
+    }
 
+    watchReferenceBoardPalette();
     stack.style.gap = '0';
     requestAnimationFrame(applyReferenceBoardPalette);
     setTimeout(applyReferenceBoardPalette, 120);
@@ -124,13 +147,13 @@
       stack.style.flexDirection = 'column';
       stack.style.width = '100%';
       stack.style.height = 'auto';
-      stack.style.gap = isLiveMobile() ? '0' : '10px';
+      stack.style.gap = isReferenceMobile() ? '0' : '10px';
 
-      arrangeLiveMobile();
+      arrangeReferenceMobile();
       return;
     }
 
-    document.body.classList.remove('reference-live-layout');
+    document.body.classList.remove('reference-play-layout');
     clearMobileInlineLayout();
     if (boardPanel.parentElement !== layout) layout.insertBefore(boardPanel, side);
   }
@@ -150,11 +173,11 @@
 
   document.addEventListener('DOMContentLoaded', () => {
     runAfterOtherLayoutHandlers();
-    setTimeout(arrangeLiveMobile, 80);
+    setTimeout(arrangeReferenceMobile, 80);
   }, { once: true });
 
   window.addEventListener('load', () => {
-    arrangeLiveMobile();
+    arrangeReferenceMobile();
     setTimeout(applyReferenceBoardPalette, 180);
   }, { once: true });
 })();
