@@ -11,7 +11,7 @@
 <div class="loading"><div><strong>جاري فتح صفحة اللعب</strong><small>تحميل الواجهة الجديدة…</small></div></div>
 <script>
 (async()=>{
-  const version='20260913-reference16-'+Date.now();
+  const version='20260913-reference18-'+Date.now();
   const response=await fetch('./play-v10.html?v='+version,{cache:'no-store'});
   if(!response.ok) throw new Error('play source '+response.status);
   let html=await response.text();
@@ -22,8 +22,9 @@
     .replace(/play-v8\.js\?v=[A-Za-z0-9._-]+/g,'play-v8.js?v='+version)
     .replace(/play-v10\.html/g,'play-entry-v16.html');
 
-  const freshStyles=`<link rel="stylesheet" href="play-reference-mobile-v14.css?v=${version}"><link rel="stylesheet" href="play-reference-pregame-v15.css?v=${version}">`;
+  const freshStyles=`<link rel="stylesheet" href="play-reference-mobile-v14.css?v=${version}"><link rel="stylesheet" href="play-reference-pregame-v15.css?v=${version}"><link rel="stylesheet" href="play-reference-overlay-v18.css?v=${version}">`;
   html=html.replace('</head>',freshStyles+'</head>');
+  html=html.replace('</body>',`<script src="play-reference-shell-v18.js?v=${version}"><\/script></body>`);
 
   document.open();
   document.write(html);
