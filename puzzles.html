@@ -9,7 +9,7 @@
   <link rel="stylesheet" href="v2/platform/page.css">
   <style>
     .puzzle-layout{display:grid;grid-template-columns:minmax(0,1fr) clamp(300px,28vw,380px);grid-template-rows:minmax(0,1fr);gap:14px;align-items:stretch;direction:ltr;min-height:0}
-    .puzzle-board-wrap{direction:rtl;display:grid;place-items:center;min-width:0;min-height:0;overflow:hidden}
+    .puzzle-board-wrap{grid-column:1;grid-row:1;direction:rtl;display:grid;place-items:center;min-width:0;min-height:0;overflow:hidden}
     .puzzle-board{width:min(100%,calc(100dvh - 116px),780px);max-width:100%;max-height:100%;aspect-ratio:1;display:grid;grid-template-columns:repeat(8,1fr);border:3px solid #66503b;box-shadow:0 16px 32px rgba(0,0,0,.24);direction:ltr}
     .puzzle-square{position:relative;border:0;padding:0;display:grid;place-items:center;min-width:0;min-height:0}
     .puzzle-square.light{background:var(--board-light,#e8dec8)}
@@ -17,7 +17,7 @@
     .puzzle-square.selected{box-shadow:inset 0 0 0 4px rgba(239,207,124,.95)}
     .puzzle-square.target::after{content:"";width:22%;height:22%;border-radius:50%;background:rgba(13,59,53,.52);position:absolute}
     .puzzle-piece{width:86%;height:86%;object-fit:contain;pointer-events:none}
-    .puzzle-side{direction:rtl;min-height:0;overflow:hidden;display:flex;flex-direction:column;padding:14px}
+    .puzzle-side{grid-column:2;grid-row:1;direction:rtl;min-height:0;overflow:hidden;display:flex;flex-direction:column;padding:14px}
     .puzzle-score-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:8px}
     .puzzle-score{padding:9px;border:1px solid var(--p-line);border-radius:11px;text-align:center;background:rgba(255,255,255,.025)}
     .puzzle-score small{display:block;color:var(--p-muted);font-size:10px}
@@ -53,9 +53,9 @@
       body.platform-page.puzzle-fit-page .platform-tabs{grid-row:3;display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:4px;width:100%;overflow:hidden!important}
       body.platform-page.puzzle-fit-page .platform-tab{min-width:0;min-height:30px;padding:4px 3px;font-size:10px;overflow:hidden;text-overflow:ellipsis}
       body.platform-page.puzzle-fit-page .puzzle-layout{grid-row:2;grid-template-columns:1fr;grid-template-rows:minmax(0,1fr) auto;gap:5px;height:100%;min-height:0;overflow:hidden!important}
-      body.platform-page.puzzle-fit-page .puzzle-board-wrap{order:1;height:100%;min-height:0;overflow:hidden;align-items:center}
+      body.platform-page.puzzle-fit-page .puzzle-board-wrap{grid-column:1;grid-row:1;order:1;height:100%;min-height:0;overflow:hidden;align-items:center}
       body.platform-page.puzzle-fit-page .puzzle-board{width:min(100%,calc(100dvh - 250px));max-height:min(58dvh,100%);margin:auto;border-width:2px;box-shadow:0 8px 18px rgba(0,0,0,.2)}
-      body.platform-page.puzzle-fit-page .puzzle-side{order:2;min-height:0;overflow:hidden;padding:7px 8px;border-radius:12px;display:grid;grid-template-columns:1fr;gap:5px}
+      body.platform-page.puzzle-fit-page .puzzle-side{grid-column:1;grid-row:2;order:2;min-height:0;overflow:hidden;padding:7px 8px;border-radius:12px;display:grid;grid-template-columns:1fr;gap:5px}
       body.platform-page.puzzle-fit-page .puzzle-score-grid{gap:4px}
       body.platform-page.puzzle-fit-page .puzzle-score{padding:4px 3px;border-radius:8px}
       body.platform-page.puzzle-fit-page .puzzle-score small{font-size:8px;line-height:1.1}
