@@ -11,7 +11,6 @@
 }
 html{background:var(--shell-bg)}
 body.v2-shell-active{padding-right:var(--shell-width)!important;background:radial-gradient(circle at 15% 18%,rgba(12,110,120,.20),transparent 26%),linear-gradient(135deg,var(--shell-bg),var(--shell-bg-2) 52%,#0b4850)!important;color:var(--shell-cream)}
-body.v2-shell-active.home-signed-in>.home-header,body.v2-shell-active.home-signed-in>header.home-header{display:none!important}
 body.v2-shell-active.v2-route-watch>header,body.v2-shell-active.v2-route-tournaments>header{display:none!important}
 .v2-global-sidebar{position:fixed;z-index:9999;inset:0 0 0 auto;width:var(--shell-width);padding:12px 10px;background:linear-gradient(180deg,#022f33,#063a40);border-left:1px solid var(--shell-line);display:flex;flex-direction:column;gap:8px;box-shadow:-8px 0 24px rgba(0,0,0,.16);font-family:Arial,sans-serif;direction:rtl;overflow:hidden}
 .v2-global-brand{display:flex;align-items:center;gap:9px;min-height:54px;padding:8px;border-bottom:1px solid var(--shell-line);margin-bottom:2px;color:var(--shell-cream);font-weight:900;text-decoration:none;flex:0 0 auto}
@@ -19,7 +18,7 @@ body.v2-shell-active.v2-route-watch>header,body.v2-shell-active.v2-route-tournam
 .v2-global-brand-copy{font-size:15px;line-height:1.2}
 .v2-global-nav{display:grid;gap:4px;min-height:0;overflow-y:auto;overflow-x:hidden;scrollbar-width:thin;scrollbar-color:rgba(224,181,103,.45) transparent;padding-left:2px}
 .v2-global-nav::-webkit-scrollbar{width:5px}.v2-global-nav::-webkit-scrollbar-thumb{background:rgba(224,181,103,.4);border-radius:999px}
-.v2-global-link{min-height:42px;padding:0 9px;border-radius:9px;display:flex;align-items:center;gap:9px;color:var(--shell-cream);text-decoration:none;font-weight:800;font-size:12px;transition:.14s;background:transparent;border:1px solid transparent;flex:0 0 auto}
+.v2-global-link{min-height:42px;padding:0 9px;border-radius:9px;display:flex;align-items:center;gap:9px;color:var(--shell-cream);text-decoration:none;font-weight:800;font-size:14px;transition:.14s;background:transparent;border:1px solid transparent;flex:0 0 auto}
 .v2-global-link:hover{background:rgba(255,255,255,.06);border-color:rgba(255,255,255,.05)}
 .v2-global-link.active{background:var(--shell-gold);color:#173536;box-shadow:0 6px 16px rgba(0,0,0,.13)}
 .v2-global-icon{width:24px;text-align:center;font-size:19px;line-height:1}
@@ -31,10 +30,11 @@ body.v2-shell-active .table-card,body.v2-shell-active .profile-card,body.v2-shel
 body.v2-shell-active .btn.gold,body.v2-shell-active .primary,body.v2-shell-active button.primary{background:var(--shell-gold)!important;color:#173536!important;border-color:transparent!important}
 body.v2-shell-active.v2-route-watch main,body.v2-shell-active.v2-route-tournaments main{padding-top:14px!important}
 @media(min-width:901px){
-  body.v2-shell-active.home-signed-in{grid-template-rows:34px 34px minmax(0,1fr)!important}
-  body.v2-shell-active.home-signed-in .welcome-ticker{grid-row:1!important}
-  body.v2-shell-active.home-signed-in #tournamentResultsTicker{grid-row:2!important}
-  body.v2-shell-active.home-signed-in .home-hero,body.v2-shell-active.home-signed-in #ranking{grid-row:3!important}
+  body.v2-shell-active.home-signed-in{grid-template-rows:64px 34px 34px minmax(0,1fr)!important}
+  body.v2-shell-active.home-signed-in .home-header{grid-row:1!important}
+  body.v2-shell-active.home-signed-in .welcome-ticker{grid-row:2!important}
+  body.v2-shell-active.home-signed-in #tournamentResultsTicker{grid-row:3!important}
+  body.v2-shell-active.home-signed-in .home-hero,body.v2-shell-active.home-signed-in #ranking{grid-row:4!important}
 }
 @media(max-width:900px){
   :root{--shell-width:0px}
