@@ -52,20 +52,60 @@
     target.style.setProperty('display', 'none', 'important');
   }
 
+  function findBoardHeaderControl(header, leave) {
+    if (!header) return null;
+    const controls = [...header.querySelectorAll('button,a,[role="button"]')];
+    return controls.find(control => {
+      if (control === leave || control.id === 'reportBtn' || control.closest('#siteNotificationHost')) return false;
+      const text = normalize(control.textContent);
+      const aria = normalize(control.getAttribute('aria-label'));
+      const title = normalize(control.getAttribute('title'));
+      const identity = `${control.id || ''} ${control.className || ''}`;
+      return text.includes('الرقعة') || aria.includes('رقعة') || title.includes('رقعة') || /board/i.test(identity);
+    }) || null;
+  }
+
   function enforceHeader() {
     if (!mobile.matches || !document.body.classList.contains('reference-play-layout')) return;
 
+    const header = document.querySelector('.side-header');
     const leave = document.getElementById('leaveBtn');
     const leaveText = document.getElementById('leaveText');
     const notifications = document.getElementById('siteNotificationHost');
+    const boardControl = findBoardHeaderControl(header, leave);
 
     if (leaveText) leaveText.style.setProperty('display', 'none', 'important');
     if (leave) {
+      leave.setAttribute('aria-label', 'رجوع');
+      leave.setAttribute('title', 'رجوع');
+      leave.style.setProperty('position', 'absolute', 'important');
+      leave.style.setProperty('right', '0', 'important');
+      leave.style.setProperty('left', 'auto', 'important');
+      leave.style.setProperty('top', '50%', 'important');
+      leave.style.setProperty('transform', 'translateY(-50%)', 'important');
+      leave.style.setProperty('width', '46px', 'important');
+      leave.style.setProperty('min-width', '46px', 'important');
+      leave.style.setProperty('height', '46px', 'important');
       leave.style.setProperty('border', '0', 'important');
       leave.style.setProperty('background', 'transparent', 'important');
       leave.style.setProperty('box-shadow', 'none', 'important');
       leave.style.setProperty('font-size', '0', 'important');
+      leave.style.setProperty('z-index', '12', 'important');
     }
+
+    document.querySelectorAll('.reference-board-control-v19').forEach(control => {
+      if (control !== boardControl) control.classList.remove('reference-board-control-v19');
+    });
+    if (boardControl) {
+      boardControl.classList.add('reference-board-control-v19');
+      boardControl.style.setProperty('position', 'absolute', 'important');
+      boardControl.style.setProperty('right', '54px', 'important');
+      boardControl.style.setProperty('left', 'auto', 'important');
+      boardControl.style.setProperty('top', '50%', 'important');
+      boardControl.style.setProperty('transform', 'translateY(-50%)', 'important');
+      boardControl.style.setProperty('z-index', '11', 'important');
+    }
+
     if (notifications) notifications.style.setProperty('display', 'none', 'important');
   }
 
