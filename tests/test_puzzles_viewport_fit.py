@@ -28,3 +28,13 @@ def test_puzzles_mobile_keeps_board_and_controls_in_one_viewport():
     assert 'max-height:min(58dvh,100%)' in marker
     assert '.puzzle-side' in marker
     assert 'overflow:hidden' in marker
+
+
+def test_puzzle_side_stays_in_second_desktop_grid_column():
+    html = (ROOT / 'puzzles.html').read_text(encoding='utf-8')
+
+    assert '.puzzle-board-wrap{grid-column:1;grid-row:1' in html
+    assert '.puzzle-side{grid-column:2;grid-row:1' in html
+    mobile = html.split('@media(max-width:900px)', 1)[1]
+    assert '.puzzle-board-wrap{grid-column:1;grid-row:1' in mobile
+    assert '.puzzle-side{grid-column:1;grid-row:2' in mobile
