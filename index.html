@@ -16,7 +16,7 @@ html,body{margin:0;min-height:100%;background:#042628;color:#f4eddc;font-family:
 <div class="loader"><div><strong>جاري فتح شطرنج العرب</strong><small>تحديث الواجهة…</small></div></div>
 <script>
 (async()=>{
-  const stamp='20260913-home-tickers1';
+  const stamp='20260913-play-reference16';
   const runtimeVersion=stamp+'-'+Date.now();
   const response=await fetch('./index-app.html?v='+runtimeVersion,{cache:'no-store'});
   if(!response.ok) throw new Error('index source '+response.status);
@@ -30,6 +30,7 @@ html,body{margin:0;min-height:100%;background:#042628;color:#f4eddc;font-family:
     .replace('setInterval(loadCurrentMatchesCount,30000);','setInterval(loadCurrentMatchesCount,3000);');
 
   html=html.replace(/href="watch\.html(?:\?[^\"]*)?"/g,'href="watch.html?v='+runtimeVersion+'"');
+  html=html.replace(/play-v10\.html/g,'play-entry-v16.html');
 
   const oldMatchesCount=`async function loadCurrentMatchesCount(){
   const el=document.querySelector('#headerMatchesCount');
