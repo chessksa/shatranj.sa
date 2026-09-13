@@ -1,0 +1,37 @@
+<!doctype html>
+<html lang="ar" dir="rtl">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
+  <title>العب الآن | شطرنج العرب</title>
+  <style>html,body{margin:0;min-height:100%;background:#262522;color:#f3f3f3;font-family:Arial,sans-serif}.loading{min-height:100dvh;display:grid;place-items:center;text-align:center;padding:24px}.loading strong{font-size:18px}.loading small{display:block;margin-top:8px;color:#aaa}</style>
+</head>
+<body>
+<div class="loading"><div><strong>جاري فتح صفحة اللعب</strong><small>تحميل الواجهة الجديدة…</small></div></div>
+<script>
+(async()=>{
+  const version='20260913-reference16-'+Date.now();
+  const response=await fetch('./play-v10.html?v='+version,{cache:'no-store'});
+  if(!response.ok) throw new Error('play source '+response.status);
+  let html=await response.text();
+
+  html=html
+    .replace(/exact-board-v13\.js\?v=[A-Za-z0-9._-]+/g,'exact-board-v13.js?v='+version)
+    .replace(/play-v10-match\.js\?v=[A-Za-z0-9._-]+/g,'play-v10-match.js?v='+version)
+    .replace(/play-v8\.js\?v=[A-Za-z0-9._-]+/g,'play-v8.js?v='+version)
+    .replace(/play-v10\.html/g,'play-entry-v16.html');
+
+  const freshStyles=`<link rel="stylesheet" href="play-reference-mobile-v14.css?v=${version}"><link rel="stylesheet" href="play-reference-pregame-v15.css?v=${version}">`;
+  html=html.replace('</head>',freshStyles+'</head>');
+
+  document.open();
+  document.write(html);
+  document.close();
+})().catch(error=>{
+  console.error(error);
+  document.body.innerHTML='<div class="loading"><div><strong>تعذر تحميل صفحة اللعب</strong><small>أعد فتح الصفحة.</small></div></div>';
+});
+</script>
+</body>
+</html>
