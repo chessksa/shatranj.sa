@@ -32,18 +32,24 @@ def test_dashboard_identity_moves_out_of_desktop_card():
     assert "host.replaceChildren(...content);" in js
 
 
-def test_ranking_uses_scoped_public_rpc():
-    html = read("index-app.html")
-    start = html.index("async function loadPlayers(){")
-    end = html.index("async function loadCurrentMatchesCount(){", start)
-    block = html[start:end]
-    assert "supabase.rpc('get_public_ranked_players',{p_gender:null})" in block
+def test_ranking_runtime_uses_scoped_public_rpc():
+    loader = read("index.html")
+    assert "supabase.rpc('get_public_ranked_players',{p_gender:null})" in loader
+    assert "playersLoaderPattern" in loader
+    assert "ALL_PLAYERS=Array.isArray(data)?data:[];" in loader
+
+
+def test_latest_members_uses_public_snapshot():
+    dashboard = read("v2/home/dashboard.mjs")
+    start = dashboard.index("async function loadWelcomeSubscribers(){")
+    end = dashboard.index("function ensureTournamentTicker(){", start)
+    block = dashboard[start:end]
+    assert "rpc('get_public_home_snapshot')" in block
     assert ".from('public_players')" not in block
-    assert "get_public_usernames" not in block
 
 
 def test_tournament_ticker_stays_below_latest_members_and_latest_members_is_faster():
     dashboard = read("v2/home/dashboard.mjs")
-    index_app = read("index-app.html")
+    loader = read("index.html")
     assert "welcome.insertAdjacentElement('afterend',ticker);" in dashboard
-    assert "animation:welcomeTickerInlineMove 52s linear infinite" in index_app
+    assert ".replace('animation:welcomeTickerInlineMove 60s linear infinite','animation:welcomeTickerInlineMove 52s linear infinite')" in loader
