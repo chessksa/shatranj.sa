@@ -1,0 +1,30 @@
+name: Home header icons verify
+
+on:
+  push:
+    branches:
+      - fix/home-header-icons-cleanup-20260914
+    paths:
+      - 'home-header-svg.css'
+      - 'tests/test_home_header_icons_cleanup.py'
+      - '.github/workflows/home-header-icons-verify.yml'
+  pull_request:
+    branches: [main]
+    paths:
+      - 'home-header-svg.css'
+      - 'tests/test_home_header_icons_cleanup.py'
+      - '.github/workflows/home-header-icons-verify.yml'
+
+permissions:
+  contents: read
+
+jobs:
+  verify:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - run: python -m pip install pytest
+      - run: python -m pytest tests/test_home_header_icons_cleanup.py -q
