@@ -32,7 +32,7 @@ if (!skip.test(location.pathname)) {
     mobileHomeCleanup.rel = 'stylesheet';
     mobileHomeCleanup.dataset.v2MobileHomeCleanup = 'final';
     const mobileHomeCleanupUrl = new URL('./mobile-home-cleanup.css', import.meta.url);
-    mobileHomeCleanupUrl.searchParams.set('v','20260915-header-frame-icons1');
+    mobileHomeCleanupUrl.searchParams.set('v','20260915-icons-hard-remove2');
     mobileHomeCleanup.href = mobileHomeCleanupUrl.href;
     document.head.appendChild(mobileHomeCleanup);
   }
