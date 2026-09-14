@@ -14,9 +14,18 @@ if (!skip.test(location.pathname)) {
     mobileHome.rel = 'stylesheet';
     mobileHome.dataset.v2MobileHome = 'no-scroll';
     const mobileHomeUrl = new URL('./mobile-home-no-scroll.css', import.meta.url);
-    mobileHomeUrl.searchParams.set('v','20260914-header-tournaments-actions1');
+    mobileHomeUrl.searchParams.set('v','20260914-header-tournaments-actions2');
     mobileHome.href = mobileHomeUrl.href;
     document.head.appendChild(mobileHome);
+  }
+  if (!document.querySelector('link[data-v2-mobile-home-polish]')) {
+    const mobileHomePolish = document.createElement('link');
+    mobileHomePolish.rel = 'stylesheet';
+    mobileHomePolish.dataset.v2MobileHomePolish = 'final';
+    const mobileHomePolishUrl = new URL('./mobile-home-polish.css', import.meta.url);
+    mobileHomePolishUrl.searchParams.set('v','20260914-text-actions-header2');
+    mobileHomePolish.href = mobileHomePolishUrl.href;
+    document.head.appendChild(mobileHomePolish);
   }
 
   document.querySelectorAll('a[href]').forEach((anchor)=>{
