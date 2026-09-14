@@ -4,24 +4,29 @@ ROOT = Path(__file__).resolve().parents[1]
 
 
 def test_computer_mode_loads_signed_in_player_avatar():
-    js = (ROOT / 'play-computer.js').read_text(encoding='utf-8')
+    fix_path = ROOT / 'play-computer-profile-v21.js'
+    assert fix_path.exists(), 'computer profile companion is missing'
+    js = fix_path.read_text(encoding='utf-8')
+    entry = (ROOT / 'play-entry-v16.html').read_text(encoding='utf-8')
 
-    assert "const bottomAvatarImg = $('bottomAvatarImg');" in js
+    assert "bottomAvatarImg" in js
     assert "get_my_player_profile" in js
     assert "avatar_path" in js
     assert "storage.from('avatars').getPublicUrl" in js
-    assert "loadComputerPlayerProfile" in js
+    assert "play-computer-profile-v21.js" in entry
 
 
 def test_play_notification_icon_is_visible_and_compact():
-    html = (ROOT / 'play-v10.html').read_text(encoding='utf-8')
-    css = (ROOT / 'play-desktop-fit-v20.css').read_text(encoding='utf-8')
+    css_path = ROOT / 'play-notification-icon-v21.css'
+    assert css_path.exists(), 'play notification icon stylesheet is missing'
+    css = css_path.read_text(encoding='utf-8')
+    entry = (ROOT / 'play-entry-v16.html').read_text(encoding='utf-8')
 
-    for source in (html, css):
-        assert '#siteNotificationHost .header-tile-icon' in source
-        assert 'color:var(--gold)!important' in source
-        assert 'width:16px!important' in source
-        assert 'height:16px!important' in source
+    assert '#siteNotificationHost .header-tile-icon' in css
+    assert 'color:var(--gold)!important' in css
+    assert 'width:16px!important' in css
+    assert 'height:16px!important' in css
+    assert 'play-notification-icon-v21.css' in entry
 
 
 def test_play_entry_cache_busts_computer_script():
