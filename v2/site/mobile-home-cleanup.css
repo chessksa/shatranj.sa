@@ -1,17 +1,21 @@
-/* Mobile home cleanup: remove outer header frame and all game-action symbols. */
+/* Final mobile-home cleanup: text-only game actions and a clear notification bell. */
 @media(max-width:900px){
-  html body.v2-route-home.home-signed-in .home-header .compact-member-nav{
+  /* Keep the mobile header open: no outer frame around the whole header group. */
+  html body .home-header .compact-member-nav{
     border:0!important;
     box-shadow:none!important;
   }
 
-  html body.v2-route-home.home-signed-in #homeBoardActions .btn::before,
-  html body.v2-route-home.home-signed-in #homeBoardActions .hero-play-btn::before,
-  html body.v2-route-home.home-signed-in #homeBoardActions .hero-computer-btn::before,
-  html body.v2-route-home.home-signed-in #homeBoardActions .hero-tournaments-btn::before,
-  html body.v2-route-home.home-signed-in #homeBoardActions .home-invite-wrap>.btn::before,
-  html body.v2-route-home.home-signed-in #homeBoardActions #homeInviteToggle::before,
-  html body.v2-route-home.home-signed-in #homeBoardActions .home-invite-wrap button::before{
+  /* Game action cards are text only. Kill every generated before/after symbol,
+     regardless of the exact signed-in/body class combination. */
+  html body #homeBoardActions :is(.btn,a,button)::before,
+  html body #homeBoardActions :is(.btn,a,button)::after,
+  html body .home-board-actions :is(.btn,a,button)::before,
+  html body .home-board-actions :is(.btn,a,button)::after,
+  html body #homeInviteToggle::before,
+  html body #homeInviteToggle::after,
+  html body .home-invite-wrap :is(.btn,a,button)::before,
+  html body .home-invite-wrap :is(.btn,a,button)::after{
     content:none!important;
     display:none!important;
     width:0!important;
@@ -22,29 +26,52 @@
     padding:0!important;
     border:0!important;
     background:none!important;
+    background-image:none!important;
     box-shadow:none!important;
   }
 
-  html body.v2-route-home.home-signed-in #homeBoardActions .btn>svg,
-  html body.v2-route-home.home-signed-in #homeBoardActions .btn>img,
-  html body.v2-route-home.home-signed-in #homeBoardActions .btn>.play-icon,
-  html body.v2-route-home.home-signed-in #homeBoardActions .btn>.action-icon,
-  html body.v2-route-home.home-signed-in #homeBoardActions .btn>.game-icon,
-  html body.v2-route-home.home-signed-in #homeBoardActions .btn>.piece,
-  html body.v2-route-home.home-signed-in #homeBoardActions #homeInviteToggle>svg,
-  html body.v2-route-home.home-signed-in #homeBoardActions #homeInviteToggle>img,
-  html body.v2-route-home.home-signed-in #homeBoardActions #homeInviteToggle>.play-icon,
-  html body.v2-route-home.home-signed-in #homeBoardActions #homeInviteToggle>.action-icon,
-  html body.v2-route-home.home-signed-in #homeBoardActions #homeInviteToggle>.game-icon,
-  html body.v2-route-home.home-signed-in #homeBoardActions #homeInviteToggle>.piece{
-    display:none!important;
-  }
-
-  html body.v2-route-home.home-signed-in #homeBoardActions .btn,
-  html body.v2-route-home.home-signed-in #homeBoardActions #homeInviteToggle{
+  html body #homeBoardActions :is(.btn,a,button),
+  html body .home-board-actions :is(.btn,a,button),
+  html body #homeInviteToggle,
+  html body .home-invite-wrap :is(.btn,a,button){
     display:flex!important;
     align-items:center!important;
     justify-content:center!important;
     gap:0!important;
+    background-image:none!important;
+  }
+
+  /* Remove any real icon node if one is injected by JavaScript. */
+  html body #homeBoardActions :is(.btn,a,button)>:is(svg,img,.play-icon,.action-icon,.game-icon,.piece,.button-icon,.icon),
+  html body .home-board-actions :is(.btn,a,button)>:is(svg,img,.play-icon,.action-icon,.game-icon,.piece,.button-icon,.icon),
+  html body #homeInviteToggle>:is(svg,img,.play-icon,.action-icon,.game-icon,.piece,.button-icon,.icon){
+    display:none!important;
+  }
+
+  /* Notification: use one clean gold bell, not the old overlapping/broken glyph. */
+  html body .compact-member-nav .site-notification-bell .header-tile-icon{
+    display:none!important;
+  }
+
+  html body .compact-member-nav .site-notification-bell::before{
+    content:""!important;
+    display:block!important;
+    width:20px!important;
+    height:20px!important;
+    min-width:20px!important;
+    min-height:20px!important;
+    flex:0 0 20px!important;
+    margin:0!important;
+    padding:0!important;
+    border:0!important;
+    border-radius:0!important;
+    background:#efcf7c!important;
+    box-shadow:none!important;
+    -webkit-mask:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'%3E%3Cpath fill='black' d='M12 2a2.2 2.2 0 0 0-2.1 1.55A7 7 0 0 0 5 10.2v3.15c0 1.25-.42 2.47-1.2 3.45L2.9 18a1 1 0 0 0 .78 1.62h16.64A1 1 0 0 0 21.1 18l-.9-1.2a5.55 5.55 0 0 1-1.2-3.45V10.2a7 7 0 0 0-4.9-6.65A2.2 2.2 0 0 0 12 2Zm-2.35 19a2.65 2.65 0 0 0 4.7 0h-4.7Z'/%3E%3C/svg%3E") center/contain no-repeat!important;
+    mask:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'%3E%3Cpath fill='black' d='M12 2a2.2 2.2 0 0 0-2.1 1.55A7 7 0 0 0 5 10.2v3.15c0 1.25-.42 2.47-1.2 3.45L2.9 18a1 1 0 0 0 .78 1.62h16.64A1 1 0 0 0 21.1 18l-.9-1.2a5.55 5.55 0 0 1-1.2-3.45V10.2a7 7 0 0 0-4.9-6.65A2.2 2.2 0 0 0 12 2Zm-2.35 19a2.65 2.65 0 0 0 4.7 0h-4.7Z'/%3E%3C/svg%3E") center/contain no-repeat!important;
+  }
+
+  html body .compact-member-nav .site-notification-bell{
+    gap:7px!important;
   }
 }
