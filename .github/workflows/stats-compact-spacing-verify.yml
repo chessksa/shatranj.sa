@@ -1,0 +1,28 @@
+name: Stats compact spacing verify
+
+on:
+  push:
+    branches:
+      - 'fix/stats-compact-spacing-20260914'
+    paths:
+      - 'stats.html'
+      - 'stats-compact-v1.css'
+      - 'tests/test_stats_compact_spacing.py'
+      - '.github/workflows/stats-compact-spacing-verify.yml'
+  pull_request:
+    paths:
+      - 'stats.html'
+      - 'stats-compact-v1.css'
+      - 'tests/test_stats_compact_spacing.py'
+      - '.github/workflows/stats-compact-spacing-verify.yml'
+
+jobs:
+  verify:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - run: python -m pip install --disable-pip-version-check pytest
+      - run: python -m pytest -q tests/test_stats_compact_spacing.py
