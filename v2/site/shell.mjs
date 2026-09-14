@@ -13,7 +13,9 @@ if (!skip.test(location.pathname)) {
     const mobileHome = document.createElement('link');
     mobileHome.rel = 'stylesheet';
     mobileHome.dataset.v2MobileHome = 'no-scroll';
-    mobileHome.href = new URL('./mobile-home-no-scroll.css', import.meta.url).href;
+    const mobileHomeUrl = new URL('./mobile-home-no-scroll.css', import.meta.url);
+    mobileHomeUrl.searchParams.set('v','20260914-header-tournaments-actions1');
+    mobileHome.href = mobileHomeUrl.href;
     document.head.appendChild(mobileHome);
   }
 
