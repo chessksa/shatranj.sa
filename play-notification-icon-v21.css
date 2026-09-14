@@ -1,0 +1,51 @@
+/* Play-page notification icon visibility and alignment. */
+#gamePage #siteNotificationHost .site-notification-bell{
+  display:inline-flex!important;
+  align-items:center!important;
+  justify-content:center!important;
+  gap:2px!important;
+  padding:0 2px!important;
+  overflow:visible!important;
+}
+
+#gamePage #siteNotificationHost .header-tile-icon{
+  width:16px!important;
+  height:16px!important;
+  min-width:16px!important;
+  min-height:16px!important;
+  flex:0 0 16px!important;
+  display:inline-grid!important;
+  place-items:center!important;
+  margin:0!important;
+  color:var(--gold)!important;
+  opacity:1!important;
+  visibility:visible!important;
+}
+
+#gamePage #siteNotificationHost .header-tile-svg{
+  width:16px!important;
+  height:16px!important;
+  min-width:16px!important;
+  max-width:16px!important;
+  display:block!important;
+  fill:none!important;
+  stroke:currentColor!important;
+  stroke-width:2!important;
+  stroke-linecap:round!important;
+  stroke-linejoin:round!important;
+  overflow:visible!important;
+}
+
+#gamePage #siteNotificationHost .header-tile-label{
+  display:inline-block!important;
+  flex:0 1 auto!important;
+  min-width:0!important;
+  margin:0!important;
+  font-family:Arial,sans-serif!important;
+  font-size:9px!important;
+  font-weight:800!important;
+  line-height:1!important;
+  white-space:nowrap!important;
+  overflow:visible!important;
+  text-overflow:clip!important;
+}
