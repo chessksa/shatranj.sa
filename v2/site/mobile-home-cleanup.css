@@ -1,0 +1,50 @@
+/* Mobile home cleanup: remove outer header frame and all game-action symbols. */
+@media(max-width:900px){
+  html body.v2-route-home.home-signed-in .home-header .compact-member-nav{
+    border:0!important;
+    box-shadow:none!important;
+  }
+
+  html body.v2-route-home.home-signed-in #homeBoardActions .btn::before,
+  html body.v2-route-home.home-signed-in #homeBoardActions .hero-play-btn::before,
+  html body.v2-route-home.home-signed-in #homeBoardActions .hero-computer-btn::before,
+  html body.v2-route-home.home-signed-in #homeBoardActions .hero-tournaments-btn::before,
+  html body.v2-route-home.home-signed-in #homeBoardActions .home-invite-wrap>.btn::before,
+  html body.v2-route-home.home-signed-in #homeBoardActions #homeInviteToggle::before,
+  html body.v2-route-home.home-signed-in #homeBoardActions .home-invite-wrap button::before{
+    content:none!important;
+    display:none!important;
+    width:0!important;
+    min-width:0!important;
+    height:0!important;
+    min-height:0!important;
+    margin:0!important;
+    padding:0!important;
+    border:0!important;
+    background:none!important;
+    box-shadow:none!important;
+  }
+
+  html body.v2-route-home.home-signed-in #homeBoardActions .btn>svg,
+  html body.v2-route-home.home-signed-in #homeBoardActions .btn>img,
+  html body.v2-route-home.home-signed-in #homeBoardActions .btn>.play-icon,
+  html body.v2-route-home.home-signed-in #homeBoardActions .btn>.action-icon,
+  html body.v2-route-home.home-signed-in #homeBoardActions .btn>.game-icon,
+  html body.v2-route-home.home-signed-in #homeBoardActions .btn>.piece,
+  html body.v2-route-home.home-signed-in #homeBoardActions #homeInviteToggle>svg,
+  html body.v2-route-home.home-signed-in #homeBoardActions #homeInviteToggle>img,
+  html body.v2-route-home.home-signed-in #homeBoardActions #homeInviteToggle>.play-icon,
+  html body.v2-route-home.home-signed-in #homeBoardActions #homeInviteToggle>.action-icon,
+  html body.v2-route-home.home-signed-in #homeBoardActions #homeInviteToggle>.game-icon,
+  html body.v2-route-home.home-signed-in #homeBoardActions #homeInviteToggle>.piece{
+    display:none!important;
+  }
+
+  html body.v2-route-home.home-signed-in #homeBoardActions .btn,
+  html body.v2-route-home.home-signed-in #homeBoardActions #homeInviteToggle{
+    display:flex!important;
+    align-items:center!important;
+    justify-content:center!important;
+    gap:0!important;
+  }
+}
