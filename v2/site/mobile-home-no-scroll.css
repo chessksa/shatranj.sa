@@ -18,40 +18,295 @@
     padding:0 0 calc(72px + env(safe-area-inset-bottom))!important;
     display:grid!important;
     grid-template-columns:1fr!important;
-    grid-template-rows:26px minmax(0,1fr)!important;
+    grid-template-rows:58px 26px 26px minmax(0,1fr)!important;
     gap:0!important;
     overflow:hidden!important;
     overscroll-behavior:none!important;
   }
 
-  /* Keep one slim ticker only. */
-  body.v2-route-home.home-signed-in .home-header,
-  body.v2-route-home.home-signed-in #tournamentResultsTicker{
+  /* Mobile header follows the same member/control structure as desktop. */
+  body.v2-route-home.home-signed-in .home-header{
+    display:block!important;
+    grid-row:1!important;
+    width:100%!important;
+    height:58px!important;
+    min-height:58px!important;
+    max-height:58px!important;
+    margin:0!important;
+    overflow:hidden!important;
+    background:rgba(2,47,51,.98)!important;
+    border:0!important;
+    border-bottom:1px solid rgba(224,181,103,.22)!important;
+    box-shadow:none!important;
+  }
+
+  body.v2-route-home.home-signed-in .home-header .compact-member-nav{
+    width:min(100% - 12px,680px)!important;
+    height:58px!important;
+    min-height:58px!important;
+    max-height:58px!important;
+    margin:0 auto!important;
+    padding:6px 0!important;
+    display:flex!important;
+    align-items:center!important;
+    justify-content:center!important;
+    overflow:hidden!important;
+  }
+
+  body.v2-route-home.home-signed-in .compact-member-nav .nav-user{
+    width:100%!important;
+    min-width:0!important;
+    height:46px!important;
+    display:flex!important;
+    flex-flow:row nowrap!important;
+    align-items:stretch!important;
+    justify-content:flex-start!important;
+    gap:4px!important;
+    overflow:hidden!important;
+    direction:rtl!important;
+  }
+
+  body.v2-route-home.home-signed-in .compact-member-nav .header-member{
+    order:1!important;
+    display:block!important;
+    flex:1 1 126px!important;
+    min-width:112px!important;
+    max-width:none!important;
+    height:46px!important;
+    margin:0!important;
+  }
+
+  body.v2-route-home.home-signed-in .compact-member-nav .header-member[hidden]{display:none!important}
+
+  body.v2-route-home.home-signed-in .compact-member-nav .header-member-link.header-tile{
+    width:100%!important;
+    min-width:0!important;
+    max-width:none!important;
+    height:46px!important;
+    min-height:46px!important;
+    max-height:46px!important;
+    margin:0!important;
+    padding:4px 6px!important;
+    display:flex!important;
+    flex-direction:row!important;
+    align-items:center!important;
+    justify-content:flex-start!important;
+    gap:5px!important;
+    overflow:hidden!important;
+    border:1px solid rgba(224,181,103,.28)!important;
+    border-radius:13px!important;
+    background:rgba(255,255,255,.035)!important;
+    box-shadow:none!important;
+  }
+
+  body.v2-route-home.home-signed-in .compact-member-nav .header-member-avatar-wrap,
+  body.v2-route-home.home-signed-in .compact-member-nav .header-member-avatar{
+    position:static!important;
+    inset:auto!important;
+    transform:none!important;
+    width:32px!important;
+    height:32px!important;
+    flex:0 0 32px!important;
+  }
+
+  body.v2-route-home.home-signed-in .compact-member-nav .header-member-copy{
+    width:auto!important;
+    min-width:0!important;
+    flex:1 1 auto!important;
+    display:grid!important;
+    grid-template-columns:minmax(0,1fr) auto!important;
+    align-items:center!important;
+    gap:4px!important;
+    overflow:hidden!important;
+  }
+
+  body.v2-route-home.home-signed-in .compact-member-nav .header-member-copy>strong{
+    min-width:0!important;
+    max-width:none!important;
+    margin:0!important;
+    padding:0!important;
+    font-size:11px!important;
+    line-height:1.1!important;
+    white-space:nowrap!important;
+    overflow:hidden!important;
+    text-overflow:ellipsis!important;
+    text-align:right!important;
+  }
+
+  body.v2-route-home.home-signed-in .compact-member-nav .header-member-points{
+    min-width:34px!important;
+    margin:0!important;
+    display:flex!important;
+    flex-direction:column!important;
+    align-items:center!important;
+    justify-content:center!important;
+    gap:2px!important;
+    line-height:1!important;
+  }
+
+  body.v2-route-home.home-signed-in .compact-member-nav .header-member-points small{
+    display:block!important;
+    margin:0!important;
+    color:#b9c9c4!important;
+    font-size:7px!important;
+    line-height:1!important;
+  }
+
+  body.v2-route-home.home-signed-in .compact-member-nav .header-member-points b{
+    margin:0!important;
+    padding:0!important;
+    color:#efcf7c!important;
+    font-size:13px!important;
+    line-height:1!important;
+  }
+
+  body.v2-route-home.home-signed-in .compact-member-nav .dashboard-link{
+    order:2!important;
+    display:inline-flex!important;
+    flex:0 0 78px!important;
+    width:78px!important;
+    min-width:78px!important;
+    max-width:78px!important;
+    height:46px!important;
+    min-height:46px!important;
+    max-height:46px!important;
+    margin:0!important;
+    padding:0 4px!important;
+    align-items:center!important;
+    justify-content:center!important;
+    gap:3px!important;
+    border:1px solid rgba(224,181,103,.24)!important;
+    border-radius:13px!important;
+    background:rgba(255,255,255,.035)!important;
+    color:#f4efe6!important;
+    font-size:9px!important;
+    font-weight:800!important;
+    white-space:nowrap!important;
+  }
+
+  body.v2-route-home.home-signed-in .compact-member-nav .dashboard-link .header-tile-icon{
+    width:15px!important;
+    height:15px!important;
+    flex:0 0 15px!important;
+    font-size:12px!important;
+  }
+
+  body.v2-route-home.home-signed-in .compact-member-nav .mobile-dashboard-link,
+  body.v2-route-home.home-signed-in .compact-member-nav .header-tournaments{
     display:none!important;
   }
 
-  body.v2-route-home.home-signed-in #welcomeTicker{
-    grid-row:1!important;
+  body.v2-route-home.home-signed-in .compact-member-nav .header-notification-host{
+    order:3!important;
+    display:flex!important;
+    align-items:center!important;
+    flex:0 0 42px!important;
+    width:42px!important;
+    min-width:42px!important;
+    max-width:42px!important;
+    height:46px!important;
+    margin:0!important;
+  }
+
+  body.v2-route-home.home-signed-in .compact-member-nav .site-notification-bell{
+    width:42px!important;
+    min-width:42px!important;
+    max-width:42px!important;
+    height:46px!important;
+    min-height:46px!important;
+    max-height:46px!important;
+    margin:0!important;
+    border:1px solid rgba(224,181,103,.24)!important;
+    border-radius:13px!important;
+    background:rgba(255,255,255,.035)!important;
+  }
+
+  body.v2-route-home.home-signed-in .compact-member-nav .nav-logout{
+    order:4!important;
+    display:inline-flex!important;
+    flex:0 0 46px!important;
+    width:46px!important;
+    min-width:46px!important;
+    max-width:46px!important;
+    height:46px!important;
+    min-height:46px!important;
+    max-height:46px!important;
+    margin:0!important;
+    padding:0 3px!important;
+    align-items:center!important;
+    justify-content:center!important;
+    border:1px solid rgba(224,181,103,.24)!important;
+    border-radius:13px!important;
+    background:rgba(255,255,255,.035)!important;
+    color:#f4efe6!important;
+    font-size:9px!important;
+    font-weight:800!important;
+  }
+
+  body.v2-route-home.home-signed-in .compact-member-nav .nav-logout[hidden]{display:none!important}
+  body.v2-route-home.home-signed-in .compact-member-nav .nav-account{display:none!important}
+
+  /* Two slim information tickers directly below the header. */
+  body.v2-route-home.home-signed-in #welcomeTicker,
+  body.v2-route-home.home-signed-in #tournamentResultsTicker{
+    display:flex!important;
     width:100%!important;
     height:26px!important;
     min-height:26px!important;
     max-height:26px!important;
     margin:0!important;
     overflow:hidden!important;
+    visibility:visible!important;
+    opacity:1!important;
+    background:rgba(3,45,48,.96)!important;
+    border:0!important;
+    border-bottom:1px solid rgba(224,181,103,.17)!important;
+    box-shadow:none!important;
   }
 
-  body.v2-route-home.home-signed-in #welcomeTicker .welcome-ticker-label{
-    padding:0 7px!important;
+  body.v2-route-home.home-signed-in #welcomeTicker{grid-row:2!important}
+  body.v2-route-home.home-signed-in #tournamentResultsTicker{grid-row:3!important}
+
+  body.v2-route-home.home-signed-in #welcomeTicker .welcome-ticker-label,
+  body.v2-route-home.home-signed-in #tournamentResultsTicker .welcome-ticker-label{
+    height:100%!important;
+    padding:0 8px!important;
+    display:flex!important;
+    align-items:center!important;
+    justify-content:center!important;
+    flex:0 0 auto!important;
+    background:#0d3b39!important;
+    border:0!important;
+    border-left:1px solid rgba(224,181,103,.18)!important;
+    box-shadow:none!important;
+    color:#efcf7c!important;
     font-size:9px!important;
+    font-weight:900!important;
+    white-space:nowrap!important;
+  }
+
+  body.v2-route-home.home-signed-in #welcomeTicker .welcome-ticker-viewport,
+  body.v2-route-home.home-signed-in #tournamentResultsTicker .welcome-ticker-viewport{
+    min-width:0!important;
+    flex:1 1 auto!important;
+    height:100%!important;
+    display:flex!important;
+    align-items:center!important;
+    overflow:hidden!important;
   }
 
   body.v2-route-home.home-signed-in #welcomeTicker .welcome-ticker-item,
-  body.v2-route-home.home-signed-in #welcomeTicker .welcome-ticker-loading{
+  body.v2-route-home.home-signed-in #welcomeTicker .welcome-ticker-loading,
+  body.v2-route-home.home-signed-in #tournamentResultsTicker .welcome-ticker-item,
+  body.v2-route-home.home-signed-in #tournamentResultsTicker .welcome-ticker-loading{
     padding-inline:10px!important;
-    font-size:10px!important;
+    color:#f4efe6!important;
+    font-size:9px!important;
+    font-weight:700!important;
+    white-space:nowrap!important;
   }
 
-  /* Remove long home sections. They remain available from navigation. */
+  /* Remove long sections from the signed-in one-screen home. */
   body.v2-route-home.home-signed-in #ranking,
   body.v2-route-home.home-signed-in .home-features,
   body.v2-route-home.home-signed-in #register,
@@ -60,7 +315,7 @@
   }
 
   body.v2-route-home.home-signed-in .home-hero{
-    grid-row:2!important;
+    grid-row:4!important;
     width:100%!important;
     height:100%!important;
     min-height:0!important;
@@ -105,9 +360,7 @@
     white-space:nowrap!important;
   }
 
-  body.v2-route-home.home-signed-in .hero-kicker .trial-badge{
-    font-size:9px!important;
-  }
+  body.v2-route-home.home-signed-in .hero-kicker .trial-badge{font-size:9px!important}
 
   body.v2-route-home.home-signed-in .home-hero h1{
     width:100%!important;
@@ -119,16 +372,14 @@
     line-height:1.08!important;
   }
 
-  body.v2-route-home.home-signed-in .home-hero-copy>p{
-    display:none!important;
-  }
+  body.v2-route-home.home-signed-in .home-hero-copy>p{display:none!important}
 
   body.v2-route-home.home-signed-in .hero-live-stats{
     width:100%!important;
     display:grid!important;
     grid-template-columns:repeat(3,minmax(0,1fr))!important;
     gap:6px!important;
-    margin:0 0 7px!important;
+    margin:0 0 8px!important;
   }
 
   body.v2-route-home.home-signed-in .hero-stat{
@@ -151,17 +402,25 @@
     line-height:1!important;
   }
 
-  /* Four primary actions only: play, invite, computer, tournaments. */
+  /* Four equal play actions: icon above label, all contained in the card. */
   body.v2-route-home.home-signed-in .home-board-actions{
     width:100%!important;
     display:grid!important;
     grid-template-columns:repeat(2,minmax(0,1fr))!important;
+    grid-template-rows:repeat(2,68px)!important;
     grid-template-areas:
       'play invite'
       'computer tournaments'!important;
     gap:6px!important;
     margin:0!important;
+    direction:rtl!important;
+    align-items:stretch!important;
   }
+
+  body.v2-route-home.home-signed-in .hero-play-btn{grid-area:play!important}
+  body.v2-route-home.home-signed-in .home-invite-wrap{grid-area:invite!important}
+  body.v2-route-home.home-signed-in .hero-computer-btn{grid-area:computer!important}
+  body.v2-route-home.home-signed-in .hero-tournaments-btn{grid-area:tournaments!important}
 
   body.v2-route-home.home-signed-in .home-board-actions>.btn,
   body.v2-route-home.home-signed-in .home-board-actions .home-invite-wrap,
@@ -169,92 +428,94 @@
   body.v2-route-home.home-signed-in .home-board-actions #homeInviteToggle{
     width:100%!important;
     min-width:0!important;
-    height:44px!important;
-    min-height:44px!important;
-    max-height:44px!important;
+    max-width:none!important;
+    height:68px!important;
+    min-height:68px!important;
+    max-height:68px!important;
     margin:0!important;
-    padding:5px 8px!important;
+    padding:0!important;
     border-radius:14px!important;
-    font-size:12px!important;
-    line-height:1.05!important;
+    overflow:visible!important;
+  }
+
+  body.v2-route-home.home-signed-in .home-board-actions .home-invite-wrap{
+    display:block!important;
+    position:relative!important;
+    border:0!important;
+    background:transparent!important;
+    box-shadow:none!important;
+  }
+
+  body.v2-route-home.home-signed-in .home-board-actions>.btn,
+  body.v2-route-home.home-signed-in .home-board-actions .home-invite-wrap>.btn,
+  body.v2-route-home.home-signed-in .home-board-actions #homeInviteToggle{
+    display:grid!important;
+    grid-template-rows:30px auto!important;
+    place-items:center!important;
+    align-content:center!important;
+    gap:4px!important;
+    padding:6px 8px!important;
+    border:1px solid rgba(224,181,103,.36)!important;
+    background:rgba(255,255,255,.022)!important;
+    color:#f4efe6!important;
+    box-shadow:none!important;
+    font:900 12px/1 Arial,sans-serif!important;
+    text-align:center!important;
+    white-space:nowrap!important;
+  }
+
+  body.v2-route-home.home-signed-in .home-board-actions>.btn::before,
+  body.v2-route-home.home-signed-in .home-board-actions .home-invite-wrap>.btn::before,
+  body.v2-route-home.home-signed-in .home-board-actions #homeInviteToggle::before{
+    width:30px!important;
+    height:30px!important;
+    min-width:30px!important;
+    min-height:30px!important;
+    margin:0!important;
+    display:grid!important;
+    place-items:center!important;
+    border:1px solid rgba(239,207,124,.40)!important;
+    border-radius:9px!important;
+    background:rgba(239,207,124,.07)!important;
+    color:#efcf7c!important;
+    font-size:18px!important;
+    line-height:1!important;
+    font-weight:900!important;
+  }
+
+  body.v2-route-home.home-signed-in .hero-play-btn::before{content:'♟'!important}
+  body.v2-route-home.home-signed-in .home-invite-wrap>.btn::before,
+  body.v2-route-home.home-signed-in #homeInviteToggle::before{content:'♙＋'!important}
+  body.v2-route-home.home-signed-in .hero-computer-btn::before{content:'▦'!important}
+  body.v2-route-home.home-signed-in .hero-tournaments-btn::before{content:'♛'!important}
+
+  body.v2-route-home.home-signed-in .home-board-actions>.btn>span,
+  body.v2-route-home.home-signed-in .home-invite-wrap>.btn>span,
+  body.v2-route-home.home-signed-in #homeInviteToggle>span{
+    display:block!important;
+    position:static!important;
+    margin:0!important;
+    padding:0!important;
+    line-height:1!important;
+    transform:none!important;
   }
 
   body.v2-route-home.home-signed-in .hero-play-btn{
-    grid-area:play!important;
+    border-color:#efd589!important;
+    background:#e0b567!important;
+    color:#07363d!important;
   }
 
-  body.v2-route-home.home-signed-in .home-invite-wrap{
-    grid-area:invite!important;
-  }
-
-  body.v2-route-home.home-signed-in .hero-computer-btn{
-    grid-area:computer!important;
-  }
-
-  body.v2-route-home.home-signed-in .hero-tournaments-btn{
-    grid-area:tournaments!important;
+  body.v2-route-home.home-signed-in .hero-play-btn::before{
+    border-color:rgba(7,54,61,.24)!important;
+    background:rgba(7,54,61,.08)!important;
+    color:#07363d!important;
   }
 
   body.v2-route-home.home-signed-in .home-board-actions>[data-phase3],
-  body.v2-route-home.home-signed-in .home-board-preview{
-    display:none!important;
-  }
+  body.v2-route-home.home-signed-in .home-board-preview{display:none!important}
 
-  /* Compact member card: identity + one play/resume action only. */
-  body.v2-route-home.home-signed-in .v5-home-dashboard{
-    width:100%!important;
-    margin:7px 0 0!important;
-    padding:7px 9px!important;
-    border-radius:16px!important;
-    flex:0 0 auto!important;
-    overflow:hidden!important;
-  }
-
-  body.v2-route-home.home-signed-in .v5-home-head{
-    min-height:48px!important;
-    margin:0!important;
-    display:grid!important;
-    grid-template-columns:minmax(0,1fr) auto!important;
-    align-items:center!important;
-    gap:8px!important;
-  }
-
-  body.v2-route-home.home-signed-in .v5-home-head>div{
-    min-width:0!important;
-    overflow:hidden!important;
-    white-space:nowrap!important;
-    text-overflow:ellipsis!important;
-  }
-
-  body.v2-route-home.home-signed-in .v5-home-head strong{
-    display:inline!important;
-    font-size:14px!important;
-  }
-
-  body.v2-route-home.home-signed-in .v5-home-head span{
-    display:inline!important;
-    font-size:10px!important;
-  }
-
-  body.v2-route-home.home-signed-in .v5-home-head>.btn{
-    width:auto!important;
-    min-width:92px!important;
-    height:40px!important;
-    min-height:40px!important;
-    padding:0 12px!important;
-    border-radius:13px!important;
-    font-size:12px!important;
-  }
-
-  body.v2-route-home.home-signed-in .v5-home-quick,
-  body.v2-route-home.home-signed-in .v5-home-cards{
-    display:none!important;
-  }
-
-  /* No duplicate floating CTA and no accidental scroll containers. */
-  body.v2-route-home.home-signed-in .mobile-play{
-    display:none!important;
-  }
+  body.v2-route-home.home-signed-in .mobile-play{display:none!important}
 
   body.v2-route-home.home-signed-in :is(.home-hero,.home-hero-grid,.home-hero-copy){
     overscroll-behavior:none!important;
@@ -264,23 +525,48 @@
 
 @media(max-width:430px){
   body.v2-route-home.home-signed-in{
-    grid-template-rows:24px minmax(0,1fr)!important;
+    grid-template-rows:56px 24px 24px minmax(0,1fr)!important;
   }
 
-  body.v2-route-home.home-signed-in #welcomeTicker{
+  body.v2-route-home.home-signed-in .home-header,
+  body.v2-route-home.home-signed-in .home-header .compact-member-nav{
+    height:56px!important;
+    min-height:56px!important;
+    max-height:56px!important;
+  }
+
+  body.v2-route-home.home-signed-in #welcomeTicker,
+  body.v2-route-home.home-signed-in #tournamentResultsTicker{
     height:24px!important;
     min-height:24px!important;
     max-height:24px!important;
   }
 
-  body.v2-route-home.home-signed-in .home-hero{
-    padding-top:5px!important;
+  body.v2-route-home.home-signed-in .compact-member-nav .dashboard-link{
+    flex-basis:72px!important;
+    width:72px!important;
+    min-width:72px!important;
+    max-width:72px!important;
+    font-size:8px!important;
   }
 
-  body.v2-route-home.home-signed-in .hero-kicker{
-    font-size:10px!important;
+  body.v2-route-home.home-signed-in .compact-member-nav .header-notification-host,
+  body.v2-route-home.home-signed-in .compact-member-nav .site-notification-bell{
+    flex-basis:40px!important;
+    width:40px!important;
+    min-width:40px!important;
+    max-width:40px!important;
   }
 
+  body.v2-route-home.home-signed-in .compact-member-nav .nav-logout{
+    flex-basis:42px!important;
+    width:42px!important;
+    min-width:42px!important;
+    max-width:42px!important;
+  }
+
+  body.v2-route-home.home-signed-in .home-hero{padding-top:5px!important}
+  body.v2-route-home.home-signed-in .hero-kicker{font-size:10px!important}
   body.v2-route-home.home-signed-in .home-hero h1{
     margin:3px 0 4px!important;
     font-size:clamp(21px,6.8vw,27px)!important;
@@ -292,21 +578,16 @@
     max-height:43px!important;
   }
 
+  body.v2-route-home.home-signed-in .home-board-actions{
+    grid-template-rows:repeat(2,64px)!important;
+  }
+
   body.v2-route-home.home-signed-in .home-board-actions>.btn,
   body.v2-route-home.home-signed-in .home-board-actions .home-invite-wrap,
   body.v2-route-home.home-signed-in .home-board-actions .home-invite-wrap>.btn,
   body.v2-route-home.home-signed-in .home-board-actions #homeInviteToggle{
-    height:42px!important;
-    min-height:42px!important;
-    max-height:42px!important;
-  }
-
-  body.v2-route-home.home-signed-in .v5-home-dashboard{
-    margin-top:6px!important;
-    padding:6px 8px!important;
-  }
-
-  body.v2-route-home.home-signed-in .v5-home-head{
-    min-height:44px!important;
+    height:64px!important;
+    min-height:64px!important;
+    max-height:64px!important;
   }
 }
