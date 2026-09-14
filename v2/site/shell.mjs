@@ -27,6 +27,15 @@ if (!skip.test(location.pathname)) {
     mobileHomePolish.href = mobileHomePolishUrl.href;
     document.head.appendChild(mobileHomePolish);
   }
+  if (!document.querySelector('link[data-v2-mobile-home-cleanup]')) {
+    const mobileHomeCleanup = document.createElement('link');
+    mobileHomeCleanup.rel = 'stylesheet';
+    mobileHomeCleanup.dataset.v2MobileHomeCleanup = 'final';
+    const mobileHomeCleanupUrl = new URL('./mobile-home-cleanup.css', import.meta.url);
+    mobileHomeCleanupUrl.searchParams.set('v','20260915-header-frame-icons1');
+    mobileHomeCleanup.href = mobileHomeCleanupUrl.href;
+    document.head.appendChild(mobileHomeCleanup);
+  }
 
   document.querySelectorAll('a[href]').forEach((anchor)=>{
     const raw=anchor.getAttribute('href')||'';
