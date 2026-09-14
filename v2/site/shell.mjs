@@ -23,7 +23,7 @@ if (!skip.test(location.pathname)) {
     mobileHomePolish.rel = 'stylesheet';
     mobileHomePolish.dataset.v2MobileHomePolish = 'final';
     const mobileHomePolishUrl = new URL('./mobile-home-polish.css', import.meta.url);
-    mobileHomePolishUrl.searchParams.set('v','20260914-text-actions-header2');
+    mobileHomePolishUrl.searchParams.set('v','20260915-text-actions-header3');
     mobileHomePolish.href = mobileHomePolishUrl.href;
     document.head.appendChild(mobileHomePolish);
   }
@@ -121,7 +121,7 @@ if (!skip.test(location.pathname)) {
       grid.appendChild(link);
     }
     const close=()=>{more.hidden=true;moreButton.setAttribute('aria-expanded','false')};
-    moreButton.addEventListener('click',()=>{const opening=more.hidden;more.hidden=!opening;moreButton.setAttribute('aria-expanded',String(opening))});
+    moreButton.addEventListener('click',()=>{const opening=more.hidden;moreButton.setAttribute('aria-expanded',String(opening));more.hidden=!opening});
     more.querySelector('.v2-mobile-more-head button').addEventListener('click',close);
     more.addEventListener('click',(event)=>{if(event.target===more)close()});
     document.body.append(more,mobile);
