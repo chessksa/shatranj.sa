@@ -9,68 +9,291 @@
   }
 
   function installMobileFinalStyles(){
-    if(document.getElementById('mobileHomeFinalStyles20260914')) return;
+    if(document.getElementById('mobileHomeFinalStyles20260914b')) return;
 
     const style=document.createElement('style');
-    style.id='mobileHomeFinalStyles20260914';
+    style.id='mobileHomeFinalStyles20260914b';
     style.textContent=`
 @media(max-width:900px){
   body .home-header{order:1!important}
   body #welcomeTicker{order:2!important}
-  body #tournamentResultsTicker{order:3!important;display:flex!important;width:100%!important;height:30px!important;min-height:30px!important;max-height:30px!important;margin:0!important;visibility:visible!important;opacity:1!important;overflow:hidden!important;background:#082f31!important;border-top:0!important;border-bottom:1px solid rgba(224,181,103,.42)!important}
+  body #tournamentResultsTicker{order:3!important;display:flex!important;width:100%!important;height:26px!important;min-height:26px!important;max-height:26px!important;margin:0!important;visibility:visible!important;opacity:1!important;overflow:hidden!important;background:#082f31!important;border-top:0!important;border-bottom:1px solid rgba(224,181,103,.42)!important}
   body .home-hero{order:4!important}
   body #ranking{order:5!important}
   body .home-features{order:6!important}
   body #register{order:7!important}
   body footer{order:8!important}
 
-  #tournamentResultsTicker .welcome-ticker-label{display:flex!important;align-items:center!important;justify-content:center!important;flex:0 0 auto!important;width:auto!important;min-width:0!important;padding:0 8px!important;background:#0d3b39!important;color:#efcf7c!important;font-size:10px!important;font-weight:900!important;white-space:nowrap!important}
+  #tournamentResultsTicker .welcome-ticker-label{display:flex!important;align-items:center!important;justify-content:center!important;flex:0 0 auto!important;width:auto!important;min-width:0!important;padding:0 8px!important;background:#0d3b39!important;color:#efcf7c!important;font-size:9px!important;font-weight:900!important;white-space:nowrap!important}
   #tournamentResultsTicker .welcome-ticker-viewport{display:flex!important;flex:1 1 auto!important;min-width:0!important;height:100%!important;overflow:hidden!important}
 }
 
 @media(max-width:600px){
-  .home-header .compact-member-nav{display:flex!important;align-items:center!important;justify-content:flex-start!important;min-height:58px!important;padding:6px 0!important;overflow:hidden!important}
+  html body.v2-shell-active.v2-route-home.home-signed-in{
+    grid-template-rows:108px 26px 26px minmax(0,1fr)!important;
+  }
 
-  body.home-signed-in .compact-member-nav .nav-user,
-  .compact-member-nav .nav-user{display:flex!important;flex-direction:row!important;flex-wrap:nowrap!important;align-items:center!important;justify-content:flex-start!important;width:100%!important;min-width:0!important;gap:5px!important;overflow-x:auto!important;overflow-y:hidden!important;scrollbar-width:none!important;-webkit-overflow-scrolling:touch!important}
-  .compact-member-nav .nav-user::-webkit-scrollbar{display:none!important}
+  html body.v2-shell-active.v2-route-home.home-signed-in .home-header{
+    display:block!important;
+    grid-row:1!important;
+    width:100%!important;
+    height:108px!important;
+    min-height:108px!important;
+    max-height:108px!important;
+    margin:0!important;
+    overflow:hidden!important;
+    background:rgba(2,47,51,.98)!important;
+    border:0!important;
+    border-bottom:1px solid rgba(224,181,103,.22)!important;
+    box-shadow:none!important;
+  }
 
-  body.home-signed-in .compact-member-nav .header-member,
-  .compact-member-nav .header-member{order:1!important;grid-column:auto!important;grid-row:auto!important;flex:0 0 auto!important;width:auto!important;min-width:0!important}
+  html body.v2-shell-active.v2-route-home.home-signed-in .home-header .compact-member-nav{
+    width:min(100% - 12px,680px)!important;
+    height:108px!important;
+    min-height:108px!important;
+    max-height:108px!important;
+    margin:0 auto!important;
+    padding:5px 0!important;
+    display:block!important;
+    overflow:hidden!important;
+  }
 
-  body.home-signed-in .compact-member-nav .header-member-link.header-tile,
-  .compact-member-nav .header-member-link.header-tile{display:flex!important;flex-direction:row!important;align-items:center!important;justify-content:flex-start!important;width:146px!important;min-width:146px!important;max-width:146px!important;height:46px!important;min-height:46px!important;padding:4px 7px!important;gap:6px!important;overflow:hidden!important;border:1px solid var(--hero-line)!important;border-radius:13px!important;background:rgba(255,255,255,.035)!important}
+  html body.v2-shell-active.v2-route-home.home-signed-in .compact-member-nav .nav-user{
+    width:100%!important;
+    min-width:0!important;
+    height:98px!important;
+    display:grid!important;
+    grid-template-columns:repeat(3,minmax(0,1fr))!important;
+    grid-template-rows:50px 42px!important;
+    grid-template-areas:'member member member' 'dashboard notifications logout'!important;
+    gap:6px!important;
+    align-items:stretch!important;
+    justify-items:stretch!important;
+    overflow:hidden!important;
+    direction:rtl!important;
+  }
 
-  body.home-signed-in .compact-member-nav .header-member-avatar-wrap,
-  .compact-member-nav .header-member-avatar-wrap,
-  body.home-signed-in .compact-member-nav .header-member-avatar,
-  .compact-member-nav .header-member-avatar{position:static!important;transform:none!important;width:34px!important;height:34px!important;flex:0 0 34px!important}
+  html body.v2-shell-active.v2-route-home.home-signed-in .compact-member-nav .header-member{
+    grid-area:member!important;
+    display:block!important;
+    width:100%!important;
+    min-width:0!important;
+    max-width:none!important;
+    height:50px!important;
+    margin:0!important;
+  }
 
-  body.home-signed-in .compact-member-nav .header-member-copy,
-  .compact-member-nav .header-member-copy{display:grid!important;grid-template-columns:minmax(0,1fr) auto!important;align-items:center!important;gap:5px!important;width:auto!important;min-width:0!important;flex:1 1 auto!important;overflow:hidden!important}
+  html body.v2-shell-active.v2-route-home.home-signed-in .compact-member-nav .header-member[hidden]{display:none!important}
 
-  body.home-signed-in .compact-member-nav .header-member-copy>strong,
-  .compact-member-nav .header-member-copy>strong{min-width:0!important;max-width:none!important;margin:0!important;padding:0!important;font-size:12px!important;line-height:1.15!important;white-space:nowrap!important;overflow:hidden!important;text-overflow:ellipsis!important;text-align:right!important}
+  html body.v2-shell-active.v2-route-home.home-signed-in .compact-member-nav .header-member-link.header-tile{
+    width:100%!important;
+    min-width:0!important;
+    max-width:none!important;
+    height:50px!important;
+    min-height:50px!important;
+    max-height:50px!important;
+    margin:0!important;
+    padding:4px 9px!important;
+    display:flex!important;
+    flex-direction:row!important;
+    align-items:center!important;
+    justify-content:flex-start!important;
+    gap:8px!important;
+    overflow:hidden!important;
+    direction:rtl!important;
+    border:1px solid rgba(224,181,103,.28)!important;
+    border-radius:14px!important;
+    background:linear-gradient(145deg,rgba(9,68,70,.94),rgba(6,47,49,.95))!important;
+    box-shadow:none!important;
+  }
 
-  body.home-signed-in .compact-member-nav .header-member-points,
-  .compact-member-nav .header-member-points{display:flex!important;flex-direction:column!important;align-items:center!important;justify-content:center!important;min-width:36px!important;gap:2px!important;line-height:1!important}
-  body.home-signed-in .compact-member-nav .header-member-points small,
-  .compact-member-nav .header-member-points small{display:block!important;margin:0!important;font-size:8px!important;line-height:1!important}
-  body.home-signed-in .compact-member-nav .header-member-points b,
-  .compact-member-nav .header-member-points b{margin:0!important;padding:0!important;font-size:14px!important;line-height:1!important}
+  html body.v2-shell-active.v2-route-home.home-signed-in .compact-member-nav .header-member-avatar-wrap,
+  html body.v2-shell-active.v2-route-home.home-signed-in .compact-member-nav .header-member-avatar{
+    position:static!important;
+    inset:auto!important;
+    transform:none!important;
+    width:40px!important;
+    height:40px!important;
+    min-width:40px!important;
+    flex:0 0 40px!important;
+    border-radius:50%!important;
+  }
 
-  body.home-signed-in .compact-member-nav .dashboard-link,
-  .compact-member-nav .dashboard-link{order:2!important;grid-column:auto!important;grid-row:auto!important;display:inline-flex!important;align-items:center!important;justify-content:center!important;flex:0 0 92px!important;width:92px!important;min-width:92px!important;max-width:92px!important;height:46px!important;min-height:46px!important;margin:0!important;padding:0 6px!important;gap:4px!important;font-size:10px!important}
-  .compact-member-nav .mobile-dashboard-link{display:none!important}
+  html body.v2-shell-active.v2-route-home.home-signed-in .compact-member-nav .header-member-copy{
+    width:auto!important;
+    min-width:0!important;
+    flex:1 1 auto!important;
+    display:grid!important;
+    grid-template-columns:minmax(0,1fr) auto!important;
+    align-items:center!important;
+    gap:10px!important;
+    overflow:hidden!important;
+    direction:rtl!important;
+  }
 
-  body.home-signed-in .compact-member-nav .header-notification-host,
-  .compact-member-nav .header-notification-host{order:3!important;grid-column:auto!important;grid-row:auto!important;display:flex!important;align-items:center!important;flex:0 0 46px!important;width:46px!important;min-width:46px!important;max-width:46px!important;height:46px!important;min-height:46px!important;margin:0!important}
-  .compact-member-nav .site-notification-bell{width:46px!important;min-width:46px!important;height:46px!important;border-radius:13px!important}
+  html body.v2-shell-active.v2-route-home.home-signed-in .compact-member-nav .header-member-copy>strong{
+    min-width:0!important;
+    max-width:none!important;
+    margin:0!important;
+    padding:0!important;
+    color:#f4efe6!important;
+    font-size:16px!important;
+    font-weight:900!important;
+    line-height:1.1!important;
+    white-space:nowrap!important;
+    overflow:hidden!important;
+    text-overflow:ellipsis!important;
+    text-align:right!important;
+  }
 
-  body.home-signed-in .compact-member-nav .nav-logout,
-  .compact-member-nav .nav-logout{order:4!important;grid-column:auto!important;grid-row:auto!important;display:inline-flex!important;align-items:center!important;justify-content:center!important;flex:0 0 56px!important;width:56px!important;min-width:56px!important;max-width:56px!important;height:46px!important;min-height:46px!important;margin:0!important;padding:0 5px!important;font-size:10px!important}
-  .compact-member-nav .nav-logout[hidden]{display:none!important}
-  .compact-member-nav .header-tournaments{display:none!important}
+  html body.v2-shell-active.v2-route-home.home-signed-in .compact-member-nav .header-member-points{
+    min-width:58px!important;
+    margin:0!important;
+    padding:0 2px!important;
+    display:flex!important;
+    flex-direction:column!important;
+    align-items:center!important;
+    justify-content:center!important;
+    gap:1px!important;
+    line-height:1!important;
+  }
+
+  html body.v2-shell-active.v2-route-home.home-signed-in .compact-member-nav .header-member-points small{
+    display:block!important;
+    margin:0!important;
+    color:#b9c9c4!important;
+    font-size:8px!important;
+    line-height:1!important;
+  }
+
+  html body.v2-shell-active.v2-route-home.home-signed-in .compact-member-nav .header-member-points b{
+    margin:0!important;
+    padding:0!important;
+    color:#efcf7c!important;
+    font-size:21px!important;
+    font-weight:900!important;
+    line-height:1!important;
+  }
+
+  html body.v2-shell-active.v2-route-home.home-signed-in .compact-member-nav .dashboard-link{
+    grid-area:dashboard!important;
+    display:flex!important;
+    width:100%!important;
+    min-width:0!important;
+    max-width:none!important;
+    height:42px!important;
+    min-height:42px!important;
+    max-height:42px!important;
+    margin:0!important;
+    padding:4px 3px!important;
+    flex-direction:column!important;
+    align-items:center!important;
+    justify-content:center!important;
+    gap:2px!important;
+    border:1px solid rgba(224,181,103,.24)!important;
+    border-radius:12px!important;
+    background:rgba(255,255,255,.035)!important;
+    color:#f4efe6!important;
+    font-size:8px!important;
+    font-weight:800!important;
+    white-space:nowrap!important;
+  }
+
+  html body.v2-shell-active.v2-route-home.home-signed-in .compact-member-nav .dashboard-link .header-tile-icon{
+    width:auto!important;
+    height:auto!important;
+    min-width:0!important;
+    flex:0 0 auto!important;
+    font-size:18px!important;
+    line-height:1!important;
+  }
+
+  html body.v2-shell-active.v2-route-home.home-signed-in .compact-member-nav .header-notification-host{
+    grid-area:notifications!important;
+    position:relative!important;
+    display:grid!important;
+    grid-template-rows:22px auto!important;
+    place-items:center!important;
+    width:100%!important;
+    min-width:0!important;
+    max-width:none!important;
+    height:42px!important;
+    min-height:42px!important;
+    max-height:42px!important;
+    margin:0!important;
+    padding:3px!important;
+    border:1px solid rgba(224,181,103,.24)!important;
+    border-radius:12px!important;
+    background:rgba(255,255,255,.035)!important;
+    overflow:hidden!important;
+  }
+
+  html body.v2-shell-active.v2-route-home.home-signed-in .compact-member-nav .header-notification-host::after{
+    content:'التنبيهات'!important;
+    color:#f4efe6!important;
+    font:800 8px/1 Arial,sans-serif!important;
+    white-space:nowrap!important;
+  }
+
+  html body.v2-shell-active.v2-route-home.home-signed-in .compact-member-nav .site-notification-bell{
+    width:28px!important;
+    min-width:28px!important;
+    max-width:28px!important;
+    height:22px!important;
+    min-height:22px!important;
+    max-height:22px!important;
+    margin:0!important;
+    padding:0!important;
+    border:0!important;
+    border-radius:8px!important;
+    background:transparent!important;
+    box-shadow:none!important;
+    font-size:18px!important;
+  }
+
+  html body.v2-shell-active.v2-route-home.home-signed-in .compact-member-nav .nav-logout{
+    grid-area:logout!important;
+    display:flex!important;
+    width:100%!important;
+    min-width:0!important;
+    max-width:none!important;
+    height:42px!important;
+    min-height:42px!important;
+    max-height:42px!important;
+    margin:0!important;
+    padding:3px!important;
+    flex-direction:column!important;
+    align-items:center!important;
+    justify-content:center!important;
+    gap:2px!important;
+    border:1px solid rgba(224,181,103,.24)!important;
+    border-radius:12px!important;
+    background:rgba(255,255,255,.035)!important;
+    color:#f4efe6!important;
+    font-size:8px!important;
+    font-weight:800!important;
+  }
+
+  html body.v2-shell-active.v2-route-home.home-signed-in .compact-member-nav .nav-logout::before{
+    content:'↪'!important;
+    display:block!important;
+    color:#efcf7c!important;
+    font-size:18px!important;
+    line-height:1!important;
+  }
+
+  html body.v2-shell-active.v2-route-home.home-signed-in .compact-member-nav .mobile-dashboard-link,
+  html body.v2-shell-active.v2-route-home.home-signed-in .compact-member-nav .header-tournaments,
+  html body.v2-shell-active.v2-route-home.home-signed-in .compact-member-nav .nav-account{
+    display:none!important;
+  }
+
+  html body.v2-shell-active.v2-route-home.home-signed-in .compact-member-nav .nav-logout[hidden]{display:none!important}
+
+  html body.v2-shell-active.v2-route-home.home-signed-in #welcomeTicker{grid-row:2!important}
+  html body.v2-shell-active.v2-route-home.home-signed-in #tournamentResultsTicker{grid-row:3!important}
+  html body.v2-shell-active.v2-route-home.home-signed-in .home-hero{grid-row:4!important}
 }
 
 @media(max-width:700px){
