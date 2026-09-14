@@ -1,0 +1,32 @@
+name: Play computer avatar notification verify
+
+on:
+  pull_request:
+    paths:
+      - 'play-computer.js'
+      - 'play-v10.html'
+      - 'play-entry-v16.html'
+      - 'play-desktop-fit-v20.css'
+      - 'tests/test_play_computer_avatar_notification.py'
+      - '.github/workflows/play-computer-avatar-notification-verify.yml'
+  push:
+    branches:
+      - 'fix/play-computer-avatar-notification-20260914'
+    paths:
+      - 'play-computer.js'
+      - 'play-v10.html'
+      - 'play-entry-v16.html'
+      - 'play-desktop-fit-v20.css'
+      - 'tests/test_play_computer_avatar_notification.py'
+      - '.github/workflows/play-computer-avatar-notification-verify.yml'
+
+jobs:
+  verify:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - run: python -m pip install --disable-pip-version-check pytest
+      - run: python -m pytest -q tests/test_play_computer_avatar_notification.py
