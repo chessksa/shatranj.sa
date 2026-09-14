@@ -54,3 +54,16 @@ def test_puzzles_desktop_matches_play_board_geometry_and_style():
     assert '<div class="puzzle-board-frame">' in html
     assert '.puzzle-square.light{background:#d6cfbf}' in html
     assert '.puzzle-square.dark{background:#246f77}' in html
+
+
+def test_puzzles_board_is_right_aligned_and_has_uniform_squares():
+    html = (ROOT / 'puzzles.html').read_text(encoding='utf-8')
+
+    desktop = html.split('Puzzle play-layout alignment 20260914', 1)[1]
+    desktop = desktop.split('@media(max-width:900px)', 1)[0]
+
+    assert 'direction:ltr!important' in desktop
+    assert 'justify-self:end' in desktop
+    assert 'grid-template-columns:repeat(8,minmax(0,1fr))' in html
+    assert 'grid-template-rows:repeat(8,minmax(0,1fr))' in html
+    assert 'box-shadow:inset 0 0 0 .5px rgba(2,47,51,.26)' in html
