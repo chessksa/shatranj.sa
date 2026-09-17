@@ -1,0 +1,73 @@
+@media(min-width:901px){
+  /* Remove the footer slogan completely. */
+  body.desktop-board-workspace .desktop-sidebar-footer{
+    display:none!important;
+  }
+
+  /* Keep the whole desktop sidebar visible without an internal scrollbar. */
+  body.desktop-board-workspace .v2-global-sidebar{
+    overflow:hidden!important;
+  }
+
+  body.desktop-board-workspace .v2-global-nav{
+    overflow:visible!important;
+    max-height:none!important;
+    min-height:0!important;
+    flex:0 0 auto!important;
+    gap:6px!important;
+    scrollbar-width:none!important;
+  }
+
+  body.desktop-board-workspace .v2-global-nav::-webkit-scrollbar{
+    display:none!important;
+    width:0!important;
+    height:0!important;
+  }
+
+  /* Remove the outlined frames around navigation/play items. */
+  body.desktop-board-workspace .desktop-home-nav-link{
+    min-height:44px!important;
+    border:0!important;
+    outline:0!important;
+    box-shadow:none!important;
+    background:transparent!important;
+    border-radius:0!important;
+    padding:0 10px!important;
+  }
+
+  body.desktop-board-workspace .desktop-home-nav-link:hover{
+    background:rgba(224,181,103,.08)!important;
+  }
+
+  /* Keep the active item clear without restoring an outer frame. */
+  body.desktop-board-workspace .desktop-home-nav-link.active{
+    background:rgba(224,181,103,.92)!important;
+    color:#07363d!important;
+    border:0!important;
+    box-shadow:none!important;
+    border-radius:10px!important;
+  }
+
+  body.desktop-board-workspace .desktop-home-nav-link .v2-global-icon{
+    border:0!important;
+    outline:0!important;
+    box-shadow:none!important;
+    background:transparent!important;
+  }
+
+  /* Slightly compact the profile block so every nav item fits on screen. */
+  .desktop-member-card{
+    padding-top:4px!important;
+    padding-bottom:4px!important;
+    gap:5px!important;
+  }
+
+  .desktop-member-avatar-wrap{
+    width:70px!important;
+    height:70px!important;
+  }
+
+  .desktop-member-country{
+    min-height:24px!important;
+  }
+}
