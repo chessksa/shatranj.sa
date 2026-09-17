@@ -102,42 +102,43 @@
     border-radius:0!important;
   }
 
-  /* Refine the daily-tip icon: clean ring, centered dot, balanced with the copy. */
+  /* Daily tip: remove the decorative icon completely. */
+  .desktop-tip-icon{
+    display:none!important;
+  }
+
   .desktop-tip-card{
     display:flex!important;
     align-items:center!important;
-    gap:12px!important;
-  }
-
-  .desktop-tip-icon{
-    position:relative!important;
-    width:32px!important;
-    height:32px!important;
-    flex:0 0 32px!important;
-    display:grid!important;
-    place-items:center!important;
-    font-size:0!important;
-    line-height:0!important;
-    color:transparent!important;
-    border:2px solid #efc45f!important;
-    border-radius:50%!important;
-    background:rgba(224,181,103,.06)!important;
-    box-shadow:inset 0 0 0 1px rgba(255,255,255,.025)!important;
-  }
-
-  .desktop-tip-icon::after{
-    content:""!important;
-    width:9px!important;
-    height:9px!important;
-    border-radius:50%!important;
-    background:#efc45f!important;
+    gap:0!important;
+    padding:10px 14px!important;
   }
 
   .desktop-tip-card>div{
     min-width:0!important;
+    width:100%!important;
     display:flex!important;
     flex-direction:column!important;
     justify-content:center!important;
     gap:4px!important;
+  }
+
+  /* Quick play: no outer frame, consistent 6px spacing. */
+  .desktop-quick-card{
+    border:0!important;
+    background:transparent!important;
+    box-shadow:none!important;
+    padding:0!important;
+    margin:0!important;
+  }
+
+  .desktop-quick-card-no-title .desktop-quick-actions{
+    gap:6px!important;
+    padding:0!important;
+    margin:0!important;
+  }
+
+  .desktop-dashboard-home{
+    gap:6px!important;
   }
 }
