@@ -1,9 +1,12 @@
-import './desktop-sidebar-cleanup.mjs?v=20260918-sidebar-clean3';
-
 const css=document.createElement('link');
 css.rel='stylesheet';
-css.href='v2/home/desktop-board-shell-tune.css?v=20260918-sidebar-clean3';
+css.href='v2/home/desktop-board-shell-tune.css?v=20260918-sidebar-final4';
 document.head.appendChild(css);
+
+const cleanupCss=document.createElement('link');
+cleanupCss.rel='stylesheet';
+cleanupCss.href='v2/home/desktop-sidebar-cleanup.css?v=20260918-sidebar-final4';
+document.head.appendChild(cleanupCss);
 
 const desktop=window.matchMedia('(min-width:901px)');
 
@@ -106,17 +109,24 @@ function watchCounts(){
   });
 }
 
+function removeSidebarFooter(){
+  document.querySelector('.desktop-sidebar-footer')?.remove();
+}
+
 if(desktop.matches){
+  removeSidebarFooter();
   let attempts=0;
   const timer=setInterval(()=>{
     attempts+=1;
+    removeSidebarFooter();
     if(restoreDashboardBlocks()||attempts>50){
       clearInterval(timer);
       bindTuneActions();
       watchCounts();
       labelMemberActions();
-      setTimeout(()=>{restoreDashboardBlocks();labelMemberActions();},300);
-      setTimeout(()=>{restoreDashboardBlocks();labelMemberActions();},1000);
+      removeSidebarFooter();
+      setTimeout(()=>{restoreDashboardBlocks();labelMemberActions();removeSidebarFooter();},300);
+      setTimeout(()=>{restoreDashboardBlocks();labelMemberActions();removeSidebarFooter();},1000);
     }
   },50);
 }
