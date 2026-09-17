@@ -1,7 +1,7 @@
 import { rpc, supabase } from '../platform/api.mjs';
 import './public-home.mjs?v=20260912-home-polish1';
 import './desktop-board-shell.mjs?v=20260918-fixed-board4';
-import './desktop-board-shell-tune.mjs?v=20260918-inline-piece94';
+import './desktop-board-shell-tune.mjs?v=20260918-pawn112';
 
 const sleep=(ms)=>new Promise(resolve=>setTimeout(resolve,ms));
 
