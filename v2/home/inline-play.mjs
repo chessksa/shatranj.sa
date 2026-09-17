@@ -114,6 +114,18 @@ function updateHistoryGame(gameId=null){
   history.replaceState({},'',`${url.pathname}${url.search}${url.hash}`);
 }
 
+function updatePlayRoute(enabled){
+  const url=new URL(location.href);
+  if(enabled){
+    url.hash='#play';
+  }else{
+    url.hash='';
+    url.searchParams.delete('game');
+    url.searchParams.delete('auto');
+  }
+  history.replaceState({},'',`${url.pathname}${url.search}${url.hash}`);
+}
+
 function restoreStaticBoard(){
   const target=document.getElementById('homeBoardPreview');
   if(!target) return;
@@ -674,6 +686,7 @@ async function enterInlinePlay({gameId=null}={}){
 
   document.body.classList.add('desktop-inline-play-active');
   active=true;
+  updatePlayRoute(true);
   const home=document.getElementById('desktopDashboardHome');
   const view=document.getElementById('desktopDashboardView');
   if(home) home.hidden=true;
@@ -726,7 +739,7 @@ function exitInlinePlay(){
   const home=document.getElementById('desktopDashboardHome');
   if(home) home.hidden=false;
   restoreStaticBoard();
-  updateHistoryGame(null);
+  updatePlayRoute(false);
 }
 
 function handleEntryClick(event){
@@ -758,13 +771,14 @@ function boot(){
   document.addEventListener('click',handleEntryClick,true);
 
   const requestedGameId=new URLSearchParams(location.search).get('game');
-  if(requestedGameId){
+  const requestedPlayMode=location.hash==='#play';
+  if(requestedGameId||requestedPlayMode){
     let attempts=0;
     const timer=setInterval(()=>{
       attempts+=1;
       if(document.getElementById('homeBoardPreview')&&document.getElementById('desktopDashboardColumn')){
         clearInterval(timer);
-        void enterInlinePlay({gameId:requestedGameId});
+        void enterInlinePlay({gameId:requestedGameId||null});
       }else if(attempts>80){
         clearInterval(timer);
       }
