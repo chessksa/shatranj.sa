@@ -239,6 +239,47 @@
     @media(max-width:900px){html.tournament-match{height:auto!important;overflow-y:auto!important}}
   </style>
   <link rel="stylesheet" href="exact-board-v13.css?v=20260909-tournamentbottomplayer1" />
+<style>
+    /* FINAL COMPUTER DESKTOP CARD LOCK */
+    @media(min-width:901px){
+      body.computer-game #gamePage .panel-stack{
+        display:grid!important;
+        grid-template-rows:auto 150px 100px 150px!important;
+        grid-auto-rows:0!important;
+        align-content:space-between!important;
+      }
+      body.computer-game #gamePage .side-head-stack{grid-row:1!important}
+      body.computer-game #gamePage #topPlayerCard{
+        grid-row:2!important;
+        height:150px!important;
+        min-height:150px!important;
+        max-height:150px!important;
+        flex:0 0 150px!important;
+        align-self:start!important;
+        overflow:hidden!important;
+        box-sizing:border-box!important;
+      }
+      body.computer-game #gamePage #gameActions{
+        grid-row:3!important;
+        height:100px!important;
+        min-height:100px!important;
+        max-height:100px!important;
+        align-self:center!important;
+        overflow:hidden!important;
+        box-sizing:border-box!important;
+      }
+      body.computer-game #gamePage #bottomPlayerCard{
+        grid-row:4!important;
+        height:150px!important;
+        min-height:150px!important;
+        max-height:150px!important;
+        flex:0 0 150px!important;
+        align-self:end!important;
+        overflow:hidden!important;
+        box-sizing:border-box!important;
+      }
+    }
+</style>
 </head>
 <body>
   <div id="mobilePullRefresh" aria-hidden="true">اسحب للتحديث</div>
@@ -365,7 +406,7 @@
       document.body.classList.add('pregame','computer-game');
       const s=document.createElement('script');
       s.type='module';
-      s.src='play-computer.js?v=20260918-cardlock4';
+      s.src='play-computer.js?v=20260918-card-final5';
       document.body.appendChild(s);
     }else if(hasGame){
       document.body.classList.add('live-game');
