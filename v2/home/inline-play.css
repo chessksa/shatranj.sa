@@ -36,8 +36,8 @@
   }
 
   .inline-play-piece{
-    width:82%;
-    height:82%;
+    width:94%;
+    height:94%;
     object-fit:contain;
     pointer-events:none;
     user-select:none;
