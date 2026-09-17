@@ -11,7 +11,7 @@
 <div class="loading"><div><strong>جاري فتح صفحة اللعب</strong><small>تحميل الواجهة الجديدة…</small></div></div>
 <script>
 (async()=>{
-  const version='20260914-computerprofile21-'+Date.now();
+  const version='20260918-computer-card-rootfix1-'+Date.now();
   const response=await fetch('./play-v10.html?v='+version,{cache:'no-store'});
   if(!response.ok) throw new Error('play source '+response.status);
   let html=await response.text();
