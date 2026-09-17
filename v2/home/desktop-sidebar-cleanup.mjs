@@ -1,6 +1,6 @@
 const cleanupCss=document.createElement('link');
 cleanupCss.rel='stylesheet';
-cleanupCss.href='v2/home/desktop-sidebar-cleanup.css?v=20260918-sidebar-clean1';
+cleanupCss.href='v2/home/desktop-sidebar-cleanup.css?v=20260918-sidebar-clean2';
 document.head.appendChild(cleanupCss);
 
 function cleanupDesktopSidebar(){
