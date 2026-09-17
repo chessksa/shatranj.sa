@@ -14,6 +14,7 @@ const statsOrderCss=document.createElement('style');
 statsOrderCss.textContent=`@media(min-width:901px){
   .desktop-live-stat small{margin-top:0!important}
   .desktop-live-stat strong{margin-top:6px!important}
+  .inline-play-piece{width:94%!important;height:94%!important}
 }`;
 document.head.appendChild(statsOrderCss);
 
