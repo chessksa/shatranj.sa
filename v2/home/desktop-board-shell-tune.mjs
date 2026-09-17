@@ -1,11 +1,11 @@
 const css=document.createElement('link');
 css.rel='stylesheet';
-css.href='v2/home/desktop-board-shell-tune.css?v=20260918-sidebar-final4';
+css.href='v2/home/desktop-board-shell-tune.css?v=20260918-sidebar-final5';
 document.head.appendChild(css);
 
 const cleanupCss=document.createElement('link');
 cleanupCss.rel='stylesheet';
-cleanupCss.href='v2/home/desktop-sidebar-cleanup.css?v=20260918-sidebar-final4';
+cleanupCss.href='v2/home/desktop-sidebar-cleanup.css?v=20260918-sidebar-final5';
 document.head.appendChild(cleanupCss);
 
 const desktop=window.matchMedia('(min-width:901px)');
