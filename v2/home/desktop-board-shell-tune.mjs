@@ -1,6 +1,6 @@
 const css=document.createElement('link');
 css.rel='stylesheet';
-css.href='v2/home/desktop-board-shell-tune.css?v=20260918-correct-stats-actions1';
+css.href='v2/home/desktop-board-shell-tune.css?v=20260918-member-actions-row2';
 document.head.appendChild(css);
 
 const desktop=window.matchMedia('(min-width:901px)');
@@ -19,6 +19,25 @@ function makeQuickAction({id,label,sub,icon,href}){
   el.dataset.tuneAction=id;
   el.innerHTML=`<span class="desktop-quick-copy"><strong>${label}</strong><small>${sub}</small></span><span class="desktop-quick-icon">${icon}</span>`;
   return el;
+}
+
+function labelMemberActions(){
+  const actions=document.querySelector('.desktop-member-play-icons');
+  if(!actions)return false;
+  const items=[...actions.children];
+  const labels=[
+    {label:'العب',icon:'⚔'},
+    {label:'كمبيوتر',icon:'▣'},
+    {label:'دعوة',icon:'＋'},
+    {label:'بطولة',icon:'♜'}
+  ];
+  items.forEach((item,index)=>{
+    const meta=labels[index];
+    if(!meta)return;
+    item.classList.add('desktop-member-play-action');
+    item.innerHTML=`<span class="desktop-member-play-label">${meta.label}</span><span class="desktop-member-play-symbol" aria-hidden="true">${meta.icon}</span>`;
+  });
+  return true;
 }
 
 function restoreDashboardBlocks(){
@@ -57,6 +76,7 @@ function restoreDashboardBlocks(){
   copyText('headerMatchesCount','desktopMatchesCount','0');
   copyText('headerOnlineCount','desktopOnlineCount','0');
   copyText('headerPlayersCount','desktopPlayersCount','0');
+  labelMemberActions();
   return true;
 }
 
@@ -92,8 +112,9 @@ if(desktop.matches){
       clearInterval(timer);
       bindTuneActions();
       watchCounts();
-      setTimeout(restoreDashboardBlocks,300);
-      setTimeout(restoreDashboardBlocks,1000);
+      labelMemberActions();
+      setTimeout(()=>{restoreDashboardBlocks();labelMemberActions();},300);
+      setTimeout(()=>{restoreDashboardBlocks();labelMemberActions();},1000);
     }
   },50);
 }
