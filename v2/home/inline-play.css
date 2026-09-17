@@ -48,6 +48,11 @@
     pointer-events:none;
     user-select:none;
     -webkit-user-drag:none;
+    filter:
+      drop-shadow(.4px 0 0 rgba(255,255,255,.88))
+      drop-shadow(-.4px 0 0 rgba(255,255,255,.88))
+      drop-shadow(0 .4px 0 rgba(255,255,255,.88))
+      drop-shadow(0 -.4px 0 rgba(255,255,255,.88));
   }
 
   .inline-play-piece[src$="wp.png"]{--piece-left:50.21%;--piece-top:34.37%;--piece-scale:1.12}
