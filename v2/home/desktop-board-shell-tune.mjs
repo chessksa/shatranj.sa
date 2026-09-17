@@ -1,3 +1,5 @@
+import './inline-play.mjs?v=20260918-inline-play1';
+
 const css=document.createElement('link');
 css.rel='stylesheet';
 css.href='v2/home/desktop-board-shell-tune.css?v=20260918-no-tip-card1';
@@ -84,7 +86,7 @@ function restoreDashboardBlocks(){
       makeQuickAction({id:'tournaments',label:'البطولات',sub:'شارك في البطولات',icon:'♜',href:'tournaments.html'}),
       makeQuickAction({id:'ranking',label:'الترتيب',sub:'عرض الترتيب',icon:'▥'}),
       makeQuickAction({id:'invite',label:'دعوة لاعب',sub:'ادعُ أصدقاءك',icon:'＋'}),
-      makeQuickAction({id:'play',label:'ابدأ اللعب',sub:'مباراة جديدة',icon:'⚔',href:'play-v2.html?auto=1'})
+      makeQuickAction({id:'play',label:'ابدأ اللعب',sub:'مباراة جديدة',icon:'⚔',href:'#play'})
     );
     card.appendChild(actions);
     stats.insertAdjacentElement('afterend',card);
