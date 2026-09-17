@@ -879,11 +879,30 @@ function handleBoardInput(event) {
   return true;
 }
 
+function lockComputerPlayerCards() {
+  const panelStack = document.querySelector('.panel-stack');
+  if (panelStack) {
+    panelStack.style.setProperty('grid-template-rows', 'auto 150px auto 150px', 'important');
+    panelStack.style.setProperty('align-content', 'space-between', 'important');
+  }
+  [topPlayerCard, bottomPlayerCard].forEach((card) => {
+    if (!card) return;
+    card.style.setProperty('height', '150px', 'important');
+    card.style.setProperty('min-height', '150px', 'important');
+    card.style.setProperty('max-height', '150px', 'important');
+    card.style.setProperty('align-self', 'center', 'important');
+    card.style.setProperty('overflow', 'hidden', 'important');
+  });
+}
+
 function setPlayingLayout(levelKey, minutes, player = null) {
   const level = LEVELS[levelKey];
   const initialMs = minutes * 60_000;
   document.body.classList.remove('pregame');
   document.body.classList.add('live-game', 'computer-game');
+  lockComputerPlayerCards();
+  requestAnimationFrame(lockComputerPlayerCards);
+  setTimeout(lockComputerPlayerCards, 100);
   opponentSearchPanel.hidden = true;
   topPlayerLive.hidden = false;
   topNameEl.textContent = 'الكمبيوتر';
