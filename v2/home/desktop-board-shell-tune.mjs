@@ -8,6 +8,13 @@ cleanupCss.rel='stylesheet';
 cleanupCss.href='v2/home/desktop-sidebar-cleanup.css?v=20260918-no-tip-card1';
 document.head.appendChild(cleanupCss);
 
+const statsOrderCss=document.createElement('style');
+statsOrderCss.textContent=`@media(min-width:901px){
+  .desktop-live-stat small{margin-top:0!important}
+  .desktop-live-stat strong{margin-top:6px!important}
+}`;
+document.head.appendChild(statsOrderCss);
+
 const desktop=window.matchMedia('(min-width:901px)');
 
 function copyText(sourceId,targetId,fallback='0'){
@@ -61,9 +68,9 @@ function restoreDashboardBlocks(){
     stats.className='desktop-live-stats';
     stats.setAttribute('aria-label','إحصاءات المنصة');
     stats.innerHTML=`
-      <div class="desktop-live-stat"><strong id="desktopMatchesCount">0</strong><small>المباريات الآن</small></div>
-      <div class="desktop-live-stat"><strong id="desktopOnlineCount">0</strong><small>المتواجدون</small></div>
-      <div class="desktop-live-stat"><strong id="desktopPlayersCount">0</strong><small>المشتركون</small></div>`;
+      <div class="desktop-live-stat"><small>المباريات الآن</small><strong id="desktopMatchesCount">0</strong></div>
+      <div class="desktop-live-stat"><small>المتواجدون</small><strong id="desktopOnlineCount">0</strong></div>
+      <div class="desktop-live-stat"><small>المشتركون</small><strong id="desktopPlayersCount">0</strong></div>`;
     welcome.insertAdjacentElement('afterend',stats);
   }
 
