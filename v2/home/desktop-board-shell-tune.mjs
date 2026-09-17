@@ -1,6 +1,6 @@
 const css=document.createElement('link');
 css.rel='stylesheet';
-css.href='v2/home/desktop-board-shell-tune.css?v=20260918-member-actions-row2';
+css.href='v2/home/desktop-board-shell-tune.css?v=20260918-sidebar-row3';
 document.head.appendChild(css);
 
 const desktop=window.matchMedia('(min-width:901px)');
