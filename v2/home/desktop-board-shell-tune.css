@@ -109,56 +109,7 @@
   }
 
   .desktop-member-play-icons{
-    width:100%;
-    display:flex;
-    align-items:center;
-    justify-content:center;
-    gap:var(--desktop-gap);
-    padding:0;
-    border:0;
-    background:transparent;
-    flex-wrap:nowrap;
-    direction:rtl;
-  }
-
-  .desktop-member-play-icons a,
-  .desktop-member-play-icons button{
-    flex:1 1 0;
-    min-width:0;
-    height:28px;
-    padding:0 2px;
-    display:inline-flex;
-    align-items:center;
-    justify-content:center;
-    gap:3px;
-    border:0;
-    border-radius:6px;
-    background:transparent;
-    color:#efcf7c;
-    font:900 9px/1 Arial,sans-serif;
-    text-decoration:none;
-    cursor:pointer;
-    white-space:nowrap;
-    overflow:hidden;
-  }
-
-  .desktop-member-play-label{
-    min-width:0;
-    overflow:hidden;
-    text-overflow:ellipsis;
-    white-space:nowrap;
-  }
-
-  .desktop-member-play-symbol{
-    flex:0 0 auto;
-    font-size:13px;
-    line-height:1;
-  }
-
-  .desktop-member-play-icons a:hover,
-  .desktop-member-play-icons button:hover{
-    background:rgba(216,182,101,.10);
-    color:#fff0bd;
+    display:none!important;
   }
 
   body.desktop-board-workspace .v2-global-nav{
@@ -168,16 +119,19 @@
 
   body.desktop-board-workspace .desktop-home-nav-link{
     min-height:50px!important;
-    padding:0 11px!important;
-    display:grid!important;
-    grid-template-columns:32px minmax(0,1fr)!important;
-    column-gap:var(--desktop-gap)!important;
+    padding:0 14px!important;
+    display:flex!important;
+    flex-direction:row!important;
     align-items:center!important;
+    justify-content:space-between!important;
+    gap:10px!important;
+    flex-wrap:nowrap!important;
+    direction:rtl!important;
     font-size:16px!important;
   }
 
   body.desktop-board-workspace .desktop-home-nav-link .v2-global-icon{
-    grid-column:1!important;
+    flex:0 0 32px!important;
     width:32px!important;
     font-size:24px!important;
     line-height:1!important;
@@ -185,9 +139,13 @@
   }
 
   .desktop-home-nav-label{
-    grid-column:2!important;
+    flex:1 1 auto!important;
+    min-width:0!important;
     text-align:right!important;
-    font-size:16px!important;
+    font-size:17px!important;
+    font-weight:900!important;
+    line-height:1.2!important;
+    white-space:nowrap!important;
   }
 
   .desktop-home-nav-chevron,
