@@ -11,7 +11,6 @@
     display:none!important;
   }
 
-  /* End the sidebar on the exact same horizontal line as the board. */
   body.desktop-board-workspace .v2-global-sidebar{
     top:0!important;
     bottom:var(--desktop-board-bottom-gap)!important;
@@ -23,7 +22,6 @@
     padding-bottom:0!important;
   }
 
-  /* Keep the center dashboard on the same bottom line as the board too. */
   body.desktop-board-workspace .desktop-dashboard-column{
     bottom:var(--desktop-board-bottom-gap)!important;
   }
@@ -47,7 +45,6 @@
     height:0!important;
   }
 
-  /* Consistent frame around every main navigation item. */
   body.desktop-board-workspace .desktop-home-nav-link{
     min-height:0!important;
     height:100%!important;
@@ -96,7 +93,6 @@
     min-height:24px!important;
   }
 
-  /* Remove only the inner box around quick-play symbols. */
   .desktop-quick-icon,
   .desktop-quick-action.primary .desktop-quick-icon{
     background:transparent!important;
@@ -104,5 +100,44 @@
     outline:0!important;
     box-shadow:none!important;
     border-radius:0!important;
+  }
+
+  /* Refine the daily-tip icon: clean ring, centered dot, balanced with the copy. */
+  .desktop-tip-card{
+    display:flex!important;
+    align-items:center!important;
+    gap:12px!important;
+  }
+
+  .desktop-tip-icon{
+    position:relative!important;
+    width:32px!important;
+    height:32px!important;
+    flex:0 0 32px!important;
+    display:grid!important;
+    place-items:center!important;
+    font-size:0!important;
+    line-height:0!important;
+    color:transparent!important;
+    border:2px solid #efc45f!important;
+    border-radius:50%!important;
+    background:rgba(224,181,103,.06)!important;
+    box-shadow:inset 0 0 0 1px rgba(255,255,255,.025)!important;
+  }
+
+  .desktop-tip-icon::after{
+    content:""!important;
+    width:9px!important;
+    height:9px!important;
+    border-radius:50%!important;
+    background:#efc45f!important;
+  }
+
+  .desktop-tip-card>div{
+    min-width:0!important;
+    display:flex!important;
+    flex-direction:column!important;
+    justify-content:center!important;
+    gap:4px!important;
   }
 }
