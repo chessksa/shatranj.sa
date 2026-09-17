@@ -117,22 +117,42 @@
     padding:0;
     border:0;
     background:transparent;
+    flex-wrap:nowrap;
+    direction:rtl;
   }
 
   .desktop-member-play-icons a,
   .desktop-member-play-icons button{
-    width:34px;
-    height:34px;
-    padding:0;
-    display:grid;
-    place-items:center;
+    flex:1 1 0;
+    min-width:0;
+    height:28px;
+    padding:0 2px;
+    display:inline-flex;
+    align-items:center;
+    justify-content:center;
+    gap:3px;
     border:0;
-    border-radius:7px;
+    border-radius:6px;
     background:transparent;
     color:#efcf7c;
-    font:900 23px/1 Arial,sans-serif;
+    font:900 9px/1 Arial,sans-serif;
     text-decoration:none;
     cursor:pointer;
+    white-space:nowrap;
+    overflow:hidden;
+  }
+
+  .desktop-member-play-label{
+    min-width:0;
+    overflow:hidden;
+    text-overflow:ellipsis;
+    white-space:nowrap;
+  }
+
+  .desktop-member-play-symbol{
+    flex:0 0 auto;
+    font-size:13px;
+    line-height:1;
   }
 
   .desktop-member-play-icons a:hover,
