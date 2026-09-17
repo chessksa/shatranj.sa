@@ -1,8 +1,8 @@
-import './desktop-sidebar-cleanup.mjs?v=20260918-sidebar-clean1';
+import './desktop-sidebar-cleanup.mjs?v=20260918-sidebar-clean2';
 
 const css=document.createElement('link');
 css.rel='stylesheet';
-css.href='v2/home/desktop-board-shell-tune.css?v=20260918-sidebar-row3';
+css.href='v2/home/desktop-board-shell-tune.css?v=20260918-sidebar-clean2';
 document.head.appendChild(css);
 
 const desktop=window.matchMedia('(min-width:901px)');
