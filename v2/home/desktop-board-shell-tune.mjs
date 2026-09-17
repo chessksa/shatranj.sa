@@ -2,7 +2,7 @@ import './inline-play.mjs?v=20260918-inline-play3';
 
 const inlinePlayCss=document.createElement('link');
 inlinePlayCss.rel='stylesheet';
-inlinePlayCss.href='v2/home/inline-play.css?v=20260918-piece-center1';
+inlinePlayCss.href='v2/home/inline-play.css?v=20260918-piece-outline1';
 document.head.appendChild(inlinePlayCss);
 
 const css=document.createElement('link');
