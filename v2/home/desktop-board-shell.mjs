@@ -1,3 +1,13 @@
+if(!document.querySelector('link[data-desktop-board-shell]')){
+  const css=document.createElement('link');
+  css.rel='stylesheet';
+  css.dataset.desktopBoardShell='1';
+  const url=new URL('./desktop-board-shell.css',import.meta.url);
+  url.searchParams.set('v','20260917-fixed-board1');
+  css.href=url.href;
+  document.head.appendChild(css);
+}
+
 const desktop=window.matchMedia('(min-width:901px)');
 if(desktop.matches && document.querySelector('#homeHero')){
   const sleep=ms=>new Promise(resolve=>setTimeout(resolve,ms));
