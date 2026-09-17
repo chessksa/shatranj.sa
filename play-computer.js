@@ -882,16 +882,32 @@ function handleBoardInput(event) {
 function lockComputerPlayerCards() {
   const panelStack = document.querySelector('.panel-stack');
   if (panelStack) {
-    panelStack.style.setProperty('grid-template-rows', 'auto 150px auto 150px', 'important');
+    panelStack.style.setProperty('display', 'grid', 'important');
+    panelStack.style.setProperty('grid-template-rows', 'auto 150px 100px 150px', 'important');
+    panelStack.style.setProperty('grid-auto-rows', '0', 'important');
     panelStack.style.setProperty('align-content', 'space-between', 'important');
+  }
+  if (topPlayerCard) {
+    topPlayerCard.style.setProperty('grid-row', '2', 'important');
+  }
+  if (gameActions) {
+    gameActions.style.setProperty('grid-row', '3', 'important');
+    gameActions.style.setProperty('height', '100px', 'important');
+    gameActions.style.setProperty('min-height', '100px', 'important');
+    gameActions.style.setProperty('max-height', '100px', 'important');
+    gameActions.style.setProperty('box-sizing', 'border-box', 'important');
+  }
+  if (bottomPlayerCard) {
+    bottomPlayerCard.style.setProperty('grid-row', '4', 'important');
   }
   [topPlayerCard, bottomPlayerCard].forEach((card) => {
     if (!card) return;
     card.style.setProperty('height', '150px', 'important');
     card.style.setProperty('min-height', '150px', 'important');
     card.style.setProperty('max-height', '150px', 'important');
-    card.style.setProperty('align-self', 'center', 'important');
+    card.style.setProperty('flex', '0 0 150px', 'important');
     card.style.setProperty('overflow', 'hidden', 'important');
+    card.style.setProperty('box-sizing', 'border-box', 'important');
   });
 }
 
