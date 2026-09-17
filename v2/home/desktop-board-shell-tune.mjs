@@ -1,4 +1,4 @@
-import './inline-play.mjs?v=20260918-inline-play2';
+import './inline-play.mjs?v=20260918-inline-play3';
 
 const css=document.createElement('link');
 css.rel='stylesheet';
@@ -16,7 +16,6 @@ statsOrderCss.textContent=`@media(min-width:901px){
   .desktop-live-stat strong{margin-top:6px!important}
   .inline-play-square{position:relative!important}
   .inline-play-piece{width:94%!important;height:94%!important}
-  .inline-play-piece[src$="wp.png"],.inline-play-piece[src$="bp.png"]{position:absolute!important;left:50%!important;top:50%!important;transform:translate(-50%,-50%) scale(1.12)!important;transform-origin:center center!important}
 }`;
 document.head.appendChild(statsOrderCss);
 
