@@ -3,7 +3,7 @@ if(!document.querySelector('link[data-desktop-board-shell]')){
   css.rel='stylesheet';
   css.dataset.desktopBoardShell='1';
   const url=new URL('./desktop-board-shell.css',import.meta.url);
-  url.searchParams.set('v','20260917-fixed-board3');
+  url.searchParams.set('v','20260918-fixed-board4');
   css.href=url.href;
   document.head.appendChild(css);
 }
@@ -15,6 +15,17 @@ if(desktop.matches && document.querySelector('#homeHero')){
   let rankingNode=null;
   let inviteAnchor=null;
   let inviteNode=null;
+
+  const COUNTRY_FLAGS={
+    'السعودية':'🇸🇦','الأردن':'🇯🇴','مصر':'🇪🇬','الكويت':'🇰🇼','البحرين':'🇧🇭','قطر':'🇶🇦',
+    'الإمارات':'🇦🇪','الإمارات العربية المتحدة':'🇦🇪','عمان':'🇴🇲','سلطنة عمان':'🇴🇲','العراق':'🇮🇶',
+    'سوريا':'🇸🇾','لبنان':'🇱🇧','فلسطين':'🇵🇸','اليمن':'🇾🇪','المغرب':'🇲🇦','الجزائر':'🇩🇿',
+    'تونس':'🇹🇳','ليبيا':'🇱🇾','السودان':'🇸🇩','موريتانيا':'🇲🇷','الصومال':'🇸🇴','جيبوتي':'🇩🇯','جزر القمر':'🇰🇲'
+  };
+
+  function countryFlag(country){
+    return COUNTRY_FLAGS[String(country||'').trim()]||'🌐';
+  }
 
   function buildBoard(){
     const preview=document.getElementById('homeBoardPreview');
@@ -67,39 +78,39 @@ if(desktop.matches && document.querySelector('#homeHero')){
     item.className='v2-global-link desktop-home-nav-link';
     item.href=href;
     item.dataset.desktopNav=id;
-    item.innerHTML=`<span class="desktop-home-nav-chevron">‹</span><span class="desktop-home-nav-label">${label}</span><span class="v2-global-icon">${icon}</span>`;
+    item.innerHTML=`<span class="desktop-home-nav-label">${label}</span><span class="v2-global-icon">${icon}</span>`;
     return item;
   }
 
   function buildSidebar(){
     const sidebar=document.querySelector('.v2-global-sidebar');
     const nav=sidebar?.querySelector('.v2-global-nav');
-    const brand=sidebar?.querySelector('.v2-global-brand');
     if(!sidebar||!nav)return;
 
-    if(brand){
-      const copy=brand.querySelector('.v2-global-brand-copy');
-      if(copy)copy.innerHTML='شطرنج<br>العرب';
-      brand.href='index.html';
-    }
-
+    sidebar.querySelector('.v2-global-brand')?.remove();
     sidebar.querySelector('.desktop-member-card')?.remove();
-    const member=document.createElement('a');
+
+    const member=document.createElement('section');
     member.className='desktop-member-card';
-    member.href='profile.html';
     member.innerHTML=`
-      <span class="desktop-member-chevron">‹</span>
-      <span class="desktop-member-copy">
-        <strong id="desktopMemberName">العضو</strong>
-        <span class="desktop-member-city"><span aria-hidden="true">⌖</span><b id="desktopMemberCity">—</b></span>
-        <span class="desktop-member-rating"><span aria-hidden="true">▥</span><b id="desktopMemberRating">1500</b></span>
-        <span class="desktop-member-status"><i></i><b id="desktopMemberStatus">متصل الآن</b></span>
-      </span>
-      <span class="desktop-member-avatar-wrap">
-        <img id="desktopMemberAvatar" class="desktop-member-avatar" alt="" hidden>
-        <span id="desktopMemberFallback" class="desktop-member-fallback">♟</span>
-        <i class="desktop-member-online-dot"></i>
-      </span>`;
+      <a class="desktop-member-profile" href="profile.html" aria-label="الملف الشخصي">
+        <span class="desktop-member-avatar-wrap">
+          <img id="desktopMemberAvatar" class="desktop-member-avatar" alt="" hidden>
+          <span id="desktopMemberFallback" class="desktop-member-fallback">♟</span>
+          <i class="desktop-member-online-dot"></i>
+        </span>
+        <strong id="desktopMemberName" class="desktop-member-name">العضو</strong>
+      </a>
+      <div class="desktop-member-points"><span>النقاط</span><b id="desktopMemberRating">1500</b></div>
+      <div class="desktop-member-country" id="desktopMemberCountryWrap" title="الدولة">
+        <span id="desktopMemberCountryFlag" class="desktop-member-country-flag">🌐</span>
+      </div>
+      <nav class="desktop-member-play-icons" aria-label="أيقونات اللعب">
+        <a href="play-v2.html?auto=1" title="العب الآن" aria-label="العب الآن">⚔</a>
+        <a href="play-v10.html?computer=1" title="الكمبيوتر" aria-label="الكمبيوتر">▣</a>
+        <button type="button" data-desktop-member-action="invite" title="دعوة لاعب" aria-label="دعوة لاعب">＋</button>
+        <a href="tournaments.html" title="البطولات" aria-label="البطولات">♜</a>
+      </nav>`;
     sidebar.insertBefore(member,nav);
 
     nav.replaceChildren(
@@ -121,16 +132,6 @@ if(desktop.matches && document.querySelector('#homeHero')){
     }
   }
 
-  function quickAction({id,label,sub,icon,highlight=false,href='#'}){
-    const element=href==='#'?document.createElement('button'):document.createElement('a');
-    if(element.tagName==='BUTTON')element.type='button';
-    element.className=`desktop-quick-action${highlight?' primary':''}`;
-    element.dataset.desktopAction=id;
-    element.href=href;
-    element.innerHTML=`<span class="desktop-quick-chevron">‹</span><span class="desktop-quick-copy"><strong>${label}</strong><small>${sub}</small></span><span class="desktop-quick-icon">${icon}</span>`;
-    return element;
-  }
-
   function buildDashboard(){
     document.getElementById('desktopDashboardColumn')?.remove();
     const column=document.createElement('aside');
@@ -149,17 +150,6 @@ if(desktop.matches && document.querySelector('#homeHero')){
           <div class="desktop-welcome-art" aria-hidden="true"><span>♞</span><i>♟</i><b>♜</b></div>
         </section>
 
-        <section class="desktop-live-stats" aria-label="إحصاءات المنصة">
-          <div class="desktop-live-stat"><span class="desktop-stat-icon gold">♜</span><strong id="desktopMatchesCount">0</strong><small>المباريات الآن</small></div>
-          <div class="desktop-live-stat"><span class="desktop-stat-icon green">●●●</span><strong id="desktopOnlineCount">0</strong><small>المتواجدون</small></div>
-          <div class="desktop-live-stat"><span class="desktop-stat-icon cyan">●●●</span><strong id="desktopPlayersCount">0</strong><small>المشتركون</small></div>
-        </section>
-
-        <section class="desktop-quick-card">
-          <div class="desktop-card-title"><span>⚡</span><strong>إجراءات سريعة</strong></div>
-          <div class="desktop-quick-actions" id="desktopQuickActions"></div>
-        </section>
-
         <section class="desktop-tip-card">
           <span class="desktop-tip-icon">◉</span>
           <div><strong>معلومة اليوم</strong><p>التفكير المسبق هو سر الفوز في الشطرنج.</p></div>
@@ -170,14 +160,6 @@ if(desktop.matches && document.querySelector('#homeHero')){
         <div id="desktopDashboardViewBody" class="desktop-dashboard-view-body"></div>
       </section>`;
     document.body.appendChild(column);
-
-    const actions=column.querySelector('#desktopQuickActions');
-    actions.append(
-      quickAction({id:'tournaments',label:'البطولات',sub:'شارك في البطولات',icon:'♜'}),
-      quickAction({id:'ranking',label:'الترتيب',sub:'عرض الترتيب',icon:'▥'}),
-      quickAction({id:'invite',label:'دعوة لاعب',sub:'ادعُ أصدقاءك',icon:'＋'}),
-      quickAction({id:'play',label:'ابدأ اللعب',sub:'مباراة جديدة',icon:'⚔',highlight:true,href:'play-v2.html?auto=1'})
-    );
     column.querySelector('#desktopDashboardBack').addEventListener('click',()=>showDashboard('home'));
   }
 
@@ -272,17 +254,19 @@ if(desktop.matches && document.querySelector('#homeHero')){
   }
 
   function syncLiveData(){
-    copyText('headerPlayersCount','desktopPlayersCount','0');
-    copyText('headerOnlineCount','desktopOnlineCount','0');
-    copyText('headerMatchesCount','desktopMatchesCount','0');
     copyText('headerMemberName','desktopMemberName','العضو');
     copyText('headerMemberRating','desktopMemberRating','1500');
-    copyText('accountCity','desktopMemberCity','—');
 
     const signedIn=document.body.classList.contains('home-signed-in');
-    const status=document.getElementById('desktopMemberStatus');
-    if(status)status.textContent=signedIn?'متصل الآن':'غير مسجل';
-    document.querySelector('.desktop-member-card')?.classList.toggle('is-guest',!signedIn);
+    const member=document.querySelector('.desktop-member-card');
+    member?.classList.toggle('is-guest',!signedIn);
+
+    const countryRaw=document.getElementById('accountRegion')?.textContent?.trim()||'';
+    const country=signedIn&&countryRaw&&countryRaw!=='—'?countryRaw:'';
+    const flag=document.getElementById('desktopMemberCountryFlag');
+    const countryWrap=document.getElementById('desktopMemberCountryWrap');
+    if(flag)flag.textContent=countryFlag(country);
+    if(countryWrap)countryWrap.title=country||'الدولة';
 
     const sourceAvatar=document.getElementById('headerMemberAvatar');
     const targetAvatar=document.getElementById('desktopMemberAvatar');
@@ -300,7 +284,7 @@ if(desktop.matches && document.querySelector('#homeHero')){
 
   function watchLiveData(){
     const observer=new MutationObserver(()=>queueMicrotask(syncLiveData));
-    ['headerPlayersCount','headerOnlineCount','headerMatchesCount','headerMemberName','headerMemberRating','accountCity','headerMemberAvatar'].forEach(id=>{
+    ['headerMemberName','headerMemberRating','accountRegion','headerMemberAvatar'].forEach(id=>{
       const node=document.getElementById(id);
       if(node)observer.observe(node,{childList:true,characterData:true,subtree:true,attributes:true});
     });
@@ -319,10 +303,10 @@ if(desktop.matches && document.querySelector('#homeHero')){
         showDashboard(nav.dataset.desktopNav);
         return;
       }
-      const action=event.target.closest('[data-desktop-action]');
-      if(action&&['ranking','invite','tournaments'].includes(action.dataset.desktopAction)){
+      const memberAction=event.target.closest('[data-desktop-member-action]');
+      if(memberAction?.dataset.desktopMemberAction==='invite'){
         event.preventDefault();
-        showDashboard(action.dataset.desktopAction);
+        showDashboard('invite');
       }
     });
   }
