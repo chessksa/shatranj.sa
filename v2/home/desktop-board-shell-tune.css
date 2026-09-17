@@ -1,0 +1,202 @@
+@media(min-width:901px){
+  :root{
+    --desktop-board-sidebar:clamp(190px,11.5vw,205px)!important;
+    --desktop-dashboard-width:clamp(320px,20.2vw,350px)!important;
+    --desktop-workspace-gap:8px!important;
+  }
+
+  body.desktop-board-workspace .v2-global-sidebar{
+    padding:9px 9px 8px!important;
+    gap:7px!important;
+  }
+
+  body.desktop-board-workspace .v2-global-brand{
+    min-height:56px!important;
+    padding:6px 4px 8px!important;
+  }
+
+  body.desktop-board-workspace .v2-global-brand-mark{
+    width:44px!important;
+    height:44px!important;
+    font-size:25px!important;
+  }
+
+  body.desktop-board-workspace .v2-global-brand-copy{
+    font-size:18px!important;
+  }
+
+  .desktop-member-card{
+    min-height:106px!important;
+    grid-template-columns:20px minmax(0,1fr) 60px!important;
+    padding:9px 8px!important;
+    gap:7px!important;
+  }
+
+  .desktop-member-copy>strong{
+    font-size:16px!important;
+  }
+
+  .desktop-member-city,
+  .desktop-member-rating,
+  .desktop-member-status{
+    font-size:11px!important;
+  }
+
+  .desktop-member-rating b{
+    font-size:16px!important;
+  }
+
+  .desktop-member-avatar-wrap{
+    width:58px!important;
+    height:58px!important;
+  }
+
+  body.desktop-board-workspace .v2-global-nav{
+    gap:6px!important;
+    padding:3px 0!important;
+  }
+
+  body.desktop-board-workspace .desktop-home-nav-link{
+    min-height:48px!important;
+    grid-template-columns:22px minmax(0,1fr) 31px!important;
+    gap:7px!important;
+    padding:0 9px!important;
+    font-size:14px!important;
+  }
+
+  body.desktop-board-workspace .desktop-home-nav-link .v2-global-icon{
+    width:31px!important;
+    font-size:23px!important;
+    line-height:1!important;
+  }
+
+  .desktop-home-nav-chevron,
+  .desktop-quick-chevron,
+  .desktop-member-chevron{
+    transform:scaleX(-1)!important;
+    transform-origin:center!important;
+  }
+
+  .desktop-home-nav-chevron{
+    font-size:28px!important;
+  }
+
+  .desktop-member-chevron{
+    font-size:31px!important;
+  }
+
+  .desktop-sidebar-footer{
+    min-height:31px!important;
+    font-size:9px!important;
+  }
+
+  .desktop-board-stage{
+    left:12px!important;
+    top:12px!important;
+    bottom:12px!important;
+    right:calc(var(--desktop-board-sidebar) + var(--desktop-dashboard-width) + (var(--desktop-workspace-gap) * 2))!important;
+  }
+
+  body.desktop-board-workspace #homeBoardPreview.desktop-board-preview{
+    width:min(calc(100vw - var(--desktop-board-sidebar) - var(--desktop-dashboard-width) - 44px),calc(100dvh - 24px))!important;
+    height:min(calc(100vw - var(--desktop-board-sidebar) - var(--desktop-dashboard-width) - 44px),calc(100dvh - 24px))!important;
+    padding:8px!important;
+  }
+
+  .desktop-dashboard-column{
+    top:12px!important;
+    bottom:12px!important;
+    right:calc(var(--desktop-board-sidebar) + var(--desktop-workspace-gap))!important;
+    width:var(--desktop-dashboard-width)!important;
+  }
+
+  .desktop-dashboard-home{
+    grid-template-rows:minmax(154px,1.05fr) minmax(88px,.52fr) minmax(184px,.94fr) minmax(76px,.43fr)!important;
+    gap:8px!important;
+  }
+
+  .desktop-welcome-copy{
+    padding:15px 8px 12px 14px!important;
+  }
+
+  .desktop-welcome-copy small{
+    font-size:17px!important;
+  }
+
+  .desktop-welcome-copy h2{
+    font-size:clamp(25px,1.9vw,34px)!important;
+  }
+
+  .desktop-welcome-copy p{
+    font-size:12px!important;
+  }
+
+  .desktop-welcome-copy blockquote{
+    font-size:10px!important;
+  }
+
+  .desktop-stat-icon{
+    font-size:21px!important;
+  }
+
+  .desktop-live-stat strong{
+    font-size:clamp(20px,1.55vw,27px)!important;
+  }
+
+  .desktop-live-stat small{
+    font-size:10px!important;
+  }
+
+  .desktop-quick-card{
+    padding:9px!important;
+  }
+
+  .desktop-card-title{
+    font-size:14px!important;
+    margin-bottom:7px!important;
+  }
+
+  .desktop-quick-actions{
+    gap:7px!important;
+  }
+
+  .desktop-quick-action{
+    min-height:68px!important;
+    padding:7px 8px!important;
+    grid-template-columns:20px minmax(0,1fr) 42px!important;
+  }
+
+  .desktop-quick-icon{
+    width:42px!important;
+    height:42px!important;
+    font-size:24px!important;
+  }
+
+  .desktop-quick-copy strong{
+    font-size:14px!important;
+  }
+
+  .desktop-quick-copy small{
+    font-size:10px!important;
+  }
+
+  .desktop-quick-chevron{
+    font-size:27px!important;
+  }
+
+  .desktop-tip-card{
+    padding:10px 12px!important;
+  }
+
+  .desktop-tip-icon{
+    font-size:24px!important;
+  }
+
+  .desktop-tip-card strong{
+    font-size:14px!important;
+  }
+
+  .desktop-tip-card p{
+    font-size:10px!important;
+  }
+}
