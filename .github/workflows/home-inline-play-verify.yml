@@ -20,4 +20,6 @@ jobs:
       - uses: actions/setup-node@v4
         with:
           node-version: '20'
+      - run: node --check v2/home/inline-play.mjs
+      - run: node --check v2/home/desktop-board-shell-tune.mjs
       - run: node tests/home-inline-play-verify.mjs
