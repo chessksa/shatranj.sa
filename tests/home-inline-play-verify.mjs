@@ -17,6 +17,7 @@ assert.match(inline,/preventDefault\(\)/,'الضغط على اللعب يجب أ
 assert.match(inline,/setAttribute\(["']href["'],["']#play["']\)/,'يجب تحويل روابط اللعب في الواجهة إلى رابط داخلي');
 assert.doesNotMatch(inline,/play-v2\.html\?game=/,'وضع اللعب الداخلي لا يجب أن يغيّر العنوان إلى صفحة اللعب المنفصلة');
 assert.match(inlineCss,/\.inline-play-piece\s*\{[\s\S]*?width:94%[\s\S]*?height:94%/,'قطع اللعب داخل الواجهة يجب أن تكون بحجم 94% من المربع');
-assert.match(inlineCss,/\.inline-play-piece\[src\$=["']wp\.png["']\][\s\S]*?\.inline-play-piece\[src\$=["']bp\.png["']\][\s\S]*?transform:scale\(1\.12\)/,'يجب تكبير الجنود البيض والسود فقط بنسبة إضافية');
+assert.match(inlineCss,/\.inline-play-square\s*\{[\s\S]*?position:relative/,'مربع اللعب يجب أن يكون مرجع تمركز للقطعة');
+assert.match(inlineCss,/\.inline-play-piece\[src\$=["']wp\.png["']\][\s\S]*?\.inline-play-piece\[src\$=["']bp\.png["']\][\s\S]*?position:absolute[\s\S]*?left:50%[\s\S]*?top:50%[\s\S]*?transform:translate\(-50%,-50%\) scale\(1\.12\)/,'يجب تكبير الجنود من مركز المربع تمامًا');
 
 console.log('home inline play verification passed');
