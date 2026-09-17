@@ -47,13 +47,14 @@
   .desktop-workspace-panel-head{height:54px;flex:0 0 54px;padding:0 12px;display:flex;align-items:center;justify-content:space-between;border-bottom:1px solid rgba(224,181,103,.22)}
   .desktop-workspace-panel-head strong{font-size:16px}.desktop-workspace-panel-close{width:34px;height:34px;border:1px solid rgba(224,181,103,.32);border-radius:9px;background:transparent;color:#f4efe6;font-size:20px;cursor:pointer}
   .desktop-workspace-panel-body{min-height:0;flex:1;overflow:auto;padding:12px}
-  .desktop-workspace-panel-body #ranking{display:block!important;width:100%!important;height:auto!important;padding:0!important;margin:0!important;overflow:visible!important}
+  body.desktop-board-workspace .desktop-workspace-panel-body #ranking{display:block!important;width:100%!important;height:auto!important;padding:0!important;margin:0!important;overflow:visible!important}
   .desktop-workspace-panel-body #ranking>.wrap{width:100%!important;max-width:none!important;margin:0!important}
   .desktop-workspace-panel-body #ranking .head{display:grid!important;gap:8px!important;height:auto!important;min-height:0!important;padding:0 0 8px!important}
   .desktop-workspace-panel-body #ranking .filters{width:100%!important;display:grid!important;grid-template-columns:1fr 1fr!important}
   .desktop-workspace-panel-body #ranking .table-card{height:auto!important;max-height:none!important;overflow:visible!important}
   .desktop-workspace-panel-body #ranking .table-wrap{max-height:calc(100dvh - 160px)!important;overflow:auto!important}
   .desktop-workspace-panel-body #ranking table{min-width:560px!important}
+  .desktop-workspace-panel-body .home-invite-wrap{display:block!important;width:100%!important;position:relative!important;margin:0!important}.desktop-workspace-panel-body .home-invite-wrap>.btn{width:100%!important;min-height:44px!important}
   .desktop-panel-card{padding:14px;border:1px solid rgba(224,181,103,.25);border-radius:13px;background:rgba(255,255,255,.035);margin-bottom:9px}
   .desktop-panel-card h3{margin:0 0 5px;color:#efcf7c;font-size:15px}.desktop-panel-card p{margin:0;color:#d6cfbf;font-size:12px;line-height:1.65}
   .desktop-panel-actions{display:grid;gap:8px;margin-top:10px}.desktop-panel-actions a,.desktop-panel-actions button{min-height:44px;border:1px solid rgba(224,181,103,.38);border-radius:11px;background:rgba(255,255,255,.035);color:#f4efe6;font:800 12px Arial,sans-serif;display:flex;align-items:center;justify-content:center;text-decoration:none;cursor:pointer}.desktop-panel-actions .primary{background:#e0b567!important;color:#173536!important}
