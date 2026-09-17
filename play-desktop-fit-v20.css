@@ -190,6 +190,19 @@
     min-width:0!important;
     max-width:100%!important;
   }
+
+  /* Keep computer player cards compact after the game starts. */
+  body.computer-game.live-game #gamePage .panel-stack{
+    grid-template-rows:auto 150px auto 150px!important;
+    align-content:space-between!important;
+  }
+
+  body.computer-game.live-game #gamePage #topPlayerCard,
+  body.computer-game.live-game #gamePage #bottomPlayerCard{
+    height:150px!important;
+    min-height:150px!important;
+    max-height:150px!important;
+  }
 }
 
 @media (min-width:901px) and (max-width:1120px){
