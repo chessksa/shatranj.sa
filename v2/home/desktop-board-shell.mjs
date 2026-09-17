@@ -3,7 +3,7 @@ if(!document.querySelector('link[data-desktop-board-shell]')){
   css.rel='stylesheet';
   css.dataset.desktopBoardShell='1';
   const url=new URL('./desktop-board-shell.css',import.meta.url);
-  url.searchParams.set('v','20260917-fixed-board1');
+  url.searchParams.set('v','20260917-fixed-board2');
   css.href=url.href;
   document.head.appendChild(css);
 }
@@ -11,7 +11,6 @@ if(!document.querySelector('link[data-desktop-board-shell]')){
 const desktop=window.matchMedia('(min-width:901px)');
 if(desktop.matches && document.querySelector('#homeHero')){
   const sleep=ms=>new Promise(resolve=>setTimeout(resolve,ms));
-  const pieceRows=['♜♞♝♛♚♝♞♜','♟♟♟♟♟♟♟♟','        ','        ','        ','        ','♙♙♙♙♙♙♙♙','♖♘♗♕♔♗♘♖'];
 
   function buildBoard(){
     const preview=document.getElementById('homeBoardPreview');
@@ -24,8 +23,6 @@ if(desktop.matches && document.querySelector('#homeHero')){
       const row=Math.floor(i/8),col=i%8;
       const sq=document.createElement('span');
       sq.className=`desktop-board-square ${(row+col)%2?'dark':'light'}`;
-      const piece=pieceRows[row][col];
-      if(piece&&piece!==' '){const p=document.createElement('span');p.className='desktop-board-piece';p.textContent=piece;sq.appendChild(p)}
       grid.appendChild(sq);
     });
     const hint=document.createElement('span');hint.className='desktop-board-hint';hint.textContent='اضغط على الرقعة للعب';
@@ -70,8 +67,9 @@ if(desktop.matches && document.querySelector('#homeHero')){
       const ranking=document.getElementById('ranking');if(ranking)body.appendChild(ranking);else body.appendChild(card('الترتيب','تعذر تحميل جدول الترتيب الآن.'));
     }else if(id==='invite'){
       title.textContent='دعوة لاعب';
-      body.append(card('دعوة لاعب','ابحث عن لاعب من داخل الموقع وأرسل له دعوة مباشرة دون أن تتغير مساحة الرقعة.'),actions(link('فتح الدعوات','index.html#homeInviteToggle',true)));
-      document.getElementById('homeInviteToggle')?.click();
+      const invite=document.querySelector('.home-invite-wrap');
+      if(invite){body.appendChild(invite);document.getElementById('homeInviteToggle')?.click();}
+      else body.append(card('دعوة لاعب','ابحث عن لاعب من داخل الموقع وأرسل له دعوة مباشرة دون أن تتغير مساحة الرقعة.'));
     }else if(id==='tournaments'){
       title.textContent='البطولات';
       const text=document.getElementById('tournamentResultsTickerTrack')?.innerText?.trim()||'اطلع على البطولات المفتوحة والجارية.';
