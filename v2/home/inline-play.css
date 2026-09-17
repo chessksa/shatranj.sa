@@ -44,6 +44,12 @@
     -webkit-user-drag:none;
   }
 
+  .inline-play-piece[src$="wp.png"],
+  .inline-play-piece[src$="bp.png"]{
+    transform:scale(1.12);
+    transform-origin:center;
+  }
+
   .desktop-inline-play-panel{
     height:100%;
     min-height:0;
