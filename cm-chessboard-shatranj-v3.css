@@ -44,6 +44,15 @@
   height:auto !important;
   filter:none;
 }
+
+/* Computer mode: thin black edge around the approved realistic pieces. */
+body.computer-game .cm-board-host .cm-chessboard use.piece{
+  filter:
+    drop-shadow(.22px 0 0 rgba(0,0,0,.78))
+    drop-shadow(-.22px 0 0 rgba(0,0,0,.78))
+    drop-shadow(0 .22px 0 rgba(0,0,0,.78))
+    drop-shadow(0 -.22px 0 rgba(0,0,0,.78));
+}
 .cm-board-host .cm-chessboard .pieces-layer,
 .cm-board-host .cm-chessboard .pieces,
 .cm-board-host .cm-chessboard .markers-layer,
