@@ -1,16 +1,31 @@
 @media(min-width:901px){
+  :root{
+    --desktop-board-sync-size:min(
+      calc(100vw - var(--desktop-board-sidebar) - var(--desktop-dashboard-width) - 18px),
+      calc(100dvh - 12px)
+    );
+    --desktop-board-bottom-gap:calc((100dvh - var(--desktop-board-sync-size))/2);
+  }
+
   body.desktop-board-workspace .desktop-sidebar-footer{
     display:none!important;
   }
 
-  /* Make the sidebar end exactly with the board viewport and never scroll internally. */
+  /* End the sidebar on the exact same horizontal line as the board. */
   body.desktop-board-workspace .v2-global-sidebar{
-    height:100dvh!important;
+    top:0!important;
+    bottom:var(--desktop-board-bottom-gap)!important;
+    height:auto!important;
     box-sizing:border-box!important;
     display:flex!important;
     flex-direction:column!important;
     overflow:hidden!important;
-    padding-bottom:6px!important;
+    padding-bottom:0!important;
+  }
+
+  /* Keep the center dashboard on the same bottom line as the board too. */
+  body.desktop-board-workspace .desktop-dashboard-column{
+    bottom:var(--desktop-board-bottom-gap)!important;
   }
 
   body.desktop-board-workspace .v2-global-nav{
@@ -32,7 +47,7 @@
     height:0!important;
   }
 
-  /* Restore a consistent frame around every main navigation item. */
+  /* Consistent frame around every main navigation item. */
   body.desktop-board-workspace .desktop-home-nav-link{
     min-height:0!important;
     height:100%!important;
@@ -65,7 +80,6 @@
     background:transparent!important;
   }
 
-  /* Keep the profile compact so all seven navigation rows fit exactly. */
   .desktop-member-card{
     flex:0 0 auto!important;
     padding-top:4px!important;
@@ -82,7 +96,7 @@
     min-height:24px!important;
   }
 
-  /* Remove only the inner box around the quick-play symbols; keep the action cards. */
+  /* Remove only the inner box around quick-play symbols. */
   .desktop-quick-icon,
   .desktop-quick-action.primary .desktop-quick-icon{
     background:transparent!important;
