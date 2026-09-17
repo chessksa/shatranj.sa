@@ -1,4 +1,4 @@
-import './inline-play.mjs?v=20260918-inline-play1';
+import './inline-play.mjs?v=20260918-inline-play2';
 
 const css=document.createElement('link');
 css.rel='stylesheet';
