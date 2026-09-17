@@ -1,5 +1,10 @@
 import './inline-play.mjs?v=20260918-inline-play3';
 
+const inlinePlayCss=document.createElement('link');
+inlinePlayCss.rel='stylesheet';
+inlinePlayCss.href='v2/home/inline-play.css?v=20260918-piece-center1';
+document.head.appendChild(inlinePlayCss);
+
 const css=document.createElement('link');
 css.rel='stylesheet';
 css.href='v2/home/desktop-board-shell-tune.css?v=20260918-no-tip-card1';
