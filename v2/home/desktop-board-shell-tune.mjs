@@ -1,11 +1,11 @@
 const css=document.createElement('link');
 css.rel='stylesheet';
-css.href='v2/home/desktop-board-shell-tune.css?v=20260918-tip-icon1';
+css.href='v2/home/desktop-board-shell-tune.css?v=20260918-play-spacing1';
 document.head.appendChild(css);
 
 const cleanupCss=document.createElement('link');
 cleanupCss.rel='stylesheet';
-cleanupCss.href='v2/home/desktop-sidebar-cleanup.css?v=20260918-tip-icon1';
+cleanupCss.href='v2/home/desktop-sidebar-cleanup.css?v=20260918-play-spacing1';
 document.head.appendChild(cleanupCss);
 
 const desktop=window.matchMedia('(min-width:901px)');
@@ -45,12 +45,18 @@ function labelMemberActions(){
   return true;
 }
 
+function removeDailyTipIcon(){
+  document.querySelector('.desktop-tip-icon')?.remove();
+}
+
 function restoreDashboardBlocks(){
   if(!desktop.matches)return false;
   const home=document.getElementById('desktopDashboardHome');
   const welcome=home?.querySelector('.desktop-welcome-card');
   const tip=home?.querySelector('.desktop-tip-card');
   if(!home||!welcome||!tip)return false;
+
+  removeDailyTipIcon();
 
   if(!home.querySelector('.desktop-live-stats')){
     const stats=document.createElement('section');
@@ -115,18 +121,21 @@ function removeSidebarFooter(){
 
 if(desktop.matches){
   removeSidebarFooter();
+  removeDailyTipIcon();
   let attempts=0;
   const timer=setInterval(()=>{
     attempts+=1;
     removeSidebarFooter();
+    removeDailyTipIcon();
     if(restoreDashboardBlocks()||attempts>50){
       clearInterval(timer);
       bindTuneActions();
       watchCounts();
       labelMemberActions();
       removeSidebarFooter();
-      setTimeout(()=>{restoreDashboardBlocks();labelMemberActions();removeSidebarFooter();},300);
-      setTimeout(()=>{restoreDashboardBlocks();labelMemberActions();removeSidebarFooter();},1000);
+      removeDailyTipIcon();
+      setTimeout(()=>{restoreDashboardBlocks();labelMemberActions();removeSidebarFooter();removeDailyTipIcon();},300);
+      setTimeout(()=>{restoreDashboardBlocks();labelMemberActions();removeSidebarFooter();removeDailyTipIcon();},1000);
     }
   },50);
 }
