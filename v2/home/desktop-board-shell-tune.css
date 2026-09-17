@@ -3,11 +3,13 @@
     --desktop-board-sidebar:clamp(190px,11.5vw,205px)!important;
     --desktop-dashboard-width:clamp(320px,20.2vw,350px)!important;
     --desktop-workspace-gap:8px!important;
+    --desktop-icon-gap:10px;
+    --desktop-item-gap:8px;
   }
 
   body.desktop-board-workspace .v2-global-sidebar{
     padding:9px 9px 8px!important;
-    gap:7px!important;
+    gap:var(--desktop-item-gap)!important;
   }
 
   body.desktop-board-workspace .v2-global-brand{
@@ -22,67 +24,69 @@
   }
 
   body.desktop-board-workspace .v2-global-brand-copy{
-    font-size:18px!important;
+    font-size:19px!important;
   }
 
   .desktop-member-card{
-    min-height:106px!important;
-    grid-template-columns:20px minmax(0,1fr) 60px!important;
-    padding:9px 8px!important;
-    gap:7px!important;
+    min-height:116px!important;
+    grid-template-columns:minmax(0,1fr) 64px!important;
+    padding:11px 10px!important;
+    column-gap:var(--desktop-icon-gap)!important;
+    border-radius:16px!important;
+    align-items:center!important;
+  }
+
+  .desktop-member-copy{
+    gap:5px!important;
+    align-items:flex-start!important;
+    text-align:right!important;
   }
 
   .desktop-member-copy>strong{
-    font-size:16px!important;
+    font-size:18px!important;
+    line-height:1.2!important;
   }
 
   .desktop-member-city,
   .desktop-member-rating,
   .desktop-member-status{
-    font-size:11px!important;
+    gap:var(--desktop-icon-gap)!important;
+    font-size:12px!important;
+    line-height:1.15!important;
   }
 
   .desktop-member-rating b{
-    font-size:16px!important;
+    font-size:18px!important;
   }
 
   .desktop-member-avatar-wrap{
-    width:58px!important;
-    height:58px!important;
-  }
-
-  body.desktop-board-workspace .v2-global-nav{
-    gap:6px!important;
-    padding:3px 0!important;
-  }
-
-  body.desktop-board-workspace .desktop-home-nav-link{
-    min-height:48px!important;
-    grid-template-columns:22px minmax(0,1fr) 31px!important;
-    gap:7px!important;
-    padding:0 9px!important;
-    font-size:14px!important;
-  }
-
-  body.desktop-board-workspace .desktop-home-nav-link .v2-global-icon{
-    width:31px!important;
-    font-size:23px!important;
-    line-height:1!important;
+    width:64px!important;
+    height:64px!important;
   }
 
   .desktop-home-nav-chevron,
   .desktop-quick-chevron,
   .desktop-member-chevron{
-    transform:scaleX(-1)!important;
-    transform-origin:center!important;
+    display:none!important;
   }
 
-  .desktop-home-nav-chevron{
-    font-size:28px!important;
+  body.desktop-board-workspace .v2-global-nav{
+    gap:var(--desktop-item-gap)!important;
+    padding:3px 0!important;
   }
 
-  .desktop-member-chevron{
-    font-size:31px!important;
+  body.desktop-board-workspace .desktop-home-nav-link{
+    min-height:50px!important;
+    grid-template-columns:minmax(0,1fr) 32px!important;
+    column-gap:var(--desktop-icon-gap)!important;
+    padding:0 11px!important;
+    font-size:16px!important;
+  }
+
+  body.desktop-board-workspace .desktop-home-nav-link .v2-global-icon{
+    width:32px!important;
+    font-size:24px!important;
+    line-height:1!important;
   }
 
   .desktop-sidebar-footer{
@@ -112,7 +116,7 @@
 
   .desktop-dashboard-home{
     grid-template-rows:minmax(154px,1.05fr) minmax(88px,.52fr) minmax(184px,.94fr) minmax(76px,.43fr)!important;
-    gap:8px!important;
+    gap:var(--desktop-item-gap)!important;
   }
 
   .desktop-welcome-copy{
@@ -120,31 +124,35 @@
   }
 
   .desktop-welcome-copy small{
-    font-size:17px!important;
+    font-size:18px!important;
   }
 
   .desktop-welcome-copy h2{
-    font-size:clamp(25px,1.9vw,34px)!important;
+    font-size:clamp(27px,2vw,36px)!important;
   }
 
   .desktop-welcome-copy p{
-    font-size:12px!important;
+    font-size:13px!important;
   }
 
   .desktop-welcome-copy blockquote{
-    font-size:10px!important;
+    font-size:11px!important;
   }
 
   .desktop-stat-icon{
-    font-size:21px!important;
+    font-size:22px!important;
   }
 
   .desktop-live-stat strong{
-    font-size:clamp(20px,1.55vw,27px)!important;
+    font-size:clamp(21px,1.6vw,28px)!important;
   }
 
   .desktop-live-stat small{
-    font-size:10px!important;
+    font-size:11px!important;
+  }
+
+  .desktop-live-stats{
+    gap:var(--desktop-item-gap)!important;
   }
 
   .desktop-quick-card{
@@ -152,40 +160,39 @@
   }
 
   .desktop-card-title{
-    font-size:14px!important;
-    margin-bottom:7px!important;
+    gap:var(--desktop-icon-gap)!important;
+    font-size:15px!important;
+    margin-bottom:8px!important;
   }
 
   .desktop-quick-actions{
-    gap:7px!important;
+    gap:var(--desktop-item-gap)!important;
   }
 
   .desktop-quick-action{
-    min-height:68px!important;
-    padding:7px 8px!important;
-    grid-template-columns:20px minmax(0,1fr) 42px!important;
+    min-height:70px!important;
+    padding:8px 10px!important;
+    grid-template-columns:minmax(0,1fr) 44px!important;
+    column-gap:var(--desktop-icon-gap)!important;
   }
 
   .desktop-quick-icon{
-    width:42px!important;
-    height:42px!important;
-    font-size:24px!important;
+    width:44px!important;
+    height:44px!important;
+    font-size:25px!important;
   }
 
   .desktop-quick-copy strong{
-    font-size:14px!important;
+    font-size:16px!important;
   }
 
   .desktop-quick-copy small{
-    font-size:10px!important;
-  }
-
-  .desktop-quick-chevron{
-    font-size:27px!important;
+    font-size:11px!important;
   }
 
   .desktop-tip-card{
     padding:10px 12px!important;
+    gap:var(--desktop-icon-gap)!important;
   }
 
   .desktop-tip-icon{
@@ -193,10 +200,10 @@
   }
 
   .desktop-tip-card strong{
-    font-size:14px!important;
+    font-size:15px!important;
   }
 
   .desktop-tip-card p{
-    font-size:10px!important;
+    font-size:11px!important;
   }
 }
