@@ -186,7 +186,7 @@ function ensureCmStyles() {
   if (!document.querySelector('link[data-cm-chessboard-shatranj]')) {
     const theme = document.createElement('link');
     theme.rel = 'stylesheet';
-    theme.href = 'cm-chessboard-shatranj-v3.css?v=20260918-computer-black-thin1';
+    theme.href = 'cm-chessboard-shatranj-v3.css?v=20260918-normal-outline1';
     theme.dataset.cmChessboardShatranj = '1';
     document.head.appendChild(theme);
   }
