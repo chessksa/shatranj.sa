@@ -1,0 +1,23 @@
+name: home inline play verify
+
+on:
+  push:
+    paths:
+      - 'v2/home/**'
+      - 'tests/home-inline-play-verify.mjs'
+      - '.github/workflows/home-inline-play-verify.yml'
+  pull_request:
+    paths:
+      - 'v2/home/**'
+      - 'tests/home-inline-play-verify.mjs'
+      - '.github/workflows/home-inline-play-verify.yml'
+
+jobs:
+  verify:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+      - run: node tests/home-inline-play-verify.mjs
