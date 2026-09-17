@@ -11,7 +11,7 @@
 <div class="loading"><div><strong>جاري فتح صفحة اللعب</strong><small>تحميل الواجهة الجديدة…</small></div></div>
 <script>
 (async()=>{
-  const version='20260918-computer-card-rootfix1-'+Date.now();
+  const version='20260918-card-final5-'+Date.now();
   const response=await fetch('./play-v10.html?v='+version,{cache:'no-store'});
   if(!response.ok) throw new Error('play source '+response.status);
   let html=await response.text();
@@ -24,7 +24,47 @@
     .replace(/play-v10\.html/g,'play-entry-v16.html');
 
   const freshStyles=`<link rel="stylesheet" href="play-reference-mobile-v14.css?v=${version}"><link rel="stylesheet" href="play-reference-pregame-v15.css?v=${version}"><link rel="stylesheet" href="play-reference-overlay-v18.css?v=${version}"><link rel="stylesheet" href="play-desktop-fit-v20.css?v=${version}"><link rel="stylesheet" href="play-notification-icon-v21.css?v=${version}">`;
-  html=html.replace('</head>',freshStyles+'</head>');
+  html=html.replace('</head>',freshStyles+`<style>
+    /* FINAL COMPUTER DESKTOP CARD LOCK */
+    @media(min-width:901px){
+      body.computer-game #gamePage .panel-stack{
+        display:grid!important;
+        grid-template-rows:auto 150px 100px 150px!important;
+        grid-auto-rows:0!important;
+        align-content:space-between!important;
+      }
+      body.computer-game #gamePage .side-head-stack{grid-row:1!important}
+      body.computer-game #gamePage #topPlayerCard{
+        grid-row:2!important;
+        height:150px!important;
+        min-height:150px!important;
+        max-height:150px!important;
+        flex:0 0 150px!important;
+        align-self:start!important;
+        overflow:hidden!important;
+        box-sizing:border-box!important;
+      }
+      body.computer-game #gamePage #gameActions{
+        grid-row:3!important;
+        height:100px!important;
+        min-height:100px!important;
+        max-height:100px!important;
+        align-self:center!important;
+        overflow:hidden!important;
+        box-sizing:border-box!important;
+      }
+      body.computer-game #gamePage #bottomPlayerCard{
+        grid-row:4!important;
+        height:150px!important;
+        min-height:150px!important;
+        max-height:150px!important;
+        flex:0 0 150px!important;
+        align-self:end!important;
+        overflow:hidden!important;
+        box-sizing:border-box!important;
+      }
+    }
+</style>`+'</head>');
   html=html.replace('</body>',`<script src="play-reference-shell-v18.js?v=${version}"><\/script><script type="module" src="play-computer-profile-v21.js?v=${version}"><\/script></body>`);
 
   document.open();
