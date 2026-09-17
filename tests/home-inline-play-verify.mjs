@@ -17,5 +17,7 @@ assert.match(inline,/preventDefault\(\)/,'الضغط على اللعب يجب أ
 assert.match(inline,/setAttribute\(["']href["'],["']#play["']\)/,'يجب تحويل روابط اللعب في الواجهة إلى رابط داخلي');
 assert.doesNotMatch(inline,/play-v2\.html\?game=/,'وضع اللعب الداخلي لا يجب أن يغيّر العنوان إلى صفحة اللعب المنفصلة');
 assert.match(inlineCss,/\.inline-play-piece\s*\{[\s\S]*?width:94%[\s\S]*?height:94%/,'قطع اللعب داخل الواجهة يجب أن تكون بحجم 94% من المربع');
+assert.match(inline,/inline-play-piece-pawn/,'يجب تمييز الجنود بفئة مستقلة لتكبيرها دون بقية القطع');
+assert.match(inlineCss,/\.inline-play-piece-pawn\s*\{[\s\S]*?transform:scale\(1\.12\)/,'يجب تكبير الجنود وحدهم بنسبة إضافية');
 
 console.log('home inline play verification passed');
