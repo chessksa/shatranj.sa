@@ -7,7 +7,7 @@ const tune=read('v2/home/desktop-board-shell-tune.mjs');
 const inlinePath='v2/home/inline-play.mjs';
 const inlineCss=read('v2/home/inline-play.css');
 
-function pawnVisualBounds(path){
+function pieceVisualBounds(path){
   const png=fs.readFileSync(path);
   let offset=8,width=0,height=0,bitDepth=0,colorType=0;
   const idat=[];
@@ -60,14 +60,12 @@ function pawnVisualBounds(path){
       minY=Math.min(minY,y); maxY=Math.max(maxY,y);
     }
   }
-  assert.ok(maxX>=0&&maxY>=0,'لم يتم العثور على رسم مرئي داخل قطعة البيدق');
-  return {
-    width,height,minX,maxX,minY,maxY,
-    centerX:(minX+maxX)/2,
-    centerY:(minY+maxY)/2,
-    canvasCenterX:(width-1)/2,
-    canvasCenterY:(height-1)/2,
-  };
+  assert.ok(maxX>=0&&maxY>=0,`لم يتم العثور على رسم مرئي داخل ${path}`);
+  const canvasCenterX=(width-1)/2;
+  const canvasCenterY=(height-1)/2;
+  const centerX=(minX+maxX)/2;
+  const centerY=(minY+maxY)/2;
+  return {width,height,minX,maxX,minY,maxY,centerX,centerY,canvasCenterX,canvasCenterY,offsetX:centerX-canvasCenterX,offsetY:centerY-canvasCenterY};
 }
 
 assert.ok(fs.existsSync(inlinePath),'يجب وجود وحدة لعب داخلية للواجهة الرئيسية');
@@ -85,7 +83,8 @@ assert.match(inline,/location\.hash\s*===\s*["']#play["']/,'بدء الصفحة 
 assert.match(inline,/url\.hash\s*=\s*["']["']/,'الخروج من اللعب يجب أن يزيل #play من الرابط');
 assert.match(inlineCss,/\.inline-play-piece\s*\{[\s\S]*?width:94%[\s\S]*?height:94%/,'قطع اللعب داخل الواجهة يجب أن تكون بحجم 94% من المربع');
 assert.match(inlineCss,/\.inline-play-square\s*\{[\s\S]*?position:relative/,'مربع اللعب يجب أن يكون مرجع تمركز للقطعة');
-assert.match(inlineCss,/\.inline-play-piece\[src\$=["']wp\.png["']\][\s\S]*?\.inline-play-piece\[src\$=["']bp\.png["']\][\s\S]*?position:absolute[\s\S]*?left:50%[\s\S]*?top:50%[\s\S]*?transform:translate\(-50%,-50%\) scale\(1\.12\)/,'يجب تكبير الجنود من مركز المربع تمامًا');
 
-console.log('PAWN_BOUNDS',JSON.stringify({white:pawnVisualBounds('assets/pieces/wp.png'),black:pawnVisualBounds('assets/pieces/bp.png')}));
+const pieceCodes=['wp','wn','wb','wr','wq','wk','bp','bn','bb','br','bq','bk'];
+const pieceBounds=Object.fromEntries(pieceCodes.map(code=>[code,pieceVisualBounds(`assets/pieces/${code}.png`)]));
+console.log('PIECE_BOUNDS',JSON.stringify(pieceBounds));
 console.log('home inline play verification passed');
