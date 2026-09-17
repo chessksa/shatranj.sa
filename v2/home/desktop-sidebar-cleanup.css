@@ -1,20 +1,28 @@
 @media(min-width:901px){
-  /* Remove the footer slogan completely. */
   body.desktop-board-workspace .desktop-sidebar-footer{
     display:none!important;
   }
 
-  /* Keep the whole desktop sidebar visible without an internal scrollbar. */
+  /* Make the sidebar end exactly with the board viewport and never scroll internally. */
   body.desktop-board-workspace .v2-global-sidebar{
+    height:100dvh!important;
+    box-sizing:border-box!important;
+    display:flex!important;
+    flex-direction:column!important;
     overflow:hidden!important;
+    padding-bottom:6px!important;
   }
 
   body.desktop-board-workspace .v2-global-nav{
-    overflow:visible!important;
-    max-height:none!important;
+    flex:1 1 auto!important;
     min-height:0!important;
-    flex:0 0 auto!important;
+    max-height:none!important;
+    overflow:hidden!important;
+    display:grid!important;
+    grid-template-rows:repeat(7,minmax(0,1fr))!important;
+    align-content:stretch!important;
     gap:6px!important;
+    padding:0!important;
     scrollbar-width:none!important;
   }
 
@@ -24,28 +32,30 @@
     height:0!important;
   }
 
-  /* Remove the outlined frames around navigation/play items. */
+  /* Restore a consistent frame around every main navigation item. */
   body.desktop-board-workspace .desktop-home-nav-link{
-    min-height:44px!important;
-    border:0!important;
+    min-height:0!important;
+    height:100%!important;
+    border:1px solid rgba(102,172,173,.38)!important;
     outline:0!important;
     box-shadow:none!important;
-    background:transparent!important;
-    border-radius:0!important;
-    padding:0 10px!important;
+    background:linear-gradient(145deg,rgba(6,59,63,.90),rgba(3,45,49,.92))!important;
+    border-radius:12px!important;
+    padding:0 12px!important;
+    box-sizing:border-box!important;
   }
 
   body.desktop-board-workspace .desktop-home-nav-link:hover{
-    background:rgba(224,181,103,.08)!important;
+    background:linear-gradient(145deg,rgba(8,70,74,.94),rgba(4,53,57,.94))!important;
+    border-color:rgba(224,181,103,.42)!important;
   }
 
-  /* Keep the active item clear without restoring an outer frame. */
   body.desktop-board-workspace .desktop-home-nav-link.active{
-    background:rgba(224,181,103,.92)!important;
+    background:linear-gradient(135deg,#efca72,#d9aa4f)!important;
     color:#07363d!important;
-    border:0!important;
+    border:1px solid rgba(240,207,130,.96)!important;
     box-shadow:none!important;
-    border-radius:10px!important;
+    border-radius:12px!important;
   }
 
   body.desktop-board-workspace .desktop-home-nav-link .v2-global-icon{
@@ -55,8 +65,9 @@
     background:transparent!important;
   }
 
-  /* Slightly compact the profile block so every nav item fits on screen. */
+  /* Keep the profile compact so all seven navigation rows fit exactly. */
   .desktop-member-card{
+    flex:0 0 auto!important;
     padding-top:4px!important;
     padding-bottom:4px!important;
     gap:5px!important;
@@ -69,5 +80,15 @@
 
   .desktop-member-country{
     min-height:24px!important;
+  }
+
+  /* Remove only the inner box around the quick-play symbols; keep the action cards. */
+  .desktop-quick-icon,
+  .desktop-quick-action.primary .desktop-quick-icon{
+    background:transparent!important;
+    border:0!important;
+    outline:0!important;
+    box-shadow:none!important;
+    border-radius:0!important;
   }
 }
