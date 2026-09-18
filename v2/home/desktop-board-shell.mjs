@@ -107,7 +107,7 @@ if(desktop.matches && document.querySelector('#homeHero')){
       </div>
       <nav class="desktop-member-play-icons" aria-label="أيقونات اللعب">
         <a href="play-v2.html?auto=1" title="العب الآن" aria-label="العب الآن">⚔</a>
-        <a href="play-entry-v16.html?computer=1&v=20260918-card-width-lock1" title="الكمبيوتر" aria-label="الكمبيوتر">▣</a>
+        <a href="play-entry-v16.html?computer=1&v=20260918-horizontal-final2" title="الكمبيوتر" aria-label="الكمبيوتر">▣</a>
         <button type="button" data-desktop-member-action="invite" title="دعوة لاعب" aria-label="دعوة لاعب">＋</button>
         <a href="tournaments.html" title="البطولات" aria-label="البطولات">♜</a>
       </nav>`;
