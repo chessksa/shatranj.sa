@@ -1,3 +1,4 @@
+import { mountInlineComputer, stopInlineComputer } from './inline-computer.mjs?v=20260918-inline-computer1';
 if(!document.querySelector('link[data-desktop-board-shell]')){
   const css=document.createElement('link');
   css.rel='stylesheet';
@@ -107,7 +108,7 @@ if(desktop.matches && document.querySelector('#homeHero')){
       </div>
       <nav class="desktop-member-play-icons" aria-label="أيقونات اللعب">
         <a href="play-v2.html?auto=1" title="العب الآن" aria-label="العب الآن">⚔</a>
-        <a href="play-entry-v16.html?computer=1&v=20260918-sidewidth-freeze1" title="الكمبيوتر" aria-label="الكمبيوتر">▣</a>
+        <button type="button" data-desktop-member-action="computer" title="الكمبيوتر" aria-label="الكمبيوتر">▣</button>
         <button type="button" data-desktop-member-action="invite" title="دعوة لاعب" aria-label="دعوة لاعب">＋</button>
         <a href="tournaments.html" title="البطولات" aria-label="البطولات">♜</a>
       </nav>`;
@@ -118,7 +119,7 @@ if(desktop.matches && document.querySelector('#homeHero')){
       navItem({id:'ranking',label:'الترتيب',icon:'▥',href:'#ranking'}),
       navItem({id:'invite',label:'دعوة لاعب',icon:'＋',href:'#invite'}),
       navItem({id:'play',label:'العب',icon:'⚔',href:'play-v2.html?auto=1'}),
-      navItem({id:'computer',label:'الكمبيوتر',icon:'▣',href:'play-v10.html?computer=1'}),
+      navItem({id:'computer',label:'الكمبيوتر',icon:'▣',href:'#computer'}),
       navItem({id:'puzzles',label:'الألغاز',icon:'◆',href:'puzzles.html'}),
       navItem({id:'learn',label:'تعلّم',icon:'▤',href:'learn.html'})
     );
@@ -207,7 +208,12 @@ if(desktop.matches && document.querySelector('#homeHero')){
     body.appendChild(card);
   }
 
+  function computerView(body){
+    mountInlineComputer(body);
+  }
+
   function showDashboard(id='home'){
+    if(id!=='computer') stopInlineComputer();
     const home=document.getElementById('desktopDashboardHome');
     const view=document.getElementById('desktopDashboardView');
     const body=document.getElementById('desktopDashboardViewBody');
@@ -242,6 +248,11 @@ if(desktop.matches && document.querySelector('#homeHero')){
     if(id==='tournaments'){
       showViewTitle('البطولات');
       tournamentView(body);
+      return;
+    }
+    if(id==='computer'){
+      showViewTitle('اللعب مع الكمبيوتر');
+      computerView(body);
       return;
     }
     showDashboard('home');
@@ -298,7 +309,7 @@ if(desktop.matches && document.querySelector('#homeHero')){
   function bindDesktopActions(){
     document.addEventListener('click',event=>{
       const nav=event.target.closest('[data-desktop-nav]');
-      if(nav&&['home','ranking','invite'].includes(nav.dataset.desktopNav)){
+      if(nav&&['home','ranking','invite','computer'].includes(nav.dataset.desktopNav)){
         event.preventDefault();
         showDashboard(nav.dataset.desktopNav);
         return;
@@ -307,6 +318,17 @@ if(desktop.matches && document.querySelector('#homeHero')){
       if(memberAction?.dataset.desktopMemberAction==='invite'){
         event.preventDefault();
         showDashboard('invite');
+        return;
+      }
+      if(memberAction?.dataset.desktopMemberAction==='computer'){
+        event.preventDefault();
+        showDashboard('computer');
+        return;
+      }
+      const heroComputer=event.target.closest('.hero-computer-btn');
+      if(heroComputer){
+        event.preventDefault();
+        showDashboard('computer');
       }
     });
   }
