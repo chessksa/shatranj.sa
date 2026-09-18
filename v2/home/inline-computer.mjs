@@ -403,13 +403,13 @@ function bindPanel(){
   host.querySelector('#inlineComputerStart')?.addEventListener('click',event=>{
     event.preventDefault();
     event.stopPropagation();
-    void startGame();
+    startGame();
   });
   host.querySelector('#inlineComputerNew')?.addEventListener('click',resetToSetup);
   host.querySelector('#inlineComputerResign')?.addEventListener('click',()=>finish('استسلمت — فاز الكمبيوتر'));
 }
 
-async function startGame(){
+function startGame(){
   if(started) return;
   started=true;
   resetLocalGame();
@@ -428,21 +428,17 @@ async function startGame(){
 
   renderBoard();
   updateClockUi();
-  setStatus('جاري تجهيز الكمبيوتر…');
+  lastTick=Date.now();
+  startClock();
+  setStatus(`دورك — مستوى ${LEVELS[selectedLevel].label}`);
 
-  try{
-    const ready=await initEngine();
-    if(!ready) throw new Error('تعذر تشغيل محرك الكمبيوتر');
-    lastTick=Date.now();
-    startClock();
-    setStatus(`دورك — مستوى ${LEVELS[selectedLevel].label}`);
-  }catch(error){
-    started=false;
-    stopClock();
-    if(setup) setup.hidden=false;
-    if(actions) actions.hidden=true;
-    setStatus(error.message||'تعذر بدء المباراة',true);
-  }
+  void initEngine().then(ready=>{
+    if(!ready && started){
+      setStatus('تعذر تشغيل محرك الكمبيوتر',true);
+    }
+  }).catch(()=>{
+    if(started) setStatus('تعذر تشغيل محرك الكمبيوتر',true);
+  });
 }
 
 function resetToSetup(){
@@ -587,6 +583,7 @@ export function mountInlineComputer(body){
   buildPanel(body);
   renderBoard();
   updateClockUi();
+  void initEngine().catch(()=>{});
   const url=new URL(location.href);
   url.hash='#computer';
   history.replaceState({},'',`${url.pathname}${url.search}${url.hash}`);
