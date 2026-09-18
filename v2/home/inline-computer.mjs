@@ -175,7 +175,7 @@ function applyUciMove(uci){
     }
   }
 
-  lastMove={from,to};
+  lastMove={from,to,color:piece.color};
   moveHistory.push(move);
   currentTurn=currentTurn==='w'?'b':'w';
   return true;
@@ -264,10 +264,29 @@ function restoreStaticBoard(){
   target.append(grid,hint);
 }
 
+function legalTargetFromUci(uci){
+  const move=String(uci||'').toLowerCase();
+  const from=move.slice(0,2);
+  const to=move.slice(2,4);
+  const movingPiece=position.get(from);
+  const targetPiece=position.get(to);
+  const isEnPassant=Boolean(
+    movingPiece?.type==='p'
+    && from[0]!==to[0]
+    && !targetPiece
+  );
+  return {
+    from,
+    to,
+    uci:move,
+    capture:Boolean(targetPiece)||isEnPassant,
+  };
+}
+
 function renderBoard(){
   if(!board) return;
   const fragment=document.createDocumentFragment();
-  const legalSet=new Set(legalTargets.map(move=>move.to));
+  const legalMap=new Map(legalTargets.map(move=>[move.to,move]));
   orderedSquares().forEach(squareName=>{
     const file=squareName.charCodeAt(0)-97;
     const rank=Number(squareName[1]);
@@ -277,7 +296,10 @@ function renderBoard(){
     square.dataset.square=squareName;
     if(lastMove&&(squareName===lastMove.from||squareName===lastMove.to)) square.classList.add('last-move');
     if(squareName===selectedSquare) square.classList.add('selected');
-    if(legalSet.has(squareName)) square.classList.add('target');
+    const legalTarget=legalMap.get(squareName);
+    if(legalTarget){
+      square.classList.add('target',legalTarget.capture?'capture-option':'move-option');
+    }
     const piece=position.get(squareName);
     if(piece){
       const img=document.createElement('img');
@@ -319,8 +341,8 @@ function startClock(){
     if(currentTurn==='w') whiteMs=Math.max(0,whiteMs-delta);
     else blackMs=Math.max(0,blackMs-delta);
     updateClockUi();
-    if(whiteMs<=0) finish('انتهى وقتك — فاز الكمبيوتر');
-    else if(blackMs<=0) finish('انتهى وقت الكمبيوتر — فزت');
+    if(whiteMs<=0) finish('انتهى وقتك — فاز الكمبيوتر','computer');
+    else if(blackMs<=0) finish('انتهى وقت الكمبيوتر — فزت','player');
   },250);
 }
 
@@ -410,12 +432,13 @@ function bindPanel(){
     startGame();
   });
   host.querySelector('#inlineComputerNew')?.addEventListener('click',resetToSetup);
-  host.querySelector('#inlineComputerResign')?.addEventListener('click',()=>finish('استسلمت — فاز الكمبيوتر'));
+  host.querySelector('#inlineComputerResign')?.addEventListener('click',()=>finish('استسلمت — فاز الكمبيوتر','computer'));
 }
 
 function startGame(){
   if(started) return;
   started=true;
+  clearResultColors();
   resetLocalGame();
   selectedSquare=null;
   legalTargets=[];
@@ -445,8 +468,28 @@ function startGame(){
   });
 }
 
+function clearResultColors(){
+  host?.querySelector('.inline-computer-player')?.classList.remove('result-winner','result-loser');
+  host?.querySelector('.inline-computer-opponent')?.classList.remove('result-winner','result-loser');
+}
+
+function applyResultColors(outcome){
+  clearResultColors();
+  if(outcome!=='player'&&outcome!=='computer') return;
+  const playerCard=host?.querySelector('.inline-computer-player');
+  const computerCard=host?.querySelector('.inline-computer-opponent');
+  if(outcome==='player'){
+    playerCard?.classList.add('result-winner');
+    computerCard?.classList.add('result-loser');
+  }else{
+    computerCard?.classList.add('result-winner');
+    playerCard?.classList.add('result-loser');
+  }
+}
+
 function resetToSetup(){
   started=false;
+  clearResultColors();
   stopClock();
   game=null;
   resetLocalGame();
@@ -460,20 +503,21 @@ function resetToSetup(){
   updateClockUi();
 }
 
-function finish(message){
+function finish(message,outcome=null){
   if(!started) return;
   started=false;
   stopClock();
   selectedSquare=null;
   legalTargets=[];
   setStatus(message);
+  applyResultColors(outcome);
   renderBoard();
 }
 
 async function checkGameEnd(){
   const moves=await requestLegalMoves();
   if(moves.length) return false;
-  finish('انتهت المباراة');
+  finish('انتهت المباراة',lastMove?.color==='w'?'player':lastMove?.color==='b'?'computer':null);
   return true;
 }
 
@@ -513,7 +557,7 @@ async function computerTurn(){
     moveText=chooseFallbackMove(legal);
   }
   if(!moveText){
-    finish('انتهت المباراة');
+    finish('انتهت المباراة',lastMove?.color==='w'?'player':lastMove?.color==='b'?'computer':null);
     return;
   }
 
@@ -525,7 +569,7 @@ async function computerTurn(){
 
   const legal=await requestLegalMoves();
   if(!legal.length){
-    finish('انتهت المباراة');
+    finish('انتهت المباراة',lastMove?.color==='w'?'player':lastMove?.color==='b'?'computer':null);
     return;
   }
   setStatus('دورك');
@@ -546,7 +590,7 @@ async function handleBoardClick(event){
     selectedSquare=square;
     legalTargets=legal
       .filter(move=>move.startsWith(square))
-      .map(move=>({from:move.slice(0,2),to:move.slice(2,4),uci:move}));
+      .map(legalTargetFromUci);
     renderBoard();
     return;
   }
@@ -568,7 +612,7 @@ async function handleBoardClick(event){
     selectedSquare=square;
     legalTargets=legal
       .filter(move=>move.startsWith(square))
-      .map(move=>({from:move.slice(0,2),to:move.slice(2,4),uci:move}));
+      .map(legalTargetFromUci);
   }else{
     selectedSquare=null;
     legalTargets=[];
