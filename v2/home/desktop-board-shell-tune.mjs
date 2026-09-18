@@ -1,4 +1,4 @@
-import './inline-play.mjs?v=20260918-inline-modes1';
+import './inline-play.mjs?v=20260918-computer-board-click1';
 
 const inlinePlayCss=document.createElement('link');
 inlinePlayCss.rel='stylesheet';
