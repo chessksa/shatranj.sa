@@ -25,6 +25,7 @@ let blackMs=300000;
 let lastTick=0;
 let selectedSquare=null;
 let legalTargets=[];
+let lastMove=null;
 let engine=null;
 let engineReadyPromise=null;
 let bestMoveResolve=null;
@@ -138,6 +139,7 @@ function resetLocalGame(){
   position=parseFen(START_FEN);
   moveHistory=[];
   currentTurn='w';
+  lastMove=null;
 }
 
 function applyUciMove(uci){
@@ -173,6 +175,7 @@ function applyUciMove(uci){
     }
   }
 
+  lastMove={from,to};
   moveHistory.push(move);
   currentTurn=currentTurn==='w'?'b':'w';
   return true;
@@ -272,6 +275,7 @@ function renderBoard(){
     square.type='button';
     square.className=`desktop-board-square inline-play-square ${(file+rank)%2===1?'light':'dark'}`;
     square.dataset.square=squareName;
+    if(lastMove&&(squareName===lastMove.from||squareName===lastMove.to)) square.classList.add('last-move');
     if(squareName===selectedSquare) square.classList.add('selected');
     if(legalSet.has(squareName)) square.classList.add('target');
     const piece=position.get(squareName);
