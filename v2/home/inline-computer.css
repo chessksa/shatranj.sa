@@ -176,4 +176,8 @@
   #homeBoardPreview.inline-computer-active .inline-computer-piece{
     pointer-events:none;
   }
+
+  #homeBoardPreview.inline-computer-active .inline-play-square.last-move{
+    box-shadow:inset 0 0 0 999px rgba(239,196,95,.24)!important;
+  }
 }
