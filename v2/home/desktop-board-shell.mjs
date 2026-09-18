@@ -344,7 +344,17 @@ if(desktop.matches && document.querySelector('#homeHero')){
     buildDashboard();
     bindDesktopActions();
     watchLiveData();
-    showDashboard('home');
+
+    const initialView=location.hash==='#computer'?'computer':'home';
+    showDashboard(initialView);
+
+    window.addEventListener('hashchange',()=>{
+      if(location.hash==='#computer'){
+        showDashboard('computer');
+      }else if(location.hash===''||location.hash==='#home'){
+        showDashboard('home');
+      }
+    });
   }
 
   void boot();
