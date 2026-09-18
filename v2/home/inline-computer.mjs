@@ -501,7 +501,9 @@ export function stopInlineComputer({restoreBoard=true}={}){
 
 window.addEventListener('desktop:inline-computer-stop',()=>stopInlineComputer());
 
-ensureCss();
-normalizeComputerLinks();
-const observer=new MutationObserver(()=>normalizeComputerLinks());
-observer.observe(document.documentElement,{childList:true,subtree:true});
+if(desktop.matches){
+  ensureCss();
+  normalizeComputerLinks();
+  const observer=new MutationObserver(()=>normalizeComputerLinks());
+  observer.observe(document.documentElement,{childList:true,subtree:true});
+}
