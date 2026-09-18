@@ -280,6 +280,42 @@
       }
     }
 </style>
+
+<style id="computerHorizontalCardLock">
+@media(min-width:901px){
+  body.computer-game #gamePage .side-panel,
+  body.computer-game #gamePage .panel-stack{
+    width:100%!important;
+    min-width:0!important;
+    max-width:100%!important;
+    overflow:hidden!important;
+    box-sizing:border-box!important;
+  }
+  body.computer-game #gamePage #topPlayerCard,
+  body.computer-game #gamePage #bottomPlayerCard{
+    width:100%!important;
+    min-width:0!important;
+    max-width:100%!important;
+    justify-self:stretch!important;
+    overflow:hidden!important;
+    box-sizing:border-box!important;
+  }
+  body.computer-game #gamePage .player-info{
+    min-width:0!important;
+    max-width:100%!important;
+    overflow:hidden!important;
+  }
+  body.computer-game #gamePage .name,
+  body.computer-game #gamePage .location,
+  body.computer-game #gamePage .rating{
+    min-width:0!important;
+    max-width:100%!important;
+    overflow:hidden!important;
+    text-overflow:ellipsis!important;
+    white-space:nowrap!important;
+  }
+}
+</style>
 </head>
 <body>
   <div id="mobilePullRefresh" aria-hidden="true">اسحب للتحديث</div>
@@ -406,7 +442,7 @@
       document.body.classList.add('pregame','computer-game');
       const s=document.createElement('script');
       s.type='module';
-      s.src='play-computer.js?v=20260918-card-width-lock1';
+      s.src='play-computer.js?v=20260918-horizontal-final2';
       document.body.appendChild(s);
     }else if(hasGame){
       document.body.classList.add('live-game');
