@@ -681,6 +681,7 @@ function bindPanelOnce(){
 
 async function enterInlinePlay({gameId=null}={}){
   if(!desktop.matches) return;
+  window.dispatchEvent(new CustomEvent('desktop:inline-computer-stop'));
   normalizePlayLinks();
   if(!ensurePanel()||!ensureBoard()) return;
 
@@ -785,6 +786,8 @@ function boot(){
     },50);
   }
 }
+
+window.addEventListener('desktop:inline-play-stop',()=>exitInlinePlay());
 
 window.addEventListener('pagehide',()=>{
   if(polling) cancelMatchmaking().catch(()=>{});
