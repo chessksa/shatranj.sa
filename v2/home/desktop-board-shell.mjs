@@ -1,4 +1,4 @@
-import { mountInlineComputer, stopInlineComputer } from './inline-computer.mjs?v=20260918-inline-computer1';
+import { mountInlineComputer, stopInlineComputer } from './inline-computer.mjs?v=20260918-controls-fix1';
 if(!document.querySelector('link[data-desktop-board-shell]')){
   const css=document.createElement('link');
   css.rel='stylesheet';
