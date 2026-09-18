@@ -182,34 +182,23 @@
   }
 
 
-  /* Legal move choices: green for a normal move, red for a capture. */
+  /* Legal move choices: one subtle gray dot for every available square. */
   #homeBoardPreview.inline-computer-active .inline-play-square.move-option::after,
   #homeBoardPreview.inline-computer-active .inline-play-square.capture-option::after{
     content:"";
     position:absolute;
     left:50%;
     top:50%;
+    width:20%;
+    height:20%;
     transform:translate(-50%,-50%);
+    border:0;
+    border-radius:50%;
+    background:rgba(92,96,98,.62);
+    box-shadow:0 1px 3px rgba(0,0,0,.16);
     pointer-events:none;
     z-index:5;
     box-sizing:border-box;
-  }
-
-  #homeBoardPreview.inline-computer-active .inline-play-square.move-option::after{
-    width:24%;
-    height:24%;
-    border-radius:50%;
-    background:rgba(64,201,103,.78);
-    box-shadow:0 0 0 5px rgba(64,201,103,.12);
-  }
-
-  #homeBoardPreview.inline-computer-active .inline-play-square.capture-option::after{
-    width:72%;
-    height:72%;
-    border-radius:50%;
-    border:4px solid rgba(239,79,79,.86);
-    background:rgba(239,79,79,.10);
-    box-shadow:0 0 0 4px rgba(239,79,79,.08);
   }
 
   /* Result colors: winner green, loser red. */
