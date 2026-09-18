@@ -77,7 +77,6 @@ let computerReviewFens = [];
 let computerReviewIndex = -1;
 let computerMoveReviewMode = false;
 let lastMove = null;
-let computerPlayerCardWidthPx = 0;
 
 function toast(message, ms = 2600) {
   if (!gameToast) return;
@@ -880,17 +879,15 @@ function handleBoardInput(event) {
   return true;
 }
 
-function captureComputerPlayerCardWidth() {
-  const widths = [topPlayerCard, bottomPlayerCard]
-    .map((card) => Math.round(card?.getBoundingClientRect?.().width || 0))
-    .filter((width) => width > 0);
-  if (widths.length) computerPlayerCardWidthPx = Math.min(...widths);
-}
-
 function lockComputerPlayerCards() {
   const panelStack = document.querySelector('.panel-stack');
   if (panelStack) {
     panelStack.style.setProperty('display', 'grid', 'important');
+    panelStack.style.setProperty('width', '100%', 'important');
+    panelStack.style.setProperty('min-width', '0', 'important');
+    panelStack.style.setProperty('max-width', '100%', 'important');
+    panelStack.style.setProperty('overflow', 'hidden', 'important');
+    panelStack.style.setProperty('box-sizing', 'border-box', 'important');
     panelStack.style.setProperty('grid-template-rows', 'auto 150px 100px 150px', 'important');
     panelStack.style.setProperty('grid-auto-rows', '0', 'important');
     panelStack.style.setProperty('align-content', 'space-between', 'important');
@@ -914,13 +911,10 @@ function lockComputerPlayerCards() {
     card.style.setProperty('min-height', '150px', 'important');
     card.style.setProperty('max-height', '150px', 'important');
     card.style.setProperty('flex', '0 0 150px', 'important');
-    if (computerPlayerCardWidthPx > 0) {
-      const fixedWidth = `${computerPlayerCardWidthPx}px`;
-      card.style.setProperty('width', fixedWidth, 'important');
-      card.style.setProperty('min-width', fixedWidth, 'important');
-      card.style.setProperty('max-width', fixedWidth, 'important');
-      card.style.setProperty('justify-self', 'end', 'important');
-    }
+    card.style.setProperty('width', '100%', 'important');
+    card.style.setProperty('min-width', '0', 'important');
+    card.style.setProperty('max-width', '100%', 'important');
+    card.style.setProperty('justify-self', 'stretch', 'important');
     card.style.setProperty('overflow', 'hidden', 'important');
     card.style.setProperty('box-sizing', 'border-box', 'important');
   });
@@ -929,7 +923,6 @@ function lockComputerPlayerCards() {
 function setPlayingLayout(levelKey, minutes, player = null) {
   const level = LEVELS[levelKey];
   const initialMs = minutes * 60_000;
-  captureComputerPlayerCardWidth();
   document.body.classList.remove('pregame');
   document.body.classList.add('live-game', 'computer-game');
   lockComputerPlayerCards();
