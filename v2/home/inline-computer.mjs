@@ -139,7 +139,7 @@ function orderedSquares(){
 function ensureBoard(){
   preview=document.getElementById('homeBoardPreview');
   if(!preview) return false;
-  preview.setAttribute('href','#computer');
+  preview.removeAttribute('href');
   preview.classList.add('inline-play-active','inline-computer-active');
   let grid=preview.querySelector('#inlineComputerBoardGrid');
   if(!grid){
@@ -317,7 +317,11 @@ function bindPanel(){
     whiteMs=blackMs=selectedMinutes*60000;
     updateClockUi();
   }));
-  host.querySelector('#inlineComputerStart')?.addEventListener('click',()=>void startGame());
+  host.querySelector('#inlineComputerStart')?.addEventListener('click',event=>{
+    event.preventDefault();
+    event.stopPropagation();
+    void startGame();
+  });
   host.querySelector('#inlineComputerNew')?.addEventListener('click',resetToSetup);
   host.querySelector('#inlineComputerResign')?.addEventListener('click',()=>finish('استسلمت — فاز الكمبيوتر'));
 }
@@ -329,9 +333,11 @@ async function startGame(){
     setStatus(error.message||'تعذر بدء المباراة',true);
     return;
   }
-  window.dispatchEvent(new CustomEvent('desktop:inline-play-stop'));
   game=new window.Chess();
   started=true;
+  const url=new URL(location.href);
+  url.hash='#computer';
+  history.replaceState({},'',`${url.pathname}${url.search}${url.hash}`);
   selectedSquare=null;
   legalTargets=[];
   whiteMs=blackMs=selectedMinutes*60000;
