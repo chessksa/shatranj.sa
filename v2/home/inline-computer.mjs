@@ -308,7 +308,7 @@ function startClock(){
   stopClock();
   lastTick=Date.now();
   clockTimer=setInterval(()=>{
-    if(!started||!game) return;
+    if(!started) return;
     const now=Date.now();
     const delta=now-lastTick;
     lastTick=now;
