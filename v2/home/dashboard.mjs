@@ -1,6 +1,6 @@
 import { rpc, supabase } from '../platform/api.mjs';
 import './public-home.mjs?v=20260912-home-polish1';
-import './desktop-board-shell.mjs?v=20260918-move-options-result1';
+import './desktop-board-shell.mjs?v=20260918-gray-dots1';
 import './desktop-board-shell-tune.mjs?v=20260918-computer-board-click1';
 
 const sleep=(ms)=>new Promise(resolve=>setTimeout(resolve,ms));
