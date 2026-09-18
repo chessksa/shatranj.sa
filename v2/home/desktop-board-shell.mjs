@@ -1,10 +1,10 @@
-import { mountInlineComputer, stopInlineComputer } from './inline-computer.mjs?v=20260918-controls-fix1';
+import { mountInlineComputer, stopInlineComputer } from './inline-computer.mjs?v=20260918-compact-controls2';
 if(!document.querySelector('link[data-desktop-board-shell]')){
   const css=document.createElement('link');
   css.rel='stylesheet';
   css.dataset.desktopBoardShell='1';
   const url=new URL('./desktop-board-shell.css',import.meta.url);
-  url.searchParams.set('v','20260918-fixed-board4');
+  url.searchParams.set('v','20260918-computer-head2');
   css.href=url.href;
   document.head.appendChild(css);
 }
@@ -219,6 +219,7 @@ if(desktop.matches && document.querySelector('#homeHero')){
     const body=document.getElementById('desktopDashboardViewBody');
     if(!home||!view||!body)return;
 
+    view.classList.toggle('computer-view',id==='computer');
     restoreMovedContent();
     body.replaceChildren();
 
