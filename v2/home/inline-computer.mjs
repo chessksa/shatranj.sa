@@ -13,6 +13,9 @@ let started=false;
 let selectedLevel='medium';
 let selectedMinutes=5;
 let game=null;
+let position=parseFen(START_FEN);
+let moveHistory=[];
+let currentTurn='w';
 let preview=null;
 let board=null;
 let host=null;
@@ -25,6 +28,8 @@ let legalTargets=[];
 let engine=null;
 let engineReadyPromise=null;
 let bestMoveResolve=null;
+let legalMoveResolve=null;
+let legalMoveBuffer=[];
 
 function ensureCss(){
   if(document.getElementById('inlineComputerCss')) return;
@@ -40,24 +45,6 @@ function ensureCss(){
     base.href=new URL('./inline-play.css?v=20260918-inline-play1',import.meta.url).href;
     document.head.appendChild(base);
   }
-}
-
-function loadChess(){
-  if(window.Chess) return Promise.resolve(window.Chess);
-  return new Promise((resolve,reject)=>{
-    const existing=document.querySelector('script[data-inline-computer-chess]');
-    if(existing){
-      existing.addEventListener('load',()=>resolve(window.Chess),{once:true});
-      existing.addEventListener('error',()=>reject(new Error('تعذر تحميل محرك القواعد')),{once:true});
-      return;
-    }
-    const script=document.createElement('script');
-    script.dataset.inlineComputerChess='1';
-    script.src='https://cdnjs.cloudflare.com/ajax/libs/chess.js/0.10.3/chess.min.js';
-    script.onload=()=>resolve(window.Chess);
-    script.onerror=()=>reject(new Error('تعذر تحميل محرك القواعد'));
-    document.head.appendChild(script);
-  });
 }
 
 function initEngine(){
@@ -92,6 +79,17 @@ function initEngine(){
           const done=bestMoveResolve;
           bestMoveResolve=null;
           done(move);
+        }else if(legalMoveResolve){
+          const legalMatch=msg.match(/^([a-h][1-8][a-h][1-8][qrbn]?):\s*\d+/i);
+          if(legalMatch){
+            legalMoveBuffer.push(legalMatch[1].toLowerCase());
+          }else if(/^Nodes searched:/i.test(msg)){
+            const done=legalMoveResolve;
+            const moves=[...legalMoveBuffer];
+            legalMoveResolve=null;
+            legalMoveBuffer=[];
+            done(moves);
+          }
         }
       }
     };
@@ -134,6 +132,92 @@ function parseFen(fen){
 
 function orderedSquares(){
   return [8,7,6,5,4,3,2,1].flatMap(rank=>['a','b','c','d','e','f','g','h'].map(file=>`${file}${rank}`));
+}
+
+function resetLocalGame(){
+  position=parseFen(START_FEN);
+  moveHistory=[];
+  currentTurn='w';
+}
+
+function applyUciMove(uci){
+  const move=String(uci||'').toLowerCase();
+  if(!/^[a-h][1-8][a-h][1-8][qrbn]?$/.test(move)) return false;
+  const from=move.slice(0,2);
+  const to=move.slice(2,4);
+  const promotion=move[4]||'';
+  const piece=position.get(from);
+  if(!piece) return false;
+
+  const target=position.get(to);
+  if(piece.type==='p' && from[0]!==to[0] && !target){
+    const capturedRank=piece.color==='w'?Number(to[1])-1:Number(to[1])+1;
+    position.delete(`${to[0]}${capturedRank}`);
+  }
+
+  position.delete(from);
+  position.set(to,{color:piece.color,type:promotion||piece.type});
+
+  if(piece.type==='k'){
+    const castles={
+      e1g1:['h1','f1'], e1c1:['a1','d1'],
+      e8g8:['h8','f8'], e8c8:['a8','d8'],
+    };
+    const rookMove=castles[`${from}${to}`];
+    if(rookMove){
+      const rook=position.get(rookMove[0]);
+      if(rook){
+        position.delete(rookMove[0]);
+        position.set(rookMove[1],rook);
+      }
+    }
+  }
+
+  moveHistory.push(move);
+  currentTurn=currentTurn==='w'?'b':'w';
+  return true;
+}
+
+function currentPositionFen(){
+  const rows=[];
+  for(let rank=8;rank>=1;rank-=1){
+    let row='';
+    let empty=0;
+    for(const file of ['a','b','c','d','e','f','g','h']){
+      const piece=position.get(`${file}${rank}`);
+      if(!piece){ empty+=1; continue; }
+      if(empty){ row+=String(empty); empty=0; }
+      const token=piece.color==='w'?piece.type.toUpperCase():piece.type;
+      row+=token;
+    }
+    if(empty) row+=String(empty);
+    rows.push(row);
+  }
+  return `${rows.join('/')} ${currentTurn} - - 0 ${Math.floor(moveHistory.length/2)+1}`;
+}
+
+async function requestLegalMoves(){
+  const ready=await initEngine();
+  if(!ready||!engine) return [];
+  if(legalMoveResolve) return [];
+  const history=moveHistory.length?` moves ${moveHistory.join(' ')}`:'';
+  engine.postMessage(`position startpos${history}`);
+  return new Promise(resolve=>{
+    const timer=setTimeout(()=>{
+      if(legalMoveResolve){
+        legalMoveResolve=null;
+        const moves=[...legalMoveBuffer];
+        legalMoveBuffer=[];
+        resolve(moves);
+      }
+    },2500);
+    legalMoveBuffer=[];
+    legalMoveResolve=moves=>{
+      clearTimeout(timer);
+      resolve(moves);
+    };
+    engine.postMessage('go perft 1');
+  });
 }
 
 function ensureBoard(){
@@ -179,7 +263,6 @@ function restoreStaticBoard(){
 
 function renderBoard(){
   if(!board) return;
-  const position=parseFen(game?.fen?.()||START_FEN);
   const fragment=document.createDocumentFragment();
   const legalSet=new Set(legalTargets.map(move=>move.to));
   orderedSquares().forEach(squareName=>{
@@ -229,7 +312,7 @@ function startClock(){
     const now=Date.now();
     const delta=now-lastTick;
     lastTick=now;
-    if(game.turn()==='w') whiteMs=Math.max(0,whiteMs-delta);
+    if(currentTurn==='w') whiteMs=Math.max(0,whiteMs-delta);
     else blackMs=Math.max(0,blackMs-delta);
     updateClockUi();
     if(whiteMs<=0) finish('انتهى وقتك — فاز الكمبيوتر');
@@ -327,35 +410,46 @@ function bindPanel(){
 }
 
 async function startGame(){
-  try{
-    await loadChess();
-  }catch(error){
-    setStatus(error.message||'تعذر بدء المباراة',true);
-    return;
-  }
-  game=new window.Chess();
+  if(started) return;
   started=true;
-  const url=new URL(location.href);
-  url.hash='#computer';
-  history.replaceState({},'',`${url.pathname}${url.search}${url.hash}`);
+  resetLocalGame();
   selectedSquare=null;
   legalTargets=[];
   whiteMs=blackMs=selectedMinutes*60000;
-  const setup=host.querySelector('#inlineComputerSetup');
-  const actions=host.querySelector('#inlineComputerActions');
+
+  const url=new URL(location.href);
+  url.hash='#computer';
+  history.replaceState({},'',`${url.pathname}${url.search}${url.hash}`);
+
+  const setup=host?.querySelector('#inlineComputerSetup');
+  const actions=host?.querySelector('#inlineComputerActions');
   if(setup) setup.hidden=true;
   if(actions) actions.hidden=false;
-  setStatus(`دورك — مستوى ${LEVELS[selectedLevel].label}`);
+
   renderBoard();
   updateClockUi();
-  startClock();
-  void initEngine();
+  setStatus('جاري تجهيز الكمبيوتر…');
+
+  try{
+    const ready=await initEngine();
+    if(!ready) throw new Error('تعذر تشغيل محرك الكمبيوتر');
+    lastTick=Date.now();
+    startClock();
+    setStatus(`دورك — مستوى ${LEVELS[selectedLevel].label}`);
+  }catch(error){
+    started=false;
+    stopClock();
+    if(setup) setup.hidden=false;
+    if(actions) actions.hidden=true;
+    setStatus(error.message||'تعذر بدء المباراة',true);
+  }
 }
 
 function resetToSetup(){
   started=false;
   stopClock();
   game=null;
+  resetLocalGame();
   selectedSquare=null;
   legalTargets=[];
   whiteMs=blackMs=selectedMinutes*60000;
@@ -376,25 +470,15 @@ function finish(message){
   renderBoard();
 }
 
-function checkGameEnd(){
-  if(!game) return false;
-  if(game.in_checkmate()){
-    finish(game.turn()==='b'?'كش مات — فزت':'كش مات — فاز الكمبيوتر');
-    return true;
-  }
-  if(game.in_draw()){
-    finish('انتهت المباراة بالتعادل');
-    return true;
-  }
-  return false;
+async function checkGameEnd(){
+  const moves=await requestLegalMoves();
+  if(moves.length) return false;
+  finish('انتهت المباراة');
+  return true;
 }
 
-function chooseFallbackMove(){
-  const moves=game.moves({verbose:true});
-  if(!moves.length) return null;
-  const captures=moves.filter(move=>move.captured);
-  if(selectedLevel==='hard'&&captures.length) return captures[Math.floor(Math.random()*captures.length)];
-  if(selectedLevel==='medium'&&captures.length&&Math.random()<0.7) return captures[Math.floor(Math.random()*captures.length)];
+function chooseFallbackMove(moves){
+  if(!Array.isArray(moves)||!moves.length) return null;
   return moves[Math.floor(Math.random()*moves.length)];
 }
 
@@ -403,7 +487,8 @@ async function askEngineMove(){
   if(!ready||!engine) return null;
   const level=LEVELS[selectedLevel];
   engine.postMessage(`setoption name Skill Level value ${level.skill}`);
-  engine.postMessage(`position fen ${game.fen()}`);
+  const history=moveHistory.length?` moves ${moveHistory.join(' ')}`:'';
+  engine.postMessage(`position startpos${history}`);
   return new Promise(resolve=>{
     const timer=setTimeout(()=>{
       if(bestMoveResolve){ bestMoveResolve=null; resolve(null); }
@@ -417,55 +502,73 @@ async function askEngineMove(){
 }
 
 async function computerTurn(){
-  if(!started||!game||game.turn()!=='b') return;
+  if(!started||currentTurn!=='b') return;
   setStatus('الكمبيوتر يفكر…');
   let moveText=null;
   try{ moveText=await askEngineMove(); }catch{}
-  if(!started||!game||game.turn()!=='b') return;
-  let move=null;
-  if(moveText&&moveText.length>=4){
-    move=game.move({from:moveText.slice(0,2),to:moveText.slice(2,4),promotion:moveText[4]||'q'});
+  if(!started||currentTurn!=='b') return;
+
+  if(!moveText||moveText==='(none)'||moveText==='0000'){
+    const legal=await requestLegalMoves();
+    moveText=chooseFallbackMove(legal);
   }
-  if(!move){
-    const fallback=chooseFallbackMove();
-    if(fallback) game.move({from:fallback.from,to:fallback.to,promotion:fallback.promotion||'q'});
+  if(!moveText){
+    finish('انتهت المباراة');
+    return;
   }
+
+  applyUciMove(moveText);
   selectedSquare=null;
   legalTargets=[];
   renderBoard();
-  if(checkGameEnd()) return;
   lastTick=Date.now();
+
+  const legal=await requestLegalMoves();
+  if(!legal.length){
+    finish('انتهت المباراة');
+    return;
+  }
   setStatus('دورك');
 }
 
-function handleBoardClick(event){
+async function handleBoardClick(event){
   event.preventDefault();
-  if(!active||!started||!game||game.turn()!=='w') return;
+  event.stopPropagation();
+  if(!active||!started||currentTurn!=='w') return;
+
   const square=event.target.closest('[data-square]')?.dataset.square;
   if(!square) return;
+
   if(!selectedSquare){
-    const piece=game.get(square);
+    const piece=position.get(square);
     if(!piece||piece.color!=='w') return;
+    const legal=await requestLegalMoves();
     selectedSquare=square;
-    legalTargets=game.moves({square,verbose:true});
+    legalTargets=legal
+      .filter(move=>move.startsWith(square))
+      .map(move=>({from:move.slice(0,2),to:move.slice(2,4),uci:move}));
     renderBoard();
     return;
   }
+
   const candidate=legalTargets.find(move=>move.to===square);
   if(candidate){
-    game.move({from:selectedSquare,to:square,promotion:candidate.promotion||'q'});
+    applyUciMove(candidate.uci);
     selectedSquare=null;
     legalTargets=[];
     renderBoard();
-    if(checkGameEnd()) return;
     lastTick=Date.now();
     void computerTurn();
     return;
   }
-  const piece=game.get(square);
+
+  const piece=position.get(square);
   if(piece?.color==='w'){
+    const legal=await requestLegalMoves();
     selectedSquare=square;
-    legalTargets=game.moves({square,verbose:true});
+    legalTargets=legal
+      .filter(move=>move.startsWith(square))
+      .map(move=>({from:move.slice(0,2),to:move.slice(2,4),uci:move}));
   }else{
     selectedSquare=null;
     legalTargets=[];
@@ -494,6 +597,7 @@ export function stopInlineComputer({restoreBoard=true}={}){
   active=false;
   started=false;
   stopClock();
+  resetLocalGame();
   selectedSquare=null;
   legalTargets=[];
   if(engine){
@@ -501,6 +605,8 @@ export function stopInlineComputer({restoreBoard=true}={}){
     engine=null;
     engineReadyPromise=null;
     bestMoveResolve=null;
+    legalMoveResolve=null;
+    legalMoveBuffer=[];
   }
   if(restoreBoard) restoreStaticBoard();
 }
