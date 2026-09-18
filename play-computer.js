@@ -77,6 +77,7 @@ let computerReviewFens = [];
 let computerReviewIndex = -1;
 let computerMoveReviewMode = false;
 let lastMove = null;
+let computerSideWidthPx = 0;
 
 function toast(message, ms = 2600) {
   if (!gameToast) return;
@@ -879,8 +880,29 @@ function handleBoardInput(event) {
   return true;
 }
 
+function captureComputerSideWidth() {
+  const sidePanel = document.querySelector('.side-panel');
+  const width = Math.round(sidePanel?.getBoundingClientRect?.().width || 0);
+  if (width > 0) computerSideWidthPx = width;
+}
+
 function lockComputerPlayerCards() {
+  const layout = document.querySelector('#gamePage .layout');
+  const sidePanel = document.querySelector('.side-panel');
   const panelStack = document.querySelector('.panel-stack');
+  if (computerSideWidthPx > 0) {
+    const fixedWidth = `${computerSideWidthPx}px`;
+    if (layout) {
+      layout.style.setProperty('grid-template-columns', `minmax(0,1fr) ${fixedWidth}`, 'important');
+    }
+    [sidePanel, panelStack].forEach((node) => {
+      if (!node) return;
+      node.style.setProperty('width', fixedWidth, 'important');
+      node.style.setProperty('min-width', fixedWidth, 'important');
+      node.style.setProperty('max-width', fixedWidth, 'important');
+      node.style.setProperty('box-sizing', 'border-box', 'important');
+    });
+  }
   if (panelStack) {
     panelStack.style.setProperty('display', 'grid', 'important');
     panelStack.style.setProperty('width', '100%', 'important');
@@ -923,6 +945,7 @@ function lockComputerPlayerCards() {
 function setPlayingLayout(levelKey, minutes, player = null) {
   const level = LEVELS[levelKey];
   const initialMs = minutes * 60_000;
+  captureComputerSideWidth();
   document.body.classList.remove('pregame');
   document.body.classList.add('live-game', 'computer-game');
   lockComputerPlayerCards();
