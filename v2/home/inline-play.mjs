@@ -748,7 +748,13 @@ function handleEntryClick(event){
   const playNav=event.target.closest('[data-desktop-nav="play"]');
   const quickPlay=event.target.closest('[data-tune-action="play"]');
   const previewClick=event.target.closest('#homeBoardPreview');
+  const computerBoardClick=event.target.closest('#inlineComputerBoardGrid')
+    || document.getElementById('homeBoardPreview')?.classList.contains('inline-computer-active')
+    || location.hash==='#computer';
 
+  /* Computer mode owns every click inside its board. Never hand those
+     clicks to normal matchmaking/play navigation. */
+  if(previewClick&&computerBoardClick) return;
   if(active&&previewClick) return;
 
   if(playNav||quickPlay||previewClick){
