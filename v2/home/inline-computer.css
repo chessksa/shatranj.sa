@@ -7,75 +7,173 @@
     gap:12px;
     overflow:hidden;
   }
+
+  /* Respect the interface state. The shared inline-play stylesheet sets
+     display:grid on action groups, so computer-mode hidden sections must win. */
+  .inline-computer-panel [hidden]{
+    display:none!important;
+  }
+
   .inline-computer-panel .inline-play-player-card{
     min-width:0;
     width:100%;
+    height:150px;
+    min-height:150px;
+    max-height:150px;
+    padding:14px 15px;
     box-sizing:border-box;
+    overflow:hidden;
   }
+
+  .inline-computer-panel .inline-play-player-copy{
+    min-width:0;
+    overflow:hidden;
+  }
+
+  .inline-computer-panel .inline-play-player-name,
+  .inline-computer-panel .inline-play-player-meta,
+  .inline-computer-panel .inline-play-status{
+    max-width:100%;
+    overflow:hidden;
+    text-overflow:ellipsis;
+    white-space:nowrap;
+  }
+
   .inline-computer-setup{
     min-height:0;
+    width:100%;
     padding:14px;
     border:1px solid rgba(224,181,103,.34);
     border-radius:14px;
-    background:rgba(3,49,54,.82);
-    display:flex;
-    flex-direction:column;
-    justify-content:center;
-    gap:10px;
+    background:linear-gradient(145deg,rgba(6,59,63,.94),rgba(3,45,49,.94));
+    box-shadow:0 12px 28px rgba(0,0,0,.14),inset 0 1px 0 rgba(255,255,255,.03);
+    display:grid;
+    grid-template-rows:auto 52px auto 52px 48px;
+    align-content:center;
+    gap:9px;
     overflow:hidden;
+    box-sizing:border-box;
   }
+
   .inline-computer-label{
+    margin:0;
     color:#efcf7c;
-    font:900 12px Arial,sans-serif;
+    font:900 12px/1.2 Arial,sans-serif;
+    text-align:right;
   }
+
   .inline-computer-options{
     display:grid;
     grid-template-columns:repeat(3,minmax(0,1fr));
     gap:7px;
+    min-width:0;
   }
+
   .inline-computer-options button{
     min-width:0;
-    min-height:44px;
+    height:52px;
+    min-height:52px;
     padding:5px 4px;
-    border:1px solid rgba(224,181,103,.30);
+    border:1px solid rgba(102,172,173,.34);
     border-radius:10px;
-    background:rgba(2,34,38,.72);
+    background:rgba(2,47,51,.82);
     color:#f4efe6;
-    font:800 11px Arial,sans-serif;
+    font:800 11px/1.15 Arial,sans-serif;
     cursor:pointer;
+    overflow:hidden;
   }
+
   .inline-computer-options button small{
     display:block;
-    margin-top:3px;
+    margin-top:4px;
     color:#d9b35f;
     font-size:9px;
+    line-height:1;
   }
+
   .inline-computer-options button.active{
-    border-color:#e0b567;
-    box-shadow:inset 0 0 0 1px rgba(224,181,103,.45);
-    background:rgba(224,181,103,.12);
-    color:#ffd982;
+    border-color:#efca72;
+    background:linear-gradient(135deg,#efca72,#d9aa4f);
+    color:#173536;
+    box-shadow:none;
   }
+
+  .inline-computer-options button.active small{
+    color:#173536;
+  }
+
   .inline-computer-start{
-    min-height:46px;
+    width:100%;
+    height:48px;
+    min-height:48px;
     border:0;
     border-radius:11px;
     background:linear-gradient(135deg,#efca72,#d9aa4f);
     color:#173536;
-    font:900 13px Arial,sans-serif;
+    font:900 13px/1 Arial,sans-serif;
     cursor:pointer;
   }
+
   .inline-computer-panel .inline-play-actions{
     min-height:0;
-    border:1px solid rgba(224,181,103,.28);
-    border-radius:13px;
+    width:100%;
+    align-self:center;
+    padding:10px;
+    border:1px solid rgba(102,172,173,.34);
+    border-radius:14px;
+    background:linear-gradient(145deg,rgba(6,59,63,.94),rgba(3,45,49,.94));
+    display:grid;
+    grid-template-columns:repeat(2,minmax(0,1fr));
+    gap:8px;
+    box-sizing:border-box;
     overflow:hidden;
-    grid-template-columns:1fr 1fr;
   }
+
   .inline-computer-panel .inline-play-actions button{
-    min-height:64px;
+    height:58px;
+    min-height:58px;
+    padding:0 8px;
+    border:1px solid rgba(102,172,173,.34);
+    border-radius:11px;
+    background:rgba(2,47,51,.82);
+    color:#f4efe6;
+    font:900 12px/1 Arial,sans-serif;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    gap:7px;
   }
-  .inline-computer-panel .inline-play-status.error{color:#ff8d8d}
-  #homeBoardPreview.inline-computer-active{cursor:default!important}
-  #homeBoardPreview.inline-computer-active .inline-computer-piece{pointer-events:none}
+
+  .inline-computer-panel .inline-play-actions button::before{
+    display:inline-grid;
+    place-items:center;
+    width:24px;
+    height:24px;
+    font:900 20px/1 Arial,sans-serif;
+    color:#efca72;
+  }
+
+  #inlineComputerNew::before{
+    content:"↻";
+  }
+
+  #inlineComputerResign::before{
+    content:"⚑";
+  }
+
+  #inlineComputerResign{
+    color:#ffb0aa;
+  }
+
+  .inline-computer-panel .inline-play-status.error{
+    color:#ff8d8d;
+  }
+
+  #homeBoardPreview.inline-computer-active{
+    cursor:default!important;
+  }
+
+  #homeBoardPreview.inline-computer-active .inline-computer-piece{
+    pointer-events:none;
+  }
 }
