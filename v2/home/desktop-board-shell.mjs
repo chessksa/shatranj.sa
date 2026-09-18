@@ -1,4 +1,4 @@
-import { mountInlineComputer, stopInlineComputer } from './inline-computer.mjs?v=20260918-start-inline-fix1';
+import { mountInlineComputer, stopInlineComputer } from './inline-computer.mjs?v=20260918-local-stockfish1';
 if(!document.querySelector('link[data-desktop-board-shell]')){
   const css=document.createElement('link');
   css.rel='stylesheet';
