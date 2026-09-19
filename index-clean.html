@@ -936,8 +936,8 @@ footer{
       <div id="siteNotificationHost" class="header-notification-host"></div>
 
       <button id="navLogout" class="nav-logout header-action header-tile" type="button" hidden>خروج</button>
-      <a href="#register" id="navSignup" class="nav-account header-action header-tile">تسجيل</a>
-      <a href="#register" id="navAccount" class="nav-account header-action header-tile">تسجيل الدخول</a>
+      <button type="button" id="navSignup" class="nav-account header-action header-tile">تسجيل</button>
+      <button type="button" id="navAccount" class="nav-account header-action header-tile">تسجيل الدخول</button>
     </div>
   </div>
 
@@ -1968,7 +1968,7 @@ function renderAccount(){
     $('#accountPanel').hidden=true;
     $('#resetPasswordForm').hidden=false;
     $('#navAccount').textContent='تغيير كلمة المرور';
-    $('#navAccount').href='#register';
+    delete $('#navAccount').dataset.href;
     $('#navLogout').hidden=true;
     const dashboardNav=$('#dashboardNav');
     if(dashboardNav) dashboardNav.href='#register';
@@ -2000,7 +2000,7 @@ function renderAccount(){
   const navSignup=$('#navSignup');
   if(loggedIn){
     $('#navAccount').textContent='لوحة التحكم';
-    $('#navAccount').href='profile.html';
+    $('#navAccount').dataset.href='profile.html';
     $('#navAccount').hidden=true;
     $('#navLogout').hidden=false;
     if(navSignup) navSignup.hidden=true;
@@ -2035,15 +2035,18 @@ async function refreshAuthUI(session){
 }
 
 function openAuth(mode){
-  switchAuthTab(mode);
   const section=document.getElementById('register');
-  if(section){
-    section.hidden=false;
-    section.scrollIntoView({behavior:'smooth',block:'start'});
-  }
+  const guest=document.getElementById('guestAuth');
+  if(section) section.hidden=false;
+  if(guest) guest.hidden=false;
+  switchAuthTab(mode);
+  requestAnimationFrame(()=>section?.scrollIntoView({behavior:'smooth',block:'start'}));
 }
-$('#navSignup')?.addEventListener('click',event=>{ event.preventDefault(); openAuth('signup'); });
-$('#navAccount')?.addEventListener('click',event=>{ event.preventDefault(); openAuth('login'); });
+document.getElementById('navSignup')?.addEventListener('click',()=>openAuth('signup'));
+document.getElementById('navAccount')?.addEventListener('click',()=>{
+  if(currentSession){ location.href='profile.html'; return; }
+  openAuth('login');
+});
 
 /* إنشاء الحساب */
 $('#signupRegion').addEventListener('change',async()=>{
