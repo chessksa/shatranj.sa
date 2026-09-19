@@ -29,7 +29,7 @@ html,body{margin:0;min-height:100%;background:#042628;color:#f4eddc;font-family:
     console.warn('تعذر تنظيف التخزين المؤقت القديم',error);
   }
 
-  const stamp='20260918-gray-dot2';
+  const stamp='20260920-guest-auth1';
   const runtimeVersion=stamp+'-'+Date.now();
   const response=await fetch('./index-app.html?v='+runtimeVersion,{cache:'no-store'});
   if(!response.ok) throw new Error('index source '+response.status);
@@ -232,6 +232,30 @@ async function loadCurrentMatchesCount(){`;
   if(!html.includes('v2/site/shell.mjs')){
     html=html.replace('</body>','<script type="module" src="v2/site/shell.mjs?v='+runtimeVersion+'"><\/script></body>');
   }
+
+  // Guest auth header fix: always expose both actions to visitors.
+  html=html.replace(
+    '<a href="#register" id="navAccount" class="nav-account header-action header-tile">تسجيل الدخول</a>',
+    '<a href="#register" id="navSignup" class="nav-account header-action header-tile">تسجيل</a><a href="#register" id="navAccount" class="nav-account header-action header-tile">تسجيل الدخول</a>'
+  );
+  html=html.replace('</head>','<style id="guestAuthHeaderFix">#navSignup[hidden]{display:none!important}</style></head>');
+  html=html.replace(
+    "  $('#headerMember').hidden=!loggedIn;\n  $('#navAccount').hidden=loggedIn;",
+    "  $('#headerMember').hidden=!loggedIn;\n  $('#navAccount').hidden=loggedIn;\n  const navSignup=$('#navSignup'); if(navSignup) navSignup.hidden=loggedIn;"
+  );
+  html=html.replace(
+    "    $('#navAccount').hidden=false;\n    $('#guestAuth').hidden=true;",
+    "    $('#navAccount').hidden=false;\n    const navSignup=$('#navSignup'); if(navSignup) navSignup.hidden=true;\n    $('#guestAuth').hidden=true;"
+  );
+  html=html.replace(
+    "    $('#navAccount').hidden=true;\n    $('#navLogout').hidden=false;",
+    "    $('#navAccount').hidden=true;\n    const navSignup=$('#navSignup'); if(navSignup) navSignup.hidden=true;\n    $('#navLogout').hidden=false;"
+  );
+  html=html.replace(
+    "    $('#navAccount').hidden=false;\n    $('#navLogout').hidden=true;",
+    "    $('#navAccount').hidden=false;\n    const navSignup=$('#navSignup'); if(navSignup) navSignup.hidden=false;\n    $('#navLogout').hidden=true;"
+  );
+  html=html.replace('</body>','<script>document.addEventListener("click",function(e){const a=e.target.closest("#navSignup");if(!a)return;setTimeout(function(){const t=document.querySelector("[data-tab=signup],#signupTab");if(t)t.click();},0);});<\/script></body>');
 
   document.open();
   document.write(html);
