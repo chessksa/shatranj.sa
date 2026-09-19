@@ -902,8 +902,84 @@ footer{
 }
 </style>
 <link rel="stylesheet" href="home-theme.css?v=20260909-tickergap8">
-<link rel="stylesheet" href="home-clean.css?v=20260920-clean3">
-<link rel="stylesheet" href="home-clean-auth.css?v=20260920-clean3">
+<style id="mobileHeroTitleOneLine">
+@media(max-width:600px){
+  .home-hero h1{
+    width:100%!important;
+    max-width:100%!important;
+    padding-inline:8px!important;
+    white-space:nowrap!important;
+    font-size:clamp(17px,5.2vw,25px)!important;
+    text-align:center!important;
+  }
+  .home-hero h1 span{display:inline!important}
+}
+</style>
+<style id="hiddenNavAccountFix">
+#navAccount[hidden],#navSignup[hidden]{display:none!important}
+</style>
+<style id="welcomeTickerInlineStyles">
+.welcome-ticker{width:100%;height:34px;display:flex;align-items:center;overflow:hidden;background:#0a302f;color:#f7f3e7;border-top:0;border-bottom:1px solid rgba(197,163,77,.55);position:relative;z-index:19;flex:none;direction:rtl}
+.welcome-ticker-label{flex:0 0 auto;height:100%;display:flex;align-items:center;padding:0 18px;white-space:nowrap;background:#0d3b39;color:#efcf7c;border-left:1px solid rgba(197,163,77,.5);font-size:12px;font-weight:900;line-height:1;position:relative;z-index:2;box-shadow:-8px 0 18px rgba(0,0,0,.12)}
+.welcome-ticker-viewport{min-width:0;flex:1;overflow:hidden;height:100%;display:flex;align-items:center;direction:ltr}
+.welcome-ticker-track{display:flex;align-items:center;width:max-content;min-width:max-content;will-change:transform;animation:welcomeTickerInlineMove 60s linear infinite;direction:ltr}
+.welcome-ticker-group{display:flex;align-items:center;flex:none}
+.welcome-ticker-item{display:inline-flex;align-items:center;white-space:nowrap;direction:rtl;font-size:12px;font-weight:800;line-height:1;padding:0 22px}
+.welcome-ticker-separator{width:5px;height:5px;border-radius:50%;background:#c5a34d;flex:none}
+.welcome-ticker-loading{display:inline-flex;align-items:center;white-space:nowrap;padding:0 20px;font-size:12px;font-weight:800;direction:rtl}
+.welcome-ticker-single{animation:none!important;transform:none!important}
+@keyframes welcomeTickerInlineMove{from{transform:translateX(-50%)}to{transform:translateX(0)}}
+@media(min-width:901px){
+  body{grid-template-rows:auto 34px auto auto auto auto!important}
+  .home-header{grid-column:1/-1!important;grid-row:1!important}
+  .welcome-ticker{grid-column:1/-1;grid-row:2;position:relative!important;top:auto!important;left:auto!important;right:auto!important}
+  .home-hero{grid-column:3!important;grid-row:3!important}
+  #ranking{grid-column:2!important;grid-row:3/5!important}
+  .home-features{grid-column:3!important;grid-row:4!important}
+  #register{grid-column:2/4!important;grid-row:5!important}
+  footer{grid-column:1/-1!important;grid-row:6!important}
+
+  body.home-signed-in{grid-template-rows:64px 34px minmax(0,1fr) 104px 38px!important}
+  body.home-signed-in .home-header{grid-row:1!important}
+  body.home-signed-in .welcome-ticker{grid-row:2!important}
+  body.home-signed-in .home-hero{grid-row:3!important}
+  body.home-signed-in #ranking{grid-row:3/5!important}
+  body.home-signed-in .home-features{grid-row:4!important}
+  body.home-signed-in footer{grid-row:5!important}
+  body.home-signed-in #ranking .table-card{flex:0 0 auto!important}
+  body.home-signed-in #ranking .table-wrap{height:auto!important;overflow:visible!important}
+  body.home-signed-in #ranking table{height:auto!important}
+}
+@media(min-width:901px) and (max-height:700px){
+  body.home-signed-in{height:auto!important;min-height:100vh!important;overflow-y:auto!important;grid-template-rows:64px 34px auto 104px 38px!important}
+  body.home-signed-in #ranking{height:auto!important;overflow:visible!important}
+  body.home-signed-in #ranking>.wrap{height:auto!important}
+  body.home-signed-in .home-hero{overflow:visible!important}
+}
+@media(max-width:900px){
+  .home-header{order:1!important}
+  .welcome-ticker{order:2}
+  .home-hero{order:3!important}
+  #ranking{order:4!important}
+  .home-features{order:5!important}
+  #register{order:6!important}
+  footer{order:7!important}
+}
+@media(max-width:800px){.welcome-ticker{height:30px}.welcome-ticker-label{padding:0 10px;font-size:10px}.welcome-ticker-item{font-size:11px;padding:0 16px}.welcome-ticker-track{animation-duration:52s}}
+@media(max-width:430px){.welcome-ticker-label{padding:0 8px;font-size:9px}.welcome-ticker-item{padding:0 12px;font-size:10px}}
+@media(prefers-reduced-motion:reduce){.welcome-ticker-track{animation:none;transform:none}.welcome-ticker-group:nth-child(2){display:none}}
+</style>
+<style id="welcomeTickerSeamFix20260909">
+.home-header{border-bottom:0!important;box-shadow:none!important;margin-bottom:0!important}
+.welcome-ticker{border-top:0!important;margin-top:0!important}
+.home-header + .welcome-ticker{margin-top:-1px!important}
+@media(min-width:901px){body{row-gap:0!important}}
+</style>
+
+<style id="homeBottomGapFix20260909">
+@media(max-width:800px){body{padding-bottom:0!important}}
+</style>
+
 </head>
 
 <body>
@@ -936,8 +1012,7 @@ footer{
       <div id="siteNotificationHost" class="header-notification-host"></div>
 
       <button id="navLogout" class="nav-logout header-action header-tile" type="button" hidden>خروج</button>
-      <a href="auth-clean.html?mode=signup" id="navSignup" class="nav-account header-action header-tile">تسجيل</a>
-      <a href="auth-clean.html?mode=login" id="navAccount" class="nav-account header-action header-tile">تسجيل الدخول</a>
+      <a href="#register" id="navSignup" class="nav-account header-action header-tile">تسجيل</a>\n      <a href="#register" id="navAccount" class="nav-account header-action header-tile">تسجيل الدخول</a>
     </div>
   </div>
 
@@ -951,6 +1026,15 @@ footer{
     </div>
   </div>
 </div>
+
+
+
+
+
+
+
+
+
 
 <!-- APPROVED HOME HERO 20260904 -->
 <section id="homeHero" class="home-hero">
@@ -981,6 +1065,7 @@ footer{
     <a id="homeBoardPreview" class="home-board-preview protected-play" href="play-v10.html?ui=20260909-orange82" aria-label="فتح رقعة اللعب"></a>
   </div>
 </section>
+
 
 <!-- RANKING -->
 <section id="ranking">
@@ -1052,6 +1137,7 @@ footer{
 
   </div>
 </section>
+
 
 <!-- ACCOUNT -->
 <section id="register" class="register">
@@ -1276,6 +1362,7 @@ footer{
     </div>
   </div>
 </section>
+
 
 <script type="module">
 import { createClient } from 'https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/+esm';
@@ -1957,8 +2044,8 @@ function renderAccount(){
   const loggedIn=!!currentSession;
   document.body.classList.toggle('home-signed-in',loggedIn);
   $('#headerMember').hidden=!loggedIn;
-  $('#navAccount').hidden=loggedIn;
-  const navSignup=$('#navSignup'); if(navSignup) navSignup.hidden=loggedIn;
+  $('#navAccount').hidden=loggedIn;\n  const navSignup=$('#navSignup'); if(navSignup) navSignup.hidden=loggedIn;
+
 
   if(passwordRecoveryMode){
     document.body.classList.remove('home-signed-in');
@@ -1968,7 +2055,7 @@ function renderAccount(){
     $('#accountPanel').hidden=true;
     $('#resetPasswordForm').hidden=false;
     $('#navAccount').textContent='تغيير كلمة المرور';
-    $('#navAccount').href='auth-clean.html?mode=login';
+    $('#navAccount').href='#register';
     $('#navLogout').hidden=true;
     const dashboardNav=$('#dashboardNav');
     if(dashboardNav) dashboardNav.href='#register';
@@ -1996,25 +2083,23 @@ function renderAccount(){
   }
 
   const dashboardNav=$('#dashboardNav');
-  const mobileDashboardNav=$('#mobileDashboardNav');
-  const navSignup=$('#navSignup');
   if(loggedIn){
     $('#navAccount').textContent='لوحة التحكم';
     $('#navAccount').href='profile.html';
     $('#navAccount').hidden=true;
     $('#navLogout').hidden=false;
-    if(navSignup) navSignup.hidden=true;
+    const navSignup=$('#navSignup'); if(navSignup) navSignup.hidden=true;
     if(dashboardNav){ dashboardNav.hidden=false; dashboardNav.style.display=''; dashboardNav.href='profile.html'; }
-    if(mobileDashboardNav){ mobileDashboardNav.hidden=false; mobileDashboardNav.style.display=''; }
+    const mobileDashboardNav=$('#mobileDashboardNav'); if(mobileDashboardNav){ mobileDashboardNav.hidden=false; mobileDashboardNav.style.display=''; }
   }else{
     $('#headerMember').hidden=true;
     $('#navAccount').textContent='تسجيل الدخول';
     $('#navAccount').href='#register';
     $('#navAccount').hidden=false;
-    if(navSignup) navSignup.hidden=false;
+    const navSignup=$('#navSignup'); if(navSignup) navSignup.hidden=false;
     $('#navLogout').hidden=true;
     if(dashboardNav){ dashboardNav.hidden=true; dashboardNav.style.display='none'; dashboardNav.href='#register'; }
-    if(mobileDashboardNav){ mobileDashboardNav.hidden=true; mobileDashboardNav.style.display='none'; }
+    const mobileDashboardNav=$('#mobileDashboardNav'); if(mobileDashboardNav){ mobileDashboardNav.hidden=true; mobileDashboardNav.style.display='none'; }
   }
 }
 
@@ -2034,8 +2119,7 @@ async function refreshAuthUI(session){
   renderAccount();
 }
 
-
-/* إنشاء الحساب */
+$('#navSignup')?.addEventListener('click',()=>{ switchAuthTab('signup'); });\n\n/* إنشاء الحساب */
 $('#signupRegion').addEventListener('change',async()=>{
   await populateSignupCities(true);
 });
@@ -2373,6 +2457,7 @@ supabase.auth.onAuthStateChange((event,session)=>{
     setTimeout(()=>refreshAuthUI(session),0);
   }
 });
+
 
 loadPlayers().catch(error=>{
   console.error(error);
