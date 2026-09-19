@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
-<meta name="x-build" content="clean-home-20260920">\n<meta name="theme-color" content="#0c3435">
+<meta name="theme-color" content="#0c3435">
 <title>شطرنج العرب</title>
 
 <style>
@@ -980,6 +980,18 @@ footer{
 @media(max-width:800px){body{padding-bottom:0!important}}
 </style>
 
+<style id="clean-home-authority-20260920">
+/* Clean authority layer: one deterministic owner for home header/auth visibility. */
+#headerMember[hidden],#navLogout[hidden],#navAccount[hidden],#navSignup[hidden],#dashboardNav[hidden],#mobileDashboardNav[hidden]{display:none!important}
+body:not(.home-signed-in) #headerMember,body:not(.home-signed-in) #navLogout,body:not(.home-signed-in) #dashboardNav,body:not(.home-signed-in) #mobileDashboardNav{display:none!important}
+body:not(.home-signed-in) #navSignup,body:not(.home-signed-in) #navAccount{display:inline-flex!important;visibility:visible!important;opacity:1!important;align-items:center!important;justify-content:center!important;min-width:96px!important}
+body.home-signed-in #navSignup,body.home-signed-in #navAccount{display:none!important}
+body.home-signed-in #headerMember:not([hidden]),body.home-signed-in #navLogout:not([hidden]),body.home-signed-in #dashboardNav:not([hidden]){display:flex!important}
+@media(max-width:800px){
+ body:not(.home-signed-in) .compact-member-nav .nav-user{display:flex!important;flex-wrap:nowrap!important;justify-content:flex-end!important;gap:6px!important;overflow:visible!important}
+ body:not(.home-signed-in) #navSignup,body:not(.home-signed-in) #navAccount{min-width:0!important;height:40px!important;padding:0 10px!important;font-size:13px!important}
+}
+</style>
 </head>
 
 <body>
@@ -2083,23 +2095,25 @@ function renderAccount(){
   }
 
   const dashboardNav=$('#dashboardNav');
+  const mobileDashboardNav=$('#mobileDashboardNav');
+  const navSignup=$('#navSignup');
   if(loggedIn){
     $('#navAccount').textContent='لوحة التحكم';
     $('#navAccount').href='profile.html';
     $('#navAccount').hidden=true;
     $('#navLogout').hidden=false;
-    const navSignup=$('#navSignup'); if(navSignup) navSignup.hidden=true;
+    if(navSignup) navSignup.hidden=true;
     if(dashboardNav){ dashboardNav.hidden=false; dashboardNav.style.display=''; dashboardNav.href='profile.html'; }
-    const mobileDashboardNav=$('#mobileDashboardNav'); if(mobileDashboardNav){ mobileDashboardNav.hidden=false; mobileDashboardNav.style.display=''; }
+    if(mobileDashboardNav){ mobileDashboardNav.hidden=false; mobileDashboardNav.style.display=''; }
   }else{
     $('#headerMember').hidden=true;
     $('#navAccount').textContent='تسجيل الدخول';
     $('#navAccount').href='#register';
     $('#navAccount').hidden=false;
-    const navSignup=$('#navSignup'); if(navSignup) navSignup.hidden=false;
+    if(navSignup) navSignup.hidden=false;
     $('#navLogout').hidden=true;
     if(dashboardNav){ dashboardNav.hidden=true; dashboardNav.style.display='none'; dashboardNav.href='#register'; }
-    const mobileDashboardNav=$('#mobileDashboardNav'); if(mobileDashboardNav){ mobileDashboardNav.hidden=true; mobileDashboardNav.style.display='none'; }
+    if(mobileDashboardNav){ mobileDashboardNav.hidden=true; mobileDashboardNav.style.display='none'; }
   }
 }
 
