@@ -915,9 +915,6 @@ footer{
   .home-hero h1 span{display:inline!important}
 }
 </style>
-<style id="hiddenNavAccountFix">
-#navAccount[hidden],#navSignup[hidden]{display:none!important}
-</style>
 <style id="welcomeTickerInlineStyles">
 .welcome-ticker{width:100%;height:34px;display:flex;align-items:center;overflow:hidden;background:#0a302f;color:#f7f3e7;border-top:0;border-bottom:1px solid rgba(197,163,77,.55);position:relative;z-index:19;flex:none;direction:rtl}
 .welcome-ticker-label{flex:0 0 auto;height:100%;display:flex;align-items:center;padding:0 18px;white-space:nowrap;background:#0d3b39;color:#efcf7c;border-left:1px solid rgba(197,163,77,.5);font-size:12px;font-weight:900;line-height:1;position:relative;z-index:2;box-shadow:-8px 0 18px rgba(0,0,0,.12)}
@@ -969,17 +966,6 @@ footer{
 @media(max-width:430px){.welcome-ticker-label{padding:0 8px;font-size:9px}.welcome-ticker-item{padding:0 12px;font-size:10px}}
 @media(prefers-reduced-motion:reduce){.welcome-ticker-track{animation:none;transform:none}.welcome-ticker-group:nth-child(2){display:none}}
 </style>
-<style id="welcomeTickerSeamFix20260909">
-.home-header{border-bottom:0!important;box-shadow:none!important;margin-bottom:0!important}
-.welcome-ticker{border-top:0!important;margin-top:0!important}
-.home-header + .welcome-ticker{margin-top:-1px!important}
-@media(min-width:901px){body{row-gap:0!important}}
-</style>
-
-<style id="homeBottomGapFix20260909">
-@media(max-width:800px){body{padding-bottom:0!important}}
-</style>
-
 <style id="clean-home-authority-20260920">
 /* Clean authority layer: one deterministic owner for home header/auth visibility. */
 #headerMember[hidden],#navLogout[hidden],#navAccount[hidden],#navSignup[hidden],#dashboardNav[hidden],#mobileDashboardNav[hidden]{display:none!important}
@@ -1024,7 +1010,8 @@ body.home-signed-in #headerMember:not([hidden]),body.home-signed-in #navLogout:n
       <div id="siteNotificationHost" class="header-notification-host"></div>
 
       <button id="navLogout" class="nav-logout header-action header-tile" type="button" hidden>خروج</button>
-      <a href="#register" id="navSignup" class="nav-account header-action header-tile">تسجيل</a>\n      <a href="#register" id="navAccount" class="nav-account header-action header-tile">تسجيل الدخول</a>
+      <a href="#register" id="navSignup" class="nav-account header-action header-tile">تسجيل</a>
+      <a href="#register" id="navAccount" class="nav-account header-action header-tile">تسجيل الدخول</a>
     </div>
   </div>
 
@@ -1038,15 +1025,6 @@ body.home-signed-in #headerMember:not([hidden]),body.home-signed-in #navLogout:n
     </div>
   </div>
 </div>
-
-
-
-
-
-
-
-
-
 
 <!-- APPROVED HOME HERO 20260904 -->
 <section id="homeHero" class="home-hero">
@@ -1077,7 +1055,6 @@ body.home-signed-in #headerMember:not([hidden]),body.home-signed-in #navLogout:n
     <a id="homeBoardPreview" class="home-board-preview protected-play" href="play-v10.html?ui=20260909-orange82" aria-label="فتح رقعة اللعب"></a>
   </div>
 </section>
-
 
 <!-- RANKING -->
 <section id="ranking">
@@ -1149,7 +1126,6 @@ body.home-signed-in #headerMember:not([hidden]),body.home-signed-in #navLogout:n
 
   </div>
 </section>
-
 
 <!-- ACCOUNT -->
 <section id="register" class="register">
@@ -1374,7 +1350,6 @@ body.home-signed-in #headerMember:not([hidden]),body.home-signed-in #navLogout:n
     </div>
   </div>
 </section>
-
 
 <script type="module">
 import { createClient } from 'https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/+esm';
@@ -2056,8 +2031,8 @@ function renderAccount(){
   const loggedIn=!!currentSession;
   document.body.classList.toggle('home-signed-in',loggedIn);
   $('#headerMember').hidden=!loggedIn;
-  $('#navAccount').hidden=loggedIn;\n  const navSignup=$('#navSignup'); if(navSignup) navSignup.hidden=loggedIn;
-
+  $('#navAccount').hidden=loggedIn;
+  const navSignup=$('#navSignup'); if(navSignup) navSignup.hidden=loggedIn;
 
   if(passwordRecoveryMode){
     document.body.classList.remove('home-signed-in');
@@ -2133,7 +2108,9 @@ async function refreshAuthUI(session){
   renderAccount();
 }
 
-$('#navSignup')?.addEventListener('click',()=>{ switchAuthTab('signup'); });\n\n/* إنشاء الحساب */
+$('#navSignup')?.addEventListener('click',()=>{ switchAuthTab('signup'); });
+
+/* إنشاء الحساب */
 $('#signupRegion').addEventListener('change',async()=>{
   await populateSignupCities(true);
 });
@@ -2471,7 +2448,6 @@ supabase.auth.onAuthStateChange((event,session)=>{
     setTimeout(()=>refreshAuthUI(session),0);
   }
 });
-
 
 loadPlayers().catch(error=>{
   console.error(error);
