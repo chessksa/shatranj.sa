@@ -1,0 +1,1326 @@
+<!doctype html><html lang="ar" dir="rtl"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>الدخول | شطرنج العرب</title><link rel="stylesheet" href="home-theme.css?v=20260920-auth"><style>body{margin:0;background:#ebe8df;font-family:Arial,sans-serif}.auth-page{max-width:760px;margin:40px auto;padding:16px}.auth-page .register{border:0;background:transparent}.auth-back{display:inline-flex;margin-bottom:14px;color:#0d3b2e;font-weight:800;text-decoration:none}.form-card{background:#fff;border-radius:12px;padding:18px}</style></head><body><main class="auth-page"><a class="auth-back" href="index-clean.html">العودة للرئيسية</a><section id="register" class="register">
+  <div class="wrap">
+
+    <div class="form-card">
+
+      <div id="guestAuth">
+        <div class="auth-tabs">
+          <button type="button" id="signupTab" class="auth-tab active">إنشاء حساب</button>
+          <button type="button" id="loginTab" class="auth-tab">تسجيل الدخول</button>
+        </div>
+
+        <form id="signupForm" class="auth-form">
+          <label>
+            <span>الاسم الظاهر</span>
+            <input id="signupName" required minlength="2" maxlength="60"
+                   autocomplete="name"
+                   placeholder="مثال: أحمد">
+          </label>
+
+          <label>
+            <span>اسم المستخدم</span>
+            <input id="signupUsername" required minlength="3" maxlength="20"
+                   autocomplete="username" inputmode="latin"
+                   dir="ltr" placeholder="مثال: ahmed_99">
+            <small id="usernameStatus" class="username-status">اكتب اسم المستخدم للتحقق من توفره.</small>
+          </label>
+
+          <label>
+            <span>البريد الإلكتروني</span>
+            <input id="signupEmail" type="email" required maxlength="160" placeholder="name@example.com" autocomplete="email">
+          </label>
+
+          <label>
+            <span>رقم الجوال (مع مفتاح الدولة)</span>
+            <input id="signupMobile" required maxlength="18" inputmode="tel" placeholder="مثال: +9665xxxxxxxx" autocomplete="tel">
+          </label>
+
+          <label class="password-wrap">
+            <span>كلمة المرور</span>
+            <input id="signupPassword" type="password" required minlength="8" maxlength="72" autocomplete="new-password" placeholder="8 أحرف على الأقل">
+            <button class="show-pass" type="button" data-target="signupPassword">إظهار</button>
+          </label>
+
+          <label class="password-wrap">
+            <span>تأكيد كلمة المرور</span>
+            <input id="signupPassword2" type="password" required minlength="8" maxlength="72" autocomplete="new-password">
+            <button class="show-pass" type="button" data-target="signupPassword2">إظهار</button>
+          </label>
+
+          <label>
+            <span>الجنسية</span>
+            <select id="signupNationality" required>
+              <option value="">اختر الجنسية</option>
+            </select>
+          </label>
+
+          <label>
+            <span>دولة الإقامة</span>
+            <select id="signupRegion" required>
+              <option value="">اختر الدولة</option>
+              <option value="السعودية">السعودية</option>
+              <option value="الإمارات">الإمارات</option>
+              <option value="الكويت">الكويت</option>
+              <option value="البحرين">البحرين</option>
+              <option value="قطر">قطر</option>
+              <option value="عُمان">عُمان</option>
+              <option value="اليمن">اليمن</option>
+              <option value="العراق">العراق</option>
+              <option value="الأردن">الأردن</option>
+              <option value="فلسطين">فلسطين</option>
+              <option value="لبنان">لبنان</option>
+              <option value="سوريا">سوريا</option>
+              <option value="مصر">مصر</option>
+              <option value="السودان">السودان</option>
+              <option value="ليبيا">ليبيا</option>
+              <option value="تونس">تونس</option>
+              <option value="الجزائر">الجزائر</option>
+              <option value="المغرب">المغرب</option>
+              <option value="موريتانيا">موريتانيا</option>
+              <option value="الصومال">الصومال</option>
+              <option value="جيبوتي">جيبوتي</option>
+              <option value="جزر القمر">جزر القمر</option>
+            </select>
+          </label>
+
+          <label>
+            <span>المدينة</span>
+            <input id="signupCity" required maxlength="80" list="signupCityOptions" autocomplete="address-level2" placeholder="اختر أو اكتب المدينة">
+            <datalist id="signupCityOptions"></datalist>
+          </label>
+
+          <label class="full">
+            <span>الجنس</span>
+            <select id="signupGender" required>
+              <option value="">اختر الجنس</option>
+              <option value="male">ذكر</option>
+              <option value="female">أنثى</option>
+            </select>
+          </label>
+
+          <label class="full">
+            <span>الفئة</span>
+            <select id="signupCategory">
+              <option value="open">مفتوح</option>
+              <option value="u18">تحت 18</option>
+              <option value="u14">تحت 14</option>
+              <option value="u10">تحت 10</option>
+            </select>
+          </label>
+
+          <label class="check full">
+            <input type="checkbox" id="signupTerms" required>
+            أوافق على قواعد المنصة وسياسة اللعب النظيف.
+          </label>
+
+          <button class="btn full" type="submit" id="signupBtn">إنشاء الحساب</button>
+        </form>
+
+        <form id="loginForm" class="auth-form" hidden>
+          <label class="full">
+            <span>اسم المستخدم</span>
+            <input id="loginUsername" required minlength="3" maxlength="20"
+                   autocomplete="username" inputmode="latin" dir="ltr"
+                   placeholder="مثال: ahmed_99">
+          </label>
+
+          <label class="password-wrap full">
+            <span>كلمة المرور</span>
+            <input id="loginPassword" type="password" required minlength="8" maxlength="72" autocomplete="current-password">
+            <button class="show-pass" type="button" data-target="loginPassword">إظهار</button>
+          </label>
+
+          <div class="login-help full">
+            <button class="text-link" type="button" id="forgotPasswordBtn">نسيت كلمة المرور؟</button>
+          </div>
+
+          <button class="btn full" type="submit" id="loginBtn">تسجيل الدخول</button>
+        </form>
+
+        <form id="recoveryForm" class="auth-form" hidden>
+          <label class="full">
+            <span>البريد الإلكتروني للاستعادة</span>
+            <input id="recoveryEmail" type="email" required maxlength="160"
+                   placeholder="name@example.com" autocomplete="email">
+          </label>
+
+          <button class="btn full" type="submit" id="recoveryBtn">إرسال رابط الاستعادة</button>
+          <button class="text-link full" type="button" id="backToLoginBtn">العودة لتسجيل الدخول</button>
+        </form>
+
+        <div id="authMsg" class="msg"></div>
+        <div class="auth-note">يتم تفعيل الحساب مباشرة بعد التسجيل حاليًا، دون رسالة تأكيد بالبريد.</div>
+      </div>
+
+      <form id="resetPasswordForm" class="auth-form" hidden>
+        <h3 class="full reset-password-title">تعيين كلمة مرور جديدة</h3>
+
+        <label class="password-wrap full">
+          <span>كلمة المرور الجديدة</span>
+          <input id="resetPassword" type="password" required minlength="8" maxlength="72" autocomplete="new-password">
+          <button class="show-pass" type="button" data-target="resetPassword">إظهار</button>
+        </label>
+
+        <label class="password-wrap full">
+          <span>تأكيد كلمة المرور الجديدة</span>
+          <input id="resetPassword2" type="password" required minlength="8" maxlength="72" autocomplete="new-password">
+          <button class="show-pass" type="button" data-target="resetPassword2">إظهار</button>
+        </label>
+
+        <button class="btn full" type="submit" id="resetPasswordBtn">حفظ كلمة المرور</button>
+        <div id="resetPasswordMsg" class="msg full"></div>
+      </form>
+
+      <div id="accountPanel" class="account-panel" hidden>
+        <div>
+          <div class="account-identity-row">
+
+            <div class="account-avatar-wrap" aria-label="صورة العضو">
+
+              <img class="account-avatar" id="accountAvatarImage" alt="صورة العضو" hidden />
+
+              <div class="account-avatar account-avatar-fallback" id="accountAvatarFallback">♟</div>
+
+            </div>
+
+            <div class="account-identity-text">
+              <strong id="accountWelcome">مرحبًا</strong>
+              <span class="account-rank-badge" id="accountRankBadge" data-rank="beginner">
+                <span class="account-rank-icon" id="accountRankIcon" aria-hidden="true">♟</span>
+                <span id="accountRankLabel">مبتدئ</span>
+              </span>
+            </div>
+
+          </div>
+
+          <div class="account-card">
+            <div class="account-stat">
+              <small>النقاط</small>
+              <strong id="accountRating">1500</strong>
+            </div>
+
+            <div class="account-stat">
+              <small>الدولة</small>
+              <strong id="accountRegion">—</strong>
+            </div>
+
+            <div class="account-stat">
+              <small>المدينة</small>
+              <strong id="accountCity">—</strong>
+            </div>
+
+            <div class="account-stat">
+              <small>المباريات</small>
+              <strong id="accountGames">0</strong>
+            </div>
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+</section></main><script type="module">
+import { createClient } from 'https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/+esm';
+import { ARAB_CITIES_DATA } from './arab-cities.js';
+import { WORLD_COUNTRIES, getCitiesForCountry } from './world-locations.js';
+
+const SUPABASE_URL='https://zjxkxhsvltihucdacjrv.supabase.co';
+const SUPABASE_KEY='sb_publishable_bwFGOiJzT_Xv656pLPR8ww_oJxFzSGJ';
+const supabase=createClient(SUPABASE_URL,SUPABASE_KEY);
+
+const $=selector=>document.querySelector(selector);
+
+const SAUDI_REGIONS=new Set(['الرياض','مكة المكرمة','المدينة المنورة','القصيم','المنطقة الشرقية','عسير','تبوك','حائل','الحدود الشمالية','جازان','نجران','الباحة','الجوف']);
+const ARAB_CITIES=ARAB_CITIES_DATA;
+
+const CATEGORY={
+  open:'مفتوح',
+  u18:'تحت 18',
+  u14:'تحت 14',
+  u10:'تحت 10'
+};
+
+let ALL_PLAYERS=[];
+let currentSession=null;
+let currentProfile=null;
+let pendingSignupProfile=JSON.parse(sessionStorage.getItem('pending_signup_profile')||'null');
+let usernameAvailability=null;
+let usernameCheckTimer=null;
+let passwordRecoveryMode=false;
+
+function escapeHTML(text){
+  return String(text??'').replace(/[&<>"']/g,c=>({
+    '&':'&amp;',
+    '<':'&lt;',
+    '>':'&gt;',
+    '"':'&quot;',
+    "'":'&#39;'
+  }[c]));
+}
+
+function normalizeInternationalMobile(value){
+  const raw=String(value||'').trim();
+  const compact=raw.replace(/[\s()\-]/g,'');
+
+  if(/^05\d{8}$/.test(compact)){
+    const e164='+966'+compact.slice(1);
+    return {local:e164,e164};
+  }
+
+  if(/^00\d{8,15}$/.test(compact)){
+    const e164='+'+compact.slice(2);
+    return {local:e164,e164};
+  }
+
+  if(/^\+\d{8,15}$/.test(compact)){
+    return {local:compact,e164:compact};
+  }
+
+  return null;
+}
+
+function countryForRegion(value){
+  const region=String(value||'').trim();
+  return SAUDI_REGIONS.has(region)?'السعودية':region;
+}
+
+function renderWelcomeTicker(rows){
+  const track=$('#welcomeTickerTrack');
+  if(!track) return;
+
+  const members=[...(Array.isArray(rows)?rows:[])]
+    .filter(player=>player&&player.created_at)
+    .sort((a,b)=>new Date(b.created_at)-new Date(a.created_at))
+    .slice(0,20);
+
+  if(!members.length){
+    track.className='welcome-ticker-track welcome-ticker-single';
+    const fallback=document.createElement('span');
+    fallback.className='welcome-ticker-loading';
+    fallback.textContent='لا توجد تسجيلات حديثة';
+    track.replaceChildren(fallback);
+    return;
+  }
+
+  const buildGroup=()=>{
+    const group=document.createElement('div');
+    group.className='welcome-ticker-group';
+
+    members.forEach(member=>{
+      const name=String(member.name||'لاعب جديد').trim()||'لاعب جديد';
+      const country=countryForRegion(member.region)||'دولة غير محددة';
+      const city=String(member.city||'').trim();
+
+      const item=document.createElement('span');
+      item.className='welcome-ticker-item';
+      item.textContent=city
+        ? `${name} — ${country}، ${city}`
+        : `${name} — ${country}`;
+      group.appendChild(item);
+
+      const separator=document.createElement('span');
+      separator.className='welcome-ticker-separator';
+      separator.setAttribute('aria-hidden','true');
+      group.appendChild(separator);
+    });
+
+    return group;
+  };
+
+  track.className='welcome-ticker-track';
+  track.replaceChildren(buildGroup(),buildGroup());
+}
+
+function setAuthMsg(text,type=''){
+  const el=$('#authMsg');
+  el.textContent=text||'';
+  el.className='msg '+type;
+}
+
+function authErrorMessage(error,context=''){
+  const raw=String(error?.message||error||'').toLowerCase();
+
+  if(raw.includes('invalid login credentials')){
+    return 'اسم المستخدم أو كلمة المرور غير صحيحة.';
+  }
+
+  if(
+    raw.includes('username_registry') ||
+    raw.includes('username_taken') ||
+    raw.includes('duplicate key') && raw.includes('username')
+  ){
+    return 'اسم المستخدم محجوز. اختر اسمًا آخر.';
+  }
+
+  if(
+    raw.includes('user already registered') ||
+    raw.includes('already been registered') ||
+    raw.includes('already exists')
+  ){
+    return 'يوجد حساب بهذا الرقم بالفعل. استخدم تسجيل الدخول.';
+  }
+
+  if(raw.includes('email not confirmed')){
+    return 'يجب تأكيد البريد الإلكتروني أولًا من الرسالة المرسلة إليك.';
+  }
+
+  if(raw.includes('email') && raw.includes('already')){
+    return 'يوجد حساب بهذا البريد الإلكتروني بالفعل. استخدم تسجيل الدخول.';
+  }
+
+  if(raw.includes('password') && raw.includes('characters')){
+    return 'كلمة المرور يجب أن تكون 8 أحرف على الأقل.';
+  }
+
+  if(raw.includes('rate limit')){
+    return 'محاولات كثيرة خلال وقت قصير. انتظر قليلًا ثم أعد المحاولة.';
+  }
+
+  if(raw.includes('otp') || raw.includes('token')){
+    return 'رمز التحقق غير صحيح أو انتهت صلاحيته.';
+  }
+
+  if(context==='profile'){
+    return 'تم الدخول، لكن تعذر ربط الحساب بملف اللاعب. شغّل ملف SQL الجديد في Supabase.';
+  }
+
+  return error?.message || 'حدث خطأ غير متوقع.';
+}
+
+function switchAuthTab(tab){
+  const signup=tab==='signup';
+
+  $('#signupTab').classList.toggle('active',signup);
+  $('#loginTab').classList.toggle('active',!signup);
+  $('#signupForm').hidden=!signup;
+  $('#loginForm').hidden=signup;
+  $('#recoveryForm').hidden=true;
+
+  setAuthMsg('');
+}
+
+$('#signupTab').addEventListener('click',()=>switchAuthTab('signup'));
+$('#loginTab').addEventListener('click',()=>switchAuthTab('login'));
+
+function setUsernameStatus(text,state=''){
+  const el=$('#usernameStatus');
+  if(!el) return;
+  el.textContent=text;
+  el.className='username-status '+state;
+}
+
+async function checkUsernameAvailability(username){
+  const clean=String(username||'').trim().toLowerCase();
+
+  if(!/^[a-z0-9_]{3,20}$/.test(clean)){
+    usernameAvailability=false;
+    setUsernameStatus('3–20 خانة: أحرف إنجليزية أو أرقام أو _ فقط.','taken');
+    return false;
+  }
+
+  setUsernameStatus('جاري التحقق...','checking');
+
+  const {data,error}=await supabase.rpc(
+    'is_username_available',
+    {p_username:clean}
+  );
+
+  if(error){
+    console.error(error);
+    usernameAvailability=null;
+    setUsernameStatus('تعذر التحقق الآن.','taken');
+    return false;
+  }
+
+  usernameAvailability=!!data;
+
+  if(usernameAvailability){
+    setUsernameStatus('✓ متاح للحجز','available');
+  }else{
+    setUsernameStatus('✕ محجوز','taken');
+  }
+
+  return usernameAvailability;
+}
+
+$('#signupUsername').addEventListener('input',function(){
+  const clean=this.value.trim().toLowerCase();
+  if(this.value!==clean) this.value=clean;
+
+  usernameAvailability=null;
+  clearTimeout(usernameCheckTimer);
+
+  if(!clean){
+    setUsernameStatus('اكتب اسم المستخدم للتحقق من توفره.','');
+    return;
+  }
+
+  setUsernameStatus('جاري التحقق...','checking');
+
+  usernameCheckTimer=setTimeout(
+    ()=>checkUsernameAvailability(clean),
+    350
+  );
+});
+
+document.querySelectorAll('.show-pass').forEach(button=>{
+  button.addEventListener('click',()=>{
+    const input=document.getElementById(button.dataset.target);
+    const hidden=input.type==='password';
+
+    input.type=hidden?'text':'password';
+    button.textContent=hidden?'إخفاء':'إظهار';
+  });
+});
+
+/* الدولة والمدينة */
+/* التسجيل العالمي: الدول ثابتة داخل الموقع والمدن تُحمّل حسب الدولة */
+function populateSignupNationalities(){
+  const select=$('#signupNationality');
+  if(!select) return;
+
+  const placeholder=document.createElement('option');
+  placeholder.value='';
+  placeholder.textContent='اختر الجنسية';
+
+  const options=WORLD_COUNTRIES.map(country=>{
+    const option=document.createElement('option');
+    option.value=country.nameAr;
+    option.textContent=country.nameAr;
+    option.dataset.iso2=country.iso2;
+    return option;
+  });
+
+  select.replaceChildren(placeholder,...options);
+  select.value='';
+}
+
+function populateSignupCountries(){
+  const select=$('#signupRegion');
+  if(!select) return;
+
+  const placeholder=document.createElement('option');
+  placeholder.value='';
+  placeholder.textContent='اختر الدولة';
+
+  const options=WORLD_COUNTRIES.map(country=>{
+    const option=document.createElement('option');
+    option.value=country.nameAr;
+    option.textContent=country.nameAr;
+    option.dataset.iso2=country.iso2;
+    return option;
+  });
+
+  select.replaceChildren(placeholder,...options);
+  select.value='';
+}
+
+async function populateSignupCities(clearInput=true){
+  const select=$('#signupRegion');
+  const list=$('#signupCityOptions');
+  const input=$('#signupCity');
+  if(!select||!list||!input) return;
+
+  const selected=select.selectedOptions?.[0];
+  const iso2=selected?.dataset?.iso2||'';
+  if(clearInput) input.value='';
+  list.replaceChildren();
+
+  if(!iso2){
+    input.placeholder='اختر الدولة أولًا ثم اختر أو اكتب المدينة';
+    return;
+  }
+
+  input.placeholder='جاري تحميل المدن... ويمكنك كتابة المدينة';
+  const cities=await getCitiesForCountry(iso2);
+
+  if((select.selectedOptions?.[0]?.dataset?.iso2||'')!==iso2) return;
+
+  list.replaceChildren(...cities.map(city=>{
+    const option=document.createElement('option');
+    option.value=city;
+    return option;
+  }));
+
+  input.placeholder=cities.length
+    ? 'اختر المدينة من القائمة أو اكتب المدينة'
+    : 'اكتب المدينة';
+}
+
+populateSignupNationalities();
+populateSignupCountries();
+
+function populateCityList(country,listSelector,inputSelector,allWhenEmpty=false,clearInput=true){
+  const list=$(listSelector);
+  const input=$(inputSelector);
+  const cities=country
+    ? (ARAB_CITIES[country]||[])
+    : (allWhenEmpty?[...new Set(Object.values(ARAB_CITIES).flat())]:[]);
+
+  list.replaceChildren(...cities.map(city=>{
+    const option=document.createElement('option');
+    option.value=city;
+    return option;
+  }));
+
+  if(clearInput) input.value='';
+}
+
+function populateRankingCountries(){
+  const select=$('#regionFilter');
+  if(!select) return;
+
+  const placeholder=document.createElement('option');
+  placeholder.value='';
+  placeholder.textContent='الجنسية';
+
+  const options=WORLD_COUNTRIES.map(country=>{
+    const option=document.createElement('option');
+    option.value=country.nameAr;
+    option.textContent=country.nameAr;
+    return option;
+  });
+
+  select.replaceChildren(placeholder,...options);
+  select.value='';
+}
+
+function populateRankingCitySelect(country){
+  const cityFilter=$('#cityFilter');
+  const cities=ARAB_CITIES[country]||[];
+  const first=document.createElement('option');
+  first.value='';
+  first.textContent=country?'المدينة':'اختر الدولة أولًا';
+
+  cityFilter.replaceChildren(
+    first,
+    ...cities.map(city=>{
+      const option=document.createElement('option');
+      option.value=city;
+      option.textContent=city;
+      return option;
+    })
+  );
+  cityFilter.disabled=!country;
+  cityFilter.value='';
+}
+
+$('#regionFilter').addEventListener('change',()=>{
+  const country=$('#regionFilter').value;
+  populateRankingCitySelect(country);
+  applyFilter();
+});
+$('#cityFilter').addEventListener('change',applyFilter);
+populateRankingCountries();
+populateRankingCitySelect('');
+
+async function loadPlayers(){
+  const [{data,error},{data:usernameRows,error:usernameError}]=await Promise.all([
+    supabase
+      .from('public_players')
+      .select('id,name,region,city,category,rating,rating_status,created_at,is_synthetic')
+      .order('rating',{ascending:false})
+      .order('created_at',{ascending:true}),
+    supabase.rpc('get_public_usernames')
+  ]);
+
+  if(error) throw error;
+
+  if(usernameError){
+    console.warn('username mapping unavailable',usernameError);
+  }
+
+  const usernameMap=new Map(
+    (usernameRows||[]).map(row=>[
+      String(row.player_id),
+      row.username
+    ])
+  );
+
+  ALL_PLAYERS=(data||[]).map(player=>({
+    ...player,
+    username:usernameMap.get(String(player.id))||''
+  }));
+
+  renderWelcomeTicker(ALL_PLAYERS);
+
+  window.__HOME_PLAYERS__=ALL_PLAYERS;
+  window.dispatchEvent(new CustomEvent('home-players-loaded',{detail:ALL_PLAYERS}));
+
+  const headerPlayers=document.querySelector('#headerPlayersCount');
+  if(headerPlayers) headerPlayers.textContent=500 + ALL_PLAYERS.length;
+
+  applyFilter();
+}
+
+async function loadCurrentMatchesCount(){
+  const el=document.querySelector('#headerMatchesCount');
+  if(!el) return;
+
+  const liveStatuses=['playing','active','in_progress','started'];
+
+  try{
+    const {count,error}=await supabase
+      .from('live_games')
+      .select('*',{count:'exact',head:true})
+      .in('status',liveStatuses);
+
+    if(error) throw error;
+    el.textContent=String(typeof count==='number'?count:0);
+  }catch(error){
+    console.warn('تعذر تحميل عدد المباريات الجارية',error);
+    el.textContent='0';
+  }
+}
+
+function updateRankingTitle(country,city){
+  const title=$('#rankingTitle');
+  if(!title) return;
+
+  if(city){
+    title.textContent=`ترتيب اللاعبين في مدينة ${city}`;
+    return;
+  }
+
+  if(country){
+    title.textContent=`ترتيب اللاعبين في ${country}`;
+    return;
+  }
+
+  title.textContent='ترتيب اللاعبين عالميًا';
+}
+
+function applyFilter(){
+  const country=$('#regionFilter').value.trim();
+  const city=$('#cityFilter').value.trim();
+
+  updateRankingTitle(country,city);
+
+  renderPlayers(
+    ALL_PLAYERS.filter(player=>{
+      const playerCountry=countryForRegion(player.region);
+      const playerCity=(player.city||'').trim();
+
+      return (
+        (!country || playerCountry===country) &&
+        (!city || playerCity.includes(city))
+      );
+    })
+  );
+}
+
+function renderPlayers(players){
+  const rankingLimit=window.matchMedia('(max-width:800px)').matches?5:10;
+  const topPlayers=players.slice(0,rankingLimit);
+  const rows=[];
+
+  for(let index=0;index<rankingLimit;index++){
+    const player=topPlayers[index];
+
+    if(!player){
+      rows.push(`
+        <tr class="ranking-placeholder">
+          <td class="rank-number">${index+1}</td>
+          <td></td>
+          <td></td>
+          <td></td>
+          <td></td>
+        </tr>
+      `);
+      continue;
+    }
+
+    rows.push(`
+      <tr>
+        <td class="rank-number">${index+1}</td>
+        <td>
+          <a class="player-name player-profile-link" href="player.html?id=${encodeURIComponent(player.id)}">${escapeHTML(player.name)}</a>
+          ${player.username
+            ? `<span class="player-username">@${escapeHTML(player.username)}</span>`
+            : ''
+          }
+        </td>
+        <td>${escapeHTML(countryForRegion(player.region))}</td>
+        <td>${escapeHTML(player.city)}</td>
+        <td class="rating">${player.rating}</td>
+      </tr>
+    `);
+  }
+
+  $('#tbody').innerHTML=rows.join('');
+  $('#results').textContent=topPlayers.length+' لاعب';
+  $('#empty').style.display='none';
+}
+
+async function claimOrCreateProfile(profileData){
+  const {data,error}=await supabase.rpc('claim_player_profile',{
+    p_name:profileData.name,
+    p_mobile:profileData.mobile,
+    p_region:profileData.region,
+    p_city:profileData.city,
+    p_category:profileData.category||'open',
+    p_residence_country:profileData.country,
+    p_residence_country:profileData.country,
+    p_residence_country:profileData.country
+  });
+
+  if(error) throw error;
+
+  return Array.isArray(data)?data[0]:data;
+}
+
+async function loadMyProfile(){
+  const {data,error}=await supabase.rpc('get_my_player_profile');
+
+  if(error) throw error;
+
+  currentProfile=Array.isArray(data)?data[0]:data;
+  return currentProfile;
+}
+
+async function ensureProfile(){
+  try{
+    const profile=await loadMyProfile();
+    if(profile) return profile;
+  }catch(error){
+    console.warn('profile lookup failed',error);
+  }
+
+  const metadata=currentSession?.user?.user_metadata||{};
+
+  const fallback=pendingSignupProfile||{
+    name:metadata.name||'لاعب',
+    username:metadata.username||'',
+    mobile:metadata.mobile||'',
+    region:metadata.region||'السعودية',
+    country:metadata.country||metadata.region||'السعودية',
+    city:metadata.city||'الرياض',
+    category:metadata.category||'open'
+  };
+
+  await claimOrCreateProfile(fallback);
+
+  sessionStorage.removeItem('pending_signup_profile');
+  pendingSignupProfile=null;
+
+  return loadMyProfile();
+}
+
+function accountInitial(name){
+  return (String(name||'ل').trim().charAt(0)||'ل').toUpperCase();
+}
+
+function rankForRating(rating){
+  const points=Number(rating)||0;
+  if(points>=3000) return {key:'champion',label:'بطل',icon:'🏆'};
+  if(points>=2700) return {key:'elite',label:'نخبة',icon:'♚'};
+  if(points>=2400) return {key:'professional',label:'محترف',icon:'♛'};
+  if(points>=2100) return {key:'advanced',label:'متقدم',icon:'♜'};
+  if(points>=1800) return {key:'competitor',label:'منافس',icon:'♞'};
+  return {key:'beginner',label:'مبتدئ',icon:'♟'};
+}
+
+function renderAccountRank(rating){
+  const badge=$('#accountRankBadge');
+  if(!badge) return;
+  const rank=rankForRating(rating);
+  badge.dataset.rank=rank.key;
+  $('#accountRankLabel').textContent=rank.label;
+  $('#accountRankIcon').textContent=rank.icon;
+}
+
+function accountAvatarPublicUrl(path){
+  return supabase.storage.from('avatars').getPublicUrl(path).data.publicUrl;
+}
+
+function showAccountAvatar(){
+  const img=$('#accountAvatarImage');
+  const fallback=$('#accountAvatarFallback');
+  if(!img||!fallback||!currentProfile||!currentSession) return;
+
+  fallback.textContent=accountInitial(currentProfile.name);
+  fallback.hidden=false;
+  img.hidden=true;
+
+  const currentPath=`${currentProfile.id}/avatar.webp`;
+  const legacyPath=`${currentSession.user.id}/avatar.webp`;
+  let triedLegacy=false;
+
+  img.onerror=()=>{
+    if(!triedLegacy && legacyPath!==currentPath){
+      triedLegacy=true;
+      img.src=accountAvatarPublicUrl(legacyPath);
+      return;
+    }
+    img.hidden=true;
+    fallback.hidden=false;
+  };
+
+  img.onload=()=>{
+    fallback.hidden=true;
+    img.hidden=false;
+  };
+
+  img.src=accountAvatarPublicUrl(currentPath);
+}
+
+function showHeaderMemberAvatar(){
+  const img=$('#headerMemberAvatar');
+  const fallback=$('#headerMemberFallback');
+  if(!img||!fallback||!currentProfile||!currentSession) return;
+
+  fallback.textContent=accountInitial(currentProfile.name);
+  fallback.hidden=false;
+  img.hidden=true;
+
+  const currentPath=`${currentProfile.id}/avatar.webp`;
+  const legacyPath=`${currentSession.user.id}/avatar.webp`;
+  let triedLegacy=false;
+
+  img.onerror=()=>{
+    if(!triedLegacy && legacyPath!==currentPath){
+      triedLegacy=true;
+      img.src=accountAvatarPublicUrl(legacyPath);
+      return;
+    }
+    img.hidden=true;
+    fallback.hidden=false;
+  };
+
+  img.onload=()=>{
+    fallback.hidden=true;
+    img.hidden=false;
+  };
+
+  img.src=accountAvatarPublicUrl(currentPath);
+}
+
+function renderAccount(){
+  const loggedIn=!!currentSession;
+  document.body.classList.toggle('home-signed-in',loggedIn);
+  $('#headerMember').hidden=!loggedIn;
+  $('#navAccount').hidden=loggedIn;
+  const navSignup=$('#navSignup'); if(navSignup) navSignup.hidden=loggedIn;
+
+  if(passwordRecoveryMode){
+    document.body.classList.remove('home-signed-in');
+    $('#headerMember').hidden=true;
+    $('#navAccount').hidden=false;
+    $('#guestAuth').hidden=true;
+    $('#accountPanel').hidden=true;
+    $('#resetPasswordForm').hidden=false;
+    $('#navAccount').textContent='تغيير كلمة المرور';
+    $('#navAccount').href='auth-clean.html?mode=login';
+    $('#navLogout').hidden=true;
+    const dashboardNav=$('#dashboardNav');
+    if(dashboardNav) dashboardNav.href='#register';
+    return;
+  }
+
+  $('#resetPasswordForm').hidden=true;
+  $('#guestAuth').hidden=loggedIn;
+  $('#accountPanel').hidden=!loggedIn;
+
+  if(loggedIn && currentProfile){
+    showAccountAvatar();
+    showHeaderMemberAvatar();
+    $('#headerMemberName').textContent=currentProfile.name;
+    $('#headerMemberRating').textContent=currentProfile.rating??1500;
+    $('#accountWelcome').textContent='مرحبًا، '+currentProfile.name;
+    renderAccountRank(currentProfile.rating);
+    $('#accountRating').textContent=currentProfile.rating??1500;
+    const accountRegion=$('#accountRegion');
+    const accountRegionValue=countryForRegion(currentProfile.region)||'—';
+    accountRegion.textContent=accountRegionValue;
+    accountRegion.classList.toggle('account-region-long',accountRegionValue.length>10);
+    $('#accountCity').textContent=currentProfile.city||'—';
+    $('#accountGames').textContent=currentProfile.games_count??0;
+  }
+
+  const dashboardNav=$('#dashboardNav');
+  const mobileDashboardNav=$('#mobileDashboardNav');
+  const navSignup=$('#navSignup');
+  if(loggedIn){
+    $('#navAccount').textContent='لوحة التحكم';
+    $('#navAccount').href='profile.html';
+    $('#navAccount').hidden=true;
+    $('#navLogout').hidden=false;
+    if(navSignup) navSignup.hidden=true;
+    if(dashboardNav){ dashboardNav.hidden=false; dashboardNav.style.display=''; dashboardNav.href='profile.html'; }
+    if(mobileDashboardNav){ mobileDashboardNav.hidden=false; mobileDashboardNav.style.display=''; }
+  }else{
+    $('#headerMember').hidden=true;
+    $('#navAccount').textContent='تسجيل الدخول';
+    $('#navAccount').href='#register';
+    $('#navAccount').hidden=false;
+    if(navSignup) navSignup.hidden=false;
+    $('#navLogout').hidden=true;
+    if(dashboardNav){ dashboardNav.hidden=true; dashboardNav.style.display='none'; dashboardNav.href='#register'; }
+    if(mobileDashboardNav){ mobileDashboardNav.hidden=true; mobileDashboardNav.style.display='none'; }
+  }
+}
+
+async function refreshAuthUI(session){
+  currentSession=session||null;
+  currentProfile=null;
+
+  if(currentSession){
+    try{
+      await ensureProfile();
+    }catch(error){
+      console.error(error);
+      setAuthMsg(authErrorMessage(error,'profile'),'err');
+    }
+  }
+
+  renderAccount();
+}
+
+
+/* إنشاء الحساب */
+$('#signupRegion').addEventListener('change',async()=>{
+  await populateSignupCities(true);
+});
+
+$('#signupForm').addEventListener('submit',async event=>{
+  event.preventDefault();
+  setAuthMsg('');
+
+  const displayName=$('#signupName').value.trim();
+  const username=$('#signupUsername').value.trim().toLowerCase();
+  const email=$('#signupEmail').value.trim().toLowerCase();
+  const mobile=normalizeInternationalMobile($('#signupMobile').value);
+  const password=$('#signupPassword').value;
+  const password2=$('#signupPassword2').value;
+
+  if(displayName.length<2){
+    return setAuthMsg('اكتب الاسم الظاهر للاعب.','err');
+  }
+
+  if(!/^[a-z0-9_]{3,20}$/.test(username)){
+    return setAuthMsg(
+      'اسم المستخدم يجب أن يكون من 3 إلى 20 خانة: أحرف إنجليزية أو أرقام أو _ فقط.',
+      'err'
+    );
+  }
+
+  const usernameAvailable=await checkUsernameAvailability(username);
+
+  if(!usernameAvailable){
+    return setAuthMsg('اسم المستخدم محجوز. اختر اسمًا آخر.','err');
+  }
+
+  if(!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)){
+    return setAuthMsg('أدخل بريدًا إلكترونيًا صحيحًا.','err');
+  }
+
+  if(!mobile){
+    return setAuthMsg('أدخل رقم الجوال مع مفتاح الدولة، مثال +9665xxxxxxxx.','err');
+  }
+
+  if(password.length<8){
+    return setAuthMsg('كلمة المرور يجب أن تكون 8 أحرف على الأقل.','err');
+  }
+
+  if(password!==password2){
+    return setAuthMsg('كلمتا المرور غير متطابقتين.','err');
+  }
+
+  if(!$('#signupNationality').value){
+    return setAuthMsg('اختر الجنسية.','err');
+  }
+
+  if(!$('#signupRegion').value){
+    return setAuthMsg('اختر دولة الإقامة.','err');
+  }
+
+  if(!$('#signupCity').value){
+    return setAuthMsg('اختر المدينة.','err');
+  }
+
+  if(!$('#signupGender').value){
+    return setAuthMsg('اختر الجنس.','err');
+  }
+
+  const profileData={
+    name:displayName,
+    username:username,
+    mobile:mobile.local,
+    region:$('#signupNationality').value,
+    country:$('#signupRegion').value,
+    city:$('#signupCity').value,
+    gender:$('#signupGender').value,
+    category:$('#signupCategory').value
+  };
+
+  pendingSignupProfile=profileData;
+  sessionStorage.setItem(
+    'pending_signup_profile',
+    JSON.stringify(profileData)
+  );
+
+  const button=$('#signupBtn');
+  button.disabled=true;
+  button.textContent='جاري إنشاء الحساب...';
+
+  try{
+    const redirectUrl=location.origin + location.pathname;
+
+    const {data,error}=await supabase.auth.signUp({
+      email,
+      password,
+      options:{
+        emailRedirectTo:redirectUrl,
+        data:profileData
+      }
+    });
+
+    if(error) throw error;
+
+    if(data.session){
+      currentSession=data.session;
+
+      await claimOrCreateProfile(profileData);
+
+      sessionStorage.removeItem('pending_signup_profile');
+      pendingSignupProfile=null;
+
+      await refreshAuthUI(data.session);
+      await loadPlayers();
+
+      setAuthMsg(
+        'تم إنشاء الحساب وتسجيل الدخول بنجاح.',
+        'ok'
+      );
+    }else{
+      setAuthMsg(
+        'تم إنشاء الحساب. يمكنك الآن تسجيل الدخول باسم المستخدم وكلمة المرور.',
+        'ok'
+      );
+
+      $('#signupForm').reset();
+      usernameAvailability=null;
+      setUsernameStatus('اكتب اسم المستخدم للتحقق من توفره.','');
+      populateSignupCities(true);
+
+      switchAuthTab('login');
+    }
+  }catch(error){
+    console.error(error);
+    setAuthMsg(authErrorMessage(error),'err');
+  }finally{
+    button.disabled=false;
+    button.textContent='إنشاء الحساب';
+  }
+});
+
+/* تسجيل الدخول باسم المستخدم */
+$('#loginForm').addEventListener('submit',async event=>{
+  event.preventDefault();
+  setAuthMsg('');
+
+  const username=$('#loginUsername').value.trim().toLowerCase();
+  const password=$('#loginPassword').value;
+
+  if(!/^[a-z0-9_]{3,20}$/.test(username)){
+    return setAuthMsg('أدخل اسم مستخدم صحيحًا.','err');
+  }
+
+  if(password.length<8){
+    return setAuthMsg('أدخل كلمة المرور.','err');
+  }
+
+  const button=$('#loginBtn');
+  button.disabled=true;
+  button.textContent='جاري الدخول...';
+
+  try{
+    const {data,error}=await supabase.functions.invoke('username-login',{
+      body:{username,password}
+    });
+
+    if(error || !data?.access_token || !data?.refresh_token){
+      throw new Error('Invalid username or password');
+    }
+
+    const {data:sessionData,error:sessionError}=await supabase.auth.setSession({
+      access_token:data.access_token,
+      refresh_token:data.refresh_token
+    });
+
+    if(sessionError || !sessionData.session) throw sessionError||new Error('Invalid username or password');
+
+    currentSession=sessionData.session;
+    await refreshAuthUI(sessionData.session);
+
+    setAuthMsg('تم تسجيل الدخول.','ok');
+  }catch(error){
+    console.error(error);
+    setAuthMsg('اسم المستخدم أو كلمة المرور غير صحيحة.','err');
+  }finally{
+    button.disabled=false;
+    button.textContent='تسجيل الدخول';
+  }
+});
+
+$('#forgotPasswordBtn').addEventListener('click',()=>{
+  $('#loginForm').hidden=true;
+  $('#recoveryForm').hidden=false;
+  setAuthMsg('اكتب البريد المرتبط بالحساب لإرسال رابط الاستعادة.');
+});
+
+$('#backToLoginBtn').addEventListener('click',()=>switchAuthTab('login'));
+
+$('#recoveryForm').addEventListener('submit',async event=>{
+  event.preventDefault();
+  setAuthMsg('');
+
+  const email=$('#recoveryEmail').value.trim().toLowerCase();
+  if(!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)){
+    return setAuthMsg('أدخل بريدًا إلكترونيًا صحيحًا.','err');
+  }
+
+  const button=$('#recoveryBtn');
+  button.disabled=true;
+  button.textContent='جاري الإرسال...';
+
+  try{
+    const redirectTo=location.origin + location.pathname;
+    const {error}=await supabase.auth.resetPasswordForEmail(email,{redirectTo});
+    if(error) throw error;
+
+    setAuthMsg(
+      'إذا كان البريد مرتبطًا بحساب فسيصلك رابط استعادة كلمة المرور.',
+      'ok'
+    );
+  }catch(error){
+    console.error(error);
+    setAuthMsg('تعذر إرسال رابط الاستعادة الآن. حاول لاحقًا.','err');
+  }finally{
+    button.disabled=false;
+    button.textContent='إرسال رابط الاستعادة';
+  }
+});
+
+function setResetPasswordMsg(text,type=''){
+  const el=$('#resetPasswordMsg');
+  el.textContent=text||'';
+  el.className='msg full '+type;
+}
+
+function showPasswordReset(session){
+  passwordRecoveryMode=true;
+  currentSession=session||currentSession;
+  currentProfile=null;
+  setResetPasswordMsg('اختر كلمة مرور جديدة للحساب.');
+  renderAccount();
+}
+
+$('#resetPasswordForm').addEventListener('submit',async event=>{
+  event.preventDefault();
+  setResetPasswordMsg('');
+
+  const password=$('#resetPassword').value;
+  const password2=$('#resetPassword2').value;
+
+  if(password.length<8){
+    return setResetPasswordMsg('كلمة المرور يجب أن تكون 8 أحرف على الأقل.','err');
+  }
+
+  if(password!==password2){
+    return setResetPasswordMsg('كلمتا المرور غير متطابقتين.','err');
+  }
+
+  const button=$('#resetPasswordBtn');
+  button.disabled=true;
+  button.textContent='جاري الحفظ...';
+
+  try{
+    const {error}=await supabase.auth.updateUser({password});
+    if(error) throw error;
+
+    passwordRecoveryMode=false;
+    $('#resetPasswordForm').reset();
+    history.replaceState({},document.title,location.pathname+location.search);
+    await supabase.auth.signOut();
+
+    currentSession=null;
+    currentProfile=null;
+    renderAccount();
+    switchAuthTab('login');
+    setAuthMsg('تم تغيير كلمة المرور. سجّل الدخول باسم المستخدم.','ok');
+  }catch(error){
+    console.error(error);
+    setResetPasswordMsg('تعذر تغيير كلمة المرور. افتح رابط الاستعادة مرة أخرى.','err');
+  }finally{
+    button.disabled=false;
+    button.textContent='حفظ كلمة المرور';
+  }
+});
+
+/* تسجيل الخروج */
+$('#navLogout').addEventListener('click',async()=>{
+  await supabase.auth.signOut();
+
+  currentSession=null;
+  currentProfile=null;
+
+  renderAccount();
+  switchAuthTab('login');
+
+  setAuthMsg('تم تسجيل الخروج.','ok');
+});
+
+/* منع اللعب قبل تسجيل الدخول */
+document.querySelectorAll('.protected-play').forEach(link=>{
+  link.addEventListener('click',event=>{
+    if(currentSession) return;
+
+    event.preventDefault();
+
+    switchAuthTab('login');
+    setAuthMsg(
+      'سجّل الدخول أولًا ثم اضغط «العب الآن».',
+      'err'
+    );
+
+    document
+      .querySelector('#register')
+      .scrollIntoView({behavior:'smooth'});
+  });
+});
+
+/* تهيئة */
+const {data:{session}}=await supabase.auth.getSession();
+const recoveryFromUrl=new URLSearchParams(location.hash.replace(/^#/,''))
+  .get('type')==='recovery';
+
+if(recoveryFromUrl && session){
+  showPasswordReset(session);
+}else{
+  await refreshAuthUI(session);
+}
+
+supabase.auth.onAuthStateChange((event,session)=>{
+  if(event==='PASSWORD_RECOVERY'){
+    setTimeout(()=>showPasswordReset(session),0);
+    return;
+  }
+
+  if(
+    event==='SIGNED_IN' ||
+    event==='SIGNED_OUT' ||
+    event==='TOKEN_REFRESHED'
+  ){
+    setTimeout(()=>refreshAuthUI(session),0);
+  }
+});
+
+loadPlayers().catch(error=>{
+  console.error(error);
+  setAuthMsg('تعذر الاتصال بقاعدة البيانات.','err');
+});
+
+loadCurrentMatchesCount();
+setInterval(loadCurrentMatchesCount,30000);
+</script><script>window.addEventListener('DOMContentLoaded',()=>{const m=new URLSearchParams(location.search).get('mode');setTimeout(()=>document.getElementById(m==='signup'?'signupTab':'loginTab')?.click(),0)});</script></body></html>
