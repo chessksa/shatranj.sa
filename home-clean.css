@@ -1,0 +1,51 @@
+/* Clean home-only CSS extracted from legacy inline overrides. */
+.welcome-ticker{width:100%;height:34px;display:flex;align-items:center;overflow:hidden;background:#0a302f;color:#f7f3e7;border-top:0;border-bottom:1px solid rgba(197,163,77,.55);position:relative;z-index:19;flex:none;direction:rtl}
+.welcome-ticker-label{flex:0 0 auto;height:100%;display:flex;align-items:center;padding:0 18px;white-space:nowrap;background:#0d3b39;color:#efcf7c;border-left:1px solid rgba(197,163,77,.5);font-size:12px;font-weight:900;line-height:1;position:relative;z-index:2;box-shadow:-8px 0 18px rgba(0,0,0,.12)}
+.welcome-ticker-viewport{min-width:0;flex:1;overflow:hidden;height:100%;display:flex;align-items:center;direction:ltr}
+.welcome-ticker-track{display:flex;align-items:center;width:max-content;min-width:max-content;will-change:transform;animation:welcomeTickerInlineMove 60s linear infinite;direction:ltr}
+.welcome-ticker-group{display:flex;align-items:center;flex:none}
+.welcome-ticker-item{display:inline-flex;align-items:center;white-space:nowrap;direction:rtl;font-size:12px;font-weight:800;line-height:1;padding:0 22px}
+.welcome-ticker-separator{width:5px;height:5px;border-radius:50%;background:#c5a34d;flex:none}
+.welcome-ticker-loading{display:inline-flex;align-items:center;white-space:nowrap;padding:0 20px;font-size:12px;font-weight:800;direction:rtl}
+.welcome-ticker-single{animation:none!important;transform:none!important}
+@keyframes welcomeTickerInlineMove{from{transform:translateX(-50%)}to{transform:translateX(0)}}
+@media(min-width:901px){
+  body{grid-template-rows:auto 34px auto auto auto auto!important}
+  .home-header{grid-column:1/-1!important;grid-row:1!important}
+  .welcome-ticker{grid-column:1/-1;grid-row:2;position:relative!important;top:auto!important;left:auto!important;right:auto!important}
+  .home-hero{grid-column:3!important;grid-row:3!important}
+  #ranking{grid-column:2!important;grid-row:3/5!important}
+  .home-features{grid-column:3!important;grid-row:4!important}
+  #register{grid-column:2/4!important;grid-row:5!important}
+  footer{grid-column:1/-1!important;grid-row:6!important}
+
+  body.home-signed-in{grid-template-rows:64px 34px minmax(0,1fr) 104px 38px!important}
+  body.home-signed-in .home-header{grid-row:1!important}
+  body.home-signed-in .welcome-ticker{grid-row:2!important}
+  body.home-signed-in .home-hero{grid-row:3!important}
+  body.home-signed-in #ranking{grid-row:3/5!important}
+  body.home-signed-in .home-features{grid-row:4!important}
+  body.home-signed-in footer{grid-row:5!important}
+  body.home-signed-in #ranking .table-card{flex:0 0 auto!important}
+  body.home-signed-in #ranking .table-wrap{height:auto!important;overflow:visible!important}
+  body.home-signed-in #ranking table{height:auto!important}
+}
+@media(min-width:901px) and (max-height:700px){
+  body.home-signed-in{height:auto!important;min-height:100vh!important;overflow-y:auto!important;grid-template-rows:64px 34px auto 104px 38px!important}
+  body.home-signed-in #ranking{height:auto!important;overflow:visible!important}
+  body.home-signed-in #ranking>.wrap{height:auto!important}
+  body.home-signed-in .home-hero{overflow:visible!important}
+}
+@media(max-width:900px){
+  .home-header{order:1!important}
+  .welcome-ticker{order:2}
+  .home-hero{order:3!important}
+  #ranking{order:4!important}
+  .home-features{order:5!important}
+  #register{order:6!important}
+  footer{order:7!important}
+}
+@media(max-width:800px){.welcome-ticker{height:30px}.welcome-ticker-label{padding:0 10px;font-size:10px}.welcome-ticker-item{font-size:11px;padding:0 16px}.welcome-ticker-track{animation-duration:52s}}
+@media(max-width:430px){.welcome-ticker-label{padding:0 8px;font-size:9px}.welcome-ticker-item{padding:0 12px;font-size:10px}}
+@media(prefers-reduced-motion:reduce){.welcome-ticker-track{animation:none;transform:none}.welcome-ticker-group:nth-child(2){display:none}}
+@media(max-width:800px){.home-hero h1{white-space:nowrap!important;font-size:clamp(17px,5.2vw,25px)!important;text-align:center!important}.home-hero h1 span{display:inline!important}}
