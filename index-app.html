@@ -2088,14 +2088,18 @@ function renderAccount(){
     $('#navAccount').href='profile.html';
     $('#navAccount').hidden=true;
     $('#navLogout').hidden=false;
-    if(dashboardNav) dashboardNav.href='profile.html';
+    const navSignup=$('#navSignup'); if(navSignup) navSignup.hidden=true;
+    if(dashboardNav){ dashboardNav.hidden=false; dashboardNav.style.display=''; dashboardNav.href='profile.html'; }
+    const mobileDashboardNav=$('#mobileDashboardNav'); if(mobileDashboardNav){ mobileDashboardNav.hidden=false; mobileDashboardNav.style.display=''; }
   }else{
     $('#headerMember').hidden=true;
     $('#navAccount').textContent='تسجيل الدخول';
     $('#navAccount').href='#register';
     $('#navAccount').hidden=false;
+    const navSignup=$('#navSignup'); if(navSignup) navSignup.hidden=false;
     $('#navLogout').hidden=true;
-    if(dashboardNav) dashboardNav.href='#register';
+    if(dashboardNav){ dashboardNav.hidden=true; dashboardNav.style.display='none'; dashboardNav.href='#register'; }
+    const mobileDashboardNav=$('#mobileDashboardNav'); if(mobileDashboardNav){ mobileDashboardNav.hidden=true; mobileDashboardNav.style.display='none'; }
   }
 }
 
