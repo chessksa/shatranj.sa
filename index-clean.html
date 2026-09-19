@@ -2034,7 +2034,16 @@ async function refreshAuthUI(session){
   renderAccount();
 }
 
-$('#navSignup')?.addEventListener('click',()=>{ switchAuthTab('signup'); });
+function openAuth(mode){
+  switchAuthTab(mode);
+  const section=document.getElementById('register');
+  if(section){
+    section.hidden=false;
+    section.scrollIntoView({behavior:'smooth',block:'start'});
+  }
+}
+$('#navSignup')?.addEventListener('click',event=>{ event.preventDefault(); openAuth('signup'); });
+$('#navAccount')?.addEventListener('click',event=>{ event.preventDefault(); openAuth('login'); });
 
 /* إنشاء الحساب */
 $('#signupRegion').addEventListener('change',async()=>{
