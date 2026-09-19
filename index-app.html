@@ -916,7 +916,7 @@ footer{
 }
 </style>
 <style id="hiddenNavAccountFix">
-#navAccount[hidden],#navSignup[hidden]{display:none!important}
+#navAccount[hidden]{display:none!important}
 </style>
 <style id="welcomeTickerInlineStyles">
 .welcome-ticker{width:100%;height:34px;display:flex;align-items:center;overflow:hidden;background:#0a302f;color:#f7f3e7;border-top:0;border-bottom:1px solid rgba(197,163,77,.55);position:relative;z-index:19;flex:none;direction:rtl}
@@ -1012,7 +1012,7 @@ footer{
       <div id="siteNotificationHost" class="header-notification-host"></div>
 
       <button id="navLogout" class="nav-logout header-action header-tile" type="button" hidden>خروج</button>
-      <a href="#register" id="navSignup" class="nav-account header-action header-tile">تسجيل</a>\n      <a href="#register" id="navAccount" class="nav-account header-action header-tile">تسجيل الدخول</a>
+      <a href="#register" id="navAccount" class="nav-account header-action header-tile">تسجيل الدخول</a>
     </div>
   </div>
 
@@ -2044,7 +2044,7 @@ function renderAccount(){
   const loggedIn=!!currentSession;
   document.body.classList.toggle('home-signed-in',loggedIn);
   $('#headerMember').hidden=!loggedIn;
-  $('#navAccount').hidden=loggedIn;\n  const navSignup=$('#navSignup'); if(navSignup) navSignup.hidden=loggedIn;
+  $('#navAccount').hidden=loggedIn;
 
 
   if(passwordRecoveryMode){
@@ -2088,18 +2088,14 @@ function renderAccount(){
     $('#navAccount').href='profile.html';
     $('#navAccount').hidden=true;
     $('#navLogout').hidden=false;
-    const navSignup=$('#navSignup'); if(navSignup) navSignup.hidden=true;
-    if(dashboardNav){ dashboardNav.hidden=false; dashboardNav.style.display=''; dashboardNav.href='profile.html'; }
-    const mobileDashboardNav=$('#mobileDashboardNav'); if(mobileDashboardNav){ mobileDashboardNav.hidden=false; mobileDashboardNav.style.display=''; }
+    if(dashboardNav) dashboardNav.href='profile.html';
   }else{
     $('#headerMember').hidden=true;
     $('#navAccount').textContent='تسجيل الدخول';
     $('#navAccount').href='#register';
     $('#navAccount').hidden=false;
-    const navSignup=$('#navSignup'); if(navSignup) navSignup.hidden=false;
     $('#navLogout').hidden=true;
-    if(dashboardNav){ dashboardNav.hidden=true; dashboardNav.style.display='none'; dashboardNav.href='#register'; }
-    const mobileDashboardNav=$('#mobileDashboardNav'); if(mobileDashboardNav){ mobileDashboardNav.hidden=true; mobileDashboardNav.style.display='none'; }
+    if(dashboardNav) dashboardNav.href='#register';
   }
 }
 
@@ -2119,7 +2115,7 @@ async function refreshAuthUI(session){
   renderAccount();
 }
 
-$('#navSignup')?.addEventListener('click',()=>{ switchAuthTab('signup'); });\n\n/* إنشاء الحساب */
+/* إنشاء الحساب */
 $('#signupRegion').addEventListener('change',async()=>{
   await populateSignupCities(true);
 });
