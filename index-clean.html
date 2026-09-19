@@ -903,18 +903,7 @@ footer{
 </style>
 <link rel="stylesheet" href="home-theme.css?v=20260909-tickergap8">
 <link rel="stylesheet" href="home-clean.css?v=20260920-clean3">
-<style id="clean-home-authority-20260920">
-/* Clean authority layer: one deterministic owner for home header/auth visibility. */
-#headerMember[hidden],#navLogout[hidden],#navAccount[hidden],#navSignup[hidden],#dashboardNav[hidden],#mobileDashboardNav[hidden]{display:none!important}
-body:not(.home-signed-in) #headerMember,body:not(.home-signed-in) #navLogout,body:not(.home-signed-in) #dashboardNav,body:not(.home-signed-in) #mobileDashboardNav{display:none!important}
-body:not(.home-signed-in) #navSignup,body:not(.home-signed-in) #navAccount{display:inline-flex!important;visibility:visible!important;opacity:1!important;align-items:center!important;justify-content:center!important;min-width:96px!important}
-body.home-signed-in #navSignup,body.home-signed-in #navAccount{display:none!important}
-body.home-signed-in #headerMember:not([hidden]),body.home-signed-in #navLogout:not([hidden]),body.home-signed-in #dashboardNav:not([hidden]){display:flex!important}
-@media(max-width:800px){
- body:not(.home-signed-in) .compact-member-nav .nav-user{display:flex!important;flex-wrap:nowrap!important;justify-content:flex-end!important;gap:6px!important;overflow:visible!important}
- body:not(.home-signed-in) #navSignup,body:not(.home-signed-in) #navAccount{min-width:0!important;height:40px!important;padding:0 10px!important;font-size:13px!important}
-}
-</style>
+<link rel="stylesheet" href="home-clean-auth.css?v=20260920-clean3">
 </head>
 
 <body>
