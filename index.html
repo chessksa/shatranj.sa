@@ -29,7 +29,7 @@ html,body{margin:0;min-height:100%;background:#042628;color:#f4eddc;font-family:
     console.warn('تعذر تنظيف التخزين المؤقت القديم',error);
   }
 
-  const stamp='20260920-guest-auth1';
+  const stamp='20260920-guest-auth2';
   const runtimeVersion=stamp+'-'+Date.now();
   const response=await fetch('./index-app.html?v='+runtimeVersion,{cache:'no-store'});
   if(!response.ok) throw new Error('index source '+response.status);
@@ -257,6 +257,12 @@ async function loadCurrentMatchesCount(){`;
   );
   html=html.replace('</body>','<script>document.addEventListener("click",function(e){const a=e.target.closest("#navSignup");if(!a)return;setTimeout(function(){const t=document.querySelector("[data-tab=signup],#signupTab");if(t)t.click();},0);});<\/script></body>');
 
+  // Force a clear guest header independent of legacy header CSS.
+  html=html.replace('</head>',`<style id="guestAuthForce20260920">
+  body:not(.home-signed-in) #dashboardNav,body:not(.home-signed-in) #mobileDashboardNav{display:none!important}
+  body:not(.home-signed-in) #navSignup,body:not(.home-signed-in) #navAccount{display:inline-flex!important;visibility:visible!important;opacity:1!important;position:relative!important;width:auto!important;min-width:92px!important;height:42px!important;align-items:center!important;justify-content:center!important}
+  body.home-signed-in #navSignup,body.home-signed-in #navAccount{display:none!important}
+  </style></head>`);
   document.open();
   document.write(html);
   document.close();
