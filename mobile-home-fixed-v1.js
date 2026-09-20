@@ -35,18 +35,13 @@
     document.documentElement.classList.add('mobile-fixed-workspace-active');
     const root=document.createElement('main');
     root.id='mobileFixedWorkspace';
-    const primaryTabs=tabs.filter(([id])=>['home','play','computer'].includes(id));
-    const secondaryTabs=tabs.filter(([id])=>['ranking','invite','more'].includes(id));
     root.innerHTML=
       '<header class="mfw-header">'+
-        '<div class="mfw-header-top">'+
-          '<div class="mfw-member"><span class="mfw-avatar">♟</span><span class="mfw-member-copy"><strong id="mfwName">شطرنج العرب</strong><small id="mfwState">المنصة العربية للشطرنج</small></span></div>'+
-          '<nav class="mfw-tabs mfw-tabs-secondary">'+secondaryTabs.map(([id,icon,label])=>'<button type="button" class="mfw-tab" data-mfw="'+id+'"><i>'+icon+'</i><span>'+label+'</span></button>').join('')+'</nav>'+
-          '<div class="mfw-points"><small>النقاط</small><b id="mfwPoints">1500</b></div>'+
-        '</div>'+
-        '<nav class="mfw-tabs mfw-tabs-primary">'+primaryTabs.map(([id,icon,label])=>'<button type="button" class="mfw-tab" data-mfw="'+id+'"><i>'+icon+'</i><span>'+label+'</span></button>').join('')+'</nav>'+
+        '<div class="mfw-member"><span class="mfw-avatar">♟</span><span class="mfw-member-copy"><strong id="mfwName">شطرنج العرب</strong><small id="mfwState">المنصة العربية للشطرنج</small></span></div>'+
+        '<div class="mfw-points"><small>النقاط</small><b id="mfwPoints">1500</b></div>'+
       '</header>'+
       '<section class="mfw-board" id="mfwBoard" aria-label="رقعة الشطرنج"><div class="mfw-board-grid">'+boardHtml()+'</div></section>'+
+      '<nav class="mfw-tabs">'+tabs.map(([id,icon,label])=>'<button type="button" class="mfw-tab" data-mfw="'+id+'"><i>'+icon+'</i><span>'+label+'</span></button>').join('')+'</nav>'+
       '<section class="mfw-panel"><div class="mfw-panel-body" id="mfwPanelBody"></div></section>';
     document.body.appendChild(root);
     root.querySelectorAll('[data-mfw]').forEach(btn=>btn.addEventListener('click',()=>show(btn.dataset.mfw)));
@@ -61,8 +56,7 @@
   }
 
   function home(body){
-    const name=signedIn()?txt('headerMemberName','العضو'):'زائر';
-    body.innerHTML='<div class="mfw-stats"><div class="mfw-stat"><small>المشتركون</small><b>'+txt('headerPlayersCount')+'</b></div><div class="mfw-stat"><small>المتواجدون</small><b>'+txt('headerOnlineCount')+'</b></div><div class="mfw-stat"><small>المباريات الآن</small><b>'+txt('headerMatchesCount')+'</b></div></div><div class="mfw-welcome"><strong>مرحبًا، '+name+'</strong><small>الرقعة ثابتة، والمحتوى حولها يتغير حسب اختيارك.</small></div>';
+    body.innerHTML='<div class="mfw-stats"><div class="mfw-stat"><small>المشتركون</small><b>'+txt('headerPlayersCount')+'</b></div><div class="mfw-stat"><small>المتواجدون</small><b>'+txt('headerOnlineCount')+'</b></div><div class="mfw-stat"><small>المباريات الآن</small><b>'+txt('headerMatchesCount')+'</b></div></div>';
   }
 
   function action(body,title,text,href,label){
