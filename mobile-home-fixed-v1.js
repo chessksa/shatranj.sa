@@ -117,11 +117,24 @@
 
   function boot(){
     ensureRoot();
-    const observer=new MutationObserver(()=>{
+
+    const refreshHome=()=>{
       syncHeader();
       if(active==='ranking')show('ranking');
+    };
+
+    ['headerMemberName','headerMemberRating','headerPlayersCount','headerOnlineCount','headerMatchesCount'].forEach(id=>{
+      const node=document.getElementById(id);
+      if(!node)return;
+      new MutationObserver(refreshHome).observe(node,{subtree:true,childList:true,characterData:true});
     });
-    observer.observe(document.body,{subtree:true,childList:true,characterData:true,attributes:true,attributeFilter:['class']});
+
+    new MutationObserver(refreshHome).observe(document.body,{attributes:true,attributeFilter:['class']});
+
+    const tbody=document.getElementById('tbody');
+    if(tbody){
+      new MutationObserver(()=>{if(active==='ranking')show('ranking')}).observe(tbody,{subtree:true,childList:true,characterData:true});
+    }
   }
 
   if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',boot,{once:true});
