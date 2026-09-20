@@ -46,8 +46,8 @@
         '</div>'+
         '<nav class="mfw-tabs mfw-tabs-primary">'+primaryTabs.map(([id,icon,label])=>'<button type="button" class="mfw-tab" data-mfw="'+id+'"><i>'+icon+'</i><span>'+label+'</span></button>').join('')+'</nav>'+
       '</header>'+
-      '<section class="mfw-board" id="mfwBoard" aria-label="رقعة الشطرنج"><div class="mfw-board-grid">'+boardHtml()+'</div><span class="mfw-board-label" id="mfwBoardLabel">الرئيسية</span></section>'+
-      '<section class="mfw-panel"><header class="mfw-panel-head" id="mfwPanelTitle">الرئيسية</header><div class="mfw-panel-body" id="mfwPanelBody"></div></section>';
+      '<section class="mfw-board" id="mfwBoard" aria-label="رقعة الشطرنج"><div class="mfw-board-grid">'+boardHtml()+'</div></section>'+
+      '<section class="mfw-panel"><div class="mfw-panel-body" id="mfwPanelBody"></div></section>';
     document.body.appendChild(root);
     root.querySelectorAll('[data-mfw]').forEach(btn=>btn.addEventListener('click',()=>show(btn.dataset.mfw)));
     root.querySelector('#mfwBoard').addEventListener('click',()=>show('play'));
@@ -58,8 +58,6 @@
   function setActive(id,title){
     active=id;
     document.querySelectorAll('[data-mfw]').forEach(btn=>btn.classList.toggle('active',btn.dataset.mfw===id));
-    const t=document.getElementById('mfwPanelTitle');if(t)t.textContent=title;
-    const b=document.getElementById('mfwBoardLabel');if(b)b.textContent=title;
   }
 
   function home(body){
