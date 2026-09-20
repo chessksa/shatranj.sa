@@ -2,6 +2,7 @@ import { rpc, supabase } from '../platform/api.mjs';
 import './public-home.mjs?v=20260912-home-polish1';
 import './desktop-board-shell.mjs?v=20260918-gray-dot2';
 import './desktop-board-shell-tune.mjs?v=20260918-computer-board-click1';
+import './mobile-board-shell.mjs?v=20260920-board-workspace1';
 
 const sleep=(ms)=>new Promise(resolve=>setTimeout(resolve,ms));
 
