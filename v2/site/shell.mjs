@@ -41,10 +41,12 @@ if (!skip.test(location.pathname)) {
 
   document.querySelectorAll('a[href]').forEach((anchor)=>{
     const raw=anchor.getAttribute('href')||'';
-    if(!/(?:^|\/)play(?:-v10)?\.html/i.test(raw)) return;
+    if(!/(?:^|\/)(?:play(?:-v10)?|play-entry-v16)\.html/i.test(raw)) return;
     try{
       const url=new URL(raw,location.href);
       if(url.searchParams.get('computer')==='1') return;
+      const isEntry=/play-entry-v16\.html$/i.test(url.pathname);
+      if(isEntry&&!window.matchMedia('(max-width:900px)').matches) return;
       anchor.setAttribute('href','play-v2.html?auto=1');
     }catch{}
   });
