@@ -74,4 +74,39 @@
   html body .compact-member-nav .site-notification-bell{
     gap:7px!important;
   }
+
+
+  /* Guest mobile header: keep only the two auth actions and give them equal width. */
+  body.v2-route-home:not(.home-signed-in) .compact-member-nav .header-member,
+  body.v2-route-home:not(.home-signed-in) .compact-member-nav .mobile-dashboard-link,
+  body.v2-route-home:not(.home-signed-in) .compact-member-nav .header-notification-host,
+  body.v2-route-home:not(.home-signed-in) .compact-member-nav .nav-logout{
+    display:none!important;
+  }
+
+  body.v2-route-home:not(.home-signed-in) .compact-member-nav .nav-user{
+    width:100%!important;
+    display:grid!important;
+    grid-template-columns:repeat(2,minmax(0,1fr))!important;
+    gap:6px!important;
+    overflow:visible!important;
+  }
+
+  body.v2-route-home:not(.home-signed-in) .compact-member-nav .dashboard-link,
+  body.v2-route-home:not(.home-signed-in) .compact-member-nav .nav-account{
+    width:100%!important;
+    min-width:0!important;
+    max-width:none!important;
+    height:44px!important;
+    min-height:44px!important;
+    margin:0!important;
+    padding:0 8px!important;
+    display:inline-flex!important;
+    align-items:center!important;
+    justify-content:center!important;
+    gap:5px!important;
+    border-radius:12px!important;
+    overflow:hidden!important;
+    white-space:nowrap!important;
+  }
 }
