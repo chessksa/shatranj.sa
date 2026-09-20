@@ -3,9 +3,13 @@ from pathlib import Path
 ROOT = Path(__file__).resolve().parents[1]
 
 
-def test_mobile_workspace_is_loaded_from_home_dashboard():
+def test_mobile_workspace_is_loaded_directly_from_index():
+    index = (ROOT / "index.html").read_text(encoding="utf-8")
     dashboard = (ROOT / "v2/home/dashboard.mjs").read_text(encoding="utf-8")
-    assert "mobile-board-shell.mjs?v=20260920-board-workspace1" in dashboard
+    assert "v2/home/mobile-board-shell.css?v=" in index
+    assert "v2/home/mobile-board-shell.mjs?v=" in index
+    assert "20260920-mobile-board3" in index
+    assert "mobile-board-shell.mjs" not in dashboard
 
 
 def test_workspace_logic_is_mobile_only():
@@ -51,7 +55,7 @@ def test_mobile_workspace_keeps_current_play_routes():
 
 
 if __name__ == "__main__":
-    test_mobile_workspace_is_loaded_from_home_dashboard()
+    test_mobile_workspace_is_loaded_directly_from_index()
     test_workspace_logic_is_mobile_only()
     test_board_stays_fixed_while_views_change()
     test_mobile_layout_has_fixed_board_icon_rail_and_changing_panel()
