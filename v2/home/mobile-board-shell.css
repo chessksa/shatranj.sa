@@ -570,6 +570,46 @@
     background:rgba(245,243,237,.98)!important;
   }
   body.mobile-board-workspace .mobile-workspace-view-body .home-invite-results{max-height:150px!important}
+  body.mobile-board-workspace .mobile-workspace-view-body #register{
+    display:block!important;
+    width:100%!important;
+    height:auto!important;
+    margin:0!important;
+    padding:0!important;
+    background:transparent!important;
+    border:0!important;
+  }
+  body.mobile-board-workspace .mobile-workspace-view-body #register>.wrap{
+    width:100%!important;
+    max-width:none!important;
+    margin:0!important;
+  }
+  body.mobile-board-workspace .mobile-workspace-view-body #register .form-card{
+    padding:7px!important;
+    border-radius:10px!important;
+    box-shadow:none!important;
+  }
+  body.mobile-board-workspace .mobile-workspace-view-body #register .auth-tabs{
+    margin-bottom:7px!important;
+    gap:5px!important;
+  }
+  body.mobile-board-workspace .mobile-workspace-view-body #register .auth-tab{
+    height:36px!important;
+    min-height:36px!important;
+    font-size:10px!important;
+  }
+  body.mobile-board-workspace .mobile-workspace-view-body #register .auth-form{
+    grid-template-columns:1fr!important;
+    gap:6px!important;
+  }
+  body.mobile-board-workspace .mobile-workspace-view-body #register input,
+  body.mobile-board-workspace .mobile-workspace-view-body #register select{
+    height:38px!important;
+    min-height:38px!important;
+    font-size:14px!important;
+  }
+  body.mobile-board-workspace .mobile-workspace-view-body #register label{font-size:10px!important}
+  body.mobile-board-workspace .mobile-workspace-view-body #register .show-pass{top:20px!important;height:28px!important;min-height:28px!important}
 
   body.mobile-board-workspace:not(.home-signed-in) .home-header{
     height:58px!important;
