@@ -6,7 +6,9 @@ if (!skip.test(location.pathname)) {
     const mobileUi = document.createElement('link');
     mobileUi.rel = 'stylesheet';
     mobileUi.dataset.v2MobileUi = 'professional';
-    mobileUi.href = new URL('./mobile-ui-professional.css', import.meta.url).href;
+    const mobileUiUrl = new URL('./mobile-ui-professional.css', import.meta.url);
+    mobileUiUrl.searchParams.set('v','20260920-mobile-stability1');
+    mobileUi.href = mobileUiUrl.href;
     document.head.appendChild(mobileUi);
   }
   if (!document.querySelector('link[data-v2-mobile-home]')) {
@@ -14,7 +16,7 @@ if (!skip.test(location.pathname)) {
     mobileHome.rel = 'stylesheet';
     mobileHome.dataset.v2MobileHome = 'no-scroll';
     const mobileHomeUrl = new URL('./mobile-home-no-scroll.css', import.meta.url);
-    mobileHomeUrl.searchParams.set('v','20260914-header-tournaments-actions2');
+    mobileHomeUrl.searchParams.set('v','20260920-mobile-stability1');
     mobileHome.href = mobileHomeUrl.href;
     document.head.appendChild(mobileHome);
   }
@@ -23,7 +25,7 @@ if (!skip.test(location.pathname)) {
     mobileHomePolish.rel = 'stylesheet';
     mobileHomePolish.dataset.v2MobileHomePolish = 'final';
     const mobileHomePolishUrl = new URL('./mobile-home-polish.css', import.meta.url);
-    mobileHomePolishUrl.searchParams.set('v','20260915-text-actions-header3');
+    mobileHomePolishUrl.searchParams.set('v','20260920-mobile-stability1');
     mobileHomePolish.href = mobileHomePolishUrl.href;
     document.head.appendChild(mobileHomePolish);
   }
@@ -32,7 +34,7 @@ if (!skip.test(location.pathname)) {
     mobileHomeCleanup.rel = 'stylesheet';
     mobileHomeCleanup.dataset.v2MobileHomeCleanup = 'final';
     const mobileHomeCleanupUrl = new URL('./mobile-home-cleanup.css', import.meta.url);
-    mobileHomeCleanupUrl.searchParams.set('v','20260915-icons-hard-remove2');
+    mobileHomeCleanupUrl.searchParams.set('v','20260920-mobile-stability1');
     mobileHomeCleanup.href = mobileHomeCleanupUrl.href;
     document.head.appendChild(mobileHomeCleanup);
   }
@@ -55,7 +57,7 @@ if (!skip.test(location.pathname)) {
     'club.html':'clubs','stats.html':'stats','notifications.html':'notifications'
   };
   const activeId = current === 'play-v2.html' ? 'play'
-    : current === 'play-v10.html' && new URLSearchParams(query).get('computer') === '1' ? 'computer'
+    : (current === 'play-v10.html' || current === 'play-entry-v16.html') && new URLSearchParams(query).get('computer') === '1' ? 'computer'
     : current === 'watch.html' || current.endsWith('-watch.html') ? 'watch'
     : current === 'tournaments.html' || current === 'tournaments-app.html' ? 'tournaments'
     : current === 'profile.html' || current === 'player.html' ? 'profile'
@@ -87,6 +89,7 @@ if (!skip.test(location.pathname)) {
 
   if (!document.querySelector('.v2-mobile-nav')) {
     const coreIds = ['home','play','puzzles','profile'];
+    const mobileHrefFor=(item)=>item.id==='computer'?'play-entry-v16.html?computer=1&v=20260918-sidewidth-freeze1':item.href;
     const mobile = document.createElement('nav');
     mobile.className = 'v2-mobile-nav';
     mobile.setAttribute('aria-label','التنقل السريع');
@@ -94,7 +97,7 @@ if (!skip.test(location.pathname)) {
       const item = SITE_NAV.find(entry => entry.id === id);
       const link = document.createElement('a');
       link.className = `v2-mobile-link ${id === activeId ? 'active' : ''}`;
-      link.href = item.href;
+      link.href = mobileHrefFor(item);
       link.innerHTML = `<span class="v2-global-icon">${item.icon}</span><span>${item.label}</span>`;
       mobile.appendChild(link);
     }
@@ -114,7 +117,7 @@ if (!skip.test(location.pathname)) {
     for(const item of moreIds){
       const link=document.createElement('a');
       link.className=`v2-mobile-more-link ${item.id===activeId?'active':''}`;
-      link.href=item.href;
+      link.href=mobileHrefFor(item);
       link.innerHTML=`<span class="v2-global-icon">${item.icon}</span><span>${item.label}</span>`;
       grid.appendChild(link);
     }
