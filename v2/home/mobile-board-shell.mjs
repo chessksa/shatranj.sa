@@ -1,6 +1,21 @@
 const mobile=window.matchMedia('(max-width:900px)');
 
 if(mobile.matches&&document.querySelector('#homeHero')){
+  const legacyMobileSelectors=[
+    'link[data-v2-mobile-ui]',
+    'link[data-v2-mobile-home]',
+    'link[data-v2-mobile-home-polish]',
+    'link[data-v2-mobile-home-cleanup]'
+  ];
+
+  function removeLegacyMobileLayers(){
+    legacyMobileSelectors.forEach(selector=>document.querySelectorAll(selector).forEach(node=>node.remove()));
+  }
+
+  removeLegacyMobileLayers();
+  const headObserver=new MutationObserver(()=>removeLegacyMobileLayers());
+  headObserver.observe(document.head,{childList:true});
+
   if(!document.querySelector('link[data-mobile-board-shell]')){
     const link=document.createElement('link');
     link.rel='stylesheet';
@@ -347,6 +362,19 @@ if(mobile.matches&&document.querySelector('#homeHero')){
     for(let i=0;i<40&&!document.querySelector('#homeBoardPreview');i+=1)await sleep(50);
     if(!document.querySelector('#homeBoardPreview'))return;
     document.body.classList.add('mobile-board-workspace');
+    removeLegacyMobileLayers();
+    const workspaceCss=document.querySelector('link[data-mobile-board-shell]');
+    if(workspaceCss) document.head.appendChild(workspaceCss);
+    setTimeout(()=>{
+      removeLegacyMobileLayers();
+      const css=document.querySelector('link[data-mobile-board-shell]');
+      if(css) document.head.appendChild(css);
+    },0);
+    setTimeout(()=>{
+      removeLegacyMobileLayers();
+      const css=document.querySelector('link[data-mobile-board-shell]');
+      if(css) document.head.appendChild(css);
+    },250);
     captureOriginalNodes();
     buildBoard();
     buildWorkspace();
