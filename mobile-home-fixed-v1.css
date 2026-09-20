@@ -1,5 +1,5 @@
 @media(max-width:900px){
-  :root{--mobile-fixed-board:min(calc(100vw - 6px),calc(100dvh - 292px))}
+  :root{--mobile-fixed-board:calc(100vw - 6px)}
   html.mobile-fixed-workspace-active,
   html.mobile-fixed-workspace-active body{
     width:100%!important;height:100%!important;min-height:100%!important;
@@ -67,8 +67,12 @@
   html.mobile-fixed-workspace-active body .home-invite-panel{z-index:20050!important}
 }
 @media(max-width:430px){
-  :root{--mobile-fixed-board:min(calc(100vw - 6px),calc(100dvh - 276px))}
+  :root{--mobile-fixed-board:calc(100vw - 6px)}
   #mobileFixedWorkspace{grid-template-rows:88px var(--mobile-fixed-board) minmax(0,1fr)!important;gap:2px!important;padding-inline:2px!important}
   .mfw-header{height:88px;grid-template-rows:40px 41px;gap:1px}.mfw-header-top{height:40px;grid-template-columns:minmax(0,1fr) 116px auto}.mfw-tabs-primary,.mfw-tabs-primary .mfw-tab{height:41px;min-height:41px}.mfw-tabs-secondary,.mfw-tabs-secondary .mfw-tab{height:36px;min-height:36px}.mfw-panel{height:auto;min-height:0;max-height:none}.mfw-tab{font-size:7px}.mfw-tab i{font-size:17px}
 }
 @media(min-width:901px){#mobileFixedWorkspace{display:none!important}}
+
+@media(max-width:900px) and (orientation:landscape){
+  :root{--mobile-fixed-board:min(calc(100vw - 6px),calc(100dvh - 184px))}
+}
