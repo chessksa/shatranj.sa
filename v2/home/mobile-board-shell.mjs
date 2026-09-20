@@ -333,6 +333,11 @@ if(mobile.matches&&document.querySelector('#homeHero')){
       if(node)observer.observe(node,{childList:true,characterData:true,subtree:true});
     });
     const classObserver=new MutationObserver(()=>{
+      const signedIn=document.body.classList.contains('home-signed-in');
+      if(signedIn&&activeView==='auth'){
+        void showView('home');
+        return;
+      }
       if(activeView==='home'||activeView==='play'||activeView==='computer'||activeView==='invite') void showView(activeView);
     });
     classObserver.observe(document.body,{attributes:true,attributeFilter:['class']});
