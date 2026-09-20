@@ -36,9 +36,11 @@
     const root=document.createElement('main');
     root.id='mobileFixedWorkspace';
     root.innerHTML=
-      '<header class="mfw-header"><div class="mfw-member"><span class="mfw-avatar">♟</span><span class="mfw-member-copy"><strong id="mfwName">شطرنج العرب</strong><small id="mfwState">المنصة العربية للشطرنج</small></span></div><div class="mfw-points"><small>النقاط</small><b id="mfwPoints">1500</b></div></header>'+
+      '<header class="mfw-header">'+
+        '<div class="mfw-header-top"><div class="mfw-member"><span class="mfw-avatar">♟</span><span class="mfw-member-copy"><strong id="mfwName">شطرنج العرب</strong><small id="mfwState">المنصة العربية للشطرنج</small></span></div><div class="mfw-points"><small>النقاط</small><b id="mfwPoints">1500</b></div></div>'+
+        '<nav class="mfw-tabs">'+tabs.map(([id,icon,label])=>'<button type="button" class="mfw-tab" data-mfw="'+id+'"><i>'+icon+'</i><span>'+label+'</span></button>').join('')+'</nav>'+
+      '</header>'+
       '<section class="mfw-board" id="mfwBoard" aria-label="رقعة الشطرنج"><div class="mfw-board-grid">'+boardHtml()+'</div><span class="mfw-board-label" id="mfwBoardLabel">الرئيسية</span></section>'+
-      '<nav class="mfw-tabs">'+tabs.map(([id,icon,label])=>'<button type="button" class="mfw-tab" data-mfw="'+id+'"><i>'+icon+'</i><span>'+label+'</span></button>').join('')+'</nav>'+
       '<section class="mfw-panel"><header class="mfw-panel-head" id="mfwPanelTitle">الرئيسية</header><div class="mfw-panel-body" id="mfwPanelBody"></div></section>';
     document.body.appendChild(root);
     root.querySelectorAll('[data-mfw]').forEach(btn=>btn.addEventListener('click',()=>show(btn.dataset.mfw)));
