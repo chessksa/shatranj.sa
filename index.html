@@ -29,7 +29,7 @@ html,body{margin:0;min-height:100%;background:#042628;color:#f4eddc;font-family:
     console.warn('تعذر تنظيف التخزين المؤقت القديم',error);
   }
 
-  const stamp='20260920-mobile-board3';
+  const stamp='20260920-mobile-fixed4';
   const runtimeVersion=stamp+'-'+Date.now();
   const response=await fetch('./index-app.html?v='+runtimeVersion,{cache:'no-store'});
   if(!response.ok) throw new Error('index source '+response.status);
@@ -220,8 +220,8 @@ async function loadCurrentMatchesCount(){`;
   if(!html.includes('v2/home/dashboard.css')){
     html=html.replace('</head>','<link rel="stylesheet" href="v2/home/dashboard.css?v='+runtimeVersion+'"></head>');
   }
-  if(!html.includes('v2/home/mobile-board-shell.css')){
-    html=html.replace('</head>','<link rel="stylesheet" data-mobile-board-shell href="v2/home/mobile-board-shell.css?v='+runtimeVersion+'"></head>');
+  if(!html.includes('mobile-home-fixed-v1.css')){
+    html=html.replace('</head>','<link rel="stylesheet" href="mobile-home-fixed-v1.css?v='+runtimeVersion+'"></head>');
   }
   if(!html.includes('config-base.js')){
     html=html.replace('</body>','<script src="config-base.js?v='+runtimeVersion+'"><\/script></body>');
@@ -235,8 +235,8 @@ async function loadCurrentMatchesCount(){`;
   if(!html.includes('v2/site/shell.mjs')){
     html=html.replace('</body>','<script type="module" src="v2/site/shell.mjs?v='+runtimeVersion+'"><\/script></body>');
   }
-  if(!html.includes('v2/home/mobile-board-shell.mjs')){
-    html=html.replace('</body>','<script type="module" src="v2/home/mobile-board-shell.mjs?v='+runtimeVersion+'"><\/script></body>');
+  if(!html.includes('mobile-home-fixed-v1.js')){
+    html=html.replace('</body>','<script src="mobile-home-fixed-v1.js?v='+runtimeVersion+'"><\/script></body>');
   }
 
   document.open();
