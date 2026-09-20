@@ -2095,7 +2095,12 @@ function renderAccount(){
     $('#navAccount').href='#register';
     $('#navAccount').hidden=false;
     $('#navLogout').hidden=true;
-    if(dashboardNav) dashboardNav.href='#register';
+    if(dashboardNav){
+      dashboardNav.href='#register';
+      if(window.matchMedia('(max-width:900px)').matches){
+        dashboardNav.innerHTML='<span class="header-tile-icon" aria-hidden="true">＋</span><span>إنشاء حساب</span>';
+      }
+    }
   }
 }
 
