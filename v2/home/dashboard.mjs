@@ -5,7 +5,7 @@ if(!document.querySelector('link[data-desktop-guest-auth]')){
   css.rel='stylesheet';
   css.dataset.desktopGuestAuth='1';
   const url=new URL('./desktop-guest-auth.css',import.meta.url);
-  url.searchParams.set('v','20260929-desktop-guest-right1');
+  url.searchParams.set('v','20260929-desktop-auth-active1');
   css.href=url.href;
   document.head.appendChild(css);
 }
@@ -29,11 +29,37 @@ function tickerCountry(value){
   return SAUDI_TICKER_REGIONS.has(region)?'السعودية':region;
 }
 
+function closeHomeAuth(){
+  document.body.classList.remove('desktop-auth-open');
+}
+
+function ensureDesktopAuthClose(target){
+  if(!target) return null;
+  let close=target.querySelector('.desktop-auth-close');
+  if(close) return close;
+  const card=target.querySelector('.form-card');
+  if(!card) return null;
+  close=node('button','desktop-auth-close','×');
+  close.type='button';
+  close.setAttribute('aria-label','إغلاق');
+  close.addEventListener('click',closeHomeAuth);
+  card.prepend(close);
+  return close;
+}
+
 function openHomeAuthTab(tab){
   const target=document.getElementById('register');
+  if(!target) return;
+  ensureDesktopAuthClose(target);
+  document.body.classList.add('desktop-auth-open');
   if(tab==='signup') document.getElementById('signupTab')?.click();
   else document.getElementById('loginTab')?.click();
-  target?.scrollIntoView({behavior:'smooth',block:'start'});
+  requestAnimationFrame(()=>{
+    const focusTarget=tab==='signup'
+      ? document.getElementById('signupName')
+      : document.getElementById('loginEmail');
+    focusTarget?.focus();
+  });
 }
 
 function mountDesktopGuestAuth(host){
@@ -80,6 +106,7 @@ function syncHomeAuthActions(){
   const desktopGuestAuth=ensureDesktopGuestAuth();
   const desktopGuestMounted=desktopGuestAuth?mountDesktopGuestAuth(desktopGuestAuth):false;
 
+  if(signedIn) closeHomeAuth();
   if(desktopGuestAuth) desktopGuestAuth.hidden=signedIn||!desktopGuestMounted;
 
   if(dashboard){
@@ -103,14 +130,20 @@ function installHomeAuthActions(){
   const dashboard=document.getElementById('dashboardNav');
   const account=document.getElementById('navAccount');
 
-  dashboard?.addEventListener('click',()=>{
+  dashboard?.addEventListener('click',event=>{
     if(document.body.classList.contains('home-signed-in')) return;
-    document.getElementById('signupTab')?.click();
+    event.preventDefault();
+    openHomeAuthTab('signup');
   });
 
-  account?.addEventListener('click',()=>{
+  account?.addEventListener('click',event=>{
     if(document.body.classList.contains('home-signed-in')) return;
-    document.getElementById('loginTab')?.click();
+    event.preventDefault();
+    openHomeAuthTab('login');
+  });
+
+  document.addEventListener('keydown',event=>{
+    if(event.key==='Escape'&&document.body.classList.contains('desktop-auth-open')) closeHomeAuth();
   });
 
   new MutationObserver(syncHomeAuthActions).observe(document.body,{
