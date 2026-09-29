@@ -124,8 +124,94 @@ function syncHomeAuthActions(){
   }
 }
 
+function setDesktopAuthMsg(text,type=''){
+  const msg=document.getElementById('authMsg');
+  if(!msg)return;
+  msg.textContent=text;
+  msg.className=`msg ${type}`.trim();
+}
+
+function installDesktopDirectLogin(){
+  if(!window.matchMedia('(min-width:901px)').matches)return;
+
+  document.addEventListener('submit',async event=>{
+    if(event.target?.id!=='loginForm')return;
+
+    event.preventDefault();
+    event.stopImmediatePropagation();
+
+    const username=document.getElementById('loginUsername')?.value.trim().toLowerCase()||'';
+    const password=document.getElementById('loginPassword')?.value||'';
+    const button=document.getElementById('loginBtn');
+
+    if(!/^[a-z0-9_]{3,20}$/.test(username)){
+      setDesktopAuthMsg('أدخل اسم مستخدم صحيحًا.','err');
+      return;
+    }
+    if(password.length<8){
+      setDesktopAuthMsg('أدخل كلمة المرور.','err');
+      return;
+    }
+
+    const cfg=window.SHATRANJ_CONFIG?.supabase||{};
+    if(!cfg.url||!cfg.anonKey||!supabase){
+      setDesktopAuthMsg('خدمة تسجيل الدخول غير متاحة الآن.','err');
+      return;
+    }
+
+    if(button){
+      button.disabled=true;
+      button.textContent='جاري الدخول...';
+    }
+    setDesktopAuthMsg('');
+
+    const controller=new AbortController();
+    const timeout=setTimeout(()=>controller.abort(),12000);
+
+    try{
+      const response=await fetch(`${cfg.url}/functions/v1/username-login`,{
+        method:'POST',
+        headers:{
+          'Content-Type':'application/json',
+          apikey:cfg.anonKey,
+          Authorization:`Bearer ${cfg.anonKey}`
+        },
+        body:JSON.stringify({username,password}),
+        signal:controller.signal
+      });
+      const data=await response.json().catch(()=>({}));
+      if(!response.ok||!data?.access_token||!data?.refresh_token){
+        throw new Error('invalid_login');
+      }
+
+      const {data:sessionData,error}=await supabase.auth.setSession({
+        access_token:data.access_token,
+        refresh_token:data.refresh_token
+      });
+      if(error||!sessionData?.session)throw error||new Error('invalid_session');
+
+      location.reload();
+    }catch(error){
+      console.error('desktop login failed',error);
+      setDesktopAuthMsg(
+        error?.name==='AbortError'
+          ? 'تأخر تسجيل الدخول. أعد المحاولة.'
+          : 'اسم المستخدم أو كلمة المرور غير صحيحة.',
+        'err'
+      );
+    }finally{
+      clearTimeout(timeout);
+      if(button){
+        button.disabled=false;
+        button.textContent='تسجيل الدخول';
+      }
+    }
+  },true);
+}
+
 function installHomeAuthActions(){
   syncHomeAuthActions();
+  installDesktopDirectLogin();
 
   const dashboard=document.getElementById('dashboardNav');
   const account=document.getElementById('navAccount');
