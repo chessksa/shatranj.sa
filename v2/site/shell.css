@@ -36,8 +36,15 @@ body.v2-shell-active.v2-route-watch main,body.v2-shell-active.v2-route-tournamen
   body.v2-shell-active.home-signed-in #tournamentResultsTicker{grid-row:3!important}
   body.v2-shell-active.home-signed-in .home-hero,body.v2-shell-active.home-signed-in #ranking{grid-row:4!important}
 
-  body.v2-shell-active.v2-route-home:not(.home-signed-in) #dashboardNav,
-  body.v2-shell-active.v2-route-home:not(.home-signed-in) #navAccount{display:none!important}
+  body.v2-shell-active.v2-route-home:not(.home-signed-in):has(#desktopGuestAuth) #dashboardNav,
+  body.v2-shell-active.v2-route-home:not(.home-signed-in):has(#desktopGuestAuth) #navAccount{display:none!important}
+
+  body.v2-shell-active.v2-route-home:not(.home-signed-in):not(:has(#desktopGuestAuth)) #dashboardNav,
+  body.v2-shell-active.v2-route-home:not(.home-signed-in):not(:has(#desktopGuestAuth)) #navAccount{
+    display:inline-flex!important;
+    visibility:visible!important;
+    opacity:1!important;
+  }
 
   #desktopGuestAuth{
     position:fixed!important;
