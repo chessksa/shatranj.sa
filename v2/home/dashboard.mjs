@@ -5,7 +5,7 @@ if(!document.querySelector('link[data-desktop-guest-auth]')){
   css.rel='stylesheet';
   css.dataset.desktopGuestAuth='1';
   const url=new URL('./desktop-guest-auth.css',import.meta.url);
-  url.searchParams.set('v','20260929-desktop-auth-active1');
+  url.searchParams.set('v','20260929-desktop-auth-theme1');
   css.href=url.href;
   document.head.appendChild(css);
 }
