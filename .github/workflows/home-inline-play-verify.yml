@@ -5,11 +5,13 @@ on:
     paths:
       - 'v2/home/**'
       - 'tests/home-inline-play-verify.mjs'
+      - 'tests/desktop-guest-auth-active.test.mjs'
       - '.github/workflows/home-inline-play-verify.yml'
   pull_request:
     paths:
       - 'v2/home/**'
       - 'tests/home-inline-play-verify.mjs'
+      - 'tests/desktop-guest-auth-active.test.mjs'
       - '.github/workflows/home-inline-play-verify.yml'
 
 jobs:
@@ -22,4 +24,6 @@ jobs:
           node-version: '20'
       - run: node --check v2/home/inline-play.mjs
       - run: node --check v2/home/desktop-board-shell-tune.mjs
+      - run: node --check v2/home/dashboard.mjs
       - run: node tests/home-inline-play-verify.mjs
+      - run: node tests/desktop-guest-auth-active.test.mjs
