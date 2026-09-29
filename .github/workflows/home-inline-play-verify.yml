@@ -6,12 +6,14 @@ on:
       - 'v2/home/**'
       - 'tests/home-inline-play-verify.mjs'
       - 'tests/desktop-guest-auth-active.test.mjs'
+      - 'tests/desktop-login-direct.test.mjs'
       - '.github/workflows/home-inline-play-verify.yml'
   pull_request:
     paths:
       - 'v2/home/**'
       - 'tests/home-inline-play-verify.mjs'
       - 'tests/desktop-guest-auth-active.test.mjs'
+      - 'tests/desktop-login-direct.test.mjs'
       - '.github/workflows/home-inline-play-verify.yml'
 
 jobs:
@@ -27,3 +29,4 @@ jobs:
       - run: node --check v2/home/dashboard.mjs
       - run: node tests/home-inline-play-verify.mjs
       - run: node tests/desktop-guest-auth-active.test.mjs
+      - run: node tests/desktop-login-direct.test.mjs
