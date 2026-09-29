@@ -1,3 +1,5 @@
+@import url('./desktop-board-preview-pieces.css?v=20260929-preview-pieces1');
+
 @media(min-width:901px){
   body.desktop-board-workspace:not(.home-signed-in) .desktop-member-card{
     display:none!important;
