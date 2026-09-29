@@ -55,3 +55,13 @@ def test_play_header_uses_home_label_and_equal_control_sizes():
     assert "#siteNotificationHost .site-notification-bell{width:64px!important;height:38px!important" in html
     assert "leaveText.textContent = 'الرئيسية'" in live
     assert "leaveText.textContent = 'مغادرة المباراة'" not in live
+
+
+def test_computer_desktop_player_cards_are_centered_as_a_group():
+    source = (ROOT / "play-entry-v16.html").read_text(encoding="utf-8")
+    desktop = source.split("/* FINAL COMPUTER DESKTOP CARD LOCK */", 1)[1]
+    assert "display:flex!important" in desktop
+    assert "flex-direction:column!important" in desktop
+    assert "margin-top:auto!important" in desktop
+    assert "margin-bottom:auto!important" in desktop
+    assert "align-content:space-between!important" not in desktop
