@@ -22,6 +22,48 @@ function tickerCountry(value){
   return SAUDI_TICKER_REGIONS.has(region)?'السعودية':region;
 }
 
+function syncHomeAuthActions(){
+  const dashboard=document.getElementById('dashboardNav');
+  const account=document.getElementById('navAccount');
+  const signedIn=document.body.classList.contains('home-signed-in');
+
+  if(dashboard){
+    dashboard.hidden=false;
+    dashboard.href=signedIn?'profile.html':'#register';
+    dashboard.innerHTML=signedIn
+      ? '<span class="header-tile-icon" aria-hidden="true">⚙</span><span>لوحة التحكم</span>'
+      : '<span class="header-tile-icon" aria-hidden="true">＋</span><span>إنشاء حساب</span>';
+  }
+
+  if(account&&!signedIn){
+    account.hidden=false;
+    account.href='#register';
+    account.textContent='تسجيل الدخول';
+  }
+}
+
+function installHomeAuthActions(){
+  syncHomeAuthActions();
+
+  const dashboard=document.getElementById('dashboardNav');
+  const account=document.getElementById('navAccount');
+
+  dashboard?.addEventListener('click',()=>{
+    if(document.body.classList.contains('home-signed-in')) return;
+    document.getElementById('signupTab')?.click();
+  });
+
+  account?.addEventListener('click',()=>{
+    if(document.body.classList.contains('home-signed-in')) return;
+    document.getElementById('loginTab')?.click();
+  });
+
+  new MutationObserver(syncHomeAuthActions).observe(document.body,{
+    attributes:true,
+    attributeFilter:['class']
+  });
+}
+
 function renderWelcomeSubscribers(rows,totalCount=null){
   const players=Array.isArray(rows)?rows:[];
   const headerPlayers=document.getElementById('headerPlayersCount');
@@ -165,6 +207,7 @@ async function boot(){
   for(let i=0;i<20&&!document.querySelector('#homeHero .home-hero-copy');i++) await sleep(100);
   document.getElementById('v5-home-dashboard')?.remove();
   document.body.classList.remove('v5-home-dashboard-active');
+  installHomeAuthActions();
   await Promise.all([loadWelcomeSubscribers(),loadTournamentTicker()]);
   setInterval(()=>void loadWelcomeSubscribers(),60000);
   setInterval(()=>void loadTournamentTicker(),60000);
