@@ -22,10 +22,45 @@ function tickerCountry(value){
   return SAUDI_TICKER_REGIONS.has(region)?'السعودية':region;
 }
 
+function openHomeAuthTab(tab){
+  const target=document.getElementById('register');
+  if(tab==='signup') document.getElementById('signupTab')?.click();
+  else document.getElementById('loginTab')?.click();
+  target?.scrollIntoView({behavior:'smooth',block:'start'});
+}
+
+function ensureDesktopGuestAuth(){
+  if(!window.matchMedia('(min-width:901px)').matches) return null;
+  let host=document.getElementById('desktopGuestAuth');
+  if(host) return host;
+
+  host=node('div','desktop-guest-auth');
+  host.id='desktopGuestAuth';
+  host.setAttribute('aria-label','الدخول والتسجيل');
+
+  const login=node('button','desktop-guest-auth-btn','تسجيل الدخول');
+  login.id='desktopGuestLogin';
+  login.type='button';
+
+  const signup=node('button','desktop-guest-auth-btn desktop-guest-auth-signup','تسجيل');
+  signup.id='desktopGuestSignup';
+  signup.type='button';
+
+  login.addEventListener('click',()=>openHomeAuthTab('login'));
+  signup.addEventListener('click',()=>openHomeAuthTab('signup'));
+
+  host.append(login,signup);
+  document.body.appendChild(host);
+  return host;
+}
+
 function syncHomeAuthActions(){
   const dashboard=document.getElementById('dashboardNav');
   const account=document.getElementById('navAccount');
   const signedIn=document.body.classList.contains('home-signed-in');
+  const desktopGuestAuth=ensureDesktopGuestAuth();
+
+  if(desktopGuestAuth) desktopGuestAuth.hidden=signedIn;
 
   if(dashboard){
     dashboard.hidden=false;
