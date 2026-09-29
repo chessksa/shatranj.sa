@@ -11,7 +11,7 @@
 <div class="loading"><div><strong>جاري فتح صفحة اللعب</strong><small>تحميل الواجهة الجديدة…</small></div></div>
 <script>
 (async()=>{
-  const version='20260929-player-card-center1-'+Date.now();
+  const version='20260929-player-card-center2-'+Date.now();
   const response=await fetch('./play-v10.html?v='+version,{cache:'no-store'});
   if(!response.ok) throw new Error('play source '+response.status);
   let html=await response.text();
@@ -28,40 +28,45 @@
     /* FINAL COMPUTER DESKTOP CARD LOCK */
     @media(min-width:901px){
       body.computer-game #gamePage .panel-stack{
-        display:flex!important;
-        flex-direction:column!important;
-        gap:clamp(20px,2.8vh,28px)!important;
-        align-content:initial!important;
+        display:grid!important;
+        grid-template-rows:auto minmax(0,1fr) 150px 100px 150px minmax(0,1fr)!important;
+        grid-auto-rows:0!important;
+        gap:18px!important;
+        align-content:stretch!important;
+        justify-content:stretch!important;
+        min-height:0!important;
       }
       body.computer-game #gamePage .side-head-stack{
-        flex:0 0 auto!important;
+        grid-row:1!important;
+        align-self:start!important;
       }
       body.computer-game #gamePage #topPlayerCard{
+        grid-row:3!important;
         height:150px!important;
         min-height:150px!important;
         max-height:150px!important;
-        flex:0 0 150px!important;
         align-self:stretch!important;
-        margin-top:auto!important;
+        margin:0!important;
         overflow:hidden!important;
         box-sizing:border-box!important;
       }
       body.computer-game #gamePage #gameActions{
+        grid-row:4!important;
         height:100px!important;
         min-height:100px!important;
         max-height:100px!important;
-        flex:0 0 100px!important;
         align-self:stretch!important;
+        margin:0!important;
         overflow:hidden!important;
         box-sizing:border-box!important;
       }
       body.computer-game #gamePage #bottomPlayerCard{
+        grid-row:5!important;
         height:150px!important;
         min-height:150px!important;
         max-height:150px!important;
-        flex:0 0 150px!important;
         align-self:stretch!important;
-        margin-bottom:auto!important;
+        margin:0!important;
         overflow:hidden!important;
         box-sizing:border-box!important;
       }
