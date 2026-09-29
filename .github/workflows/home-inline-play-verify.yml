@@ -8,6 +8,7 @@ on:
       - 'tests/desktop-guest-auth-active.test.mjs'
       - 'tests/desktop-login-direct.test.mjs'
       - 'tests/desktop-auth-observer-loop.test.mjs'
+      - 'tests/desktop-board-preview-pieces.test.mjs'
       - '.github/workflows/home-inline-play-verify.yml'
   pull_request:
     paths:
@@ -16,6 +17,7 @@ on:
       - 'tests/desktop-guest-auth-active.test.mjs'
       - 'tests/desktop-login-direct.test.mjs'
       - 'tests/desktop-auth-observer-loop.test.mjs'
+      - 'tests/desktop-board-preview-pieces.test.mjs'
       - '.github/workflows/home-inline-play-verify.yml'
 
 jobs:
@@ -33,3 +35,4 @@ jobs:
       - run: node tests/desktop-guest-auth-active.test.mjs
       - run: node tests/desktop-login-direct.test.mjs
       - run: node tests/desktop-auth-observer-loop.test.mjs
+      - run: node tests/desktop-board-preview-pieces.test.mjs
