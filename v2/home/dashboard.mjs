@@ -30,7 +30,9 @@ function tickerCountry(value){
 }
 
 function closeHomeAuth(){
-  document.body.classList.remove('desktop-auth-open');
+  if(document.body.classList.contains('desktop-auth-open')){
+    document.body.classList.remove('desktop-auth-open');
+  }
 }
 
 function ensureDesktopAuthClose(target){
