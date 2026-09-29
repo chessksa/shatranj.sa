@@ -4,9 +4,8 @@ import zlib from 'node:zlib';
 
 const read=(path)=>fs.readFileSync(path,'utf8');
 const tune=read('v2/home/desktop-board-shell-tune.mjs');
-const shell=read('v2/home/desktop-board-shell.mjs');
-const shellCss=read('v2/home/desktop-board-shell.css');
 const dashboard=read('v2/home/dashboard.mjs');
+const guestAuthCss=read('v2/home/desktop-guest-auth.css');
 const inlinePath='v2/home/inline-play.mjs';
 const inlineCss=read('v2/home/inline-play.css');
 
@@ -88,9 +87,9 @@ assert.match(inlineCss,/\.inline-play-piece\s*\{[\s\S]*?width:94%[\s\S]*?height:
 assert.match(inlineCss,/\.inline-play-square\s*\{[\s\S]*?position:relative/,'مربع اللعب يجب أن يكون مرجع تمركز للقطعة');
 assert.match(inlineCss,/\.inline-play-piece\s*\{[\s\S]*?position:absolute[\s\S]*?left:var\(--piece-left,50%\)[\s\S]*?top:var\(--piece-top,50%\)[\s\S]*?scale\(var\(--piece-scale,1\)\)/,'كل القطع يجب أن تستخدم تمركزًا بصريًا قابلًا للضبط');
 
-assert.match(shell,/member\.hidden\s*=\s*!signedIn/,'بطاقة العضو في نسخة الكمبيوتر يجب أن تختفي بالكامل عن الزائر');
+assert.match(guestAuthCss,/body\.desktop-board-workspace:not\(\.home-signed-in\) \.desktop-member-card\s*\{[\s\S]*?display:none!important/,'بطاقة العضو في نسخة الكمبيوتر يجب أن تختفي بالكامل عن الزائر');
 assert.match(dashboard,/sidebar\.insertBefore\(host,nav\)/,'أزرار تسجيل الزائر في الكمبيوتر يجب أن توضع داخل الشريط الأيمن');
-assert.match(shellCss,/body\.desktop-board-workspace #desktopGuestAuth\s*\{[\s\S]*?position:static!important[\s\S]*?width:100%!important/,'أزرار تسجيل الزائر يجب أن تكون ضمن الشريط الأيمن دون تموضع عائم');
+assert.match(guestAuthCss,/body\.desktop-board-workspace #desktopGuestAuth\s*\{[\s\S]*?position:static!important[\s\S]*?width:100%!important/,'أزرار تسجيل الزائر يجب أن تكون ضمن الشريط الأيمن دون تموضع عائم');
 
 const pieceCodes=['wp','wn','wb','wr','wq','wk','bp','bn','bb','br','bq','bk'];
 const pieceBounds=Object.fromEntries(pieceCodes.map(code=>[code,pieceVisualBounds(`assets/pieces/${code}.png`)]));
