@@ -1,7 +1,4 @@
 import { rpc, supabase } from '../platform/api.mjs';
-import './public-home.mjs?v=20260912-home-polish1';
-import './desktop-board-shell.mjs?v=20260918-gray-dot2';
-import './desktop-board-shell-tune.mjs?v=20260918-computer-board-click1';
 
 const sleep=(ms)=>new Promise(resolve=>setTimeout(resolve,ms));
 
@@ -96,6 +93,17 @@ function installHomeAuthActions(){
   new MutationObserver(syncHomeAuthActions).observe(document.body,{
     attributes:true,
     attributeFilter:['class']
+  });
+}
+
+async function loadOptionalHomeModules(){
+  const results=await Promise.allSettled([
+    import('./public-home.mjs?v=20260912-home-polish1'),
+    import('./desktop-board-shell.mjs?v=20260918-gray-dot2'),
+    import('./desktop-board-shell-tune.mjs?v=20260918-computer-board-click1')
+  ]);
+  results.forEach((result,index)=>{
+    if(result.status==='rejected') console.warn('تعذر تحميل وحدة واجهة اختيارية',index,result.reason);
   });
 }
 
@@ -239,10 +247,12 @@ async function loadTournamentTicker(){
 }
 
 async function boot(){
+  installHomeAuthActions();
+  void loadOptionalHomeModules();
   for(let i=0;i<20&&!document.querySelector('#homeHero .home-hero-copy');i++) await sleep(100);
   document.getElementById('v5-home-dashboard')?.remove();
   document.body.classList.remove('v5-home-dashboard-active');
-  installHomeAuthActions();
+  syncHomeAuthActions();
   await Promise.all([loadWelcomeSubscribers(),loadTournamentTicker()]);
   setInterval(()=>void loadWelcomeSubscribers(),60000);
   setInterval(()=>void loadTournamentTicker(),60000);
