@@ -67,6 +67,63 @@ if (!skip.test(location.pathname)) {
     : routeMap[current] || (current === 'index.html' || current === 'index-app.html' || !current ? 'home' : 'other');
 
   document.body.classList.add('v2-shell-active',`v2-route-${activeId}`);
+
+  function installDesktopHomeAuth(){
+    if(activeId!=='home'||!window.matchMedia('(min-width:901px)').matches)return;
+
+    const sync=()=>{
+      const dashboard=document.getElementById('dashboardNav');
+      const account=document.getElementById('navAccount');
+      const signedIn=document.body.classList.contains('home-signed-in');
+
+      if(dashboard){
+        dashboard.hidden=false;
+        dashboard.href=signedIn?'profile.html':'#register';
+        dashboard.innerHTML=signedIn
+          ? '<span class="header-tile-icon" aria-hidden="true">⚙</span><span>لوحة التحكم</span>'
+          : '<span class="header-tile-icon" aria-hidden="true">＋</span><span>تسجيل</span>';
+        dashboard.style.setProperty('display','inline-flex','important');
+        if(!dashboard.dataset.desktopAuthBound){
+          dashboard.dataset.desktopAuthBound='1';
+          dashboard.addEventListener('click',event=>{
+            if(document.body.classList.contains('home-signed-in'))return;
+            event.preventDefault();
+            document.getElementById('signupTab')?.click();
+            document.getElementById('register')?.scrollIntoView({behavior:'smooth',block:'start'});
+          });
+        }
+      }
+
+      if(account){
+        if(signedIn){
+          account.hidden=true;
+          account.style.setProperty('display','none','important');
+        }else{
+          account.hidden=false;
+          account.href='#register';
+          account.textContent='تسجيل الدخول';
+          account.style.setProperty('display','inline-flex','important');
+        }
+        if(!account.dataset.desktopAuthBound){
+          account.dataset.desktopAuthBound='1';
+          account.addEventListener('click',event=>{
+            if(document.body.classList.contains('home-signed-in'))return;
+            event.preventDefault();
+            document.getElementById('loginTab')?.click();
+            document.getElementById('register')?.scrollIntoView({behavior:'smooth',block:'start'});
+          });
+        }
+      }
+    };
+
+    sync();
+    new MutationObserver(sync).observe(document.body,{attributes:true,attributeFilter:['class']});
+    setTimeout(sync,250);
+    setTimeout(sync,1000);
+  }
+
+  installDesktopHomeAuth();
+
   if (!document.querySelector('.v2-global-sidebar')) {
     const sidebar = document.createElement('aside');
     sidebar.className = 'v2-global-sidebar';
