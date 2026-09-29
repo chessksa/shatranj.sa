@@ -32,7 +32,7 @@ function syncHomeAuthActions(){
     dashboard.href=signedIn?'profile.html':'#register';
     dashboard.innerHTML=signedIn
       ? '<span class="header-tile-icon" aria-hidden="true">⚙</span><span>لوحة التحكم</span>'
-      : '<span class="header-tile-icon" aria-hidden="true">＋</span><span>إنشاء حساب</span>';
+      : '<span class="header-tile-icon" aria-hidden="true">＋</span><span>تسجيل</span>';
   }
 
   if(account&&!signedIn){
