@@ -1,5 +1,15 @@
 import { rpc, supabase } from '../platform/api.mjs';
 
+if(!document.querySelector('link[data-desktop-guest-auth]')){
+  const css=document.createElement('link');
+  css.rel='stylesheet';
+  css.dataset.desktopGuestAuth='1';
+  const url=new URL('./desktop-guest-auth.css',import.meta.url);
+  url.searchParams.set('v','20260929-desktop-guest-right1');
+  css.href=url.href;
+  document.head.appendChild(css);
+}
+
 const sleep=(ms)=>new Promise(resolve=>setTimeout(resolve,ms));
 
 function node(tag,className,text){
@@ -26,10 +36,21 @@ function openHomeAuthTab(tab){
   target?.scrollIntoView({behavior:'smooth',block:'start'});
 }
 
+function mountDesktopGuestAuth(host){
+  const sidebar=document.querySelector('.v2-global-sidebar');
+  const nav=sidebar?.querySelector('.v2-global-nav');
+  if(!host||!sidebar||!nav) return false;
+  if(host.parentNode!==sidebar||host.nextSibling!==nav) sidebar.insertBefore(host,nav);
+  return true;
+}
+
 function ensureDesktopGuestAuth(){
   if(!window.matchMedia('(min-width:901px)').matches) return null;
   let host=document.getElementById('desktopGuestAuth');
-  if(host) return host;
+  if(host){
+    mountDesktopGuestAuth(host);
+    return host;
+  }
 
   host=node('div','desktop-guest-auth');
   host.id='desktopGuestAuth';
@@ -48,6 +69,7 @@ function ensureDesktopGuestAuth(){
 
   host.append(login,signup);
   document.body.appendChild(host);
+  mountDesktopGuestAuth(host);
   return host;
 }
 
@@ -56,8 +78,9 @@ function syncHomeAuthActions(){
   const account=document.getElementById('navAccount');
   const signedIn=document.body.classList.contains('home-signed-in');
   const desktopGuestAuth=ensureDesktopGuestAuth();
+  const desktopGuestMounted=desktopGuestAuth?mountDesktopGuestAuth(desktopGuestAuth):false;
 
-  if(desktopGuestAuth) desktopGuestAuth.hidden=signedIn;
+  if(desktopGuestAuth) desktopGuestAuth.hidden=signedIn||!desktopGuestMounted;
 
   if(dashboard){
     dashboard.hidden=false;
@@ -92,7 +115,8 @@ function installHomeAuthActions(){
 
   new MutationObserver(syncHomeAuthActions).observe(document.body,{
     attributes:true,
-    attributeFilter:['class']
+    attributeFilter:['class'],
+    childList:true
   });
 }
 
