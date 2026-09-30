@@ -24,4 +24,23 @@
   html body.desktop-board-workspace #homeHero #homeBoardPreview .desktop-board-square.dark{
     background:#26747b!important;
   }
+
+  /* Lock online-play squares to their real coordinates so black-side rendering cannot swap king/queen visually. */
+  #inlinePlayBoardGrid [data-square^="a"]{grid-column:1!important}
+  #inlinePlayBoardGrid [data-square^="b"]{grid-column:2!important}
+  #inlinePlayBoardGrid [data-square^="c"]{grid-column:3!important}
+  #inlinePlayBoardGrid [data-square^="d"]{grid-column:4!important}
+  #inlinePlayBoardGrid [data-square^="e"]{grid-column:5!important}
+  #inlinePlayBoardGrid [data-square^="f"]{grid-column:6!important}
+  #inlinePlayBoardGrid [data-square^="g"]{grid-column:7!important}
+  #inlinePlayBoardGrid [data-square^="h"]{grid-column:8!important}
+
+  #inlinePlayBoardGrid [data-square$="8"]{grid-row:1!important}
+  #inlinePlayBoardGrid [data-square$="7"]{grid-row:2!important}
+  #inlinePlayBoardGrid [data-square$="6"]{grid-row:3!important}
+  #inlinePlayBoardGrid [data-square$="5"]{grid-row:4!important}
+  #inlinePlayBoardGrid [data-square$="4"]{grid-row:5!important}
+  #inlinePlayBoardGrid [data-square$="3"]{grid-row:6!important}
+  #inlinePlayBoardGrid [data-square$="2"]{grid-row:7!important}
+  #inlinePlayBoardGrid [data-square$="1"]{grid-row:8!important}
 }
