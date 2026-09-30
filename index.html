@@ -29,7 +29,7 @@ html,body{margin:0;min-height:100%;background:#042628;color:#f4eddc;font-family:
     console.warn('تعذر تنظيف التخزين المؤقت القديم',error);
   }
 
-  const stamp='20260920-mobile-icons-bottom10';
+  const stamp='20260930-board-direction-ltr1';
   const runtimeVersion=stamp+'-'+Date.now();
   const response=await fetch('./index-app.html?v='+runtimeVersion,{cache:'no-store'});
   if(!response.ok) throw new Error('index source '+response.status);
@@ -45,6 +45,15 @@ html,body{margin:0;min-height:100%;background:#042628;color:#f4eddc;font-family:
 
   html=html.replace(/href="watch\.html(?:\?[^\"]*)?"/g,'href="watch.html?v='+runtimeVersion+'"');
   html=html.replace(/play-v10\.html/g,'play-entry-v16.html');
+
+  const boardDirectionFix=`<style id="boardDirectionFix20260930">
+#homeBoardPreview .desktop-board-grid,
+#inlinePlayBoardGrid,
+#inlineComputerBoardGrid{
+  direction:ltr!important;
+}
+</style>`;
+  html=html.replace('</head>',boardDirectionFix+'\n</head>');
 
   const playersLoaderPattern=/async function loadPlayers\(\)\{[\s\S]*?\n\}\n\nasync function loadCurrentMatchesCount\(\)\{/;
   const newPlayersLoader=`async function loadPlayers(){
