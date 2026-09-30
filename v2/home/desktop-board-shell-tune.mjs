@@ -17,7 +17,7 @@ document.head.appendChild(cleanupCss);
 
 const boardThemeCss=document.createElement('link');
 boardThemeCss.rel='stylesheet';
-boardThemeCss.href='v2/home/board-theme-override.css?v=20260930-petrol-cream-gold1';
+boardThemeCss.href='v2/home/board-theme-override.css?v=20260930-interface-colors2';
 document.head.appendChild(boardThemeCss);
 
 const statsOrderCss=document.createElement('style');
