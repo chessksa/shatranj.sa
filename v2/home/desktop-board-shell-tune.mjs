@@ -1,4 +1,4 @@
-import './inline-play.mjs?v=20260930-piece-order4';
+import './inline-play.mjs?v=20260930-piece-order5';
 
 const inlinePlayCss=document.createElement('link');
 inlinePlayCss.rel='stylesheet';
@@ -17,7 +17,7 @@ document.head.appendChild(cleanupCss);
 
 const boardThemeCss=document.createElement('link');
 boardThemeCss.rel='stylesheet';
-boardThemeCss.href='v2/home/board-theme-override.css?v=20260930-piece-order4';
+boardThemeCss.href='v2/home/board-theme-override.css?v=20260930-piece-order5';
 document.head.appendChild(boardThemeCss);
 
 const statsOrderCss=document.createElement('style');
@@ -30,17 +30,38 @@ statsOrderCss.textContent=`@media(min-width:901px){
 document.head.appendChild(statsOrderCss);
 
 const desktop=window.matchMedia('(min-width:901px)');
-const WHITE_BOARD_ORDER=[8,7,6,5,4,3,2,1].flatMap(rank=>['a','b','c','d','e','f','g','h'].map(file=>`${file}${rank}`));
+const FILES=['a','b','c','d','e','f','g','h'];
+const WHITE_BOARD_ORDER=[8,7,6,5,4,3,2,1].flatMap(rank=>FILES.map(file=>`${file}${rank}`));
 
-function normalizeInlineBoardOrientation(){
-  const grid=document.getElementById('inlinePlayBoardGrid');
+function normalizeBoardGrid(grid){
   if(!grid)return;
-  const squares=[...grid.children];
+  grid.style.setProperty('direction','ltr','important');
+  const squares=[...grid.querySelectorAll(':scope > [data-square]')];
   if(squares.length!==64)return;
+
+  for(const square of squares){
+    const name=String(square.dataset.square||'');
+    const fileIndex=FILES.indexOf(name[0]);
+    const rank=Number(name[1]);
+    if(fileIndex<0||rank<1||rank>8)continue;
+
+    square.style.setProperty('grid-column',String(fileIndex+1),'important');
+    square.style.setProperty('grid-row',String(9-rank),'important');
+
+    const isLight=(fileIndex+rank)%2===0;
+    square.classList.toggle('light',isLight);
+    square.classList.toggle('dark',!isLight);
+  }
+
   const bySquare=new Map(squares.map(square=>[square.dataset.square,square]));
-  const ordered=WHITE_BOARD_ORDER.map(square=>bySquare.get(square)).filter(Boolean);
+  const ordered=WHITE_BOARD_ORDER.map(name=>bySquare.get(name)).filter(Boolean);
   if(ordered.length!==64)return;
   if(ordered.some((square,index)=>squares[index]!==square))grid.append(...ordered);
+}
+
+function normalizeInlineBoardOrientation(){
+  normalizeBoardGrid(document.getElementById('inlinePlayBoardGrid'));
+  normalizeBoardGrid(document.getElementById('inlineComputerBoardGrid'));
 }
 
 function watchInlineBoardOrientation(){
@@ -173,8 +194,8 @@ if(desktop.matches){
       labelMemberActions();
       removeSidebarFooter();
       removeDailyTipCard();
-      setTimeout(()=>{restoreDashboardBlocks();labelMemberActions();removeSidebarFooter();removeDailyTipCard();},300);
-      setTimeout(()=>{restoreDashboardBlocks();labelMemberActions();removeSidebarFooter();removeDailyTipCard();},1000);
+      setTimeout(()=>{restoreDashboardBlocks();labelMemberActions();removeSidebarFooter();removeDailyTipCard();normalizeInlineBoardOrientation();},300);
+      setTimeout(()=>{restoreDashboardBlocks();labelMemberActions();removeSidebarFooter();removeDailyTipCard();normalizeInlineBoardOrientation();},1000);
     }
   },50);
 }
