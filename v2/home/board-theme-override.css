@@ -1,4 +1,4 @@
-/* Final desktop board palette: petrol + cream with a thin gold frame separated by 2px. */
+/* Final desktop board palette: interface colors with a thin gold frame separated by 2px. */
 @media(min-width:901px){
   html body.desktop-board-workspace #homeHero #homeBoardPreview.desktop-board-preview{
     padding:2px!important;
@@ -14,14 +14,14 @@
   }
 
   html body.desktop-board-workspace #homeHero #homeBoardPreview .desktop-board-square{
-    border:.5px solid rgba(8,43,39,.18)!important;
+    border:.5px solid rgba(2,47,51,.30)!important;
   }
 
   html body.desktop-board-workspace #homeHero #homeBoardPreview .desktop-board-square.light{
-    background:#e8dec8!important;
+    background:#d6cfbf!important;
   }
 
   html body.desktop-board-workspace #homeHero #homeBoardPreview .desktop-board-square.dark{
-    background:#0d3b35!important;
+    background:#26747b!important;
   }
 }
