@@ -15,6 +15,11 @@ cleanupCss.rel='stylesheet';
 cleanupCss.href='v2/home/desktop-sidebar-cleanup.css?v=20260918-no-tip-card1';
 document.head.appendChild(cleanupCss);
 
+const boardThemeCss=document.createElement('link');
+boardThemeCss.rel='stylesheet';
+boardThemeCss.href='v2/home/board-theme-override.css?v=20260930-petrol-cream-gold1';
+document.head.appendChild(boardThemeCss);
+
 const statsOrderCss=document.createElement('style');
 statsOrderCss.textContent=`@media(min-width:901px){
   .desktop-live-stat small{margin-top:0!important}
@@ -25,6 +30,24 @@ statsOrderCss.textContent=`@media(min-width:901px){
 document.head.appendChild(statsOrderCss);
 
 const desktop=window.matchMedia('(min-width:901px)');
+const WHITE_BOARD_ORDER=[8,7,6,5,4,3,2,1].flatMap(rank=>['a','b','c','d','e','f','g','h'].map(file=>`${file}${rank}`));
+
+function normalizeInlineBoardOrientation(){
+  const grid=document.getElementById('inlinePlayBoardGrid');
+  if(!grid)return;
+  const squares=[...grid.children];
+  if(squares.length!==64)return;
+  const bySquare=new Map(squares.map(square=>[square.dataset.square,square]));
+  const ordered=WHITE_BOARD_ORDER.map(square=>bySquare.get(square)).filter(Boolean);
+  if(ordered.length!==64)return;
+  if(ordered.some((square,index)=>squares[index]!==square))grid.append(...ordered);
+}
+
+function watchInlineBoardOrientation(){
+  const observer=new MutationObserver(()=>normalizeInlineBoardOrientation());
+  observer.observe(document.body,{childList:true,subtree:true});
+  normalizeInlineBoardOrientation();
+}
 
 function copyText(sourceId,targetId,fallback='0'){
   const source=document.getElementById(sourceId);
@@ -138,6 +161,7 @@ function removeSidebarFooter(){
 if(desktop.matches){
   removeSidebarFooter();
   removeDailyTipCard();
+  watchInlineBoardOrientation();
   let attempts=0;
   const timer=setInterval(()=>{
     attempts+=1;
