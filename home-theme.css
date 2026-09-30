@@ -245,3 +245,26 @@ html body .welcome-ticker{
     padding:4px 10px!important;
   }
 }
+
+/* Desktop home board parity with the play board 20260930 */
+@media(min-width:901px){
+  html body.desktop-board-workspace #homeHero #homeBoardPreview.desktop-board-preview{
+    padding:0!important;
+    border:3px solid #66503b!important;
+    border-radius:0!important;
+    background:#66503b!important;
+    box-shadow:0 14px 34px rgba(0,0,0,.26)!important;
+  }
+  html body.desktop-board-workspace #homeHero #homeBoardPreview .desktop-board-grid{
+    border:0!important;
+  }
+  html body.desktop-board-workspace #homeHero #homeBoardPreview .desktop-board-square{
+    border:.5px solid rgba(35,42,32,.28)!important;
+  }
+  html body.desktop-board-workspace #homeHero #homeBoardPreview .desktop-board-square.light{
+    background:#e8dec8!important;
+  }
+  html body.desktop-board-workspace #homeHero #homeBoardPreview .desktop-board-square.dark{
+    background:#87966a!important;
+  }
+}
