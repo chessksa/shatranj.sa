@@ -11,6 +11,7 @@
   html body.desktop-board-workspace #homeHero #homeBoardPreview .desktop-board-grid{
     border:0!important;
     background:transparent!important;
+    direction:ltr!important;
   }
 
   html body.desktop-board-workspace #homeHero #homeBoardPreview .desktop-board-square{
