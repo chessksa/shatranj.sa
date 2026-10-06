@@ -6,7 +6,7 @@ if(!document.querySelector('link[data-desktop-board-shell]')){
   css.rel='stylesheet';
   css.dataset.desktopBoardShell='1';
   const url=new URL('./desktop-board-shell.css',import.meta.url);
-  url.searchParams.set('v','20261006-quick-clean1');
+  url.searchParams.set('v','20261006-inline-tournaments1');
   css.href=url.href;
   document.head.appendChild(css);
 }
@@ -230,7 +230,7 @@ if(desktop.matches && document.querySelector('#homeHero')){
     frame.className='desktop-dashboard-embed';
     frame.title=title;
     frame.loading='eager';
-    frame.src=`${page}?embed=panel&v=20261006-panel1`;
+    frame.src=`${page}?embed=panel&v=20261006-inline-tournaments1`;
     body.appendChild(frame);
   }
 
