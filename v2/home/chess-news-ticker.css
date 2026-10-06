@@ -153,3 +153,11 @@ html body #tournamentResultsTicker{
     )!important;
   }
 }
+
+
+/* Pause news movement while the pointer is over the ticker */
+@media (hover:hover) and (pointer:fine){
+  #chessNewsTicker:hover .welcome-ticker-track{
+    animation-play-state:paused!important;
+  }
+}
