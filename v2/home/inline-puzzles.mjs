@@ -116,12 +116,15 @@ function renderBoard(){
       : []
   );
   const frag=document.createDocumentFragment();
-  for(const name of squareOrder()){
+  const order=squareOrder();
+  for(const [index,name] of order.entries()){
     const file=name.charCodeAt(0)-97;
     const rank=Number(name[1]);
+    const row=Math.floor(index/8);
+    const col=index%8;
     const square=document.createElement('button');
     square.type='button';
-    square.className=`desktop-board-square inline-play-square inline-puzzle-square ${(file+rank)%2===1?'light':'dark'}`;
+    square.className=`desktop-board-square inline-play-square inline-puzzle-square ${(row+col)%2?'dark':'light'}`;
     square.dataset.square=name;
     if(selected===name) square.classList.add('selected');
     if(legal.has(name)) square.classList.add('puzzle-target');
