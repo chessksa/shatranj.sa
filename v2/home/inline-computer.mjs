@@ -248,7 +248,7 @@ function restoreStaticBoard(){
   const target=document.getElementById('homeBoardPreview');
   if(!target) return;
   target.classList.remove('inline-play-active','inline-computer-active');
-  target.setAttribute('href','#play');
+  target.removeAttribute('href');
   target.replaceChildren();
   const grid=document.createElement('span');
   grid.className='desktop-board-grid';
