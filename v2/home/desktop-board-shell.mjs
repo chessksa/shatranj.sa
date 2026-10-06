@@ -201,19 +201,7 @@ if(desktop.matches && document.querySelector('#homeHero')){
   }
 
   function tournamentView(body){
-    const ticker=document.getElementById('tournamentResultsTickerTrack')?.innerText?.trim();
-    const card=document.createElement('div');
-    card.className='desktop-dashboard-message-card';
-    const title=document.createElement('h3');
-    title.textContent='البطولات';
-    const text=document.createElement('p');
-    text.textContent=ticker||'اطلع على البطولات المفتوحة والجارية وسجّل مباشرة.';
-    const link=document.createElement('a');
-    link.href='tournaments.html';
-    link.className='desktop-dashboard-primary-link';
-    link.textContent='فتح صفحة البطولات';
-    card.append(title,text,link);
-    body.appendChild(card);
+    embeddedPageView(body,'tournaments.html','البطولات');
   }
 
   function inviteView(body){
@@ -260,7 +248,7 @@ if(desktop.matches && document.querySelector('#homeHero')){
 
     view.classList.toggle('computer-view',id==='computer');
     view.classList.toggle('ranking-view',id==='ranking');
-    view.classList.toggle('embedded-view',false);
+    view.classList.toggle('embedded-view',id==='tournaments');
     view.classList.toggle('puzzle-view',id==='puzzles');
     view.classList.toggle('learn-view',id==='learn');
     restoreMovedContent();
