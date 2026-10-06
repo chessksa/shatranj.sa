@@ -204,6 +204,14 @@ import { createClient } from 'https://cdn.jsdelivr.net/npm/@supabase/supabase-js
 
 const cfg=window.SHATRANJ_CONFIG?.supabase||{};
 const supabase=createClient(cfg.url,cfg.anonKey);
+const embeddedPanel=new URLSearchParams(location.search).get('embed')==='panel';
+function navigateTournament(url){
+  if(embeddedPanel&&window.parent&&window.parent!==window){
+    window.parent.location.href=url;
+  }else{
+    location.href=url;
+  }
+}
 const listView=document.getElementById('tournamentListView');
 const detailView=document.getElementById('tournamentDetailView');
 const currentListEl=document.getElementById('currentTournamentList');
@@ -348,7 +356,7 @@ async function loadTournamentBracket(tournamentId){
       }else if(canEnter){
         entry=`<button class="register-btn tournament-enter-btn" type="button" data-tournament-match="${esc(match.match_id)}">دخول المباراة</button>`;
       }
-      return `<article class="bracket-match${match.is_my_match?' mine':''}"><div class="bracket-player${match.winner_player_id===match.player_one_id?' winner':''}"><span>${esc(match.player_one_name||'بانتظار المتأهل')}</span></div><div class="bracket-player${match.winner_player_id===match.player_two_id?' winner':''}"><span>${esc(match.player_two_name||'بانتظار المتأهل')}</span></div><div class="bracket-meta"><span>${esc(bracketStatusLabel(match.match_status))}${retry}</span>${entry}${canWatch?`<a class="register-btn tournament-watch-btn" href="play-v10.html?spectate=${encodeURIComponent(match.game_id)}">مشاهدة</a>`:''}</div></article>`;
+      return `<article class="bracket-match${match.is_my_match?' mine':''}"><div class="bracket-player${match.winner_player_id===match.player_one_id?' winner':''}"><span>${esc(match.player_one_name||'بانتظار المتأهل')}</span></div><div class="bracket-player${match.winner_player_id===match.player_two_id?' winner':''}"><span>${esc(match.player_two_name||'بانتظار المتأهل')}</span></div><div class="bracket-meta"><span>${esc(bracketStatusLabel(match.match_status))}${retry}</span>${entry}${canWatch?`<a class="register-btn tournament-watch-btn" ${embeddedPanel?'target="_top"':''} href="play-v10.html?spectate=${encodeURIComponent(match.game_id)}">مشاهدة</a>`:''}</div></article>`;
     }).join('')}</div></section>`).join('');
     ensureTournamentRoundCountdowns();
   }catch(error){console.error(error);host.className='bracket-empty';host.textContent='تعذر تحميل مواجهات البطولة الآن.'}
@@ -375,7 +383,7 @@ async function enterTournamentMatch(button,matchId){
         sessionStorage.setItem('shatranj_live_game_code',row.game_code||'');
         sessionStorage.setItem('shatranj_live_seat_key',row.seat_key);
         sessionStorage.setItem('shatranj_live_color',row.color);
-        location.href=`play-v10.html?game=${encodeURIComponent(row.game_id)}`;
+        navigateTournament(`play-v10.html?game=${encodeURIComponent(row.game_id)}`);
         return;
       }
       if(row?.state==='waiting'){
@@ -446,7 +454,7 @@ function showTournamentList(){clearTimeout(tournamentMatchPollTimer);clearInterv
 async function registerForTournament(button,tournamentId){
   setRegistrationMessage('');
   const {data:{session}}=await supabase.auth.getSession();
-  if(!session){setRegistrationMessage('سجّل الدخول أولًا للتسجيل في البطولات.','error');location.href='index.html#register';return}
+  if(!session){setRegistrationMessage('سجّل الدخول أولًا للتسجيل في البطولات.','error');navigateTournament('index.html#register');return}
   const originalText=button.textContent;button.disabled=true;button.textContent='جاري التسجيل...';
   try{
     const {data,error}=await supabase.rpc('register_for_tournament',{p_tournament_id:tournamentId});
