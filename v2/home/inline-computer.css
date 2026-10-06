@@ -28,22 +28,54 @@
     box-sizing:border-box;
     overflow:visible;
     justify-self:center;
+    display:flex;
+    align-items:center;
+    justify-content:space-between;
+    gap:12px;
+    direction:rtl;
   }
 
   .inline-computer-panel .inline-play-player-copy{
+    flex:1 1 auto;
     min-width:0;
+    max-width:none;
     overflow:visible;
-    text-align:center;
-    align-items:center;
+    text-align:right;
+    align-items:flex-start;
+    justify-content:center;
+    gap:4px;
+    direction:rtl;
   }
 
-  .inline-computer-panel .inline-play-player-name,
+  .inline-computer-panel .inline-play-player-name{
+    width:100%;
+    max-width:none;
+    overflow:visible;
+    text-overflow:clip;
+    white-space:nowrap;
+    text-align:right;
+    line-height:1.25;
+  }
+
   .inline-computer-panel .inline-play-player-meta,
   .inline-computer-panel .inline-play-status{
-    max-width:100%;
-    overflow:hidden;
-    text-overflow:ellipsis;
-    white-space:nowrap;
+    width:100%;
+    max-width:none;
+    overflow:visible;
+    text-overflow:clip;
+    white-space:normal;
+    overflow-wrap:anywhere;
+    text-align:right;
+    direction:rtl;
+    unicode-bidi:plaintext;
+    line-height:1.45;
+    font-size:13px!important;
+  }
+
+  .inline-computer-panel .inline-play-clock{
+    flex:0 0 108px;
+    min-width:108px;
+    max-width:108px;
   }
 
   .inline-computer-setup{
