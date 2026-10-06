@@ -11,7 +11,7 @@
     padding-right:var(--desktop-board-sidebar)!important;
     background:
       linear-gradient(rgba(1,26,29,.72),rgba(1,22,25,.82)),
-      url('../../assets/civilization-chess-bg.webp?v=20261007-bg12') center center / cover no-repeat fixed!important;
+      url('../../assets/civilization-chess-bg.webp?v=20261007-bg13') center center / cover no-repeat fixed!important;
   }
 
   body.desktop-board-workspace .home-header,
