@@ -244,8 +244,7 @@ function installHomeAuthActions(){
 async function loadOptionalHomeModules(){
   const results=await Promise.allSettled([
     import('./public-home.mjs?v=20260912-home-polish1'),
-    import('./site-background.mjs?v=20261007-bg-final1'),
-    import('./desktop-board-shell.mjs?v=20261007-bg-final1'),
+    import('./desktop-board-shell.mjs?v=20261007-bg14'),
     import('./desktop-board-shell-tune.mjs?v=20261006-frame-teal10')
   ]);
   results.forEach((result,index)=>{
