@@ -1,5 +1,5 @@
-import { mountInlineComputer, stopInlineComputer } from './inline-computer.mjs?v=20260918-gray-dot2';
-import { mountInlinePuzzles, stopInlinePuzzles } from './inline-puzzles.mjs?v=20261006-puzzle-board2';
+import { mountInlineComputer, stopInlineComputer } from './inline-computer.mjs?v=20261006-neutral-board1';
+import { mountInlinePuzzles, stopInlinePuzzles } from './inline-puzzles.mjs?v=20261006-puzzle-click2';
 if(!document.querySelector('link[data-desktop-board-shell]')){
   const css=document.createElement('link');
   css.rel='stylesheet';
