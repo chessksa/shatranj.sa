@@ -4,7 +4,7 @@ if(!document.querySelector('link[data-desktop-board-shell]')){
   css.rel='stylesheet';
   css.dataset.desktopBoardShell='1';
   const url=new URL('./desktop-board-shell.css',import.meta.url);
-  url.searchParams.set('v','20261006-inline-sections1');
+  url.searchParams.set('v','20261006-inline-sections2');
   css.href=url.href;
   document.head.appendChild(css);
 }
@@ -75,9 +75,14 @@ if(desktop.matches && document.querySelector('#homeHero')){
   }
 
   function navItem({id,label,icon,href='#'}){
-    const item=document.createElement('a');
+    const local=String(href||'').startsWith('#');
+    const item=document.createElement(local?'button':'a');
     item.className='v2-global-link desktop-home-nav-link';
-    item.href=href;
+    if(local){
+      item.type='button';
+    }else{
+      item.href=href;
+    }
     item.dataset.desktopNav=id;
     item.innerHTML=`<span class="desktop-home-nav-label">${label}</span><span class="v2-global-icon">${icon}</span>`;
     return item;
@@ -355,7 +360,7 @@ if(desktop.matches && document.querySelector('#homeHero')){
         event.preventDefault();
         showDashboard('computer');
       }
-    });
+    },true);
   }
 
   async function boot(){
