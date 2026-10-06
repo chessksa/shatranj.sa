@@ -17,7 +17,7 @@ document.head.appendChild(cleanupCss);
 
 const boardThemeCss=document.createElement('link');
 boardThemeCss.rel='stylesheet';
-boardThemeCss.href='v2/home/board-theme-override.css?v=20260930-piece-order5';
+boardThemeCss.href='v2/home/board-theme-override.css?v=20261006-frame-teal10';
 document.head.appendChild(boardThemeCss);
 
 const statsOrderCss=document.createElement('style');
