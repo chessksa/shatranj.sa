@@ -1,6 +1,6 @@
 import { mountInlineComputer, stopInlineComputer } from './inline-computer.mjs?v=20261006-computer-center1';
-import { mountInlinePuzzles, stopInlinePuzzles } from './inline-puzzles.mjs?v=20261006-puzzle-click2';
-import { mountInlineLearn, stopInlineLearn } from './inline-learn.mjs?v=20261006-learn-board1';
+import { mountInlinePuzzles, stopInlinePuzzles } from './inline-puzzles.mjs?v=20261006-board-colors1';
+import { mountInlineLearn, stopInlineLearn } from './inline-learn.mjs?v=20261006-board-colors1';
 if(!document.querySelector('link[data-desktop-board-shell]')){
   const css=document.createElement('link');
   css.rel='stylesheet';
