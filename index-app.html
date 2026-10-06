@@ -1109,7 +1109,7 @@ footer{
         <label class="ranking-filter-control ranking-filter-city">
           <span class="ranking-filter-icon" aria-hidden="true">⌖</span>
           <select id="cityFilter" disabled aria-label="فلترة حسب المدينة">
-            <option value="">اختر الدولة أولًا</option>
+            <option value="">المدينة</option>
           </select>
         </label>
       </div>
@@ -1741,7 +1741,7 @@ function populateRankingCitySelect(country){
   const cities=ARAB_CITIES[country]||[];
   const first=document.createElement('option');
   first.value='';
-  first.textContent=country?'المدينة':'اختر الدولة أولًا';
+  first.textContent='المدينة';
 
   cityFilter.replaceChildren(
     first,
