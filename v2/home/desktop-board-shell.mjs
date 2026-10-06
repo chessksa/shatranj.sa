@@ -5,7 +5,7 @@ if(!document.querySelector('link[data-desktop-board-shell]')){
   css.rel='stylesheet';
   css.dataset.desktopBoardShell='1';
   const url=new URL('./desktop-board-shell.css',import.meta.url);
-  url.searchParams.set('v','20261006-puzzle-board1');
+  url.searchParams.set('v','20261006-puzzle-click2');
   css.href=url.href;
   document.head.appendChild(css);
 }
@@ -30,8 +30,25 @@ if(desktop.matches && document.querySelector('#homeHero')){
   }
 
   function buildBoard(){
-    const preview=document.getElementById('homeBoardPreview');
+    let preview=document.getElementById('homeBoardPreview');
     if(!preview)return;
+    /* The homepage preview used to be an <a> linked to the legacy play page.
+       Replace it on desktop with a neutral container so puzzle/computer clicks
+       can never trigger the old anchor navigation. Inline play owns navigation. */
+    if(preview.tagName==='A'){
+      const neutral=document.createElement('div');
+      neutral.id=preview.id;
+      neutral.className=preview.className;
+      neutral.removeAttribute('href');
+      neutral.classList.remove('protected-play');
+      neutral.setAttribute('role','button');
+      neutral.setAttribute('tabindex','0');
+      preview.replaceWith(neutral);
+      preview=neutral;
+    }else{
+      preview.removeAttribute('href');
+      preview.classList.remove('protected-play');
+    }
     preview.classList.add('desktop-board-preview');
     preview.setAttribute('aria-label','فتح اللعب');
     preview.replaceChildren();
