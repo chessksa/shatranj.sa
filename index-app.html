@@ -1073,12 +1073,14 @@ footer{
 
     <div class="head">
       <div>
-        <h2 id="rankingTitle">ترتيب اللاعبين عالميًا</h2>
+        <h2 id="rankingTitle">ترتيب اللاعبين</h2>
       </div>
 
       <div class="filters ranking-filters">
-        <select id="regionFilter">
-          <option value="">الجنسية</option>
+        <label class="ranking-filter-control ranking-filter-country">
+          <span class="ranking-filter-icon" aria-hidden="true">⚑</span>
+          <select id="regionFilter" aria-label="فلترة حسب الدولة">
+          <option value="">الدولة</option>
           <option value="السعودية">السعودية</option>
           <option value="الإمارات">الإمارات</option>
           <option value="الكويت">الكويت</option>
@@ -1102,10 +1104,14 @@ footer{
           <option value="جيبوتي">جيبوتي</option>
           <option value="جزر القمر">جزر القمر</option>
         </select>
+        </label>
 
-        <select id="cityFilter" disabled aria-label="فلترة حسب المدينة">
-          <option value="">اختر الدولة أولًا</option>
-        </select>
+        <label class="ranking-filter-control ranking-filter-city">
+          <span class="ranking-filter-icon" aria-hidden="true">⌖</span>
+          <select id="cityFilter" disabled aria-label="فلترة حسب المدينة">
+            <option value="">اختر الدولة أولًا</option>
+          </select>
+        </label>
       </div>
     </div>
 
@@ -1717,7 +1723,7 @@ function populateRankingCountries(){
 
   const placeholder=document.createElement('option');
   placeholder.value='';
-  placeholder.textContent='الجنسية';
+  placeholder.textContent='الدولة';
 
   const options=WORLD_COUNTRIES.map(country=>{
     const option=document.createElement('option');
@@ -1832,7 +1838,7 @@ function updateRankingTitle(country,city){
     return;
   }
 
-  title.textContent='ترتيب اللاعبين عالميًا';
+  title.textContent='ترتيب اللاعبين';
 }
 
 function applyFilter(){
