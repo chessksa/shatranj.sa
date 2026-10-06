@@ -134,7 +134,7 @@ if(desktop.matches && document.querySelector('#homeHero')){
         <a href="play-v2.html?auto=1" title="العب الآن" aria-label="العب الآن">⚔</a>
         <button type="button" data-desktop-member-action="computer" title="الكمبيوتر" aria-label="الكمبيوتر">▣</button>
         <button type="button" data-desktop-member-action="invite" title="دعوة لاعب" aria-label="دعوة لاعب">＋</button>
-        <a href="tournaments.html" title="البطولات" aria-label="البطولات">♜</a>
+        <button type="button" data-desktop-member-action="tournaments" title="البطولات" aria-label="البطولات">♜</button>
       </nav>`;
     sidebar.insertBefore(member,nav);
 
@@ -365,6 +365,17 @@ if(desktop.matches && document.querySelector('#homeHero')){
       if(memberAction?.dataset.desktopMemberAction==='computer'){
         event.preventDefault();
         showDashboard('computer');
+        return;
+      }
+      if(memberAction?.dataset.desktopMemberAction==='tournaments'){
+        event.preventDefault();
+        showDashboard('tournaments');
+        return;
+      }
+      const heroTournaments=event.target.closest('.hero-tournaments-btn');
+      if(heroTournaments){
+        event.preventDefault();
+        showDashboard('tournaments');
         return;
       }
       const heroComputer=event.target.closest('.hero-computer-btn');
