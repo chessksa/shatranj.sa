@@ -4,7 +4,7 @@ if(!document.querySelector('link[data-desktop-board-shell]')){
   css.rel='stylesheet';
   css.dataset.desktopBoardShell='1';
   const url=new URL('./desktop-board-shell.css',import.meta.url);
-  url.searchParams.set('v','20260918-computer-head2');
+  url.searchParams.set('v','20261006-ranking-head1');
   css.href=url.href;
   document.head.appendChild(css);
 }
@@ -220,6 +220,7 @@ if(desktop.matches && document.querySelector('#homeHero')){
     if(!home||!view||!body)return;
 
     view.classList.toggle('computer-view',id==='computer');
+    view.classList.toggle('ranking-view',id==='ranking');
     restoreMovedContent();
     body.replaceChildren();
 
