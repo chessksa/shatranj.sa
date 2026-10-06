@@ -115,3 +115,41 @@ html body #tournamentResultsTicker{
     animation-duration:150s!important;
   }
 }
+
+/* Desktop board workspace: reserve a real top lane for news, never overlay the board */
+@media(min-width:901px){
+  html body.desktop-board-workspace #chessNewsTicker{
+    display:flex!important;
+    position:fixed!important;
+    top:0!important;
+    left:0!important;
+    right:var(--desktop-board-sidebar)!important;
+    width:auto!important;
+    height:34px!important;
+    min-height:34px!important;
+    max-height:34px!important;
+    margin:0!important;
+    z-index:90!important;
+  }
+
+  html body.desktop-board-workspace .desktop-board-stage{
+    top:44px!important;
+    bottom:10px!important;
+  }
+
+  html body.desktop-board-workspace .desktop-dashboard-column{
+    top:44px!important;
+    bottom:10px!important;
+  }
+
+  html body.desktop-board-workspace #homeBoardPreview.desktop-board-preview{
+    width:min(
+      calc(100vw - var(--desktop-board-sidebar) - var(--desktop-dashboard-width) - 40px),
+      calc(100dvh - 54px)
+    )!important;
+    height:min(
+      calc(100vw - var(--desktop-board-sidebar) - var(--desktop-dashboard-width) - 40px),
+      calc(100dvh - 54px)
+    )!important;
+  }
+}
