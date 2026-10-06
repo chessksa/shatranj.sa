@@ -1,10 +1,14 @@
 @media(min-width:901px){
   .inline-computer-panel{
+    width:100%;
     height:100%;
     min-height:0;
     display:grid;
-    grid-template-rows:110px minmax(240px,1fr) 110px;
-    gap:8px;
+    grid-template-rows:minmax(96px,110px) minmax(0,1fr) minmax(96px,110px);
+    align-items:stretch;
+    justify-items:center;
+    align-content:center;
+    gap:9px;
     overflow:hidden;
   }
 
@@ -16,18 +20,21 @@
 
   .inline-computer-panel .inline-play-player-card{
     min-width:0;
-    width:100%;
-    height:110px;
-    min-height:110px;
-    max-height:110px;
+    width:94%;
+    height:100%;
+    min-height:0;
+    max-height:none;
     padding:10px 12px;
     box-sizing:border-box;
-    overflow:hidden;
+    overflow:visible;
+    justify-self:center;
   }
 
   .inline-computer-panel .inline-play-player-copy{
     min-width:0;
-    overflow:hidden;
+    overflow:visible;
+    text-align:center;
+    align-items:center;
   }
 
   .inline-computer-panel .inline-play-player-name,
@@ -41,7 +48,8 @@
 
   .inline-computer-setup{
     min-height:0;
-    width:100%;
+    width:94%;
+    justify-self:center;
     padding:10px 12px;
     border:1px solid rgba(224,181,103,.34);
     border-radius:14px;
@@ -49,8 +57,9 @@
     box-shadow:0 12px 28px rgba(0,0,0,.14),inset 0 1px 0 rgba(255,255,255,.03);
     display:grid;
     grid-template-rows:auto 46px auto 46px 44px;
-    align-content:start;
-    gap:7px;
+    align-content:center;
+    justify-items:stretch;
+    gap:8px;
     overflow:visible;
     box-sizing:border-box;
   }
@@ -58,8 +67,8 @@
   .inline-computer-label{
     margin:0;
     color:#efcf7c;
-    font:900 12px/1.2 Arial,sans-serif;
-    text-align:right;
+    font:900 14px/1.2 Arial,sans-serif;
+    text-align:center;
   }
 
   .inline-computer-options{
@@ -78,7 +87,7 @@
     border-radius:10px;
     background:rgba(2,47,51,.82);
     color:#f4efe6;
-    font:800 11px/1.15 Arial,sans-serif;
+    font:900 13px/1.15 Arial,sans-serif;
     cursor:pointer;
     overflow:hidden;
   }
@@ -87,7 +96,7 @@
     display:block;
     margin-top:4px;
     color:#d9b35f;
-    font-size:9px;
+    font-size:11px;
     line-height:1;
   }
 
@@ -110,13 +119,14 @@
     border-radius:11px;
     background:linear-gradient(135deg,#efca72,#d9aa4f);
     color:#173536;
-    font:900 13px/1 Arial,sans-serif;
+    font:900 15px/1 Arial,sans-serif;
     cursor:pointer;
   }
 
   .inline-computer-panel .inline-play-actions{
     min-height:0;
-    width:100%;
+    width:94%;
+    justify-self:center;
     align-self:center;
     padding:10px;
     border:1px solid rgba(102,172,173,.34);
@@ -137,7 +147,7 @@
     border-radius:11px;
     background:rgba(2,47,51,.82);
     color:#f4efe6;
-    font:900 12px/1 Arial,sans-serif;
+    font:900 14px/1 Arial,sans-serif;
     display:flex;
     align-items:center;
     justify-content:center;
@@ -147,9 +157,9 @@
   .inline-computer-panel .inline-play-actions button::before{
     display:inline-grid;
     place-items:center;
-    width:24px;
-    height:24px;
-    font:900 20px/1 Arial,sans-serif;
+    width:30px;
+    height:30px;
+    font:900 26px/1 Arial,sans-serif;
     color:#efca72;
   }
 
