@@ -1,0 +1,175 @@
+/* Unified typography system — desktop + mobile */
+:root{
+  --type-title:24px;
+  --type-section:18px;
+  --type-player:17px;
+  --type-player-strong:19px;
+  --type-nav:16px;
+  --type-primary:16px;
+  --type-control:14px;
+  --type-body:14px;
+  --type-note:13px;
+  --type-number:22px;
+  --type-clock:32px;
+  --type-icon:26px;
+}
+
+/* Global shell navigation */
+@media(min-width:901px){
+  .v2-global-link{font-size:var(--type-nav)!important;line-height:1.25!important}
+  .v2-global-icon{font-size:var(--type-icon)!important;line-height:1!important}
+  body.desktop-board-workspace .desktop-home-nav-link{font-size:var(--type-nav)!important}
+  body.desktop-board-workspace .desktop-home-nav-link .v2-global-icon{font-size:var(--type-icon)!important}
+  .desktop-member-name{font-size:var(--type-player-strong)!important;line-height:1.25!important}
+  .desktop-member-points{font-size:var(--type-note)!important}
+  .desktop-member-points b{font-size:var(--type-number)!important}
+  .desktop-member-play-action{font-size:var(--type-control)!important}
+  .desktop-member-play-symbol{font-size:24px!important}
+
+  /* Main desktop workspace */
+  .desktop-welcome-copy small{font-size:var(--type-body)!important}
+  .desktop-welcome-copy h2{font-size:var(--type-title)!important}
+  .desktop-welcome-copy p{font-size:var(--type-note)!important}
+  .desktop-welcome-copy blockquote{font-size:12px!important}
+  .desktop-live-stat small{font-size:12px!important}
+  .desktop-live-stat strong{font-size:var(--type-number)!important}
+  .desktop-quick-copy strong{font-size:14px!important}
+  .desktop-quick-copy small{font-size:12px!important}
+  .desktop-quick-icon{font-size:24px!important}
+  .desktop-tip-card strong{font-size:var(--type-control)!important}
+  .desktop-tip-card p{font-size:12px!important}
+
+  /* Ranking */
+  #ranking #rankingTitle{font-size:var(--type-title)!important}
+  #ranking .filters select{font-size:var(--type-control)!important}
+  #ranking th,#ranking td{font-size:14px!important}
+  #ranking td:nth-child(1){font-size:17px!important;font-weight:900!important}
+  #ranking td:nth-child(2){font-size:15px!important}
+  #ranking td:nth-child(3){font-size:14px!important}
+
+  /* Inline play / computer */
+  .inline-play-player-name{font-size:var(--type-player-strong)!important}
+  .inline-play-player-meta,.inline-play-status{font-size:var(--type-body)!important}
+  .inline-play-clock{font-size:var(--type-clock)!important}
+  .inline-computer-label{font-size:var(--type-section)!important}
+  .inline-computer-options button{font-size:var(--type-control)!important}
+  .inline-computer-options button small{font-size:12px!important}
+  .inline-computer-start{font-size:var(--type-primary)!important}
+  .inline-computer-panel .inline-play-actions button{font-size:var(--type-control)!important}
+  .inline-computer-panel .inline-play-actions button::before{font-size:26px!important}
+
+  /* Puzzles */
+  .inline-puzzle-head h2{font-size:var(--type-title)!important}
+  .inline-puzzle-head small,.inline-puzzle-board-note{font-size:12px!important}
+  .inline-puzzle-stats small{font-size:12px!important}
+  .inline-puzzle-stats strong{font-size:var(--type-number)!important}
+  .inline-puzzle-card h3{font-size:var(--type-section)!important}
+  .inline-puzzle-badge,.inline-puzzle-status{font-size:var(--type-body)!important}
+  .inline-puzzle-actions button{font-size:var(--type-primary)!important}
+  .inline-puzzle-modes button{font-size:var(--type-control)!important}
+
+  /* Learn */
+  .inline-learn-head h2{font-size:var(--type-title)!important}
+  .inline-learn-head small,.inline-learn-board-note{font-size:12px!important}
+  .inline-learn-progress,.inline-learn-status{font-size:var(--type-note)!important}
+  .inline-learn-filters button{font-size:var(--type-control)!important}
+  .inline-learn-copy strong{font-size:15px!important}
+  .inline-learn-copy small{font-size:12px!important}
+  .inline-learn-badge{font-size:12px!important}
+  .inline-learn-viewer h3{font-size:var(--type-section)!important}
+  .inline-learn-body{font-size:var(--type-body)!important}
+  #inlineLearnBack{font-size:var(--type-control)!important}
+  .inline-learn-complete{font-size:var(--type-primary)!important}
+
+  /* Platform pages */
+  body.platform-page .platform-head h1{font-size:var(--type-title)!important}
+  body.platform-page .platform-head p{font-size:var(--type-body)!important}
+  body.platform-page .platform-card h2{font-size:var(--type-section)!important}
+  body.platform-page .platform-btn{font-size:var(--type-primary)!important}
+  body.platform-page .platform-tab,
+  body.platform-page .platform-select,
+  body.platform-page input,
+  body.platform-page select{font-size:var(--type-control)!important}
+  body.platform-page .platform-muted,
+  body.platform-page .platform-badge{font-size:var(--type-note)!important}
+
+  /* Modern play page */
+  #gamePage .name{font-size:var(--type-player-strong)!important}
+  #gamePage .location,#gamePage .rating,#gamePage .status{font-size:var(--type-note)!important}
+  #gamePage .clock{font-size:var(--type-clock)!important}
+  #gamePage .action-icon{font-size:var(--type-icon)!important}
+  #gamePage .action-label{font-size:var(--type-control)!important}
+  #gamePage .opponent-search-title{font-size:var(--type-section)!important}
+  #gamePage .opponent-time-option{font-size:var(--type-control)!important}
+  #gamePage .opponent-time-option strong{font-size:var(--type-number)!important}
+
+  /* Profile */
+  #profileApp .identity h1{font-size:var(--type-title)!important}
+  #profileApp .identity .sub{font-size:var(--type-body)!important}
+  #profileApp .identity .rating{font-size:var(--type-section)!important}
+  #profileApp .card h2{font-size:var(--type-section)!important}
+  #profileApp .stat small{font-size:var(--type-note)!important}
+  #profileApp .stat strong{font-size:var(--type-number)!important}
+  #profileApp .row-title{font-size:15px!important}
+  #profileApp .row-meta,#profileApp .mini{font-size:var(--type-note)!important}
+  #profileApp .profile-nav-main strong{font-size:16px!important}
+  #profileApp .profile-nav-label{font-size:14px!important}
+  #profileApp .profile-nav-icon{font-size:var(--type-icon)!important}
+
+  /* Spectator/watch */
+  .match-shell .table-head{font-size:var(--type-section)!important}
+  .match-shell .match-table{font-size:var(--type-body)!important}
+}
+
+@media(max-width:900px){
+  :root{
+    --type-title:22px;
+    --type-section:16px;
+    --type-player:15px;
+    --type-player-strong:17px;
+    --type-primary:14px;
+    --type-control:12px;
+    --type-body:13px;
+    --type-note:12px;
+    --type-number:20px;
+    --type-clock:28px;
+    --type-icon:22px;
+  }
+
+  .v2-mobile-link{font-size:11px!important;line-height:1.15!important}
+  .v2-mobile-link .v2-global-icon{font-size:var(--type-icon)!important}
+  .v2-mobile-more-link{font-size:12px!important}
+  .v2-mobile-more-link .v2-global-icon{font-size:var(--type-icon)!important}
+
+  body.platform-page .platform-head h1{font-size:var(--type-title)!important}
+  body.platform-page .platform-head p{font-size:var(--type-body)!important}
+  body.platform-page .platform-card h2{font-size:var(--type-section)!important}
+  body.platform-page .platform-btn{font-size:var(--type-primary)!important}
+  body.platform-page .platform-tab,
+  body.platform-page .platform-select,
+  body.platform-page input,
+  body.platform-page select{font-size:var(--type-control)!important}
+  body.platform-page .platform-muted,
+  body.platform-page .platform-badge{font-size:var(--type-note)!important}
+
+  #gamePage .name{font-size:var(--type-player-strong)!important}
+  #gamePage .location,#gamePage .rating,#gamePage .status{font-size:var(--type-note)!important}
+  #gamePage .clock{font-size:var(--type-clock)!important}
+  #gamePage .action-icon{font-size:20px!important}
+  #gamePage .action-label{font-size:12px!important}
+  #gamePage .opponent-search-title{font-size:var(--type-section)!important}
+  #gamePage .opponent-time-option strong{font-size:20px!important}
+  #gamePage .opponent-time-option span{font-size:12px!important}
+
+  #profileApp .identity h1{font-size:var(--type-title)!important}
+  #profileApp .identity .sub{font-size:var(--type-body)!important}
+  #profileApp .identity .rating{font-size:var(--type-section)!important}
+  #profileApp .card h2{font-size:var(--type-section)!important}
+  #profileApp .stat strong{font-size:var(--type-number)!important}
+  #profileApp .row-meta,#profileApp .mini{font-size:var(--type-note)!important}
+  #profileApp .profile-nav-icon{font-size:var(--type-icon)!important}
+  #profileApp .profile-nav-label{font-size:12px!important}
+
+  .match-shell .table-head{font-size:var(--type-section)!important}
+  .match-shell .match-table{font-size:var(--type-body)!important}
+}
