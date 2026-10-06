@@ -1,7 +1,8 @@
 import { SITE_NAV } from './nav.mjs?v=20260913-puzzles2';
 
 const skip = /(?:^|\/)(?:admin|profile-section)\.html$/;
-if (!skip.test(location.pathname)) {
+const embeddedPanel = new URLSearchParams(location.search).get('embed') === 'panel';
+if (!embeddedPanel && !skip.test(location.pathname)) {
   if (!document.querySelector('link[data-v2-mobile-ui]')) {
     const mobileUi = document.createElement('link');
     mobileUi.rel = 'stylesheet';
