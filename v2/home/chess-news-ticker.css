@@ -161,3 +161,11 @@ html body #tournamentResultsTicker{
     animation-play-state:paused!important;
   }
 }
+
+
+/* board frame color override: higher specificity than the desktop shell */
+@media(min-width:901px){
+  html body.desktop-board-workspace #homeBoardPreview.desktop-board-preview{
+    border:1px solid rgba(73,137,141,.78)!important;
+  }
+}
