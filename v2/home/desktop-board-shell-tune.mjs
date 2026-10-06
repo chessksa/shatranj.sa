@@ -1,4 +1,4 @@
-import './inline-play.mjs?v=20261006-puzzle-click1';
+import './inline-play.mjs?v=20261006-learn-board1';
 
 const inlinePlayCss=document.createElement('link');
 inlinePlayCss.rel='stylesheet';
