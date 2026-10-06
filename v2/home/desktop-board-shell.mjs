@@ -4,7 +4,7 @@ if(!document.querySelector('link[data-desktop-board-shell]')){
   css.rel='stylesheet';
   css.dataset.desktopBoardShell='1';
   const url=new URL('./desktop-board-shell.css',import.meta.url);
-  url.searchParams.set('v','20261006-ranking-head1');
+  url.searchParams.set('v','20261006-ranking-layout2');
   css.href=url.href;
   document.head.appendChild(css);
 }
@@ -213,6 +213,9 @@ if(desktop.matches && document.querySelector('#homeHero')){
   }
 
   function showDashboard(id='home'){
+    if(['home','ranking','invite','computer'].includes(id)){
+      history.replaceState(null,'','#'+id);
+    }
     if(id!=='computer') stopInlineComputer();
     const home=document.getElementById('desktopDashboardHome');
     const view=document.getElementById('desktopDashboardView');
@@ -346,15 +349,13 @@ if(desktop.matches && document.querySelector('#homeHero')){
     bindDesktopActions();
     watchLiveData();
 
-    const initialView=location.hash==='#computer'?'computer':'home';
+    const initialHash=location.hash.replace(/^#/,'');
+    const initialView=['home','ranking','invite','computer'].includes(initialHash)?initialHash:'home';
     showDashboard(initialView);
 
     window.addEventListener('hashchange',()=>{
-      if(location.hash==='#computer'){
-        showDashboard('computer');
-      }else if(location.hash===''||location.hash==='#home'){
-        showDashboard('home');
-      }
+      const next=location.hash.replace(/^#/,'');
+      showDashboard(['home','ranking','invite','computer'].includes(next)?next:'home');
     });
   }
 
