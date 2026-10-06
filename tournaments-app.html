@@ -5,6 +5,7 @@
 <meta name="viewport" content="width=device-width,initial-scale=1">
 <meta name="theme-color" content="#042628">
 <title>البطولات | شطرنج العرب</title>
+<script>if(new URLSearchParams(location.search).get('embed')==='panel')document.documentElement.classList.add('tournament-embedded')</script>
 <style>
 *{box-sizing:border-box}[hidden]{display:none!important}
 :root{--hero-deep:#062f31;--hero-deeper:#042628;--hero-panel:#0b4143;--hero-panel-2:#083638;--hero-gold:#d8b665;--hero-gold-2:#efcf7c;--hero-cream:#f4eddc;--hero-muted:#b7c7c2;--hero-line:rgba(216,182,101,.26);--hero-cyan-line:rgba(46,147,147,.42);--tournament-row-h:42px;--table-title-h:46px;--column-head-h:38px}
@@ -42,6 +43,126 @@ main{flex:1 1 auto;min-height:0;overflow:hidden;padding:14px 0}main>.wrap{height
 .detail-grid>.detail-item>.detail-label{border-left:1px solid rgba(216,182,101,.18)!important;background:rgba(216,182,101,.045)!important;color:#d9c58f!important;font-size:12px!important;font-weight:900!important}
 .detail-grid>.detail-item>.detail-value{background:rgba(3,38,40,.18)!important;color:var(--hero-cream)!important;font-size:10px!important;font-weight:700!important}
 @media(max-width:700px){.detail-grid{grid-template-columns:repeat(2,minmax(0,1fr))!important}.detail-grid>.detail-item{grid-template-columns:minmax(62px,.9fr) minmax(0,1.25fr)!important}.detail-grid>.detail-item>.detail-label,.detail-grid>.detail-item>.detail-value{min-height:32px!important;padding:4px 3px!important}}
+
+/* Embedded desktop workspace: keep the main chess board outside and show only tournament data here. */
+html.tournament-embedded,
+html.tournament-embedded body{
+  width:100%!important;
+  height:100%!important;
+  min-height:100%!important;
+  max-height:100%!important;
+  overflow:hidden!important;
+  background:#043135!important;
+}
+html.tournament-embedded header,
+html.tournament-embedded .page-head{
+  display:none!important;
+}
+html.tournament-embedded main{
+  width:100%!important;
+  height:100%!important;
+  min-height:0!important;
+  padding:8px!important;
+  overflow:hidden!important;
+}
+html.tournament-embedded main>.wrap{
+  width:100%!important;
+  height:100%!important;
+  min-height:0!important;
+  margin:0!important;
+  display:grid!important;
+  grid-template-rows:auto minmax(0,1fr)!important;
+  gap:6px!important;
+}
+html.tournament-embedded main>.wrap.detail-active{
+  display:flex!important;
+  flex-direction:column!important;
+}
+html.tournament-embedded .registration-message{
+  min-height:0!important;
+  padding:0 3px!important;
+  font-size:11px!important;
+}
+html.tournament-embedded .tournament-list-view{
+  min-height:0!important;
+  height:100%!important;
+  overflow:hidden!important;
+}
+html.tournament-embedded .tournament-tables-grid{
+  height:100%!important;
+  min-height:0!important;
+  display:grid!important;
+  grid-template-columns:1fr!important;
+  grid-template-rows:minmax(0,1fr) minmax(0,1fr)!important;
+  gap:7px!important;
+  align-items:stretch!important;
+}
+html.tournament-embedded .tournament-table-shell{
+  width:100%!important;
+  height:100%!important;
+  min-height:0!important;
+  max-height:100%!important;
+  border-radius:13px!important;
+}
+html.tournament-embedded .tournament-table-head{
+  height:38px!important;
+  flex:0 0 38px!important;
+  font-size:13px!important;
+}
+html.tournament-embedded .tournament-table-head strong{
+  font-size:14px!important;
+}
+html.tournament-embedded .tournament-table th{
+  height:30px!important;
+  font-size:9px!important;
+  padding:3px 4px!important;
+}
+html.tournament-embedded .tournament-table td{
+  height:36px!important;
+  font-size:10px!important;
+  padding:3px 4px!important;
+}
+html.tournament-embedded .tournament-table .num{width:30px!important}
+html.tournament-embedded .tournament-table .date-col{width:92px!important}
+html.tournament-embedded .tournament-table .status-col{width:60px!important}
+html.tournament-embedded .tournament-table .champion-col{width:96px!important}
+html.tournament-embedded .tournament-name{font-size:11px!important}
+html.tournament-embedded .tournament-date{font-size:9px!important}
+html.tournament-embedded .status{font-size:8px!important;padding:3px 5px!important}
+html.tournament-embedded .champion-name{font-size:9px!important}
+html.tournament-embedded .detail-shell{
+  flex:1 1 auto!important;
+  width:100%!important;
+  height:100%!important;
+  min-height:0!important;
+  max-height:100%!important;
+  border-radius:13px!important;
+}
+html.tournament-embedded .detail-toolbar{
+  min-height:40px!important;
+  padding:5px 8px!important;
+}
+html.tournament-embedded .detail-toolbar-title{
+  font-size:15px!important;
+}
+html.tournament-embedded .detail-card{
+  padding:10px!important;
+}
+html.tournament-embedded .detail-title{
+  font-size:17px!important;
+}
+html.tournament-embedded .detail-register{
+  margin-top:9px!important;
+  padding-top:9px!important;
+}
+html.tournament-embedded .register-btn{
+  min-height:36px!important;
+  font-size:11px!important;
+}
+html.tournament-embedded .bracket-shell{
+  margin-top:10px!important;
+  padding-top:10px!important;
+}
 </style>
 <script src="config.js?v=20260911-grid2"></script>
 </head>
