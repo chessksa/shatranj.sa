@@ -751,10 +751,13 @@ function handleEntryClick(event){
   const computerBoardClick=event.target.closest('#inlineComputerBoardGrid')
     || document.getElementById('homeBoardPreview')?.classList.contains('inline-computer-active')
     || location.hash==='#computer';
+  const puzzleBoardClick=event.target.closest('#inlinePuzzleBoardGrid')
+    || document.getElementById('homeBoardPreview')?.classList.contains('inline-puzzle-active')
+    || location.hash==='#puzzles';
 
-  /* Computer mode owns every click inside its board. Never hand those
-     clicks to normal matchmaking/play navigation. */
-  if(previewClick&&computerBoardClick) return;
+  /* Computer and puzzle modes own every click inside the main board.
+     Never hand those clicks to normal matchmaking/play navigation. */
+  if(previewClick&&(computerBoardClick||puzzleBoardClick)) return;
   if(active&&previewClick) return;
 
   if(playNav||quickPlay||previewClick){
