@@ -479,10 +479,17 @@ function buildPanel(body){
 
 export function mountInlinePuzzles(body){
   if(!desktop.matches||!body) return;
+  if(active) stopInlinePuzzles({restoreBoard:false});
   ensureCss();
   window.dispatchEvent(new CustomEvent('desktop:inline-play-stop'));
   window.dispatchEvent(new CustomEvent('desktop:inline-computer-stop'));
+  mode='rated';
+  hearts=5;
   active=true;
+  const home=document.getElementById('desktopDashboardHome');
+  const view=document.getElementById('desktopDashboardView');
+  if(home) home.hidden=true;
+  if(view) view.hidden=false;
   buildPanel(body);
   if(!ensureBoard()){
     setStatus('تعذر تجهيز الرقعة الرئيسية.','error');
