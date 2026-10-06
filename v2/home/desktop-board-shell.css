@@ -9,7 +9,9 @@
   html,body{height:100dvh!important;min-height:100dvh!important;overflow:hidden!important}
   body.v2-shell-active.desktop-board-workspace{
     padding-right:var(--desktop-board-sidebar)!important;
-    background:radial-gradient(circle at 18% 16%,rgba(25,105,110,.18),transparent 28%),linear-gradient(135deg,#022f33,#063a40 58%,#0b4850)!important;
+    background:
+      linear-gradient(rgba(1,26,29,.72),rgba(1,22,25,.82)),
+      url('../../assets/civilization-chess-bg.webp') center center / cover no-repeat fixed!important;
   }
 
   body.desktop-board-workspace .home-header,
