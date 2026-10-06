@@ -175,7 +175,9 @@
     color:#f4efe6;
     direction:rtl;
   }
-  .desktop-dashboard-home{height:100%;display:grid;grid-template-rows:minmax(166px,1.15fr) minmax(86px,.52fr) minmax(190px,1fr) minmax(82px,.46fr);gap:9px}
+  .desktop-dashboard-home{height:100%;display:grid;grid-template-rows:minmax(0,1fr) auto;gap:9px}
+  body.desktop-board-workspace .desktop-quick-card,
+  body.desktop-board-workspace .desktop-quick-actions{display:none!important}
   .desktop-dashboard-home[hidden]{display:none!important}
 
   .desktop-welcome-card,.desktop-live-stat,.desktop-quick-card,.desktop-tip-card,.desktop-dashboard-view{
@@ -337,7 +339,7 @@
 }
 
 @media(min-width:901px) and (max-height:720px){
-  .desktop-dashboard-home{grid-template-rows:minmax(142px,1.05fr) 78px minmax(166px,.95fr) 70px;gap:7px}
+  .desktop-dashboard-home{grid-template-rows:minmax(0,1fr) auto;gap:7px}
   .desktop-welcome-copy{padding:11px 6px 10px 12px}.desktop-welcome-copy small{font-size:13px}.desktop-welcome-copy h2{font-size:23px}.desktop-welcome-copy p{font-size:9px}.desktop-welcome-rule{margin:7px 0 6px}.desktop-welcome-copy blockquote{font-size:8px}
   .desktop-live-stat small{font-size:8px}.desktop-live-stat strong{font-size:18px}.desktop-quick-card{padding:7px}.desktop-card-title{margin-bottom:5px}.desktop-quick-copy strong{font-size:10px}.desktop-tip-card{padding:7px 10px}
   .desktop-member-card{min-height:94px;padding:7px}.desktop-member-avatar-wrap{width:50px;height:50px}.desktop-member-copy>strong{font-size:13px}
