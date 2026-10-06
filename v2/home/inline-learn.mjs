@@ -21,7 +21,7 @@ function ensureCss(){
     const link=document.createElement('link');
     link.id='inlineLearnCss';
     link.rel='stylesheet';
-    link.href=new URL('./inline-learn.css?v=20261006-learn-board1',import.meta.url).href;
+    link.href=new URL('./inline-learn.css?v=20261006-board-colors1',import.meta.url).href;
     document.head.appendChild(link);
   }
   if(!document.getElementById('inlineLearnBoardBaseCss')){
