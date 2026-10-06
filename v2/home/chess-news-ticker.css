@@ -2,6 +2,11 @@
 #chessNewsTicker{
   width:100%;
   min-width:0;
+  position:relative!important;
+  top:auto!important;
+  right:auto!important;
+  left:auto!important;
+  z-index:8!important;
 }
 #chessNewsTicker .chess-news-label{
   color:inherit;
@@ -25,8 +30,25 @@
   text-decoration:none;
 }
 
+/* أبطأ من بقية الأشرطة حتى تكون الأخبار مريحة للقراءة */
+#chessNewsTicker .welcome-ticker-track{
+  animation-duration:110s!important;
+}
+
 @media(min-width:901px){
-  html body.home-signed-in #chessNewsTicker{
+  /* ثلاثة أشرطة مستقلة أعلى المحتوى، ولا يدخل شريط الأخبار فوق الرقعة */
+  html body{
+    grid-template-rows:auto 34px 34px 34px auto auto auto auto!important;
+  }
+  html body #welcomeTicker{
+    grid-column:1/-1!important;
+    grid-row:2!important;
+  }
+  html body #tournamentResultsTicker{
+    grid-column:1/-1!important;
+    grid-row:3!important;
+  }
+  html body #chessNewsTicker{
     grid-column:1/-1!important;
     grid-row:4!important;
     height:34px!important;
@@ -34,6 +56,29 @@
     max-height:34px!important;
     margin:0!important;
   }
+  html body .home-hero{
+    grid-row:5!important;
+  }
+  html body #ranking{
+    grid-row:5!important;
+  }
+  html body .home-features{
+    grid-row:6!important;
+  }
+  html body #register{
+    grid-row:7!important;
+  }
+  html body footer{
+    grid-row:8!important;
+  }
+
+  html body.home-signed-in{
+    grid-template-rows:64px 34px 34px 34px minmax(0,1fr)!important;
+  }
+  html body.home-signed-in .home-header{grid-row:1!important}
+  html body.home-signed-in #welcomeTicker{grid-row:2!important}
+  html body.home-signed-in #tournamentResultsTicker{grid-row:3!important}
+  html body.home-signed-in #chessNewsTicker{grid-row:4!important}
   html body.home-signed-in .home-hero,
   html body.home-signed-in #ranking{
     grid-row:5!important;
@@ -59,5 +104,9 @@
     margin:0!important;
     border-top:0!important;
     border-bottom:1px solid rgba(224,181,103,.38)!important;
+  }
+
+  #chessNewsTicker .welcome-ticker-track{
+    animation-duration:120s!important;
   }
 }
