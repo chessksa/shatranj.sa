@@ -2,6 +2,16 @@ import { SITE_NAV } from './nav.mjs?v=20260913-puzzles2';
 
 const skip = /(?:^|\/)(?:admin|profile-section)\.html$/;
 const embeddedPanel = new URLSearchParams(location.search).get('embed') === 'panel';
+if (!document.querySelector('link[data-v2-typography]')) {
+  const typography = document.createElement('link');
+  typography.rel = 'stylesheet';
+  typography.dataset.v2Typography = '20261006';
+  const typographyUrl = new URL('./typography-system.css', import.meta.url);
+  typographyUrl.searchParams.set('v','20261006-type1');
+  typography.href = typographyUrl.href;
+  document.head.appendChild(typography);
+}
+
 if (!embeddedPanel && !skip.test(location.pathname)) {
   if (!document.querySelector('link[data-v2-mobile-ui]')) {
     const mobileUi = document.createElement('link');
