@@ -6,7 +6,7 @@ if(!document.querySelector('link[data-desktop-board-shell]')){
   css.rel='stylesheet';
   css.dataset.desktopBoardShell='1';
   const url=new URL('./desktop-board-shell.css',import.meta.url);
-  url.searchParams.set('v','20261006-inline-tournaments1');
+  url.searchParams.set('v','20261006-board-frame-teal9');
   css.href=url.href;
   document.head.appendChild(css);
 }
