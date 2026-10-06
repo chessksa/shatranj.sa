@@ -141,6 +141,7 @@ if(desktop.matches && document.querySelector('#homeHero')){
     nav.replaceChildren(
       navItem({id:'home',label:'الرئيسية',icon:'⌂',href:'#home'}),
       navItem({id:'ranking',label:'الترتيب',icon:'▥',href:'#ranking'}),
+      navItem({id:'tournaments',label:'البطولات',icon:'♜',href:'#tournaments'}),
       navItem({id:'invite',label:'دعوة لاعب',icon:'＋',href:'#invite'}),
       navItem({id:'play',label:'العب',icon:'⚔',href:'play-v2.html?auto=1'}),
       navItem({id:'computer',label:'الكمبيوتر',icon:'▣',href:'#computer'}),
@@ -246,7 +247,7 @@ if(desktop.matches && document.querySelector('#homeHero')){
   }
 
   function showDashboard(id='home'){
-    if(['home','ranking','invite','computer','puzzles','learn'].includes(id)){
+    if(['home','ranking','tournaments','invite','computer','puzzles','learn'].includes(id)){
       history.replaceState(null,'','#'+id);
     }
     if(id!=='computer') stopInlineComputer();
@@ -362,7 +363,7 @@ if(desktop.matches && document.querySelector('#homeHero')){
   function bindDesktopActions(){
     document.addEventListener('click',event=>{
       const nav=event.target.closest('[data-desktop-nav]');
-      if(nav&&['home','ranking','invite','computer','puzzles','learn'].includes(nav.dataset.desktopNav)){
+      if(nav&&['home','ranking','tournaments','invite','computer','puzzles','learn'].includes(nav.dataset.desktopNav)){
         event.preventDefault();
         showDashboard(nav.dataset.desktopNav);
         return;
@@ -398,12 +399,12 @@ if(desktop.matches && document.querySelector('#homeHero')){
     watchLiveData();
 
     const initialHash=location.hash.replace(/^#/,'');
-    const initialView=['home','ranking','invite','computer','puzzles','learn'].includes(initialHash)?initialHash:'home';
+    const initialView=['home','ranking','tournaments','invite','computer','puzzles','learn'].includes(initialHash)?initialHash:'home';
     showDashboard(initialView);
 
     window.addEventListener('hashchange',()=>{
       const next=location.hash.replace(/^#/,'');
-      showDashboard(['home','ranking','invite','computer','puzzles','learn'].includes(next)?next:'home');
+      showDashboard(['home','ranking','tournaments','invite','computer','puzzles','learn'].includes(next)?next:'home');
     });
   }
 
