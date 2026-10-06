@@ -141,8 +141,9 @@ async function loadCurrentMatchesCount(){`;
   html body.home-signed-in .home-header{grid-row:1!important}
   html body.home-signed-in .welcome-ticker{grid-row:2!important}
   html body.home-signed-in #tournamentResultsTicker{grid-column:1/-1!important;grid-row:3!important}
-  html body.home-signed-in .home-hero{grid-row:4!important}
-  html body.home-signed-in #ranking{grid-row:4!important}
+  html body.home-signed-in #chessNewsTicker{grid-column:1/-1!important;grid-row:4!important}
+  html body.home-signed-in .home-hero{grid-row:5!important}
+  html body.home-signed-in #ranking{grid-row:5!important}
 }
 @media(max-width:900px){
   html{
@@ -232,6 +233,9 @@ async function loadCurrentMatchesCount(){`;
   if(!html.includes('mobile-home-fixed-v1.css')){
     html=html.replace('</head>','<link rel="stylesheet" href="mobile-home-fixed-v1.css?v='+runtimeVersion+'"></head>');
   }
+  if(!html.includes('v2/home/chess-news-ticker.css')){
+    html=html.replace('</head>','<link rel="stylesheet" href="v2/home/chess-news-ticker.css?v='+runtimeVersion+'"></head>');
+  }
   if(!html.includes('config-base.js')){
     html=html.replace('</body>','<script src="config-base.js?v='+runtimeVersion+'"><\/script></body>');
   }
@@ -246,6 +250,10 @@ async function loadCurrentMatchesCount(){`;
   }
   if(!html.includes('mobile-home-fixed-v1.js')){
     html=html.replace('</body>','<script src="mobile-home-fixed-v1.js?v='+runtimeVersion+'"><\/script></body>');
+  }
+
+  if(!html.includes('v2/home/chess-news-ticker.mjs')){
+    html=html.replace('</body>','<script type="module" src="v2/home/chess-news-ticker.mjs?v='+runtimeVersion+'"><\/script></body>');
   }
 
   document.open();
