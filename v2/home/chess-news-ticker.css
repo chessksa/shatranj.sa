@@ -166,6 +166,6 @@ html body #tournamentResultsTicker{
 /* board frame color override: higher specificity than the desktop shell */
 @media(min-width:901px){
   html body.desktop-board-workspace #homeBoardPreview.desktop-board-preview{
-    border:1px solid rgba(73,137,141,.78)!important;
+    border:1px solid #5c8f92!important;
   }
 }
