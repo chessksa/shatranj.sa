@@ -133,23 +133,23 @@ html body #tournamentResultsTicker{
   }
 
   html body.desktop-board-workspace .desktop-board-stage{
-    top:44px!important;
+    top:38px!important;
     bottom:10px!important;
   }
 
   html body.desktop-board-workspace .desktop-dashboard-column{
-    top:44px!important;
+    top:38px!important;
     bottom:10px!important;
   }
 
   html body.desktop-board-workspace #homeBoardPreview.desktop-board-preview{
     width:min(
       calc(100vw - var(--desktop-board-sidebar) - var(--desktop-dashboard-width) - 40px),
-      calc(100dvh - 54px)
+      calc(100dvh - 48px)
     )!important;
     height:min(
       calc(100vw - var(--desktop-board-sidebar) - var(--desktop-dashboard-width) - 40px),
-      calc(100dvh - 54px)
+      calc(100dvh - 48px)
     )!important;
   }
 }
