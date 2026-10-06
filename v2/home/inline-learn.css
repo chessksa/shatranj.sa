@@ -254,6 +254,16 @@
     cursor:default!important;
   }
 
+  #homeBoardPreview.inline-learn-active .desktop-board-square.light{
+    background:#e8dec8!important;
+  }
+  #homeBoardPreview.inline-learn-active .desktop-board-square.dark{
+    background:#87966a!important;
+  }
+  #homeBoardPreview.inline-learn-active .desktop-board-square{
+    border:.5px solid rgba(35,42,32,.28)!important;
+  }
+
   #homeBoardPreview.inline-learn-active .inline-learn-piece{
     pointer-events:none;
   }
