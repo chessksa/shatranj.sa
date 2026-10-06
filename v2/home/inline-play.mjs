@@ -754,10 +754,13 @@ function handleEntryClick(event){
   const puzzleBoardClick=event.target.closest('#inlinePuzzleBoardGrid')
     || document.getElementById('homeBoardPreview')?.classList.contains('inline-puzzle-active')
     || location.hash==='#puzzles';
+  const learnBoardClick=event.target.closest('#inlineLearnBoardGrid')
+    || document.getElementById('homeBoardPreview')?.classList.contains('inline-learn-active')
+    || location.hash==='#learn';
 
-  /* Computer and puzzle modes own every click inside the main board.
+  /* Computer, puzzle and learn modes own every click inside the main board.
      Never hand those clicks to normal matchmaking/play navigation. */
-  if(previewClick&&(computerBoardClick||puzzleBoardClick)) return;
+  if(previewClick&&(computerBoardClick||puzzleBoardClick||learnBoardClick)) return;
   if(active&&previewClick) return;
 
   if(playNav||quickPlay||previewClick){
