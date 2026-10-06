@@ -4,7 +4,7 @@ if(!document.querySelector('link[data-desktop-board-shell]')){
   css.rel='stylesheet';
   css.dataset.desktopBoardShell='1';
   const url=new URL('./desktop-board-shell.css',import.meta.url);
-  url.searchParams.set('v','20261006-ranking-layout2');
+  url.searchParams.set('v','20261006-inline-sections1');
   css.href=url.href;
   document.head.appendChild(css);
 }
@@ -120,8 +120,8 @@ if(desktop.matches && document.querySelector('#homeHero')){
       navItem({id:'invite',label:'دعوة لاعب',icon:'＋',href:'#invite'}),
       navItem({id:'play',label:'العب',icon:'⚔',href:'play-v2.html?auto=1'}),
       navItem({id:'computer',label:'الكمبيوتر',icon:'▣',href:'#computer'}),
-      navItem({id:'puzzles',label:'الألغاز',icon:'◆',href:'puzzles.html'}),
-      navItem({id:'learn',label:'تعلّم',icon:'▤',href:'learn.html'})
+      navItem({id:'puzzles',label:'الألغاز',icon:'◆',href:'#puzzles'}),
+      navItem({id:'learn',label:'تعلّم',icon:'▤',href:'#learn'})
     );
 
     let footer=sidebar.querySelector('.desktop-sidebar-footer');
@@ -212,8 +212,17 @@ if(desktop.matches && document.querySelector('#homeHero')){
     mountInlineComputer(body);
   }
 
+  function embeddedPageView(body,page,title){
+    const frame=document.createElement('iframe');
+    frame.className='desktop-dashboard-embed';
+    frame.title=title;
+    frame.loading='eager';
+    frame.src=`${page}?embed=panel&v=20261006-panel1`;
+    body.appendChild(frame);
+  }
+
   function showDashboard(id='home'){
-    if(['home','ranking','invite','computer'].includes(id)){
+    if(['home','ranking','invite','computer','puzzles','learn'].includes(id)){
       history.replaceState(null,'','#'+id);
     }
     if(id!=='computer') stopInlineComputer();
@@ -224,6 +233,7 @@ if(desktop.matches && document.querySelector('#homeHero')){
 
     view.classList.toggle('computer-view',id==='computer');
     view.classList.toggle('ranking-view',id==='ranking');
+    view.classList.toggle('embedded-view',id==='puzzles'||id==='learn');
     restoreMovedContent();
     body.replaceChildren();
 
@@ -258,6 +268,16 @@ if(desktop.matches && document.querySelector('#homeHero')){
     if(id==='computer'){
       showViewTitle('اللعب مع الكمبيوتر');
       computerView(body);
+      return;
+    }
+    if(id==='puzzles'){
+      showViewTitle('الألغاز');
+      embeddedPageView(body,'puzzles.html','الألغاز');
+      return;
+    }
+    if(id==='learn'){
+      showViewTitle('تعلّم');
+      embeddedPageView(body,'learn.html','تعلّم الشطرنج');
       return;
     }
     showDashboard('home');
@@ -314,7 +334,7 @@ if(desktop.matches && document.querySelector('#homeHero')){
   function bindDesktopActions(){
     document.addEventListener('click',event=>{
       const nav=event.target.closest('[data-desktop-nav]');
-      if(nav&&['home','ranking','invite','computer'].includes(nav.dataset.desktopNav)){
+      if(nav&&['home','ranking','invite','computer','puzzles','learn'].includes(nav.dataset.desktopNav)){
         event.preventDefault();
         showDashboard(nav.dataset.desktopNav);
         return;
@@ -350,12 +370,12 @@ if(desktop.matches && document.querySelector('#homeHero')){
     watchLiveData();
 
     const initialHash=location.hash.replace(/^#/,'');
-    const initialView=['home','ranking','invite','computer'].includes(initialHash)?initialHash:'home';
+    const initialView=['home','ranking','invite','computer','puzzles','learn'].includes(initialHash)?initialHash:'home';
     showDashboard(initialView);
 
     window.addEventListener('hashchange',()=>{
       const next=location.hash.replace(/^#/,'');
-      showDashboard(['home','ranking','invite','computer'].includes(next)?next:'home');
+      showDashboard(['home','ranking','invite','computer','puzzles','learn'].includes(next)?next:'home');
     });
   }
 
