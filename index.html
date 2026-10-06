@@ -29,7 +29,7 @@ html,body{margin:0;min-height:100%;background:#042628;color:#f4eddc;font-family:
     console.warn('تعذر تنظيف التخزين المؤقت القديم',error);
   }
 
-  const stamp='20261006-inline-tournaments2';
+  const stamp='20261006-arabic-chess-news1';
   const runtimeVersion=stamp+'-'+Date.now();
   const response=await fetch('./index-app.html?v='+runtimeVersion,{cache:'no-store'});
   if(!response.ok) throw new Error('index source '+response.status);
@@ -136,7 +136,7 @@ async function loadCurrentMatchesCount(){`;
     min-height:0!important;
     max-height:100dvh!important;
     overflow:hidden!important;
-    grid-template-rows:64px 34px 34px minmax(0,1fr)!important;
+    grid-template-rows:64px 34px 34px 34px minmax(0,1fr)!important;
   }
   html body.home-signed-in .home-header{grid-row:1!important}
   html body.home-signed-in .welcome-ticker{grid-row:2!important}
