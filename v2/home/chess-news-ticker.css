@@ -1,7 +1,7 @@
-/* Arabic world chess news ticker */
+/* News ticker only */
 #chessNewsTicker{
-  width:100%;
-  min-width:0;
+  width:100%!important;
+  min-width:0!important;
   position:relative!important;
   top:auto!important;
   right:auto!important;
@@ -30,72 +30,71 @@
   text-decoration:none;
 }
 
-/* أبطأ من بقية الأشرطة حتى تكون الأخبار مريحة للقراءة */
+/* Hide all other tickers: news only */
+html body #welcomeTicker,
+html body #tournamentResultsTicker{
+  display:none!important;
+}
+
+/* Slow and readable */
 #chessNewsTicker .welcome-ticker-track{
-  animation-duration:110s!important;
+  animation-duration:140s!important;
 }
 
 @media(min-width:901px){
-  /* ثلاثة أشرطة مستقلة أعلى المحتوى، ولا يدخل شريط الأخبار فوق الرقعة */
   html body{
-    grid-template-rows:auto 34px 34px 34px auto auto auto auto!important;
+    grid-template-rows:auto 34px auto auto auto auto!important;
   }
-  html body #welcomeTicker{
+
+  html body .home-header{
+    grid-row:1!important;
+  }
+
+  html body #chessNewsTicker{
+    display:flex!important;
     grid-column:1/-1!important;
     grid-row:2!important;
-  }
-  html body #tournamentResultsTicker{
-    grid-column:1/-1!important;
-    grid-row:3!important;
-  }
-  html body #chessNewsTicker{
-    grid-column:1/-1!important;
-    grid-row:4!important;
     height:34px!important;
     min-height:34px!important;
     max-height:34px!important;
     margin:0!important;
   }
+
   html body .home-hero{
-    grid-row:5!important;
+    grid-row:3!important;
   }
   html body #ranking{
-    grid-row:5!important;
+    grid-row:3!important;
   }
   html body .home-features{
-    grid-row:6!important;
+    grid-row:4!important;
   }
   html body #register{
-    grid-row:7!important;
+    grid-row:5!important;
   }
   html body footer{
-    grid-row:8!important;
+    grid-row:6!important;
   }
 
   html body.home-signed-in{
-    grid-template-rows:64px 34px 34px 34px minmax(0,1fr)!important;
+    grid-template-rows:64px 34px minmax(0,1fr)!important;
   }
-  html body.home-signed-in .home-header{grid-row:1!important}
-  html body.home-signed-in #welcomeTicker{grid-row:2!important}
-  html body.home-signed-in #tournamentResultsTicker{grid-row:3!important}
-  html body.home-signed-in #chessNewsTicker{grid-row:4!important}
+  html body.home-signed-in .home-header{
+    grid-row:1!important;
+  }
+  html body.home-signed-in #chessNewsTicker{
+    grid-row:2!important;
+  }
   html body.home-signed-in .home-hero,
   html body.home-signed-in #ranking{
-    grid-row:5!important;
+    grid-row:3!important;
   }
 }
 
 @media(max-width:900px){
-  body #welcomeTicker{order:2!important}
-  body #tournamentResultsTicker{order:3!important}
-  body #chessNewsTicker{order:4!important}
-  body .home-hero{order:5!important}
-  body #ranking{order:6!important}
-  body .home-features{order:7!important}
-  body #register{order:8!important}
-  body footer{order:9!important}
-
-  #chessNewsTicker{
+  body #chessNewsTicker{
+    order:2!important;
+    display:flex!important;
     width:100%!important;
     height:30px!important;
     min-height:30px!important;
@@ -106,7 +105,13 @@
     border-bottom:1px solid rgba(224,181,103,.38)!important;
   }
 
+  body .home-hero{order:3!important}
+  body #ranking{order:4!important}
+  body .home-features{order:5!important}
+  body #register{order:6!important}
+  body footer{order:7!important}
+
   #chessNewsTicker .welcome-ticker-track{
-    animation-duration:120s!important;
+    animation-duration:150s!important;
   }
 }
