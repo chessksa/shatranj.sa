@@ -1,11 +1,12 @@
 import { mountInlineComputer, stopInlineComputer } from './inline-computer.mjs?v=20261006-neutral-board1';
 import { mountInlinePuzzles, stopInlinePuzzles } from './inline-puzzles.mjs?v=20261006-puzzle-click2';
+import { mountInlineLearn, stopInlineLearn } from './inline-learn.mjs?v=20261006-learn-board1';
 if(!document.querySelector('link[data-desktop-board-shell]')){
   const css=document.createElement('link');
   css.rel='stylesheet';
   css.dataset.desktopBoardShell='1';
   const url=new URL('./desktop-board-shell.css',import.meta.url);
-  url.searchParams.set('v','20261006-puzzle-click2');
+  url.searchParams.set('v','20261006-learn-board1');
   css.href=url.href;
   document.head.appendChild(css);
 }
@@ -250,6 +251,7 @@ if(desktop.matches && document.querySelector('#homeHero')){
     }
     if(id!=='computer') stopInlineComputer();
     if(id!=='puzzles') stopInlinePuzzles();
+    if(id!=='learn') stopInlineLearn();
     const home=document.getElementById('desktopDashboardHome');
     const view=document.getElementById('desktopDashboardView');
     const body=document.getElementById('desktopDashboardViewBody');
@@ -257,8 +259,9 @@ if(desktop.matches && document.querySelector('#homeHero')){
 
     view.classList.toggle('computer-view',id==='computer');
     view.classList.toggle('ranking-view',id==='ranking');
-    view.classList.toggle('embedded-view',id==='learn');
+    view.classList.toggle('embedded-view',false);
     view.classList.toggle('puzzle-view',id==='puzzles');
+    view.classList.toggle('learn-view',id==='learn');
     restoreMovedContent();
     body.replaceChildren();
 
@@ -302,7 +305,7 @@ if(desktop.matches && document.querySelector('#homeHero')){
     }
     if(id==='learn'){
       showViewTitle('تعلّم');
-      embeddedPageView(body,'learn.html','تعلّم الشطرنج');
+      mountInlineLearn(body);
       return;
     }
     showDashboard('home');
