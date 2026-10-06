@@ -75,7 +75,8 @@ function ensureMainBoard(){
       const fileIndex=files.indexOf(file);
       const square=document.createElement('button');
       square.type='button';
-      square.className=`desktop-board-square inline-play-square inline-learn-square ${(fileIndex+rank)%2===1?'light':'dark'}`;
+      const row=8-rank;
+      square.className=`desktop-board-square inline-play-square inline-learn-square ${(row+fileIndex)%2?'dark':'light'}`;
       square.dataset.square=name;
       square.setAttribute('aria-label',name);
 
