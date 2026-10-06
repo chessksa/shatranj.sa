@@ -245,7 +245,7 @@ async function loadOptionalHomeModules(){
   const results=await Promise.allSettled([
     import('./public-home.mjs?v=20260912-home-polish1'),
     import('./desktop-board-shell.mjs?v=20261006-puzzle-board2'),
-    import('./desktop-board-shell-tune.mjs?v=20260930-piece-order5')
+    import('./desktop-board-shell-tune.mjs?v=20261006-puzzle-click1')
   ]);
   results.forEach((result,index)=>{
     if(result.status==='rejected') console.warn('تعذر تحميل وحدة واجهة اختيارية',index,result.reason);
