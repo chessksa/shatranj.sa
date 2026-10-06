@@ -185,6 +185,16 @@
     cursor:default!important;
   }
 
+  #homeBoardPreview.inline-puzzle-active .desktop-board-square.light{
+    background:#e8dec8!important;
+  }
+  #homeBoardPreview.inline-puzzle-active .desktop-board-square.dark{
+    background:#87966a!important;
+  }
+  #homeBoardPreview.inline-puzzle-active .desktop-board-square{
+    border:.5px solid rgba(35,42,32,.28)!important;
+  }
+
   #homeBoardPreview.inline-puzzle-active .inline-puzzle-piece{
     pointer-events:none;
   }
