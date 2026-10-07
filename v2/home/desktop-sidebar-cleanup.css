@@ -172,3 +172,19 @@
     border-color:rgba(240,207,130,.98)!important;
   }
 }
+
+
+/* Restore outlined active nav 20261007 v5 */
+@media(min-width:901px){
+  body.desktop-board-workspace .desktop-home-nav-link.active{
+    background:linear-gradient(145deg,rgba(7,65,69,.98),rgba(3,49,53,.98))!important;
+    border:1px solid rgba(239,202,114,.88)!important;
+    color:#efcf7c!important;
+    box-shadow:0 0 0 1px rgba(239,202,114,.08),0 6px 16px rgba(0,0,0,.12)!important;
+  }
+
+  body.desktop-board-workspace .desktop-home-nav-link.active .v2-global-icon,
+  body.desktop-board-workspace .desktop-home-nav-link.active .desktop-home-nav-label{
+    color:#efcf7c!important;
+  }
+}
