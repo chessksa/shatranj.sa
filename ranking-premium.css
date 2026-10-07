@@ -401,3 +401,56 @@
     font-size:18px!important;
   }
 }
+
+/* Fix legacy signed-in head constraint that caused filter/table overlap */
+@media(min-width:901px){
+  html body.home-signed-in #ranking .head{
+    flex:0 0 auto!important;
+    min-height:0!important;
+    height:auto!important;
+    margin:0 0 7px!important;
+    padding:4px 4px 6px!important;
+    overflow:visible!important;
+  }
+  html body.home-signed-in #ranking .ranking-filters{
+    position:relative!important;
+    z-index:2!important;
+  }
+  html body.home-signed-in #ranking .table-card{
+    position:relative!important;
+    z-index:1!important;
+    flex:1 1 auto!important;
+    min-height:0!important;
+    margin-top:0!important;
+  }
+}
+
+/* Keep all ten rows inside the visible desktop ranking area */
+@media(min-width:901px) and (max-width:1100px){
+  html body.home-signed-in #ranking .head{
+    margin-bottom:6px!important;
+    padding:2px 3px 4px!important;
+    gap:5px!important;
+  }
+  html body.home-signed-in #rankingTitle{
+    font-size:22px!important;
+    padding-bottom:12px!important;
+  }
+  html body.home-signed-in #ranking .ranking-filter-control{
+    height:36px!important;
+  }
+  html body.home-signed-in #ranking thead th{
+    height:27px!important;
+    padding:2px 4px!important;
+  }
+  html body.home-signed-in #ranking tbody tr{
+    height:calc((100% - 27px)/10)!important;
+  }
+  html body.home-signed-in #ranking td{
+    padding:1px 5px!important;
+    font-size:12px!important;
+  }
+  html body.home-signed-in #ranking .rank-badge{
+    font-size:16px!important;
+  }
+}
