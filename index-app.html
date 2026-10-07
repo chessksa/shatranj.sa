@@ -1125,8 +1125,8 @@ footer{
         <table>
           <thead>
             <tr>
-              <th class="rank-number-head">#</th>
-              <th>اللاعب</th>
+              <th class="rank-number-head">الترتيب</th>
+              <th>اسم اللاعب</th>
               <th>الدولة</th>
               <th>المدينة</th>
               <th>النقاط</th>
@@ -1861,7 +1861,7 @@ function applyFilter(){
 }
 
 function renderPlayers(players){
-  const rankingLimit=window.matchMedia('(max-width:800px)').matches?5:10;
+  const rankingLimit=10;
   const topPlayers=players.slice(0,rankingLimit);
   const rows=[];
 
@@ -1871,7 +1871,7 @@ function renderPlayers(players){
     if(!player){
       rows.push(`
         <tr class="ranking-placeholder">
-          <td class="rank-number">${index+1}</td>
+          <td class="rank-number"><span class="rank-badge">${index+1}</span></td>
           <td></td>
           <td></td>
           <td></td>
@@ -1883,7 +1883,7 @@ function renderPlayers(players){
 
     rows.push(`
       <tr>
-        <td class="rank-number">${index+1}</td>
+        <td class="rank-number"><span class="rank-badge">${index+1}</span></td>
         <td>
           <a class="player-name player-profile-link" href="player.html?id=${encodeURIComponent(player.id)}">${escapeHTML(player.name)}</a>
           ${player.username
