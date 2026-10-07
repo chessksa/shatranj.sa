@@ -188,3 +188,36 @@
     color:#efcf7c!important;
   }
 }
+
+
+/* Final menu spacing + active highlight 20261007 v6 */
+@media(min-width:901px){
+  body.desktop-board-workspace .v2-global-nav{
+    display:grid!important;
+    grid-template-rows:repeat(8,minmax(0,1fr))!important;
+    gap:2px!important;
+    row-gap:2px!important;
+    column-gap:0!important;
+    padding:0!important;
+  }
+
+  body.desktop-board-workspace .desktop-home-nav-link{
+    margin:0!important;
+    background:linear-gradient(145deg,rgba(4,54,58,.62),rgba(2,38,42,.66))!important;
+    border:1px solid rgba(102,172,173,.28)!important;
+    color:#f4efe6!important;
+    box-shadow:none!important;
+  }
+
+  body.desktop-board-workspace .desktop-home-nav-link.active{
+    background:linear-gradient(145deg,rgba(7,65,69,.98),rgba(3,49,53,.98))!important;
+    border:1px solid rgba(239,202,114,.88)!important;
+    color:#efcf7c!important;
+    box-shadow:0 0 0 1px rgba(239,202,114,.08),0 6px 16px rgba(0,0,0,.12)!important;
+  }
+
+  body.desktop-board-workspace .desktop-home-nav-link.active .v2-global-icon,
+  body.desktop-board-workspace .desktop-home-nav-link.active .desktop-home-nav-label{
+    color:#efcf7c!important;
+  }
+}
