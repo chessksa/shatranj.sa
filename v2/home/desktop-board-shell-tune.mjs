@@ -20,6 +20,11 @@ boardThemeCss.rel='stylesheet';
 boardThemeCss.href='v2/home/board-theme-override.css?v=20261006-frame-teal10';
 document.head.appendChild(boardThemeCss);
 
+const rankingCleanCss=document.createElement('link');
+rankingCleanCss.rel='stylesheet';
+rankingCleanCss.href='v2/home/ranking-clean-v10.css?v=20261007-ranking-clean10';
+document.head.appendChild(rankingCleanCss);
+
 const statsOrderCss=document.createElement('style');
 statsOrderCss.textContent=`@media(min-width:901px){
   .desktop-live-stat small{margin-top:0!important}
