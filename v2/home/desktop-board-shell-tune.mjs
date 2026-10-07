@@ -12,7 +12,7 @@ document.head.appendChild(css);
 
 const cleanupCss=document.createElement('link');
 cleanupCss.rel='stylesheet';
-cleanupCss.href='v2/home/desktop-sidebar-cleanup.css?v=20261007-sidebar-bg3';
+cleanupCss.href='v2/home/desktop-sidebar-cleanup.css?v=20261007-sidebar-force4';
 document.head.appendChild(cleanupCss);
 
 const memberCardCss=document.createElement('link');
