@@ -1435,6 +1435,17 @@ function countryForRegion(value){
   return SAUDI_REGIONS.has(region)?'السعودية':region;
 }
 
+const COUNTRY_FLAGS={
+  'السعودية':'🇸🇦','الإمارات':'🇦🇪','الكويت':'🇰🇼','البحرين':'🇧🇭','قطر':'🇶🇦',
+  'عُمان':'🇴🇲','اليمن':'🇾🇪','العراق':'🇮🇶','الأردن':'🇯🇴','فلسطين':'🇵🇸',
+  'لبنان':'🇱🇧','سوريا':'🇸🇾','مصر':'🇪🇬','السودان':'🇸🇩','ليبيا':'🇱🇾',
+  'تونس':'🇹🇳','الجزائر':'🇩🇿','المغرب':'🇲🇦','موريتانيا':'🇲🇷','الصومال':'🇸🇴',
+  'جيبوتي':'🇩🇯','جزر القمر':'🇰🇲'
+};
+function flagForCountry(country){
+  return COUNTRY_FLAGS[String(country||'').trim()]||'🌐';
+}
+
 function renderWelcomeTicker(rows){
   const track=$('#welcomeTickerTrack');
   if(!track) return;
@@ -1891,7 +1902,7 @@ function renderPlayers(players){
             : ''
           }
         </td>
-        <td>${escapeHTML(countryForRegion(player.region))}</td>
+        <td class="player-country"><span class="country-cell"><span class="country-flag" aria-hidden="true">${flagForCountry(countryForRegion(player.region))}</span><span>${escapeHTML(countryForRegion(player.region))}</span></span></td>
         <td>${escapeHTML(player.city)}</td>
         <td class="rating">${player.rating}</td>
       </tr>
