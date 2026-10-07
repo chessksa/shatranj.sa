@@ -143,21 +143,39 @@
   }
 }
 
-/* Sidebar background + 2px menu spacing 20261007 */
+/* Sidebar background + 2px menu spacing 20261007 v3 */
 @media(min-width:901px){
   body.desktop-board-workspace .v2-global-sidebar{
-    background:
-      linear-gradient(rgba(2,45,49,.88),rgba(1,34,38,.94)),
-      url('../../assets/civilization-chess-bg.webp?v=20261007-bg14') center center / cover no-repeat!important;
-    border-left:1px solid rgba(224,181,103,.28)!important;
-    box-shadow:-8px 0 24px rgba(0,0,0,.14)!important;
+    background-image:
+      linear-gradient(180deg,rgba(1,45,49,.58),rgba(1,30,34,.72)),
+      radial-gradient(circle at 65% 20%,rgba(24,104,107,.26),transparent 42%),
+      url('../../assets/civilization-chess-bg.webp?v=20261007-bg14')!important;
+    background-size:auto,auto,cover!important;
+    background-position:center,center,38% center!important;
+    background-repeat:no-repeat!important;
+    border-left:1px solid rgba(224,181,103,.34)!important;
+    box-shadow:-10px 0 30px rgba(0,0,0,.18)!important;
   }
 
   body.desktop-board-workspace .v2-global-nav{
     gap:2px!important;
+    row-gap:2px!important;
+    column-gap:0!important;
   }
 
   body.desktop-board-workspace .desktop-home-nav-link{
     margin:0!important;
+    background:linear-gradient(145deg,rgba(5,55,59,.72),rgba(2,40,44,.76))!important;
+    border-color:rgba(102,172,173,.30)!important;
+  }
+
+  body.desktop-board-workspace .desktop-home-nav-link:hover{
+    background:linear-gradient(145deg,rgba(7,67,71,.80),rgba(3,49,53,.82))!important;
+  }
+
+  body.desktop-board-workspace .desktop-home-nav-link.active{
+    background:linear-gradient(135deg,#efca72,#d9aa4f)!important;
+    color:#07363d!important;
+    border-color:rgba(240,207,130,.98)!important;
   }
 }
