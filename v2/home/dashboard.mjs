@@ -244,8 +244,8 @@ function installHomeAuthActions(){
 async function loadOptionalHomeModules(){
   const results=await Promise.allSettled([
     import('./public-home.mjs?v=20260912-home-polish1'),
-    import('./desktop-board-shell.mjs?v=20261007-sidebar-force4'),
-    import('./desktop-board-shell-tune.mjs?v=20261007-sidebar-force4')
+    import('./desktop-board-shell.mjs?v=20261007-active-outline5'),
+    import('./desktop-board-shell-tune.mjs?v=20261007-active-outline5')
   ]);
   results.forEach((result,index)=>{
     if(result.status==='rejected') console.warn('تعذر تحميل وحدة واجهة اختيارية',index,result.reason);
