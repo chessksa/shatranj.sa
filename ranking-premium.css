@@ -420,3 +420,228 @@
     grid-template-rows:repeat(10,40px)!important;
   }
 }
+
+/* ranking-layout-v8: definitive normal-flow fix */
+html body #ranking.ranking-layout-v8.ranking-layout-v8{
+  height:auto!important;
+  min-height:0!important;
+  max-height:none!important;
+  overflow:visible!important;
+  align-self:start!important;
+  padding:6px 0 8px!important;
+}
+html body #ranking.ranking-layout-v8.ranking-layout-v8>.wrap{
+  width:100%!important;
+  max-width:980px!important;
+  height:auto!important;
+  min-height:0!important;
+  max-height:none!important;
+  margin:0 auto!important;
+  padding:0 6px!important;
+  display:block!important;
+  overflow:visible!important;
+  box-sizing:border-box!important;
+}
+html body #ranking.ranking-layout-v8.ranking-layout-v8 .head{
+  width:100%!important;
+  height:auto!important;
+  min-height:0!important;
+  max-height:none!important;
+  margin:0 0 8px!important;
+  padding:2px 4px 4px!important;
+  display:block!important;
+  flex:none!important;
+  border:0!important;
+  border-radius:0!important;
+  background:transparent!important;
+  box-shadow:none!important;
+}
+html body #ranking.ranking-layout-v8.ranking-layout-v8 #rankingTitle{
+  margin:0!important;
+  padding:0 0 15px!important;
+  font-size:clamp(24px,3vw,34px)!important;
+}
+html body #ranking.ranking-layout-v8.ranking-layout-v8 .ranking-filter-bar{
+  width:100%!important;
+  height:auto!important;
+  min-height:0!important;
+  margin:0 0 9px!important;
+  padding:0!important;
+  display:grid!important;
+  grid-template-columns:repeat(2,minmax(0,1fr))!important;
+  gap:10px!important;
+  position:relative!important;
+  inset:auto!important;
+  transform:none!important;
+  z-index:2!important;
+}
+html body #ranking.ranking-layout-v8.ranking-layout-v8 .ranking-filter-control{
+  height:44px!important;
+  min-height:44px!important;
+  max-height:44px!important;
+  margin:0!important;
+  border:1px solid rgba(215,191,118,.52)!important;
+  border-radius:12px!important;
+  background:rgba(3,53,56,.78)!important;
+  box-shadow:none!important;
+}
+html body #ranking.ranking-layout-v8.ranking-layout-v8 .table-card{
+  position:relative!important;
+  inset:auto!important;
+  transform:none!important;
+  width:100%!important;
+  height:auto!important;
+  min-height:0!important;
+  max-height:none!important;
+  margin:0!important;
+  padding:0!important;
+  display:block!important;
+  flex:none!important;
+  overflow:hidden!important;
+  border:1px solid rgba(55,137,140,.24)!important;
+  border-radius:12px!important;
+  background:rgba(2,54,57,.56)!important;
+  box-shadow:none!important;
+}
+html body #ranking.ranking-layout-v8.ranking-layout-v8 .table-wrap{
+  width:100%!important;
+  height:auto!important;
+  min-height:0!important;
+  max-height:none!important;
+  margin:0!important;
+  padding:0!important;
+  display:block!important;
+  overflow:visible!important;
+}
+html body #ranking.ranking-layout-v8.ranking-layout-v8 table{
+  width:100%!important;
+  height:auto!important;
+  min-height:0!important;
+  max-height:none!important;
+  display:table!important;
+  table-layout:fixed!important;
+  border-collapse:collapse!important;
+  direction:rtl!important;
+}
+html body #ranking.ranking-layout-v8.ranking-layout-v8 thead{
+  display:none!important;
+}
+html body #ranking.ranking-layout-v8.ranking-layout-v8 tbody{
+  width:100%!important;
+  height:auto!important;
+  min-height:0!important;
+  max-height:none!important;
+  display:table-row-group!important;
+}
+html body #ranking.ranking-layout-v8.ranking-layout-v8 tbody tr{
+  width:100%!important;
+  height:43px!important;
+  min-height:43px!important;
+  max-height:43px!important;
+  display:table-row!important;
+  background:transparent!important;
+}
+html body #ranking.ranking-layout-v8.ranking-layout-v8 tbody td{
+  height:43px!important;
+  min-height:43px!important;
+  max-height:43px!important;
+  padding:3px 7px!important;
+  display:table-cell!important;
+  vertical-align:middle!important;
+  border:0!important;
+  border-bottom:1px solid rgba(124,163,158,.20)!important;
+  background:transparent!important;
+  font-size:13px!important;
+  line-height:1.15!important;
+  overflow:hidden!important;
+  text-overflow:ellipsis!important;
+  white-space:nowrap!important;
+}
+html body #ranking.ranking-layout-v8.ranking-layout-v8 tbody tr:last-child td{
+  border-bottom:0!important;
+}
+html body #ranking.ranking-layout-v8.ranking-layout-v8 tbody tr:first-child td{
+  background:linear-gradient(90deg,rgba(181,135,33,.08),rgba(20,76,70,.16),rgba(181,135,33,.05))!important;
+}
+html body #ranking.ranking-layout-v8.ranking-layout-v8 tbody tr:first-child .rank-number{
+  box-shadow:inset -3px 0 #efc35b!important;
+}
+html body #ranking.ranking-layout-v8.ranking-layout-v8 tbody td:nth-child(1){width:14%!important;text-align:center!important}
+html body #ranking.ranking-layout-v8.ranking-layout-v8 tbody td:nth-child(2){width:50%!important;text-align:center!important}
+html body #ranking.ranking-layout-v8.ranking-layout-v8 tbody td:nth-child(3){width:36%!important;text-align:center!important}
+html body #ranking.ranking-layout-v8.ranking-layout-v8 tbody td:nth-child(4),
+html body #ranking.ranking-layout-v8.ranking-layout-v8 tbody td:nth-child(5){
+  display:none!important;
+}
+html body #ranking.ranking-layout-v8.ranking-layout-v8 .rank-badge{
+  width:auto!important;
+  height:auto!important;
+  min-width:0!important;
+  margin:0!important;
+  padding:0!important;
+  display:inline!important;
+  border:0!important;
+  border-radius:0!important;
+  background:transparent!important;
+  box-shadow:none!important;
+  font-size:18px!important;
+  line-height:1!important;
+}
+html body #ranking.ranking-layout-v8.ranking-layout-v8 tbody tr:nth-child(1) .rank-badge::before{
+  content:""!important;
+}
+
+/* Explicitly defeat the old mobile 210px fixed table and flex-fill gap. */
+@media(max-width:900px){
+  html body.home-signed-in #ranking.ranking-layout-v8.ranking-layout-v8,
+  html body #ranking.ranking-layout-v8.ranking-layout-v8{
+    height:auto!important;
+    min-height:0!important;
+    max-height:none!important;
+    overflow:visible!important;
+    display:block!important;
+    flex:none!important;
+  }
+  html body.home-signed-in #ranking.ranking-layout-v8.ranking-layout-v8>.wrap,
+  html body #ranking.ranking-layout-v8.ranking-layout-v8>.wrap{
+    height:auto!important;
+    min-height:0!important;
+    max-height:none!important;
+    display:block!important;
+    flex:none!important;
+  }
+  html body.home-signed-in #ranking.ranking-layout-v8.ranking-layout-v8 .table-card,
+  html body #ranking.ranking-layout-v8.ranking-layout-v8 .table-card{
+    position:relative!important;
+    height:auto!important;
+    min-height:0!important;
+    max-height:none!important;
+    flex:none!important;
+    overflow:hidden!important;
+  }
+  html body.home-signed-in #ranking.ranking-layout-v8.ranking-layout-v8 .table-wrap,
+  html body #ranking.ranking-layout-v8.ranking-layout-v8 .table-wrap{
+    height:auto!important;
+    min-height:0!important;
+    max-height:none!important;
+    overflow:visible!important;
+  }
+  html body.home-signed-in #ranking.ranking-layout-v8.ranking-layout-v8 table,
+  html body #ranking.ranking-layout-v8.ranking-layout-v8 table{
+    height:auto!important;
+    min-height:0!important;
+    max-height:none!important;
+    display:table!important;
+  }
+  html body #ranking.ranking-layout-v8.ranking-layout-v8 tbody tr{
+    height:40px!important;
+    min-height:40px!important;
+    max-height:40px!important;
+  }
+  html body #ranking.ranking-layout-v8.ranking-layout-v8 tbody td{
+    height:40px!important;
+    min-height:40px!important;
+    max-height:40px!important;
+    font-size:12.5px!important;
+  }
+}
