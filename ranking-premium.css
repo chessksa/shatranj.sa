@@ -1,0 +1,387 @@
+/* Premium ranking layout — approved 2026-10-07 */
+#ranking{
+  overflow:visible!important;
+}
+#ranking>.wrap{
+  width:100%!important;
+  margin:0 auto!important;
+  padding:0 clamp(6px,1.2vw,14px)!important;
+  box-sizing:border-box!important;
+}
+#ranking .head{
+  min-height:0!important;
+  height:auto!important;
+  margin:0 0 14px!important;
+  padding:18px 18px 16px!important;
+  display:flex!important;
+  flex-direction:column!important;
+  align-items:stretch!important;
+  justify-content:flex-start!important;
+  gap:14px!important;
+  border:1px solid rgba(40,155,160,.48)!important;
+  border-radius:24px!important;
+  background:linear-gradient(145deg,rgba(5,69,72,.96),rgba(4,55,58,.94))!important;
+  box-shadow:0 14px 34px rgba(0,0,0,.18),inset 0 1px 0 rgba(255,255,255,.035)!important;
+}
+#ranking .head>div:first-child{
+  width:100%!important;
+  min-width:0!important;
+  flex:0 0 auto!important;
+  text-align:center!important;
+}
+#rankingTitle{
+  margin:0!important;
+  padding:0 8px 10px!important;
+  color:#f1c65d!important;
+  -webkit-text-fill-color:#f1c65d!important;
+  font-size:clamp(24px,3vw,38px)!important;
+  line-height:1.25!important;
+  font-weight:900!important;
+  text-align:center!important;
+  white-space:normal!important;
+  overflow:visible!important;
+  text-overflow:clip!important;
+  text-shadow:0 2px 10px rgba(0,0,0,.16)!important;
+}
+#rankingTitle::after{
+  content:"◇";
+  display:block;
+  width:min(270px,62%);
+  margin:9px auto 0;
+  overflow:hidden;
+  color:#d8b665;
+  font-size:15px;
+  line-height:1;
+  letter-spacing:22px;
+  text-indent:22px;
+  border-bottom:1px solid rgba(216,182,101,.34);
+}
+#ranking .ranking-filters{
+  width:100%!important;
+  max-width:none!important;
+  flex:0 0 auto!important;
+  display:grid!important;
+  grid-template-columns:repeat(2,minmax(0,1fr))!important;
+  gap:12px!important;
+  direction:rtl!important;
+}
+#ranking .ranking-filter-control{
+  position:relative!important;
+  min-width:0!important;
+  height:58px!important;
+  display:flex!important;
+  align-items:center!important;
+  border:1.5px solid rgba(229,191,96,.9)!important;
+  border-radius:18px!important;
+  background:rgba(2,47,50,.82)!important;
+  box-shadow:inset 0 1px 0 rgba(255,255,255,.025),0 7px 18px rgba(0,0,0,.08)!important;
+  overflow:hidden!important;
+}
+#ranking .ranking-filter-icon{
+  position:absolute!important;
+  inset-inline-end:17px!important;
+  z-index:2!important;
+  display:flex!important;
+  align-items:center!important;
+  justify-content:center!important;
+  width:30px!important;
+  color:#efc55e!important;
+  font-size:22px!important;
+  line-height:1!important;
+  pointer-events:none!important;
+}
+#ranking .ranking-filter-control::after{
+  content:"";
+  position:absolute;
+  inset-inline-end:56px;
+  top:12px;
+  bottom:12px;
+  width:1px;
+  background:rgba(216,182,101,.3);
+  pointer-events:none;
+}
+#ranking .ranking-filters select{
+  width:100%!important;
+  height:100%!important;
+  min-width:0!important;
+  margin:0!important;
+  padding:0 68px 0 40px!important;
+  border:0!important;
+  border-radius:0!important;
+  outline:0!important;
+  background:transparent!important;
+  color:#f6f0df!important;
+  -webkit-text-fill-color:#f6f0df!important;
+  font-size:clamp(16px,1.7vw,22px)!important;
+  font-weight:900!important;
+  text-align:center!important;
+  text-align-last:center!important;
+  appearance:auto!important;
+  box-shadow:none!important;
+}
+#ranking .ranking-filter-control:has(select:disabled){
+  opacity:.58!important;
+}
+#ranking .table-card{
+  position:relative!important;
+  width:100%!important;
+  height:auto!important;
+  min-height:0!important;
+  max-height:none!important;
+  margin:0!important;
+  overflow:hidden!important;
+  border:1.5px solid rgba(229,191,96,.86)!important;
+  border-radius:22px!important;
+  background:linear-gradient(145deg,rgba(4,65,68,.97),rgba(3,52,55,.97))!important;
+  box-shadow:0 16px 32px rgba(0,0,0,.16),inset 0 1px 0 rgba(255,255,255,.025)!important;
+}
+#ranking .table-wrap{
+  width:100%!important;
+  height:auto!important;
+  min-height:0!important;
+  max-height:none!important;
+  overflow:visible!important;
+}
+#ranking table{
+  width:100%!important;
+  height:auto!important;
+  min-height:0!important;
+  table-layout:fixed!important;
+  border-collapse:collapse!important;
+  direction:rtl!important;
+}
+#ranking th,
+#ranking td{
+  height:48px!important;
+  padding:7px 10px!important;
+  text-align:center!important;
+  vertical-align:middle!important;
+  border-bottom:1px solid rgba(216,182,101,.22)!important;
+  border-left:1px solid rgba(216,182,101,.18)!important;
+  background:transparent!important;
+  color:#f4efdf!important;
+  white-space:nowrap!important;
+  overflow:hidden!important;
+  text-overflow:ellipsis!important;
+}
+#ranking th:last-child,
+#ranking td:last-child{
+  border-left:0!important;
+}
+#ranking thead th{
+  position:static!important;
+  height:46px!important;
+  top:auto!important;
+  z-index:auto!important;
+  background:rgba(4,58,61,.92)!important;
+  color:#e8c66e!important;
+  font-size:clamp(14px,1.35vw,18px)!important;
+  font-weight:900!important;
+}
+#ranking tbody td{
+  font-size:clamp(14px,1.35vw,18px)!important;
+}
+#ranking tbody tr:last-child td{
+  border-bottom:0!important;
+}
+#ranking th:nth-child(1),
+#ranking td:nth-child(1){
+  width:18%!important;
+}
+#ranking th:nth-child(2),
+#ranking td:nth-child(2){
+  width:47%!important;
+}
+#ranking th:nth-child(3),
+#ranking td:nth-child(3){
+  width:35%!important;
+}
+#ranking th:nth-child(4),
+#ranking td:nth-child(4),
+#ranking th:nth-child(5),
+#ranking td:nth-child(5){
+  display:none!important;
+}
+#ranking .player-name{
+  display:block!important;
+  max-width:100%!important;
+  color:#fff7e6!important;
+  font-size:inherit!important;
+  font-weight:900!important;
+  text-align:center!important;
+  overflow:hidden!important;
+  text-overflow:ellipsis!important;
+  white-space:nowrap!important;
+}
+#ranking .rank-number{
+  padding-inline:8px!important;
+}
+#ranking .rank-badge{
+  width:58px;
+  height:36px;
+  margin:0 auto;
+  display:inline-flex;
+  align-items:center;
+  justify-content:center;
+  gap:5px;
+  border:1px solid rgba(216,182,101,.28);
+  border-radius:10px;
+  background:rgba(3,57,60,.9);
+  color:#e9c15d;
+  font-size:24px;
+  font-weight:900;
+  line-height:1;
+  box-shadow:inset 0 1px 0 rgba(255,255,255,.025);
+}
+#ranking tbody tr:nth-child(1) .rank-badge{
+  border-color:#e7ba4f;
+  background:linear-gradient(145deg,rgba(198,154,48,.32),rgba(110,83,22,.18));
+  color:#f3c85f;
+}
+#ranking tbody tr:nth-child(1) .rank-badge::before{
+  content:"♛";
+  font-size:18px;
+  color:#f3c85f;
+}
+#ranking tbody tr:nth-child(2) .rank-badge{
+  color:#c8d2da;
+  border-color:rgba(200,210,218,.34);
+}
+#ranking tbody tr:nth-child(3) .rank-badge{
+  color:#c98658;
+  border-color:rgba(201,134,88,.55);
+  background:rgba(103,58,36,.2);
+}
+#ranking .ranking-placeholder td{
+  background:rgba(255,255,255,.008)!important;
+}
+#ranking .ranking-placeholder .rank-badge{
+  opacity:.72;
+}
+#ranking .table-head,
+#ranking #empty{
+  display:none!important;
+}
+
+@media(max-width:900px){
+  html body.home-signed-in #ranking,
+  #ranking{
+    height:auto!important;
+    min-height:0!important;
+    max-height:none!important;
+    flex:0 0 auto!important;
+    overflow:visible!important;
+    padding:8px 7px 16px!important;
+  }
+  html body.home-signed-in #ranking>.wrap,
+  #ranking>.wrap{
+    height:auto!important;
+    min-height:0!important;
+    flex:0 0 auto!important;
+  }
+  #ranking .head{
+    margin-bottom:10px!important;
+    padding:15px 12px 13px!important;
+    gap:11px!important;
+    border-radius:20px!important;
+  }
+  #rankingTitle{
+    font-size:clamp(24px,7vw,34px)!important;
+    padding-bottom:6px!important;
+  }
+  #ranking .ranking-filters{
+    gap:8px!important;
+  }
+  #ranking .ranking-filter-control{
+    height:52px!important;
+    border-radius:16px!important;
+  }
+  #ranking .ranking-filter-icon{
+    inset-inline-end:12px!important;
+    width:26px!important;
+    font-size:19px!important;
+  }
+  #ranking .ranking-filter-control::after{
+    inset-inline-end:47px!important;
+    top:10px!important;
+    bottom:10px!important;
+  }
+  #ranking .ranking-filters select{
+    padding:0 54px 0 29px!important;
+    font-size:16px!important;
+  }
+  html body.home-signed-in #ranking .table-card,
+  #ranking .table-card{
+    position:relative!important;
+    flex:0 0 auto!important;
+    height:auto!important;
+    min-height:0!important;
+    max-height:none!important;
+    overflow:hidden!important;
+    border-radius:18px!important;
+  }
+  html body.home-signed-in #ranking .table-wrap,
+  #ranking .table-wrap{
+    height:auto!important;
+    min-height:0!important;
+    max-height:none!important;
+    overflow:visible!important;
+    -webkit-overflow-scrolling:auto!important;
+    overscroll-behavior:auto!important;
+  }
+  #ranking th,
+  #ranking td{
+    height:43px!important;
+    padding:5px 6px!important;
+  }
+  #ranking thead th{
+    height:42px!important;
+    font-size:13px!important;
+  }
+  #ranking tbody td{
+    font-size:14px!important;
+  }
+  #ranking .rank-badge{
+    width:48px!important;
+    height:32px!important;
+    border-radius:9px!important;
+    font-size:20px!important;
+  }
+  #ranking tbody tr:nth-child(1) .rank-badge::before{
+    font-size:15px!important;
+  }
+}
+
+@media(max-width:430px){
+  #ranking>.wrap{padding:0!important}
+  #ranking .head{padding:13px 9px 11px!important}
+  #rankingTitle{font-size:26px!important}
+  #ranking .ranking-filter-control{height:48px!important}
+  #ranking .ranking-filters select{font-size:15px!important}
+  #ranking th:nth-child(1),#ranking td:nth-child(1){width:19%!important}
+  #ranking th:nth-child(2),#ranking td:nth-child(2){width:46%!important}
+  #ranking th:nth-child(3),#ranking td:nth-child(3){width:35%!important}
+  #ranking th,#ranking td{height:40px!important;padding:4px 4px!important}
+  #ranking thead th{height:39px!important;font-size:12px!important}
+  #ranking tbody td{font-size:13px!important}
+  #ranking .rank-badge{width:44px!important;height:30px!important;font-size:18px!important}
+}
+
+@media(min-width:901px) and (max-height:760px){
+  #ranking .head{
+    margin-bottom:7px!important;
+    padding:8px 10px!important;
+    gap:7px!important;
+  }
+  #rankingTitle{
+    font-size:21px!important;
+    padding-bottom:2px!important;
+  }
+  #rankingTitle::after{margin-top:4px!important}
+  #ranking .ranking-filter-control{height:38px!important}
+  #ranking .ranking-filters select{font-size:13px!important}
+  #ranking th,#ranking td{height:34px!important;padding:3px 6px!important}
+  #ranking thead th{height:32px!important;font-size:12px!important}
+  #ranking tbody td{font-size:13px!important}
+  #ranking .rank-badge{height:27px!important;width:46px!important;font-size:17px!important}
+}
