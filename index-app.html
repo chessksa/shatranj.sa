@@ -1435,15 +1435,15 @@ function countryForRegion(value){
   return SAUDI_REGIONS.has(region)?'السعودية':region;
 }
 
-const COUNTRY_FLAGS={
-  'السعودية':'🇸🇦','الإمارات':'🇦🇪','الكويت':'🇰🇼','البحرين':'🇧🇭','قطر':'🇶🇦',
-  'عُمان':'🇴🇲','اليمن':'🇾🇪','العراق':'🇮🇶','الأردن':'🇯🇴','فلسطين':'🇵🇸',
-  'لبنان':'🇱🇧','سوريا':'🇸🇾','مصر':'🇪🇬','السودان':'🇸🇩','ليبيا':'🇱🇾',
-  'تونس':'🇹🇳','الجزائر':'🇩🇿','المغرب':'🇲🇦','موريتانيا':'🇲🇷','الصومال':'🇸🇴',
-  'جيبوتي':'🇩🇯','جزر القمر':'🇰🇲'
+const COUNTRY_CODES={
+  'السعودية':'SA','الإمارات':'AE','الكويت':'KW','البحرين':'BH','قطر':'QA',
+  'عُمان':'OM','اليمن':'YE','العراق':'IQ','الأردن':'JO','فلسطين':'PS',
+  'لبنان':'LB','سوريا':'SY','مصر':'EG','السودان':'SD','ليبيا':'LY',
+  'تونس':'TN','الجزائر':'DZ','المغرب':'MA','موريتانيا':'MR','الصومال':'SO',
+  'جيبوتي':'DJ','جزر القمر':'KM'
 };
-function flagForCountry(country){
-  return COUNTRY_FLAGS[String(country||'').trim()]||'🌐';
+function codeForCountry(country){
+  return COUNTRY_CODES[String(country||'').trim()]||'';
 }
 
 function renderWelcomeTicker(rows){
@@ -1902,7 +1902,7 @@ function renderPlayers(players){
             : ''
           }
         </td>
-        <td class="player-country"><span class="country-cell"><span class="country-flag" aria-hidden="true">${flagForCountry(countryForRegion(player.region))}</span><span>${escapeHTML(countryForRegion(player.region))}</span></span></td>
+        <td class="player-country"><span class="country-cell"><span>${escapeHTML(countryForRegion(player.region))}</span><span class="country-code">${escapeHTML(codeForCountry(countryForRegion(player.region)))}</span></span></td>
         <td>${escapeHTML(player.city)}</td>
         <td class="rating">${player.rating}</td>
       </tr>
