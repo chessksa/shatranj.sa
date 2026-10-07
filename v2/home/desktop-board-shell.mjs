@@ -7,7 +7,7 @@ if(!document.querySelector('link[data-desktop-board-shell]')){
   css.rel='stylesheet';
   css.dataset.desktopBoardShell='1';
   const url=new URL('./desktop-board-shell.css',import.meta.url);
-  url.searchParams.set('v','20261007-active-outline5');
+  url.searchParams.set('v','20261007-menu-gap-highlight6');
   css.href=url.href;
   document.head.appendChild(css);
 }
@@ -128,12 +128,17 @@ if(desktop.matches && document.querySelector('#homeHero')){
 
     nav.querySelectorAll('.desktop-home-nav-link').forEach(item=>{
       item.style.setProperty('margin','0','important');
-      if(!item.classList.contains('active')){
-        item.style.setProperty(
-          'background',
-          'linear-gradient(145deg,rgba(4,54,58,.62),rgba(2,38,42,.66))',
-          'important'
-        );
+      item.style.setProperty('min-height','0','important');
+      if(item.classList.contains('active')){
+        item.style.setProperty('background','linear-gradient(145deg,rgba(7,65,69,.98),rgba(3,49,53,.98))','important');
+        item.style.setProperty('border','1px solid rgba(239,202,114,.88)','important');
+        item.style.setProperty('color','#efcf7c','important');
+        item.style.setProperty('box-shadow','0 0 0 1px rgba(239,202,114,.08),0 6px 16px rgba(0,0,0,.12)','important');
+      }else{
+        item.style.setProperty('background','linear-gradient(145deg,rgba(4,54,58,.62),rgba(2,38,42,.66))','important');
+        item.style.setProperty('border','1px solid rgba(102,172,173,.28)','important');
+        item.style.setProperty('color','#f4efe6','important');
+        item.style.setProperty('box-shadow','none','important');
       }
     });
   }
@@ -229,11 +234,6 @@ if(desktop.matches && document.querySelector('#homeHero')){
     document.querySelectorAll('.desktop-home-nav-link').forEach(link=>{
       const active=link.dataset.desktopNav===id;
       link.classList.toggle('active',active);
-      if(active){
-        link.style.removeProperty('background');
-      }else{
-        link.style.setProperty('background','linear-gradient(145deg,rgba(4,54,58,.62),rgba(2,38,42,.66))','important');
-      }
     });
     forceSidebarSurface();
   }
