@@ -142,3 +142,22 @@
     gap:6px!important;
   }
 }
+
+/* Sidebar background + 2px menu spacing 20261007 */
+@media(min-width:901px){
+  body.desktop-board-workspace .v2-global-sidebar{
+    background:
+      linear-gradient(rgba(2,45,49,.88),rgba(1,34,38,.94)),
+      url('../../assets/civilization-chess-bg.webp?v=20261007-bg14') center center / cover no-repeat!important;
+    border-left:1px solid rgba(224,181,103,.28)!important;
+    box-shadow:-8px 0 24px rgba(0,0,0,.14)!important;
+  }
+
+  body.desktop-board-workspace .v2-global-nav{
+    gap:2px!important;
+  }
+
+  body.desktop-board-workspace .desktop-home-nav-link{
+    margin:0!important;
+  }
+}
