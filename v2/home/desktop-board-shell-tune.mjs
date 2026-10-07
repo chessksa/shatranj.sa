@@ -15,6 +15,11 @@ cleanupCss.rel='stylesheet';
 cleanupCss.href='v2/home/desktop-sidebar-cleanup.css?v=20260918-no-tip-card1';
 document.head.appendChild(cleanupCss);
 
+const memberCardCss=document.createElement('link');
+memberCardCss.rel='stylesheet';
+memberCardCss.href='v2/home/desktop-member-card-v2.css?v=20261007-member-card2';
+document.head.appendChild(memberCardCss);
+
 const boardThemeCss=document.createElement('link');
 boardThemeCss.rel='stylesheet';
 boardThemeCss.href='v2/home/board-theme-override.css?v=20261006-frame-teal10';
