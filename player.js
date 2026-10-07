@@ -109,11 +109,31 @@
     }).join('');
   }
 
+  function formatLastSeen(value) {
+    if (!value) return 'غير متصل';
+    const time = new Date(value).getTime();
+    if (!Number.isFinite(time)) return 'غير متصل';
+    const seconds = Math.max(0, Math.floor((Date.now() - time) / 1000));
+    if (seconds < 60) return 'قبل أقل من دقيقة';
+    const minutes = Math.floor(seconds / 60);
+    if (minutes === 1) return 'قبل دقيقة';
+    if (minutes === 2) return 'قبل دقيقتين';
+    if (minutes < 60) return `قبل ${minutes} دقيقة`;
+    const hours = Math.floor(minutes / 60);
+    if (hours === 1) return 'قبل ساعة';
+    if (hours === 2) return 'قبل ساعتين';
+    if (hours < 24) return `قبل ${hours} ساعات`;
+    const days = Math.floor(hours / 24);
+    if (days === 1) return 'قبل يوم';
+    if (days === 2) return 'قبل يومين';
+    return `قبل ${days} أيام`;
+  }
+
   async function getFriendPresence() {
     if (!session || relationship.state!=='friends') return null;
-    const { data, error } = await client.rpc('get_my_friends_presence');
+    const { data, error } = await client.rpc('get_my_friends_presence_v2');
     if (error) return null;
-    return (data || []).find(x => x.player_id===playerId)?.is_online ?? false;
+    return (data || []).find(x => x.player_id===playerId) || null;
   }
 
   async function renderFriendAction() {
@@ -135,8 +155,10 @@
     } else if (relationship.state==='incoming') {
       host.innerHTML='<button class="btn gold" type="button" data-rel-action="accept">قبول طلب الصداقة</button><button class="btn" type="button" data-rel-action="reject">رفض</button>';
     } else if (relationship.state==='friends') {
-      const online=await getFriendPresence();
-      host.innerHTML=`<button class="btn" type="button" disabled>صديق</button><div class="friend-state"><span class="presence"><span class="dot ${online?'online':''}"></span>${online?'متصل الآن':'غير متصل'}</span></div>`;
+      const presence=await getFriendPresence();
+      const online=!!presence?.is_online;
+      const status=online?'متصل الآن':formatLastSeen(presence?.last_seen_at);
+      host.innerHTML=`<button class="btn" type="button" disabled>صديق</button><div class="friend-state"><span class="presence"><span class="dot ${online?'online':''}"></span>${esc(status)}</span></div>`;
     }
   }
 
