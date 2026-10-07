@@ -7,7 +7,7 @@ if(!document.querySelector('link[data-desktop-board-shell]')){
   css.rel='stylesheet';
   css.dataset.desktopBoardShell='1';
   const url=new URL('./desktop-board-shell.css',import.meta.url);
-  url.searchParams.set('v','20261007-member-card2');
+  url.searchParams.set('v','20261007-sidebar-force4');
   css.href=url.href;
   document.head.appendChild(css);
 }
@@ -108,6 +108,36 @@ if(desktop.matches && document.querySelector('#homeHero')){
     return item;
   }
 
+  function forceSidebarSurface(){
+    const sidebar=document.querySelector('.v2-global-sidebar');
+    const nav=sidebar?.querySelector('.v2-global-nav');
+    if(!sidebar||!nav)return;
+
+    sidebar.style.setProperty(
+      'background',
+      'linear-gradient(rgba(2,50,54,.62),rgba(1,29,33,.80)), url("assets/civilization-chess-bg.webp?v=20261007-bg14") 38% center / cover no-repeat',
+      'important'
+    );
+    sidebar.style.setProperty('border-left','1px solid rgba(224,181,103,.34)','important');
+    sidebar.style.setProperty('box-shadow','-10px 0 30px rgba(0,0,0,.18)','important');
+
+    nav.style.setProperty('display','grid','important');
+    nav.style.setProperty('grid-template-rows','repeat(8,minmax(0,1fr))','important');
+    nav.style.setProperty('gap','2px','important');
+    nav.style.setProperty('row-gap','2px','important');
+
+    nav.querySelectorAll('.desktop-home-nav-link').forEach(item=>{
+      item.style.setProperty('margin','0','important');
+      if(!item.classList.contains('active')){
+        item.style.setProperty(
+          'background',
+          'linear-gradient(145deg,rgba(4,54,58,.62),rgba(2,38,42,.66))',
+          'important'
+        );
+      }
+    });
+  }
+
   function buildSidebar(){
     const sidebar=document.querySelector('.v2-global-sidebar');
     const nav=sidebar?.querySelector('.v2-global-nav');
@@ -161,6 +191,7 @@ if(desktop.matches && document.querySelector('#homeHero')){
       footer.innerHTML='<span>♥</span><span>معًا .. نصنع مجتمعًا أفضل للشطرنج</span>';
       sidebar.appendChild(footer);
     }
+    forceSidebarSurface();
   }
 
   function buildDashboard(){
@@ -196,8 +227,15 @@ if(desktop.matches && document.querySelector('#homeHero')){
 
   function setActiveNav(id){
     document.querySelectorAll('.desktop-home-nav-link').forEach(link=>{
-      link.classList.toggle('active',link.dataset.desktopNav===id);
+      const active=link.dataset.desktopNav===id;
+      link.classList.toggle('active',active);
+      if(active){
+        link.style.setProperty('background','linear-gradient(135deg,#efca72,#d9aa4f)','important');
+      }else{
+        link.style.setProperty('background','linear-gradient(145deg,rgba(4,54,58,.62),rgba(2,38,42,.66))','important');
+      }
     });
+    forceSidebarSurface();
   }
 
   function showViewTitle(title){
@@ -452,6 +490,7 @@ if(desktop.matches && document.querySelector('#homeHero')){
     captureMoveTargets();
     buildBoard();
     buildSidebar();
+    forceSidebarSurface();
     buildDashboard();
     bindDesktopActions();
     watchLiveData();
