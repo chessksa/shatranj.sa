@@ -1075,11 +1075,12 @@ footer{
       <div>
         <h2 id="rankingTitle">ترتيب اللاعبين</h2>
       </div>
+    </div>
 
-      <div class="filters ranking-filters">
-        <label class="ranking-filter-control ranking-filter-country">
-          <span class="ranking-filter-icon" aria-hidden="true">⚑</span>
-          <select id="regionFilter" aria-label="فلترة حسب الدولة">
+    <div class="filters ranking-filters ranking-filter-bar" aria-label="فلاتر ترتيب اللاعبين">
+      <label class="ranking-filter-control ranking-filter-country">
+        <span class="ranking-filter-icon" aria-hidden="true">⚑</span>
+        <select id="regionFilter" aria-label="فلترة حسب الدولة">
           <option value="">الدولة</option>
           <option value="السعودية">السعودية</option>
           <option value="الإمارات">الإمارات</option>
@@ -1104,15 +1105,14 @@ footer{
           <option value="جيبوتي">جيبوتي</option>
           <option value="جزر القمر">جزر القمر</option>
         </select>
-        </label>
+      </label>
 
-        <label class="ranking-filter-control ranking-filter-city">
-          <span class="ranking-filter-icon" aria-hidden="true">⌖</span>
-          <select id="cityFilter" disabled aria-label="فلترة حسب المدينة">
-            <option value="">المدينة</option>
-          </select>
-        </label>
-      </div>
+      <label class="ranking-filter-control ranking-filter-city">
+        <span class="ranking-filter-icon" aria-hidden="true">⌖</span>
+        <select id="cityFilter" disabled aria-label="فلترة حسب المدينة">
+          <option value="">المدينة</option>
+        </select>
+      </label>
     </div>
 
     <div class="table-card">
