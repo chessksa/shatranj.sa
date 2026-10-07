@@ -7,7 +7,7 @@ if(!document.querySelector('link[data-desktop-board-shell]')){
   css.rel='stylesheet';
   css.dataset.desktopBoardShell='1';
   const url=new URL('./desktop-board-shell.css',import.meta.url);
-  url.searchParams.set('v','20261007-sidebar-force4');
+  url.searchParams.set('v','20261007-active-outline5');
   css.href=url.href;
   document.head.appendChild(css);
 }
@@ -230,7 +230,7 @@ if(desktop.matches && document.querySelector('#homeHero')){
       const active=link.dataset.desktopNav===id;
       link.classList.toggle('active',active);
       if(active){
-        link.style.setProperty('background','linear-gradient(135deg,#efca72,#d9aa4f)','important');
+        link.style.removeProperty('background');
       }else{
         link.style.setProperty('background','linear-gradient(145deg,rgba(4,54,58,.62),rgba(2,38,42,.66))','important');
       }
