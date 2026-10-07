@@ -1,12 +1,13 @@
 import { mountInlineComputer, stopInlineComputer } from './inline-computer.mjs?v=20261006-computer-text1';
 import { mountInlinePuzzles, stopInlinePuzzles } from './inline-puzzles.mjs?v=20261006-board-colors1';
 import { mountInlineLearn, stopInlineLearn } from './inline-learn.mjs?v=20261006-board-colors1';
+import { supabase } from '../platform/api.mjs';
 if(!document.querySelector('link[data-desktop-board-shell]')){
   const css=document.createElement('link');
   css.rel='stylesheet';
   css.dataset.desktopBoardShell='1';
   const url=new URL('./desktop-board-shell.css',import.meta.url);
-  url.searchParams.set('v','20261007-ranking-compact12');
+  url.searchParams.set('v','20261007-member-card2');
   css.href=url.href;
   document.head.appendChild(css);
 }
@@ -122,13 +123,17 @@ if(desktop.matches && document.querySelector('#homeHero')){
         <span class="desktop-member-avatar-wrap">
           <img id="desktopMemberAvatar" class="desktop-member-avatar" alt="" hidden>
           <span id="desktopMemberFallback" class="desktop-member-fallback">♟</span>
-          <i class="desktop-member-online-dot"></i>
+          <i class="desktop-member-online-dot" aria-hidden="true"></i>
         </span>
         <strong id="desktopMemberName" class="desktop-member-name">العضو</strong>
       </a>
-      <div class="desktop-member-points"><span>النقاط</span><b id="desktopMemberRating">1500</b></div>
-      <div class="desktop-member-country" id="desktopMemberCountryWrap" title="الدولة">
-        <span id="desktopMemberCountryFlag" class="desktop-member-country-flag">🌐</span>
+      <div class="desktop-member-score" aria-label="نقاط اللاعب">
+        <b id="desktopMemberRating">1500</b>
+        <span>نقطة</span>
+      </div>
+      <div class="desktop-member-location" id="desktopMemberLocation">—</div>
+      <div class="desktop-member-status" id="desktopMemberStatus" hidden>
+        <i aria-hidden="true"></i><span>متصل الآن</span>
       </div>
       <nav class="desktop-member-play-icons" aria-label="أيقونات اللعب">
         <a href="play-v2.html?auto=1" title="العب الآن" aria-label="العب الآن">⚔</a>
@@ -306,6 +311,56 @@ if(desktop.matches && document.querySelector('#homeHero')){
     if(target)target.textContent=source?.textContent?.trim()||fallback;
   }
 
+  function formatLastSeen(value){
+    if(!value)return 'غير متصل';
+    const time=new Date(value).getTime();
+    if(!Number.isFinite(time))return 'غير متصل';
+    const seconds=Math.max(0,Math.floor((Date.now()-time)/1000));
+    if(seconds<60)return 'قبل أقل من دقيقة';
+    const minutes=Math.floor(seconds/60);
+    if(minutes===1)return 'قبل دقيقة';
+    if(minutes===2)return 'قبل دقيقتين';
+    if(minutes<60)return `قبل ${minutes} دقيقة`;
+    const hours=Math.floor(minutes/60);
+    if(hours===1)return 'قبل ساعة';
+    if(hours===2)return 'قبل ساعتين';
+    if(hours<24)return `قبل ${hours} ساعات`;
+    const days=Math.floor(hours/24);
+    if(days===1)return 'قبل يوم';
+    if(days===2)return 'قبل يومين';
+    return `قبل ${days} أيام`;
+  }
+
+  let lastPresenceSeenAt=null;
+
+  function setMemberPresence(online,lastSeen=null){
+    const member=document.querySelector('.desktop-member-card');
+    const status=document.getElementById('desktopMemberStatus');
+    const text=status?.querySelector('span');
+    if(!member||!status||!text)return;
+    const signedIn=document.body.classList.contains('home-signed-in');
+    status.hidden=!signedIn;
+    if(!signedIn)return;
+    member.classList.toggle('is-offline',!online);
+    text.textContent=online?'متصل الآن':formatLastSeen(lastSeen);
+  }
+
+  async function heartbeatMemberPresence(){
+    if(!document.body.classList.contains('home-signed-in')||!supabase)return;
+    try{
+      const {data,error}=await supabase.rpc('heartbeat_player_presence');
+      if(error)throw error;
+      lastPresenceSeenAt=data||new Date().toISOString();
+      try{localStorage.setItem('shatranj_member_last_seen_at',lastPresenceSeenAt);}catch(_){}
+      setMemberPresence(true,lastPresenceSeenAt);
+    }catch(error){
+      console.warn('تعذر تحديث حالة اللاعب',error);
+      let fallback=lastPresenceSeenAt;
+      try{fallback=fallback||localStorage.getItem('shatranj_member_last_seen_at');}catch(_){}
+      setMemberPresence(false,fallback);
+    }
+  }
+
   function syncLiveData(){
     copyText('headerMemberName','desktopMemberName','العضو');
     copyText('headerMemberRating','desktopMemberRating','1500');
@@ -315,11 +370,15 @@ if(desktop.matches && document.querySelector('#homeHero')){
     member?.classList.toggle('is-guest',!signedIn);
 
     const countryRaw=document.getElementById('accountRegion')?.textContent?.trim()||'';
+    const cityRaw=document.getElementById('accountCity')?.textContent?.trim()||'';
     const country=signedIn&&countryRaw&&countryRaw!=='—'?countryRaw:'';
-    const flag=document.getElementById('desktopMemberCountryFlag');
-    const countryWrap=document.getElementById('desktopMemberCountryWrap');
-    if(flag)flag.textContent=countryFlag(country);
-    if(countryWrap)countryWrap.title=country||'الدولة';
+    const city=signedIn&&cityRaw&&cityRaw!=='—'?cityRaw:'';
+    const location=document.getElementById('desktopMemberLocation');
+    if(location){
+      location.textContent=[city,country].filter(Boolean).join('، ')||'—';
+      location.hidden=!signedIn;
+    }
+    setMemberPresence(signedIn,lastPresenceSeenAt);
 
     const sourceAvatar=document.getElementById('headerMemberAvatar');
     const targetAvatar=document.getElementById('desktopMemberAvatar');
@@ -396,6 +455,11 @@ if(desktop.matches && document.querySelector('#homeHero')){
     buildDashboard();
     bindDesktopActions();
     watchLiveData();
+    void heartbeatMemberPresence();
+    setInterval(()=>{if(!document.hidden)void heartbeatMemberPresence();},30000);
+    document.addEventListener('visibilitychange',()=>{
+      if(!document.hidden)void heartbeatMemberPresence();
+    });
 
     const initialHash=location.hash.replace(/^#/,'');
     const initialView=['home','ranking','tournaments','invite','computer','puzzles','learn'].includes(initialHash)?initialHash:'home';
