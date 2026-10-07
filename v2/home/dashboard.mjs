@@ -244,7 +244,7 @@ function installHomeAuthActions(){
 async function loadOptionalHomeModules(){
   const results=await Promise.allSettled([
     import('./public-home.mjs?v=20260912-home-polish1'),
-    import('./desktop-board-shell.mjs?v=20261007-member-card2'),
+    import('./desktop-board-shell.mjs?v=20261007-sidebar-force4'),
     import('./desktop-board-shell-tune.mjs?v=20261007-sidebar-bg3')
   ]);
   results.forEach((result,index)=>{
