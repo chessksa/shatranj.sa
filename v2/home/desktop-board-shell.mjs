@@ -160,13 +160,16 @@ if(desktop.matches && document.querySelector('#homeHero')){
     const member=document.createElement('section');
     member.className='desktop-member-card';
     member.innerHTML=`
-      <a class="desktop-member-profile" href="profile.html" aria-label="الملف الشخصي">
+      <a class="desktop-member-profile" href="profile.html" aria-label="عرض الملف الشخصي داخل الواجهة">
         <span class="desktop-member-avatar-wrap">
           <img id="desktopMemberAvatar" class="desktop-member-avatar" alt="" hidden>
           <span id="desktopMemberFallback" class="desktop-member-fallback">♟</span>
           <i class="desktop-member-online-dot" aria-hidden="true"></i>
         </span>
-        <strong id="desktopMemberName" class="desktop-member-name">العضو</strong>
+        <span class="desktop-member-identity">
+          <strong id="desktopMemberName" class="desktop-member-name">العضو</strong>
+          <small id="desktopMemberUsername" class="desktop-member-username" dir="ltr" hidden></small>
+        </span>
       </a>
       <div class="desktop-member-score" aria-label="نقاط اللاعب">
         <b id="desktopMemberRating">1500</b>
@@ -279,12 +282,12 @@ if(desktop.matches && document.querySelector('#homeHero')){
     frame.className='desktop-dashboard-embed';
     frame.title=title;
     frame.loading='eager';
-    frame.src=`${page}?embed=panel&v=20261006-inline-tournaments1`;
+    frame.src=`${page}?embed=panel&v=${desktopAssetVersion}`;
     body.appendChild(frame);
   }
 
   function showDashboard(id='home'){
-    if(['home','ranking','tournaments','invite','computer','puzzles','learn'].includes(id)){
+    if(['home','ranking','tournaments','invite','computer','puzzles','learn','profile'].includes(id)){
       history.replaceState(null,'','#'+id);
     }
     if(id!=='computer') stopInlineComputer();
@@ -300,6 +303,7 @@ if(desktop.matches && document.querySelector('#homeHero')){
     view.classList.toggle('embedded-view',id==='tournaments');
     view.classList.toggle('puzzle-view',id==='puzzles');
     view.classList.toggle('learn-view',id==='learn');
+    view.classList.toggle('profile-view',id==='profile');
     restoreMovedContent();
     body.replaceChildren();
 
@@ -314,6 +318,18 @@ if(desktop.matches && document.querySelector('#homeHero')){
     view.hidden=false;
     setActiveNav(id);
 
+    if(id==='profile'){
+      showViewTitle('الملف الشخصي');
+      if(document.body.classList.contains('home-signed-in')){
+        embeddedPageView(body,'profile.html','الملف الشخصي');
+      }else{
+        const note=document.createElement('div');
+        note.className='desktop-dashboard-message-card';
+        note.textContent='سجّل الدخول لعرض ملفك الشخصي.';
+        body.appendChild(note);
+      }
+      return;
+    }
     if(id==='ranking'){
       showViewTitle('الترتيب');
       rankingNode=document.getElementById('ranking')||rankingNode;
@@ -405,8 +421,48 @@ if(desktop.matches && document.querySelector('#homeHero')){
     }
   }
 
+  let memberUsernameUserId='';
+  let memberUsernamePending=false;
+  async function syncMemberUsername(){
+    const el=document.getElementById('desktopMemberUsername');
+    if(!el)return;
+    if(!document.body.classList.contains('home-signed-in')){
+      el.textContent='';
+      el.hidden=true;
+      memberUsernameUserId='';
+      return;
+    }
+    if(!supabase||memberUsernamePending)return;
+    memberUsernamePending=true;
+    try{
+      const {data:{session},error:sessionError}=await supabase.auth.getSession();
+      if(sessionError||!session?.user?.id)return;
+      const userId=session.user.id;
+      if(memberUsernameUserId===userId)return;
+      let username=String(session.user.user_metadata?.username||'').trim().replace(/^@/,'');
+      const {data:profileRows,error:profileError}=await supabase.rpc('get_my_player_profile');
+      if(profileError)throw profileError;
+      const profile=Array.isArray(profileRows)?profileRows[0]:profileRows;
+      if(profile?.id){
+        const {data:publicRows,error:publicError}=await supabase.rpc('get_public_player_profile',{p_player_id:profile.id});
+        if(publicError)throw publicError;
+        const publicProfile=Array.isArray(publicRows)?publicRows[0]:publicRows;
+        username=String(publicProfile?.username||username).trim().replace(/^@/,'');
+      }
+      if(!document.body.classList.contains('home-signed-in'))return;
+      el.textContent=username?'@'+username:'';
+      el.hidden=!username;
+      memberUsernameUserId=userId;
+    }catch(error){
+      console.warn('تعذر تحميل اسم المستخدم لبطاقة اللاعب',error);
+    }finally{
+      memberUsernamePending=false;
+    }
+  }
+
   function syncLiveData(){
     copyText('headerMemberName','desktopMemberName','العضو');
+    void syncMemberUsername();
     copyText('headerMemberRating','desktopMemberRating','1500');
 
     const signedIn=document.body.classList.contains('home-signed-in');
@@ -449,10 +505,21 @@ if(desktop.matches && document.querySelector('#homeHero')){
     syncLiveData();
     setTimeout(syncLiveData,400);
     setTimeout(syncLiveData,1200);
+    setTimeout(syncLiveData,3000);
   }
 
   function bindDesktopActions(){
     document.addEventListener('click',event=>{
+      const memberProfile=event.target.closest('.desktop-member-profile');
+      if(memberProfile){
+        event.preventDefault();
+        if(document.body.classList.contains('home-signed-in')){
+          showDashboard('profile');
+        }else{
+          document.getElementById('desktopGuestLogin')?.click();
+        }
+        return;
+      }
       const nav=event.target.closest('[data-desktop-nav]');
       if(nav&&['home','ranking','tournaments','invite','computer','puzzles','learn'].includes(nav.dataset.desktopNav)){
         event.preventDefault();
@@ -507,12 +574,12 @@ if(desktop.matches && document.querySelector('#homeHero')){
     });
 
     const initialHash=location.hash.replace(/^#/,'');
-    const initialView=['home','ranking','tournaments','invite','computer','puzzles','learn'].includes(initialHash)?initialHash:'home';
+    const initialView=['home','ranking','tournaments','invite','computer','puzzles','learn','profile'].includes(initialHash)?initialHash:'home';
     showDashboard(initialView);
 
     window.addEventListener('hashchange',()=>{
       const next=location.hash.replace(/^#/,'');
-      showDashboard(['home','ranking','tournaments','invite','computer','puzzles','learn'].includes(next)?next:'home');
+      showDashboard(['home','ranking','tournaments','invite','computer','puzzles','learn','profile'].includes(next)?next:'home');
     });
   }
 
