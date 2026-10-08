@@ -225,15 +225,13 @@
       const kind = friendGame ? 'صديق' : 'عشوائي';
       const fullKind = friendGame ? 'تحدي صديق' : 'بحث عشوائي';
       const date = new Date(game.played_at);
-      const compactDate = Number.isNaN(date.getTime()) ? '—' : date.toLocaleDateString('en-GB',{day:'2-digit',month:'2-digit'});
-      const fullDate = Number.isNaN(date.getTime()) ? 'غير محدد' : date.toLocaleDateString('en-GB');
-      const minutes = esc(game.time_control_minutes ?? '—');
+      const fullDate = Number.isNaN(date.getTime()) ? '—' : date.toLocaleDateString('en-GB');
       const opponent = esc(game.opponent_name || 'خصم');
       return `<tr>
         <td class="profile-game-name" title="${opponent}">${opponent}</td>
-        <td class="profile-game-date" title="${esc(fullDate)}">${minutes}د · ${compactDate}</td>
+        <td class="profile-game-date">${esc(fullDate)}</td>
         <td class="profile-game-kind" title="${fullKind}">${kind}</td>
-        <td><span class="profile-game-result ${cls}">${label}</span></td>
+        <td><span class="profile-game-result ${cls}" role="img" aria-label="${label}" title="${label}"></span></td>
       </tr>`;
     }).join('');
   }

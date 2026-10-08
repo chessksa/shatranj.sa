@@ -5,7 +5,9 @@ assert '.profile-dashboard-grid .profile-stat-label,' in html
 assert '.profile-dashboard-grid .profile-action-label{' in html
 assert re.search(r'font-size:13px;line-height:1.25;font-weight:800;',html)
 assert re.search(r'font-size:25px;line-height:1.1;font-weight:900;',html)
-assert re.search(r'min-height:70px;padding:4px 3px;',html)
+assert re.search(r'min-height:64px;padding:2px 3px;',html)
+assert 'min-height:62px;padding:2px 2px;gap:2px' in html
+assert 'class="profile-block profile-summary-block"' in html
 assert '.profile-dashboard-grid .profile-stat-value,' in html
 assert '.profile-dashboard-grid .profile-action-value{' in html
 assert 'overflow-wrap:anywhere' in html

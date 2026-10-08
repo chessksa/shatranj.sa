@@ -22,7 +22,7 @@ def test_dashboard_is_compact_with_nonduplicated_sections():
     assert 'class="profile-dashboard-grid"' in html
     assert 'class="profile-stats-grid"' not in html
     assert 'class="profile-links-grid"' not in html
-    assert html.count('class="profile-block"') == 1
+    assert html.count('class="profile-block profile-summary-block"') == 1
     assert 'class="profile-block profile-recent-block"' in html
     assert 'class="profile-section-head"' not in html
     assert html.count('class="profile-action"')==5
