@@ -1,36 +1,25 @@
 from pathlib import Path
+ROOT=Path(__file__).resolve().parents[1]
+read=lambda path:(ROOT/path).read_text(encoding='utf-8')
 
-read=lambda path:Path(path).read_text(encoding='utf-8')
+def test_single_approved_homepage_is_served_directly():
+    html=read('index.html')
+    assert not (ROOT/'index-app.html').exists()
+    assert not (ROOT/'index-backup-20260909.html').exists()
+    assert 'id="approvedHomeGate"' in html
+    assert 'id="approvedHomeReadyScript"' in html
+    assert 'desktop-board-workspace' in html
+    assert 'mobile-fixed-workspace-active' in html
+    assert "fetch('./index-app.html" not in html
+    assert 'document.write(html)' not in html
+    assert "get_public_ranked_players',{p_gender:null}" in html
+    assert 'list_public_current_games' in html
 
-def test_home_refresh_cannot_restore_old_app_shell():
-    boot=read('index.html')
-    worker=read('sw.js')
-    legacy=read('app.js')
-    assert "type==='reload'" in boot
-    assert "'-reload-'+Date.now()" in boot
-    assert "fetch('./index-app.html?v='+runtimeVersion,{cache:'no-store'})" in boot
-    assert "getRegistrations()" in boot
-    assert "key.startsWith('shatranj-arab-')" in boot
-    assert "legacyCleanupKey" not in boot
-    assert "self.registration.unregister()" in worker
-    assert "addEventListener('fetch'" not in worker
-    assert "navigator.serviceWorker.register" not in legacy
-
-def test_theme_base_and_every_desktop_layer_share_the_live_version():
-    boot=read('index.html')
-    app=read('index-app.html')
-    theme=read('home-theme.css')
-    dashboard=read('v2/home/dashboard.mjs')
-    shell=read('v2/home/desktop-board-shell.mjs')
-    tune=read('v2/home/desktop-board-shell-tune.mjs')
-    inline=read('v2/home/inline-play.mjs')
-    assert 'name="shatranj-asset-version"' in boot
-    assert 'home-theme-base.css?v=' in app
-    assert app.index('home-theme-base.css?v=') < app.index('home-theme.css?v=')
-    assert '@import url("./home-theme-base.css' not in theme
-    assert 'homeAssetVersion' in dashboard
-    assert 'desktopAssetVersion' in shell
-    assert 'tuneAssetVersion' in tune
-    assert 'inlineVersion' in inline
-    assert 'desktop-sidebar-cleanup.css?v=${tuneAssetVersion}' in tune
-    assert 'desktop-board-shell.mjs?v=${homeAssetVersion}' in dashboard
+def test_assets_use_one_approved_version():
+    html=read('index.html')
+    for path in ['home-theme-base.css','home-theme.css','v2/home/dashboard.mjs',
+                 'v2/site/shell.mjs','mobile-home-fixed-v1.js']:
+        assert f'{path}?v=20261009-canonical-current-ui-v1' in html
+    assert '@import url("./home-theme-base.css' not in read('home-theme.css')
+    assert "self.addEventListener('fetch'" not in read('sw.js')
+    assert 'navigator.serviceWorker.register' not in read('app.js')

@@ -6,7 +6,7 @@ ROOT = Path(__file__).resolve().parents[1]
 
 def test_desktop_header_shows_member_identity_with_square_avatar():
     css = (ROOT / 'home-header-svg.css').read_text(encoding='utf-8')
-    index = (ROOT / 'index-app.html').read_text(encoding='utf-8')
+    index = (ROOT / 'index.html').read_text(encoding='utf-8')
 
     assert 'Desktop member identity and ticker polish 20260914' in css
     block = css.split('Desktop member identity and ticker polish 20260914', 1)[1]

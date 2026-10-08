@@ -30,7 +30,7 @@ def test_mobile_home_frames_share_one_visual_contract():
 
 def test_tournaments_are_not_injected_into_the_mobile_header():
     loader = (ROOT / "index.html").read_text(encoding="utf-8")
-    app = (ROOT / "index-app.html").read_text(encoding="utf-8")
+    app = (ROOT / "index.html").read_text(encoding="utf-8")
 
     assert not (ROOT / "home-header-controls.js").exists(), "header tournaments injector must be removed"
     assert "home-header-controls.js" not in loader
@@ -68,7 +68,7 @@ def test_mobile_header_controls_are_balanced_and_readable():
     assert "body.home-signed-in.home-admin-enabled .compact-member-nav .nav-user" in core
     assert "grid-template-columns:repeat(4,minmax(0,1fr))!important" in core
     assert "html body.home-signed-in.home-admin-enabled .compact-member-nav .home-admin-link" in header_css
-    assert "home-header-svg.css?v='+runtimeVersion" in loader
+    assert "home-header-svg.css?v=" in loader
 
     for label in ["لوحة التحكم", "الإدارة", "الإشعارات"]:
         assert label in core
@@ -150,7 +150,7 @@ def test_notification_wrapper_propagates_runtime_version_to_nested_core():
     loader = (ROOT / "index.html").read_text(encoding="utf-8")
     wrapper = (ROOT / "site-notifications.js").read_text(encoding="utf-8")
 
-    assert "site-notifications.js?v='+runtimeVersion" in loader
+    assert "site-notifications.js?v=" in loader
     assert "document.currentScript" in wrapper
     assert "RUNTIME_VERSION" in wrapper
     assert "site-notifications-core.js?v=${encodeURIComponent(RUNTIME_VERSION)}" in wrapper

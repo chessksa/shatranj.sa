@@ -9,7 +9,7 @@ def read(name):
 
 
 def test_world_country_catalog_and_city_loader_are_wired_to_signup():
-    html = read("index-app.html")
+    html = read("index.html")
     world_path = ROOT / "world-locations.js"
 
     assert world_path.exists(), "world-locations.js must provide the global signup catalog"
@@ -32,7 +32,7 @@ def test_world_country_catalog_and_city_loader_are_wired_to_signup():
 
 
 def test_world_signup_keeps_city_entry_usable_as_fallback():
-    html = read("index-app.html")
+    html = read("index.html")
     assert 'id="signupCity"' in html
     assert 'list="signupCityOptions"' in html
     assert "يمكنك كتابة المدينة" in html or "اكتب المدينة" in html or "إدخال المدينة" in html

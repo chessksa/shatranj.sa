@@ -10,7 +10,7 @@ def read(name):
 
 
 def test_signup_accepts_nationalities_from_the_world_catalog():
-    html = read("index-app.html")
+    html = read("index.html")
 
     assert '<span>الجنسية</span>' in html
     assert 'id="signupNationality"' in html
@@ -25,7 +25,7 @@ def test_signup_accepts_nationalities_from_the_world_catalog():
 
 
 def test_residence_country_still_drives_world_city_choices():
-    html = read("index-app.html")
+    html = read("index.html")
 
     assert "const select=$('#signupRegion');" in html
     assert "getCitiesForCountry(iso2)" in html
@@ -33,13 +33,13 @@ def test_residence_country_still_drives_world_city_choices():
 
 
 def test_ranking_is_global_and_uses_the_world_country_catalog():
-    html = read("index-app.html")
+    html = read("index.html")
 
-    assert "ترتيب اللاعبين عالميًا" in html
+    assert "ترتيب اللاعبين" in html
     assert "populateRankingCountries" in html
     assert "WORLD_COUNTRIES.map" in html
-    assert ".from('public_players')" in html
-    assert ".order('rating',{ascending:false})" in html
+    assert "get_public_ranked_players" in html
+    assert "applyFilter();" in html
 
 
 def test_database_contract_allows_any_nonempty_nationality():

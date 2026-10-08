@@ -7,14 +7,13 @@ def test_home_theme_cache_buster_matches_latest_header_layout():
     base_css = Path('home-theme-base.css').read_text(encoding='utf-8')
     css = theme_css + '\n' + base_css
 
-    assert "const isReload=" in html and "type==='reload'" in html, 'force fresh URLs on browser reload'
-    assert "const runtimeVersion=stamp+(isReload?'-reload-'+Date.now():'');" in html
-    assert "{cache:'no-store'}" in html, 'always retrieve the newest homepage markup'
-    assert "getRegistrations()" in html and "caches.keys()" in html
-    assert "legacyCleanupKey" not in html, 'do not skip cleanup after the first visit'
-    assert 'home-theme-base\\.css\\?v=' in html, 'base theme also needs a fresh version'
-    assert 'home-theme\\.css\\?v=' in html, 'home theme URL must be rewritten regardless of its previous version'
-    assert "'home-theme.css?v='+runtimeVersion" in html, 'home theme must receive the fresh runtime version'
+    assert 'id="approvedHomeGate"' in html
+    assert 'id="approvedHomeReadyScript"' in html
+    assert "fetch('./index-app.html" not in html
+    assert 'home-theme-base.css?v=' in html
+    assert 'home-theme.css?v=' in html
+    assert 'site-notifications.js?v=' in html
+    assert 'shatranj-asset-version' in html
     assert '.header-member-avatar{' in css
     assert 'width:38px' in css and 'height:38px' in css
     assert 'border:1px solid var(--hero-cyan-line)' in css

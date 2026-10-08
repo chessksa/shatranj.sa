@@ -4,7 +4,7 @@ import re
 
 def test_tournaments_stay_out_of_header_but_remain_in_hero():
     loader = Path('index.html').read_text(encoding='utf-8')
-    app = Path('index-app.html').read_text(encoding='utf-8')
+    app = Path('index.html').read_text(encoding='utf-8')
 
     assert 'home-header-controls.js' not in loader
 

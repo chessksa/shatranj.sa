@@ -32,19 +32,11 @@ def test_dashboard_identity_moves_out_of_desktop_card():
     assert "host.replaceChildren(...content);" in js
 
 
-def test_ranking_runtime_uses_scoped_public_rpc():
-    loader = read("index.html")
-    assert "supabase.rpc('get_public_ranked_players',{p_gender:null})" in loader
-    assert "playersLoaderPattern" in loader
-    assert "ALL_PLAYERS=Array.isArray(data)?data:[];" in loader
-
-
-def test_ranking_loader_pattern_matches_current_index_app():
-    source = read("index-app.html")
-    pattern = re.compile(
-        r"async function loadPlayers\(\)\{[\s\S]*?\n\}\n\nasync function loadCurrentMatchesCount\(\)\{"
-    )
-    assert pattern.search(source), "runtime ranking replacement must match index-app.html"
+def test_ranking_uses_one_approved_homepage():
+    home=read("index.html")
+    assert "supabase.rpc('get_public_ranked_players',{p_gender:null})" in home
+    assert "ALL_PLAYERS=Array.isArray(data)?data:[];" in home
+    assert "fetch('./index-app.html" not in home
 
 
 def test_latest_members_uses_public_snapshot():
@@ -60,4 +52,4 @@ def test_tournament_ticker_stays_below_latest_members_and_latest_members_is_fast
     dashboard = read("v2/home/dashboard.mjs")
     loader = read("index.html")
     assert "welcome.insertAdjacentElement('afterend',ticker);" in dashboard
-    assert ".replace('animation:welcomeTickerInlineMove 60s linear infinite','animation:welcomeTickerInlineMove 52s linear infinite')" in loader
+    assert "animation:welcomeTickerInlineMove 52s linear infinite" in loader
