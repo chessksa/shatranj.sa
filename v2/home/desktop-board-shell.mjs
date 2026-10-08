@@ -577,6 +577,10 @@ if(desktop.matches && document.querySelector('#homeHero')){
     buildSidebar();
     forceSidebarSurface();
     buildDashboard();
+    window.addEventListener('shatranj:tournament-spectator-stopped',()=>{
+      const frame=document.querySelector('.desktop-dashboard-view.embedded-view .desktop-dashboard-embed');
+      if(frame?.contentWindow)frame.contentWindow.postMessage({type:'shatranj-tournament-spectate-stopped'},location.origin);
+    });
     window.addEventListener('message',event=>{
       if(event.origin!==location.origin || event.data?.type!=='shatranj-tournament-spectate')return;
       const frame=document.querySelector('.desktop-dashboard-view.embedded-view .desktop-dashboard-embed');
