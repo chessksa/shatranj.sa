@@ -19,6 +19,12 @@ jobs:
           dig @8.8.8.8 +time=2 +tries=1 +short arabchees.com A || true
           echo '--- public DNS CNAME ---'
           dig @1.1.1.1 +time=2 +tries=1 +short www.arabchees.com CNAME || true
+          echo '--- registrar delegation / NS via Google ---'
+          dig @8.8.8.8 +time=3 +tries=1 arabchees.com NS +noall +answer +authority +comments || true
+          echo '--- SOA via Cloudflare ---'
+          dig @1.1.1.1 +time=3 +tries=1 arabchees.com SOA +noall +answer +authority +comments || true
+          echo '--- trace to authoritative servers ---'
+          timeout 15 dig +trace +time=2 +tries=1 arabchees.com NS | tail -45 || true
           echo '--- GitHub Pages direct HTTP without DNS ---'
           curl --noproxy '*' --resolve arabchees.com:80:185.199.108.153 -sS -I --max-time 12 http://arabchees.com/ 2>&1 | head -20 || true
           echo '--- GitHub Pages direct HTTPS without DNS ---'
