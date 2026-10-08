@@ -1,0 +1,36 @@
+name: Verify Arab Chess domain
+on:
+  push:
+    paths:
+      - '.github/workflows/verify-arabchees-domain.yml'
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  dns_https:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check DNS and HTTPS availability
+        shell: bash
+        run: |
+          echo '--- A RECORDS arabchees.com ---'
+          dig +short arabchees.com A || true
+          echo '--- WWW CNAME RECORD ---'
+          dig +short www.arabchees.com CNAME || true
+          echo '--- DNS CONFIGURATION CHECK ---'
+          python3 - <<'PY'
+          import socket
+          try:
+              addresses=sorted(set(x[4][0] for x in socket.getaddrinfo("arabchees.com", 443, family=socket.AF_INET)))
+              required={"185.199.108.153","185.199.109.153","185.199.110.153","185.199.111.153"}
+              print("addresses:", addresses)
+              print("matches GitHub Pages:", bool(set(addresses) & required))
+          except Exception as e:
+              print("DNS resolution error:", type(e).__name__, str(e))
+          PY
+          echo '--- HTTPS headers ---'
+          curl -sS -I -L --max-time 25 https://arabchees.com/ | head -30 || true
+          echo '--- HTTP headers ---'
+          curl -sS -I -L --max-time 25 http://arabchees.com/ | head -30 || true
+          echo '--- WWW HTTPS headers ---'
+          curl -sS -I -L --max-time 25 https://www.arabchees.com/ | head -30 || true
