@@ -63,6 +63,26 @@
     body.innerHTML='<div class="mfw-action"><h3>'+title+'</h3><p>'+text+'</p><a class="mfw-primary" href="'+href+'">'+label+'</a></div>';
   }
 
+  // Four compact, fully visible play choices for the mobile home panel.
+  function play(body){
+    body.innerHTML='<div class="mfw-play-grid" aria-label="خيارات اللعب">'+
+      '<a class="mfw-play-tile mfw-play-tile-primary" href="play-v2.html?auto=1" aria-label="بدء لعب مباشر ضد خصم">'+
+        '<i aria-hidden="true">⚔</i><span>لعب مباشر</span><small>ابحث عن خصم</small></a>'+
+      '<button class="mfw-play-tile" id="mfwInviteTile" type="button" aria-label="دعوة لاعب">'+
+        '<i aria-hidden="true">＋</i><span>دعوة لاعب</span><small>أرسل دعوة</small></button>'+
+      '<a class="mfw-play-tile" href="play-entry-v16.html?computer=1" aria-label="اللعب مع الكمبيوتر">'+
+        '<i aria-hidden="true">▣</i><span>الكمبيوتر</span><small>اختر المستوى</small></a>'+
+      '<a class="mfw-play-tile" href="watch.html" aria-label="مشاهدة المباريات الجارية">'+
+        '<i aria-hidden="true">◉</i><span>شاهد</span><small>المباريات الآن</small></a>'+
+    '</div>';
+    body.querySelector('#mfwInviteTile')?.addEventListener('click',()=>{
+      if(!signedIn()){show('invite');return;}
+      const toggle=document.getElementById('homeInviteToggle');
+      if(toggle)toggle.click();
+      else show('invite');
+    });
+  }
+
   function ranking(body){
     const rows=[...document.querySelectorAll('#tbody tr')].slice(0,10);
     if(!rows.length){body.innerHTML='<div class="mfw-action"><p>جاري تحميل ترتيب اللاعبين…</p></div>';return}
@@ -100,7 +120,7 @@
     const titles={home:'الرئيسية',play:'العب الآن',computer:'اللعب مع الكمبيوتر',ranking:'الترتيب',invite:'دعوة لاعب',more:'المزيد'};
     setActive(id,titles[id]||'شطرنج العرب');
     if(id==='home')home(body);
-    else if(id==='play')action(body,'مباراة جديدة','ابدأ البحث عن خصم من نفس واجهة شطرنج العرب.','play-v2.html?auto=1','ابدأ اللعب');
+    else if(id==='play')play(body);
     else if(id==='computer')action(body,'اللعب مع الكمبيوتر','اختر المستوى والزمن ثم ابدأ.','play-entry-v16.html?computer=1&v=20260918-sidewidth-freeze1','اختيار المستوى');
     else if(id==='ranking')ranking(body);
     else if(id==='invite')invite(body);
