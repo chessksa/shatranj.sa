@@ -8,7 +8,11 @@ const [computerModule,puzzlesModule,learnModule]=await Promise.all([
 const {mountInlineComputer,stopInlineComputer}=computerModule;
 const {mountInlinePuzzles,stopInlinePuzzles}=puzzlesModule;
 const {mountInlineLearn,stopInlineLearn}=learnModule;
-const {mountInlineTournamentSpectator,stopInlineTournamentSpectator}=await import(`./inline-tournament-spectator.mjs?v=${desktopAssetVersion}`);
+let spectatorModulePromise=null;
+const spectatorModule=()=>spectatorModulePromise||(spectatorModulePromise=import(`./inline-tournament-spectator.mjs?v=${desktopAssetVersion}`).catch(error=>{spectatorModulePromise=null;throw error;}));
+function stopSpectatingTournament(){
+  if(spectatorModulePromise)void spectatorModulePromise.then(module=>module.stopInlineTournamentSpectator()).catch(error=>console.warn('تعذر إيقاف المتابعة',error));
+}
 if(!document.querySelector('link[data-desktop-board-shell]')){
   const css=document.createElement('link');
   css.rel='stylesheet';
@@ -294,7 +298,7 @@ if(desktop.matches && document.querySelector('#homeHero')){
     if(id!=='computer') stopInlineComputer();
     if(id!=='puzzles') stopInlinePuzzles();
     if(id!=='learn') stopInlineLearn();
-    if(id!=='tournaments') stopInlineTournamentSpectator();
+    if(id!=='tournaments') stopSpectatingTournament();
     const home=document.getElementById('desktopDashboardHome');
     const view=document.getElementById('desktopDashboardView');
     const body=document.getElementById('desktopDashboardViewBody');
@@ -579,7 +583,10 @@ if(desktop.matches && document.querySelector('#homeHero')){
       if(!frame||frame.contentWindow!==event.source)return;
       const gameId=String(event.data.gameId||'');
       if(!/^[A-Za-z0-9_-]{1,100}$/.test(gameId))return;
-      void mountInlineTournamentSpectator(gameId).catch(error=>console.warn('تعذر عرض مباراة البطولة',error));
+      void spectatorModule().then(module=>{
+        const activeFrame=document.querySelector('.desktop-dashboard-view.embedded-view .desktop-dashboard-embed');
+        if(activeFrame===frame) return module.mountInlineTournamentSpectator(gameId);
+      }).catch(error=>console.warn('تعذر عرض مباراة البطولة',error));
     });
     window.addEventListener('message',event=>{
       if(event.origin!==location.origin||event.data?.type!=='shatranj-profile-avatar-updated')return;
