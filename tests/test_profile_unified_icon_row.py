@@ -1,7 +1,7 @@
 from pathlib import Path
 html=Path('profile.html').read_text(encoding='utf-8')
 assert 'class="profile-dashboard-grid"' in html
-assert html.count('class="profile-stat"')==2
+assert html.count('class="profile-stat"')==4
 assert html.count('class="profile-stat" data-result')==2
 assert html.count('class="profile-action"')==5
 assert 'grid-template-columns:repeat(3,minmax(0,1fr))' in html
