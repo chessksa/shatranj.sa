@@ -8,6 +8,7 @@ const [computerModule,puzzlesModule,learnModule]=await Promise.all([
 const {mountInlineComputer,stopInlineComputer}=computerModule;
 const {mountInlinePuzzles,stopInlinePuzzles}=puzzlesModule;
 const {mountInlineLearn,stopInlineLearn}=learnModule;
+const {mountInlineTournamentSpectator,stopInlineTournamentSpectator}=await import(`./inline-tournament-spectator.mjs?v=${desktopAssetVersion}`);
 if(!document.querySelector('link[data-desktop-board-shell]')){
   const css=document.createElement('link');
   css.rel='stylesheet';
@@ -293,6 +294,7 @@ if(desktop.matches && document.querySelector('#homeHero')){
     if(id!=='computer') stopInlineComputer();
     if(id!=='puzzles') stopInlinePuzzles();
     if(id!=='learn') stopInlineLearn();
+    if(id!=='tournaments') stopInlineTournamentSpectator();
     const home=document.getElementById('desktopDashboardHome');
     const view=document.getElementById('desktopDashboardView');
     const body=document.getElementById('desktopDashboardViewBody');
@@ -571,6 +573,14 @@ if(desktop.matches && document.querySelector('#homeHero')){
     buildSidebar();
     forceSidebarSurface();
     buildDashboard();
+    window.addEventListener('message',event=>{
+      if(event.origin!==location.origin || event.data?.type!=='shatranj-tournament-spectate')return;
+      const frame=document.querySelector('.desktop-dashboard-view.embedded-view .desktop-dashboard-embed');
+      if(!frame||frame.contentWindow!==event.source)return;
+      const gameId=String(event.data.gameId||'');
+      if(!/^[A-Za-z0-9_-]{1,100}$/.test(gameId))return;
+      void mountInlineTournamentSpectator(gameId).catch(error=>console.warn('تعذر عرض مباراة البطولة',error));
+    });
     window.addEventListener('message',event=>{
       if(event.origin!==location.origin||event.data?.type!=='shatranj-profile-avatar-updated')return;
       const frame=document.querySelector('.desktop-dashboard-view.profile-view .desktop-dashboard-embed');
