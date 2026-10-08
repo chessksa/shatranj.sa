@@ -462,7 +462,7 @@ async function loadTournamentBracket(tournamentId){
       }else if(canEnter){
         entry=`<button class="register-btn tournament-enter-btn" type="button" data-tournament-match="${esc(match.match_id)}">دخول المباراة</button>`;
       }
-      return `<article class="bracket-match${match.is_my_match?' mine':''}"><div class="bracket-player${match.winner_player_id===match.player_one_id?' winner':''}"><span>${esc(match.player_one_name||'بانتظار المتأهل')}</span></div><div class="bracket-player${match.winner_player_id===match.player_two_id?' winner':''}"><span>${esc(match.player_two_name||'بانتظار المتأهل')}</span></div><div class="bracket-meta"><span>${esc(bracketStatusLabel(match.match_status))}${retry}</span>${entry}${canWatch?`<a class="register-btn tournament-watch-btn" ${embeddedPanel?'target="_top"':''} href="play-v10.html?spectate=${encodeURIComponent(match.game_id)}">مشاهدة</a>`:''}</div></article>`;
+      return `<article class="bracket-match${match.is_my_match?' mine':''}"><div class="bracket-player${match.winner_player_id===match.player_one_id?' winner':''}"><span>${esc(match.player_one_name||'بانتظار المتأهل')}</span></div><div class="bracket-player${match.winner_player_id===match.player_two_id?' winner':''}"><span>${esc(match.player_two_name||'بانتظار المتأهل')}</span></div><div class="bracket-meta"><span>${esc(bracketStatusLabel(match.match_status))}${retry}</span>${entry}${canWatch?`<a class="register-btn tournament-watch-btn" data-tournament-spectate="${esc(match.game_id)}" href="play-v10.html?spectate=${encodeURIComponent(match.game_id)}">مشاهدة</a>`:''}</div></article>`;
     }).join('')}</div></section>`).join('');
     ensureTournamentRoundCountdowns();
   }catch(error){console.error(error);host.className='bracket-empty';host.textContent='تعذر تحميل مواجهات البطولة الآن.'}
@@ -594,6 +594,14 @@ listView.addEventListener('keydown',event=>{
     (idx+(event.key==='ArrowLeft'?1:-1)+tabs.length)%tabs.length;
   selectTournamentTab(tabs[next].dataset.tournamentTab,true);
 });
+detailCard.addEventListener('click',event=>{
+  const watch=event.target.closest('[data-tournament-spectate]');
+  if(!watch||!embeddedPanel||window.parent===window)return;
+  event.preventDefault();
+  const gameId=watch.dataset.tournamentSpectate;
+  if(!gameId)return;
+  window.parent.postMessage({type:'shatranj-tournament-spectate',gameId},location.origin);
+},true);
 detailCard.addEventListener('click',event=>{const matchButton=event.target.closest('[data-tournament-match]');if(matchButton&&!matchButton.disabled){enterTournamentMatch(matchButton,matchButton.dataset.tournamentMatch);return}const button=event.target.closest('.register-btn[data-tournament-id]');if(!button||button.disabled)return;registerForTournament(button,button.dataset.tournamentId)});
 backToTournamentList.addEventListener('click',showTournamentList);
 inlineBackToTournamentList.addEventListener('click',showTournamentList);
