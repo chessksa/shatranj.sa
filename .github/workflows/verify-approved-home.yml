@@ -31,7 +31,7 @@ jobs:
           python - <<'PY'
           import re, pathlib, subprocess, tempfile
           html=pathlib.Path('index.html').read_text(encoding='utf-8')
-          inline=re.findall(r'<script\\b([^>]*)>([\\s\\S]*?)</script>',html)
+          inline=re.findall(r'<script\b([^>]*)>([\s\S]*?)</script>',html)
           scripts=[(attrs,body) for attrs,body in inline if 'src=' not in attrs and body.strip()]
           assert len(scripts)>=3, 'expected current home logic and retirement scripts'
           for attrs,body in scripts:
