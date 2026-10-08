@@ -3,7 +3,9 @@ html=Path('profile.html').read_text(encoding='utf-8')
 js=Path('profile.js').read_text(encoding='utf-8')
 for label in ['الأصدقاء','طلبات الصداقة','الطلبات المرسلة','التحديات','التحديات المرسلة']:
     assert label in html
-assert 'class="profile-links-grid"' in html
+assert 'class="profile-dashboard-grid"' in html
+assert 'class="profile-links-grid"' not in html
+assert 'class="profile-section-head"' not in html
 assert html.count('class="profile-action"')==5
 assert 'id="recentGames"' in html
 assert '<nav class="profile-toolbar"' in html, 'member tools should be visible at the top'

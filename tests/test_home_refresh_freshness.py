@@ -22,7 +22,7 @@ def test_assets_use_one_approved_version():
     html=read('index.html')
     for path in ['home-theme-base.css','home-theme.css','v2/home/dashboard.mjs',
                  'v2/site/shell.mjs','mobile-home-fixed-v1.js']:
-        assert f'{path}?v=20261009-profile-toolbar-v2' in html
+        assert f'{path}?v=20261009-unified-member-tiles-v1' in html
     assert '@import url("./home-theme-base.css' not in read('home-theme.css')
     assert "self.addEventListener('fetch'" not in read('sw.js')
     assert 'navigator.serviceWorker.register' not in read('app.js')

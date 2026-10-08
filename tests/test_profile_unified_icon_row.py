@@ -1,11 +1,14 @@
 from pathlib import Path
 html=Path('profile.html').read_text(encoding='utf-8')
-assert '<section class="dashboard-icon-row"' not in html
-assert 'class="profile-stats-grid"' in html
-assert 'class="profile-links-grid"' in html
+assert 'class="profile-dashboard-grid"' in html
+assert html.count('class="profile-stat"')==3
+assert html.count('class="profile-stat" data-result')==1
 assert html.count('class="profile-action"')==5
-assert html.count('class="profile-stat"')==4
+assert 'grid-template-columns:repeat(3,minmax(0,1fr))' in html
+assert 'class="profile-stats-grid"' not in html
+assert 'class="profile-links-grid"' not in html
+assert 'class="profile-section-head"' not in html
+assert 'id="publicProfileLink"' not in html
 assert 'id="statRating"' not in html
-assert '<section class="stats"' not in html
-assert 'class="profile-nav-grid"' not in html
-print('clean separated statistics and account links: PASS')
+assert 'class="profile-block profile-recent-block"' in html
+print('nine uniform member tiles in one box: PASS')

@@ -57,8 +57,6 @@
     $('statDraws').textContent = row.draws;
     $('statLosses').textContent = row.losses;
     $('friendsCount').textContent = publicProfile?.friend_count ?? 0;
-    const inChessPanel=window.parent!==window&&new URLSearchParams(location.search).get('embed')==='panel';
-    $('publicProfileLink').href=`player.html?id=${encodeURIComponent(row.id)}${inChessPanel?'&embed=panel':''}`;
 
   }
 

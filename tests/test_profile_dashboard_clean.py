@@ -19,8 +19,12 @@ def test_duplicate_header_and_identity_removed():
 
 def test_dashboard_is_compact_with_nonduplicated_sections():
     html=read('profile.html')
-    assert 'class="profile-stats-grid"' in html
-    assert 'class="profile-links-grid"' in html
+    assert 'class="profile-dashboard-grid"' in html
+    assert 'class="profile-stats-grid"' not in html
+    assert 'class="profile-links-grid"' not in html
+    assert html.count('class="profile-block"') == 1
+    assert 'class="profile-block profile-recent-block"' in html
+    assert 'class="profile-section-head"' not in html
     assert html.count('class="profile-action"')==5
     assert 'id="recentGames"' in html
     assert 'class="profile-toolbar"' in html
@@ -34,12 +38,14 @@ def test_functionality_preserved_after_cleanup():
     js=read('profile.js')
     shell=read('v2/home/desktop-board-shell.mjs')
     css=read('v2/home/desktop-board-shell.css')
-    for element_id in ('avatarInput','publicProfileLink','logoutBtn','challengeModal','recentGames'):
+    for element_id in ('avatarInput','logoutBtn','challengeModal','recentGames'):
         assert f'id="{element_id}"' in html
     assert "'get_my_player_profile'" in js
     assert "'get_public_player_profile'" in js
     assert "'get_public_player_recent_games'" in js
     assert "'get_my_friend_challenges'" in js
+    assert 'publicProfileLink' not in js
+    assert 'id="publicProfileLink"' not in html
     assert 'shatranj-profile-avatar-updated' in js
     assert 'shatranj-profile-avatar-updated' in shell
     assert 'profile-view .desktop-dashboard-view-head{display:none!important}' in css

@@ -31,8 +31,8 @@ def test_embedding_preserves_existing_profile_features():
     assert 'id="profileHero"' not in html
     assert 'class="topbar"' not in html
     assert 'id="profileHero"' not in html
-    assert 'class="profile-stats-grid"' in html
-    assert 'class="profile-links-grid"' in html
+    assert 'class="profile-dashboard-grid"' in html
+    assert 'class="profile-links-grid"' not in html
     assert 'class="profile-toolbar"' in html
     assert 'profile.js?v=' in html
 
