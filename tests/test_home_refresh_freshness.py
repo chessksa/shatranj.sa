@@ -4,7 +4,10 @@ read=lambda path:(ROOT/path).read_text(encoding='utf-8')
 
 def test_single_approved_homepage_is_served_directly():
     html=read('index.html')
-    assert not (ROOT/'index-app.html').exists()
+    shim=read('index-app.html')
+    assert 'location.replace' in shim
+    assert 'homeHero' not in shim
+    assert 'desktop-board-workspace' not in shim
     assert not (ROOT/'index-backup-20260909.html').exists()
     assert 'id="approvedHomeGate"' in html
     assert 'id="approvedHomeReadyScript"' in html
