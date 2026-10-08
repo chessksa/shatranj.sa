@@ -29,6 +29,9 @@ def test_dashboard_is_compact_with_nonduplicated_sections():
     assert 'id="recentGames"' in html
     assert 'id="recentGamesTitle">آخر المباريات</h2>' in html
     assert html.count('<th scope="col">')==4
+    assert 'border-collapse:collapse;border-spacing:0;' in html
+    assert 'background:rgba(213,183,109,.12)' in html
+    assert '.profile-games-table tbody tr:nth-child(even) td' in html
     assert 'class="profile-toolbar"' in html
     assert 'class="profile-settings"' not in html
     for id in ('friendsCount','incomingCount','outgoingCount','incomingChallengesCount','outgoingChallengesCount'):

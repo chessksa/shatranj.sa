@@ -47,7 +47,7 @@ def test_public_profile_compact_in_middle_column():
     assert 'html.embedded-public-profile .v2-mobile-nav,' in public
     assert 'html.embedded-public-profile .grid{display:grid;grid-template-columns:minmax(0,1fr)' in public
     assert '?embed=panel' in publicjs
-    assert 'profile.js?v=20261009-compact-tiles-result-dots1' in read('profile.html')
+    assert 'profile.js?v=20261009-tiles58-gridtable-v1' in read('profile.html')
 
 if __name__=='__main__':
     test_settings_removed_and_actions_at_top()

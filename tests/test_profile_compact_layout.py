@@ -12,6 +12,12 @@ assert html.count('class="profile-block profile-summary-block"')==1
 assert 'class="profile-block profile-recent-block"' in html
 assert '<table class="profile-games-table"' in html
 assert '.profile-games-table td{' in html
+assert 'border-collapse:collapse;border-spacing:0;' in html
+assert 'border:1px solid rgba(225,187,103,.50)' in html
+assert 'background:rgba(213,183,109,.12)' in html
+assert 'font-size:12px;font-weight:900;text-align:center' in html
+assert 'font-size:13px;font-weight:800;color:var(--profile-text)' in html
+assert 'height:58px;min-height:58px;max-height:58px' in html
 assert '.profile-dashboard-grid .profile-stat,' in html
 assert 'class="topbar"' not in html
 assert 'id="profileHero"' not in html

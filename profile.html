@@ -35,23 +35,23 @@ button{cursor:pointer}
 }
 .profile-dashboard-grid .profile-stat,
 .profile-dashboard-grid .profile-action{
-  min-width:0;width:100%;min-height:64px;padding:2px 3px;
+  min-width:0;width:100%;height:58px;min-height:58px;max-height:58px;padding:1px 3px;overflow:hidden;
   border:1px solid rgba(139,190,188,.26);border-radius:10px;
   background:linear-gradient(145deg,rgba(10,76,79,.65),rgba(4,45,49,.76));
   display:flex;flex-direction:column;align-items:center;justify-content:center;
-  gap:2px;text-align:center;text-decoration:none;
+  gap:0;text-align:center;text-decoration:none;
 }
 .profile-dashboard-grid .profile-stat-label,
 .profile-dashboard-grid .profile-action-label{
   display:block;flex:0 1 auto;min-width:0;width:100%;max-width:100%;
-  font-size:13px;line-height:1.25;font-weight:800;
+  font-size:13px;line-height:1.05;font-weight:800;
   color:var(--profile-muted);text-align:center;overflow-wrap:anywhere
 }
 .profile-dashboard-grid .profile-stat-value,
 .profile-dashboard-grid .profile-action-value{
   display:block;flex:0 0 auto;min-width:0;max-width:100%;padding:0;
   background:none;border:0;border-radius:0;
-  color:var(--profile-gold);font-size:25px;line-height:1.1;font-weight:900;
+  color:var(--profile-gold);font-size:25px;line-height:1;font-weight:900;
   font-variant-numeric:tabular-nums;direction:ltr;text-align:center
 }
 .profile-dashboard-grid .profile-action{
@@ -69,12 +69,18 @@ button{cursor:pointer}
 }
 .profile-game-table-wrap{width:100%;min-width:0;overflow-x:hidden}
 .profile-games-table{
-  width:100%;min-width:0;table-layout:fixed;
-  border-collapse:separate;border-spacing:0 4px;direction:rtl
+  width:100%;min-width:0;table-layout:fixed;direction:rtl;
+  border-collapse:collapse;border-spacing:0;
+  border:1px solid rgba(152,196,190,.40)
+}
+.profile-games-table thead tr{
+  background:linear-gradient(135deg,rgba(35,91,91,.98),rgba(10,60,65,.98))
 }
 .profile-games-table th{
-  padding:5px 2px 7px;border-bottom:1px solid rgba(225,187,103,.26);
-  color:var(--profile-muted);font-size:10px;font-weight:800;text-align:center;
+  padding:10px 3px;
+  background:rgba(213,183,109,.12);
+  color:#f0d69c;font-size:12px;font-weight:900;text-align:center;
+  border:1px solid rgba(225,187,103,.50);
   white-space:nowrap;overflow:hidden;text-overflow:ellipsis
 }
 .profile-games-table th:nth-child(1){width:32%}
@@ -82,24 +88,17 @@ button{cursor:pointer}
 .profile-games-table th:nth-child(3){width:20%}
 .profile-games-table th:nth-child(4){width:19%}
 .profile-games-table td{
-  min-width:0;height:36px;padding:6px 2px;
-  border-top:1px solid rgba(139,190,188,.13);
-  border-bottom:1px solid rgba(139,190,188,.13);
-  background:rgba(2,38,42,.56);
-  font-size:10px;line-height:1.35;text-align:center;
+  min-width:0;height:38px;padding:7px 3px;
+  border:1px solid rgba(152,196,190,.30);
+  background:rgba(4,49,53,.68);
+  font-size:12px;line-height:1.35;text-align:center;
   vertical-align:middle;white-space:nowrap;overflow:hidden;text-overflow:ellipsis
 }
-.profile-games-table td:first-child{
-  border-right:1px solid rgba(139,190,188,.13);
-  border-radius:0 8px 8px 0
-}
-.profile-games-table td:last-child{
-  border-left:1px solid rgba(139,190,188,.13);
-  border-radius:8px 0 0 8px
-}
-.profile-game-name{font-size:11px;font-weight:800;color:var(--profile-text)}
-.profile-game-date{font-size:10px;color:var(--profile-muted);direction:ltr;unicode-bidi:isolate}
-.profile-game-kind{font-size:9px;color:#dfc68b}
+.profile-games-table tbody tr:nth-child(even) td{background:rgba(9,66,68,.70)}
+.profile-games-table tbody tr:hover td{background:rgba(25,79,81,.88)}
+.profile-game-name{font-size:13px;font-weight:800;color:var(--profile-text)}
+.profile-game-date{font-size:12px;color:var(--profile-muted);direction:ltr;unicode-bidi:isolate}
+.profile-game-kind{font-size:12px;color:#e8d198}
 .profile-game-result{
   display:inline-block;vertical-align:middle;width:11px;height:11px;
   padding:0;border-radius:50%;border:1px solid rgba(255,255,255,.16);
@@ -156,7 +155,7 @@ button{cursor:pointer}
   .profile-block{padding:9px 7px;border-radius:11px}
   .profile-dashboard-grid{gap:5px}
   .profile-dashboard-grid .profile-stat,
-  .profile-dashboard-grid .profile-action{min-height:62px;padding:2px 2px;gap:2px}
+  .profile-dashboard-grid .profile-action{height:58px;min-height:58px;max-height:58px;padding:1px 2px;gap:0}
   .profile-dashboard-grid .profile-stat-label,
   .profile-dashboard-grid .profile-action-label{font-size:12px}
   .profile-dashboard-grid .profile-stat-value,
@@ -165,11 +164,11 @@ button{cursor:pointer}
   .profile-top-action .profile-tool-icon{width:16px;height:16px}
   .profile-recent-block{padding:9px 6px 7px}
   .profile-games-title{font-size:14px;margin-bottom:6px}
-  .profile-games-table th{font-size:9px;padding:5px 1px}
-  .profile-games-table td{height:34px;padding:5px 1px;font-size:9px}
-  .profile-game-name{font-size:10px}
-  .profile-game-date{font-size:9px}
-  .profile-game-kind{font-size:9px}
+  .profile-games-table th{font-size:11px;padding:9px 1px}
+  .profile-games-table td{height:36px;padding:6px 2px;font-size:11px}
+  .profile-game-name{font-size:12px}
+  .profile-game-date{font-size:11px}
+  .profile-game-kind{font-size:11px}
   .profile-game-result{width:10px;height:10px;padding:0}
 }
 </style>
@@ -236,7 +235,7 @@ button{cursor:pointer}
 <div class="toast" id="toast" role="status"></div>
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <script src="config.js"></script>
-<script src="profile.js?v=20261009-compact-tiles-result-dots1"></script>
+<script src="profile.js?v=20261009-tiles58-gridtable-v1"></script>
 <script type="module" src="site-presence.js?v=20260906-1"></script>
 </body>
 </html>
