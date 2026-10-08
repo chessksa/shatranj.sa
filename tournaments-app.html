@@ -163,8 +163,17 @@ html.tournament-embedded .bracket-shell{
   margin-top:10px!important;
   padding-top:10px!important;
 }
+
+/* Hidden must win over embedded forced-display rules. */
+html body #tournamentListView[hidden],html body #tournamentDetailView[hidden]{
+ display:none!important;visibility:hidden!important;
+}
+html.tournament-embedded main>.wrap.detail-active>#tournamentDetailView:not([hidden]){
+ display:flex!important;flex:1 1 auto!important;height:auto!important;min-height:0!important;max-height:100%!important;
+}
+html.tournament-embedded main>.wrap.detail-active{overflow:hidden!important}
 </style>
-<link rel="stylesheet" href="tournament-tabs-v1.css?v=20261009-tournament-tabs-v1">
+<link rel="stylesheet" href="tournament-tabs-v1.css?v=20261009-classic-live-v3">
 <script src="config.js?v=20260911-grid2"></script>
 </head>
 <body>
@@ -335,21 +344,71 @@ function registrationControl(row){if(tournamentIsFull(row))return '<button class
 
 function renderTournamentDetail(row){
   const registeredCount=Number(row.registered_count||0);
-  detailCard.innerHTML=`
-    <div class="detail-title-row"><h2 class="detail-title">${esc(row.name)}</h2><span class="status status-${esc(row.status)}">${esc(statusLabel(row.status))}</span></div>
-    <div class="detail-grid">
-      <div class="detail-item"><span class="detail-label">النطاق</span><span class="detail-value">${esc(scopeLabel(row))}</span></div>
-      <div class="detail-item"><span class="detail-label">الدولة</span><span class="detail-value">${esc(row.country||'—')}</span></div>
-      <div class="detail-item"><span class="detail-label">المدينة</span><span class="detail-value">${esc(row.city||'—')}</span></div>
-      <div class="detail-item"><span class="detail-label">نظام الوقت</span><span class="detail-value">${esc(row.time_control||'—')}</span></div>
-      <div class="detail-item"><span class="detail-label">الموعد</span><span class="detail-value">${esc(formatDate(row.starts_at))}</span></div>
-      <div class="detail-item"><span class="detail-label">المسجلون</span><span class="detail-value" data-registration-count data-count="${registeredCount}">${registeredCount} لاعب</span></div>
-      <div class="detail-item"><span class="detail-label">السعة</span><span class="detail-value">${row.max_players?esc(row.max_players)+' لاعب':'مفتوحة'}</span></div>
-      <div class="detail-item"><span class="detail-label">الحالة</span><span class="detail-value">${esc(statusLabel(row.status))}</span></div>
-      ${row.status==='finished'?`<div class="detail-item"><span class="detail-label">البطل</span><span class="detail-value">${esc(row.champion_name||'—')}</span></div>`:''}
-    </div>
-    <div class="detail-register">${registrationControl(row)}</div>
-    <section class="bracket-shell" aria-label="مواجهات البطولة"><h3 class="bracket-title">مواجهات البطولة</h3><div id="tournamentBracket" class="bracket-empty">${['running','finished'].includes(row.status)?'جاري تحميل المواجهات...':'تظهر المواجهات بعد بدء البطولة.'}</div></section>`;
+  detailCard.replaceChildren();
+  const titleRow=document.createElement('div');
+  titleRow.className='detail-title-row';
+  const name=document.createElement('h2');
+  name.className='detail-title';
+  name.textContent=row.name||'';
+  const badge=document.createElement('span');
+  badge.className='status status-'+String(row.status||'');
+  badge.textContent=statusLabel(row.status);
+  titleRow.append(name,badge);
+  const table=document.createElement('table');
+  table.className='tournament-detail-classic';
+  table.setAttribute('aria-label','بيانات البطولة');
+  const thead=document.createElement('thead');
+  const titleTr=document.createElement('tr');
+  const titleTh=document.createElement('th');
+  titleTh.colSpan=2;
+  titleTh.scope='colgroup';
+  titleTh.textContent='بيانات البطولة';
+  titleTr.appendChild(titleTh);
+  thead.appendChild(titleTr);
+  const tbody=document.createElement('tbody');
+  const rows=[
+    ['النطاق',scopeLabel(row)],
+    ['الدولة',row.country||'—'],
+    ['المدينة',row.city||'—'],
+    ['نظام الوقت',row.time_control||'—'],
+    ['الموعد',formatDate(row.starts_at)],
+    ['المسجلون',registeredCount+' لاعب'],
+    ['السعة',row.max_players?row.max_players+' لاعب':'مفتوحة'],
+    ['الحالة',statusLabel(row.status)]
+  ];
+  if(row.status==='finished')rows.push(['البطل',row.champion_name||'—']);
+  rows.forEach(([label,value])=>{
+    const tr=document.createElement('tr');
+    const th=document.createElement('th');
+    th.scope='row';th.textContent=label;
+    const td=document.createElement('td');
+    if(label==='المسجلون'){
+      const count=document.createElement('span');
+      count.dataset.registrationCount='';
+      count.dataset.count=String(registeredCount);
+      count.textContent=value;
+      td.appendChild(count);
+    }else{
+      td.textContent=value;
+    }
+    tr.append(th,td);tbody.appendChild(tr);
+  });
+  table.append(thead,tbody);
+  const registration=document.createElement('div');
+  registration.className='detail-register';
+  registration.innerHTML=registrationControl(row);
+  const bracket=document.createElement('section');
+  bracket.className='bracket-shell';
+  bracket.setAttribute('aria-label','مواجهات البطولة');
+  const bracketTitle=document.createElement('h3');
+  bracketTitle.className='bracket-title';
+  bracketTitle.textContent='مواجهات البطولة';
+  const bracketHost=document.createElement('div');
+  bracketHost.id='tournamentBracket';
+  bracketHost.className='bracket-empty';
+  bracketHost.textContent=['running','finished'].includes(row.status)?'جاري تحميل المواجهات...':'تظهر المواجهات بعد بدء البطولة.';
+  bracket.append(bracketTitle,bracketHost);
+  detailCard.append(titleRow,table,registration,bracket);
 }
 
 function firstRow(data){return Array.isArray(data)?(data[0]||null):data}
@@ -573,5 +632,6 @@ void showAdminCreateWhenAuthorized();
 loadTournaments();
 </script>
 <script type="module" src="site-presence.js?v=20260910-detail-scale2"></script>
+<script defer src="tournament-detail-classic.js?v=20261009-classic-live-v3"></script>
 </body>
 </html>
