@@ -5,6 +5,8 @@ on:
     paths:
       - 'v2/home/**'
       - 'profile.html'
+      - 'profile.js'
+      - 'tests/test_profile_dashboard_clean.py'
       - 'tests/test_desktop_member_profile_inline.py'
       - 'tests/home-inline-play-verify.mjs'
       - 'tests/desktop-guest-auth-active.test.mjs'
@@ -16,6 +18,8 @@ on:
     paths:
       - 'v2/home/**'
       - 'profile.html'
+      - 'profile.js'
+      - 'tests/test_profile_dashboard_clean.py'
       - 'tests/test_desktop_member_profile_inline.py'
       - 'tests/home-inline-play-verify.mjs'
       - 'tests/desktop-guest-auth-active.test.mjs'
@@ -41,3 +45,13 @@ jobs:
       - run: node tests/desktop-auth-observer-loop.test.mjs
       - run: node tests/desktop-board-preview-pieces.test.mjs
       - run: python tests/test_desktop_member_profile_inline.py
+      - run: python tests/test_profile_dashboard_clean.py
+      - run: python tests/test_profile_compact_layout.py
+      - run: python tests/test_profile_compact_sections.py
+      - run: python tests/test_profile_dashboard_label_size.py
+      - run: python tests/test_profile_icon_navigation.py
+      - run: python tests/test_profile_rank_badge.py
+      - run: python tests/test_profile_stat_tiles_layout.py
+      - run: python tests/test_profile_unified_icon_row.py
+      - run: node --check profile.js
+      - run: node --check v2/home/desktop-board-shell.mjs

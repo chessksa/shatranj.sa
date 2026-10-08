@@ -1,30 +1,9 @@
 from pathlib import Path
 import re
-
-html = Path('profile.html').read_text(encoding='utf-8')
-
-match = re.search(r'<section class="dashboard-icon-row".*?</section>', html, re.S)
-assert match, 'dashboard statistic row is missing'
-block = match.group(0)
-
-assert 'dashboard-icon-glyph' not in block, 'numeric dashboard cards must not show icons beside numbers'
-assert 'dashboard-icon-main' not in block, 'numeric dashboard cards should use direct label-over-value layout'
-
-expected = [
-    ('النقاط', 'statRating'),
-    ('المباريات', 'statGames'),
-    ('فوز', 'statWins'),
-    ('تعادل', 'statDraws'),
-    ('خسارة', 'statLosses'),
-    ('الأصدقاء', 'friendsCount'),
-    ('طلبات الصداقة', 'incomingCount'),
-    ('الطلبات المرسلة', 'outgoingCount'),
-    ('التحديات', 'incomingChallengesCount'),
-    ('التحديات المرسلة', 'outgoingChallengesCount'),
-]
-
-for label, value_id in expected:
-    pattern = rf'<span class="dashboard-icon-label">{re.escape(label)}</span>\s*<strong id="{value_id}">'
-    assert re.search(pattern, block), f'{label} must appear above its number ({value_id})'
-
-print('profile stat tiles layout: PASS')
+html=Path('profile.html').read_text(encoding='utf-8')
+stats=re.search(r'<div class="profile-stats-grid">([\s\S]*?)</div>\s*</section>',html)
+assert stats
+for label,id in [('المباريات','statGames'),('فوز','statWins'),('تعادل','statDraws'),('خسارة','statLosses')]:
+    assert re.search(r'>'+re.escape(label)+r'</span><strong class="profile-stat-value" id="'+id+r'">',stats.group(1))
+assert 'id="statRating"' not in html
+print('four non-duplicated match statistic tiles: PASS')

@@ -27,8 +27,11 @@ def test_embedding_preserves_existing_profile_features():
     html=read('profile.html')
     assert "get('embed')==='panel'" in html
     assert "classList.add('embedded-profile')" in html
-    assert 'html.embedded-profile .topbar{display:none!important}' in html
-    assert 'html.embedded-profile .dashboard-icon-row' in html
+    assert 'class="topbar"' not in html
+    assert 'id="profileHero"' not in html
+    assert 'class="profile-stats-grid"' in html
+    assert 'class="profile-links-grid"' in html
+    assert 'class="profile-settings"' in html
     assert 'profile.js?v=' in html
 
 if __name__=='__main__':

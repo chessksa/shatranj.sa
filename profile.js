@@ -25,24 +25,6 @@
     const region = String(value || '').trim();
     return SAUDI_REGIONS.has(region) ? 'السعودية' : region;
   };
-  function rankForRating(rating) {
-    const points = Number(rating) || 0;
-    if (points >= 3000) return { key: 'champion', label: 'بطل', icon: 'rank-trophy' };
-    if (points >= 2700) return { key: 'elite', label: 'نخبة', icon: 'rank-crown' };
-    if (points >= 2400) return { key: 'professional', label: 'محترف', icon: 'rank-queen' };
-    if (points >= 2100) return { key: 'advanced', label: 'متقدم', icon: 'rank-rook' };
-    if (points >= 1800) return { key: 'competitor', label: 'منافس', icon: 'rank-knight' };
-    return { key: 'beginner', label: 'مبتدئ', icon: 'rank-pawn' };
-  }
-
-  function renderPlayerRank(rating) {
-    const rank = rankForRating(rating);
-    const badge = $('playerRankBadge');
-    badge.dataset.rank = rank.key;
-    $('playerRankLabel').textContent = rank.label;
-    $('playerRankUse').setAttribute('href', `#${rank.icon}`);
-  }
-
   const esc = (value) => String(value ?? '')
     .replaceAll('&', '&amp;').replaceAll('<', '&lt;')
     .replaceAll('>', '&gt;').replaceAll('"', '&quot;').replaceAll("'", '&#039;');
@@ -52,31 +34,6 @@
     toastEl.textContent = message;
     toastEl.className = `toast show${isError ? ' error' : ''}`;
     toastTimer = setTimeout(() => { toastEl.className = 'toast'; }, 3200);
-  }
-
-  function initial(name) {
-    return (String(name || 'ل').trim().charAt(0) || 'ل').toUpperCase();
-  }
-
-  function showAvatar(url, fallbackName, legacyUrl) {
-    const img = $('avatarImage');
-    const fallback = $('avatarFallback');
-    fallback.textContent = initial(fallbackName);
-    let triedLegacy = false;
-    img.onerror = () => {
-      if (!triedLegacy && legacyUrl) {
-        triedLegacy = true;
-        img.src = legacyUrl;
-        return;
-      }
-      img.hidden = true;
-      fallback.hidden = false;
-    };
-    img.onload = () => {
-      fallback.hidden = true;
-      img.hidden = false;
-    };
-    img.src = url;
   }
 
   function publicAvatarUrl(path) {
@@ -94,12 +51,7 @@
     if (pubError) throw pubError;
     publicProfile = Array.isArray(pub) ? pub[0] : pub;
 
-    $('playerName').textContent = row.name;
-    const username = publicProfile?.username ? `@${publicProfile.username}` : '';
-    $('playerMeta').textContent = [username, row.city, countryForRegion(row.region)].filter(Boolean).join(' • ');
-    $('heroRating').textContent = row.rating;
-    renderPlayerRank(row.rating);
-    $('statRating').textContent = row.rating;
+    dashboard.setAttribute('aria-label',`لوحة العضو من ${row.city || 'مدينة غير محددة'}، ${countryForRegion(row.region) || 'دولة غير محددة'}`);
     $('statGames').textContent = row.games_count;
     $('statWins').textContent = row.wins;
     $('statDraws').textContent = row.draws;
@@ -107,9 +59,6 @@
     $('friendsCount').textContent = publicProfile?.friend_count ?? 0;
     $('publicProfileLink').href = `player.html?id=${encodeURIComponent(row.id)}`;
 
-    const newPath = publicProfile?.avatar_path || `${row.id}/avatar.webp`;
-    const legacyPath = `${session.user.id}/avatar.webp`;
-    showAvatar(publicAvatarUrl(newPath), row.name, publicAvatarUrl(legacyPath));
   }
 
   async function loadProfileNavigationCounts() {
@@ -360,7 +309,10 @@
     const path = `${myProfile.id}/avatar.webp`;
     const { error } = await client.storage.from('avatars').upload(path, blob, { upsert: true, contentType: 'image/webp', cacheControl: '3600' });
     if (error) throw error;
-    showAvatar(`${publicAvatarUrl(path)}?v=${Date.now()}`, myProfile.name, null);
+    // Refresh the avatar shown in the fixed sidebar without restoring the old profile header.
+    if(window.parent!==window){
+      window.parent.postMessage({type:'shatranj-profile-avatar-updated',playerId:myProfile.id},location.origin);
+    }
   }
 
   document.addEventListener('click', (event) => {

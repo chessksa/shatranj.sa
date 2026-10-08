@@ -1,14 +1,9 @@
 from pathlib import Path
 import re
-
-html = Path('profile.html').read_text(encoding='utf-8')
-
-base = re.search(r'\.dashboard-icon-label\{[^}]*font-size:([0-9.]+)px', html)
-assert base, 'dashboard label font size rule is missing'
-assert float(base.group(1)) >= 13, f'dashboard labels are still too small: {base.group(1)}px'
-
-mobile_sizes = [float(value) for value in re.findall(r'\.dashboard-icon-label\{font-size:([0-9.]+)px\}', html)]
-assert mobile_sizes, 'mobile dashboard label font size rule is missing'
-assert max(mobile_sizes) >= 12, f'mobile dashboard labels are still too small: {mobile_sizes}'
-
-print('dashboard label size: PASS')
+html=Path('profile.html').read_text(encoding='utf-8')
+for selector in ['profile-stat-label','profile-action-label','profile-section-head']:
+    assert f'.{selector}' in html
+assert re.search(r'\.profile-stat-label\{font-size:12px',html)
+assert re.search(r'\.profile-action-label\{[^}]*font-size:12px',html)
+assert 'overflow-wrap:anywhere' in html
+print('readable profile dashboard labels: PASS')

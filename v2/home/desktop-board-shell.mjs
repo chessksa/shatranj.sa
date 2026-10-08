@@ -571,6 +571,22 @@ if(desktop.matches && document.querySelector('#homeHero')){
     buildSidebar();
     forceSidebarSurface();
     buildDashboard();
+    window.addEventListener('message',event=>{
+      if(event.origin!==location.origin||event.data?.type!=='shatranj-profile-avatar-updated')return;
+      const frame=document.querySelector('.desktop-dashboard-view.profile-view .desktop-dashboard-embed');
+      if(!frame||frame.contentWindow!==event.source)return;
+      const playerId=String(event.data.playerId||'').trim();
+      if(!playerId||!supabase)return;
+      const path=`${playerId}/avatar.webp`;
+      const src=supabase.storage.from('avatars').getPublicUrl(path).data.publicUrl;
+      const url=src+'?v='+Date.now();
+      for(const id of ['desktopMemberAvatar','headerMemberAvatar']){
+        const image=document.getElementById(id);
+        if(image){image.src=url;image.hidden=false;}
+      }
+      document.getElementById('desktopMemberFallback')?.setAttribute('hidden','');
+      document.getElementById('headerMemberFallback')?.setAttribute('hidden','');
+    });
     bindDesktopActions();
     watchLiveData();
     void heartbeatMemberPresence();
