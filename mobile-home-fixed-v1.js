@@ -228,6 +228,10 @@
 
   function boot(){
     ensureRoot();
+    window.addEventListener('shatranj:tournament-spectator-stopped',()=>{
+      const frame=document.querySelector('#mfwPanelBody .mfw-tournament-embed');
+      if(frame?.contentWindow)frame.contentWindow.postMessage({type:'shatranj-tournament-spectate-stopped'},location.origin);
+    });
     window.addEventListener('message',event=>{
       if(event.origin!==location.origin||event.data?.type!=='shatranj-tournament-spectate')return;
       const frame=document.querySelector('#mfwPanelBody .mfw-tournament-embed');
