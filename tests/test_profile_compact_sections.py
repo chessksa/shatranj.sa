@@ -6,7 +6,8 @@ for label in ['الأصدقاء','طلبات الصداقة','الطلبات ا�
 assert 'class="profile-links-grid"' in html
 assert html.count('class="profile-action"')==5
 assert 'id="recentGames"' in html
-assert '<details class="profile-settings">' in html
+assert '<nav class="profile-toolbar"' in html, 'member tools should be visible at the top'
+assert '<details class="profile-settings">' not in html, 'old account settings accordion must be removed'
 assert 'id="playerRankBadge"' not in html
 assert 'id="achievementsList"' not in html
 assert 'loadRatingHistory' not in js
