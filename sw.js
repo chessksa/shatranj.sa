@@ -1,76 +1,13 @@
-const CACHE="shatranj-arab-v17";
-const ASSETS=["./","./index.html","./styles.css","./app.js","./config.js","./manifest.webmanifest","./arab-cities.js"];
-const PLAY_PATHS=["/play.html","/play-v8.html","/play-live.js","/play-v8.js","/realistic-pieces.css","/play-v8.css","/play-v10.html","/play-v10-match.js","/play-computer.js","/human-watch.html","/computer-watch.html","/spectator-board.mjs","/last-move-highlight.mjs","/cm-chessboard-shatranj-v3.css","/assets/last-move-markers.svg","/exact-board-v13.css","/exact-board-v13.js","/play-reference-mobile-v14.css","/play-reference-pregame-v15.css","/play-reference-history-v14.mjs","/assets/pieces/"];
-const ADMIN_PATHS=["/admin.html","/admin.js"];
-const FRESH_HOME_ASSETS=[
-  "/index-app.html",
-  "/home-theme.css",
-  "/ranking-top-three.css",
-  "/site-notifications.js",
-  "/site-notifications-original.js",
-  "/home-invite.js",
-  "/site-presence.js",
-  "/home-current-games.mjs",
-  "/home-tickers-bootstrap.js",
-  "/home-mobile-admin-colors.css",
-  "/home-header-svg.css",
-  "/v2/site/shell.css",
-  "/v2/site/shell.mjs",
-  "/v2/site/mobile-ui-professional.css",
-  "/v2/site/mobile-home-no-scroll.css",
-  "/v2/site/mobile-home-polish.css",
-  "/v2/home/dashboard.css",
-  "/v2/home/dashboard.mjs",
-  "/v2/home/public-home.mjs"
-];
-
-self.addEventListener("install",e=>{
-  self.skipWaiting();
-  e.waitUntil(caches.open(CACHE).then(c=>c.addAll(ASSETS)));
+// Retirement worker for legacy installations. No offline page snapshots are served.
+// It is deliberately safe to install once, clean only this site's old caches, and unregister.
+self.addEventListener('install',event=>{
+  event.waitUntil(self.skipWaiting());
 });
-
-self.addEventListener("activate",e=>{
-  e.waitUntil((async()=>{
+self.addEventListener('activate',event=>{
+  event.waitUntil((async()=>{
     const keys=await caches.keys();
-    await Promise.all(keys.filter(k=>k!==CACHE).map(k=>caches.delete(k)));
-    await self.clients.claim();
-    const clients=await self.clients.matchAll({type:"window",includeUncontrolled:true});
-    await Promise.all(clients.map(client=>client.navigate(client.url).catch(()=>null)));
+    await Promise.all(keys.filter(key=>key.startsWith('shatranj-arab-')).map(key=>caches.delete(key)));
+    await self.registration.unregister();
   })());
 });
-
-self.addEventListener("fetch",e=>{
-  const url=new URL(e.request.url);
-
-  if(e.request.mode==="navigate"){
-    e.respondWith(
-      fetch(new Request(e.request,{cache:"no-store"}))
-        .then(response=>{
-          caches.open(CACHE).then(c=>c.put(e.request,response.clone())).catch(()=>{});
-          return response;
-        })
-        .catch(()=>caches.match(e.request).then(r=>r||caches.match("./index.html")))
-    );
-    return;
-  }
-
-  const isFreshHomeAsset=FRESH_HOME_ASSETS.some(path=>url.pathname.endsWith(path));
-  if(isFreshHomeAsset){
-    e.respondWith(fetch(new Request(e.request,{cache:"no-store"})).catch(()=>caches.match(e.request)));
-    return;
-  }
-
-  const isAdminAsset=ADMIN_PATHS.some(path=>url.pathname.endsWith(path));
-  if(isAdminAsset){
-    e.respondWith(fetch(new Request(e.request,{cache:"no-store"})).catch(()=>caches.match(e.request)));
-    return;
-  }
-
-  const isPlayAsset=PLAY_PATHS.some(path=>url.pathname.endsWith(path)||url.pathname.includes(path));
-  if(isPlayAsset){
-    e.respondWith(fetch(new Request(e.request,{cache:"no-store"})).catch(()=>caches.match(e.request)));
-    return;
-  }
-
-  e.respondWith(caches.match(e.request).then(r=>r||fetch(e.request)));
-});
+// No fetch interception: all HTML, CSS, JS and play assets use the network.

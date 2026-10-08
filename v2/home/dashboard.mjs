@@ -1,11 +1,13 @@
 import { rpc, supabase } from '../platform/api.mjs';
 
+const homeAssetVersion=encodeURIComponent(document.querySelector('meta[name="shatranj-asset-version"]')?.content||'20261009-fresh-ui-refresh-v1');
+
 if(!document.querySelector('link[data-desktop-guest-auth]')){
   const css=document.createElement('link');
   css.rel='stylesheet';
   css.dataset.desktopGuestAuth='1';
   const url=new URL('./desktop-guest-auth.css',import.meta.url);
-  url.searchParams.set('v','20260929-desktop-auth-theme1');
+  url.searchParams.set('v',homeAssetVersion);
   css.href=url.href;
   document.head.appendChild(css);
 }
@@ -243,9 +245,9 @@ function installHomeAuthActions(){
 
 async function loadOptionalHomeModules(){
   const results=await Promise.allSettled([
-    import('./public-home.mjs?v=20260912-home-polish1'),
-    import('./desktop-board-shell.mjs?v=20261007-menu-gap-highlight6'),
-    import('./desktop-board-shell-tune.mjs?v=20261009-sidebar-canonical1')
+    import(`./public-home.mjs?v=${homeAssetVersion}`),
+    import(`./desktop-board-shell.mjs?v=${homeAssetVersion}`),
+    import(`./desktop-board-shell-tune.mjs?v=${homeAssetVersion}`)
   ]);
   results.forEach((result,index)=>{
     if(result.status==='rejected') console.warn('تعذر تحميل وحدة واجهة اختيارية',index,result.reason);

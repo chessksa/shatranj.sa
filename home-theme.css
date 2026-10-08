@@ -1,4 +1,4 @@
-@import url("./home-theme-base.css?v=20260909-rankingrow35");
+/* Base theme is loaded before this file by index-app.html so each refresh can version it. */
 
 /* Desktop home final fit 20260906 */
 @media(min-width:901px){

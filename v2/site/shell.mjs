@@ -1,4 +1,5 @@
 import { SITE_NAV } from './nav.mjs?v=20260913-puzzles2';
+const shellAssetVersion=encodeURIComponent(document.querySelector('meta[name="shatranj-asset-version"]')?.content||'20261009-fresh-ui-refresh-v1');
 
 const skip = /(?:^|\/)(?:admin|profile-section)\.html$/;
 const embeddedPanel = new URLSearchParams(location.search).get('embed') === 'panel';
@@ -7,7 +8,7 @@ if (!document.querySelector('link[data-v2-typography]')) {
   typography.rel = 'stylesheet';
   typography.dataset.v2Typography = '20261006';
   const typographyUrl = new URL('./typography-system.css', import.meta.url);
-  typographyUrl.searchParams.set('v','20261006-type1');
+  typographyUrl.searchParams.set('v',shellAssetVersion);
   typography.href = typographyUrl.href;
   document.head.appendChild(typography);
 }
@@ -18,7 +19,7 @@ if (!embeddedPanel && !skip.test(location.pathname)) {
     mobileUi.rel = 'stylesheet';
     mobileUi.dataset.v2MobileUi = 'professional';
     const mobileUiUrl = new URL('./mobile-ui-professional.css', import.meta.url);
-    mobileUiUrl.searchParams.set('v','20260920-mobile-stability1');
+    mobileUiUrl.searchParams.set('v',shellAssetVersion);
     mobileUi.href = mobileUiUrl.href;
     document.head.appendChild(mobileUi);
   }
@@ -27,7 +28,7 @@ if (!embeddedPanel && !skip.test(location.pathname)) {
     mobileHome.rel = 'stylesheet';
     mobileHome.dataset.v2MobileHome = 'no-scroll';
     const mobileHomeUrl = new URL('./mobile-home-no-scroll.css', import.meta.url);
-    mobileHomeUrl.searchParams.set('v','20260920-mobile-stability1');
+    mobileHomeUrl.searchParams.set('v',shellAssetVersion);
     mobileHome.href = mobileHomeUrl.href;
     document.head.appendChild(mobileHome);
   }
@@ -36,7 +37,7 @@ if (!embeddedPanel && !skip.test(location.pathname)) {
     mobileHomePolish.rel = 'stylesheet';
     mobileHomePolish.dataset.v2MobileHomePolish = 'final';
     const mobileHomePolishUrl = new URL('./mobile-home-polish.css', import.meta.url);
-    mobileHomePolishUrl.searchParams.set('v','20260920-mobile-stability1');
+    mobileHomePolishUrl.searchParams.set('v',shellAssetVersion);
     mobileHomePolish.href = mobileHomePolishUrl.href;
     document.head.appendChild(mobileHomePolish);
   }
@@ -45,7 +46,7 @@ if (!embeddedPanel && !skip.test(location.pathname)) {
     mobileHomeCleanup.rel = 'stylesheet';
     mobileHomeCleanup.dataset.v2MobileHomeCleanup = 'final';
     const mobileHomeCleanupUrl = new URL('./mobile-home-cleanup.css', import.meta.url);
-    mobileHomeCleanupUrl.searchParams.set('v','20260920-mobile-stability1');
+    mobileHomeCleanupUrl.searchParams.set('v',shellAssetVersion);
     mobileHomeCleanup.href = mobileHomeCleanupUrl.href;
     document.head.appendChild(mobileHomeCleanup);
   }

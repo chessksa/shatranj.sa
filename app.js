@@ -216,9 +216,7 @@ form.addEventListener("submit", async (e) => {
 regionFilter.addEventListener("change", render);
 cityFilter.addEventListener("input", render);
 
-if ("serviceWorker" in navigator) {
-  navigator.serviceWorker.register("./sw.js").catch(() => {});
-}
+// The retired offline service worker must never be registered again.
 
 fillRegions();
 render();

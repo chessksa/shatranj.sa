@@ -1,13 +1,19 @@
-import { mountInlineComputer, stopInlineComputer } from './inline-computer.mjs?v=20261006-computer-text1';
-import { mountInlinePuzzles, stopInlinePuzzles } from './inline-puzzles.mjs?v=20261006-board-colors1';
-import { mountInlineLearn, stopInlineLearn } from './inline-learn.mjs?v=20261006-board-colors1';
 import { supabase } from '../platform/api.mjs';
+const desktopAssetVersion=encodeURIComponent(document.querySelector('meta[name="shatranj-asset-version"]')?.content||'20261009-fresh-ui-refresh-v1');
+const [computerModule,puzzlesModule,learnModule]=await Promise.all([
+  import(`./inline-computer.mjs?v=${desktopAssetVersion}`),
+  import(`./inline-puzzles.mjs?v=${desktopAssetVersion}`),
+  import(`./inline-learn.mjs?v=${desktopAssetVersion}`)
+]);
+const {mountInlineComputer,stopInlineComputer}=computerModule;
+const {mountInlinePuzzles,stopInlinePuzzles}=puzzlesModule;
+const {mountInlineLearn,stopInlineLearn}=learnModule;
 if(!document.querySelector('link[data-desktop-board-shell]')){
   const css=document.createElement('link');
   css.rel='stylesheet';
   css.dataset.desktopBoardShell='1';
   const url=new URL('./desktop-board-shell.css',import.meta.url);
-  url.searchParams.set('v','20261007-menu-gap-highlight6');
+  url.searchParams.set('v',desktopAssetVersion);
   css.href=url.href;
   document.head.appendChild(css);
 }

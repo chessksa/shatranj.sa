@@ -18,7 +18,8 @@ import { normalizeGameState } from '../play/state.mjs';
 
 const css=document.createElement('link');
 css.rel='stylesheet';
-css.href=new URL('./inline-play.css?v=20260918-inline-play1',import.meta.url).href;
+const inlineVersion=encodeURIComponent(document.querySelector('meta[name="shatranj-asset-version"]')?.content||'20261009-fresh-ui-refresh-v1');
+css.href=new URL(`./inline-play.css?v=${inlineVersion}`,import.meta.url).href;
 document.head.appendChild(css);
 
 const desktop=window.matchMedia('(min-width:901px)');

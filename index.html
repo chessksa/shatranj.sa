@@ -16,35 +16,36 @@ html,body{margin:0;min-height:100%;background:#042628;color:#f4eddc;font-family:
 <div class="loader"><div><strong>جاري فتح شطرنج العرب</strong><small>تحديث الواجهة…</small></div></div>
 <script>
 (async()=>{
-  // Retire legacy workers/caches once per browser. Normal visits avoid this work.
-  const legacyCleanupKey='shatranj-legacy-cache-cleaned-v1';
+  // Legacy SW registrations can return after a previous cleanup (e.g. via old pages).
+  // Check each navigation; never let an old offline snapshot replace the live site.
   try{
-    let legacyCleaned=false;
-    try{legacyCleaned=localStorage.getItem(legacyCleanupKey)==='1';}catch(_){}
-    if(!legacyCleaned){
-      if('serviceWorker' in navigator){
-        const registrations=await navigator.serviceWorker.getRegistrations();
-        await Promise.all(registrations.map(registration=>registration.unregister().catch(()=>false)));
-      }
-      if('caches' in window){
-        const keys=await caches.keys();
-        await Promise.all(keys.filter(key=>key.startsWith('shatranj-arab-')).map(key=>caches.delete(key)));
-      }
-      try{localStorage.setItem(legacyCleanupKey,'1');}catch(_){}
+    if('serviceWorker' in navigator){
+      const ownScope=new URL('./',location.href).pathname;
+      const registrations=await navigator.serviceWorker.getRegistrations();
+      await Promise.all(registrations
+        .filter(registration=>new URL(registration.scope).pathname===ownScope)
+        .map(registration=>registration.unregister().catch(()=>false)));
+    }
+    if('caches' in window){
+      const keys=await caches.keys();
+      await Promise.all(keys.filter(key=>key.startsWith('shatranj-arab-')).map(key=>caches.delete(key)));
     }
   }catch(error){
-    console.warn('تعذر تنظيف التخزين المؤقت القديم',error);
+    console.warn('تعذر إزالة التخزين المؤقت القديم',error);
   }
 
-  // Change this stamp on releases, not on every page visit: assets stay cacheable.
-  const stamp='20261009-cache-and-sidebar-cleanup-v1';
-  const runtimeVersion=stamp;
-  const response=await fetch('./index-app.html?v='+runtimeVersion,{cache:'no-cache'});
+  // Normal navigation keeps a stable release cache. Refresh always gets new asset URLs.
+  const stamp='20261009-fresh-ui-refresh-v1';
+  const isReload=performance.getEntriesByType('navigation')?.[0]?.type==='reload';
+  const runtimeVersion=stamp+(isReload?'-reload-'+Date.now():'');
+  const response=await fetch('./index-app.html?v='+runtimeVersion,{cache:'no-store'});
   if(!response.ok) throw new Error('index source '+response.status);
   let html=await response.text();
 
   html=html
+    .replace(/home-theme-base\.css\?v=[A-Za-z0-9._-]+/g,'home-theme-base.css?v='+runtimeVersion)
     .replace(/home-theme\.css\?v=[A-Za-z0-9._-]+/g,'home-theme.css?v='+runtimeVersion)
+    .replace(/home-invite\.js\?v=[A-Za-z0-9._-]+/g,'home-invite.js?v='+runtimeVersion)
     .replace(/site-notifications\.js\?v=[A-Za-z0-9._-]+/g,'site-notifications.js?v='+runtimeVersion)
     .replace(/site-presence\.js\?v=[A-Za-z0-9._-]+/g,'site-presence.js?v='+runtimeVersion)
     .replace("const rankingLimit=window.matchMedia('(max-width:800px)').matches?5:10;","const rankingLimit=10;")
@@ -266,6 +267,9 @@ async function loadCurrentMatchesCount(){`;
   if(!html.includes('v2/home/chess-news-ticker.mjs')){
     html=html.replace('</body>','<script type="module" src="v2/home/chess-news-ticker.mjs?v='+runtimeVersion+'"><\/script></body>');
   }
+
+  // Child modules use the same build id; refresh cannot mix old and new CSS/JS.
+  html=html.replace('</head>','<meta name="shatranj-asset-version" content="'+runtimeVersion+'"></head>');
 
   document.open();
   document.write(html);

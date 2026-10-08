@@ -1,28 +1,29 @@
-import './inline-play.mjs?v=20261006-learn-board1';
+const tuneAssetVersion=encodeURIComponent(document.querySelector('meta[name="shatranj-asset-version"]')?.content||'20261009-fresh-ui-refresh-v1');
+await import(`./inline-play.mjs?v=${tuneAssetVersion}`);
 
 const inlinePlayCss=document.createElement('link');
 inlinePlayCss.rel='stylesheet';
-inlinePlayCss.href='v2/home/inline-play.css?v=20260918-piece-black-thin1';
+inlinePlayCss.href=`v2/home/inline-play.css?v=${tuneAssetVersion}`;
 document.head.appendChild(inlinePlayCss);
 
 const css=document.createElement('link');
 css.rel='stylesheet';
-css.href='v2/home/desktop-board-shell-tune.css?v=20260918-no-tip-card1';
+css.href=`v2/home/desktop-board-shell-tune.css?v=${tuneAssetVersion}`;
 document.head.appendChild(css);
 
 const cleanupCss=document.createElement('link');
 cleanupCss.rel='stylesheet';
-cleanupCss.href='v2/home/desktop-sidebar-cleanup.css?v=20261009-sidebar-canonical1';
+cleanupCss.href=`v2/home/desktop-sidebar-cleanup.css?v=${tuneAssetVersion}`;
 document.head.appendChild(cleanupCss);
 
 const memberCardCss=document.createElement('link');
 memberCardCss.rel='stylesheet';
-memberCardCss.href='v2/home/desktop-member-card-v2.css?v=20261007-member-card2';
+memberCardCss.href=`v2/home/desktop-member-card-v2.css?v=${tuneAssetVersion}`;
 document.head.appendChild(memberCardCss);
 
 const boardThemeCss=document.createElement('link');
 boardThemeCss.rel='stylesheet';
-boardThemeCss.href='v2/home/board-theme-override.css?v=20261006-frame-teal10';
+boardThemeCss.href=`v2/home/board-theme-override.css?v=${tuneAssetVersion}`;
 document.head.appendChild(boardThemeCss);
 
 
