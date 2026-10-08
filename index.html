@@ -29,7 +29,7 @@ html,body{margin:0;min-height:100%;background:#042628;color:#f4eddc;font-family:
     console.warn('تعذر تنظيف التخزين المؤقت القديم',error);
   }
 
-  const stamp='20261008-mobile-auth-header-modal3';
+  const stamp='20261008-auth-dialog-portal-fix5';
   const runtimeVersion=stamp+'-'+Date.now();
   const response=await fetch('./index-app.html?v='+runtimeVersion,{cache:'no-store'});
   if(!response.ok) throw new Error('index source '+response.status);
@@ -232,6 +232,9 @@ async function loadCurrentMatchesCount(){`;
   }
   if(!html.includes('mobile-home-fixed-v1.css')){
     html=html.replace('</head>','<link rel="stylesheet" href="mobile-home-fixed-v1.css?v='+runtimeVersion+'"></head>');
+  }
+  if(!html.includes('mobile-auth-dialog-portal-v2.css')){
+    html=html.replace('</head>','<link rel="stylesheet" href="mobile-auth-dialog-portal-v2.css?v='+runtimeVersion+'"></head>');
   }
   if(!html.includes('v2/home/chess-news-ticker.css')){
     html=html.replace('</head>','<link rel="stylesheet" href="v2/home/chess-news-ticker.css?v='+runtimeVersion+'"></head>');
