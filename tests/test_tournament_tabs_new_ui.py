@@ -4,7 +4,7 @@ page=(root/'tournaments-app.html').read_text(encoding='utf-8')
 boot=(root/'tournaments.html').read_text(encoding='utf-8')
 css=(root/'tournament-tabs-v1.css').read_text(encoding='utf-8')
 admin=(root/'admin.js').read_text(encoding='utf-8')
-assert page.count('class="tournament-tab')==3
+assert page.count('data-tournament-tab="')==3
 for name in ('current','upcoming','finished'):
     assert f'data-tournament-tab="{name}"' in page
 assert 'id="tournamentCards"' in page
