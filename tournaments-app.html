@@ -242,6 +242,7 @@ let selectedTournamentId=null;
 let tournamentMatchPollTimer=null;
 let tournamentRoundCountdownTimer=null;
 let tournamentBracketRefreshTimer=null;
+let watchedTournamentGameId=null;
 
 function esc(value){return String(value??'').replace(/[&<>"']/g,ch=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot',"'":'&#39;'}[ch]))}
 function scopeLabel(row){if(row.scope_type==='global')return 'عامة';if(row.scope_type==='country')return 'دولة';if(row.scope_type==='city')return 'مدينة';return row.scope_type||'—'}
@@ -431,6 +432,14 @@ function updateTournamentRoundCountdowns(){
   });
 }
 function ensureTournamentRoundCountdowns(){clearInterval(tournamentRoundCountdownTimer);updateTournamentRoundCountdowns();tournamentRoundCountdownTimer=setInterval(updateTournamentRoundCountdowns,1000)}
+function markWatchedTournamentMatch(){
+  detailCard.querySelectorAll('.bracket-match[data-tournament-spectate],.tournament-matches-classic tr[data-tournament-spectate]').forEach(row=>{
+    const selected=!!watchedTournamentGameId&&row.dataset.tournamentSpectate===watchedTournamentGameId;
+    row.classList.toggle('tournament-watching',selected);
+    if(selected)row.setAttribute('aria-current','true');
+    else row.removeAttribute('aria-current');
+  });
+}
 function scheduleTournamentBracketRefresh(){clearInterval(tournamentBracketRefreshTimer);if(!selectedTournamentId)return;tournamentBracketRefreshTimer=setInterval(()=>{if(selectedTournamentId)loadTournamentBracket(selectedTournamentId)},5000)}
 
 async function loadTournamentBracket(tournamentId){
@@ -453,6 +462,7 @@ async function loadTournamentBracket(tournamentId){
       const roundBreak=Boolean(participant&&match.match_status==='pending'&&Number(match.round_no)>1&&(!match.ready_opens_at||(Number.isFinite(readyAt)&&readyAt>Date.now())));
       const canEnter=participant&&!roundBreak;
       const canWatch=Boolean(match.match_status==='active'&&match.game_id);
+       const watchMatchProps=canWatch?` data-tournament-spectate="${esc(match.game_id)}" tabindex="0" aria-label="مشاهدة مباراة ${esc(match.player_one_name||'اللاعب الأول')} ضد ${esc(match.player_two_name||'اللاعب الثاني')}"`:'';
       const retry=Number(match.attempt_no||1)>1?` · إعادة ${Number(match.attempt_no)}`:'';
       let entry='';
       if(roundBreak){
@@ -462,8 +472,9 @@ async function loadTournamentBracket(tournamentId){
       }else if(canEnter){
         entry=`<button class="register-btn tournament-enter-btn" type="button" data-tournament-match="${esc(match.match_id)}">دخول المباراة</button>`;
       }
-      return `<article class="bracket-match${match.is_my_match?' mine':''}"><div class="bracket-player${match.winner_player_id===match.player_one_id?' winner':''}"><span>${esc(match.player_one_name||'بانتظار المتأهل')}</span></div><div class="bracket-player${match.winner_player_id===match.player_two_id?' winner':''}"><span>${esc(match.player_two_name||'بانتظار المتأهل')}</span></div><div class="bracket-meta"><span>${esc(bracketStatusLabel(match.match_status))}${retry}</span>${entry}${canWatch?`<a class="register-btn tournament-watch-btn" data-tournament-spectate="${esc(match.game_id)}" href="play-v10.html?spectate=${encodeURIComponent(match.game_id)}">مشاهدة</a>`:''}</div></article>`;
+      return `<article class="bracket-match${match.is_my_match?' mine':''}${canWatch?' tournament-spectatable':''}"${watchMatchProps}><div class="bracket-player${match.winner_player_id===match.player_one_id?' winner':''}"><span>${esc(match.player_one_name||'بانتظار المتأهل')}</span></div><div class="bracket-player${match.winner_player_id===match.player_two_id?' winner':''}"><span>${esc(match.player_two_name||'بانتظار المتأهل')}</span></div><div class="bracket-meta"><span>${esc(bracketStatusLabel(match.match_status))}${retry}</span>${entry}${canWatch?`<a class="register-btn tournament-watch-btn" data-tournament-spectate="${esc(match.game_id)}" href="play-v10.html?spectate=${encodeURIComponent(match.game_id)}">مشاهدة</a>`:''}</div></article>`;
     }).join('')}</div></section>`).join('');
+    markWatchedTournamentMatch();
     ensureTournamentRoundCountdowns();
   }catch(error){console.error(error);host.className='bracket-empty';host.textContent='تعذر تحميل مواجهات البطولة الآن.'}
 }
@@ -594,14 +605,35 @@ listView.addEventListener('keydown',event=>{
     (idx+(event.key==='ArrowLeft'?1:-1)+tabs.length)%tabs.length;
   selectTournamentTab(tabs[next].dataset.tournamentTab,true);
 });
+function spectateSelectedTournamentMatch(gameId){
+  if(!embeddedPanel||window.parent===window)return false;
+  const id=String(gameId||'').trim();
+  if(!id)return false;
+  watchedTournamentGameId=id;
+  markWatchedTournamentMatch();
+  window.parent.postMessage({type:'shatranj-tournament-spectate',gameId:id},location.origin);
+  return true;
+}
 detailCard.addEventListener('click',event=>{
+  if(event.target.closest('[data-tournament-match],.register-btn[data-tournament-id]'))return;
   const watch=event.target.closest('[data-tournament-spectate]');
   if(!watch||!embeddedPanel||window.parent===window)return;
   event.preventDefault();
-  const gameId=watch.dataset.tournamentSpectate;
-  if(!gameId)return;
-  window.parent.postMessage({type:'shatranj-tournament-spectate',gameId},location.origin);
+  spectateSelectedTournamentMatch(watch.dataset.tournamentSpectate);
 },true);
+detailCard.addEventListener('keydown',event=>{
+  if(event.key!=='Enter'&&event.key!==' ')return;
+  const row=event.target.closest('.bracket-match[data-tournament-spectate],.tournament-matches-classic tr[data-tournament-spectate]');
+  if(!row||event.target!==row||!embeddedPanel)return;
+  event.preventDefault();
+  spectateSelectedTournamentMatch(row.dataset.tournamentSpectate);
+});
+window.addEventListener('message',event=>{
+  if(event.origin!==location.origin||event.source!==window.parent||event.data?.type!=='shatranj-tournament-spectate-stopped')return;
+  watchedTournamentGameId=null;
+  markWatchedTournamentMatch();
+});
+
 detailCard.addEventListener('click',event=>{const matchButton=event.target.closest('[data-tournament-match]');if(matchButton&&!matchButton.disabled){enterTournamentMatch(matchButton,matchButton.dataset.tournamentMatch);return}const button=event.target.closest('.register-btn[data-tournament-id]');if(!button||button.disabled)return;registerForTournament(button,button.dataset.tournamentId)});
 backToTournamentList.addEventListener('click',showTournamentList);
 inlineBackToTournamentList.addEventListener('click',showTournamentList);
@@ -640,6 +672,6 @@ void showAdminCreateWhenAuthorized();
 loadTournaments();
 </script>
 <script type="module" src="site-presence.js?v=20260910-detail-scale2"></script>
-<script defer src="tournament-detail-classic.js?v=20261009-classic-live-v3"></script>
+<script defer src="tournament-detail-classic.js?v=20261009-switch-watch-v1"></script>
 </body>
 </html>
