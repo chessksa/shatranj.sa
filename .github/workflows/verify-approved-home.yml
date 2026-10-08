@@ -23,7 +23,16 @@ jobs:
         with:
           python-version: '3.12'
       - name: Confirm current homepage and no legacy variants
-        run: python -m pytest tests/test_home_refresh_freshness.py tests/test_home_theme_cache_buster.py -q
+        run: |
+          python - <<'PY'
+          import runpy
+          for path in ['tests/test_home_refresh_freshness.py','tests/test_home_theme_cache_buster.py']:
+              tests=runpy.run_path(path)
+              for name,fn in tests.items():
+                  if name.startswith('test_') and callable(fn):
+                      fn()
+                      print(f'{path}: {name} PASS')
+          PY
       - name: Validate legacy refresh and mobile gap invariants
         run: python tests/test_home_bottom_gap.py
       - name: Parse all inline homepage scripts
