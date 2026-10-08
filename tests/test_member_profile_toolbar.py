@@ -7,7 +7,7 @@ def test_settings_removed_and_actions_at_top():
     html=read('profile.html')
     assert '<details class="profile-settings"' not in html
     assert '<nav class="profile-toolbar"' in html
-    assert html.index('class="profile-toolbar"')<html.index('class="profile-stats-grid"')
+    assert html.index('class="profile-toolbar"')<html.index('class="profile-dashboard-grid"')
     for token in ('id="avatarInput"','id="logoutBtn"'):
         assert html.count(token)==1
     assert html.count('class="profile-top-action')==2
