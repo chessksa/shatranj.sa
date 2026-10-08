@@ -10,27 +10,18 @@ jobs:
   dns_https:
     runs-on: ubuntu-latest
     steps:
-      - name: Check DNS and HTTPS availability
+      - name: Check public DNS resolvers and GitHub Pages origin
         shell: bash
         run: |
-          echo '--- A RECORDS arabchees.com ---'
-          dig +short arabchees.com A || true
-          echo '--- WWW CNAME RECORD ---'
-          dig +short www.arabchees.com CNAME || true
-          echo '--- DNS CONFIGURATION CHECK ---'
-          python3 - <<'PY'
-          import socket
-          try:
-              addresses=sorted(set(x[4][0] for x in socket.getaddrinfo("arabchees.com", 443, family=socket.AF_INET)))
-              required={"185.199.108.153","185.199.109.153","185.199.110.153","185.199.111.153"}
-              print("addresses:", addresses)
-              print("matches GitHub Pages:", bool(set(addresses) & required))
-          except Exception as e:
-              print("DNS resolution error:", type(e).__name__, str(e))
-          PY
-          echo '--- HTTPS headers ---'
-          curl -sS -I -L --max-time 25 https://arabchees.com/ | head -30 || true
-          echo '--- HTTP headers ---'
-          curl -sS -I -L --max-time 25 http://arabchees.com/ | head -30 || true
-          echo '--- WWW HTTPS headers ---'
-          curl -sS -I -L --max-time 25 https://www.arabchees.com/ | head -30 || true
+          echo '--- control github.com DNS ---'
+          getent ahostsv4 github.com | head -3 || true
+          echo '--- public DNS A ---'
+          dig @8.8.8.8 +time=2 +tries=1 +short arabchees.com A || true
+          echo '--- public DNS CNAME ---'
+          dig @1.1.1.1 +time=2 +tries=1 +short www.arabchees.com CNAME || true
+          echo '--- GitHub Pages direct HTTP without DNS ---'
+          curl --noproxy '*' --resolve arabchees.com:80:185.199.108.153 -sS -I --max-time 12 http://arabchees.com/ 2>&1 | head -20 || true
+          echo '--- GitHub Pages direct HTTPS without DNS ---'
+          curl --noproxy '*' --resolve arabchees.com:443:185.199.108.153 -sS -I --max-time 12 https://arabchees.com/ 2>&1 | head -25 || true
+          echo '--- GitHub Pages direct www HTTPS without DNS ---'
+          curl --noproxy '*' --resolve www.arabchees.com:443:185.199.108.153 -sS -I --max-time 12 https://www.arabchees.com/ 2>&1 | head -25 || true
