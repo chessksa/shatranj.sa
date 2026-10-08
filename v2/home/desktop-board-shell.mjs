@@ -434,12 +434,14 @@ if(desktop.matches && document.querySelector('#homeHero')){
     }
     if(!supabase||memberUsernamePending)return;
     memberUsernamePending=true;
+    let fallbackUsername='';
     try{
       const {data:{session},error:sessionError}=await supabase.auth.getSession();
       if(sessionError||!session?.user?.id)return;
       const userId=session.user.id;
       if(memberUsernameUserId===userId)return;
-      let username=String(session.user.user_metadata?.username||'').trim().replace(/^@/,'');
+      fallbackUsername=String(session.user.user_metadata?.username||'').trim().replace(/^@/,'');
+      let username=fallbackUsername;
       const {data:profileRows,error:profileError}=await supabase.rpc('get_my_player_profile');
       if(profileError)throw profileError;
       const profile=Array.isArray(profileRows)?profileRows[0]:profileRows;
@@ -454,6 +456,10 @@ if(desktop.matches && document.querySelector('#homeHero')){
       el.hidden=!username;
       memberUsernameUserId=userId;
     }catch(error){
+      if(fallbackUsername&&document.body.classList.contains('home-signed-in')){
+        el.textContent='@'+fallbackUsername;
+        el.hidden=false;
+      }
       console.warn('تعذر تحميل اسم المستخدم لبطاقة اللاعب',error);
     }finally{
       memberUsernamePending=false;
