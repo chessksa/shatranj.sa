@@ -9,6 +9,37 @@ html:not(.approved-home-ready) body > :not(#approvedHomeBoot){visibility:hidden!
 #approvedHomeBoot small{display:block;margin-top:10px;color:#b7c7c2}
 html.approved-home-ready #approvedHomeBoot{display:none!important}
 </style>
+<script id="retireLegacyHomeCaches">
+(async()=>{
+  try{
+    let hadOldWorker=false;
+    if('serviceWorker' in navigator){
+      const rootPath=new URL('./',location.href).pathname;
+      const registrations=await navigator.serviceWorker.getRegistrations();
+      const oldRegistrations=registrations.filter(registration=>{
+        const scope=new URL(registration.scope);
+        return scope.origin===location.origin&&scope.pathname===rootPath;
+      });
+      hadOldWorker=oldRegistrations.length>0;
+      await Promise.all(oldRegistrations.map(registration=>registration.unregister()));
+    }
+    if('caches' in window){
+      const keys=await caches.keys();
+      await Promise.all(keys.filter(key=>key.startsWith('shatranj-arab-')).map(key=>caches.delete(key)));
+    }
+    // A page already controlled by a retired worker needs one new network navigation.
+    if(hadOldWorker&&navigator.serviceWorker.controller){
+      const key='shatranj-worker-retired-canonical-v1';
+      if(sessionStorage.getItem(key)!=='1'){
+        sessionStorage.setItem(key,'1');
+        location.reload();
+      }
+    }
+  }catch(error){
+    console.warn('تعذر تنظيف التخزين المؤقت القديم',error);
+  }
+})();
+</script>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
 <meta name="theme-color" content="#0c3435">
