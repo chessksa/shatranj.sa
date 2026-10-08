@@ -10,26 +10,29 @@ jobs:
   dns_https:
     runs-on: ubuntu-latest
     steps:
-      - name: Diagnose registrar authoritative name servers
+      - name: Verify new DNS delegation and GitHub Pages
         shell: bash
         run: |
-          echo '--- Registered name servers from .com TLD ---'
-          dig +short @a.gtld-servers.net arabchees.com NS || true
-          echo '--- Check all 4 Dimofinf authoritative name servers ---'
-          for ns in ns1.dimofinf.sa ns2.dimofinf.sa ns3.dimofinf.sa ns4.dimofinf.sa; do
-            echo "==== $ns arabchees.com SOA ===="
-            dig +time=3 +tries=1 @"$ns" arabchees.com SOA +noall +answer +comments || true
-            echo "==== $ns arabchees.com A ===="
-            dig +time=3 +tries=1 @"$ns" arabchees.com A +noall +answer +comments || true
-            echo "==== $ns reference zone thiqqah.com SOA ===="
-            dig +time=3 +tries=1 @"$ns" thiqqah.com SOA +noall +answer +comments || true
-          done
-          echo '--- DNSSEC parent DS (sanity check) ---'
-          dig +time=3 +tries=1 @a.gtld-servers.net arabchees.com DS +noall +answer +comments || true
-          echo '--- Public resolver A and WWW ---'
+          echo '--- Parent delegation ---'
+          dig +time=3 +tries=1 @a.gtld-servers.net arabchees.com NS +noall +answer +authority +comments || true
+          echo '--- Public recursive DNS A ---'
           dig +time=3 +tries=1 @8.8.8.8 arabchees.com A +noall +answer +comments || true
-          dig +time=3 +tries=1 @1.1.1.1 www.arabchees.com CNAME +noall +answer +comments || true
-          echo '--- HTTP on GitHub Pages origin, ignoring broken DNS ---'
-          curl --noproxy '*' --resolve arabchees.com:80:185.199.108.153 -sS -I --max-time 15 http://arabchees.com/ | head -8 || true
-          echo '--- HTTPS on GitHub Pages origin, ignoring broken DNS ---'
-          curl --noproxy '*' --resolve arabchees.com:443:185.199.108.153 -sS -I --max-time 15 https://arabchees.com/ 2>&1 | head -5 || true
+          echo '--- Public recursive DNS www CNAME ---'
+          dig +time=3 +tries=1 @8.8.8.8 www.arabchees.com CNAME +noall +answer +comments || true
+          echo '--- Authoritative nameservers A, www, SOA ---'
+          for ns in dns1.name-services.com dns2.name-services.com dns3.name-services.com dns4.name-services.com dns5.name-services.com; do
+            echo "==== $ns SOA ===="
+            dig +time=3 +tries=1 @"$ns" arabchees.com SOA +noall +answer +comments || true
+            echo "==== $ns A ===="
+            dig +time=3 +tries=1 @"$ns" arabchees.com A +noall +answer +comments || true
+            echo "==== $ns www CNAME ===="
+            dig +time=3 +tries=1 @"$ns" www.arabchees.com CNAME +noall +answer +comments || true
+          done
+          echo '--- Domain HTTPS ---'
+          curl -IL --max-time 12 -sS https://arabchees.com/ 2>&1 | head -18 || true
+          echo '--- Domain HTTP ---'
+          curl -IL --max-time 12 -sS http://arabchees.com/ 2>&1 | head -18 || true
+          echo '--- www HTTPS ---'
+          curl -IL --max-time 12 -sS https://www.arabchees.com/ 2>&1 | head -18 || true
+          echo '--- GitHub direct HTTP bypass DNS ---'
+          curl --noproxy '*' --resolve arabchees.com:80:185.199.108.153 -sS -I --max-time 12 http://arabchees.com/ | head -10 || true
