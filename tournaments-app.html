@@ -164,6 +164,7 @@ html.tournament-embedded .bracket-shell{
   padding-top:10px!important;
 }
 </style>
+<link rel="stylesheet" href="tournament-tabs-v1.css?v=20261009-tournament-tabs-v1">
 <script src="config.js?v=20260911-grid2"></script>
 </head>
 <body>
@@ -172,30 +173,24 @@ html.tournament-embedded .bracket-shell{
   <div class="page-head"><div id="tournamentPageHeadTitle" class="page-head-title"><h1 id="tournamentPageTitle">البطولات</h1><div id="tournamentCount" class="count">0</div></div></div>
   <div id="registrationMsg" class="registration-message" role="status" aria-live="polite"></div>
   <section id="tournamentListView" class="tournament-list-view" aria-label="قائمة البطولات">
-    <div class="tournament-tables-grid">
-      <section class="tournament-table-shell current-tournaments" aria-label="البطولات الحالية">
-        <div class="tournament-table-head">البطولات الحالية <strong id="currentTournamentCount">0</strong></div>
-        <div class="tournament-table-scroll">
-          <table class="tournament-table" aria-label="البطولات الحالية">
-            <thead><tr><th class="num">#</th><th class="name-col">اسم البطولة</th><th class="date-col">الموعد</th><th class="status-col">الحالة</th></tr></thead>
-            <tbody id="currentTournamentList"><tr class="empty-row"><td colspan="4">جاري تحميل البطولات...</td></tr></tbody>
-          </table>
-        </div>
-      </section>
-      <section class="tournament-table-shell finished-tournaments" aria-label="البطولات المنتهية">
-        <div class="tournament-table-head">البطولات المنتهية <strong id="finishedTournamentCount">0</strong></div>
-        <div class="tournament-table-scroll">
-          <table class="tournament-table" aria-label="البطولات المنتهية">
-            <thead><tr><th class="num">#</th><th class="name-col">اسم البطولة</th><th class="champion-col">البطل</th></tr></thead>
-            <tbody id="finishedTournamentList"><tr class="empty-row"><td colspan="3">جاري تحميل البطولات...</td></tr></tbody>
-          </table>
-        </div>
-      </section>
+    <div class="tournament-tabs" role="tablist" aria-label="حالة البطولات">
+      <button id="tournamentTabCurrent" class="tournament-tab is-active" type="button" role="tab" aria-selected="true" aria-controls="tournamentCards" data-tournament-tab="current">
+        <span class="tournament-tab-label">الحالية</span><strong id="currentTournamentCount">0</strong>
+      </button>
+      <button id="tournamentTabUpcoming" class="tournament-tab" type="button" role="tab" aria-selected="false" aria-controls="tournamentCards" data-tournament-tab="upcoming" tabindex="-1">
+        <span class="tournament-tab-label">القادمة</span><strong id="upcomingTournamentCount">0</strong>
+      </button>
+      <button id="tournamentTabFinished" class="tournament-tab" type="button" role="tab" aria-selected="false" aria-controls="tournamentCards" data-tournament-tab="finished" tabindex="-1">
+        <span class="tournament-tab-label">المنتهية</span><strong id="finishedTournamentCount">0</strong>
+      </button>
     </div>
-    <div id="tournamentEmpty" class="empty" hidden></div>
+    <div class="tournament-tools"><a id="tournamentAdminCreate" class="tournament-admin-create" href="admin.html#create-tournament" hidden>＋ إنشاء بطولة</a></div>
+    <div id="tournamentCards" class="tournament-cards" role="tabpanel" aria-labelledby="tournamentTabCurrent" tabindex="0">
+      <div class="tournament-list-empty">جاري تحميل البطولات…</div>
+    </div>
   </section>
   <section id="tournamentDetailView" class="detail-shell" hidden aria-label="تفاصيل البطولة">
-    <div class="detail-toolbar"><div id="tournamentDetailToolbarTitle" class="detail-toolbar-title"></div></div>
+    <div class="detail-toolbar"><button id="backToTournamentListInline" class="detail-inline-back" type="button" aria-label="العودة إلى قائمة البطولات">←</button><div id="tournamentDetailToolbarTitle" class="detail-toolbar-title"></div></div>
     <article id="tournamentDetailCard" class="detail-card"></article>
   </section>
 </div></main>
@@ -214,12 +209,15 @@ function navigateTournament(url){
 }
 const listView=document.getElementById('tournamentListView');
 const detailView=document.getElementById('tournamentDetailView');
-const currentListEl=document.getElementById('currentTournamentList');
-const finishedListEl=document.getElementById('finishedTournamentList');
+const cardsEl=document.getElementById('tournamentCards');
+const tabs=[...document.querySelectorAll('[data-tournament-tab]')];
 const currentCountEl=document.getElementById('currentTournamentCount');
+const upcomingCountEl=document.getElementById('upcomingTournamentCount');
 const finishedCountEl=document.getElementById('finishedTournamentCount');
+const adminCreateLink=document.getElementById('tournamentAdminCreate');
+const inlineBackToTournamentList=document.getElementById('backToTournamentListInline');
 const detailCard=document.getElementById('tournamentDetailCard');
-const emptyEl=document.getElementById('tournamentEmpty');
+
 const countEl=document.getElementById('tournamentCount');
 const pageHead=document.querySelector('.page-head');
 const mainWrap=document.querySelector('main>.wrap');
@@ -230,6 +228,7 @@ const registrationMsg=document.getElementById('registrationMsg');
 const backToTournamentList=document.getElementById('backToTournamentList');
 const TOURNAMENT_QUERY_KEY='tournament';
 let tournaments=[];
+let activeTournamentTab='current';
 let selectedTournamentId=null;
 let tournamentMatchPollTimer=null;
 let tournamentRoundCountdownTimer=null;
@@ -254,20 +253,68 @@ function tournamentSort(a,b){
   return aTime-bTime;
 }
 
-function renderTournamentRows(list,finished=false){
-  return list.map((row,index)=>`<tr class="tournament-row${finished?' finished-row':''}" tabindex="0" data-tournament-id="${esc(row.id)}" aria-label="عرض تفاصيل ${esc(row.name)}"><td class="num">${index+1}</td><td><span class="tournament-name">${esc(row.name)}</span></td>${finished?`<td class="champion-col"><span class="champion-name">${esc(row.champion_name||'—')}</span></td>`:`<td><span class="tournament-date">${esc(formatDate(row.starts_at))}</span></td><td class="status-col"><span class="status status-${esc(row.status)}">${esc(statusLabel(row.status))}</span></td>`}</tr>`).join('');
+function tournamentIsUpcoming(row){
+  if(row.status==='finished'||row.status==='running')return false;
+  const opensAt=row.registration_opens_at?Date.parse(row.registration_opens_at):NaN;
+  return row.status==='open'&&Number.isFinite(opensAt)&&opensAt>Date.now();
 }
-
+function tournamentCategory(row){
+  if(row.status==='finished')return 'finished';
+  if(tournamentIsUpcoming(row))return 'upcoming';
+  return 'current';
+}
+function tabRows(tab){
+  return tournaments.filter(row=>tournamentCategory(row)===tab).sort(tournamentSort);
+}
+function renderTournamentCards(rows){
+  return rows.map(row=>{
+    const label=tournamentIsUpcoming(row)?'قادمة':statusLabel(row.status);
+    const statusClass=tournamentIsUpcoming(row)?'upcoming':row.status;
+    const registered=Number(row.registered_count||0);
+    const capacity=Number(row.max_players);
+    const hasLimit=Number.isFinite(capacity)&&capacity>0;
+    const ratio=hasLimit?Math.min(100,Math.max(0,(registered/capacity)*100)):0;
+    const readableCount=hasLimit?`${registered} / ${capacity} لاعب`:`${registered} لاعب`;
+    const subtitle=row.status==='finished'?
+      `البطل: ${esc(row.champion_name||'—')}`:
+      `${esc(formatDate(row.starts_at))} · ${esc(readableCount)}`;
+    return `<button type="button" class="tournament-list-item" data-tournament-id="${esc(row.id)}" aria-label="عرض بطولة ${esc(row.name)}">
+      <span class="tournament-list-info">
+        <strong class="tournament-list-name">${esc(row.name)}</strong>
+        <small class="tournament-list-meta">${subtitle}</small>
+        ${hasLimit&&row.status!=='finished'?`<span class="tournament-capacity-track" role="progressbar" aria-label="اكتمال عدد المسجلين" aria-valuemin="0" aria-valuemax="${capacity}" aria-valuenow="${Math.min(registered,capacity)}"><i style="width:${ratio}%"></i></span>`:''}
+      </span>
+      <span class="tournament-list-status status-${esc(statusClass)}">${esc(label)}</span>
+      <span class="tournament-list-arrow" aria-hidden="true">‹</span>
+    </button>`;
+  }).join('');
+}
+function renderActiveTournamentTab(){
+  tabs.forEach(tab=>{
+    const selected=tab.dataset.tournamentTab===activeTournamentTab;
+    tab.classList.toggle('is-active',selected);
+    tab.setAttribute('aria-selected',String(selected));
+    tab.tabIndex=selected?0:-1;
+  });
+  const activeTab=tabs.find(tab=>tab.dataset.tournamentTab===activeTournamentTab);
+  cardsEl.setAttribute('aria-labelledby',activeTab?.id||'tournamentTabCurrent');
+  const rows=tabRows(activeTournamentTab);
+  const messages={current:'لا توجد بطولات حالية.',upcoming:'لا توجد بطولات قادمة.',finished:'لا توجد بطولات منتهية.'};
+  cardsEl.innerHTML=rows.length?renderTournamentCards(rows):`<div class="tournament-list-empty">${messages[activeTournamentTab]}</div>`;
+}
 function renderTournamentList(rows){
   const list=(Array.isArray(rows)?rows:[]).slice().sort(tournamentSort);
-  const current=list.filter(row=>row.status!=='finished');
-  const finished=list.filter(row=>row.status==='finished');
-  countEl.textContent=`${list.length}`;
-  currentCountEl.textContent=String(current.length);
-  finishedCountEl.textContent=String(finished.length);
-  emptyEl.hidden=true;
-  currentListEl.innerHTML=current.length?renderTournamentRows(current,false):'<tr class="empty-row"><td colspan="4">لا توجد بطولات حالية.</td></tr>';
-  finishedListEl.innerHTML=finished.length?renderTournamentRows(finished,true):'<tr class="empty-row"><td colspan="3">لا توجد بطولات منتهية.</td></tr>';
+  countEl.textContent=String(list.length);
+  currentCountEl.textContent=String(list.filter(row=>tournamentCategory(row)==='current').length);
+  upcomingCountEl.textContent=String(list.filter(row=>tournamentCategory(row)==='upcoming').length);
+  finishedCountEl.textContent=String(list.filter(row=>tournamentCategory(row)==='finished').length);
+  renderActiveTournamentTab();
+}
+function selectTournamentTab(tab,focus=false){
+  if(!['current','upcoming','finished'].includes(tab))return;
+  activeTournamentTab=tab;
+  renderActiveTournamentTab();
+  if(focus)tabs.find(button=>button.dataset.tournamentTab===tab)?.focus();
 }
 
 async function loadTournamentChampion(row){
@@ -471,11 +518,37 @@ async function registerForTournament(button,tournamentId){
   }catch(error){console.error(error);button.disabled=false;button.textContent=originalText;setRegistrationMessage('تعذر إتمام التسجيل الآن. حاول مرة أخرى.','error')}
 }
 
-function tournamentRowFromEvent(event){return event.target.closest('.tournament-row[data-tournament-id]')}
-listView.addEventListener('click',event=>{const row=tournamentRowFromEvent(event);if(row)openTournamentDetail(row.dataset.tournamentId)});
-listView.addEventListener('keydown',event=>{if(event.key!=='Enter'&&event.key!==' ')return;const row=tournamentRowFromEvent(event);if(!row)return;event.preventDefault();openTournamentDetail(row.dataset.tournamentId)});
+function tournamentRowFromEvent(event){return event.target.closest('.tournament-list-item[data-tournament-id]')}
+listView.addEventListener('click',event=>{
+  const tab=event.target.closest('[data-tournament-tab]');
+  if(tab){selectTournamentTab(tab.dataset.tournamentTab);return}
+  const row=tournamentRowFromEvent(event);
+  if(row)openTournamentDetail(row.dataset.tournamentId);
+});
+listView.addEventListener('keydown',event=>{
+  if(!['ArrowLeft','ArrowRight','Home','End'].includes(event.key))return;
+  const tab=event.target.closest('[data-tournament-tab]');
+  if(!tab)return;
+  event.preventDefault();
+  const idx=tabs.indexOf(tab);
+  const next=event.key==='Home'?0:event.key==='End'?tabs.length-1:
+    (idx+(event.key==='ArrowLeft'?1:-1)+tabs.length)%tabs.length;
+  selectTournamentTab(tabs[next].dataset.tournamentTab,true);
+});
 detailCard.addEventListener('click',event=>{const matchButton=event.target.closest('[data-tournament-match]');if(matchButton&&!matchButton.disabled){enterTournamentMatch(matchButton,matchButton.dataset.tournamentMatch);return}const button=event.target.closest('.register-btn[data-tournament-id]');if(!button||button.disabled)return;registerForTournament(button,button.dataset.tournamentId)});
 backToTournamentList.addEventListener('click',showTournamentList);
+inlineBackToTournamentList.addEventListener('click',showTournamentList);
+
+async function showAdminCreateWhenAuthorized(){
+  try{
+    const {data:{session}}=await supabase.auth.getSession();
+    if(!session)return;
+    const {data,error}=await supabase.rpc('admin_get_access');
+    if(error)return;
+    const access=firstRow(data);
+    if(access&&access.is_active!==false)adminCreateLink.hidden=false;
+  }catch(error){console.warn('تعذر التحقق من صلاحية إدارة البطولات',error)}
+}
 
 async function loadTournaments(){
   try{
@@ -490,9 +563,13 @@ async function loadTournaments(){
     await Promise.all(tournaments.filter(row=>row.status==='finished').map(loadTournamentChampion));
     renderTournamentList(tournaments);
     restoreTournamentFromUrl();
-  }catch(error){console.error(error);currentListEl.innerHTML='<tr class="empty-row"><td colspan="4">تعذر تحميل البطولات.</td></tr>';finishedListEl.innerHTML='<tr class="empty-row"><td colspan="3">تعذر تحميل البطولات.</td></tr>';emptyEl.hidden=true}
+  }catch(error){
+    console.error(error);
+    cardsEl.innerHTML='<div class="tournament-list-empty error">تعذر تحميل البطولات. أعد المحاولة.</div>';
+  }
 }
 
+void showAdminCreateWhenAuthorized();
 loadTournaments();
 </script>
 <script type="module" src="site-presence.js?v=20260910-detail-scale2"></script>

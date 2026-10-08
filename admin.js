@@ -458,6 +458,7 @@ async function init(){
   try{state.access=first(await rpc('admin_get_access'));}catch(err){console.error(err)}
   if(!state.access){$('accessMessage').textContent='ليس لديك صلاحية الدخول إلى لوحة الإدارة.';setTimeout(()=>location.href='index.html',1400);return}
   $('adminIdentity').textContent=`${session.user.email||'إدارة الموقع'} · ${isOwner()?'المالك':'مشرف'}`;applyAccessUi();$('accessGate').hidden=true;$('adminApp').hidden=false;await loadDashboard();
+  if(location.hash==='#create-tournament'){setView('tournamentsView');openTournamentModal();}
 }
 
 init();

@@ -1,0 +1,45 @@
+name: Verify tournament tabs
+
+on:
+  push:
+    paths:
+      - 'tournaments.html'
+      - 'tournaments-app.html'
+      - 'tournament-tabs-v1.css'
+      - 'admin.js'
+      - 'tests/test_tournament_tabs_new_ui.py'
+      - '.github/workflows/verify-tournament-tabs.yml'
+  pull_request:
+    paths:
+      - 'tournaments.html'
+      - 'tournaments-app.html'
+      - 'tournament-tabs-v1.css'
+      - 'admin.js'
+      - 'tests/test_tournament_tabs_new_ui.py'
+      - '.github/workflows/verify-tournament-tabs.yml'
+  workflow_dispatch:
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+      - run: python tests/test_tournament_tabs_new_ui.py
+      - run: node --check admin.js
+      - name: Check embedded tournament module syntax
+        run: |
+          python - <<'PY'
+          from pathlib import Path
+          import re, subprocess, tempfile
+          html=Path('tournaments-app.html').read_text(encoding='utf-8')
+          scripts=re.findall(r'<script type="module">([\s\S]*?)</script>',html)
+          assert len(scripts)==1
+          with tempfile.NamedTemporaryFile('w',suffix='.mjs',encoding='utf-8') as f:
+              f.write(scripts[0])
+              f.flush()
+              subprocess.run(['node','--check',f.name],check=True)
+          print('tournament code syntax: PASS')
+          PY
