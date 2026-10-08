@@ -173,7 +173,8 @@ function createHud(color,loc){
   }
   return hud;
 }
-export function stopInlineTournamentSpectator(){
+export function stopInlineTournamentSpectator({notify=true}={}){
+  const previousGameId=live.id;
   ++live.generation;
   if(live.poll){clearInterval(live.poll);live.poll=null;}
   if(live.clock){clearInterval(live.clock);live.clock=null;}
@@ -184,6 +185,7 @@ export function stopInlineTournamentSpectator(){
     host.removeAttribute('data-tournament-spectating');
   }
   live.id='';live.host=null;live.saved=null;live.state=null;live.fen='';live.fetching=false;live.errorShown=false;
+  if(notify&&previousGameId)window.dispatchEvent(new Event('shatranj:tournament-spectator-stopped'));
 }
 export async function mountInlineTournamentSpectator(gameId){
   const id=String(gameId||'').trim();
@@ -194,7 +196,7 @@ export async function mountInlineTournamentSpectator(gameId){
   if(!host||!supabase)return false;
   installStyle();
   if(live.host===host&&live.id===id){void fetchState(live.generation);return true;}
-  stopInlineTournamentSpectator();
+  stopInlineTournamentSpectator({notify:false});
   const saved=document.createDocumentFragment();
   while(host.firstChild)saved.appendChild(host.firstChild);
   live.host=host;live.saved=saved;live.id=id;
