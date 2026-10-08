@@ -32,14 +32,21 @@
       host.appendChild(form);
     }
     form.hidden=false;
-    overlay.hidden=false;
+    document.getElementById('mfwAuthTitle').textContent=tab==='signup'?'إنشاء حساب':'تسجيل الدخول';
     document.getElementById(tab==='signup'?'signupTab':'loginTab')?.click();
+    // Preserve the site's real Supabase authentication workflow, but explicitly select one form.
+    document.getElementById('signupForm').hidden=tab!=='signup';
+    document.getElementById('loginForm').hidden=tab!=='login';
+    document.getElementById('recoveryForm').hidden=true;
+    overlay.hidden=false;
+    document.body.classList.add('mfw-auth-open');
     document.getElementById('mfwAuthClose')?.focus();
   }
   function closeAuth(returnFocus=true){
     const overlay=document.getElementById('mfwAuthOverlay');
     if(!overlay || overlay.hidden)return;
     overlay.hidden=true;
+    document.body.classList.remove('mfw-auth-open');
     const form=document.getElementById('guestAuth');
     if(form && authReturn.parent && form.parentElement!==authReturn.parent){
       if(authReturn.next?.parentNode===authReturn.parent){
@@ -50,6 +57,13 @@
   }
   document.addEventListener('keydown',event=>{
     if(event.key==='Escape' && !document.getElementById('mfwAuthOverlay')?.hidden)closeAuth();
+  });
+  document.addEventListener('click',event=>{
+    if(event.target?.id==='loginTab'||event.target?.id==='signupTab'){
+      const title=document.getElementById('mfwAuthTitle');
+      if(title && !document.getElementById('mfwAuthOverlay')?.hidden)
+        title.textContent=event.target.id==='loginTab'?'تسجيل الدخول':'إنشاء حساب';
+    }
   });
 
   function boardHtml(){
@@ -78,18 +92,27 @@
       '</header>'+
       '<section class="mfw-board" id="mfwBoard" aria-label="رقعة الشطرنج"><div class="mfw-board-grid">'+boardHtml()+'</div></section>'+
       '<nav class="mfw-tabs">'+tabs.map(([id,icon,label])=>'<button type="button" class="mfw-tab" data-mfw="'+id+'"><i>'+icon+'</i><span>'+label+'</span></button>').join('')+'</nav>'+
-      '<section class="mfw-panel"><div class="mfw-panel-body" id="mfwPanelBody"></div></section>'+
-      '<div class="mfw-auth-overlay" id="mfwAuthOverlay" hidden>'+
-        '<section class="mfw-auth-dialog" role="dialog" aria-modal="true" aria-labelledby="mfwAuthTitle">'+
-          '<div class="mfw-auth-head"><h2 id="mfwAuthTitle">حساب شطرنج العرب</h2><button type="button" id="mfwAuthClose" aria-label="إغلاق">×</button></div>'+
-          '<div class="mfw-auth-host" id="mfwAuthHost"></div>'+
-        '</section></div>';
+      '<section class="mfw-panel"><div class="mfw-panel-body" id="mfwPanelBody"></div></section>';
     document.body.appendChild(root);
+    // The dialog must live outside the board's four-row grid to prevent mobile layout overflow.
+    let overlay=document.getElementById('mfwAuthOverlay');
+    if(!overlay){
+      overlay=document.createElement('div');
+      overlay.id='mfwAuthOverlay';
+      overlay.className='mfw-auth-overlay';
+      overlay.hidden=true;
+      overlay.innerHTML=
+        '<section class="mfw-auth-dialog" role="dialog" aria-modal="true" aria-labelledby="mfwAuthTitle">'+
+          '<div class="mfw-auth-head"><h2 id="mfwAuthTitle">تسجيل الدخول</h2><button type="button" id="mfwAuthClose" aria-label="إغلاق نافذة الدخول">×</button></div>'+
+          '<div class="mfw-auth-host" id="mfwAuthHost"></div>'+
+        '</section>';
+      document.body.appendChild(overlay);
+    }
     root.querySelectorAll('[data-mfw]').forEach(btn=>btn.addEventListener('click',()=>show(btn.dataset.mfw)));
     root.querySelector('#mfwBoard').addEventListener('click',()=>show('play'));
     root.querySelector('#mfwLoginButton').addEventListener('click',()=>openAuth('login'));
-    root.querySelector('#mfwAuthClose').addEventListener('click',()=>closeAuth());
-    root.querySelector('#mfwAuthOverlay').addEventListener('click',event=>{
+    overlay.querySelector('#mfwAuthClose').addEventListener('click',()=>closeAuth());
+    overlay.addEventListener('click',event=>{
       if(event.target===event.currentTarget) closeAuth();
     });
     syncHeader();
