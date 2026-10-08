@@ -10,24 +10,26 @@ jobs:
   dns_https:
     runs-on: ubuntu-latest
     steps:
-      - name: Check public DNS resolvers and GitHub Pages origin
+      - name: Diagnose registrar authoritative name servers
         shell: bash
         run: |
-          echo '--- control github.com DNS ---'
-          getent ahostsv4 github.com | head -3 || true
-          echo '--- public DNS A ---'
-          dig @8.8.8.8 +time=2 +tries=1 +short arabchees.com A || true
-          echo '--- public DNS CNAME ---'
-          dig @1.1.1.1 +time=2 +tries=1 +short www.arabchees.com CNAME || true
-          echo '--- registrar delegation / NS via Google ---'
-          dig @8.8.8.8 +time=3 +tries=1 arabchees.com NS +noall +answer +authority +comments || true
-          echo '--- SOA via Cloudflare ---'
-          dig @1.1.1.1 +time=3 +tries=1 arabchees.com SOA +noall +answer +authority +comments || true
-          echo '--- trace to authoritative servers ---'
-          timeout 15 dig +trace +time=2 +tries=1 arabchees.com NS | tail -45 || true
-          echo '--- GitHub Pages direct HTTP without DNS ---'
-          curl --noproxy '*' --resolve arabchees.com:80:185.199.108.153 -sS -I --max-time 12 http://arabchees.com/ 2>&1 | head -20 || true
-          echo '--- GitHub Pages direct HTTPS without DNS ---'
-          curl --noproxy '*' --resolve arabchees.com:443:185.199.108.153 -sS -I --max-time 12 https://arabchees.com/ 2>&1 | head -25 || true
-          echo '--- GitHub Pages direct www HTTPS without DNS ---'
-          curl --noproxy '*' --resolve www.arabchees.com:443:185.199.108.153 -sS -I --max-time 12 https://www.arabchees.com/ 2>&1 | head -25 || true
+          echo '--- Registered name servers from .com TLD ---'
+          dig +short @a.gtld-servers.net arabchees.com NS || true
+          echo '--- Check all 4 Dimofinf authoritative name servers ---'
+          for ns in ns1.dimofinf.sa ns2.dimofinf.sa ns3.dimofinf.sa ns4.dimofinf.sa; do
+            echo "==== $ns arabchees.com SOA ===="
+            dig +time=3 +tries=1 @"$ns" arabchees.com SOA +noall +answer +comments || true
+            echo "==== $ns arabchees.com A ===="
+            dig +time=3 +tries=1 @"$ns" arabchees.com A +noall +answer +comments || true
+            echo "==== $ns reference zone thiqqah.com SOA ===="
+            dig +time=3 +tries=1 @"$ns" thiqqah.com SOA +noall +answer +comments || true
+          done
+          echo '--- DNSSEC parent DS (sanity check) ---'
+          dig +time=3 +tries=1 @a.gtld-servers.net arabchees.com DS +noall +answer +comments || true
+          echo '--- Public resolver A and WWW ---'
+          dig +time=3 +tries=1 @8.8.8.8 arabchees.com A +noall +answer +comments || true
+          dig +time=3 +tries=1 @1.1.1.1 www.arabchees.com CNAME +noall +answer +comments || true
+          echo '--- HTTP on GitHub Pages origin, ignoring broken DNS ---'
+          curl --noproxy '*' --resolve arabchees.com:80:185.199.108.153 -sS -I --max-time 15 http://arabchees.com/ | head -8 || true
+          echo '--- HTTPS on GitHub Pages origin, ignoring broken DNS ---'
+          curl --noproxy '*' --resolve arabchees.com:443:185.199.108.153 -sS -I --max-time 15 https://arabchees.com/ 2>&1 | head -5 || true
