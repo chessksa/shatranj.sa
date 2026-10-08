@@ -17,6 +17,41 @@
   function txt(id,fallback='0'){return document.getElementById(id)?.textContent?.trim()||fallback}
   function signedIn(){return document.body.classList.contains('home-signed-in')}
 
+  // Reuse the existing Supabase-powered login/signup forms and event handlers.
+  // Move (never clone) the live form into a mobile dialog, then restore it on close.
+  const authReturn={parent:null,next:null};
+  function openAuth(tab='login'){
+    if(signedIn())return;
+    const form=document.getElementById('guestAuth');
+    const host=document.getElementById('mfwAuthHost');
+    const overlay=document.getElementById('mfwAuthOverlay');
+    if(!form || !host || !overlay)return;
+    if(form.parentElement!==host){
+      authReturn.parent=form.parentElement;
+      authReturn.next=form.nextSibling;
+      host.appendChild(form);
+    }
+    form.hidden=false;
+    overlay.hidden=false;
+    document.getElementById(tab==='signup'?'signupTab':'loginTab')?.click();
+    document.getElementById('mfwAuthClose')?.focus();
+  }
+  function closeAuth(returnFocus=true){
+    const overlay=document.getElementById('mfwAuthOverlay');
+    if(!overlay || overlay.hidden)return;
+    overlay.hidden=true;
+    const form=document.getElementById('guestAuth');
+    if(form && authReturn.parent && form.parentElement!==authReturn.parent){
+      if(authReturn.next?.parentNode===authReturn.parent){
+        authReturn.parent.insertBefore(form,authReturn.next);
+      }else authReturn.parent.appendChild(form);
+    }
+    if(returnFocus && !signedIn())document.getElementById('mfwLoginButton')?.focus();
+  }
+  document.addEventListener('keydown',event=>{
+    if(event.key==='Escape' && !document.getElementById('mfwAuthOverlay')?.hidden)closeAuth();
+  });
+
   function boardHtml(){
     let out='';
     for(let rank=8;rank>=1;rank--){
@@ -38,14 +73,25 @@
     root.innerHTML=
       '<header class="mfw-header">'+
         '<div class="mfw-member"><span class="mfw-avatar">♟</span><span class="mfw-member-copy"><strong id="mfwName">شطرنج العرب</strong><small id="mfwState">المنصة العربية للشطرنج</small></span></div>'+
+        '<button type="button" class="mfw-login-btn" id="mfwLoginButton" aria-haspopup="dialog">تسجيل الدخول</button>'+
         '<div class="mfw-points"><small>النقاط</small><b id="mfwPoints">1500</b></div>'+
       '</header>'+
       '<section class="mfw-board" id="mfwBoard" aria-label="رقعة الشطرنج"><div class="mfw-board-grid">'+boardHtml()+'</div></section>'+
       '<nav class="mfw-tabs">'+tabs.map(([id,icon,label])=>'<button type="button" class="mfw-tab" data-mfw="'+id+'"><i>'+icon+'</i><span>'+label+'</span></button>').join('')+'</nav>'+
-      '<section class="mfw-panel"><div class="mfw-panel-body" id="mfwPanelBody"></div></section>';
+      '<section class="mfw-panel"><div class="mfw-panel-body" id="mfwPanelBody"></div></section>'+
+      '<div class="mfw-auth-overlay" id="mfwAuthOverlay" hidden>'+
+        '<section class="mfw-auth-dialog" role="dialog" aria-modal="true" aria-labelledby="mfwAuthTitle">'+
+          '<div class="mfw-auth-head"><h2 id="mfwAuthTitle">حساب شطرنج العرب</h2><button type="button" id="mfwAuthClose" aria-label="إغلاق">×</button></div>'+
+          '<div class="mfw-auth-host" id="mfwAuthHost"></div>'+
+        '</section></div>';
     document.body.appendChild(root);
     root.querySelectorAll('[data-mfw]').forEach(btn=>btn.addEventListener('click',()=>show(btn.dataset.mfw)));
     root.querySelector('#mfwBoard').addEventListener('click',()=>show('play'));
+    root.querySelector('#mfwLoginButton').addEventListener('click',()=>openAuth('login'));
+    root.querySelector('#mfwAuthClose').addEventListener('click',()=>closeAuth());
+    root.querySelector('#mfwAuthOverlay').addEventListener('click',event=>{
+      if(event.target===event.currentTarget) closeAuth();
+    });
     syncHeader();
     show('home');
   }
@@ -102,7 +148,7 @@
   function invite(body){
     if(!signedIn()){
       action(body,'دعوة لاعب','سجّل الدخول أولًا لإرسال دعوة مباشرة.','#register','تسجيل الدخول');
-      body.querySelector('a')?.addEventListener('click',e=>{e.preventDefault();document.getElementById('navAccount')?.click()});
+      body.querySelector('a')?.addEventListener('click',event=>{event.preventDefault();openAuth('login')});
       return;
     }
     body.innerHTML='<div class="mfw-action"><h3>دعوة لاعب</h3><p>ابحث عن لاعب من داخل الموقع وأرسل له دعوة مباشرة.</p><button class="mfw-primary" id="mfwInviteButton" type="button">فتح البحث عن لاعب</button></div>';
@@ -132,6 +178,11 @@
     if(n)n.textContent=signedIn()?txt('headerMemberName','العضو'):'شطرنج العرب';
     if(p)p.textContent=signedIn()?txt('headerMemberRating','1500'):'—';
     if(s)s.textContent=signedIn()?'متصل الآن':'المنصة العربية للشطرنج';
+    const loginButton=document.getElementById('mfwLoginButton');
+    const points=document.querySelector('#mobileFixedWorkspace .mfw-points');
+    if(loginButton)loginButton.hidden=signedIn();
+    if(points)points.hidden=!signedIn();
+    if(signedIn() && !document.getElementById('mfwAuthOverlay')?.hidden)closeAuth(false);
     if(active==='home')show('home');
   }
 
