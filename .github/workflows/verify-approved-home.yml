@@ -1,0 +1,44 @@
+name: Verify approved homepage only
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - 'index.html'
+      - 'tests/test_home_refresh_freshness.py'
+      - 'tests/test_home_theme_cache_buster.py'
+      - 'tests/test_home_bottom_gap.py'
+      - '.github/workflows/verify-approved-home.yml'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  verify:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - name: Confirm current homepage and no legacy variants
+        run: python -m pytest tests/test_home_refresh_freshness.py tests/test_home_theme_cache_buster.py -q
+      - name: Validate legacy refresh and mobile gap invariants
+        run: python tests/test_home_bottom_gap.py
+      - name: Parse all inline homepage scripts
+        run: |
+          python - <<'PY'
+          import re, pathlib, subprocess, tempfile
+          html=pathlib.Path('index.html').read_text(encoding='utf-8')
+          inline=re.findall(r'<script\\b([^>]*)>([\\s\\S]*?)</script>',html)
+          scripts=[(attrs,body) for attrs,body in inline if 'src=' not in attrs and body.strip()]
+          assert len(scripts)>=3, 'expected current home logic and retirement scripts'
+          for attrs,body in scripts:
+              suffix='.mjs' if 'type="module"' in attrs else '.js'
+              with tempfile.NamedTemporaryFile('w',suffix=suffix,encoding='utf-8') as file:
+                  file.write(body)
+                  file.flush()
+                  subprocess.run(['node','--check',file.name],check=True)
+          print(f'Parsed {len(scripts)} inline scripts')
+          PY
