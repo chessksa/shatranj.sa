@@ -25,8 +25,10 @@ def test_username_uses_authoritative_player_profile():
 
 def test_embedding_preserves_existing_profile_features():
     html=read('profile.html')
-    assert "get('embed')==='panel'" in html
-    assert "classList.add('embedded-profile')" in html
+    # The same compact dashboard is used standalone and inside the chess workspace.
+    # No legacy header, hero, or separate embedded-only profile layout remains.
+    assert 'class="topbar"' not in html
+    assert 'id="profileHero"' not in html
     assert 'class="topbar"' not in html
     assert 'id="profileHero"' not in html
     assert 'class="profile-stats-grid"' in html
