@@ -1,5 +1,6 @@
-/* Center enlarged chess-piece images precisely within each mobile square.
-   The individual CSS translate property preserves existing piece animations. */
+/* Optical centering for the actual artwork (not just the PNG canvas).
+   Chess-piece PNGs have uneven transparent top padding; pawns need more lift.
+   Keep enlarged 116% pieces, board size, colors, and move animations unchanged. */
 @media(max-width:900px){
   body.shatranj-play-home-palette .v2-board .v2-square{
     position:relative!important;
@@ -7,7 +8,8 @@
   }
   body.shatranj-play-home-palette .v2-board .v2-square>.v2-piece{
     position:absolute!important;
-    top:50%!important;
+    /* Optical shift is relative to the square, while translate centers the image box. */
+    top:calc(50% - var(--piece-optical-lift, 8%))!important;
     left:50%!important;
     translate:-50% -50%!important;
     width:116%!important;
@@ -20,5 +22,26 @@
     padding:0!important;
     object-fit:contain!important;
     pointer-events:none!important;
+  }
+  /* File-specific transparent-area compensation for white and black pieces. */
+  body.shatranj-play-home-palette .v2-piece[src$="/wp.png"],
+  body.shatranj-play-home-palette .v2-piece[src$="/bp.png"]{
+    --piece-optical-lift:18%;
+  }
+  body.shatranj-play-home-palette .v2-piece[src$="/wr.png"],
+  body.shatranj-play-home-palette .v2-piece[src$="/br.png"],
+  body.shatranj-play-home-palette .v2-piece[src$="/wn.png"],
+  body.shatranj-play-home-palette .v2-piece[src$="/bn.png"]{
+    --piece-optical-lift:8%;
+  }
+  body.shatranj-play-home-palette .v2-piece[src$="/wb.png"],
+  body.shatranj-play-home-palette .v2-piece[src$="/bb.png"],
+  body.shatranj-play-home-palette .v2-piece[src$="/wq.png"],
+  body.shatranj-play-home-palette .v2-piece[src$="/bq.png"]{
+    --piece-optical-lift:5%;
+  }
+  body.shatranj-play-home-palette .v2-piece[src$="/wk.png"],
+  body.shatranj-play-home-palette .v2-piece[src$="/bk.png"]{
+    --piece-optical-lift:1%;
   }
 }
