@@ -124,7 +124,7 @@
 
   function setActive(id,title){
     active=id;
-    document.querySelectorAll('[data-mfw]').forEach(btn=>btn.classList.toggle('active',btn.dataset.mfw===id));
+    document.querySelectorAll('[data-mfw]').forEach(btn=>btn.classList.toggle('active',btn.dataset.mfw===(id==='tournaments'?'more':id)));
   }
 
   function home(body){
@@ -234,7 +234,7 @@
       if(!frame||frame.contentWindow!==event.source||active!=='tournaments')return;
       const gameId=String(event.data.gameId||'');
       if(!/^[A-Za-z0-9_-]{1,100}$/.test(gameId))return;
-      void spectatorModule().then(module=>module.mountInlineTournamentSpectator(gameId)).catch(error=>console.warn('تعذر عرض مباراة البطولة',error));
+      void spectatorModule().then(module=>{if(active==='tournaments'&&document.querySelector('#mfwPanelBody .mfw-tournament-embed')===frame)return module.mountInlineTournamentSpectator(gameId);}).catch(error=>console.warn('تعذر عرض مباراة البطولة',error));
     });
 
     const refreshHome=()=>{
