@@ -1,0 +1,18 @@
+/* Make chess pieces visually larger on phones without resizing the board.
+   Scope: live play page only; desktop and the home preview are unchanged. */
+@media(max-width:900px){
+  body.shatranj-play-home-palette .v2-board .v2-square{
+    overflow:hidden!important;
+  }
+  body.shatranj-play-home-palette .v2-board .v2-square>.v2-piece{
+    width:116%!important;
+    height:116%!important;
+    max-width:none!important;
+    max-height:none!important;
+    min-width:0!important;
+    min-height:0!important;
+    object-fit:contain!important;
+    justify-self:center!important;
+    align-self:center!important;
+  }
+}
