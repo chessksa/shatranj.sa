@@ -4,6 +4,8 @@ on:
   push:
     paths:
       - 'v2/home/**'
+      - 'profile.html'
+      - 'tests/test_desktop_member_profile_inline.py'
       - 'tests/home-inline-play-verify.mjs'
       - 'tests/desktop-guest-auth-active.test.mjs'
       - 'tests/desktop-login-direct.test.mjs'
@@ -13,6 +15,8 @@ on:
   pull_request:
     paths:
       - 'v2/home/**'
+      - 'profile.html'
+      - 'tests/test_desktop_member_profile_inline.py'
       - 'tests/home-inline-play-verify.mjs'
       - 'tests/desktop-guest-auth-active.test.mjs'
       - 'tests/desktop-login-direct.test.mjs'
@@ -36,3 +40,4 @@ jobs:
       - run: node tests/desktop-login-direct.test.mjs
       - run: node tests/desktop-auth-observer-loop.test.mjs
       - run: node tests/desktop-board-preview-pieces.test.mjs
+      - run: python tests/test_desktop_member_profile_inline.py

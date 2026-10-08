@@ -56,6 +56,11 @@
     box-shadow:none!important;
   }
 
+  .desktop-member-identity{
+    display:flex!important;flex-direction:column!important;align-items:center!important;
+    justify-content:center!important;min-width:0!important;width:100%!important;gap:3px!important;
+  }
+
   .desktop-member-name{
     max-width:100%!important;
     font-size:18px!important;
@@ -67,6 +72,16 @@
     overflow:hidden!important;
     text-overflow:ellipsis!important;
   }
+
+  .desktop-member-username{
+    display:block!important;width:100%!important;max-width:100%!important;
+    font-size:12px!important;line-height:1.3!important;font-weight:700!important;
+    color:#d8cda9!important;direction:ltr!important;unicode-bidi:plaintext!important;
+    text-align:center!important;white-space:nowrap!important;
+    overflow:hidden!important;text-overflow:ellipsis!important;
+  }
+  .desktop-member-username[hidden]{display:none!important}
+  .desktop-member-profile:hover .desktop-member-name{text-decoration:underline;text-decoration-color:rgba(239,207,124,.6)}
 
   .desktop-member-score{
     width:100%!important;
@@ -157,6 +172,7 @@
   .desktop-member-card{padding:7px 7px 8px!important;gap:5px!important}
   .desktop-member-avatar-wrap{width:72px!important;height:72px!important}
   .desktop-member-name{font-size:16px!important}
+  .desktop-member-username{font-size:11px!important}
   .desktop-member-score{min-height:42px!important}
   .desktop-member-score b{font-size:26px!important}
   .desktop-member-location{font-size:11px!important}
