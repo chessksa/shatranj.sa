@@ -57,7 +57,8 @@
     $('statDraws').textContent = row.draws;
     $('statLosses').textContent = row.losses;
     $('friendsCount').textContent = publicProfile?.friend_count ?? 0;
-    $('publicProfileLink').href = `player.html?id=${encodeURIComponent(row.id)}`;
+    const inChessPanel=window.parent!==window&&new URLSearchParams(location.search).get('embed')==='panel';
+    $('publicProfileLink').href=`player.html?id=${encodeURIComponent(row.id)}${inChessPanel?'&embed=panel':''}`;
 
   }
 
@@ -223,7 +224,7 @@
     $('recentGames').innerHTML = data.map(game => {
       const [label, cls] = outcomeArabic(game.outcome);
       const kind = Number(game.rating_step) === 1 ? 'تحدي صديق' : 'بحث عشوائي';
-      return `<div class="row"><div><div class="row-title">${esc(game.opponent_name || 'خصم')}</div><div class="row-meta">${esc(game.time_control_minutes)} دقائق • ${new Date(game.played_at).toLocaleDateString('ar-SA')}</div></div><div class="row-actions"><span class="game-kind">${kind}</span><span class="game-result ${cls}">${label}</span></div></div>`;
+      return `<div class="row"><div class="profile-game-main"><span class="row-title" title="${esc(game.opponent_name||'خصم')}">${esc(game.opponent_name||'خصم')}</span><span class="row-meta">${esc(game.time_control_minutes)} د • ${new Date(game.played_at).toLocaleDateString('ar-SA')}</span></div><div class="row-actions"><span class="game-kind">${kind}</span><span class="game-result ${cls}">${label}</span></div></div>`;
     }).join('');
   }
 
@@ -351,7 +352,11 @@
 
   $('logoutBtn').addEventListener('click', async () => {
     await client.auth.signOut();
-    location.href = 'index.html';
+    if(window.parent!==window&&new URLSearchParams(location.search).get('embed')==='panel'){
+      window.parent.location.assign('index.html');
+    }else{
+      location.href='index.html';
+    }
   });
 
   document.addEventListener('visibilitychange', () => { if (!document.hidden) heartbeatAndRefreshFriends(); });

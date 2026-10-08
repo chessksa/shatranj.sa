@@ -21,7 +21,7 @@ button{cursor:pointer}
 [hidden]{display:none!important}
 .shell{width:min(100% - 22px,880px);min-width:0;margin:0 auto;padding:12px 0 30px}
 #dashboard{display:grid;gap:10px;min-width:0}
-.profile-block,.profile-settings{
+.profile-block{
   min-width:0;border:1px solid var(--profile-line);border-radius:14px;
   background:var(--profile-panel);box-shadow:0 8px 24px rgba(0,0,0,.12);
   padding:11px;
@@ -41,9 +41,9 @@ button{cursor:pointer}
 .profile-stat[data-result="losses"] .profile-stat-value{color:#efb0ab}
 .profile-links-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:6px}
 .profile-action{
-  min-width:0;min-height:62px;padding:9px 10px;border:1px solid rgba(139,190,188,.28);
+  min-width:0;min-height:74px;padding:9px 7px;border:1px solid rgba(139,190,188,.28);
   border-radius:10px;background:linear-gradient(145deg,rgba(10,76,79,.75),rgba(5,48,53,.8));
-  display:flex;align-items:center;justify-content:space-between;gap:8px;
+  display:flex;flex-direction:column;align-items:center;justify-content:center;gap:6px;text-align:center;
   transition:background .15s,border-color .15s;
 }
 .profile-action:hover,.profile-action:focus-visible{
@@ -51,8 +51,8 @@ button{cursor:pointer}
 }
 .profile-action:last-child{grid-column:1/-1}
 .profile-action-label{
-  flex:1;min-width:0;color:var(--profile-text);font-size:12px;
-  font-weight:800;line-height:1.45;overflow-wrap:anywhere
+  flex:0 1 auto;min-width:0;width:100%;color:var(--profile-text);font-size:12px;
+  font-weight:800;line-height:1.45;overflow-wrap:anywhere;text-align:center
 }
 .profile-action-value{
   flex:0 0 auto;min-width:30px;padding:5px 7px;border-radius:7px;
@@ -66,31 +66,29 @@ button{cursor:pointer}
   gap:6px;padding:9px 8px;border:1px solid rgba(139,190,188,.17);
   border-radius:9px;background:rgba(2,38,42,.55)
 }
-.profile-games .row>div:first-child{min-width:0}
-.row-title{font-size:12px;color:var(--profile-text);font-weight:900;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
-.row-meta{font-size:10px;line-height:1.5;color:var(--profile-muted);margin-top:4px}
-.row-actions{display:flex;align-items:center;justify-content:flex-start;flex-wrap:wrap;gap:5px}
+.profile-games .row{white-space:nowrap}
+.profile-game-main{min-width:0;display:flex;align-items:center;justify-content:flex-start;gap:6px;overflow:hidden;white-space:nowrap}
+.row-title{min-width:0;flex:0 1 auto;font-size:12px;color:var(--profile-text);font-weight:900;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;text-align:center}
+.row-meta{min-width:0;flex:1 1 auto;font-size:10px;line-height:1.5;color:var(--profile-muted);margin:0;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;text-align:center}
+.row-actions{display:flex;align-items:center;justify-content:center;flex-wrap:nowrap;white-space:nowrap;gap:5px;text-align:center}
 .game-kind{padding:4px 5px;border-radius:6px;background:rgba(225,187,103,.08);color:#dfc68b;font-size:9px;white-space:nowrap}
 .game-result{font-size:11px;font-weight:900}
 .game-result.win{color:#a8e2b9}.game-result.loss{color:#ffb9b4}.game-result.draw{color:#e1ce97}
 .empty{padding:22px 6px;text-align:center;color:var(--profile-muted);font-size:12px}
-.profile-settings{padding:0;overflow:hidden}
-.profile-settings summary{
-  cursor:pointer;list-style:none;padding:12px;color:#d3ddd6;
-  font-size:12px;font-weight:800
+
+.profile-toolbar{width:100%;min-width:0;display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:6px}
+.profile-top-action{
+ min-width:0;min-height:67px;padding:8px 4px;display:flex;flex-direction:column;
+ align-items:center;justify-content:center;gap:6px;text-align:center;cursor:pointer;
+ border:1px solid rgba(225,187,103,.31);border-radius:11px;
+ background:linear-gradient(145deg,rgba(10,76,79,.75),rgba(4,49,53,.84));
+ color:var(--profile-text);font-size:11px;font-weight:800;line-height:1.3
 }
-.profile-settings summary::-webkit-details-marker{display:none}
-.profile-settings summary::after{content:"⌄";float:left;color:var(--profile-gold)}
-.profile-settings[open] summary::after{content:"⌃"}
-.profile-settings[open] summary{border-bottom:1px solid var(--profile-line)}
-.profile-settings-actions{padding:10px;display:grid;gap:7px}
-.profile-setting-btn{
-  min-height:37px;border:1px solid rgba(225,187,103,.3);border-radius:9px;
-  background:rgba(8,67,70,.7);color:var(--profile-text);font-size:12px;
-  display:flex;align-items:center;justify-content:center;padding:8px;cursor:pointer
-}
-.profile-setting-btn:hover{border-color:var(--profile-gold)}
-.profile-setting-btn.danger{border-color:rgba(225,116,116,.38);color:#f3c2be}
+.profile-top-action:hover,.profile-top-action:focus-visible{outline:none;border-color:var(--profile-gold);background:rgba(17,84,85,.95)}
+.profile-top-action .profile-tool-icon{width:18px;height:18px;display:block;flex:0 0 18px;stroke:var(--profile-gold);fill:none;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round}
+.profile-top-action span{text-align:center;width:100%;overflow-wrap:anywhere}
+.profile-top-action.danger{border-color:rgba(225,116,116,.36)}
+.profile-top-action.danger .profile-tool-icon{stroke:#efb1ae}
 .avatar-input{display:none}
 .loading{min-height:150px;display:grid;place-items:center;font-size:13px;color:var(--profile-muted);text-align:center;padding:16px}
 .modal{
@@ -126,11 +124,18 @@ button{cursor:pointer}
   .profile-stat{min-height:68px;padding:6px 2px;gap:6px}
   .profile-stat-label{font-size:10px}
   .profile-stat-value{font-size:20px}
-  .profile-action{min-height:55px;padding:7px}
+  .profile-top-action{min-height:59px;font-size:10px;padding:6px 3px}
+  .profile-top-action .profile-tool-icon{width:16px;height:16px}
+  .profile-action{min-height:64px;padding:7px}
   .profile-action-label{font-size:11px}
   .profile-action-value{font-size:15px}
-  .profile-games .row{padding:8px 6px}
-  .row-actions{max-width:108px}
+  .profile-games .row{padding:8px 5px;gap:4px}
+  .profile-game-main{gap:4px}
+  .row-title{font-size:11px}
+  .row-meta{font-size:9px}
+  .row-actions{max-width:none;gap:3px}
+  .game-kind{font-size:8px;padding:3px}
+  .game-result{font-size:10px}
 }
 </style>
 </head>
@@ -138,6 +143,21 @@ button{cursor:pointer}
 <div class="shell" id="profileApp">
   <div class="loading" id="loadingState" role="status">جاري تحميل بيانات العضو…</div>
   <main id="dashboard" hidden>
+    <nav class="profile-toolbar" aria-label="أدوات العضو">
+      <label class="profile-top-action" for="avatarInput" title="تغيير الصورة الشخصية">
+        <svg class="profile-tool-icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M4 7h4l2-3h4l2 3h4v12H4z"/><circle cx="12" cy="13" r="4"/></svg>
+        <span>تغيير الصورة</span>
+      </label>
+      <input class="avatar-input" id="avatarInput" type="file" accept="image/jpeg,image/png,image/webp">
+      <a class="profile-top-action" id="publicProfileLink" href="#" title="الصفحة العامة">
+        <svg class="profile-tool-icon" viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="8" r="4"/><path d="M4 21v-3c0-3 3-5 8-5s8 2 8 5v3"/></svg>
+        <span>الصفحة العامة</span>
+      </a>
+      <button class="profile-top-action danger" id="logoutBtn" type="button" title="تسجيل الخروج">
+        <svg class="profile-tool-icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M12 2v10"/><path d="M6.5 5.5a9 9 0 1 0 11 0"/></svg>
+        <span>تسجيل الخروج</span>
+      </button>
+    </nav>
     <section class="profile-block" aria-labelledby="matchStatsTitle">
       <div class="profile-section-head"><h2 id="matchStatsTitle">إحصاءات المباريات</h2></div>
       <div class="profile-stats-grid">
@@ -164,15 +184,6 @@ button{cursor:pointer}
       </div>
       <div class="profile-games" id="recentGames"></div>
     </section>
-    <details class="profile-settings">
-      <summary>إعدادات الحساب</summary>
-      <div class="profile-settings-actions">
-        <label class="profile-setting-btn" for="avatarInput">تغيير الصورة الشخصية</label>
-        <input class="avatar-input" id="avatarInput" type="file" accept="image/jpeg,image/png,image/webp">
-        <a class="profile-setting-btn" id="publicProfileLink" href="#">الصفحة العامة</a>
-        <button class="profile-setting-btn danger" id="logoutBtn" type="button">تسجيل الخروج</button>
-      </div>
-    </details>
   </main>
 </div>
 <div class="modal" id="challengeModal" hidden>
@@ -193,7 +204,7 @@ button{cursor:pointer}
 <div class="toast" id="toast" role="status"></div>
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <script src="config.js"></script>
-<script src="profile.js?v=20261009-profile-dashboard-compact-v1"></script>
+<script src="profile.js?v=20261009-profile-toolbar-v2"></script>
 <script type="module" src="site-presence.js?v=20260906-1"></script>
 </body>
 </html>

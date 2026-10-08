@@ -147,7 +147,7 @@
     if (error) { host.innerHTML=''; return; }
     relationship=(Array.isArray(data)?data[0]:data) || {state:'none',request_id:null};
     if (relationship.state==='self') {
-      host.innerHTML='<a class="btn gold" href="profile.html">لوحة التحكم</a>';
+      host.innerHTML=`<a class="btn gold" href="profile.html${new URLSearchParams(location.search).get('embed')==='panel'?'?embed=panel':''}">لوحة التحكم</a>`;
     } else if (relationship.state==='none') {
       host.innerHTML='<button class="btn gold" type="button" data-rel-action="send">إضافة صديق</button>';
     } else if (relationship.state==='outgoing') {

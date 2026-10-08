@@ -5,6 +5,11 @@
   <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover" />
   <title>ملف اللاعب | شطرنج العرب</title>
   <meta name="theme-color" content="#0c3435" />
+  <script>
+    if(new URLSearchParams(location.search).get('embed')==='panel'){
+      document.documentElement.classList.add('embedded-public-profile');
+    }
+  </script>
   <style>
     :root{--bg:#082d2f;--panel:#103f40;--gold:#d4b467;--cream:#f4eddc;--muted:#adc1bc;--line:rgba(212,180,103,.22);--good:#74b38b;--bad:#d96c6c;--shadow:0 18px 45px rgba(0,0,0,.2)}
     *{box-sizing:border-box}html,body{margin:0;min-height:100%;font-family:Arial,sans-serif;background:linear-gradient(145deg,var(--bg),#0a3839 55%,#08292b);color:var(--cream)}
@@ -13,6 +18,58 @@
     .stats{display:grid;grid-template-columns:repeat(6,1fr);gap:10px;margin:14px 0}.stat,.card{border:1px solid var(--line);background:rgba(13,56,57,.88);border-radius:17px}.stat{padding:14px}.stat small{display:block;color:var(--muted);margin-bottom:6px}.stat strong{font-size:22px}.grid{display:grid;grid-template-columns:1.15fr .85fr;gap:14px}.card{padding:18px}.card h2{margin:0 0 14px;font-size:18px}.wide{grid-column:1/-1}.chart{height:220px;display:grid;align-items:center}.chart svg{width:100%;height:190px;overflow:visible}.chart-line{fill:none;stroke:var(--gold);stroke-width:3;stroke-linecap:round;stroke-linejoin:round}.chart-grid{stroke:rgba(255,255,255,.08)}.chart-dot{fill:var(--cream);stroke:var(--gold);stroke-width:2}.chart-label{fill:var(--muted);font-size:12px}.empty{color:var(--muted);text-align:center;padding:26px 10px}.list{display:grid;gap:9px}.row{display:grid;grid-template-columns:1fr auto;gap:10px;align-items:center;padding:12px;border:1px solid rgba(255,255,255,.08);border-radius:14px;background:rgba(255,255,255,.025)}.row-title{font-weight:800}.row-meta{color:var(--muted);font-size:12px;margin-top:4px}.result{font-weight:800}.win{color:#8ed2a5}.loss{color:#ef9b9b}.draw{color:#e8dba9}.kind{font-size:11px;padding:3px 7px;border-radius:12px;background:rgba(212,180,103,.1);color:var(--gold)}.chips{display:flex;gap:6px;align-items:center}.achievement-grid{display:grid;gap:8px}.achievement{display:flex;align-items:center;gap:10px;padding:11px;border:1px solid rgba(212,180,103,.22);border-radius:13px;background:rgba(212,180,103,.06)}.achievement .ico{font-size:22px;color:var(--gold)}.achievement .name{font-weight:800}.achievement .hint{font-size:11px;color:var(--muted);margin-top:3px}.message{min-height:50vh;display:grid;place-items:center;text-align:center;color:var(--muted)}.toast{position:fixed;left:20px;bottom:20px;padding:12px 15px;max-width:min(380px,calc(100% - 40px));border-radius:12px;background:#153e3f;border:1px solid var(--line);box-shadow:var(--shadow);opacity:0;transform:translateY(10px);transition:.2s;pointer-events:none}.toast.show{opacity:1;transform:none}.toast.error{border-color:rgba(217,108,108,.55)}
     @media(max-width:800px){.hero{grid-template-columns:auto 1fr}.friend-action{grid-column:1/-1;grid-template-columns:1fr}.stats{grid-template-columns:repeat(3,1fr)}.grid{grid-template-columns:1fr}.wide{grid-column:auto}}
     @media(max-width:520px){.shell{width:calc(100% - 18px);padding-top:9px}.brand span:last-child{display:none}.hero{padding:16px;gap:13px}.avatar,.avatar-fallback{width:84px;height:84px}.identity h1{font-size:22px}.stats{grid-template-columns:repeat(2,1fr);gap:8px}.stat{padding:12px}.card{padding:14px}.row{grid-template-columns:1fr}.topbar .btn{padding:8px 10px;font-size:12px}}
+
+    /* Public player inside the fixed chess middle column; no nested mobile navigation. */
+    html.embedded-public-profile,html.embedded-public-profile body{
+      min-width:0;width:100%;max-width:100%;margin:0;padding:0;overflow-x:hidden;background:#043135
+    }
+    html.embedded-public-profile .shell{margin:0;width:100%;max-width:none;padding:8px 7px 30px}
+    html.embedded-public-profile .topbar,
+    html.embedded-public-profile .v2-global-sidebar,
+    html.embedded-public-profile .v2-mobile-nav,
+    html.embedded-public-profile .v2-mobile-more,
+    html.embedded-public-profile #siteNotificationHost{display:none!important}
+    html.embedded-public-profile .hero{
+      display:flex;flex-direction:column;align-items:center;justify-content:center;
+      text-align:center;gap:8px;padding:12px 7px;border-radius:12px;width:100%;min-width:0
+    }
+    html.embedded-public-profile .avatar,
+    html.embedded-public-profile .avatar-fallback{width:76px;height:76px}
+    html.embedded-public-profile .identity{min-width:0;width:100%}
+    html.embedded-public-profile .identity-name-row{justify-content:center;gap:6px}
+    html.embedded-public-profile .identity h1{font-size:19px;line-height:1.3;overflow-wrap:anywhere}
+    html.embedded-public-profile .player-rank-badge{font-size:11px}
+    html.embedded-public-profile .meta{font-size:11px;line-height:1.6;overflow-wrap:anywhere}
+    html.embedded-public-profile .rating{font-size:17px;margin-top:5px}
+    html.embedded-public-profile .friend-action{
+      min-width:0;width:100%;display:flex;flex-direction:column;gap:5px;
+      align-items:stretch;justify-content:center
+    }
+    html.embedded-public-profile .friend-action .btn{
+      width:100%;font-size:11px;min-height:35px;padding:7px 5px;text-align:center
+    }
+    html.embedded-public-profile .stats{
+      display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:5px;margin:7px 0
+    }
+    html.embedded-public-profile .stat{min-width:0;min-height:60px;padding:7px 3px;text-align:center}
+    html.embedded-public-profile .stat small{font-size:10px;min-width:0;margin-bottom:6px;white-space:normal}
+    html.embedded-public-profile .stat strong{font-size:19px}
+    html.embedded-public-profile .grid{display:grid;grid-template-columns:minmax(0,1fr);gap:7px}
+    html.embedded-public-profile .card{min-width:0;padding:10px 8px;border-radius:11px}
+    html.embedded-public-profile .card h2{font-size:14px;margin-bottom:9px}
+    html.embedded-public-profile .wide{grid-column:1/-1}
+    html.embedded-public-profile .chart{height:150px}
+    html.embedded-public-profile .chart svg{height:135px;max-width:100%}
+    html.embedded-public-profile .row{grid-template-columns:minmax(0,1fr) auto;padding:7px 5px;gap:4px}
+    html.embedded-public-profile .row-title{font-size:11px}
+    html.embedded-public-profile .row-meta{font-size:9px}
+    html.embedded-public-profile .chips{gap:4px;flex-wrap:nowrap}
+    html.embedded-public-profile .kind{font-size:8px;padding:3px}
+    html.embedded-public-profile .result{font-size:10px}
+    html.embedded-public-profile .achievement{min-width:0;padding:8px}
+    html.embedded-public-profile .achievement .name{font-size:12px}
+    html.embedded-public-profile .achievement .hint{font-size:10px}
+
   </style>
 <link rel="stylesheet" href="v2/site/typography-system.css?v=20261006-type1"></head>
 <body>
@@ -93,7 +150,7 @@
       new MutationObserver(revealRealMessage).observe(message,{childList:true,subtree:true,characterData:true});
     })();
   </script>
-  <script src="player.js?v=20261007-last-seen1"></script>
+  <script src="player.js?v=20261009-embedded-public-v2"></script>
 <script type="module" src="site-presence.js?v=20260906-1"></script>
 </body>
 </html>

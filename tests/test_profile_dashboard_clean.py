@@ -23,8 +23,8 @@ def test_dashboard_is_compact_with_nonduplicated_sections():
     assert 'class="profile-links-grid"' in html
     assert html.count('class="profile-action"')==5
     assert 'id="recentGames"' in html
-    assert '<details class="profile-settings">' in html
-    assert '<details class="profile-settings" open' not in html
+    assert 'class="profile-toolbar"' in html
+    assert 'class="profile-settings"' not in html
     for id in ('friendsCount','incomingCount','outgoingCount','incomingChallengesCount','outgoingChallengesCount'):
         assert f'id="{id}"' in html
     assert 'overflow-x:hidden' in html
