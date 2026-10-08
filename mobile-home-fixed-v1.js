@@ -13,6 +13,9 @@
     ['ranking','▥','الترتيب'],['invite','＋','دعوة'],['more','☰','المزيد']
   ];
   let active='home';
+  let tournamentSpectatorPromise=null;
+  const spectatorModule=()=>tournamentSpectatorPromise||(tournamentSpectatorPromise=import('./v2/home/inline-tournament-spectator.mjs?v=20261009-inline-tournament-v1'));
+
 
   function txt(id,fallback='0'){return document.getElementById(id)?.textContent?.trim()||fallback}
   function signedIn(){return document.body.classList.contains('home-signed-in')}
@@ -109,7 +112,7 @@
       document.body.appendChild(overlay);
     }
     root.querySelectorAll('[data-mfw]').forEach(btn=>btn.addEventListener('click',()=>show(btn.dataset.mfw)));
-    root.querySelector('#mfwBoard').addEventListener('click',()=>show('play'));
+    root.querySelector('#mfwBoard').addEventListener('click',()=>{if(!root.querySelector('#mfwBoard')?.dataset.tournamentSpectating)show('play')});
     root.querySelector('#mfwLoginButton').addEventListener('click',()=>openAuth('login'));
     overlay.querySelector('#mfwAuthClose').addEventListener('click',()=>closeAuth());
     overlay.addEventListener('click',event=>{
@@ -179,20 +182,34 @@
   }
 
   function more(body){
-    const items=[['♜','البطولات','tournaments.html'],['◉','شاهد','watch.html'],['◆','الألغاز','puzzles.html'],['▤','تعلّم','learn.html'],['⌁','التحليل','analysis.html'],['▥','الإحصائيات','stats.html'],['♙','الأندية','clubs.html'],['⚙','الإعدادات','settings-v2.html'],['●','حسابي','profile.html']];
+    const items=[['♜','البطولات','#tournaments'],['◉','شاهد','watch.html'],['◆','الألغاز','puzzles.html'],['▤','تعلّم','learn.html'],['⌁','التحليل','analysis.html'],['▥','الإحصائيات','stats.html'],['♙','الأندية','clubs.html'],['⚙','الإعدادات','settings-v2.html'],['●','حسابي','profile.html']];
     body.innerHTML='<div class="mfw-more">'+items.map(([i,l,h])=>'<a href="'+h+'"><i>'+i+'</i><span>'+l+'</span></a>').join('')+'</div>';
+    body.querySelector('a[href="#tournaments"]')?.addEventListener('click',event=>{event.preventDefault();show('tournaments');});
   }
 
+  function tournaments(body){
+    const frame=document.createElement('iframe');
+    frame.className='mfw-tournament-embed';
+    frame.title='البطولات';
+    frame.src='tournaments.html?embed=panel&v=20261009-inline-tournament-v1';
+    frame.loading='eager';
+    body.appendChild(frame);
+  }
   function show(id){
     const body=document.getElementById('mfwPanelBody');if(!body)return;
+    if(active==='tournaments'&&id!=='tournaments'&&tournamentSpectatorPromise){
+      void tournamentSpectatorPromise.then(module=>module.stopInlineTournamentSpectator()).catch(console.warn);
+    }
+    document.getElementById('mobileFixedWorkspace')?.classList.toggle('mfw-tournament-mode',id==='tournaments');
     body.replaceChildren();
-    const titles={home:'الرئيسية',play:'العب الآن',computer:'اللعب مع الكمبيوتر',ranking:'الترتيب',invite:'دعوة لاعب',more:'المزيد'};
+    const titles={home:'الرئيسية',play:'العب الآن',computer:'اللعب مع الكمبيوتر',ranking:'الترتيب',invite:'دعوة لاعب',more:'المزيد',tournaments:'البطولات'};
     setActive(id,titles[id]||'شطرنج العرب');
     if(id==='home')home(body);
     else if(id==='play')play(body);
     else if(id==='computer')action(body,'اللعب مع الكمبيوتر','اختر المستوى والزمن ثم ابدأ.','play-entry-v16.html?computer=1&v=20260918-sidewidth-freeze1','اختيار المستوى');
     else if(id==='ranking')ranking(body);
     else if(id==='invite')invite(body);
+    else if(id==='tournaments')tournaments(body);
     else more(body);
   }
 
@@ -211,6 +228,14 @@
 
   function boot(){
     ensureRoot();
+    window.addEventListener('message',event=>{
+      if(event.origin!==location.origin||event.data?.type!=='shatranj-tournament-spectate')return;
+      const frame=document.querySelector('#mfwPanelBody .mfw-tournament-embed');
+      if(!frame||frame.contentWindow!==event.source||active!=='tournaments')return;
+      const gameId=String(event.data.gameId||'');
+      if(!/^[A-Za-z0-9_-]{1,100}$/.test(gameId))return;
+      void spectatorModule().then(module=>module.mountInlineTournamentSpectator(gameId)).catch(error=>console.warn('تعذر عرض مباراة البطولة',error));
+    });
 
     const refreshHome=()=>{
       syncHeader();
