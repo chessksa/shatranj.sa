@@ -1,0 +1,141 @@
+/* Shatranj Al Arab: play screen shares the home screen's petrol/teal/cream/gold palette.
+   Loaded after mobile-focus.css to replace its olive/charcoal colors.
+   Changes are color-only: do not alter chessboard sizing, controls, or gameplay. */
+:root{
+  --play-home-deep:#022f33;
+  --play-home-mid:#063a40;
+  --play-home-teal:#26747b;
+  --play-home-panel:#073a40;
+  --play-home-cream:#d6cfbf;
+  --play-home-text:#f4efe6;
+  --play-home-muted:#c7d0cc;
+  --play-home-gold:#e0b567;
+  --play-home-gold-light:#efcf7c;
+  --play-home-border:rgba(224,181,103,.46);
+  --v2-petrol:#063a40;
+  --v2-petrol-deep:#022f33;
+  --v2-panel:#073a40;
+  --v2-panel-soft:#0b4850;
+  --v2-light-square:#d6cfbf;
+  --v2-dark-square:#26747b;
+  --v2-wood:#d1a85a;
+  --v2-text:#f4efe6;
+  --v2-muted:#c7d0cc;
+  --v2-accent:#e0b567;
+}
+html{
+  background:#022f33!important;
+}
+body.shatranj-play-home-palette,
+body.shatranj-play-home-palette.v2-shell-active.v2-route-play{
+  background:radial-gradient(circle at 18% 12%,rgba(22,112,118,.22),transparent 29%),linear-gradient(155deg,#022f33,#063a40 58%,#0b4850)!important;
+  color:var(--play-home-text)!important;
+}
+/* The home board uses cream #d6cfbf / turquoise #26747b. Respect other user-selected board themes. */
+body.shatranj-play-home-palette .v2-board:not([data-board-theme]),
+body.shatranj-play-home-palette .v2-board[data-board-theme="shatranj"]{
+  --board-light:#d6cfbf!important;
+  --board-dark:#26747b!important;
+  --board-line:rgba(2,47,51,.24)!important;
+}
+body.shatranj-play-home-palette .v2-board{
+  border-color:rgba(224,181,103,.82)!important;
+  background:#07363d!important;
+  box-shadow:0 8px 23px rgba(0,0,0,.22)!important;
+}
+body.shatranj-play-home-palette .v2-player-card{
+  background:linear-gradient(145deg,#073a40,#04353a)!important;
+  border:1px solid var(--play-home-border)!important;
+  border-radius:12px!important;
+  color:var(--play-home-text)!important;
+  box-shadow:0 5px 16px rgba(0,0,0,.17)!important;
+}
+body.shatranj-play-home-palette .v2-player-name{
+  color:var(--play-home-text)!important;
+}
+body.shatranj-play-home-palette .v2-player-meta,
+body.shatranj-play-home-palette .v2-search-status,
+body.shatranj-play-home-palette .v5-rematch-state{
+  color:var(--play-home-muted)!important;
+}
+body.shatranj-play-home-palette .v2-search-status.v2-status-error{
+  color:#ffe1dc!important;
+}
+body.shatranj-play-home-palette .v2-clock:not(.final-minute){
+  background:#052f34!important;
+  color:var(--play-home-gold-light)!important;
+  border:1px solid rgba(224,181,103,.20)!important;
+}
+body.shatranj-play-home-palette .v2-clock.final-minute{
+  background:#b93d35!important;
+  color:#fff!important;
+}
+body.shatranj-play-home-palette .v2-side-panel{
+  background:rgba(5,47,51,.60)!important;
+  border-color:var(--play-home-border)!important;
+}
+body.shatranj-play-home-palette #v2-resign,
+body.shatranj-play-home-palette #v2-draw,
+body.shatranj-play-home-palette #v2-board-settings{
+  background:linear-gradient(145deg,#073a40,#04353a)!important;
+  color:var(--play-home-text)!important;
+  border:1px solid rgba(224,181,103,.30)!important;
+}
+body.shatranj-play-home-palette #v2-resign::before,
+body.shatranj-play-home-palette #v2-draw::before,
+body.shatranj-play-home-palette #v2-board-settings::before{
+  color:var(--play-home-gold-light)!important;
+}
+body.shatranj-play-home-palette #v2-grace-end,
+body.shatranj-play-home-palette #v5-rematch{
+  background:linear-gradient(135deg,#efca72,#d9aa4f)!important;
+  color:#173536!important;
+  border-color:var(--play-home-gold)!important;
+}
+body.shatranj-play-home-palette .v5-play-topbar .v5-home-link,
+body.shatranj-play-home-palette .v5-time-picker-button{
+  background:linear-gradient(145deg,#073a40,#04353a)!important;
+  color:var(--play-home-text)!important;
+  border-color:var(--play-home-border)!important;
+}
+body.shatranj-play-home-palette .v5-time-picker-button.searching{
+  background:#26747b!important;
+  color:var(--play-home-text)!important;
+}
+body.shatranj-play-home-palette .v5-play-topbar .v5-home-link-icon,
+body.shatranj-play-home-palette .v5-time-icon{
+  color:var(--play-home-gold-light)!important;
+}
+body.shatranj-play-home-palette .v5-time-picker-menu,
+body.shatranj-play-home-palette .v2-side-panel>.v5-custom-box{
+  background:#073a40!important;
+  border-color:var(--play-home-border)!important;
+}
+body.shatranj-play-home-palette .v5-time-picker-menu button,
+body.shatranj-play-home-palette .v5-custom-box select,
+body.shatranj-play-home-palette .v5-custom-box #v5-custom-search{
+  background:#052f34!important;
+  border-color:var(--play-home-border)!important;
+  color:var(--play-home-text)!important;
+}
+body.shatranj-play-home-palette .v5-custom-box label{
+  color:var(--play-home-muted)!important;
+}
+body.shatranj-play-home-palette .v5-custom-grid label>span::before,
+body.shatranj-play-home-palette #v5-custom-search::before{
+  color:var(--play-home-gold-light)!important;
+  background:rgba(224,181,103,.10)!important;
+}
+body.shatranj-play-home-palette .v5-rated input{
+  accent-color:#26747b!important;
+}
+body.shatranj-play-home-palette .v2-settings-card{
+  background:#073a40!important;
+  border-color:var(--play-home-border)!important;
+}
+@media(max-width:900px){
+  body.shatranj-play-home-palette .v2-side-panel{
+    background:transparent!important;
+    border:0!important;
+  }
+}
