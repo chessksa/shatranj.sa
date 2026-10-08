@@ -31,23 +31,23 @@ button{cursor:pointer}
 }
 .profile-dashboard-grid .profile-stat,
 .profile-dashboard-grid .profile-action{
-  min-width:0;width:100%;min-height:82px;padding:9px 4px;
+  min-width:0;width:100%;min-height:70px;padding:4px 3px;
   border:1px solid rgba(139,190,188,.26);border-radius:10px;
   background:linear-gradient(145deg,rgba(10,76,79,.65),rgba(4,45,49,.76));
   display:flex;flex-direction:column;align-items:center;justify-content:center;
-  gap:9px;text-align:center;text-decoration:none;
+  gap:4px;text-align:center;text-decoration:none;
 }
 .profile-dashboard-grid .profile-stat-label,
 .profile-dashboard-grid .profile-action-label{
   display:block;flex:0 1 auto;min-width:0;width:100%;max-width:100%;
-  font-size:11px;line-height:1.35;font-weight:800;
+  font-size:13px;line-height:1.25;font-weight:800;
   color:var(--profile-muted);text-align:center;overflow-wrap:anywhere
 }
 .profile-dashboard-grid .profile-stat-value,
 .profile-dashboard-grid .profile-action-value{
   display:block;flex:0 0 auto;min-width:0;max-width:100%;padding:0;
   background:none;border:0;border-radius:0;
-  color:var(--profile-gold);font-size:22px;line-height:1.15;font-weight:900;
+  color:var(--profile-gold);font-size:25px;line-height:1.1;font-weight:900;
   font-variant-numeric:tabular-nums;direction:ltr;text-align:center
 }
 .profile-dashboard-grid .profile-action{
@@ -58,22 +58,55 @@ button{cursor:pointer}
   outline:none;border-color:rgba(225,187,103,.72);
   background:rgba(17,81,84,.85)
 }
-.profile-games{display:grid;gap:7px;min-width:0}
-.profile-games .row{
-  min-width:0;display:grid;grid-template-columns:minmax(0,1fr) auto;align-items:center;
-  gap:6px;padding:9px 8px;border:1px solid rgba(139,190,188,.17);
-  border-radius:9px;background:rgba(2,38,42,.55)
+.profile-recent-block{padding:10px 8px 8px}
+.profile-games-title{
+  margin:0 0 7px;color:var(--profile-gold);font-size:15px;
+  line-height:1.45;font-weight:900;text-align:right
 }
-.profile-games .row{white-space:nowrap}
-.profile-game-main{min-width:0;display:flex;align-items:center;justify-content:flex-start;gap:6px;overflow:hidden;white-space:nowrap}
-.row-title{min-width:0;flex:0 1 auto;font-size:12px;color:var(--profile-text);font-weight:900;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;text-align:center}
-.row-meta{min-width:0;flex:1 1 auto;font-size:10px;line-height:1.5;color:var(--profile-muted);margin:0;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;text-align:center}
-.row-actions{display:flex;align-items:center;justify-content:center;flex-wrap:nowrap;white-space:nowrap;gap:5px;text-align:center}
-.game-kind{padding:4px 5px;border-radius:6px;background:rgba(225,187,103,.08);color:#dfc68b;font-size:9px;white-space:nowrap}
-.game-result{font-size:11px;font-weight:900}
-.game-result.win{color:#a8e2b9}.game-result.loss{color:#ffb9b4}.game-result.draw{color:#e1ce97}
-.empty{padding:22px 6px;text-align:center;color:var(--profile-muted);font-size:12px}
-
+.profile-game-table-wrap{width:100%;min-width:0;overflow-x:hidden}
+.profile-games-table{
+  width:100%;min-width:0;table-layout:fixed;
+  border-collapse:separate;border-spacing:0 4px;direction:rtl
+}
+.profile-games-table th{
+  padding:5px 2px 7px;border-bottom:1px solid rgba(225,187,103,.26);
+  color:var(--profile-muted);font-size:10px;font-weight:800;text-align:center;
+  white-space:nowrap;overflow:hidden;text-overflow:ellipsis
+}
+.profile-games-table th:nth-child(1){width:29%}
+.profile-games-table th:nth-child(2){width:32%}
+.profile-games-table th:nth-child(3){width:22%}
+.profile-games-table th:nth-child(4){width:17%}
+.profile-games-table td{
+  min-width:0;height:36px;padding:6px 2px;
+  border-top:1px solid rgba(139,190,188,.13);
+  border-bottom:1px solid rgba(139,190,188,.13);
+  background:rgba(2,38,42,.56);
+  font-size:10px;line-height:1.35;text-align:center;
+  vertical-align:middle;white-space:nowrap;overflow:hidden;text-overflow:ellipsis
+}
+.profile-games-table td:first-child{
+  border-right:1px solid rgba(139,190,188,.13);
+  border-radius:0 8px 8px 0
+}
+.profile-games-table td:last-child{
+  border-left:1px solid rgba(139,190,188,.13);
+  border-radius:8px 0 0 8px
+}
+.profile-game-name{font-size:11px;font-weight:800;color:var(--profile-text)}
+.profile-game-date{font-size:10px;color:var(--profile-muted);direction:ltr;unicode-bidi:isolate}
+.profile-game-kind{font-size:9px;color:#dfc68b}
+.profile-game-result{
+  display:inline-block;padding:4px 3px;border-radius:6px;
+  font-size:10px;line-height:1;font-weight:900
+}
+.profile-game-result.win{color:#a8e2b9;background:rgba(105,169,126,.13)}
+.profile-game-result.loss{color:#ffb9b4;background:rgba(197,94,94,.13)}
+.profile-game-result.draw{color:#e1ce97;background:rgba(225,206,151,.10)}
+.profile-games-table .empty{
+  padding:16px 5px;color:var(--profile-muted);
+  text-align:center;font-size:11px;border-radius:8px
+}
 .profile-toolbar{width:100%;min-width:0;display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:6px}
 .profile-top-action{
  min-width:0;min-height:67px;padding:8px 4px;display:flex;flex-direction:column;
@@ -118,20 +151,21 @@ button{cursor:pointer}
   .profile-block{padding:9px 7px;border-radius:11px}
   .profile-dashboard-grid{gap:5px}
   .profile-dashboard-grid .profile-stat,
-  .profile-dashboard-grid .profile-action{min-height:77px;padding:6px 3px;gap:7px}
+  .profile-dashboard-grid .profile-action{min-height:69px;padding:4px 2px;gap:3px}
   .profile-dashboard-grid .profile-stat-label,
-  .profile-dashboard-grid .profile-action-label{font-size:10px}
+  .profile-dashboard-grid .profile-action-label{font-size:12px}
   .profile-dashboard-grid .profile-stat-value,
-  .profile-dashboard-grid .profile-action-value{font-size:20px}
+  .profile-dashboard-grid .profile-action-value{font-size:23px}
   .profile-top-action{min-height:59px;font-size:10px;padding:6px 3px}
   .profile-top-action .profile-tool-icon{width:16px;height:16px}
-  .profile-games .row{padding:8px 5px;gap:4px}
-  .profile-game-main{gap:4px}
-  .row-title{font-size:11px}
-  .row-meta{font-size:9px}
-  .row-actions{max-width:none;gap:3px}
-  .game-kind{font-size:8px;padding:3px}
-  .game-result{font-size:10px}
+  .profile-recent-block{padding:9px 6px 7px}
+  .profile-games-title{font-size:14px;margin-bottom:6px}
+  .profile-games-table th{font-size:9px;padding:5px 1px}
+  .profile-games-table td{height:34px;padding:5px 1px;font-size:9px}
+  .profile-game-name{font-size:10px}
+  .profile-game-date{font-size:9px}
+  .profile-game-kind{font-size:9px}
+  .profile-game-result{font-size:9px;padding:4px 2px}
 }
 </style>
 </head>
@@ -163,8 +197,19 @@ button{cursor:pointer}
         <a class="profile-action" href="profile-section.html?section=sent-challenges"><span class="profile-action-label">التحديات المرسلة</span><strong class="profile-action-value" id="outgoingChallengesCount">0</strong></a>
       </div>
     </section>
-    <section class="profile-block profile-recent-block" aria-label="آخر المباريات">
-      <div class="profile-games" id="recentGames" aria-label="آخر 10 مباريات"></div>
+    <section class="profile-block profile-recent-block" aria-labelledby="recentGamesTitle">
+      <h2 class="profile-games-title" id="recentGamesTitle">آخر المباريات</h2>
+      <div class="profile-game-table-wrap">
+        <table class="profile-games-table" aria-label="آخر 10 مباريات">
+          <thead><tr>
+            <th scope="col">الخصم</th>
+            <th scope="col">الوقت والتاريخ</th>
+            <th scope="col">النوع</th>
+            <th scope="col">النتيجة</th>
+          </tr></thead>
+          <tbody id="recentGames"></tbody>
+        </table>
+      </div>
     </section>
   </main>
 </div>
@@ -186,7 +231,7 @@ button{cursor:pointer}
 <div class="toast" id="toast" role="status"></div>
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <script src="config.js"></script>
-<script src="profile.js?v=20261009-unified-member-tiles-v1"></script>
+<script src="profile.js?v=20261009-member-compact-games-table-v1"></script>
 <script type="module" src="site-presence.js?v=20260906-1"></script>
 </body>
 </html>

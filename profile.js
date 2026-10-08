@@ -216,13 +216,25 @@
     const { data, error } = await client.rpc('get_public_player_recent_games', { p_player_id: myProfile.id, p_limit: 10 });
     if (error) throw error;
     if (!data?.length) {
-      $('recentGames').innerHTML = '<div class="empty">لا توجد مباريات منتهية حتى الآن.</div>';
+      $('recentGames').innerHTML = '<tr><td class="empty" colspan="4">لا توجد مباريات منتهية حتى الآن.</td></tr>';
       return;
     }
     $('recentGames').innerHTML = data.map(game => {
       const [label, cls] = outcomeArabic(game.outcome);
-      const kind = Number(game.rating_step) === 1 ? 'تحدي صديق' : 'بحث عشوائي';
-      return `<div class="row"><div class="profile-game-main"><span class="row-title" title="${esc(game.opponent_name||'خصم')}">${esc(game.opponent_name||'خصم')}</span><span class="row-meta">${esc(game.time_control_minutes)} د • ${new Date(game.played_at).toLocaleDateString('ar-SA')}</span></div><div class="row-actions"><span class="game-kind">${kind}</span><span class="game-result ${cls}">${label}</span></div></div>`;
+      const friendGame = Number(game.rating_step) === 1;
+      const kind = friendGame ? 'صديق' : 'عشوائي';
+      const fullKind = friendGame ? 'تحدي صديق' : 'بحث عشوائي';
+      const date = new Date(game.played_at);
+      const compactDate = Number.isNaN(date.getTime()) ? '—' : date.toLocaleDateString('en-GB',{day:'2-digit',month:'2-digit'});
+      const fullDate = Number.isNaN(date.getTime()) ? 'غير محدد' : date.toLocaleDateString('en-GB');
+      const minutes = esc(game.time_control_minutes ?? '—');
+      const opponent = esc(game.opponent_name || 'خصم');
+      return `<tr>
+        <td class="profile-game-name" title="${opponent}">${opponent}</td>
+        <td class="profile-game-date" title="${esc(fullDate)}">${minutes}د · ${compactDate}</td>
+        <td class="profile-game-kind" title="${fullKind}">${kind}</td>
+        <td><span class="profile-game-result ${cls}">${label}</span></td>
+      </tr>`;
     }).join('');
   }
 

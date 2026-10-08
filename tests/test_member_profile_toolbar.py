@@ -17,12 +17,17 @@ def test_settings_removed_and_actions_at_top():
 def test_each_recent_game_in_one_horizontal_row_and_centered_icons():
     html=read('profile.html')
     js=read('profile.js')
-    assert '.profile-game-main{min-width:0;display:flex;' in html
-    assert 'flex-wrap:nowrap;white-space:nowrap' in html
-    assert '<div class="profile-game-main">' in js
-    assert 'class="row-meta"' in js
-    assert 'text-align:center' in html
-    assert 'flex-direction:column;align-items:center;justify-content:center' in html
+    assert '<table class="profile-games-table"' in html
+    assert '<h2 class="profile-games-title" id="recentGamesTitle">آخر المباريات</h2>' in html
+    assert '<tbody id="recentGames"></tbody>' in html
+    assert 'table-layout:fixed' in html
+    assert 'white-space:nowrap' in html
+    assert 'return \`<tr>' not in js
+    assert 'return `<tr>' in js
+    assert 'class="profile-game-name"' in js
+    assert 'class="profile-game-date"' in js
+    assert 'class="profile-game-kind"' in js
+    assert 'class="profile-game-result' in js
 
 def test_public_profile_compact_in_middle_column():
     profilejs=read('profile.js')
@@ -34,7 +39,7 @@ def test_public_profile_compact_in_middle_column():
     assert 'html.embedded-public-profile .v2-mobile-nav,' in public
     assert 'html.embedded-public-profile .grid{display:grid;grid-template-columns:minmax(0,1fr)' in public
     assert '?embed=panel' in publicjs
-    assert 'profile.js?v=20261009-unified-member-tiles-v1' in read('profile.html')
+    assert 'profile.js?v=20261009-member-compact-games-table-v1' in read('profile.html')
 
 if __name__=='__main__':
     test_settings_removed_and_actions_at_top()

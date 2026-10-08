@@ -27,6 +27,8 @@ def test_dashboard_is_compact_with_nonduplicated_sections():
     assert 'class="profile-section-head"' not in html
     assert html.count('class="profile-action"')==5
     assert 'id="recentGames"' in html
+    assert 'id="recentGamesTitle">آخر المباريات</h2>' in html
+    assert html.count('<th scope="col">')==4
     assert 'class="profile-toolbar"' in html
     assert 'class="profile-settings"' not in html
     for id in ('friendsCount','incomingCount','outgoingCount','incomingChallengesCount','outgoingChallengesCount'):
