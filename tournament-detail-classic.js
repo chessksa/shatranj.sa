@@ -33,6 +33,12 @@
     '#tournamentDetailCard .classic-players .winner{color:#a7e7bd!important;}',
     '#tournamentDetailCard .classic-vs{color:#d8b665;font-size:11px;}',
     '#tournamentDetailCard .classic-action{white-space:normal!important;}',
+    '#tournamentDetailCard .tournament-matches-classic tbody tr[data-tournament-spectate]{cursor:pointer;transition:background .15s ease;}',
+    '#tournamentDetailCard .tournament-matches-classic tbody tr[data-tournament-spectate]:hover{background:rgba(46,147,147,.12)!important;}',
+    '#tournamentDetailCard .tournament-matches-classic tbody tr[data-tournament-spectate]:focus-visible{outline:2px solid #d8b665!important;outline-offset:-2px;}',
+    '#tournamentDetailCard .tournament-matches-classic tbody tr.tournament-watching{background:rgba(216,182,101,.11)!important;box-shadow:inset 3px 0 0 #d8b665;}',
+    '#tournamentDetailCard .tournament-matches-classic tbody tr.tournament-watching .classic-players{color:#efcf7c;}',
+    '#tournamentDetailCard .tournament-matches-classic .tournament-watch-indicator{display:inline-block;margin-right:6px;color:#efcf7c;font-size:10px;font-weight:800;}',
     '#tournamentDetailCard .classic-action .register-btn{display:inline-flex!important;align-items:center!important;justify-content:center!important;white-space:normal!important;max-width:100%!important;min-width:0!important;min-height:31px!important;padding:5px 8px!important;margin:1px 4px 1px 0!important;font-size:11px!important;border-radius:6px!important;line-height:1.35!important;}',
     '#tournamentDetailCard .bracket-empty{border:0!important;border-radius:0!important;background:transparent!important;padding:11px 0!important;text-align:right!important;}',
     '#v3TournamentFormatPanel{border:0!important;border-top:1px solid rgba(216,182,101,.18)!important;border-radius:0!important;background:transparent!important;margin-top:17px!important;padding:13px 0 0!important;box-shadow:none!important;}',
@@ -97,6 +103,14 @@
     const tbody=document.createElement('tbody');
     for(const match of matches){
       const tr=document.createElement('tr');
+      if(match.dataset.tournamentSpectate){
+        tr.dataset.tournamentSpectate=match.dataset.tournamentSpectate;
+        tr.tabIndex=0;
+        tr.setAttribute('aria-label',match.getAttribute('aria-label')||'اضغط لمشاهدة المباراة على الرقعة الرئيسية');
+        tr.classList.add('tournament-spectatable');
+        if(match.classList.contains('tournament-watching'))tr.classList.add('tournament-watching');
+        if(match.hasAttribute('aria-current'))tr.setAttribute('aria-current',match.getAttribute('aria-current'));
+      }
       const players=document.createElement('td');
       const pair=document.createElement('div');pair.className='classic-players';
       const names=match.querySelectorAll('.bracket-player');
