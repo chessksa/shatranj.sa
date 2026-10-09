@@ -37,7 +37,7 @@ function ensureCss(){
   const link=document.createElement('link');
   link.id='inlineComputerCss';
   link.rel='stylesheet';
-  link.href=new URL('./inline-computer.css?v=20261009-computer-outline-red-v3',import.meta.url).href;
+  link.href=new URL('./inline-computer.css?v=20261009-computer-orange-v4',import.meta.url).href;
   document.head.appendChild(link);
   if(!document.getElementById('inlinePlayComputerBaseCss')){
     const base=document.createElement('link');
