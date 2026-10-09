@@ -215,10 +215,12 @@ if (!embeddedPanel && !skip.test(location.pathname)) {
     if(!visible)return;
 
     const desktop=document.querySelector('.v2-global-nav');
-    if(desktop){
+    // The desktop workspace has its own administration button in the right sidebar.
+    // Do not add a second standalone-page link after the sidebar has mounted.
+    if(desktop&&!document.querySelector('.desktop-sidebar-bottom [data-desktop-nav="admin"]')){
       const link=document.createElement('a');
       link.className='v2-global-link';
-      link.href='admin.html';
+      link.href=(document.body.classList.contains('desktop-board-workspace')?'#admin':'admin.html');
       link.dataset.v2AdminLink='1';
       link.innerHTML='<span class="v2-global-icon">♜</span><span>لوحة الإدارة</span>';
       desktop.appendChild(link);
