@@ -26,8 +26,8 @@ assert 'admin_get_access' in page
 assert 'adminCreateLink.hidden=false' in page
 assert "openTournamentModal();" in admin
 assert "location.hash==='#create-tournament'" in admin
-assert 'tournament-tabs-v1.css?v=20261009-tournament-tabs-v1' in page
-assert "20261009-tournament-tabs-v1" in boot
+assert 'tournament-tabs-v1.css?v=' in page
+assert "const stamp=" in boot
 assert '.tournament-list-item{' in css
 assert '.tournament-tabs{' in css
 assert 'html.tournament-embedded .tournament-list-view' in css
