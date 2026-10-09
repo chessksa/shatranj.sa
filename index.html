@@ -1240,10 +1240,9 @@ footer{
         <table>
           <thead>
             <tr>
-              <th class="rank-number-head">الترتيب</th>
+              <th class="rank-number-head" scope="col" aria-label="المركز">م</th>
               <th>اسم اللاعب</th>
               <th>الدولة</th>
-              <th>المدينة</th>
               <th>النقاط</th>
             </tr>
           </thead>
@@ -1971,7 +1970,6 @@ function renderPlayers(players){
           <td></td>
           <td></td>
           <td></td>
-          <td></td>
         </tr>
       `);
       continue;
@@ -1988,8 +1986,7 @@ function renderPlayers(players){
           }
         </td>
         <td class="player-country"><span class="country-cell"><span>${escapeHTML(countryForRegion(player.region))}</span></span></td>
-        <td>${escapeHTML(player.city)}</td>
-        <td class="rating">${player.rating}</td>
+        <td class="rating" dir="ltr">${Number.isFinite(Number(player.rating))?Number(player.rating).toLocaleString("en-US"):"—"}</td>
       </tr>
     `);
   }
