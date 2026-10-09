@@ -105,23 +105,23 @@ if(desktop.matches && document.querySelector('#homeHero')){
     }
   }
 
+  /* Filled pictograms matching the approved sidebar reference. */
   const SIDEBAR_ICONS={
-    home:'<path d="m3 10 9-7 9 7"/><path d="M5 9v12h14V9"/><path d="M9 21v-7h6v7"/>',
-    play:'<path d="M8 5c2-2 5-2 7 0l-2 3 3 4-2 4H7L6 12l4-4z"/><path d="M7 16h10l2 4H5z"/><path d="M10 9h.01"/>',
-    tournaments:'<path d="M8 3h8v3h4v3a5 5 0 0 1-5 5h-.3A5 5 0 0 1 13 17v2h4v2H7v-2h4v-2a5 5 0 0 1-1.7-3H9a5 5 0 0 1-5-5V6h4V3Z"/>',
-    ranking:'<path d="M5 20v-6h4v6M10 20V9h4v11M15 20V4h4v16"/>',
-    watch:'<path d="M2 12c2.6-4 6-6 10-6s7.4 2 10 6c-2.6 4-6 6-10 6S4.6 16 2 12Z"/><circle cx="12" cy="12" r="3"/>',
-    computer:'<rect x="3" y="4" width="18" height="13" rx="2"/><path d="M8 21h8m-4-4v4"/>',
-    puzzles:'<path d="M8 3h4v4a2 2 0 1 0 4 0V3h5v6h-4a2 2 0 1 0 0 4h4v8h-7v-4a2 2 0 1 0-4 0v4H3v-8h4a2 2 0 1 0 0-4H3V3h5Z"/>',
-    learn:'<path d="m2 9 10-5 10 5-10 5L2 9Zm4 3v5c3.5 3 8.5 3 12 0v-5M22 9v7"/>',
-    invite:'<path d="M16 20v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2M8.5 10a4 4 0 1 0 0-8 4 4 0 0 0 0 8ZM19 8v6m-3-3h6"/>',
-    settings:'<circle cx="12" cy="12" r="3"/><path d="m10 2-.5 2.1-2 1.1-2.1-.6-2 3.5 1.6 1.5v2.5L3.4 14l2 3.5 2.1-.6 2-1.1L10 20h4l.5-2 2-1.1 2.1.6 2-3.5-1.6-1.5V10l1.6-1.5-2-3.5-2.1.6-2-1.1L14 2z"/>',
-    admin:'<path d="m12 2 8 4v6c0 5-3.4 8.5-8 10-4.6-1.5-8-5-8-10V6l8-4Z"/><path d="m9 12 2 2 4-4"/>',
-    logout:'<path d="M9 3H5a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h4M16 17l5-5-5-5M21 12H9"/>',
-    more:'<path d="m6 9 6 6 6-6"/>'
+    home:'<path d="M12 2.8 1.7 11.4h2.9V21h6v-6h2.8v6h6v-9.6h2.9z" fill="currentColor"/>',
+    play:'<path d="M10.6 2.5c1.7-.7 4.5.1 6.1 2.5.7 1 .8 2.3.4 3.5l-1.8 2.8 2.7 5.2H6.4L5.3 12l2.9-3.7-.7-2.8 3.1 1.1V2.5Zm-.5 5.4a.9.9 0 1 0 0 1.8.9.9 0 0 0 0-1.8" fill="currentColor"/><path d="M5.3 18h13.4l1.4 3H3.9Z" fill="currentColor"/>',
+    tournaments:'<path d="M7 2h10v3h4v5c0 3.3-2.2 5.4-5.4 5.6A5.5 5.5 0 0 1 13 18v2h4v2H7v-2h4v-2a5.5 5.5 0 0 1-2.6-2.4C5.2 15.4 3 13.3 3 10V5h4V2Zm0 5H5v3c0 1.6.8 2.6 2.5 3C7.2 11.7 7 9.9 7 7Zm10 0c0 2.9-.2 4.7-.5 6C18.2 12.6 19 11.6 19 10V7Z" fill="currentColor"/>',
+    ranking:'<rect x="2" y="14" width="5.3" height="8" rx="1" fill="currentColor"/><rect x="9.3" y="8" width="5.3" height="14" rx="1" fill="currentColor"/><rect x="16.6" y="2" width="5.3" height="20" rx="1" fill="currentColor"/>',
+    watch:'<circle cx="12" cy="12" r="10.2" fill="currentColor"/><path d="m10 7 7 5-7 5z" fill="#07383c"/>',
+    computer:'<rect x="5" y="7" width="14" height="13" rx="3" fill="currentColor"/><path d="M12 4V2M8 3.5h8M2 11v5m20-5v5" stroke="currentColor" stroke-width="2" stroke-linecap="round"/><circle cx="9" cy="12" r="1.2" fill="#07383c"/><circle cx="15" cy="12" r="1.2" fill="#07383c"/><path d="M9 16h6" stroke="#07383c" stroke-width="1.8" stroke-linecap="round"/>',
+    puzzles:'<path d="M9 2h5v4a2.5 2.5 0 1 1 5 0h3v6h-3.4a2.5 2.5 0 1 0 0 5H22v5h-7v-3a2.5 2.5 0 0 0-5 0v3H2v-7h3a2.5 2.5 0 1 0 0-5H2V2h7z" fill="currentColor"/>',
+    learn:'<path d="m1 9 11-6 11 6-11 6z" fill="currentColor"/><path d="M5 12.7V17c4.2 3.5 9.8 3.5 14 0v-4.3l-7 3.8zM22 10v8" fill="currentColor" stroke="currentColor" stroke-linecap="round"/>',
+    invite:'<circle cx="8" cy="8" r="4" fill="currentColor"/><circle cx="17" cy="8" r="3.5" fill="currentColor"/><path d="M1 20v-2c0-3.1 2.9-5.1 7-5.1s7 2 7 5.1v2H1Zm15 0v-2c0-1.7-.6-3-1.6-4.1C18.9 13.3 23 15.4 23 18v2z" fill="currentColor"/>',
+    settings:'<path d="m10 1.5-.5 2.4-2 1L5.2 4 3 7.5l1.8 1.8v2.4L3 13.5 5.2 17l2.3-.9 2 1 .5 2.4h4l.5-2.4 2-1 2.3.9 2.2-3.5-1.8-1.8V9.3L21 7.5 18.8 4l-2.3.9-2-1-.5-2.4z" fill="currentColor" transform="translate(0 1)"/><circle cx="12" cy="12" r="3.1" fill="#07383c"/>',
+    admin:'<path d="m12 1.8 9 4.5V12c0 5.3-3.5 9-9 10.2C6.5 21 3 17.3 3 12V6.3z" fill="currentColor"/><path d="M12 5.5 7 8v4c0 3 1.8 5.1 5 6.1 3.2-1 5-3.1 5-6.1V8Z" fill="#07383c"/><path d="m9.5 12.2 1.6 1.6 3.7-3.7" stroke="currentColor" stroke-width="1.9" fill="none" stroke-linecap="round" stroke-linejoin="round"/>',
+    logout:'<path d="M10 3H5a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h5" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"/><path d="m15 5 7 7-7 7v-5H9v-4h6z" fill="currentColor"/>'
   };
   function sidebarIcon(key){
-    return '<svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">'+(SIDEBAR_ICONS[key]||SIDEBAR_ICONS.play)+'</svg>';
+    return '<svg viewBox="0 0 24 24" width="24" height="24" aria-hidden="true">'+(SIDEBAR_ICONS[key]||SIDEBAR_ICONS.play)+'</svg>';
   }
   function navItem({id,label,icon,href='#'}){
     const local=String(href||'').startsWith('#');
@@ -148,7 +148,7 @@ if(desktop.matches && document.querySelector('#homeHero')){
 
     const brand=document.createElement('div');
     brand.className='desktop-sidebar-brand';
-    brand.innerHTML='<span class="desktop-sidebar-brand-mark" aria-hidden="true">♞</span><strong>شطرنج العرب</strong>';
+    brand.innerHTML='<span class="desktop-sidebar-brand-mark" aria-hidden="true">♚</span><strong>شطرنج العرب</strong>';
     sidebar.insertBefore(brand,nav);
 
     const member=document.createElement('section');
@@ -169,30 +169,18 @@ if(desktop.matches && document.querySelector('#homeHero')){
     ].join('');
     sidebar.insertBefore(member,nav);
 
-    const primary=[
+    // All nine sections stay visible, exactly as in the approved reference.
+    nav.replaceChildren(
       navItem({id:'home',label:'الرئيسية',icon:'home',href:'#home'}),
       navItem({id:'play',label:'العب الآن',icon:'play',href:'play-v2.html?auto=1'}),
       navItem({id:'tournaments',label:'البطولات',icon:'tournaments',href:'#tournaments'}),
       navItem({id:'ranking',label:'الترتيب',icon:'ranking',href:'#ranking'}),
-      navItem({id:'watch',label:'شاهد',icon:'watch',href:'#watch'})
-    ];
-    const more=document.createElement('button');
-    more.type='button';
-    more.className='desktop-sidebar-more-toggle';
-    more.setAttribute('aria-expanded','false');
-    more.setAttribute('aria-controls','desktopSidebarMorePanel');
-    more.innerHTML='<span>المزيد من اللعب</span><span class="desktop-sidebar-more-chevron">'+sidebarIcon('more')+'</span>';
-    const morePanel=document.createElement('div');
-    morePanel.id='desktopSidebarMorePanel';
-    morePanel.className='desktop-sidebar-more-panel';
-    morePanel.hidden=true;
-    morePanel.append(
+      navItem({id:'watch',label:'شاهد',icon:'watch',href:'#watch'}),
       navItem({id:'computer',label:'اللعب مع الكمبيوتر',icon:'computer',href:'#computer'}),
       navItem({id:'puzzles',label:'الألغاز',icon:'puzzles',href:'#puzzles'}),
       navItem({id:'learn',label:'التعلم',icon:'learn',href:'#learn'}),
       navItem({id:'invite',label:'الأصدقاء والتحديات',icon:'invite',href:'#invite'})
     );
-    nav.replaceChildren(...primary,more,morePanel);
 
     const bottom=document.createElement('div');
     bottom.className='desktop-sidebar-bottom';
@@ -246,13 +234,6 @@ if(desktop.matches && document.querySelector('#homeHero')){
       if(active)link.setAttribute('aria-current','page');
       else link.removeAttribute('aria-current');
     });
-    const more=document.querySelector('.desktop-sidebar-more-toggle');
-    const panel=document.getElementById('desktopSidebarMorePanel');
-    if(more&&panel){
-      const expanded=['computer','puzzles','learn','invite'].includes(id);
-      panel.hidden=!expanded;
-      more.setAttribute('aria-expanded',String(expanded));
-    }
     forceSidebarSurface();
   }
 
@@ -591,17 +572,6 @@ if(desktop.matches && document.querySelector('#homeHero')){
       if(nav&&['home','ranking','tournaments','watch','settings','invite','computer','puzzles','learn'].includes(nav.dataset.desktopNav)){
         event.preventDefault();
         showDashboard(nav.dataset.desktopNav);
-        return;
-      }
-      const moreToggle=event.target.closest('.desktop-sidebar-more-toggle');
-      if(moreToggle){
-        event.preventDefault();
-        const panel=document.getElementById('desktopSidebarMorePanel');
-        if(panel){
-          const next=panel.hidden;
-          panel.hidden=!next;
-          moreToggle.setAttribute('aria-expanded',String(next));
-        }
         return;
       }
       const logoutAction=event.target.closest('[data-desktop-action="logout"]');
