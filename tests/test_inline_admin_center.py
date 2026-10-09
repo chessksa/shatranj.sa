@@ -1,0 +1,34 @@
+from pathlib import Path
+
+ROOT=Path(__file__).resolve().parents[1]
+SHELL=(ROOT/'v2/home/desktop-board-shell.mjs').read_text(encoding='utf-8')
+CSS=(ROOT/'v2/home/desktop-board-shell.css').read_text(encoding='utf-8')
+ADMIN=(ROOT/'admin.html').read_text(encoding='utf-8')
+ADMIN_JS=(ROOT/'admin.js').read_text(encoding='utf-8')
+INLINE=(ROOT/'admin-inline-panel.css').read_text(encoding='utf-8')
+
+def test_admin_click_opens_in_existing_middle_column():
+    assert "id:'admin',label:'لوحة الإدارة',icon:'admin',href:'#admin'" in SHELL
+    assert "showDashboard('admin');" in SHELL
+    assert "embeddedPageView(body,'admin.html','لوحة إدارة شطرنج العرب')" in SHELL
+    assert "view.classList.toggle('admin-view',id==='admin')" in SHELL
+    assert "location.hash.replace(/^#/,'')" in SHELL
+    assert "admin'].includes(initialHash)" in SHELL
+    assert ".desktop-dashboard-view.admin-view" in CSS
+
+def test_embedded_admin_stays_authenticated_and_is_usable_in_narrow_column():
+    assert "get('embed')==='panel'" in ADMIN
+    assert 'admin-inline-panel.css' in ADMIN
+    assert 'id="adminInlineNav"' in ADMIN
+    assert "const embeddedAdmin=new URLSearchParams(location.search).get('embed')==='panel'" in ADMIN_JS
+    assert "state.access=first(await rpc('admin_get_access'))" in ADMIN_JS
+    assert "mountInlineAdmin();await loadDashboard()" in ADMIN_JS
+    assert "if(!embeddedAdmin)setTimeout(()=>location.href='index.html',1400)" in ADMIN_JS
+    assert "new MutationObserver(syncEmbeddedTableLabels)" in ADMIN_JS
+    assert "table.querySelectorAll('tbody tr')" in ADMIN_JS
+    assert "html.admin-embedded .table-wrap tbody" in INLINE
+    assert "html.admin-embedded .admin-shell > .sidebar{display:none!important}" in INLINE
+
+def test_standard_admin_page_not_styled_as_embed():
+    assert INLINE.count("html.admin-embedded") > 20
+    assert '<title>لوحة الإدارة | شطرنج العرب</title>' in ADMIN

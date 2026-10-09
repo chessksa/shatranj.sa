@@ -1,0 +1,66 @@
+/* Compact administrator workspace, activated only inside the main page centre iframe. */
+html.admin-embedded,html.admin-embedded body{height:100%;min-height:0;max-height:100%;width:100%;margin:0;overflow:hidden;background:#052e33;color:#f2ede2;scrollbar-color:rgba(216,182,101,.4) transparent}
+html.admin-embedded .access-gate{height:100dvh;min-height:0;padding:12px;background:#052e33}
+html.admin-embedded .access-card{padding:18px 12px;border-radius:10px;box-shadow:none}
+html.admin-embedded .access-card h1{font-size:17px}
+html.admin-embedded .access-card p{font-size:12px}
+html.admin-embedded .admin-shell{height:100dvh;min-height:0;max-height:100dvh;display:flex!important;flex-direction:column;overflow:hidden;background:#052e33}
+html.admin-embedded .admin-shell > .sidebar{display:none!important}
+html.admin-embedded .admin-shell > div{display:flex;flex-direction:column;flex:1 1 auto;min-height:0;min-width:0;overflow:hidden}
+html.admin-embedded .mobile-top{display:none!important}
+html.admin-embedded .admin-inline-header{display:flex;align-items:center;justify-content:space-between;flex:0 0 auto;gap:8px;padding:13px 12px 10px;background:#052f34;border-bottom:1px solid rgba(216,182,101,.18)}
+html.admin-embedded .admin-inline-header[hidden],html.admin-embedded .admin-inline-nav[hidden]{display:none!important}
+html.admin-embedded .admin-inline-header>div{display:grid;gap:3px;min-width:0}
+html.admin-embedded .admin-inline-header small{font-size:10px;color:#aac6c5;font-weight:600}
+html.admin-embedded .admin-inline-header strong{font-size:18px;font-weight:900;color:#f1e5c8}
+html.admin-embedded .admin-inline-header>span{font-size:10px;color:#e5c27e;border:1px solid rgba(221,182,106,.35);border-radius:5px;padding:5px 6px;white-space:nowrap}
+html.admin-embedded .admin-inline-nav{display:grid!important;grid-template-columns:repeat(3,minmax(0,1fr));flex:0 0 auto;gap:5px;padding:9px 10px 11px;border-bottom:1px solid rgba(216,182,101,.2);background:#052f34}
+html.admin-embedded .admin-inline-tab{width:100%;min-width:0;min-height:34px;padding:6px 3px;display:grid;place-items:center;text-align:center;font:700 11px/1.25 Arial,sans-serif;border:1px solid rgba(87,145,146,.27);border-radius:6px;color:#c7d6d2;background:rgba(15,75,78,.52);white-space:normal}
+html.admin-embedded .admin-inline-tab:hover{border-color:rgba(218,180,105,.6);background:#10474b;color:#f7e9c6}
+html.admin-embedded .admin-inline-tab.active{border-color:#dfae64;color:#ffd995;background:rgba(173,113,38,.16);box-shadow:inset 0 0 0 1px rgba(223,174,100,.07)}
+html.admin-embedded main.content{flex:1 1 auto;min-height:0;min-width:0;width:100%;max-width:none;margin:0;padding:0 10px 14px;overflow-y:auto;overflow-x:hidden;overscroll-behavior:contain}
+html.admin-embedded .topline{display:flex;align-items:center;justify-content:space-between;gap:5px;position:sticky;top:0;z-index:6;margin:0 -10px 12px;padding:9px 10px 10px;background:#052e33;border-bottom:1px solid rgba(216,182,101,.15)}
+html.admin-embedded .topline h1{font-size:14px;margin:0;color:#efd197;font-weight:900}
+html.admin-embedded .topline p{display:none!important}
+html.admin-embedded .refresh-btn{min-height:30px;height:30px;padding:0 8px;border-radius:6px;font-size:11px;white-space:nowrap}
+html.admin-embedded .stats-grid,html.admin-embedded .stats-grid.pro-stats-grid{grid-template-columns:repeat(2,minmax(0,1fr))!important;gap:7px!important}
+html.admin-embedded .stat-card,html.admin-embedded .stat-card.pro-stat{min-width:0;min-height:79px;padding:11px 9px;border-radius:8px;box-shadow:none;background:#0b4247;border-color:rgba(103,168,165,.28)}
+html.admin-embedded .stat-card small{font-size:10px;line-height:1.4;color:#c3d3cc}
+html.admin-embedded .stat-card strong,html.admin-embedded .stat-card.pro-stat strong{font-size:23px;line-height:1.2;margin-top:7px;color:#f1cf86}
+html.admin-embedded .grid-two{display:grid;grid-template-columns:1fr!important;gap:9px;margin-top:10px}
+html.admin-embedded .panel{border-radius:8px;border-color:rgba(105,168,166,.24);box-shadow:none;background:#083a3f}
+html.admin-embedded .panel-head{padding:10px 11px}
+html.admin-embedded .panel-head h2{font-size:12px}
+html.admin-embedded .panel-body{padding:10px}
+html.admin-embedded .recent-list{gap:6px}
+html.admin-embedded .recent-row{display:grid;gap:5px;min-width:0;padding:8px;border-radius:6px;box-shadow:none;font-size:11px;overflow-wrap:anywhere}
+html.admin-embedded .recent-row span{font-size:10px}
+html.admin-embedded .toolbar{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:6px;margin:0 0 10px;padding:0;background:transparent;border:none}
+html.admin-embedded .toolbar>*{width:100%!important;min-width:0!important;max-width:100%!important}
+html.admin-embedded .toolbar input.field{grid-column:1/-1}
+html.admin-embedded .field{min-height:35px;padding:0 7px;font-size:11px;border-radius:6px}
+html.admin-embedded .table-wrap{overflow:visible;max-width:100%;background:transparent;box-shadow:none;border:0;border-radius:0}
+html.admin-embedded .table-wrap table{display:block;width:100%!important;min-width:0!important;max-width:100%;border-collapse:separate}
+html.admin-embedded .table-wrap thead{display:none!important}
+html.admin-embedded .table-wrap tbody{display:grid;gap:8px;width:100%}
+html.admin-embedded .table-wrap tr{display:block;width:100%;min-width:0;border:1px solid rgba(97,163,162,.28);background:rgba(6,58,64,.92);border-radius:8px;padding:6px 9px}
+html.admin-embedded .table-wrap tbody tr:hover{background:#0b4145}
+html.admin-embedded .table-wrap td{display:grid!important;grid-template-columns:minmax(0,77px) minmax(0,1fr);gap:8px;align-items:start;text-align:right;min-width:0;width:100%;height:auto!important;min-height:25px;padding:6px 0!important;border-bottom:1px solid rgba(105,168,166,.14);font-size:11px;overflow-wrap:anywhere;word-break:normal}
+html.admin-embedded .table-wrap td:last-child{border-bottom:0}
+html.admin-embedded .table-wrap td:not([colspan])::before{content:attr(data-label);font-size:10px;font-weight:700;color:#9eb6b6}
+html.admin-embedded .table-wrap td[colspan]{display:block!important;text-align:center;color:#bfd0c8}
+html.admin-embedded .table-wrap td a,html.admin-embedded .table-wrap td button{max-width:100%;white-space:normal;overflow-wrap:anywhere}
+html.admin-embedded .section-title{font-size:12px;margin:12px 0 9px}
+html.admin-embedded .modal{padding:7px}
+html.admin-embedded .modal-card,html.admin-embedded .modal-card.narrow{width:100%!important;max-width:100%!important;max-height:94dvh;border-radius:9px}
+html.admin-embedded .modal-head{padding:10px}
+html.admin-embedded .modal-head h2{font-size:14px}
+html.admin-embedded .modal-body{padding:10px}
+html.admin-embedded .detail-grid{grid-template-columns:1fr!important;gap:6px}
+html.admin-embedded .action-row{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:6px}
+html.admin-embedded .action-btn{min-width:0;width:100%;padding:6px;font-size:11px}
+html.admin-embedded .form-grid{grid-template-columns:1fr!important}
+html.admin-embedded .form-group.full{grid-column:auto!important}
+html.admin-embedded .modal-card input,html.admin-embedded .modal-card select,html.admin-embedded .modal-card textarea{min-width:0;max-width:100%}
+html.admin-embedded button:focus-visible,html.admin-embedded a:focus-visible,html.admin-embedded select:focus-visible,html.admin-embedded input:focus-visible{outline:2px solid #e2b46b;outline-offset:2px}
+@media(max-height:650px){html.admin-embedded .admin-inline-header{padding:7px 10px}html.admin-embedded .admin-inline-tab{min-height:30px}html.admin-embedded .admin-inline-nav{padding:6px 8px}}

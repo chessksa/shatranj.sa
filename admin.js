@@ -8,6 +8,7 @@ const esc=value=>String(value??'').replace(/[&<>'"]/g,ch=>({'&':'&amp;','<':'&lt
 const first=data=>Array.isArray(data)?(data[0]||null):data;
 const fmtDate=value=>value?new Intl.DateTimeFormat('ar-SA',{dateStyle:'medium',timeStyle:'short'}).format(new Date(value)):'—';
 const countries=Object.keys(ARAB_CITIES_DATA);
+const embeddedAdmin=new URLSearchParams(location.search).get('embed')==='panel';
 
 const state={
   view:'dashboardView',players:[],allPlayers:[],games:[],reports:[],actions:[],moderators:[],tournaments:[],
@@ -193,6 +194,45 @@ async function invokeAdmin(body){
     throw new Error(map[data?.error]||data?.error||'تعذر تنفيذ العملية.');
   }
   return data;
+}
+
+function mountInlineAdmin(){
+  if(!embeddedAdmin)return;
+  const nav=$('adminInlineNav');
+  const header=$('adminInlineHeader');
+  if(!nav || !header)return;
+  const labels={dashboardView:'نظرة عامة',playersView:'اللاعبون',gamesView:'المباريات',tournamentsView:'البطولات',reportsView:'البلاغات',moderatorsView:'المشرفون',actionsView:'السجل'};
+  nav.replaceChildren();
+  document.querySelectorAll('#adminSidebar .nav-btn[data-view]').forEach(source=>{
+    if(source.hidden || (source.classList.contains('owner-only')&&!isOwner()))return;
+    const name=labels[source.dataset.view];
+    if(!name)return;
+    const button=document.createElement('button');
+    button.type='button';
+    button.className='nav-btn admin-inline-tab';
+    button.dataset.view=source.dataset.view;
+    button.textContent=name;
+    nav.appendChild(button);
+  });
+  header.hidden=false;
+  nav.hidden=false;
+  syncEmbeddedTableLabels();
+  const app=$('adminApp');
+  new MutationObserver(syncEmbeddedTableLabels).observe(app,{childList:true,subtree:true});
+}
+
+function syncEmbeddedTableLabels(){
+  if(!embeddedAdmin)return;
+  document.querySelectorAll('#adminApp .table-wrap table').forEach(table=>{
+    const labels=[...table.querySelectorAll('thead th')].map(th=>th.textContent.trim());
+    table.querySelectorAll('tbody tr').forEach(row=>{
+      [...row.cells].forEach((cell,index)=>{
+        if(cell.hasAttribute('colspan'))return;
+        const label=labels[index]||'إجراء';
+        if(cell.dataset.label!==label)cell.dataset.label=label;
+      });
+    });
+  });
 }
 
 function setView(id){
@@ -454,10 +494,10 @@ async function init(){
   injectExtendedUi();wireEvents();
   if(!supabase){$('accessMessage').textContent='تعذر الاتصال بخدمة الموقع.';return}
   const {data:{session}}=await supabase.auth.getSession();state.session=session;
-  if(!session){location.href='index.html#register';return}
+  if(!session){if(embeddedAdmin){$('accessMessage').textContent='سجّل الدخول من الواجهة الرئيسية أولًا لفتح لوحة الإدارة.';}else{location.href='index.html#register';}return}
   try{state.access=first(await rpc('admin_get_access'));}catch(err){console.error(err)}
-  if(!state.access){$('accessMessage').textContent='ليس لديك صلاحية الدخول إلى لوحة الإدارة.';setTimeout(()=>location.href='index.html',1400);return}
-  $('adminIdentity').textContent=`${session.user.email||'إدارة الموقع'} · ${isOwner()?'المالك':'مشرف'}`;applyAccessUi();$('accessGate').hidden=true;$('adminApp').hidden=false;await loadDashboard();
+  if(!state.access){$('accessMessage').textContent='ليس لديك صلاحية الدخول إلى لوحة الإدارة.';if(!embeddedAdmin)setTimeout(()=>location.href='index.html',1400);return}
+  $('adminIdentity').textContent=`${session.user.email||'إدارة الموقع'} · ${isOwner()?'المالك':'مشرف'}`;applyAccessUi();$('accessGate').hidden=true;$('adminApp').hidden=false;mountInlineAdmin();await loadDashboard();
   if(location.hash==='#create-tournament'){setView('tournamentsView');openTournamentModal();}
 }
 

@@ -185,7 +185,7 @@ if(desktop.matches && document.querySelector('#homeHero')){
     const bottom=document.createElement('div');
     bottom.className='desktop-sidebar-bottom';
     const settings=navItem({id:'settings',label:'الإعدادات',icon:'settings',href:'#settings'});
-    const admin=navItem({id:'admin',label:'لوحة الإدارة',icon:'admin',href:'admin.html'});
+    const admin=navItem({id:'admin',label:'لوحة الإدارة',icon:'admin',href:'#admin'});
     const logout=document.createElement('button');
     logout.type='button';
     logout.className='desktop-sidebar-logout';
@@ -311,7 +311,7 @@ if(desktop.matches && document.querySelector('#homeHero')){
   }
 
   function showDashboard(id='home'){
-    if(['home','ranking','tournaments','watch','settings','invite','computer','puzzles','learn','profile'].includes(id)){
+    if(['home','ranking','tournaments','watch','settings','invite','computer','puzzles','learn','profile','admin'].includes(id)){
       history.replaceState(null,'','#'+id);
     }
     if(id!=='computer') stopInlineComputer();
@@ -328,7 +328,8 @@ if(desktop.matches && document.querySelector('#homeHero')){
     view.classList.toggle('puzzle-view',id==='puzzles');
     view.classList.toggle('learn-view',id==='learn');
     view.classList.toggle('profile-view',id==='profile');
-    view.classList.toggle('embedded-view',id==='tournaments'||id==='watch'||id==='settings');
+    view.classList.toggle('embedded-view',['tournaments','watch','settings','admin'].includes(id));
+    view.classList.toggle('admin-view',id==='admin');
     restoreMovedContent();
     body.replaceChildren();
 
@@ -377,6 +378,11 @@ if(desktop.matches && document.querySelector('#homeHero')){
     if(id==='watch'){
       showViewTitle('شاهد');
       embeddedPageView(body,'watch.html','شاهد المباريات');
+      return;
+    }
+    if(id==='admin'){
+      showViewTitle('لوحة الإدارة');
+      embeddedPageView(body,'admin.html','لوحة إدارة شطرنج العرب');
       return;
     }
     if(id==='settings'){
@@ -569,9 +575,15 @@ if(desktop.matches && document.querySelector('#homeHero')){
         return;
       }
       const nav=event.target.closest('[data-desktop-nav]');
-      if(nav&&['home','ranking','tournaments','watch','settings','invite','computer','puzzles','learn'].includes(nav.dataset.desktopNav)){
+      if(nav&&['home','ranking','tournaments','watch','settings','invite','computer','puzzles','learn','admin'].includes(nav.dataset.desktopNav)){
         event.preventDefault();
         showDashboard(nav.dataset.desktopNav);
+        return;
+      }
+      const injectedAdmin=event.target.closest('[data-v2-admin-link]');
+      if(injectedAdmin && desktop.matches){
+        event.preventDefault();
+        showDashboard('admin');
         return;
       }
       const logoutAction=event.target.closest('[data-desktop-action="logout"]');
@@ -671,12 +683,12 @@ if(desktop.matches && document.querySelector('#homeHero')){
     });
 
     const initialHash=location.hash.replace(/^#/,'');
-    const initialView=['home','ranking','tournaments','watch','settings','invite','computer','puzzles','learn','profile'].includes(initialHash)?initialHash:'home';
+    const initialView=['home','ranking','tournaments','watch','settings','invite','computer','puzzles','learn','profile','admin'].includes(initialHash)?initialHash:'home';
     showDashboard(initialView);
 
     window.addEventListener('hashchange',()=>{
       const next=location.hash.replace(/^#/,'');
-      showDashboard(['home','ranking','tournaments','watch','settings','invite','computer','puzzles','learn','profile'].includes(next)?next:'home');
+      showDashboard(['home','ranking','tournaments','watch','settings','invite','computer','puzzles','learn','profile','admin'].includes(next)?next:'home');
     });
   }
 
