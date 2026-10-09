@@ -163,7 +163,7 @@ if(desktop.matches && document.querySelector('#homeHero')){
       '<strong id="desktopMemberName" class="desktop-member-name">العضو</strong>',
       '<small id="desktopMemberUsername" class="desktop-member-username" dir="ltr" hidden></small>',
       '<small id="desktopMemberLocation" class="desktop-member-location">—</small>',
-      '<span class="desktop-member-score" aria-label="نقاط اللاعب"><b id="desktopMemberRating">1500</b><span>نقطة</span></span>',
+      '<span class="desktop-member-score" aria-label="نقاط اللاعب"><b id="desktopMemberRating">1500</b><span class="desktop-member-score-star" aria-hidden="true">★</span></span>',
       '</span></a>',
       '<span class="desktop-member-status" id="desktopMemberStatus" hidden><i aria-hidden="true"></i><span>متصل الآن</span></span>'
     ].join('');
