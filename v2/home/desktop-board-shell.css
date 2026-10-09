@@ -583,92 +583,109 @@
 }
 
 
-/* Integrated ranking grid: header emphasis, rank divider, no inner frame or scroll (20261009) */
+/* Ranking fills center panel: three-row grid, ten expanded rows, no scrolling (20261009) */
 @media(min-width:901px){
   html body.desktop-board-workspace .desktop-dashboard-view.ranking-view .desktop-dashboard-view-body{
+    display:block!important;
     overflow:hidden!important;
     padding:8px 0 0!important;
-    display:block!important;
+    box-sizing:border-box!important;
   }
   html body.desktop-board-workspace .desktop-dashboard-view.ranking-view .desktop-dashboard-view-body #ranking{
     display:block!important;
     width:100%!important;
-    height:auto!important;
+    height:100%!important;
     min-height:0!important;
-    max-height:none!important;
-    overflow:visible!important;
-    padding:0!important;
-    margin:0!important;
-  }
-  html body.desktop-board-workspace .desktop-dashboard-view.ranking-view .desktop-dashboard-view-body #ranking>.wrap{
-    display:flex!important;
-    flex-direction:column!important;
-    justify-content:flex-start!important;
-    align-items:stretch!important;
-    gap:0!important;
-    height:auto!important;
-    min-height:0!important;
-    max-height:none!important;
-    overflow:visible!important;
-    padding:0!important;
-    margin:0!important;
-    width:100%!important;
-  }
-  html body.desktop-board-workspace .desktop-dashboard-view.ranking-view .desktop-dashboard-view-body #ranking .head{
-    flex:0 0 auto!important;
-    width:calc(100% - 18px)!important;
-    margin:0 9px 7px!important;
-    align-self:stretch!important;
-  }
-  html body.desktop-board-workspace .desktop-dashboard-view.ranking-view .desktop-dashboard-view-body #ranking .ranking-filters{
-    flex:0 0 auto!important;
-    width:calc(100% - 18px)!important;
-    margin:0 9px 8px!important;
-    align-self:stretch!important;
-  }
-  html body.desktop-board-workspace .desktop-dashboard-view.ranking-view .desktop-dashboard-view-body #ranking .table-card{
-    display:block!important;
-    flex:0 0 auto!important;
-    align-self:stretch!important;
-    position:static!important;
-    width:100%!important;
-    height:auto!important;
-    min-height:0!important;
-    max-height:none!important;
+    max-height:100%!important;
     margin:0!important;
     padding:0!important;
     overflow:hidden!important;
+    box-sizing:border-box!important;
+  }
+  html body.desktop-board-workspace .desktop-dashboard-view.ranking-view .desktop-dashboard-view-body #ranking>.wrap{
+    display:grid!important;
+    grid-template-columns:minmax(0,1fr)!important;
+    grid-template-rows:max-content max-content minmax(0,1fr)!important;
+    align-content:stretch!important;
+    justify-content:stretch!important;
+    gap:0!important;
+    width:100%!important;
+    height:100%!important;
+    min-height:0!important;
+    max-height:100%!important;
+    margin:0!important;
+    padding:0!important;
+    overflow:hidden!important;
+    box-sizing:border-box!important;
+  }
+  html body.desktop-board-workspace .desktop-dashboard-view.ranking-view .desktop-dashboard-view-body #ranking .head{
+    grid-row:1!important;
+    width:calc(100% - 18px)!important;
+    margin:0 9px 7px!important;
+    align-self:start!important;
+    flex:none!important;
+  }
+  html body.desktop-board-workspace .desktop-dashboard-view.ranking-view .desktop-dashboard-view-body #ranking .ranking-filters{
+    grid-row:2!important;
+    width:calc(100% - 18px)!important;
+    margin:0 9px 8px!important;
+    align-self:start!important;
+    flex:none!important;
+  }
+  html body.desktop-board-workspace .desktop-dashboard-view.ranking-view .desktop-dashboard-view-body #ranking .table-card{
+    grid-row:3!important;
+    display:block!important;
+    width:100%!important;
+    height:100%!important;
+    min-height:0!important;
+    max-height:100%!important;
+    margin:0!important;
+    padding:0!important;
     border:0!important;
     border-radius:0!important;
     background:transparent!important;
     box-shadow:none!important;
+    overflow:hidden!important;
+    box-sizing:border-box!important;
   }
   html body.desktop-board-workspace .desktop-dashboard-view.ranking-view .desktop-dashboard-view-body #ranking .table-wrap{
     display:block!important;
-    flex:0 0 auto!important;
     width:100%!important;
-    height:auto!important;
+    height:100%!important;
     min-height:0!important;
-    max-height:none!important;
+    max-height:100%!important;
     margin:0!important;
     padding:0!important;
     overflow:hidden!important;
     border:0!important;
     border-radius:0!important;
     scrollbar-width:none!important;
+    box-sizing:border-box!important;
   }
-  html body.desktop-board-workspace .desktop-dashboard-view.ranking-view .desktop-dashboard-view-body #ranking .table-wrap::-webkit-scrollbar{display:none!important}
+  html body.desktop-board-workspace .desktop-dashboard-view.ranking-view .desktop-dashboard-view-body #ranking .table-wrap::-webkit-scrollbar{
+    display:none!important;
+  }
   html body.desktop-board-workspace .desktop-dashboard-view.ranking-view .desktop-dashboard-view-body #ranking table{
-    width:100%!important;
     display:table!important;
-    height:auto!important;
+    width:100%!important;
+    height:100%!important;
     min-height:0!important;
-    max-height:none!important;
+    max-height:100%!important;
+    margin:0!important;
+    padding:0!important;
+    border:0!important;
+    border-radius:0!important;
     table-layout:fixed!important;
     border-collapse:collapse!important;
     border-spacing:0!important;
-    border:0!important;
-    border-radius:0!important;
+    direction:rtl!important;
+  }
+  html body.desktop-board-workspace .desktop-dashboard-view.ranking-view .desktop-dashboard-view-body #ranking thead,
+  html body.desktop-board-workspace .desktop-dashboard-view.ranking-view .desktop-dashboard-view-body #ranking tbody{
+    display:table-header-group!important;
+  }
+  html body.desktop-board-workspace .desktop-dashboard-view.ranking-view .desktop-dashboard-view-body #ranking tbody{
+    display:table-row-group!important;
   }
   html body.desktop-board-workspace .desktop-dashboard-view.ranking-view .desktop-dashboard-view-body #ranking thead tr,
   html body.desktop-board-workspace .desktop-dashboard-view.ranking-view .desktop-dashboard-view-body #ranking tbody tr{
@@ -676,7 +693,7 @@
     height:auto!important;
   }
   html body.desktop-board-workspace .desktop-dashboard-view.ranking-view .desktop-dashboard-view-body #ranking table tr > :is(th,td){
-    height:clamp(21px,calc((100dvh - 165px)/11),34px)!important;
+    height:clamp(19px,calc((100dvh - 175px)/11),34px)!important;
     padding:2px 4px!important;
     line-height:1.16!important;
     border-inline-start:0!important;
@@ -694,7 +711,6 @@
     border-right:0!important;
   }
   html body.desktop-board-workspace .desktop-dashboard-view.ranking-view .desktop-dashboard-view-body #ranking table thead th{
-    height:clamp(22px,calc((100dvh - 165px)/11),32px)!important;
     background:rgba(20,92,92,.52)!important;
     color:#e9d3a3!important;
     border-bottom:1px solid rgba(220,185,111,.55)!important;
