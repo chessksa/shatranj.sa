@@ -11,7 +11,7 @@ def test_member_card_opens_profile_inside_current_workspace():
     assert "embeddedPageView(body,'profile.html','الملف الشخصي')" in js
     assert "view.classList.toggle('profile-view',id==='profile')" in js
     assert "desktop-dashboard-view.profile-view .desktop-dashboard-view-body" in css
-    assert "['home','ranking','tournaments','invite','computer','puzzles','learn','profile']" in js
+    assert "['home','ranking','tournaments','watch','settings','invite','computer','puzzles','learn','profile','admin'].includes(initialHash)" in js
 
 def test_username_uses_authoritative_player_profile():
     js=read('v2/home/desktop-board-shell.mjs')

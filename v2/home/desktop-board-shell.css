@@ -696,3 +696,11 @@
     background-image:none!important;
   }
 }
+
+/* The administrator works in the existing centre workspace; the main navigation remains unique. */
+@media(min-width:901px){
+  body.desktop-board-workspace .v2-global-nav > [data-v2-admin-link]{display:none!important}
+  body.desktop-board-workspace .desktop-dashboard-view.admin-view,
+  body.desktop-board-workspace .desktop-dashboard-view.admin-view .desktop-dashboard-view-body{border-radius:0!important}
+  body.desktop-board-workspace .desktop-dashboard-view.admin-view .desktop-dashboard-embed{background:#052e33!important}
+}
