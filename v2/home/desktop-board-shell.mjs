@@ -246,10 +246,12 @@ if(desktop.matches && document.querySelector('#homeHero')){
       if(active)link.setAttribute('aria-current','page');
       else link.removeAttribute('aria-current');
     });
-    if(['computer','puzzles','learn','invite'].includes(id)){
-      const more=document.querySelector('.desktop-sidebar-more-toggle');
-      const panel=document.getElementById('desktopSidebarMorePanel');
-      if(more&&panel){panel.hidden=false;more.setAttribute('aria-expanded','true');}
+    const more=document.querySelector('.desktop-sidebar-more-toggle');
+    const panel=document.getElementById('desktopSidebarMorePanel');
+    if(more&&panel){
+      const expanded=['computer','puzzles','learn','invite'].includes(id);
+      panel.hidden=!expanded;
+      more.setAttribute('aria-expanded',String(expanded));
     }
     forceSidebarSurface();
   }
