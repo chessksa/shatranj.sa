@@ -521,3 +521,63 @@
     overflow:visible!important;
   }
 }
+
+
+/* Ranking grid — actual scores and restrained podium highlights, 20261009 */
+@media (min-width:901px){
+  html body.desktop-board-workspace .desktop-dashboard-view.ranking-view .desktop-dashboard-view-body #ranking table{
+    width:100%!important;
+    table-layout:fixed!important;
+    border-collapse:collapse!important;
+    border-spacing:0!important;
+  }
+  html body.desktop-board-workspace .desktop-dashboard-view.ranking-view .desktop-dashboard-view-body #ranking :is(th,td){
+    display:table-cell!important;
+    border:0!important;
+    border-bottom:1px solid rgba(162,195,186,.18)!important;
+    border-inline-start:1px solid rgba(162,195,186,.18)!important;
+    padding:5px 4px!important;
+    height:36px!important;
+    min-width:0!important;
+    max-width:none!important;
+    line-height:1.2!important;
+    font-size:12px!important;
+    text-align:center!important;
+    vertical-align:middle!important;
+    overflow:hidden!important;
+    text-overflow:ellipsis!important;
+    white-space:nowrap!important;
+    background:transparent!important;
+  }
+  html body.desktop-board-workspace .desktop-dashboard-view.ranking-view .desktop-dashboard-view-body #ranking tr > :first-child{border-inline-start:0!important}
+  html body.desktop-board-workspace .desktop-dashboard-view.ranking-view .desktop-dashboard-view-body #ranking thead th{
+    height:36px!important;
+    color:#dfceab!important;
+    font-size:12px!important;
+    font-weight:900!important;
+    background:rgba(17,91,91,.20)!important;
+    border-bottom:1px solid rgba(216,182,101,.22)!important;
+  }
+  html body.desktop-board-workspace .desktop-dashboard-view.ranking-view .desktop-dashboard-view-body #ranking :is(th,td):nth-child(1){width:12%!important;direction:ltr!important;font-size:13px!important}
+  html body.desktop-board-workspace .desktop-dashboard-view.ranking-view .desktop-dashboard-view-body #ranking :is(th,td):nth-child(2){width:37%!important}
+  html body.desktop-board-workspace .desktop-dashboard-view.ranking-view .desktop-dashboard-view-body #ranking :is(th,td):nth-child(3){width:25%!important}
+  html body.desktop-board-workspace .desktop-dashboard-view.ranking-view .desktop-dashboard-view-body #ranking :is(th,td):nth-child(4){width:26%!important;display:table-cell!important;color:#f4efe6!important;font-variant-numeric:tabular-nums!important}
+  html body.desktop-board-workspace .desktop-dashboard-view.ranking-view .desktop-dashboard-view-body #ranking .player-name{
+    font-size:12px!important;
+    font-weight:800!important;
+  }
+  html body.desktop-board-workspace .desktop-dashboard-view.ranking-view .desktop-dashboard-view-body #ranking .rank-badge{
+    border:0!important;box-shadow:none!important;background:transparent!important;
+    font-size:15px!important;color:#e2bd6c!important;
+  }
+  html body.desktop-board-workspace .desktop-dashboard-view.ranking-view .desktop-dashboard-view-body #ranking tbody tr:not(.ranking-placeholder):nth-child(1){background:rgba(218,179,95,.075)!important}
+  html body.desktop-board-workspace .desktop-dashboard-view.ranking-view .desktop-dashboard-view-body #ranking tbody tr:not(.ranking-placeholder):nth-child(2){background:rgba(180,194,202,.055)!important}
+  html body.desktop-board-workspace .desktop-dashboard-view.ranking-view .desktop-dashboard-view-body #ranking tbody tr:not(.ranking-placeholder):nth-child(3){background:rgba(185,130,90,.050)!important}
+  html body.desktop-board-workspace .desktop-dashboard-view.ranking-view .desktop-dashboard-view-body #ranking tbody tr:nth-child(1) .rank-badge{color:#e2c47f!important}
+  html body.desktop-board-workspace .desktop-dashboard-view.ranking-view .desktop-dashboard-view-body #ranking tbody tr:nth-child(2) .rank-badge{color:#c8d0d0!important}
+  html body.desktop-board-workspace .desktop-dashboard-view.ranking-view .desktop-dashboard-view-body #ranking tbody tr:nth-child(3) .rank-badge{color:#cba187!important}
+  html body.desktop-board-workspace .desktop-dashboard-view.ranking-view .desktop-dashboard-view-body #ranking tbody tr:not(.ranking-placeholder):nth-child(-n+3) .rank-number{box-shadow:none!important}
+  html body.desktop-board-workspace .desktop-dashboard-view.ranking-view .desktop-dashboard-view-body #ranking tbody tr:not(.ranking-placeholder):nth-child(1) .rating{color:#e2c47f!important}
+  html body.desktop-board-workspace .desktop-dashboard-view.ranking-view .desktop-dashboard-view-body #ranking tbody tr:not(.ranking-placeholder):nth-child(2) .rating{color:#c8d0d0!important}
+  html body.desktop-board-workspace .desktop-dashboard-view.ranking-view .desktop-dashboard-view-body #ranking tbody tr:not(.ranking-placeholder):nth-child(3) .rating{color:#cba187!important}
+}
