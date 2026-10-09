@@ -153,8 +153,11 @@ def test_notification_wrapper_propagates_runtime_version_to_nested_core():
     assert "site-notifications.js?v=" in loader
     assert "document.currentScript" in wrapper
     assert "RUNTIME_VERSION" in wrapper
-    assert "site-notifications-core.js?v=${encodeURIComponent(RUNTIME_VERSION)}" in wrapper
-    assert "site-notifications-core.js?v=20260910-admin-home1" not in wrapper
+    original = (ROOT / "site-notifications-original.js").read_text(encoding="utf-8")
+    assert "script.src = 'site-notifications-original.js?v=' + encodeURIComponent(RUNTIME_VERSION)" in wrapper
+    assert "new URL(document.currentScript?.src || location.href, location.href).searchParams.get('v')" in original
+    assert "site-notifications-core.js?v=" in original
+    assert "site-notifications-core.js?v=20260910-admin-home1" not in original
 
 
 if __name__ == "__main__":
