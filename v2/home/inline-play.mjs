@@ -103,7 +103,10 @@ function normalizePlayLinks(){
 
 function setActiveNav(id){
   document.querySelectorAll('.desktop-home-nav-link').forEach(link=>{
-    link.classList.toggle('active',link.dataset.desktopNav===id);
+    const selected=link.dataset.desktopNav===id;
+    link.classList.toggle('active',selected);
+    if(selected)link.setAttribute('aria-current','page');
+    else link.removeAttribute('aria-current');
   });
 }
 
