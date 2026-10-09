@@ -243,7 +243,14 @@ if(desktop.matches && document.querySelector('#homeHero')){
     document.querySelectorAll('.desktop-home-nav-link').forEach(link=>{
       const active=link.dataset.desktopNav===id;
       link.classList.toggle('active',active);
+      if(active)link.setAttribute('aria-current','page');
+      else link.removeAttribute('aria-current');
     });
+    if(['computer','puzzles','learn','invite'].includes(id)){
+      const more=document.querySelector('.desktop-sidebar-more-toggle');
+      const panel=document.getElementById('desktopSidebarMorePanel');
+      if(more&&panel){panel.hidden=false;more.setAttribute('aria-expanded','true');}
+    }
     forceSidebarSurface();
   }
 
@@ -321,7 +328,7 @@ if(desktop.matches && document.querySelector('#homeHero')){
   }
 
   function showDashboard(id='home'){
-    if(['home','ranking','tournaments','invite','computer','puzzles','learn','profile'].includes(id)){
+    if(['home','ranking','tournaments','watch','settings','invite','computer','puzzles','learn','profile'].includes(id)){
       history.replaceState(null,'','#'+id);
     }
     if(id!=='computer') stopInlineComputer();
@@ -339,6 +346,7 @@ if(desktop.matches && document.querySelector('#homeHero')){
     view.classList.toggle('puzzle-view',id==='puzzles');
     view.classList.toggle('learn-view',id==='learn');
     view.classList.toggle('profile-view',id==='profile');
+    view.classList.toggle('embedded-view',id==='tournaments'||id==='watch'||id==='settings');
     restoreMovedContent();
     body.replaceChildren();
 
@@ -382,6 +390,21 @@ if(desktop.matches && document.querySelector('#homeHero')){
     if(id==='tournaments'){
       showViewTitle('البطولات');
       tournamentView(body);
+      return;
+    }
+    if(id==='watch'){
+      showViewTitle('شاهد');
+      embeddedPageView(body,'watch.html','شاهد المباريات');
+      return;
+    }
+    if(id==='settings'){
+      showViewTitle('الإعدادات');
+      if(document.body.classList.contains('home-signed-in')){
+        embeddedPageView(body,'settings-v2.html','الإعدادات');
+      }else{
+        document.getElementById('desktopGuestLogin')?.click();
+        showDashboard('home');
+      }
       return;
     }
     if(id==='computer'){
@@ -564,9 +587,26 @@ if(desktop.matches && document.querySelector('#homeHero')){
         return;
       }
       const nav=event.target.closest('[data-desktop-nav]');
-      if(nav&&['home','ranking','tournaments','invite','computer','puzzles','learn'].includes(nav.dataset.desktopNav)){
+      if(nav&&['home','ranking','tournaments','watch','settings','invite','computer','puzzles','learn'].includes(nav.dataset.desktopNav)){
         event.preventDefault();
         showDashboard(nav.dataset.desktopNav);
+        return;
+      }
+      const moreToggle=event.target.closest('.desktop-sidebar-more-toggle');
+      if(moreToggle){
+        event.preventDefault();
+        const panel=document.getElementById('desktopSidebarMorePanel');
+        if(panel){
+          const next=panel.hidden;
+          panel.hidden=!next;
+          moreToggle.setAttribute('aria-expanded',String(next));
+        }
+        return;
+      }
+      const logoutAction=event.target.closest('[data-desktop-action="logout"]');
+      if(logoutAction){
+        event.preventDefault();
+        document.getElementById('navLogout')?.click();
         return;
       }
       const memberAction=event.target.closest('[data-desktop-member-action]');
@@ -660,12 +700,12 @@ if(desktop.matches && document.querySelector('#homeHero')){
     });
 
     const initialHash=location.hash.replace(/^#/,'');
-    const initialView=['home','ranking','tournaments','invite','computer','puzzles','learn','profile'].includes(initialHash)?initialHash:'home';
+    const initialView=['home','ranking','tournaments','watch','settings','invite','computer','puzzles','learn','profile'].includes(initialHash)?initialHash:'home';
     showDashboard(initialView);
 
     window.addEventListener('hashchange',()=>{
       const next=location.hash.replace(/^#/,'');
-      showDashboard(['home','ranking','tournaments','invite','computer','puzzles','learn','profile'].includes(next)?next:'home');
+      showDashboard(['home','ranking','tournaments','watch','settings','invite','computer','puzzles','learn','profile'].includes(next)?next:'home');
     });
   }
 
