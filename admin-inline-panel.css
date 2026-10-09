@@ -8,21 +8,47 @@ html.admin-embedded .admin-shell{height:100dvh;min-height:0;max-height:100dvh;di
 html.admin-embedded .admin-shell > .sidebar{display:none!important}
 html.admin-embedded .admin-shell > div{display:flex;flex-direction:column;flex:1 1 auto;min-height:0;min-width:0;overflow:hidden}
 html.admin-embedded .mobile-top{display:none!important}
-html.admin-embedded .admin-inline-header{display:flex;align-items:center;justify-content:space-between;flex:0 0 auto;gap:8px;padding:13px 12px 10px;background:#052f34;border-bottom:1px solid rgba(216,182,101,.18)}
-html.admin-embedded .admin-inline-header[hidden],html.admin-embedded .admin-inline-nav[hidden]{display:none!important}
-html.admin-embedded .admin-inline-header>div{display:grid;gap:3px;min-width:0}
-html.admin-embedded .admin-inline-header small{font-size:10px;color:#aac6c5;font-weight:600}
-html.admin-embedded .admin-inline-header strong{font-size:18px;font-weight:900;color:#f1e5c8}
-html.admin-embedded .admin-inline-header>span{font-size:10px;color:#e5c27e;border:1px solid rgba(221,182,106,.35);border-radius:5px;padding:5px 6px;white-space:nowrap}
-html.admin-embedded .admin-inline-nav{display:grid!important;grid-template-columns:repeat(3,minmax(0,1fr));flex:0 0 auto;gap:5px;padding:9px 10px 11px;border-bottom:1px solid rgba(216,182,101,.2);background:#052f34}
-html.admin-embedded .admin-inline-tab{width:100%;min-width:0;min-height:34px;padding:6px 3px;display:grid;place-items:center;text-align:center;font:700 11px/1.25 Arial,sans-serif;border:1px solid rgba(87,145,146,.27);border-radius:6px;color:#c7d6d2;background:rgba(15,75,78,.52);white-space:normal}
-html.admin-embedded .admin-inline-tab:hover{border-color:rgba(218,180,105,.6);background:#10474b;color:#f7e9c6}
-html.admin-embedded .admin-inline-tab.active{border-color:#dfae64;color:#ffd995;background:rgba(173,113,38,.16);box-shadow:inset 0 0 0 1px rgba(223,174,100,.07)}
-html.admin-embedded main.content{flex:1 1 auto;min-height:0;min-width:0;width:100%;max-width:none;margin:0;padding:0 10px 14px;overflow-y:auto;overflow-x:hidden;overscroll-behavior:contain}
-html.admin-embedded .topline{display:flex;align-items:center;justify-content:space-between;gap:5px;position:sticky;top:0;z-index:6;margin:0 -10px 12px;padding:9px 10px 10px;background:#052e33;border-bottom:1px solid rgba(216,182,101,.15)}
-html.admin-embedded .topline h1{font-size:14px;margin:0;color:#efd197;font-weight:900}
-html.admin-embedded .topline p{display:none!important}
-html.admin-embedded .refresh-btn{min-height:30px;height:30px;padding:0 8px;border-radius:6px;font-size:11px;white-space:nowrap}
+/* Landing shows only centred text-only tiles. No persistent secondary navigation. */
+html.admin-embedded.admin-inline-menu main.content{display:none!important}
+html.admin-embedded .admin-inline-nav[hidden],html.admin-embedded .admin-inline-header[hidden]{display:none!important}
+html.admin-embedded .admin-inline-nav{
+  display:grid!important;grid-template-columns:repeat(2,minmax(0,1fr));grid-auto-rows:64px;
+  align-content:start;flex:1 1 auto;min-height:0;gap:10px;padding:14px 12px;
+  overflow-y:auto;overscroll-behavior:contain;background:transparent
+}
+html.admin-embedded .admin-inline-tab{
+  display:flex!important;align-items:center!important;justify-content:center!important;
+  width:100%;min-width:0;min-height:64px;height:64px;
+  padding:8px!important;border:1px solid rgba(221,174,101,.53)!important;
+  border-radius:8px!important;background:rgba(9,69,74,.75)!important;
+  color:#f0eadd!important;font:800 14px/1.45 Arial,sans-serif!important;
+  white-space:normal;text-align:center!important;box-shadow:none!important
+}
+html.admin-embedded .admin-inline-tab:hover,
+html.admin-embedded .admin-inline-tab:focus-visible{
+  border-color:#edba6b!important;background:rgba(114,81,38,.31)!important;color:#ffe3a9!important
+}
+/* Once selected, the buttons disappear and the section occupies the entire middle column. */
+html.admin-embedded .admin-inline-header{
+  flex:0 0 53px;height:53px;min-height:53px;display:grid!important;
+  grid-template-columns:61px minmax(0,1fr) 61px;gap:5px;align-items:center;
+  padding:0 8px;background:#052f34;border-bottom:1px solid rgba(216,182,101,.25)
+}
+html.admin-embedded .admin-inline-header>strong{
+  min-width:0;color:#efd196;font-size:16px;font-weight:900;text-align:center;
+  white-space:nowrap;overflow:hidden;text-overflow:ellipsis
+}
+html.admin-embedded .admin-inline-control{
+  width:100%;height:31px;min-height:31px;border:1px solid rgba(221,174,101,.4);
+  border-radius:6px;background:rgba(9,63,68,.7);color:#eaddbb;
+  text-align:center;font:800 11px Arial,sans-serif;cursor:pointer
+}
+html.admin-embedded .admin-inline-control:hover{background:rgba(221,174,101,.17);border-color:#edba6b}
+html.admin-embedded main.content{
+  flex:1 1 auto;min-height:0;min-width:0;width:100%;max-width:none;
+  margin:0;padding:12px 10px 14px;overflow-y:auto;overflow-x:hidden;overscroll-behavior:contain
+}
+html.admin-embedded .topline{display:none!important}
 html.admin-embedded .stats-grid,html.admin-embedded .stats-grid.pro-stats-grid{grid-template-columns:repeat(2,minmax(0,1fr))!important;gap:7px!important}
 html.admin-embedded .stat-card,html.admin-embedded .stat-card.pro-stat{min-width:0;min-height:79px;padding:11px 9px;border-radius:8px;box-shadow:none;background:#0b4247;border-color:rgba(103,168,165,.28)}
 html.admin-embedded .stat-card small{font-size:10px;line-height:1.4;color:#c3d3cc}
@@ -63,4 +89,4 @@ html.admin-embedded .form-grid{grid-template-columns:1fr!important}
 html.admin-embedded .form-group.full{grid-column:auto!important}
 html.admin-embedded .modal-card input,html.admin-embedded .modal-card select,html.admin-embedded .modal-card textarea{min-width:0;max-width:100%}
 html.admin-embedded button:focus-visible,html.admin-embedded a:focus-visible,html.admin-embedded select:focus-visible,html.admin-embedded input:focus-visible{outline:2px solid #e2b46b;outline-offset:2px}
-@media(max-height:650px){html.admin-embedded .admin-inline-header{padding:7px 10px}html.admin-embedded .admin-inline-tab{min-height:30px}html.admin-embedded .admin-inline-nav{padding:6px 8px}}
+@media(max-height:650px){html.admin-embedded .admin-inline-nav{grid-auto-rows:54px;gap:7px;padding:9px}html.admin-embedded .admin-inline-tab{height:54px;min-height:54px}}

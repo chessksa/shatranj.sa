@@ -28,7 +28,7 @@ button,input,select,textarea{font:inherit}button{cursor:pointer}a{color:inherit;
 @media(max-width:760px){.admin-shell{display:block}.sidebar{position:fixed;right:0;top:0;z-index:120;width:min(82vw,310px);transform:translateX(105%);transition:.2s ease;border-left:1px solid var(--line);box-shadow:var(--shadow)}.sidebar.open{transform:translateX(0)}.mobile-top{display:flex;position:sticky;top:0;z-index:90;align-items:center;justify-content:space-between;padding:10px 12px;background:rgba(3,38,43,.96);border-bottom:1px solid var(--line)}.menu-btn{width:42px;height:42px;border:1px solid var(--line);border-radius:10px;background:transparent;color:#fff;font-size:21px}.content{padding:14px 10px 24px}.topline{align-items:flex-start}.topline h1{font-size:22px}.refresh-btn{min-height:39px;padding:0 10px;font-size:12px}.stats-grid{grid-template-columns:1fr 1fr;gap:8px}.stat-card{padding:13px}.stat-card strong{font-size:25px}.toolbar{display:grid;grid-template-columns:1fr 1fr}.toolbar input{grid-column:1/-1}.field,input.field,select.field{width:100%;min-width:0}.detail-grid{grid-template-columns:1fr 1fr}.modal{padding:9px}.modal-card{max-height:94dvh;border-radius:14px}.action-row{display:grid;grid-template-columns:1fr 1fr}.action-btn{width:100%}}
 @media(max-width:420px){.stats-grid{grid-template-columns:1fr 1fr}.detail-grid{grid-template-columns:1fr}.action-row{grid-template-columns:1fr}}
 </style>
-<link rel="stylesheet" href="admin-inline-panel.css?v=20261010-1">
+<link rel="stylesheet" href="admin-inline-panel.css?v=20261010-2">
 </head>
 <body>
 <div id="accessGate" class="access-gate">
@@ -50,7 +50,7 @@ button,input,select,textarea{font:inherit}button{cursor:pointer}a{color:inherit;
 
   <div>
     <div class="mobile-top"><strong>لوحة الإدارة</strong><button id="mobileMenuBtn" class="menu-btn" type="button">☰</button></div>
-    <section id="adminInlineHeader" class="admin-inline-header" hidden><div><small>شطرنج العرب</small><strong>لوحة الإدارة</strong></div><span>مركز التحكم</span></section>
+    <section id="adminInlineHeader" class="admin-inline-header" hidden><button id="adminInlineBack" class="admin-inline-control" type="button">الأقسام</button><strong id="adminInlineTitle" aria-live="polite"></strong><button id="adminInlineRefresh" class="admin-inline-control" type="button">تحديث</button></section>
     <nav id="adminInlineNav" class="admin-inline-nav" aria-label="أقسام لوحة الإدارة" hidden></nav>
     <main class="content">
       <div class="topline"><div><h1 id="viewTitle">الرئيسية</h1><p id="viewSubtitle">نظرة سريعة على نشاط الموقع.</p></div><button id="refreshBtn" class="refresh-btn" type="button">↻ تحديث</button></div>
@@ -114,7 +114,7 @@ button,input,select,textarea{font:inherit}button{cursor:pointer}a{color:inherit;
 </div>
 
 <script src="config.js"></script>
-<script type="module" src="admin.js?v=20260906-cache1"></script>
+<script type="module" src="admin.js?v=20261010-section-tiles-2"></script>
 <script type="module" src="admin-computer-games.js?v=20260908-1"></script>
 </body>
 </html>
