@@ -16,11 +16,6 @@ cleanupCss.rel='stylesheet';
 cleanupCss.href=`v2/home/desktop-sidebar-cleanup.css?v=${tuneAssetVersion}`;
 document.head.appendChild(cleanupCss);
 
-const memberCardCss=document.createElement('link');
-memberCardCss.rel='stylesheet';
-memberCardCss.href=`v2/home/desktop-member-card-v2.css?v=${tuneAssetVersion}`;
-document.head.appendChild(memberCardCss);
-
 const boardThemeCss=document.createElement('link');
 boardThemeCss.rel='stylesheet';
 boardThemeCss.href=`v2/home/board-theme-override.css?v=${tuneAssetVersion}`;
@@ -93,25 +88,6 @@ function makeQuickAction({id,label,sub,icon,href}){
   return el;
 }
 
-function labelMemberActions(){
-  const actions=document.querySelector('.desktop-member-play-icons');
-  if(!actions)return false;
-  const items=[...actions.children];
-  const labels=[
-    {label:'العب',icon:'⚔'},
-    {label:'كمبيوتر',icon:'▣'},
-    {label:'دعوة',icon:'＋'},
-    {label:'بطولة',icon:'♜'}
-  ];
-  items.forEach((item,index)=>{
-    const meta=labels[index];
-    if(!meta)return;
-    item.classList.add('desktop-member-play-action');
-    item.innerHTML=`<span class="desktop-member-play-label">${meta.label}</span><span class="desktop-member-play-symbol" aria-hidden="true">${meta.icon}</span>`;
-  });
-  return true;
-}
-
 function removeDailyTipCard(){
   document.querySelector('.desktop-tip-card')?.remove();
 }
@@ -154,7 +130,6 @@ function restoreDashboardBlocks(){
   copyText('headerMatchesCount','desktopMatchesCount','0');
   copyText('headerOnlineCount','desktopOnlineCount','0');
   copyText('headerPlayersCount','desktopPlayersCount','0');
-  labelMemberActions();
   return true;
 }
 
@@ -198,11 +173,10 @@ if(desktop.matches){
       clearInterval(timer);
       bindTuneActions();
       watchCounts();
-      labelMemberActions();
-      removeSidebarFooter();
+          removeSidebarFooter();
       removeDailyTipCard();
-      setTimeout(()=>{restoreDashboardBlocks();labelMemberActions();removeSidebarFooter();removeDailyTipCard();normalizeInlineBoardOrientation();},300);
-      setTimeout(()=>{restoreDashboardBlocks();labelMemberActions();removeSidebarFooter();removeDailyTipCard();normalizeInlineBoardOrientation();},1000);
+      setTimeout(()=>{restoreDashboardBlocks();removeSidebarFooter();removeDailyTipCard();normalizeInlineBoardOrientation();},300);
+      setTimeout(()=>{restoreDashboardBlocks();removeSidebarFooter();removeDailyTipCard();normalizeInlineBoardOrientation();},1000);
     }
   },50);
 }
