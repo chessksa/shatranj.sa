@@ -668,7 +668,7 @@
   html body.desktop-board-workspace .desktop-dashboard-view.ranking-view .desktop-dashboard-view-body #ranking table{
     display:table!important;
     width:100%!important;
-    height:100%!important;
+    height:var(--ranking-table-height,100%)!important;
     min-height:0!important;
     max-height:100%!important;
     margin:0!important;
@@ -693,7 +693,7 @@
     height:auto!important;
   }
   html body.desktop-board-workspace .desktop-dashboard-view.ranking-view .desktop-dashboard-view-body #ranking table tr > :is(th,td){
-    height:clamp(19px,calc((100dvh - 175px)/11),34px)!important;
+    height:var(--ranking-row-height,34px)!important;
     padding:2px 4px!important;
     line-height:1.16!important;
     border-inline-start:0!important;
@@ -710,11 +710,23 @@
     border-left:1px solid rgba(171,200,194,.46)!important;
     border-right:0!important;
   }
+  html body.desktop-board-workspace .desktop-dashboard-view.ranking-view .desktop-dashboard-view-body #ranking table thead tr,
+  html body.desktop-board-workspace .desktop-dashboard-view.ranking-view .desktop-dashboard-view-body #ranking table tbody tr{
+    height:var(--ranking-row-height,34px)!important;
+  }
   html body.desktop-board-workspace .desktop-dashboard-view.ranking-view .desktop-dashboard-view-body #ranking table thead th{
-    background:rgba(20,92,92,.52)!important;
-    color:#e9d3a3!important;
-    border-bottom:1px solid rgba(220,185,111,.55)!important;
+    background:rgba(18,91,93,.67)!important;
+    color:#edd6a8!important;
+    border-top:1px solid rgba(218,181,104,.52)!important;
+    border-bottom:1px solid rgba(218,181,104,.59)!important;
+    box-shadow:inset 0 1px 0 rgba(247,220,159,.075)!important;
     font-weight:900!important;
+  }
+  html body.desktop-board-workspace .desktop-dashboard-view.ranking-view .desktop-dashboard-view-body #ranking table thead th:not(:first-child){
+    border-left:1px solid rgba(218,181,104,.34)!important;
+  }
+  html body.desktop-board-workspace .desktop-dashboard-view.ranking-view .desktop-dashboard-view-body #ranking table thead th:first-child{
+    border-left:1px solid rgba(218,181,104,.64)!important;
   }
   html body.desktop-board-workspace .desktop-dashboard-view.ranking-view .desktop-dashboard-view-body #ranking tbody tr:not(.ranking-placeholder):first-child{
     background:rgba(213,172,86,.16)!important;
