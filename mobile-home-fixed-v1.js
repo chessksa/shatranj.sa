@@ -156,19 +156,56 @@
   }
 
   function ranking(body){
-    const rows=[...document.querySelectorAll('#tbody tr')].slice(0,10);
-    if(!rows.length){body.innerHTML='<div class="mfw-action"><p>جاري تحميل ترتيب اللاعبين…</p></div>';return}
-    const wrap=document.createElement('div');wrap.className='mfw-ranking';
-    rows.forEach((row,index)=>{
-      const cells=[...row.querySelectorAll('td')];
-      const item=document.createElement('div');item.className='mfw-rank-row';
-      const number=(cells[0]?.textContent||String(index+1)).trim();
-      const player=(cells[1]?.textContent||'لاعب').trim();
-      const points=(cells[cells.length-1]?.textContent||'').trim();
-      item.innerHTML='<b>'+number+'</b><strong>'+player+'</strong><small>'+points+' نقطة</small>';
-      wrap.appendChild(item);
+    const sourceRows=[...document.querySelectorAll('#tbody tr')].slice(0,10);
+    if(!sourceRows.length){
+      body.innerHTML='<div class="mfw-action"><p>جاري تحميل ترتيب اللاعبين…</p></div>';
+      return;
+    }
+    const table=document.createElement('table');
+    table.className='mfw-ranking-grid';
+    table.dir='rtl';
+    table.setAttribute('aria-label','ترتيب اللاعبين');
+    const head=document.createElement('thead');
+    const headings=document.createElement('tr');
+    [['م','المركز'],['اسم اللاعب','اسم اللاعب'],['الدولة','الدولة'],['النقاط','النقاط']].forEach(([label,description])=>{
+      const th=document.createElement('th');th.scope='col';th.textContent=label;
+      th.setAttribute('aria-label',description);
+      headings.appendChild(th);
     });
-    body.appendChild(wrap);
+    head.appendChild(headings);
+    const tbody=document.createElement('tbody');
+    sourceRows.forEach((source,index)=>{
+      const cells=[...source.querySelectorAll(':scope > td')];
+      const placeholder=source.classList.contains('ranking-placeholder');
+      const tr=document.createElement('tr');
+      if(placeholder)tr.classList.add('ranking-placeholder');
+      else if(index<3)tr.classList.add('podium-'+String(index+1));
+      const values=[
+        cells[0]?.textContent?.trim()||String(index+1),
+        placeholder?'':cells[1]?.querySelector('.player-name')?.textContent?.trim()||cells[1]?.textContent?.trim()||'',
+        placeholder?'':cells[2]?.textContent?.trim()||'',
+        placeholder?'':cells[3]?.textContent?.trim()||'—'
+      ];
+      values.forEach((value,i)=>{
+        const td=document.createElement('td');
+        if(i===0)td.className='mfw-ranking-place';
+        if(i===3)td.className='mfw-ranking-points';
+        if(i===1&&!placeholder){
+          const profile=cells[1]?.querySelector('a.player-profile-link');
+          if(profile){
+            const link=document.createElement('a');
+            link.href=profile.getAttribute('href')||'#';
+            link.className='mfw-ranking-player';
+            link.textContent=value;
+            td.appendChild(link);
+          }else td.textContent=value;
+        }else td.textContent=value;
+        tr.appendChild(td);
+      });
+      tbody.appendChild(tr);
+    });
+    table.append(head,tbody);
+    body.replaceChildren(table);
   }
 
   function invite(body){
