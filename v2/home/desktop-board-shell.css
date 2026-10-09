@@ -728,13 +728,27 @@
   html body.desktop-board-workspace .desktop-dashboard-view.ranking-view .desktop-dashboard-view-body #ranking table thead th:first-child{
     border-left:1px solid rgba(218,181,104,.64)!important;
   }
-  html body.desktop-board-workspace .desktop-dashboard-view.ranking-view .desktop-dashboard-view-body #ranking tbody tr:not(.ranking-placeholder):first-child{
-    background:rgba(213,172,86,.16)!important;
+  /* Podium backgrounds: ultra-soft orange fading gently from 1st to 3rd. */
+  html body.desktop-board-workspace .desktop-dashboard-view.ranking-view .desktop-dashboard-view-body #ranking tbody tr:not(.ranking-placeholder):nth-child(1){
+    background:rgba(255,184,120,.145)!important;
   }
-  html body.desktop-board-workspace .desktop-dashboard-view.ranking-view .desktop-dashboard-view-body #ranking tbody tr:not(.ranking-placeholder):first-child td{
-    border-bottom:1px solid rgba(215,179,101,.40)!important;
+  html body.desktop-board-workspace .desktop-dashboard-view.ranking-view .desktop-dashboard-view-body #ranking tbody tr:not(.ranking-placeholder):nth-child(2){
+    background:rgba(255,184,120,.085)!important;
   }
+  html body.desktop-board-workspace .desktop-dashboard-view.ranking-view .desktop-dashboard-view-body #ranking tbody tr:not(.ranking-placeholder):nth-child(3){
+    background:rgba(255,184,120,.045)!important;
+  }
+  html body.desktop-board-workspace .desktop-dashboard-view.ranking-view .desktop-dashboard-view-body #ranking tbody tr:not(.ranking-placeholder):nth-child(1) td{
+    border-bottom:1px solid rgba(231,183,129,.32)!important;
+  }
+  html body.desktop-board-workspace .desktop-dashboard-view.ranking-view .desktop-dashboard-view-body #ranking tbody tr:not(.ranking-placeholder):nth-child(2) td{
+    border-bottom:1px solid rgba(231,183,129,.24)!important;
+  }
+  html body.desktop-board-workspace .desktop-dashboard-view.ranking-view .desktop-dashboard-view-body #ranking tbody tr:not(.ranking-placeholder):nth-child(3) td{
+    border-bottom:1px solid rgba(231,183,129,.18)!important;
+  }
+  /* Close the grid beneath rank 10 without adding an external frame. */
   html body.desktop-board-workspace .desktop-dashboard-view.ranking-view .desktop-dashboard-view-body #ranking tbody tr:last-child td{
-    border-bottom:0!important;
+    border-bottom:1px solid rgba(154,190,184,.42)!important;
   }
 }
