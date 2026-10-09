@@ -46,26 +46,24 @@ def test_signed_in_mobile_home_is_one_screen_without_page_scroll():
     assert 'body.v2-route-home.home-signed-in footer' in css
     assert 'body.v2-route-home.home-signed-in #tournamentResultsTicker' in css
     assert 'body.v2-route-home.home-signed-in .home-board-preview' in css
-    assert 'body.v2-route-home.home-signed-in .v5-home-quick' in css
-    assert 'body.v2-route-home.home-signed-in .v5-home-cards' in css
     assert 'mobile-home-no-scroll.css' in shell
     assert "label:'Chess960'" in shell
     assert "label:'Puzzle Battle'" not in shell
     assert "if(window.matchMedia('(max-width:900px)').matches)return;" in shell
 
 
-def test_mobile_member_card_moves_to_top_and_exposes_three_compact_statuses():
+def test_mobile_member_identity_remains_in_compact_header_without_old_dashboard():
     dashboard_css = (ROOT / 'v2/home/dashboard.css').read_text(encoding='utf-8')
     dashboard = (ROOT / 'v2/home/dashboard.mjs').read_text(encoding='utf-8')
+    index = (ROOT / 'index.html').read_text(encoding='utf-8')
 
-    assert "if(window.matchMedia('(max-width:900px)').matches) copy.prepend(host);" in dashboard
-    assert '.v5-home-mobile-strip{display:grid' in dashboard_css
-    assert 'grid-template-columns:repeat(3,minmax(0,1fr))' in dashboard_css
-    assert "const mobileStrip=node('div','v5-home-mobile-strip');" in dashboard
-    assert "label:'آخر مباراة'" in dashboard
-    assert "label:'الأصدقاء'" in dashboard
-    assert "label:'الإشعارات'" in dashboard
-    assert 'متصل الآن' in dashboard
+    assert '.compact-member-nav' in dashboard_css
+    assert '#headerMember' in dashboard_css
+    assert 'headerPlayersCount' in dashboard
+    assert 'home-players-loaded' in dashboard
+    assert 'compact-member-nav' in index
+    assert 'v5-home-mobile-strip' not in dashboard
+    assert '#v5-home-dashboard,.v5-home-dashboard{display:none!important}' in dashboard_css
 
 
 def test_home_uses_real_public_snapshot_and_clean_mobile_visuals():
@@ -87,11 +85,12 @@ def test_home_uses_real_public_snapshot_and_clean_mobile_visuals():
     assert "rpc('get_public_home_snapshot')" in public_home
     assert '.slice(0,10)' in public_home
     assert 'loadPublicHomeSnapshot' in public_home
-    assert "import './public-home.mjs?v=20260912-home-polish1';" in dashboard
+    assert "public-home.mjs" in dashboard
+    assert "homeAssetVersion" in dashboard
     assert 'mobile-home-polish.css' in public_home
 
-    assert '.welcome-ticker-label' in css
+    assert '.compact-member-nav' in css
     assert 'border:0!important' in css
-    assert '.hero-stat' in css
+    assert '.site-notification-bell' in css
     assert 'box-shadow:none!important' in css
-    assert '.home-board-actions' in css
+    assert '.header-tile' in css
