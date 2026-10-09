@@ -2,7 +2,7 @@
   'use strict';
 
   const MOBILE_BREAKPOINT = 800;
-  const MOBILE_RANKING_LIMIT = 5;
+  const MOBILE_RANKING_LIMIT = 10;
   const COUNTRY_FLAG_CODES = Object.freeze({
     'السعودية':'SA','الإمارات':'AE','الكويت':'KW','البحرين':'BH','قطر':'QA','عُمان':'OM','اليمن':'YE',
     'العراق':'IQ','الأردن':'JO','فلسطين':'PS','لبنان':'LB','سوريا':'SY','مصر':'EG','السودان':'SD',
@@ -134,7 +134,7 @@
 
   function installMobileRankingLimit() {
     const style = document.createElement('style');
-    style.id = 'mobileRankingFiveStyles';
+    style.id = 'mobileRankingTenStyles';
     style.textContent = `@media(max-width:${MOBILE_BREAKPOINT}px){#ranking #tbody tr:nth-child(n+${MOBILE_RANKING_LIMIT + 1}){display:none!important}}`;
     if (!document.getElementById(style.id)) document.head.appendChild(style);
 
@@ -302,7 +302,7 @@
 
       const track = document.createElement('div');
       track.id = 'tournamentResultsTickerTrack';
-      track.className = 'welcome-ticker-track welcome-ticker-single';
+      track.className = 'welcome-ticker-track tournament-ticker-single';
 
       const loading = document.createElement('span');
       loading.className = 'welcome-ticker-loading';
@@ -317,11 +317,28 @@
     const renderFallback = text => {
       const track = document.getElementById('tournamentResultsTickerTrack');
       if (!track) return;
-      track.className = 'welcome-ticker-track welcome-ticker-single';
-      const item = document.createElement('span');
-      item.className = 'welcome-ticker-loading';
-      item.textContent = text;
-      track.replaceChildren(item);
+      track.className = 'welcome-ticker-track';
+
+      const buildFallbackGroup = () => {
+        const group = document.createElement('div');
+        group.className = 'welcome-ticker-group';
+
+        for (let index = 0; index < 10; index += 1) {
+          const item = document.createElement('span');
+          item.className = 'welcome-ticker-loading';
+          item.textContent = text;
+          group.appendChild(item);
+
+          const separator = document.createElement('span');
+          separator.className = 'welcome-ticker-separator';
+          separator.setAttribute('aria-hidden', 'true');
+          group.appendChild(separator);
+        }
+
+        return group;
+      };
+
+      track.replaceChildren(buildFallbackGroup(), buildFallbackGroup());
     };
 
     const buildGroup = results => {
@@ -453,6 +470,6 @@
   installTournamentResultsTicker();
 
   const core = document.createElement('script');
-  core.src = 'site-notifications-core.js?v=20260905-mobile5';
+  core.src = 'site-notifications-core.js?v=' + encodeURIComponent(new URL(document.currentScript?.src || location.href, location.href).searchParams.get('v') || '20261010');
   document.head.appendChild(core);
 })();
