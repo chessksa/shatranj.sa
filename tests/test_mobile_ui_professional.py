@@ -89,8 +89,8 @@ def test_home_uses_real_public_snapshot_and_clean_mobile_visuals():
     assert "homeAssetVersion" in dashboard
     assert 'mobile-home-polish.css' in public_home
 
-    assert '.welcome-ticker-label' in css
+    assert '.compact-member-nav' in css
     assert 'border:0!important' in css
-    assert '.hero-stat' in css
+    assert '.site-notification-bell' in css
     assert 'box-shadow:none!important' in css
-    assert '.home-board-actions' in css
+    assert '.header-tile' in css
