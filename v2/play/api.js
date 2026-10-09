@@ -1,21 +1,10 @@
-let cachedClient = null;
+import { supabase as sharedClient } from '../platform/api.mjs';
 
-function config() {
-  const value = window.SHATRANJ_CONFIG?.supabase;
-  if (!value?.enabled || !value?.url || !value?.anonKey) {
-    throw new Error('إعدادات الاتصال غير مكتملة');
-  }
-  return value;
-}
-
+// Reuse the same authenticated client used by the home page and dashboard.
+// The home page imports Supabase as an ES module, not window.supabase.
 export function supabaseClient() {
-  if (cachedClient) return cachedClient;
-  if (!window.supabase?.createClient) throw new Error('تعذر تحميل خدمة الاتصال');
-  const value = config();
-  cachedClient = window.supabase.createClient(value.url, value.anonKey, {
-    auth: { persistSession: true, autoRefreshToken: true, detectSessionInUrl: true },
-  });
-  return cachedClient;
+  if (!sharedClient) throw new Error('إعدادات الاتصال غير مكتملة');
+  return sharedClient;
 }
 
 function firstRow(data) {
