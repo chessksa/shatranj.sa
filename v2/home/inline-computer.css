@@ -132,15 +132,16 @@
     line-height:1;
   }
 
+  /* Selected level/time: light orange outline with the same dark background as other choices. */
   .inline-computer-options button.active{
-    border-color:#efca72;
-    background:linear-gradient(135deg,#efca72,#d9aa4f);
-    color:#173536;
+    border:2px solid #f0be86;
+    background:rgba(2,47,51,.82);
+    color:#f4efe6;
     box-shadow:none;
   }
 
   .inline-computer-options button.active small{
-    color:#173536;
+    color:#f0be86;
   }
 
   .inline-computer-start{
