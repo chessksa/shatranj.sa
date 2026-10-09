@@ -291,6 +291,32 @@ if(desktop.matches && document.querySelector('#homeHero')){
     body.appendChild(frame);
   }
 
+  /* Keep ranking row height matched to the live column, without scrolling. */
+  let rankingFitQueued=false;
+  function fitRankingToPanel(){
+    const panel=document.getElementById('desktopDashboardView');
+    if(!panel||panel.hidden||!panel.classList.contains('ranking-view'))return;
+    const table=panel.querySelector('#ranking .table-wrap table');
+    if(!table)return;
+    const top=table.getBoundingClientRect().top;
+    const bottom=panel.getBoundingClientRect().bottom;
+    const rowCount=(table.tHead?.rows.length||0)+[...table.tBodies].reduce((n,t)=>n+t.rows.length,0);
+    if(!rowCount||!Number.isFinite(top)||!Number.isFinite(bottom)||bottom<=top)return;
+    const available=Math.floor(bottom-top-2);
+    if(available<=0)return;
+    const rowHeight=available/rowCount;
+    table.style.setProperty('--ranking-row-height',rowHeight.toFixed(3)+'px');
+    table.style.setProperty('--ranking-table-height',available+'px');
+  }
+  function scheduleRankingFit(){
+    if(rankingFitQueued)return;
+    rankingFitQueued=true;
+    requestAnimationFrame(()=>{
+      rankingFitQueued=false;
+      fitRankingToPanel();
+    });
+  }
+
   function showDashboard(id='home'){
     if(['home','ranking','tournaments','invite','computer','puzzles','learn','profile'].includes(id)){
       history.replaceState(null,'','#'+id);
@@ -339,8 +365,10 @@ if(desktop.matches && document.querySelector('#homeHero')){
     if(id==='ranking'){
       showViewTitle('الترتيب');
       rankingNode=document.getElementById('ranking')||rankingNode;
-      if(rankingNode)body.appendChild(rankingNode);
-      else tournamentView(body);
+      if(rankingNode){
+        body.appendChild(rankingNode);
+        scheduleRankingFit();
+      }else tournamentView(body);
       return;
     }
     if(id==='invite'){
@@ -610,6 +638,18 @@ if(desktop.matches && document.querySelector('#homeHero')){
     });
     bindDesktopActions();
     watchLiveData();
+    if(typeof ResizeObserver!=='undefined'){
+      const rankingPanel=document.getElementById('desktopDashboardView');
+      const panelObserver=new ResizeObserver(scheduleRankingFit);
+      if(rankingPanel)panelObserver.observe(rankingPanel);
+    }
+    const rankingBody=document.getElementById('tbody');
+    if(rankingBody){
+      const rowObserver=new MutationObserver(scheduleRankingFit);
+      rowObserver.observe(rankingBody,{childList:true});
+    }
+    window.addEventListener('resize',scheduleRankingFit);
+    document.fonts?.ready?.then(scheduleRankingFit);
     void heartbeatMemberPresence();
     setInterval(()=>{if(!document.hidden)void heartbeatMemberPresence();},30000);
     document.addEventListener('visibilitychange',()=>{
