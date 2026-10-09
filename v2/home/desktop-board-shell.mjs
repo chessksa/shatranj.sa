@@ -303,7 +303,8 @@ if(desktop.matches && document.querySelector('#homeHero')){
     const bottom=wrap.getBoundingClientRect().bottom;
     const rows=[...table.querySelectorAll('thead tr, tbody tr')];
     if(!rows.length||!Number.isFinite(top)||!Number.isFinite(bottom)||bottom<=top)return;
-    const available=Math.round(bottom-top);
+    // Reserve one pixel for the sole bottom divider on the table wrapper.
+    const available=Math.floor(bottom-top-1);
     if(available<=0)return;
     const rowHeight=available/rows.length;
     table.style.setProperty('--ranking-row-height',rowHeight+'px');
@@ -314,20 +315,6 @@ if(desktop.matches && document.querySelector('#homeHero')){
       row.style.setProperty('height',height+'px','important');
       [...row.cells].forEach(cell=>cell.style.setProperty('height',height+'px','important'));
     });
-    // Add a REAL DOM line. Unlike a collapsed table border or ::after pseudo,
-    // its painting order is independent of the table's border algorithm.
-    let rule=wrap.querySelector('.ranking-bottom-rule');
-    if(!rule){
-      rule=document.createElement('div');
-      rule.className='ranking-bottom-rule';
-      rule.setAttribute('aria-hidden','true');
-      wrap.appendChild(rule);
-    }
-    const last=rows[rows.length-1];
-    const rect=wrap.getBoundingClientRect();
-    const finalBottom=last.getBoundingClientRect().bottom;
-    const lineTop=Math.max(0,Math.min(rect.height-2,finalBottom-rect.top-2));
-    if(Number.isFinite(lineTop))rule.style.setProperty('top',lineTop+'px','important');
   }
   function scheduleRankingFit(){
     if(rankingFitQueued)return;
