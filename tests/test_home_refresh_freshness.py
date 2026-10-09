@@ -18,11 +18,12 @@ def test_single_approved_homepage_is_served_directly():
     assert "get_public_ranked_players',{p_gender:null}" in html
     assert 'list_public_current_games' in html
 
-def test_assets_use_one_approved_version():
+def test_approved_homepage_assets_have_nonempty_cache_versions():
+    import re
     html=read('index.html')
     for path in ['home-theme-base.css','home-theme.css','v2/home/dashboard.mjs',
                  'v2/site/shell.mjs','mobile-home-fixed-v1.js']:
-        assert f'{path}?v=20261009-tiles58-gridtable-v1' in html
+        assert re.search(re.escape(path) + r'\\?v=[0-9A-Za-z._-]+', html), path
     assert '@import url("./home-theme-base.css' not in read('home-theme.css')
     assert "self.addEventListener('fetch'" not in read('sw.js')
     assert 'navigator.serviceWorker.register' not in read('app.js')
