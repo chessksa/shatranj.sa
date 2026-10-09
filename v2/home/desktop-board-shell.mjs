@@ -342,7 +342,6 @@ if(desktop.matches && document.querySelector('#homeHero')){
 
     view.classList.toggle('computer-view',id==='computer');
     view.classList.toggle('ranking-view',id==='ranking');
-    view.classList.toggle('embedded-view',id==='tournaments');
     view.classList.toggle('puzzle-view',id==='puzzles');
     view.classList.toggle('learn-view',id==='learn');
     view.classList.toggle('profile-view',id==='profile');
