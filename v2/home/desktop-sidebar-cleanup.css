@@ -27,8 +27,9 @@
     overflow-x:hidden!important;
     overflow-y:auto!important;
     scrollbar-width:none!important;
-    border:1px solid rgba(24,116,119,.38)!important;
-    border-radius:22px!important;
+    border:0!important;
+    border-left:2px solid rgba(233,188,106,.9)!important;
+    border-radius:0!important;
     background:linear-gradient(180deg,rgba(2,53,57,.97) 0%,rgba(1,43,48,.985) 52%,rgba(1,29,34,.99) 100%)!important;
     box-shadow:inset 0 0 18px rgba(0,0,0,.075),-6px 0 19px rgba(0,0,0,.13)!important;
   }
@@ -223,21 +224,20 @@
   body.desktop-board-workspace .desktop-member-card.is-offline .desktop-member-status{color:#afbdb9!important}
   body.desktop-board-workspace:not(.home-signed-in) .desktop-member-card{display:none!important}
   body.desktop-board-workspace .v2-global-nav{
-    display:flex!important;
+    display:grid!important;
     flex:1 1 auto!important;
-    flex-direction:column!important;
+    grid-template-columns:minmax(0,1fr)!important;
+    grid-template-rows:repeat(9,minmax(0,1fr))!important;
+    align-content:stretch!important;
     align-items:stretch!important;
-    justify-content:space-evenly!important;
-    gap:1px!important;
+    justify-content:stretch!important;
+    gap:0!important;
     width:100%!important;
     min-height:0!important;
     height:auto!important;
-    padding:0 0 6px!important;
-    overflow-x:hidden!important;
-    overflow-y:visible!important;
+    padding:6px 0!important;
+    overflow:hidden!important;
     scrollbar-width:none!important;
-    grid-template-rows:none!important;
-    grid-auto-rows:auto!important;
   }
   body.desktop-board-workspace .v2-global-nav::-webkit-scrollbar{display:none!important}
   body.desktop-board-workspace .desktop-home-nav-link,
@@ -248,19 +248,19 @@
     justify-content:flex-start!important;
     flex:0 0 auto!important;
     width:100%!important;
-    height:clamp(35px,5.6dvh,57px)!important;
-    min-height:35px!important;
-    padding:0 12px!important;
+    height:100%!important;
+    min-height:0!important;
+    padding:0 10px!important;
     margin:0!important;
     gap:11px!important;
     box-sizing:border-box!important;
     border:0!important;
-    border-radius:10px!important;
+    border-radius:0!important;
     outline:0!important;
     background:transparent!important;
     box-shadow:none!important;
     color:#f1eee8!important;
-    font:800 clamp(14px,1.18vw,19px)/1.2 Arial,sans-serif!important;
+    font:800 clamp(17px,1.3vw,22px)/1.2 Arial,sans-serif!important;
     direction:rtl!important;
     text-align:right!important;
     text-decoration:none!important;
@@ -269,14 +269,14 @@
   }
   body.desktop-board-workspace .desktop-home-nav-link:hover,
   body.desktop-board-workspace .desktop-sidebar-logout:hover{
-    background:rgba(57,122,122,.18)!important;
+    background:rgba(57,122,122,.10)!important;
   }
   body.desktop-board-workspace .desktop-home-nav-link.active,
   body.desktop-board-workspace .desktop-home-nav-link[aria-current="page"]{
     position:relative!important;
     border:0!important;
-    border-radius:11px!important;
-    background:linear-gradient(90deg,rgba(39,125,130,.39),rgba(33,92,95,.26))!important;
+    border-radius:0!important;
+    background:rgba(39,125,130,.14)!important;
     box-shadow:none!important;
     color:#f4eddb!important;
   }
@@ -288,21 +288,21 @@
     right:0;
     bottom:0;
     width:4px;
-    border-radius:3px;
+    border-radius:0;
     background:#efc77b;
   }
   body.desktop-board-workspace .desktop-home-nav-icon{
     display:grid!important;
     place-items:center!important;
-    flex:0 0 32px!important;
-    width:32px!important;
-    min-width:32px!important;
-    height:32px!important;
+    flex:0 0 36px!important;
+    width:36px!important;
+    min-width:36px!important;
+    height:36px!important;
     color:#8fbec6!important;
   }
   body.desktop-board-workspace .desktop-home-nav-icon svg{
-    width:28px!important;
-    height:28px!important;
+    width:32px!important;
+    height:32px!important;
     display:block!important;
   }
   body.desktop-board-workspace .desktop-home-nav-link.active .desktop-home-nav-icon,
@@ -331,9 +331,9 @@
   }
   body.desktop-board-workspace .desktop-sidebar-bottom .desktop-home-nav-link,
   body.desktop-board-workspace .desktop-sidebar-bottom .desktop-sidebar-logout{
-    height:clamp(31px,4.8dvh,46px)!important;
-    min-height:31px!important;
-    font-size:clamp(12px,.94vw,16px)!important;
+    height:clamp(38px,5.2dvh,53px)!important;
+    min-height:38px!important;
+    font-size:clamp(16px,1.1vw,19px)!important;
   }
   body.desktop-board-workspace .desktop-sidebar-bottom .desktop-sidebar-logout{color:#e18f8a!important}
   body.desktop-board-workspace .desktop-sidebar-bottom .desktop-sidebar-logout .desktop-home-nav-icon{color:#e27672!important}
@@ -404,8 +404,8 @@
   body.desktop-board-workspace .desktop-member-score b{font-size:17px!important}
   body.desktop-board-workspace .desktop-member-score-star{font-size:15px!important}
   body.desktop-board-workspace .desktop-member-status{margin-right:59px!important}
-  body.desktop-board-workspace .desktop-home-nav-link{height:clamp(29px,5dvh,38px)!important;min-height:29px!important}
-  body.desktop-board-workspace .desktop-home-nav-label{font-size:12px!important}
+  body.desktop-board-workspace .v2-global-nav .desktop-home-nav-link{height:100%!important;min-height:0!important}
+  body.desktop-board-workspace .desktop-home-nav-label{font-size:clamp(15px,1.1vw,18px)!important}
   body.desktop-board-workspace .desktop-sidebar-bottom .desktop-home-nav-link,
   body.desktop-board-workspace .desktop-sidebar-bottom .desktop-sidebar-logout{height:30px!important;min-height:30px!important}
 }
@@ -414,7 +414,7 @@
   body.desktop-board-workspace .desktop-sidebar-brand strong{font-size:15px}
   body.desktop-board-workspace .desktop-member-card{padding:4px 0 4px!important;margin-bottom:3px!important}
   body.desktop-board-workspace .desktop-member-avatar-wrap{width:44px!important;height:44px!important;min-width:44px!important;flex-basis:44px!important}
-  body.desktop-board-workspace .desktop-home-nav-link{height:29px!important;min-height:29px!important}
+  body.desktop-board-workspace .v2-global-nav .desktop-home-nav-link{height:100%!important;min-height:0!important}
   body.desktop-board-workspace .desktop-sidebar-bottom .desktop-home-nav-link,
   body.desktop-board-workspace .desktop-sidebar-bottom .desktop-sidebar-logout{height:27px!important;min-height:27px!important}
 }
