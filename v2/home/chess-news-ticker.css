@@ -42,6 +42,13 @@ html body #tournamentResultsTicker{
 }
 
 @media(min-width:901px){
+  /* Desktop news ticker text only; mobile type remains unchanged. */
+  html body #chessNewsTicker .chess-news-label,
+  html body #chessNewsTicker .chess-news-item,
+  html body #chessNewsTicker .chess-news-fallback,
+  html body #chessNewsTicker .welcome-ticker-loading{
+    font-size:14px!important;
+  }
   html body{
     grid-template-rows:auto 34px auto auto auto auto!important;
   }
