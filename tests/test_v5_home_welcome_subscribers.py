@@ -8,7 +8,7 @@ def read(path: str) -> str:
 
 
 def test_home_restores_welcome_ticker_and_counts_loaded_subscribers():
-    html = read("index-app.html")
+    html = read("index.html")
     dashboard = read("v2/home/dashboard.mjs")
 
     assert '<small>المشتركين</small>' in html
