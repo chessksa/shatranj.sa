@@ -12,7 +12,7 @@ import {
   offerDraw,
   respondDraw,
   timeoutGame,
-} from '../play/api.js';
+} from '../play/api.js?v=20261010-play-connection-v1';
 import { remainingAt, formatClock, isFinalMinute } from '../play/clock.mjs';
 import { normalizeGameState } from '../play/state.mjs';
 
@@ -186,7 +186,7 @@ function ensurePanel(){
 
       <section class="inline-play-player-card inline-play-current-card">
         <div class="inline-play-player-copy">
-          <a id="inlinePlayPlayerName" class="inline-play-player-name">أنت</a>
+          <a id="inlinePlayPlayerName" class="inline-play-player-name">جارٍ التحميل</a>
           <span id="inlinePlayPlayerMeta" class="inline-play-player-meta">النقاط —</span>
         </div>
         <time id="inlinePlayClockWhite" class="inline-play-clock" datetime="PT10M">10:00</time>
@@ -278,7 +278,7 @@ function renderPosition(fen=START_FEN,color=orientation){
 
 function updateIdentity(){
   if(!currentPlayer||!playerName||!playerMeta) return;
-  playerName.textContent=currentPlayer.name||'أنت';
+  playerName.textContent=currentPlayer.name||'اللاعب';
   playerName.href=`player.html?id=${encodeURIComponent(currentPlayer.id)}`;
   const city=currentPlayer.city?` · ${currentPlayer.city}`:'';
   playerMeta.textContent=`النقاط ${Number(currentPlayer.rating??1500)}${city}`;
