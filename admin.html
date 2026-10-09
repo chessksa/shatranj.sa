@@ -5,7 +5,14 @@
 <meta name="viewport" content="width=device-width,initial-scale=1">
 <meta name="theme-color" content="#062f34">
 <title>لوحة الإدارة | شطرنج العرب</title>
-<script>if(new URLSearchParams(location.search).get('embed')==='panel')document.documentElement.classList.add('admin-embedded');</script>
+<script>
+const embeddedAdministration=new URLSearchParams(location.search).get('embed')==='panel';
+if(embeddedAdministration){document.documentElement.classList.add('admin-embedded');}
+else if(window.top===window&&matchMedia('(min-width:901px)').matches&&location.hash!=='#create-tournament'){
+  // Legacy desktop admin links always return to the single middle-column workspace.
+  location.replace('index.html?entry=admin-20261010#admin');
+}
+</script>
 <style>
 *{box-sizing:border-box}
 :root{
@@ -28,7 +35,7 @@ button,input,select,textarea{font:inherit}button{cursor:pointer}a{color:inherit;
 @media(max-width:760px){.admin-shell{display:block}.sidebar{position:fixed;right:0;top:0;z-index:120;width:min(82vw,310px);transform:translateX(105%);transition:.2s ease;border-left:1px solid var(--line);box-shadow:var(--shadow)}.sidebar.open{transform:translateX(0)}.mobile-top{display:flex;position:sticky;top:0;z-index:90;align-items:center;justify-content:space-between;padding:10px 12px;background:rgba(3,38,43,.96);border-bottom:1px solid var(--line)}.menu-btn{width:42px;height:42px;border:1px solid var(--line);border-radius:10px;background:transparent;color:#fff;font-size:21px}.content{padding:14px 10px 24px}.topline{align-items:flex-start}.topline h1{font-size:22px}.refresh-btn{min-height:39px;padding:0 10px;font-size:12px}.stats-grid{grid-template-columns:1fr 1fr;gap:8px}.stat-card{padding:13px}.stat-card strong{font-size:25px}.toolbar{display:grid;grid-template-columns:1fr 1fr}.toolbar input{grid-column:1/-1}.field,input.field,select.field{width:100%;min-width:0}.detail-grid{grid-template-columns:1fr 1fr}.modal{padding:9px}.modal-card{max-height:94dvh;border-radius:14px}.action-row{display:grid;grid-template-columns:1fr 1fr}.action-btn{width:100%}}
 @media(max-width:420px){.stats-grid{grid-template-columns:1fr 1fr}.detail-grid{grid-template-columns:1fr}.action-row{grid-template-columns:1fr}}
 </style>
-<link rel="stylesheet" href="admin-inline-panel.css?v=20261010-2">
+<link rel="stylesheet" href="admin-inline-panel.css?v=20261010-admin-tiles-entry-cachefix-v3">
 </head>
 <body>
 <div id="accessGate" class="access-gate">
@@ -114,7 +121,7 @@ button,input,select,textarea{font:inherit}button{cursor:pointer}a{color:inherit;
 </div>
 
 <script src="config.js"></script>
-<script type="module" src="admin.js?v=20261010-section-tiles-2"></script>
+<script type="module" src="admin.js?v=20261010-admin-tiles-entry-cachefix-v3"></script>
 <script type="module" src="admin-computer-games.js?v=20260908-1"></script>
 </body>
 </html>
