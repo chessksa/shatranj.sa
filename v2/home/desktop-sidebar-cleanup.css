@@ -2,7 +2,7 @@
    This is the only desktop sidebar override; nothing changes in center or on the board. */
 @media(min-width:901px){
   :root{
-    --desktop-board-sidebar:clamp(232px,18.6vw,300px);
+    --desktop-board-sidebar:clamp(232px,18.6vw,300px)!important;
     --desktop-board-sync-size:min(
       calc(100vw - var(--desktop-board-sidebar) - var(--desktop-dashboard-width) - 18px),
       calc(100dvh - 12px)
@@ -223,7 +223,7 @@
   body.desktop-board-workspace .desktop-member-status i{display:none!important}
   body.desktop-board-workspace .desktop-member-card.is-offline .desktop-member-status{color:#afbdb9!important}
   body.desktop-board-workspace:not(.home-signed-in) .desktop-member-card{display:none!important}
-  body.desktop-board-workspace .v2-global-nav{
+  body.desktop-board-workspace .v2-global-sidebar.desktop-sidebar-refined .v2-global-nav{
     display:grid!important;
     flex:1 1 auto!important;
     grid-template-columns:minmax(0,1fr)!important;
@@ -239,9 +239,9 @@
     overflow:hidden!important;
     scrollbar-width:none!important;
   }
-  body.desktop-board-workspace .v2-global-nav::-webkit-scrollbar{display:none!important}
-  body.desktop-board-workspace .desktop-home-nav-link,
-  body.desktop-board-workspace .desktop-sidebar-logout{
+  body.desktop-board-workspace .v2-global-sidebar.desktop-sidebar-refined .v2-global-nav::-webkit-scrollbar{display:none!important}
+  body.desktop-board-workspace .v2-global-sidebar.desktop-sidebar-refined .desktop-home-nav-link,
+  body.desktop-board-workspace .v2-global-sidebar.desktop-sidebar-refined .desktop-sidebar-logout{
     display:flex!important;
     flex-direction:row!important;
     align-items:center!important;
@@ -267,12 +267,12 @@
     white-space:nowrap!important;
     cursor:pointer!important;
   }
-  body.desktop-board-workspace .desktop-home-nav-link:hover,
-  body.desktop-board-workspace .desktop-sidebar-logout:hover{
+  body.desktop-board-workspace .v2-global-sidebar.desktop-sidebar-refined .desktop-home-nav-link:hover,
+  body.desktop-board-workspace .v2-global-sidebar.desktop-sidebar-refined .desktop-sidebar-logout:hover{
     background:rgba(57,122,122,.10)!important;
   }
-  body.desktop-board-workspace .desktop-home-nav-link.active,
-  body.desktop-board-workspace .desktop-home-nav-link[aria-current="page"]{
+  body.desktop-board-workspace .v2-global-sidebar.desktop-sidebar-refined .desktop-home-nav-link.active,
+  body.desktop-board-workspace .v2-global-sidebar.desktop-sidebar-refined .desktop-home-nav-link[aria-current="page"]{
     position:relative!important;
     border:0!important;
     border-radius:0!important;
@@ -280,8 +280,8 @@
     box-shadow:none!important;
     color:#f4eddb!important;
   }
-  body.desktop-board-workspace .desktop-home-nav-link.active::before,
-  body.desktop-board-workspace .desktop-home-nav-link[aria-current="page"]::before{
+  body.desktop-board-workspace .v2-global-sidebar.desktop-sidebar-refined .desktop-home-nav-link.active::before,
+  body.desktop-board-workspace .v2-global-sidebar.desktop-sidebar-refined .desktop-home-nav-link[aria-current="page"]::before{
     content:"";
     position:absolute;
     top:0;
@@ -305,8 +305,8 @@
     height:32px!important;
     display:block!important;
   }
-  body.desktop-board-workspace .desktop-home-nav-link.active .desktop-home-nav-icon,
-  body.desktop-board-workspace .desktop-home-nav-link[aria-current="page"] .desktop-home-nav-icon{color:#edc678!important}
+  body.desktop-board-workspace .v2-global-sidebar.desktop-sidebar-refined .desktop-home-nav-link.active .desktop-home-nav-icon,
+  body.desktop-board-workspace .v2-global-sidebar.desktop-sidebar-refined .desktop-home-nav-link[aria-current="page"] .desktop-home-nav-icon{color:#edc678!important}
   body.desktop-board-workspace .desktop-home-nav-label{
     display:block!important;
     flex:1 1 auto!important;
@@ -404,7 +404,7 @@
   body.desktop-board-workspace .desktop-member-score b{font-size:17px!important}
   body.desktop-board-workspace .desktop-member-score-star{font-size:15px!important}
   body.desktop-board-workspace .desktop-member-status{margin-right:59px!important}
-  body.desktop-board-workspace .v2-global-nav .desktop-home-nav-link{height:100%!important;min-height:0!important}
+  body.desktop-board-workspace .v2-global-sidebar.desktop-sidebar-refined .v2-global-nav .desktop-home-nav-link{height:100%!important;min-height:0!important}
   body.desktop-board-workspace .desktop-home-nav-label{font-size:clamp(15px,1.1vw,18px)!important}
   body.desktop-board-workspace .desktop-sidebar-bottom .desktop-home-nav-link,
   body.desktop-board-workspace .desktop-sidebar-bottom .desktop-sidebar-logout{height:30px!important;min-height:30px!important}
@@ -414,7 +414,7 @@
   body.desktop-board-workspace .desktop-sidebar-brand strong{font-size:15px}
   body.desktop-board-workspace .desktop-member-card{padding:4px 0 4px!important;margin-bottom:3px!important}
   body.desktop-board-workspace .desktop-member-avatar-wrap{width:44px!important;height:44px!important;min-width:44px!important;flex-basis:44px!important}
-  body.desktop-board-workspace .v2-global-nav .desktop-home-nav-link{height:100%!important;min-height:0!important}
+  body.desktop-board-workspace .v2-global-sidebar.desktop-sidebar-refined .v2-global-nav .desktop-home-nav-link{height:100%!important;min-height:0!important}
   body.desktop-board-workspace .desktop-sidebar-bottom .desktop-home-nav-link,
   body.desktop-board-workspace .desktop-sidebar-bottom .desktop-sidebar-logout{height:27px!important;min-height:27px!important}
 }
