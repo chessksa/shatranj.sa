@@ -1,18 +1,8 @@
-/* Ranking top three: keep table dark, accent rank only */
-#ranking tbody tr:not(.ranking-placeholder):nth-child(-n+3) .rank-number{
-  font-weight:900!important;
-  font-size:1.08em!important;
-}
-
-#ranking tbody tr:not(.ranking-placeholder):nth-child(1) .rank-number{
-  color:#d7b45e!important;
-  box-shadow:inset -3px 0 #d7b45e;
-}
-#ranking tbody tr:not(.ranking-placeholder):nth-child(2) .rank-number{
-  color:#c5ced6!important;
-  box-shadow:inset -3px 0 #c5ced6;
-}
-#ranking tbody tr:not(.ranking-placeholder):nth-child(3) .rank-number{
-  color:#c9875b!important;
-  box-shadow:inset -3px 0 #c9875b;
-}
+/* Restrained ranking podium: tint the row softly, no medals or heavy stripes. */
+#ranking tbody tr:not(.ranking-placeholder):nth-child(1){background:rgba(218,179,95,.075)!important}
+#ranking tbody tr:not(.ranking-placeholder):nth-child(2){background:rgba(180,194,202,.055)!important}
+#ranking tbody tr:not(.ranking-placeholder):nth-child(3){background:rgba(185,130,90,.050)!important}
+#ranking tbody tr:not(.ranking-placeholder):nth-child(-n+3) .rank-number{box-shadow:none!important;font-weight:900!important}
+#ranking tbody tr:not(.ranking-placeholder):nth-child(1) .rank-badge{color:#e2c47f!important}
+#ranking tbody tr:not(.ranking-placeholder):nth-child(2) .rank-badge{color:#c8d0d0!important}
+#ranking tbody tr:not(.ranking-placeholder):nth-child(3) .rank-badge{color:#cba187!important}
