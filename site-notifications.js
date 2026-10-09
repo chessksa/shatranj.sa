@@ -235,63 +235,17 @@
     }).observe(tbody, { childList:true });
   }
 
-  async function loadOriginalPatched() {
-    try {
-      const response = await fetch(ORIGINAL_SRC, { cache: 'no-store' });
-      if (!response.ok) throw new Error(`HTTP ${response.status}`);
-      let source = await response.text();
-
-      const fallbackOld = `    const renderFallback = text => {
-      const track = document.getElementById('tournamentResultsTickerTrack');
-      if (!track) return;
-      track.className = 'welcome-ticker-track welcome-ticker-single';
-      const item = document.createElement('span');
-      item.className = 'welcome-ticker-loading';
-      item.textContent = text;
-      track.replaceChildren(item);
-    };`;
-
-      const fallbackNew = `    const renderFallback = text => {
-      const track = document.getElementById('tournamentResultsTickerTrack');
-      if (!track) return;
-      track.className = 'welcome-ticker-track';
-
-      const buildFallbackGroup = () => {
-        const group = document.createElement('div');
-        group.className = 'welcome-ticker-group';
-
-        for (let index = 0; index < 10; index += 1) {
-          const item = document.createElement('span');
-          item.className = 'welcome-ticker-loading';
-          item.textContent = text;
-          group.appendChild(item);
-
-          const separator = document.createElement('span');
-          separator.className = 'welcome-ticker-separator';
-          separator.setAttribute('aria-hidden', 'true');
-          group.appendChild(separator);
-        }
-
-        return group;
+  function loadCurrentNotifications() {
+    return new Promise(resolve => {
+      const script = document.createElement('script');
+      script.src = 'site-notifications-original.js?v=' + encodeURIComponent(RUNTIME_VERSION);
+      script.onload = () => resolve();
+      script.onerror = () => {
+        console.error('site notifications script failed to load');
+        resolve();
       };
-
-      track.replaceChildren(buildFallbackGroup(), buildFallbackGroup());
-    };`;
-
-      if (source.includes(fallbackOld)) source = source.replace(fallbackOld, fallbackNew);
-
-      source = source
-        .replace('const MOBILE_RANKING_LIMIT = 5;', 'const MOBILE_RANKING_LIMIT = 10;')
-        .replace("style.id = 'mobileRankingFiveStyles';", "style.id = 'mobileRankingTenStyles';")
-        .replace(/site-notifications-core\.js\?v=[A-Za-z0-9._-]+/g, `site-notifications-core.js?v=${encodeURIComponent(RUNTIME_VERSION)}`)
-        .replace(
-          /track\.className = 'welcome-ticker-track welcome-ticker-single';/g,
-          "track.className = 'welcome-ticker-track tournament-ticker-single';"
-        );
-      (0, eval)(source);
-    } catch (error) {
-      console.error('site notifications compatibility loader failed', error);
-    }
+      document.head.appendChild(script);
+    });
   }
 
   installTournamentTickerMotion();
@@ -311,7 +265,7 @@
   });
   window.addEventListener('resize', queueMobileRender, { passive: true });
 
-  loadOriginalPatched().finally(() => {
+  loadCurrentNotifications().finally(() => {
     installRankingPullGuard();
     installRankingObserver();
     queueMobileRender();
