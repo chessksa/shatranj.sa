@@ -650,6 +650,7 @@
   }
   html body.desktop-board-workspace .desktop-dashboard-view.ranking-view .desktop-dashboard-view-body #ranking .table-wrap{
     display:block!important;
+    position:relative!important;
     width:100%!important;
     height:100%!important;
     min-height:0!important;
@@ -750,5 +751,21 @@
   /* Close the grid beneath rank 10 without adding an external frame. */
   html body.desktop-board-workspace .desktop-dashboard-view.ranking-view .desktop-dashboard-view-body #ranking tbody tr:last-child td{
     border-bottom:1px solid rgba(154,190,184,.42)!important;
+  }
+  /* Independent overlay: collapsed table borders can be clipped at the final row. */
+  html body.desktop-board-workspace .desktop-dashboard-view.ranking-view .desktop-dashboard-view-body #ranking .table-wrap::after{
+    content:""!important;
+    display:block!important;
+    position:absolute!important;
+    z-index:7!important;
+    left:0!important;
+    right:0!important;
+    top:var(--ranking-last-rule-top,calc(100% - 2px))!important;
+    height:2px!important;
+    min-height:2px!important;
+    background:rgba(176,207,198,.68)!important;
+    pointer-events:none!important;
+    border:0!important;
+    box-shadow:none!important;
   }
 }
