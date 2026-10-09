@@ -583,15 +583,16 @@
 }
 
 
-/* Ranking no-scroll repair — fixed natural table flow (20261009) */
+/* Integrated ranking grid: header emphasis, rank divider, no inner frame or scroll (20261009) */
 @media(min-width:901px){
   html body.desktop-board-workspace .desktop-dashboard-view.ranking-view .desktop-dashboard-view-body{
     overflow:hidden!important;
-    padding:8px 9px 9px!important;
+    padding:8px 0 0!important;
     display:block!important;
   }
   html body.desktop-board-workspace .desktop-dashboard-view.ranking-view .desktop-dashboard-view-body #ranking{
     display:block!important;
+    width:100%!important;
     height:auto!important;
     min-height:0!important;
     max-height:none!important;
@@ -611,13 +612,18 @@
     overflow:visible!important;
     padding:0!important;
     margin:0!important;
+    width:100%!important;
   }
   html body.desktop-board-workspace .desktop-dashboard-view.ranking-view .desktop-dashboard-view-body #ranking .head{
     flex:0 0 auto!important;
+    width:calc(100% - 18px)!important;
+    margin:0 9px 7px!important;
     align-self:stretch!important;
   }
   html body.desktop-board-workspace .desktop-dashboard-view.ranking-view .desktop-dashboard-view-body #ranking .ranking-filters{
     flex:0 0 auto!important;
+    width:calc(100% - 18px)!important;
+    margin:0 9px 8px!important;
     align-self:stretch!important;
   }
   html body.desktop-board-workspace .desktop-dashboard-view.ranking-view .desktop-dashboard-view-body #ranking .table-card{
@@ -625,22 +631,30 @@
     flex:0 0 auto!important;
     align-self:stretch!important;
     position:static!important;
+    width:100%!important;
     height:auto!important;
     min-height:0!important;
     max-height:none!important;
     margin:0!important;
     padding:0!important;
     overflow:hidden!important;
+    border:0!important;
+    border-radius:0!important;
+    background:transparent!important;
+    box-shadow:none!important;
   }
   html body.desktop-board-workspace .desktop-dashboard-view.ranking-view .desktop-dashboard-view-body #ranking .table-wrap{
     display:block!important;
     flex:0 0 auto!important;
+    width:100%!important;
     height:auto!important;
     min-height:0!important;
     max-height:none!important;
     margin:0!important;
     padding:0!important;
     overflow:hidden!important;
+    border:0!important;
+    border-radius:0!important;
     scrollbar-width:none!important;
   }
   html body.desktop-board-workspace .desktop-dashboard-view.ranking-view .desktop-dashboard-view-body #ranking .table-wrap::-webkit-scrollbar{display:none!important}
@@ -653,34 +667,46 @@
     table-layout:fixed!important;
     border-collapse:collapse!important;
     border-spacing:0!important;
+    border:0!important;
+    border-radius:0!important;
   }
   html body.desktop-board-workspace .desktop-dashboard-view.ranking-view .desktop-dashboard-view-body #ranking thead tr,
   html body.desktop-board-workspace .desktop-dashboard-view.ranking-view .desktop-dashboard-view-body #ranking tbody tr{
     display:table-row!important;
     height:auto!important;
   }
-  html body.desktop-board-workspace .desktop-dashboard-view.ranking-view .desktop-dashboard-view-body #ranking :is(th,td){
+  html body.desktop-board-workspace .desktop-dashboard-view.ranking-view .desktop-dashboard-view-body #ranking table tr > :is(th,td){
     height:clamp(21px,calc((100dvh - 165px)/11),34px)!important;
     padding:2px 4px!important;
     line-height:1.16!important;
     border-inline-start:0!important;
-    border-left:1px solid rgba(154,190,184,.30)!important;
+    border-right:0!important;
+    border-left:1px solid rgba(154,190,184,.32)!important;
+    border-bottom:1px solid rgba(154,190,184,.22)!important;
+    background:transparent!important;
   }
-  html body.desktop-board-workspace .desktop-dashboard-view.ranking-view .desktop-dashboard-view-body #ranking thead th{
-    height:clamp(22px,calc((100dvh - 165px)/11),32px)!important;
-  }
-  html body.desktop-board-workspace .desktop-dashboard-view.ranking-view .desktop-dashboard-view-body #ranking :is(th,td):last-child{
+  html body.desktop-board-workspace .desktop-dashboard-view.ranking-view .desktop-dashboard-view-body #ranking table tr > :last-child{
     border-left:0!important;
-    border-right:1px solid rgba(154,190,184,.30)!important;
+    border-right:0!important;
+  }
+  html body.desktop-board-workspace .desktop-dashboard-view.ranking-view .desktop-dashboard-view-body #ranking table tr > :first-child{
+    border-left:1px solid rgba(171,200,194,.46)!important;
+    border-right:0!important;
+  }
+  html body.desktop-board-workspace .desktop-dashboard-view.ranking-view .desktop-dashboard-view-body #ranking table thead th{
+    height:clamp(22px,calc((100dvh - 165px)/11),32px)!important;
+    background:rgba(20,92,92,.52)!important;
+    color:#e9d3a3!important;
+    border-bottom:1px solid rgba(220,185,111,.55)!important;
+    font-weight:900!important;
   }
   html body.desktop-board-workspace .desktop-dashboard-view.ranking-view .desktop-dashboard-view-body #ranking tbody tr:not(.ranking-placeholder):first-child{
     background:rgba(213,172,86,.16)!important;
   }
   html body.desktop-board-workspace .desktop-dashboard-view.ranking-view .desktop-dashboard-view-body #ranking tbody tr:not(.ranking-placeholder):first-child td{
-    border-top:1px solid rgba(215,179,101,.40)!important;
     border-bottom:1px solid rgba(215,179,101,.40)!important;
   }
   html body.desktop-board-workspace .desktop-dashboard-view.ranking-view .desktop-dashboard-view-body #ranking tbody tr:last-child td{
-    border-bottom:1px solid rgba(154,190,184,.25)!important;
+    border-bottom:0!important;
   }
 }
