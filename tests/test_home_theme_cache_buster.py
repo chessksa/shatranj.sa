@@ -24,8 +24,8 @@ def test_desktop_sidebar_has_one_authoritative_active_style():
     tune_js = Path('v2/home/desktop-board-shell-tune.mjs').read_text(encoding='utf-8')
     dashboard_js = Path('v2/home/dashboard.mjs').read_text(encoding='utf-8')
 
-    assert sidebar_css.count('body.desktop-board-workspace .desktop-home-nav-link.active{') == 1
+    assert sidebar_css.count('body.desktop-board-workspace .v2-global-sidebar.desktop-sidebar-refined .desktop-home-nav-link.active,') == 1
     assert 'gap:2px!important' in sidebar_css
-    assert 'border:1px solid rgba(239,202,114,.88)!important' in sidebar_css
+    assert 'background:#efc77b;' in sidebar_css
     assert 'desktop-sidebar-cleanup.css?v=${tuneAssetVersion}' in tune_js
     assert 'desktop-board-shell-tune.mjs?v=${homeAssetVersion}' in dashboard_js
