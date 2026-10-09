@@ -659,7 +659,7 @@
     font-variant-numeric:tabular-nums!important;
   }
   html body.desktop-board-workspace .desktop-dashboard-view.ranking-view .desktop-dashboard-view-body #ranking table tr > :last-child{border-left:0!important}
-  html body.desktop-board-workspace .desktop-dashboard-view.ranking-view .desktop-dashboard-view-body #ranking thead th{
+  html body.desktop-board-workspace .desktop-dashboard-view.ranking-view .desktop-dashboard-view-body #ranking table thead tr > th{
     color:#edd6a8!important;
     background:rgba(18,91,93,.67)!important;
     font-size:12px!important;
@@ -667,7 +667,7 @@
     border-top:1px solid rgba(218,181,104,.52)!important;
     border-bottom:1px solid rgba(218,181,104,.59)!important;
   }
-  html body.desktop-board-workspace .desktop-dashboard-view.ranking-view .desktop-dashboard-view-body #ranking thead th:not(:last-child){border-left-color:rgba(218,181,104,.34)!important}
+  html body.desktop-board-workspace .desktop-dashboard-view.ranking-view .desktop-dashboard-view-body #ranking table thead tr > th:not(:last-child){border-left-color:rgba(218,181,104,.34)!important}
   html body.desktop-board-workspace .desktop-dashboard-view.ranking-view .desktop-dashboard-view-body #ranking .player-name{
     font-size:12px!important;
     font-weight:800!important;
