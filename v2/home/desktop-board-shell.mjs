@@ -314,6 +314,14 @@ if(desktop.matches && document.querySelector('#homeHero')){
       row.style.setProperty('height',height+'px','important');
       [...row.cells].forEach(cell=>cell.style.setProperty('height',height+'px','important'));
     });
+    // Position the independent line on the rendered bottom edge of the final row.
+    // This remains visible even if border-collapse hides the last cell borders.
+    const finalRow=rows[rows.length-1];
+    const wrapTop=wrap.getBoundingClientRect().top;
+    const rowBottom=finalRow.getBoundingClientRect().bottom;
+    const wrapHeight=wrap.getBoundingClientRect().height;
+    const lineTop=Math.max(0,Math.min(wrapHeight-2,rowBottom-wrapTop-2));
+    if(Number.isFinite(lineTop))wrap.style.setProperty('--ranking-last-rule-top',lineTop+'px');
   }
   function scheduleRankingFit(){
     if(rankingFitQueued)return;
