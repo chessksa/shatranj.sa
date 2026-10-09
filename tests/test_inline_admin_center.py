@@ -32,3 +32,25 @@ def test_embedded_admin_stays_authenticated_and_is_usable_in_narrow_column():
 def test_standard_admin_page_not_styled_as_embed():
     assert INLINE.count("html.admin-embedded") > 20
     assert '<title>لوحة الإدارة | شطرنج العرب</title>' in ADMIN
+
+def test_admin_menu_uses_text_only_framed_buttons():
+    assert "button.textContent=name" in ADMIN_JS
+    assert "button.className='nav-btn admin-inline-tab'" in ADMIN_JS
+    assert "nav.appendChild(button)" in ADMIN_JS
+    assert "grid-template-columns:repeat(2,minmax(0,1fr))" in INLINE
+    assert "justify-content:center!important" in INLINE
+    assert "border:1px solid rgba(221,174,101,.53)!important" in INLINE
+
+def test_section_title_replaces_navigation_and_uses_full_column():
+    assert 'id="adminInlineBack"' in ADMIN
+    assert 'id="adminInlineTitle"' in ADMIN
+    assert 'id="adminInlineRefresh"' in ADMIN
+    assert "document.documentElement.classList.add('admin-inline-menu')" in ADMIN_JS
+    assert "document.documentElement.classList.add('admin-inline-detail')" in ADMIN_JS
+    assert "$('adminInlineNav').hidden=true" in ADMIN_JS
+    assert "$('adminInlineHeader').hidden=false" in ADMIN_JS
+    assert "if(embeddedAdmin)showInlineAdminDetail(id)" in ADMIN_JS
+    assert "$('adminInlineBack')?.addEventListener('click',showInlineAdminMenu)" in ADMIN_JS
+    assert "html.admin-embedded.admin-inline-menu main.content{display:none!important}" in INLINE
+    assert "html.admin-embedded .topline{display:none!important}" in INLINE
+    assert "if(!state.access)" in ADMIN_JS
