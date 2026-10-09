@@ -297,16 +297,23 @@ if(desktop.matches && document.querySelector('#homeHero')){
     const panel=document.getElementById('desktopDashboardView');
     if(!panel||panel.hidden||!panel.classList.contains('ranking-view'))return;
     const table=panel.querySelector('#ranking .table-wrap table');
-    if(!table)return;
+    const wrap=panel.querySelector('#ranking .table-wrap');
+    if(!table||!wrap)return;
     const top=table.getBoundingClientRect().top;
-    const bottom=panel.getBoundingClientRect().bottom;
-    const rowCount=(table.tHead?.rows.length||0)+[...table.tBodies].reduce((n,t)=>n+t.rows.length,0);
-    if(!rowCount||!Number.isFinite(top)||!Number.isFinite(bottom)||bottom<=top)return;
-    const available=Math.floor(bottom-top-2);
+    const bottom=wrap.getBoundingClientRect().bottom;
+    const rows=[...table.querySelectorAll('thead tr, tbody tr')];
+    if(!rows.length||!Number.isFinite(top)||!Number.isFinite(bottom)||bottom<=top)return;
+    const available=Math.round(bottom-top);
     if(available<=0)return;
-    const rowHeight=available/rowCount;
-    table.style.setProperty('--ranking-row-height',rowHeight.toFixed(3)+'px');
+    const rowHeight=available/rows.length;
+    table.style.setProperty('--ranking-row-height',rowHeight+'px');
     table.style.setProperty('--ranking-table-height',available+'px');
+    table.style.setProperty('height',available+'px','important');
+    rows.forEach((row,index)=>{
+      const height=index===rows.length-1?available-rowHeight*index:rowHeight;
+      row.style.setProperty('height',height+'px','important');
+      [...row.cells].forEach(cell=>cell.style.setProperty('height',height+'px','important'));
+    });
   }
   function scheduleRankingFit(){
     if(rankingFitQueued)return;
