@@ -54,3 +54,16 @@ def test_section_title_replaces_navigation_and_uses_full_column():
     assert "html.admin-embedded.admin-inline-menu main.content{display:none!important}" in INLINE
     assert "html.admin-embedded .topline{display:none!important}" in INLINE
     assert "if(!state.access)" in ADMIN_JS
+
+
+def test_navigation_entries_are_cache_busted_and_legacy_desktop_admin_is_redirected():
+    index=(ROOT/'index.html').read_text(encoding='utf-8')
+    site=(ROOT/'v2/site/shell.mjs').read_text(encoding='utf-8')
+    version='20261010-admin-tiles-entry-cachefix-v3'
+    assert f'v2/home/dashboard.mjs?v={version}' in index
+    assert f'v2/site/shell.mjs?v={version}' in index
+    assert index.count(f'name="shatranj-asset-version" content="{version}"')==2
+    assert "!document.querySelector('.desktop-sidebar-bottom [data-desktop-nav=\\"admin\\"]')" in site
+    assert "location.replace('index.html?entry=admin-20261010#admin')" in ADMIN
+    assert f'admin-inline-panel.css?v={version}' in ADMIN
+    assert f'admin.js?v={version}' in ADMIN
