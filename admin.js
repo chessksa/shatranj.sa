@@ -196,16 +196,40 @@ async function invokeAdmin(body){
   return data;
 }
 
+const INLINE_ADMIN_LABELS=Object.freeze({
+  dashboardView:'نظرة عامة',playersView:'اللاعبون',gamesView:'المباريات',
+  tournamentsView:'البطولات',reportsView:'البلاغات',
+  moderatorsView:'المشرفون',actionsView:'السجل'
+});
+
+function showInlineAdminMenu(){
+  if(!embeddedAdmin)return;
+  document.documentElement.classList.add('admin-inline-menu');
+  document.documentElement.classList.remove('admin-inline-detail');
+  $('adminInlineHeader').hidden=true;
+  $('adminInlineNav').hidden=false;
+}
+
+function showInlineAdminDetail(id){
+  if(!embeddedAdmin)return;
+  $('adminInlineTitle').textContent=INLINE_ADMIN_LABELS[id]||titles[id]?.[0]||'الإدارة';
+  $('adminInlineNav').hidden=true;
+  $('adminInlineHeader').hidden=false;
+  document.documentElement.classList.remove('admin-inline-menu');
+  document.documentElement.classList.add('admin-inline-detail');
+  const content=document.querySelector('#adminApp main.content');
+  if(content)content.scrollTop=0;
+}
+
 function mountInlineAdmin(){
   if(!embeddedAdmin)return;
   const nav=$('adminInlineNav');
   const header=$('adminInlineHeader');
   if(!nav || !header)return;
-  const labels={dashboardView:'نظرة عامة',playersView:'اللاعبون',gamesView:'المباريات',tournamentsView:'البطولات',reportsView:'البلاغات',moderatorsView:'المشرفون',actionsView:'السجل'};
   nav.replaceChildren();
   document.querySelectorAll('#adminSidebar .nav-btn[data-view]').forEach(source=>{
     if(source.hidden || (source.classList.contains('owner-only')&&!isOwner()))return;
-    const name=labels[source.dataset.view];
+    const name=INLINE_ADMIN_LABELS[source.dataset.view];
     if(!name)return;
     const button=document.createElement('button');
     button.type='button';
@@ -214,8 +238,9 @@ function mountInlineAdmin(){
     button.textContent=name;
     nav.appendChild(button);
   });
-  header.hidden=false;
-  nav.hidden=false;
+  $('adminInlineBack')?.addEventListener('click',showInlineAdminMenu);
+  $('adminInlineRefresh')?.addEventListener('click',()=>void handleRefresh());
+  showInlineAdminMenu();
   syncEmbeddedTableLabels();
   const app=$('adminApp');
   new MutationObserver(syncEmbeddedTableLabels).observe(app,{childList:true,subtree:true});
@@ -242,6 +267,7 @@ function setView(id){
   document.querySelectorAll('.nav-btn').forEach(b=>b.classList.toggle('active',b.dataset.view===id));
   const meta=titles[id]||titles.dashboardView;$('viewTitle').textContent=meta[0];$('viewSubtitle').textContent=meta[1];
   $('adminSidebar')?.classList.remove('open');
+  if(embeddedAdmin)showInlineAdminDetail(id);
   refreshCurrent();
 }
 
