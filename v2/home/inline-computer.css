@@ -132,23 +132,23 @@
     line-height:1;
   }
 
-  /* Selected level/time and Start: slim soft-red border, dark surface. */
+  /* Selected level/time and Start: one-pixel orange outline, dark surface. */
   .inline-computer-options button.active{
-    border:1px solid #f3a1a4;
+    border:1px solid #e69b36;
     background:rgba(2,47,51,.82);
     color:#f4efe6;
     box-shadow:none;
   }
 
   .inline-computer-options button.active small{
-    color:#f3a1a4;
+    color:#e69b36;
   }
 
   .inline-computer-start{
     width:100%;
     height:44px;
     min-height:44px;
-    border:1px solid #f3a1a4;
+    border:1px solid #e69b36;
     border-radius:11px;
     background:rgba(2,47,51,.82);
     color:#f4efe6;
