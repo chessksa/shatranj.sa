@@ -46,7 +46,7 @@
     position:relative;display:grid;place-items:center;overflow:hidden;
     border-right:1px solid rgba(89,61,40,.23);border-bottom:1px solid rgba(89,61,40,.23);
   }
-  .mfw-square.light{background:#c9a97d}.mfw-square.dark{background:#835839}
+  .mfw-square.light{background:#F3EBDD}.mfw-square.dark{background:#7B4A2C}
   /* Match the larger pieces used on the mobile play board, without changing assets. */
   .mfw-piece{
     display:block;width:100%;height:100%;object-fit:contain;
