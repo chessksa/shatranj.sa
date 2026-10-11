@@ -30,6 +30,70 @@ if(desktop.matches && document.querySelector('#homeHero')){
   let rankingNode=null;
   let inviteAnchor=null;
   let inviteNode=null;
+  // Desktop permissions are not inferred from the visible navigation or URL.
+  let desktopSignedIn=false;
+  let desktopAdminAccess=false;
+  let desktopAccessRequest=0;
+
+  function setDesktopActionVisibility(element,visible,display='flex'){
+    if(!element)return;
+    element.hidden=!visible;
+    // The theme uses display:...!important; hide must override it.
+    element.style.setProperty('display',visible?display:'none','important');
+  }
+
+  function applyDesktopPermissions(signedIn=false,isAdmin=false){
+    desktopSignedIn=!!signedIn;
+    desktopAdminAccess=desktopSignedIn&&!!isAdmin;
+    const bottom=document.querySelector('.desktop-sidebar-bottom');
+    setDesktopActionVisibility(bottom,desktopSignedIn,'grid');
+    setDesktopActionVisibility(bottom?.querySelector('[data-desktop-nav="settings"]'),desktopSignedIn);
+    setDesktopActionVisibility(bottom?.querySelector('[data-desktop-nav="admin"]'),desktopAdminAccess);
+    setDesktopActionVisibility(bottom?.querySelector('[data-desktop-action="logout"]'),desktopSignedIn);
+  }
+
+  function leaveForbiddenDesktopView(){
+    const current=location.hash.replace(/^#/,'');
+    if((current==='admin'&&!desktopAdminAccess)||(current==='settings'&&!desktopSignedIn)){
+      showDashboard('home');
+    }
+  }
+
+  async function refreshDesktopPermissions(){
+    const request=++desktopAccessRequest;
+    if(!supabase){
+      applyDesktopPermissions(false,false);
+      leaveForbiddenDesktopView();
+      return;
+    }
+    try{
+      const {data,error}=await supabase.auth.getSession();
+      if(request!==desktopAccessRequest)return;
+      if(error)throw error;
+      if(!data?.session?.user?.id){
+        applyDesktopPermissions(false,false);
+        leaveForbiddenDesktopView();
+        return;
+      }
+      applyDesktopPermissions(true,false);
+      let adminAllowed=false;
+      try{
+        const {data:access,error:accessError}=await supabase.rpc('admin_get_access');
+        if(accessError)throw accessError;
+        adminAllowed=!!(Array.isArray(access)?access[0]:access);
+      }catch(error){
+        console.warn('تعذر التحقق من صلاحية لوحة الإدارة',error);
+      }
+      if(request!==desktopAccessRequest)return;
+      applyDesktopPermissions(true,adminAllowed);
+      leaveForbiddenDesktopView();
+    }catch(error){
+      if(request!==desktopAccessRequest)return;
+      console.warn('تعذر التحقق من جلسة المستخدم',error);
+      applyDesktopPermissions(false,false);
+      leaveForbiddenDesktopView();
+    }
+  }
 
   const COUNTRY_FLAGS={
     'السعودية':'🇸🇦','الأردن':'🇯🇴','مصر':'🇪🇬','الكويت':'🇰🇼','البحرين':'🇧🇭','قطر':'🇶🇦',
@@ -193,6 +257,7 @@ if(desktop.matches && document.querySelector('#homeHero')){
     logout.innerHTML='<span class="desktop-home-nav-icon">'+sidebarIcon('logout')+'</span><span>تسجيل الخروج</span>';
     bottom.append(settings,admin,logout);
     sidebar.append(bottom);
+    applyDesktopPermissions(false,false);
     forceSidebarSurface();
   }
 
@@ -311,6 +376,8 @@ if(desktop.matches && document.querySelector('#homeHero')){
   }
 
   function showDashboard(id='home'){
+    if(id==='admin'&&!desktopAdminAccess)id='home';
+    if(id==='settings'&&!desktopSignedIn)id='home';
     if(['home','ranking','tournaments','watch','settings','invite','computer','puzzles','learn','profile','admin'].includes(id)){
       history.replaceState(null,'','#'+id);
     }
@@ -554,7 +621,20 @@ if(desktop.matches && document.querySelector('#homeHero')){
       const node=document.getElementById(id);
       if(node)observer.observe(node,{childList:true,characterData:true,subtree:true,attributes:true});
     });
-    const classObserver=new MutationObserver(()=>syncLiveData());
+    let lastSignedIn=document.body.classList.contains('home-signed-in');
+    const classObserver=new MutationObserver(()=>{
+      syncLiveData();
+      const signedIn=document.body.classList.contains('home-signed-in');
+      if(signedIn===lastSignedIn)return;
+      lastSignedIn=signedIn;
+      if(!signedIn){
+        ++desktopAccessRequest;
+        applyDesktopPermissions(false,false);
+        leaveForbiddenDesktopView();
+      }else{
+        void refreshDesktopPermissions();
+      }
+    });
     classObserver.observe(document.body,{attributes:true,attributeFilter:['class']});
     syncLiveData();
     setTimeout(syncLiveData,400);
@@ -583,12 +663,14 @@ if(desktop.matches && document.querySelector('#homeHero')){
       const injectedAdmin=event.target.closest('[data-v2-admin-link]');
       if(injectedAdmin && desktop.matches){
         event.preventDefault();
+        if(!desktopAdminAccess)return;
         showDashboard('admin');
         return;
       }
       const logoutAction=event.target.closest('[data-desktop-action="logout"]');
       if(logoutAction){
         event.preventDefault();
+        if(!desktopSignedIn)return;
         document.getElementById('navLogout')?.click();
         return;
       }
@@ -664,6 +746,17 @@ if(desktop.matches && document.querySelector('#homeHero')){
     });
     bindDesktopActions();
     watchLiveData();
+    if(supabase){
+      supabase.auth.onAuthStateChange(event=>{
+        if(event==='SIGNED_OUT'){
+          ++desktopAccessRequest;
+          applyDesktopPermissions(false,false);
+          leaveForbiddenDesktopView();
+        }else if(['SIGNED_IN','INITIAL_SESSION','TOKEN_REFRESHED','USER_UPDATED'].includes(event)){
+          setTimeout(()=>void refreshDesktopPermissions(),0);
+        }
+      });
+    }
     if(typeof ResizeObserver!=='undefined'){
       const rankingPanel=document.getElementById('desktopDashboardView');
       const panelObserver=new ResizeObserver(scheduleRankingFit);
@@ -682,6 +775,7 @@ if(desktop.matches && document.querySelector('#homeHero')){
       if(!document.hidden)void heartbeatMemberPresence();
     });
 
+    await refreshDesktopPermissions();
     const initialHash=location.hash.replace(/^#/,'');
     const initialView=['home','ranking','tournaments','watch','settings','invite','computer','puzzles','learn','profile','admin'].includes(initialHash)?initialHash:'home';
     showDashboard(initialView);
