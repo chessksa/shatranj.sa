@@ -1,4 +1,4 @@
-import { loadBoardPreferences, saveBoardPreferences, applyBoardPreferences, renderThemePicker } from '../board/controller.mjs?v=20261011-photo-walnut-reference-v2';
+import { loadBoardPreferences, saveBoardPreferences, applyBoardPreferences, renderThemePicker } from '../board/controller.mjs?v=20261011-palette-clean-v1';
 import { getGameState } from './api.js';
 
 const board = document.getElementById('v2-board');
