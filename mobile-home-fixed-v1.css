@@ -52,16 +52,11 @@
   /* Optical centering compensates for transparent space in the approved
      piece PNGs. Keep mobile sizing isolated from desktop and game engines. */
   .mfw-piece{
-    position:absolute;left:50%;top:calc(50% - var(--piece-lift,8%));
-    display:block;width:116%;height:116%;max-width:none;max-height:none;
-    object-fit:contain;transform:translate(-50%,-50%) scale(var(--piece-scale,1));
+    position:absolute;left:50%;top:50%;
+    display:block;width:108%;height:108%;max-width:none;max-height:none;
+    object-fit:contain;transform:translate(-50%,-50%);
     transform-origin:center;pointer-events:none;user-select:none;
   }
-  .mfw-piece[src$="/wp.png"],.mfw-piece[src$="/bp.png"]{--piece-lift:18%}
-  .mfw-piece[src$="/bp.png"]{--piece-scale:1.055}
-  .mfw-piece:is([src$="/wr.png"],[src$="/br.png"],[src$="/wn.png"],[src$="/bn.png"]){--piece-lift:8%}
-  .mfw-piece:is([src$="/wb.png"],[src$="/bb.png"],[src$="/wq.png"],[src$="/bq.png"]){--piece-lift:5%}
-  .mfw-piece:is([src$="/wk.png"],[src$="/bk.png"]){--piece-lift:1%}
   .mfw-board-label{position:absolute;z-index:2;top:9px;right:9px;min-height:27px;padding:0 9px;display:flex;align-items:center;border:1px solid rgba(224,181,103,.45);border-radius:9px;background:rgba(2,47,51,.91);color:#f4efe6;font-size:9px;font-weight:900;pointer-events:none}
   .mfw-tabs{display:grid;grid-template-columns:repeat(6,minmax(0,1fr));gap:3px;height:58px;min-height:58px;align-self:stretch}
   .mfw-tab{min-width:0;height:58px;margin:0;padding:3px 1px;border:1px solid rgba(224,181,103,.22);border-radius:10px;background:linear-gradient(180deg,rgba(8,63,68,.97),rgba(4,48,52,.97));color:#d8d2c5;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:3px;font:800 8px/1 Arial,sans-serif}
