@@ -83,7 +83,7 @@ function ensurePreviewBoard(){
       cssClass: 'shatranj',
       showCoordinates: false,
       borderType: BORDER_TYPE.none,
-      pieces:{file:'pieces/shatranj-approved-20260904.svg?v=20261012-upright-fullsize-v2',tileSize:40},
+      pieces:{file:'pieces/shatranj-approved-20260904.svg?v=20261012-extracted-photo-pieces-v3',tileSize:40},
       animationDuration: 180
     }
   });

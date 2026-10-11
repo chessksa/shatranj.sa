@@ -96,8 +96,8 @@ const pieceBounds=Object.fromEntries(pieceCodes.map(code=>[code,pieceVisualBound
 // The new approved files have a matched transparent canvas and identical baseline.
 for(const code of pieceCodes){
   const b=pieceBounds[code];
-  assert.equal(b.width,128,`Expected a normalized width for ${code}`);
-  assert.equal(b.height,128,`Expected a normalized height for ${code}`);
+  assert.equal(b.width,512,`Expected a normalized width for ${code}`);
+  assert.equal(b.height,512,`Expected a normalized height for ${code}`);
   assert.ok(Math.abs(b.centerX-b.canvasCenterX)<6,`Artwork must be horizontally centered for ${code}`);
 }
 assert.ok(!inlineCss.includes('.inline-play-piece[src$='),'Legacy individual offsets must be removed');
