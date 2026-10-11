@@ -544,3 +544,47 @@
   body.live-game #gameActions{height:68px!important;min-height:68px!important;flex-basis:68px!important;padding:0 10px!important;gap:7px!important}
   body.live-game #gameActions .action-item{height:52px!important;min-height:52px!important}
 }
+
+/* Computer matches on phones: fit the full card/board/actions stack inside
+   Safari's actually visible viewport. Other games and desktop are untouched. */
+@media (max-width:900px){
+  body.computer-game.live-game.reference-play-layout #gamePage{
+    height:var(--computer-mobile-visible-height,100dvh)!important;
+    min-height:0!important;
+    max-height:var(--computer-mobile-visible-height,100dvh)!important;
+    padding:0 0 max(8px,env(safe-area-inset-bottom))!important;
+    box-sizing:border-box!important;
+    overflow-y:auto!important;
+    overflow-x:hidden!important;
+    -webkit-overflow-scrolling:touch;
+    overscroll-behavior-y:contain;
+  }
+  body.computer-game.live-game.reference-play-layout #gamePage .layout{
+    height:auto!important;
+    min-height:0!important;
+    overflow:visible!important;
+  }
+  body.computer-game.live-game.reference-play-layout #gamePage .side-panel,
+  body.computer-game.live-game.reference-play-layout #gamePage .panel-stack{
+    height:auto!important;
+    min-height:0!important;
+    max-height:none!important;
+    overflow:visible!important;
+  }
+  body.computer-game.live-game.reference-play-layout #gamePage .board-panel{
+    flex:0 0 auto!important;
+    min-height:0!important;
+    height:auto!important;
+  }
+  body.computer-game.live-game.reference-play-layout #gamePage .board-panel>.board-frame{
+    width:var(--computer-mobile-board-size,min(100vw,max(208px,calc(100dvh - 410px))))!important;
+    max-width:100%!important;
+    margin-inline:auto!important;
+    flex:0 0 auto!important;
+  }
+  body.computer-game.live-game.reference-play-layout #gamePage #bottomPlayerCard,
+  body.computer-game.live-game.reference-play-layout #gamePage #topPlayerCard,
+  body.computer-game.live-game.reference-play-layout #gamePage #gameActions{
+    flex-shrink:0!important;
+  }
+}
