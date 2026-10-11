@@ -12,18 +12,23 @@
 @media(max-width:900px){.settings-shell{width:min(100% - 18px,1180px);padding-top:12px}.settings-grid{grid-template-columns:1fr}.account-card{grid-column:auto}.preview-card{order:-1}.v2-theme-grid{grid-template-columns:repeat(3,minmax(0,1fr))}}
 @media(max-width:520px){.settings-title h1{font-size:22px}.options{grid-template-columns:1fr}.v2-theme-grid{grid-template-columns:repeat(2,minmax(0,1fr))}.card{padding:12px}}
 
-/* Show the approved woodgrain in the default board preview and theme picker.
-   Alternative theme cards retain their own original colors. */
+/* Original Lichess Wood 4 board artwork, loaded locally. */
+#v2-settings-preview-board[data-board-theme="shatranj"],
+.v2-theme-option[data-theme="shatranj"] .v2-theme-preview{
+  background:#ad8a65 url("assets/boards/wood4.jpg") center/100% 100% no-repeat;
+}
 #v2-settings-preview-board[data-board-theme="shatranj"] .preview-square.light,
 .v2-theme-option[data-theme="shatranj"] .v2-theme-preview i:nth-child(1),
 .v2-theme-option[data-theme="shatranj"] .v2-theme-preview i:nth-child(4){
-  background:#F1EEE8!important;
+  background:rgba(255,247,224,.43)!important;
 }
 #v2-settings-preview-board[data-board-theme="shatranj"] .preview-square.dark,
 .v2-theme-option[data-theme="shatranj"] .v2-theme-preview i:nth-child(2),
 .v2-theme-option[data-theme="shatranj"] .v2-theme-preview i:nth-child(3){
-  background:#925A4E!important;
+  background:rgba(49,24,11,.36)!important;
 }
+.board-texture-credit{margin:15px 2px 0;font-size:11px;color:#bacac7;text-align:center}
+.board-texture-credit a{color:#e9c681;text-underline-offset:2px}
 </style>
 </head>
 <body>
@@ -50,6 +55,7 @@
       <label class="option toggle"><span>الأبيض دائمًا أسفل</span><input id="v2-setting-white-bottom" type="checkbox"></label>
     </div></section>
   </div>
+  <p class="board-texture-credit">خامة الرقعة: <a href="assets/boards/SOURCE.md" target="_blank" rel="noopener noreferrer">Lichess Wood 4</a> · <a href="licenses/AGPL-3.0.txt" target="_blank" rel="noopener noreferrer">ترخيص AGPLv3+</a></p>
 </main>
 <script src="config-base.js"></script>
 <script type="module" src="v2/settings/account.mjs"></script>
