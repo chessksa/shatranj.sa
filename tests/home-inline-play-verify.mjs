@@ -100,9 +100,9 @@ for(const code of pieceCodes){
   assert.equal(b.height,128,`Expected a normalized height for ${code}`);
   assert.ok(Math.abs(b.centerX-b.canvasCenterX)<6,`Artwork must be horizontally centered for ${code}`);
 }
-assert.doesNotMatch(inlineCss,/\\.inline-play-piece\\[src\\$=/,'Legacy piece-specific offsets must be removed');
-assert.match(inlineCss,/left:var\\(--piece-left,50%\\)/,'Default horizontal position must be centered');
-assert.match(inlineCss,/top:var\\(--piece-top,50%\\)/,'Default vertical position must be centered');
+assert.ok(!inlineCss.includes('.inline-play-piece[src$='),'Legacy individual offsets must be removed');
+assert.ok(inlineCss.includes('left:var(--piece-left,50%)'),'Horizontal artwork alignment must be centered');
+assert.ok(inlineCss.includes('top:var(--piece-top,50%)'),'Vertical artwork alignment must be centered');
 
 console.log('PIECE_BOUNDS',JSON.stringify(pieceBounds));
 console.log('home inline play verification passed');
