@@ -1,7 +1,7 @@
 export const DEFAULT_BOARD_THEME = 'shatranj';
 
 export const BOARD_THEMES = {
-  shatranj:{label:'شطرنج العرب',light:'#e8dec8',dark:'#87966a',line:'rgba(35,42,32,.28)'},
+  shatranj:{label:'شطرنج العرب — جوزي وعاجي',light:'#F3EBDD',dark:'#7B4A2C',line:'rgba(91,56,35,.24)'},
   '8-bit':{label:'8-Bit',light:'#f3e4b5',dark:'#6d7f3f',line:'rgba(25,25,25,.28)'},
   bases:{label:'Bases',light:'#f0d9b5',dark:'#b58863',line:'rgba(50,35,25,.22)'},
   blue:{label:'Blue',light:'#d7e3ef',dark:'#5f87a9',line:'rgba(24,48,70,.22)'},
@@ -57,7 +57,7 @@ function solidColor(value, fallback){
 export function getBoardThemeSolidPair(value){
   const theme=getBoardTheme(value);
   return {
-    light:solidColor(theme.light,'#e8dec8'),
-    dark:solidColor(theme.dark,'#87966a')
+    light:solidColor(theme.light,'#F3EBDD'),
+    dark:solidColor(theme.dark,'#7B4A2C')
   };
 }
