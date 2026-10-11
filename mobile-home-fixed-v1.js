@@ -13,6 +13,35 @@
     ['ranking','▥','الترتيب'],['invite','＋','دعوة'],['more','☰','المزيد']
   ];
   let active='home';
+  let mobileAdminAllowed=false;
+  let mobileAdminRequest=0;
+  // This is the real mobile workspace. Admin access must come from the same
+  // server-side permission check used by admin.html, never from profile text.
+  async function refreshMobileAdminAccess(){
+    const request=++mobileAdminRequest;
+    let allowed=false;
+    if(signedIn()){
+      try{
+        const {supabase}=await import('./v2/platform/api.mjs');
+        if(!supabase)throw new Error('Supabase غير متاح');
+        const {data:auth,error:sessionError}=await supabase.auth.getSession();
+        if(sessionError)throw sessionError;
+        if(auth?.session?.user?.id){
+          const {data:access,error:accessError}=await supabase.rpc('admin_get_access');
+          if(accessError)throw accessError;
+          allowed=Boolean(Array.isArray(access)?access[0]:access);
+        }
+      }catch(error){
+        console.warn('تعذر التحقق من صلاحية الإدارة في الجوال',error);
+      }
+    }
+    if(request!==mobileAdminRequest)return;
+    mobileAdminAllowed=allowed;
+    if(active==='more'){
+      const panel=document.getElementById('mfwPanelBody');
+      if(panel)more(panel);
+    }
+  }
   let tournamentSpectatorPromise=null;
   const spectatorModule=()=>tournamentSpectatorPromise||(tournamentSpectatorPromise=import('./v2/home/inline-tournament-spectator.mjs?v=20261009-inline-tournament-v1'));
 
@@ -220,6 +249,8 @@
 
   function more(body){
     const items=[['♜','البطولات','#tournaments'],['◉','شاهد','watch.html'],['◆','الألغاز','puzzles.html'],['▤','تعلّم','learn.html'],['⌁','التحليل','analysis.html'],['▥','الإحصائيات','stats.html'],['♙','الأندية','clubs.html'],['⚙','الإعدادات','settings-v2.html'],['●','حسابي','profile.html']];
+    // Keep the administrator action first so it is visible without scrolling.
+    if(mobileAdminAllowed&&signedIn())items.unshift(['♜','لوحة الإدارة','admin.html']);
     body.innerHTML='<div class="mfw-more">'+items.map(([i,l,h])=>'<a href="'+h+'"><i>'+i+'</i><span>'+l+'</span></a>').join('')+'</div>';
     body.querySelector('a[href="#tournaments"]')?.addEventListener('click',event=>{event.preventDefault();show('tournaments');});
   }
@@ -247,7 +278,10 @@
     else if(id==='ranking')ranking(body);
     else if(id==='invite')invite(body);
     else if(id==='tournaments')tournaments(body);
-    else more(body);
+    else if(id==='more'){
+      more(body);
+      void refreshMobileAdminAccess();
+    }else more(body);
   }
 
   function syncHeader(){
@@ -289,7 +323,18 @@
       new MutationObserver(refreshHome).observe(node,{subtree:true,childList:true,characterData:true});
     });
 
-    new MutationObserver(refreshHome).observe(document.body,{attributes:true,attributeFilter:['class']});
+    let wasSignedIn=signedIn();
+    new MutationObserver(()=>{
+      const isSignedIn=signedIn();
+      if(isSignedIn!==wasSignedIn){
+        wasSignedIn=isSignedIn;
+        // Invalidate in-flight checks immediately after logout.
+        if(!isSignedIn){++mobileAdminRequest;mobileAdminAllowed=false;}
+        void refreshMobileAdminAccess();
+      }
+      refreshHome();
+    }).observe(document.body,{attributes:true,attributeFilter:['class']});
+    void refreshMobileAdminAccess();
 
     const tbody=document.getElementById('tbody');
     if(tbody){
