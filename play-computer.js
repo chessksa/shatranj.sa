@@ -1140,6 +1140,7 @@ function setupTimeChooser(levelKey) {
     button.dataset.minutes = String(minutes);
     button.style.minWidth = '0';
     button.innerHTML = `<strong>${minutes}</strong><span>دقائق</span>`;
+    button.setAttribute('aria-label', `${minutes} دقائق`);
     button.onclick = () => startComputerGame(levelKey, minutes);
   });
   if (topPlayerCard) topPlayerCard.setAttribute('aria-label', 'اختيار زمن مباراة الكمبيوتر');
@@ -1167,7 +1168,10 @@ function setupLevelChooser() {
     button.disabled = false;
     button.removeAttribute('data-minutes');
     button.dataset.level = key;
-    button.innerHTML = `<strong>${label}</strong><span>${sub}</span>`;
+    // One points label only. The old mobile stylesheet generates a second
+    // label for direct child <span> elements; use <small> instead.
+    button.innerHTML = `<i class="computer-level-meter" aria-hidden="true"><b></b><b></b><b></b></i><strong>${label}</strong><small class="computer-level-points" dir="rtl">${sub}</small>`;
+    button.setAttribute('aria-label', `مستوى ${label} — ${sub}`);
     button.onclick = () => {
       if (selectedLevel) return;
       selectedLevel = key;
