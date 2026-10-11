@@ -38,8 +38,8 @@
 
   .inline-play-piece{
     position:absolute;
-    width:94%;
-    height:94%;
+    width:100%;
+    height:100%;
     left:var(--piece-left,50%);
     top:var(--piece-top,50%);
     transform:translate(-50%,-50%) scale(var(--piece-scale,1));

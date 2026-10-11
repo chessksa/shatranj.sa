@@ -105,7 +105,7 @@
         const name=file+rank;
         const dark=((file.charCodeAt(0)-97)+rank)%2===0;
         const piece=PIECES[name];
-        out+='<span class="mfw-square '+(dark?'dark':'light')+'">'+(piece?'<img class="mfw-piece" src="assets/pieces/'+piece+'.png?v=20261012-custom-white-graphite-pieces-v1" alt="" draggable="false">':'')+'</span>';
+        out+='<span class="mfw-square '+(dark?'dark':'light')+'">'+(piece?'<img class="mfw-piece" src="assets/pieces/'+piece+'.png?v=20261012-upright-fullsize-v2" alt="" draggable="false">':'')+'</span>';
       }
     }
     return out;

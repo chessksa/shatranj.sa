@@ -3,7 +3,7 @@
  body.shatranj-play-home-palette .v2-board .v2-square{position:relative!important;overflow:hidden!important}
  body.shatranj-play-home-palette .v2-board .v2-square>.v2-piece{
    position:absolute!important;top:50%!important;left:50%!important;
-   translate:-50% -50%!important;width:108%!important;height:108%!important;
+   translate:-50% -50%!important;width:100%!important;height:100%!important;
    max-width:none!important;max-height:none!important;
    min-width:0!important;min-height:0!important;
    margin:0!important;padding:0!important;object-fit:contain!important;

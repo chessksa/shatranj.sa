@@ -27,7 +27,7 @@ statsOrderCss.textContent=`@media(min-width:901px){
   .desktop-live-stat small{margin-top:0!important}
   .desktop-live-stat strong{margin-top:6px!important}
   .inline-play-square{position:relative!important}
-  .inline-play-piece{width:94%!important;height:94%!important}
+  .inline-play-piece{width:100%!important;height:100%!important}
 }`;
 document.head.appendChild(statsOrderCss);
 
