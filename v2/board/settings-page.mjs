@@ -1,4 +1,4 @@
-import { loadBoardPreferences, saveBoardPreferences, applyBoardPreferences, renderThemePicker } from './controller.mjs?v=20261011-classic-walnut-ivory-v1';
+import { loadBoardPreferences, saveBoardPreferences, applyBoardPreferences, renderThemePicker } from './controller.mjs?v=20261011-photo-walnut-reference-v2';
 
 const board = document.getElementById('v2-settings-preview-board');
 const picker = document.getElementById('v2-settings-theme-picker');
