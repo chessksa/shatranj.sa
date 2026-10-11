@@ -545,55 +545,234 @@
   body.live-game #gameActions .action-item{height:52px!important;min-height:52px!important}
 }
 
-/* Computer matches on phones: fit the full card/board/actions stack inside
-   Safari's actually visible viewport. Other games and desktop are untouched. */
+/* Phone computer matches: one edge-to-edge, centered square board.
+   Header, identity cards and actions are compact; scroll only if the whole
+   stack cannot fit the usable Safari viewport, never crop the player. */
 @media (max-width:900px){
   body.computer-game.live-game.reference-play-layout #gamePage{
+    width:100%!important;
     height:var(--computer-mobile-visible-height,100dvh)!important;
     min-height:0!important;
-    max-height:var(--computer-mobile-visible-height,100dvh)!important;
-    padding:0 0 max(8px,env(safe-area-inset-bottom))!important;
+    max-height:none!important;
+    padding:0 0 max(4px,env(safe-area-inset-bottom))!important;
     box-sizing:border-box!important;
-    overflow-y:auto!important;
     overflow-x:hidden!important;
+    overflow-y:auto!important;
     -webkit-overflow-scrolling:touch;
     overscroll-behavior-y:contain;
   }
   body.computer-game.live-game.reference-play-layout #gamePage .layout{
+    width:100%!important;
     height:auto!important;
     min-height:0!important;
+    padding:0!important;
+    margin:0!important;
+    gap:0!important;
     overflow:visible!important;
+    align-items:stretch!important;
   }
   body.computer-game.live-game.reference-play-layout #gamePage .side-panel,
   body.computer-game.live-game.reference-play-layout #gamePage .panel-stack{
+    width:100%!important;
     height:auto!important;
     min-height:0!important;
     max-height:none!important;
+    gap:0!important;
+    margin:0!important;
+    padding:0!important;
     overflow:visible!important;
   }
-  body.computer-game.live-game.reference-play-layout #gamePage .board-panel{
-    flex:0 0 auto!important;
+
+  /* Stop wasting the first row on an empty '…' history strip. */
+  body.computer-game.live-game.reference-play-layout .reference-move-strip{
+    display:none!important;
+    height:0!important;
     min-height:0!important;
+    margin:0!important;
+    padding:0!important;
+  }
+
+  /* Compact site identity; the square control is a separate, small icon. */
+  body.computer-game.live-game.reference-play-layout .side-head-stack{
+    margin:0!important;
+    padding:0!important;
+    gap:0!important;
+  }
+  body.computer-game.live-game.reference-play-layout .side-header{
+    height:52px!important;
+    min-height:52px!important;
+    max-height:52px!important;
+    margin:0!important;
+    padding:0 8px!important;
+    justify-content:center!important;
+  }
+  body.computer-game.live-game.reference-play-layout .side-brand{
+    position:absolute!important;
+    left:50%!important;
+    top:50%!important;
+    transform:translate(-50%,-50%)!important;
+    max-width:calc(100% - 148px)!important;
+    gap:3px!important;
+    font-size:clamp(16px,4.2vw,19px)!important;
+    white-space:nowrap!important;
+    overflow:hidden!important;
+    text-overflow:ellipsis!important;
+  }
+  body.computer-game.live-game.reference-play-layout .side-brand-mark{
+    width:24px!important;
+    height:27px!important;
+    min-width:24px!important;
+    font-size:25px!important;
+    line-height:1!important;
+    display:grid!important;
+    place-items:center!important;
+    margin:0!important;
+  }
+  body.computer-game.live-game.reference-play-layout .side-header-actions{
+    inset:0 6px!important;
+  }
+  body.computer-game.live-game.reference-play-layout #leaveBtn{
+    right:0!important;
+    width:38px!important;
+    min-width:38px!important;
+    height:38px!important;
+    min-height:38px!important;
+  }
+  body.computer-game.live-game.reference-play-layout #leaveBtn::before{
+    font-size:27px!important;
+  }
+  body.computer-game.live-game.reference-play-layout #reportBtn{
+    left:0!important;
+    width:34px!important;
+    min-width:34px!important;
+    height:36px!important;
+  }
+  body.computer-game.live-game.reference-play-layout .reference-board-control-v19{
+    right:40px!important;
+    width:38px!important;
+    min-width:38px!important;
+    height:38px!important;
+    min-height:38px!important;
+    padding:0!important;
+    border-radius:9px!important;
+    font-size:0!important;
+    line-height:0!important;
+    overflow:hidden!important;
+    display:grid!important;
+    place-items:center!important;
+  }
+  body.computer-game.live-game.reference-play-layout .reference-board-control-v19::before{
+    content:"♟"!important;
+    display:block!important;
+    font:900 24px/1 Arial,sans-serif!important;
+    color:#efcf7c!important;
+  }
+
+  /* Full phone width; no height clamp or side gutters. */
+  body.computer-game.live-game.reference-play-layout #gamePage .board-panel{
+    order:3!important;
+    width:100%!important;
     height:auto!important;
+    min-height:0!important;
+    flex:0 0 auto!important;
+    margin:0!important;
+    padding:0!important;
+    display:flex!important;
+    justify-content:center!important;
+    align-items:center!important;
+    overflow:visible!important;
   }
   body.computer-game.live-game.reference-play-layout #gamePage .board-panel>.board-frame{
-    width:var(--computer-mobile-board-size,min(100vw,max(208px,calc(100dvh - 410px))))!important;
+    width:var(--computer-mobile-board-size,100vw)!important;
     max-width:100%!important;
-    margin-inline:auto!important;
+    min-width:0!important;
     flex:0 0 auto!important;
+    margin:0 auto!important;
+    padding:0!important;
+    border:0!important;
+    border-radius:0!important;
+    display:block!important;
+    box-sizing:border-box!important;
   }
-  /* Compact the two rows only as the visible height gets tighter;
-     avatar, name and clock still fit, and the chessboard stays larger. */
+  body.computer-game.live-game.reference-play-layout #gamePage .board-shell{
+    width:100%!important;
+    aspect-ratio:1/1!important;
+    margin:0!important;
+  }
+
+  /* Preserve readable clocks and names in minimal vertical space. */
   body.computer-game.live-game.reference-play-layout #gamePage #topPlayerCard,
   body.computer-game.live-game.reference-play-layout #gamePage #bottomPlayerCard{
-    height:clamp(84px,12.5dvh,108px)!important;
-    min-height:clamp(84px,12.5dvh,108px)!important;
-    flex:0 0 clamp(84px,12.5dvh,108px)!important;
-    padding-block:6px!important;
+    width:100%!important;
+    height:78px!important;
+    min-height:78px!important;
+    flex:0 0 78px!important;
+    margin:0!important;
+    padding:5px 10px!important;
+    grid-template-columns:92px minmax(0,1fr) 60px!important;
+    gap:7px!important;
+    overflow:hidden!important;
+    box-sizing:border-box!important;
+  }
+  body.computer-game.live-game.reference-play-layout #gamePage .player-card .avatar{
+    width:58px!important;
+    height:58px!important;
+    min-width:58px!important;
+    min-height:58px!important;
+  }
+  body.computer-game.live-game.reference-play-layout #gamePage .player-card .clock-box{
+    width:92px!important;
+  }
+  body.computer-game.live-game.reference-play-layout #gamePage .player-card .clock{
+    height:48px!important;
+    min-height:48px!important;
+    font-size:25px!important;
+  }
+  body.computer-game.live-game.reference-play-layout #gamePage .player-card .name{
+    font-size:clamp(15px,4vw,18px)!important;
+    margin:0 0 2px!important;
+    line-height:1.2!important;
+  }
+  body.computer-game.live-game.reference-play-layout #gamePage .player-card .location{
+    font-size:10px!important;
+    margin:0 0 2px!important;
+  }
+  body.computer-game.live-game.reference-play-layout #gamePage .player-card .rating{
+    font-size:11px!important;
+    line-height:1.15!important;
   }
   body.computer-game.live-game.reference-play-layout #gamePage #gameActions{
-    height:clamp(60px,9dvh,68px)!important;
-    min-height:clamp(60px,9dvh,68px)!important;
-    flex:0 0 clamp(60px,9dvh,68px)!important;
+    width:100%!important;
+    height:58px!important;
+    min-height:58px!important;
+    flex:0 0 58px!important;
+    margin:0!important;
+    padding:0 7px!important;
+    gap:6px!important;
+    box-sizing:border-box!important;
+  }
+  body.computer-game.live-game.reference-play-layout #gamePage #gameActions .action-item{
+    min-height:46px!important;
+    height:46px!important;
+    padding:2px 4px!important;
+    gap:1px!important;
+  }
+  body.computer-game.live-game.reference-play-layout #gamePage #gameActions .action-icon{
+    font-size:21px!important;
+  }
+  body.computer-game.live-game.reference-play-layout #gamePage #gameActions .action-label{
+    font-size:10px!important;
+  }
+}
+@media (max-width:350px){
+  body.computer-game.live-game.reference-play-layout #gamePage #topPlayerCard,
+  body.computer-game.live-game.reference-play-layout #gamePage #bottomPlayerCard{
+    grid-template-columns:82px minmax(0,1fr) 52px!important;
+    padding-inline:5px!important;
+    gap:4px!important;
+  }
+  body.computer-game.live-game.reference-play-layout #gamePage .player-card .clock-box{width:82px!important}
+  body.computer-game.live-game.reference-play-layout #gamePage .player-card .avatar{
+    width:50px!important;height:50px!important;min-width:50px!important;min-height:50px!important;
   }
 }
