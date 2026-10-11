@@ -13,12 +13,74 @@
   const historyScriptId = 'playReferenceHistoryV14';
   let boardObserver = null;
 
+  let computerFitFrame = 0;
+  let computerHudObserver = null;
+  const observedComputerHud = new WeakSet();
+
+  // iOS Safari's address and bottom bars change the visible viewport height.
+  // Reserve the cards and controls before allocating space to the board.
+  function fitMobileComputerGame() {
+    const root = document.documentElement;
+    if (!mobileQuery.matches ||
+        !document.body.classList.contains('computer-game') ||
+        !document.body.classList.contains('live-game')) {
+      root.style.removeProperty('--computer-mobile-visible-height');
+      root.style.removeProperty('--computer-mobile-board-size');
+      return;
+    }
+
+    const visualHeight = Number(window.visualViewport?.height) || window.innerHeight;
+    const viewportHeight = Math.floor(Math.min(window.innerHeight || visualHeight, visualHeight));
+    const page = document.getElementById('gamePage');
+    const header = stack.querySelector('.side-head-stack');
+    const strip = document.getElementById('liveMoveStrip');
+    const topCard = document.getElementById('topPlayerCard');
+    const bottomCard = document.getElementById('bottomPlayerCard');
+    const actions = document.getElementById('gameActions');
+    if (!page || viewportHeight <= 0 || !header || !topCard || !bottomCard || !actions) return;
+
+    const hud = [header, strip, topCard, bottomCard, actions].filter(Boolean);
+    const hudHeight = hud.reduce((sum, element) => sum + element.getBoundingClientRect().height, 0);
+    const padding = parseFloat(getComputedStyle(page).paddingBottom) || 0;
+    const gap = parseFloat(getComputedStyle(stack).rowGap) || 0;
+    const boardRoom = Math.floor(viewportHeight - hudHeight - padding - gap * 5 - 10);
+    const screenWidth = root.clientWidth || window.innerWidth;
+    // When space is extremely limited, scrolling is preferable to an
+    // unusably small chessboard.
+    const boardSize = Math.floor(Math.min(screenWidth, Math.max(208, boardRoom)));
+
+    if (root.style.getPropertyValue('--computer-mobile-visible-height') !== viewportHeight + 'px') {
+      root.style.setProperty('--computer-mobile-visible-height', viewportHeight + 'px');
+    }
+    if (root.style.getPropertyValue('--computer-mobile-board-size') !== boardSize + 'px') {
+      root.style.setProperty('--computer-mobile-board-size', boardSize + 'px');
+    }
+
+    if (typeof ResizeObserver === 'function') {
+      computerHudObserver ||= new ResizeObserver(scheduleMobileComputerFit);
+      hud.forEach((element) => {
+        if (observedComputerHud.has(element)) return;
+        observedComputerHud.add(element);
+        computerHudObserver.observe(element);
+      });
+    }
+  }
+
+  function scheduleMobileComputerFit() {
+    if (computerFitFrame) cancelAnimationFrame(computerFitFrame);
+    computerFitFrame = requestAnimationFrame(() => {
+      computerFitFrame = 0;
+      fitMobileComputerGame();
+    });
+  }
+
+
   function ensureReferenceStyles() {
     if (!document.getElementById(referenceCssId)) {
       const link = document.createElement('link');
       link.id = referenceCssId;
       link.rel = 'stylesheet';
-      link.href = 'play-reference-mobile-v14.css?v=20260913-2';
+      link.href = 'play-reference-mobile-v14.css?v=20261011-computer-viewport-fit-v1';
       document.head.appendChild(link);
     }
     if (!document.getElementById(pregameCssId)) {
@@ -150,10 +212,12 @@
       stack.style.gap = isReferenceMobile() ? '0' : '10px';
 
       arrangeReferenceMobile();
+      scheduleMobileComputerFit();
       return;
     }
 
     document.body.classList.remove('reference-play-layout');
+    scheduleMobileComputerFit();
     clearMobileInlineLayout();
     if (boardPanel.parentElement !== layout) layout.insertBefore(boardPanel, side);
   }
@@ -162,6 +226,10 @@
   syncBoardFlow();
 
   const runAfterOtherLayoutHandlers = () => setTimeout(syncBoardFlow, 0);
+  window.addEventListener('resize', scheduleMobileComputerFit, { passive: true });
+  window.addEventListener('orientationchange', scheduleMobileComputerFit, { passive: true });
+  window.visualViewport?.addEventListener('resize', scheduleMobileComputerFit, { passive: true });
+  window.visualViewport?.addEventListener('scroll', scheduleMobileComputerFit, { passive: true });
   if (typeof mobileQuery.addEventListener === 'function') {
     mobileQuery.addEventListener('change', runAfterOtherLayoutHandlers);
   } else if (typeof mobileQuery.addListener === 'function') {
@@ -173,11 +241,12 @@
 
   document.addEventListener('DOMContentLoaded', () => {
     runAfterOtherLayoutHandlers();
-    setTimeout(arrangeReferenceMobile, 80);
+    setTimeout(() => { arrangeReferenceMobile(); scheduleMobileComputerFit(); }, 80);
   }, { once: true });
 
   window.addEventListener('load', () => {
     arrangeReferenceMobile();
     setTimeout(applyReferenceBoardPalette, 180);
+    scheduleMobileComputerFit();
   }, { once: true });
 })();
