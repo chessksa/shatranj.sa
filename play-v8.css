@@ -14,15 +14,15 @@
 }
 .board-shell{
   border-radius:2px !important;
-  background:var(--real-board-edge) !important;
+  background:#ad8a65 url('assets/boards/wood4.jpg') center/100% 100% no-repeat !important;
   box-shadow:inset 0 0 0 1px rgba(0,0,0,.55),0 1px 0 rgba(255,255,255,.04) !important;
 }
 .square{
   border-right:1px solid rgba(2,47,51,.34) !important;
   border-bottom:1px solid rgba(2,47,51,.34) !important;
 }
-.square.light{background:var(--real-board-light) !important;}
-.square.dark{background:var(--real-board-dark) !important;}
+.square.light{background:rgba(255,247,224,.43) !important;}
+.square.dark{background:rgba(49,24,11,.36) !important;}
 .piece{
   position:relative !important;
   width:96% !important;
