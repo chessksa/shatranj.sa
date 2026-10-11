@@ -4,7 +4,7 @@ ROOT = Path(__file__).resolve().parents[1]
 SPRITE = ROOT / "assets" / "pieces" / "shatranj-approved-20260904.svg"
 PIECE_CODES = ("wk", "wq", "wr", "wb", "wn", "wp", "bk", "bq", "br", "bb", "bn", "bp")
 PNG_CODES = ("wr", "wn", "wb", "wq", "wk", "wp", "br", "bn", "bb", "bq", "bk", "bp")
-CACHE = "20260904-12"
+CACHE = "20261012-custom-white-graphite-pieces-v1"
 
 
 def test_uploaded_png_piece_set_is_complete():
