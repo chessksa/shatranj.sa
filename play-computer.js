@@ -250,11 +250,44 @@ function showMoveHints(square) {
 }
 
 function forceBoardSquareColors() {
+  const svg = boardEl.querySelector('.cm-chessboard svg, svg.cm-chessboard, .cm-chessboard');
+  const ns = 'http://www.w3.org/2000/svg';
+  let ready = false;
+  if (svg && svg.namespaceURI === ns) {
+    let defs = svg.querySelector('defs[data-shatranj-wood]');
+    if (!defs) {
+      defs = document.createElementNS(ns, 'defs');
+      defs.setAttribute('data-shatranj-wood', '1');
+      const texturePairs = [
+        ['shatranj-square-ivory', 'data:image/jpeg;base64,/9j/4AAQSkZJRgABAQAAAQABAAD/2wBDAAoHBwkHBgoJCAkLCwoMDxkQDw4ODx4WFxIZJCAmJSMgIyIoLTkwKCo2KyIjMkQyNjs9QEBAJjBGS0U+Sjk/QD3/2wBDAQsLCw8NDx0QEB09KSMpPT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT3/wAARCACAAIADASIAAhEBAxEB/8QAGAABAQEBAQAAAAAAAAAAAAAAAgEAAwf/xAAeEAEBAQEBAQEBAQEBAAAAAAAAAQIxIRFBAzIiQv/EABcBAQEBAQAAAAAAAAAAAAAAAAABAgP/xAAYEQEBAQEBAAAAAAAAAAAAAAAAAUExAv/aAAwDAQACEQMRAD8A9O3PTzwdrm+OetYtC306F6UhQpfBnCzfEgOl/mmix4aYTRqn1pE1XLV9dNcc/wBY9NQs3xrWapBzt+0sj+nlJ1V02W00b1kqF6X0bfVoU8WD9LJBNQs8HRYvhqKlWsoFvgRdjlitQvvrJ+tq+ID+nkc+nCLU/FzEWNstepWYFnCwk4ueqjbTFbaYnw1XSp9UNFSDu/RjW/asYaX8Hd8L6GulJ1scdY55OEKn4qSK2y0iVfo3opTi56JZ6I20yu0yaHXPVKhqlIE/0cHPTjEarVzvtdLxz7SkPMODkosSi1rWp8aF++DKs4k8Alz1Fz0Rd1Mcb+jfz4aYuoFdK5avpSLmMs4jKreOf6d4MnpVh5KcScWLErnaQ2fFnrQo3pDegX4s6n4sEbafz8LfBx00xaGuumnL790lWOn3/kZS/wDIzqC64OV1fBlSq6KMJplz1Wy254mFUo2ljVUScWVvxsoLrg4vpbCeUpD1fHPPV1fAx1KsdbwZ1aknoNtstppxFKKkVWaG79TDVM+KrpKlrDaqH+JOtP8AKTqB6HMXV8TNBN+QcrupOIsL60RpQbVWcG30pxFKKkZpl//Z'],
+        ['shatranj-square-walnut', 'data:image/jpeg;base64,/9j/4AAQSkZJRgABAQAAAQABAAD/2wBDAAoHBwkHBgoJCAkLCwoMDxkQDw4ODx4WFxIZJCAmJSMgIyIoLTkwKCo2KyIjMkQyNjs9QEBAJjBGS0U+Sjk/QD3/2wBDAQsLCw8NDx0QEB09KSMpPT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT3/wAARCACAAIADASIAAhEBAxEB/8QAGQAAAwEBAQAAAAAAAAAAAAAAAQIDAAQG/8QAIBAAAgMAAwADAQEAAAAAAAAAAAECESEDIjESMkFCcf/EABgBAQEBAQEAAAAAAAAAAAAAAAABAgQF/8QAGhEBAQEBAQEBAAAAAAAAAAAAABEBIRIxQf/aAAwDAQACEQMRAD8A8jL0oo4JyD8cjleiaKoSUfWUkJF+2DjleSZT42hORVMeHhTgxVHTFVEgi6l0ItwVrDNWhYDskS4SMaRS+oreBX1BcKtsyVJmQJSrBhm4T9DGCbANGQnS45m7KQFnGmNBYVmKEr7FoaTnCpCkQm+w0ATWhhjLvxYdqinH2QHXxDwYyL5PXxG9QZemVESdItdD1gq+xVNND9PKdUTmVm6JypoZ9PJawDweJmk0P08o8j3TQeh5ErBD0qLeE5S0r+E3XyBmITemTNyxqQY+FWKL6j8YqyI3G1ZlVFYPSjr4k4rRUgUPG0jOmwt0gROTEkM9ZrspChRknY7SoEQ5cYI+jcr0WLoIv+EmmpFYy6k5StgJzCQDyyNDGVVK6mgqC31NxsgvFfKJkqNCVI1kJgpfosraGcqQEwTETRTsaXpkU4LMvRVLsO9IRCWyBWjNaZelRWCqIrSspFdSUl2BifJFMSPo0/Rf0Ku/obipoC2AePEwKxSGxkooZEDSAg1aET7UBquQ0qSAsYJFCpaGwrwC0BXHTVo/6I3UgiyyJGauRW+pJ/YGJckWhYoryO0JFBVF9R+NYJVRH4gM7Q0fATbsfjVoB0qgc+/NnRJ1E5lLsBSgf6MtA1TAyWAQbpATsBG9FWyNPGaD0qL/ABqJJ+l/YkWqZBOQPAzWgKKP6B4WL7Efj8IppKwp0hb0YDTfUhFWy3J9ROJaEUWCyehb0zQGl4IsKPwWQUk1gkfRrwVPSo6IvBZhj5YknpELNYIh5vqJEKeuoeNmvqJAC1WyiROAy9A01bBBB/oyxgatGSBejN0gFmqZOV2UbslJ9ij/2Q==']
+      ];
+      for (const [id, imageUrl] of texturePairs) {
+        const pattern = document.createElementNS(ns, 'pattern');
+        pattern.setAttribute('id', id);
+        pattern.setAttribute('patternUnits', 'objectBoundingBox');
+        pattern.setAttribute('patternContentUnits', 'objectBoundingBox');
+        pattern.setAttribute('width', '1');
+        pattern.setAttribute('height', '1');
+        const image = document.createElementNS(ns, 'image');
+        image.setAttribute('href', imageUrl);
+        image.setAttribute('x', '0');
+        image.setAttribute('y', '0');
+        image.setAttribute('width', '1');
+        image.setAttribute('height', '1');
+        image.setAttribute('preserveAspectRatio', 'none');
+        pattern.appendChild(image);
+        defs.appendChild(pattern);
+      }
+      svg.insertBefore(defs, svg.firstChild);
+    }
+    ready = true;
+  }
   boardEl.querySelectorAll('.cm-chessboard .square.white').forEach((square) => {
-    square.style.setProperty('fill','#E7E4DB','important');
+    square.style.setProperty('fill', ready ? 'url(#shatranj-square-ivory)' : '#E7E4DB', 'important');
   });
   boardEl.querySelectorAll('.cm-chessboard .square.black').forEach((square) => {
-    square.style.setProperty('fill','#6C4437','important');
+    square.style.setProperty('fill', ready ? 'url(#shatranj-square-walnut)' : '#6C4437', 'important');
   });
 }
 
