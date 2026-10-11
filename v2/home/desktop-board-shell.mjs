@@ -752,7 +752,7 @@ if(desktop.matches && document.querySelector('#homeHero')){
           ++desktopAccessRequest;
           applyDesktopPermissions(false,false);
           leaveForbiddenDesktopView();
-        }else if(['SIGNED_IN','INITIAL_SESSION','TOKEN_REFRESHED','USER_UPDATED'].includes(event)){
+        }else if(['SIGNED_IN','TOKEN_REFRESHED','USER_UPDATED'].includes(event)){
           setTimeout(()=>void refreshDesktopPermissions(),0);
         }
       });
