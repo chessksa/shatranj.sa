@@ -194,8 +194,33 @@
     setTimeout(applyReferenceBoardPalette, 120);
   }
 
+  function clearDesktopComputerLocksOnMobile() {
+    if (!document.body.classList.contains('computer-game')) return;
+    const importantLocks = [
+      [layout, ['grid-template-columns']],
+      [side, ['width', 'min-width', 'max-width', 'box-sizing']],
+      [stack, ['display', 'width', 'min-width', 'max-width', 'overflow',
+        'box-sizing', 'grid-template-rows', 'grid-auto-rows', 'align-content']],
+      [document.getElementById('gameActions'), ['grid-row', 'height', 'min-height', 'max-height', 'box-sizing']],
+      ...['topPlayerCard', 'bottomPlayerCard'].map(id => [
+        document.getElementById(id),
+        ['grid-row', 'height', 'min-height', 'max-height', 'flex', 'width',
+          'min-width', 'max-width', 'justify-self', 'overflow', 'box-sizing']
+      ])
+    ];
+    for (const [element, properties] of importantLocks) {
+      if (!element) continue;
+      properties.forEach(property => {
+        if (element.style.getPropertyPriority(property) === 'important') {
+          element.style.removeProperty(property);
+        }
+      });
+    }
+  }
+
   function syncBoardFlow() {
     if (mobileQuery.matches) {
+      clearDesktopComputerLocksOnMobile();
       // Mobile Safari/Chrome can mishandle order across nested display:contents wrappers.
       // Put the board into the same vertical flow as the player rows.
       if (boardPanel.parentElement !== stack) stack.appendChild(boardPanel);
