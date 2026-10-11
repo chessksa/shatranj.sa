@@ -28,6 +28,11 @@
   body.shatranj-play-home-palette .v2-piece[src$="/bp.png"]{
     --piece-optical-lift:18%;
   }
+  /* Black pawn artwork has a smaller visible silhouette in the PNG. */
+  body.shatranj-play-home-palette .v2-piece[src$="/bp.png"]{
+    scale:1.055!important;
+    transform-origin:center!important;
+  }
   body.shatranj-play-home-palette .v2-piece[src$="/wr.png"],
   body.shatranj-play-home-palette .v2-piece[src$="/br.png"],
   body.shatranj-play-home-palette .v2-piece[src$="/wn.png"],
