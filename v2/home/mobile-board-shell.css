@@ -258,6 +258,7 @@
     direction:ltr;
     overflow:hidden;
     border:1px solid rgba(0,0,0,.34);
+    background:#ad8a65 url('../../assets/boards/wood4.jpg') center/100% 100% no-repeat;
   }
 
   .mobile-board-square{
@@ -270,8 +271,8 @@
     border-right:1px solid rgba(2,47,51,.24);
     border-bottom:1px solid rgba(2,47,51,.24);
   }
-  .mobile-board-square.light{background:#F1EEE8}
-  .mobile-board-square.dark{background:#925A4E}
+  .mobile-board-square.light{background:rgba(255,247,224,.43)}
+  .mobile-board-square.dark{background:rgba(49,24,11,.36)}
 
   .mobile-board-piece{
     width:94%;
