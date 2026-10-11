@@ -606,7 +606,7 @@ function ensureCmStyles(){
   if(!document.querySelector('link[data-cm-chessboard-shatranj]')){
     const theme=document.createElement('link');
     theme.rel='stylesheet';
-    theme.href='cm-chessboard-shatranj-v3.css?v=20260904-3';
+    theme.href='cm-chessboard-shatranj-v3.css?v=20261011-walnut-ivory-default-v1';
     theme.dataset.cmChessboardShatranj='1';
     document.head.appendChild(theme);
   }
@@ -614,10 +614,10 @@ function ensureCmStyles(){
 
 function forceBoardSquareColors(){
   boardEl.querySelectorAll('.cm-chessboard .square.white').forEach((square)=>{
-    square.style.setProperty('fill','#d6cfbf','important');
+    square.style.setProperty('fill','#F3EBDD','important');
   });
   boardEl.querySelectorAll('.cm-chessboard .square.black').forEach((square)=>{
-    square.style.setProperty('fill','#246f77','important');
+    square.style.setProperty('fill','#7B4A2C','important');
   });
 }
 
