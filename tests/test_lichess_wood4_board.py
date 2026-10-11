@@ -10,8 +10,8 @@ BLOB_SHA = "25ae7c98a2f31b9498d66ea3e29a9a1068f868dd"
 
 def test_wood4_is_exact_original_asset():
     data = BOARD.read_bytes()
-    assert data.startswith(b"\\xff\\xd8\\xff"), "Wood 4 must remain a JPEG"
-    raw = b"blob " + str(len(data)).encode() + b"\\0" + data
+    assert data.startswith(bytes((0xFF, 0xD8, 0xFF))), "Wood 4 must remain a JPEG"
+    raw = b"blob " + str(len(data)).encode() + bytes((0,)) + data
     assert hashlib.sha1(raw).hexdigest() == BLOB_SHA
 
 
