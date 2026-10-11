@@ -54,7 +54,7 @@
   border:1px solid rgba(214,170,85,.78) !important;
   border-radius:1px !important;
   overflow:hidden !important;
-  background:var(--ref-teal-edge) !important;
+  background:#ad8a65 url('assets/boards/wood4.jpg') center/100% 100% no-repeat !important;
   box-shadow:
     0 0 0 1px rgba(0,0,0,.5),
     inset 0 0 16px rgba(0,0,0,.12) !important;
@@ -65,10 +65,10 @@
   border-bottom:1px solid rgba(4,47,48,.38) !important;
 }
 .square.light{
-  background:#F1EEE8 !important;
+  background:rgba(255,247,224,.43) !important;
 }
 .square.dark{
-  background:#925A4E !important;
+  background:rgba(49,24,11,.36) !important;
 }
 
 .piece{
