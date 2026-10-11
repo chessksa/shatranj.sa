@@ -43,7 +43,7 @@ function ensureCss(){
     const base=document.createElement('link');
     base.id='inlinePlayComputerBaseCss';
     base.rel='stylesheet';
-    base.href=new URL('./inline-play.css?v=20261012-upright-fullsize-v2',import.meta.url).href;
+    base.href=new URL('./inline-play.css?v=20261012-extracted-photo-pieces-v3',import.meta.url).href;
     document.head.appendChild(base);
   }
 }
@@ -112,7 +112,7 @@ function setActiveNav(){
 }
 
 function pieceAsset(color,type){
-  return `${PIECE_ROOT}${color}${type}.png?v=20261012-upright-fullsize-v2`;
+  return `${PIECE_ROOT}${color}${type}.png?v=20261012-extracted-photo-pieces-v3`;
 }
 
 function parseFen(fen){

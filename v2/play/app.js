@@ -54,7 +54,7 @@ let actionInFlight = false;
 let timeoutRequested = false;
 
 function pieceAsset(color, type) {
-  return `${PIECE_ROOT}${color}${type}.png?v=20261012-upright-fullsize-v2`;
+  return `${PIECE_ROOT}${color}${type}.png?v=20261012-extracted-photo-pieces-v3`;
 }
 
 export function parseFen(fen) {

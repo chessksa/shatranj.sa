@@ -21,7 +21,7 @@ if(mobile.matches&&document.querySelector('#homeHero')){
     link.rel='stylesheet';
     link.dataset.mobileBoardShell='1';
     const url=new URL('./mobile-board-shell.css',import.meta.url);
-    url.searchParams.set('v','20261012-upright-fullsize-v2');
+    url.searchParams.set('v','20261012-extracted-photo-pieces-v3');
     link.href=url.href;
     document.head.appendChild(link);
   }
@@ -87,7 +87,7 @@ if(mobile.matches&&document.querySelector('#homeHero')){
       if(piece){
         const img=document.createElement('img');
         img.className='mobile-board-piece';
-        img.src=`assets/pieces/${piece}.png?v=20261012-upright-fullsize-v2`;
+        img.src=`assets/pieces/${piece}.png?v=20261012-extracted-photo-pieces-v3`;
         img.alt='';
         img.draggable=false;
         square.appendChild(img);

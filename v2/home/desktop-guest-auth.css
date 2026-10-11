@@ -1,4 +1,4 @@
-@import url('./desktop-board-preview-pieces.css?v=20261012-upright-fullsize-v2');
+@import url('./desktop-board-preview-pieces.css?v=20261012-extracted-photo-pieces-v3');
 
 @media(min-width:901px){
   body.desktop-board-workspace:not(.home-signed-in) .desktop-member-card{
