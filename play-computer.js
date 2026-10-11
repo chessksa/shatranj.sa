@@ -881,12 +881,21 @@ function handleBoardInput(event) {
 }
 
 function captureComputerSideWidth() {
+  // The phone layout flows the board, clocks and player cards vertically.
+  // Never capture the phone viewport as a fixed desktop sidebar width.
+  if (window.matchMedia('(max-width:900px)').matches) {
+    computerSideWidthPx = 0;
+    return;
+  }
   const sidePanel = document.querySelector('.side-panel');
   const width = Math.round(sidePanel?.getBoundingClientRect?.().width || 0);
   if (width > 0) computerSideWidthPx = width;
 }
 
 function lockComputerPlayerCards() {
+  // Desktop-only: applying display:grid / 150px rows to the mobile panel
+  // overrides exact-board-v13's flex flow and clips the bottom player card.
+  if (window.matchMedia('(max-width:900px)').matches) return;
   const layout = document.querySelector('#gamePage .layout');
   const sidePanel = document.querySelector('.side-panel');
   const panelStack = document.querySelector('.panel-stack');
