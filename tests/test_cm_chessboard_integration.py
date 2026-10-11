@@ -22,6 +22,6 @@ def test_live_game_uses_cm_chessboard_for_rendering_and_input():
 
 def test_cm_chessboard_theme_matches_site_palette():
     css = (ROOT / "cm-chessboard-shatranj.css").read_text(encoding="utf-8")
-    assert "#F3EBDD" in css
-    assert "#7B4A2C" in css
+    assert "#E7E4DB" in css
+    assert "#6C4437" in css
     assert ".cm-chessboard.shatranj" in css
