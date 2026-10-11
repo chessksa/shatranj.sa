@@ -54,7 +54,7 @@ let actionInFlight = false;
 let timeoutRequested = false;
 
 function pieceAsset(color, type) {
-  return `${PIECE_ROOT}${color}${type}.png?v=20261012-custom-white-graphite-pieces-v1`;
+  return `${PIECE_ROOT}${color}${type}.png?v=20261012-upright-fullsize-v2`;
 }
 
 export function parseFen(fen) {

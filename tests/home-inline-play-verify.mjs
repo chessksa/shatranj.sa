@@ -83,7 +83,7 @@ assert.doesNotMatch(inline,/play-v2\.html\?game=/,'وضع اللعب الداخ�
 assert.match(inline,/url\.hash\s*=\s*["']#play["']/,'الدخول إلى وضع اللعب يجب أن يحفظ #play في الرابط حتى يعود بعد التحديث');
 assert.match(inline,/location\.hash\s*===\s*["']#play["']/,'بدء الصفحة يجب أن يتعرف على #play ويعيد فتح وضع اللعب بعد التحديث');
 assert.match(inline,/url\.hash\s*=\s*["']["']/,'الخروج من اللعب يجب أن يزيل #play من الرابط');
-assert.match(inlineCss,/\.inline-play-piece\s*\{[\s\S]*?width:94%[\s\S]*?height:94%/,'قطع اللعب داخل الواجهة يجب أن تكون بحجم 94% من المربع');
+assert.match(inlineCss,/\.inline-play-piece\s*\{[\s\S]*?width:100%[\s\S]*?height:100%/,'قطع اللعب داخل الواجهة يجب أن تكون بحجم 94% من المربع');
 assert.match(inlineCss,/\.inline-play-square\s*\{[\s\S]*?position:relative/,'مربع اللعب يجب أن يكون مرجع تمركز للقطعة');
 assert.match(inlineCss,/\.inline-play-piece\s*\{[\s\S]*?position:absolute[\s\S]*?left:var\(--piece-left,50%\)[\s\S]*?top:var\(--piece-top,50%\)[\s\S]*?scale\(var\(--piece-scale,1\)\)/,'كل القطع يجب أن تستخدم تمركزًا بصريًا قابلًا للضبط');
 

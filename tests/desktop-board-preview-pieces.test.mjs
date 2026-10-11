@@ -5,8 +5,8 @@ const previewCss=fs.readFileSync('v2/home/desktop-board-preview-pieces.css','utf
 const playCss=fs.readFileSync('v2/home/inline-play.css','utf8');
 
 assert.match(previewCss,/#homeBoardPreview:not\(\.inline-play-active\) \.desktop-board-square::after/,'طبقة قطع المعاينة يجب أن تختفي فور دخول وضع اللعب لمنع تراكب طقمين');
-assert.match(previewCss,/width:94%/,'قطع معاينة الرئيسية يجب أن تستخدم نفس عرض قطع اللعب');
-assert.match(previewCss,/height:94%/,'قطع معاينة الرئيسية يجب أن تستخدم نفس ارتفاع قطع اللعب');
+assert.match(previewCss,/width:100%/,'قطع معاينة الرئيسية يجب أن تستخدم نفس عرض قطع اللعب');
+assert.match(previewCss,/height:100%/,'قطع معاينة الرئيسية يجب أن تستخدم نفس ارتفاع قطع اللعب');
 assert.match(previewCss,/transform:translate\(-50%,-50%\) scale\(var\(--piece-scale,1\)\)/,'قطع المعاينة يجب أن تستخدم نفس طريقة تمركز قطع اللعب');
 
 for(const code of ['wp','wn','wb','wr','wq','wk','bp','bn','bb','br','bq','bk']){
