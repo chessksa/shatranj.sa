@@ -1,4 +1,4 @@
-import { BOARD_THEMES, THEME_ORDER, getBoardTheme } from './themes.mjs?v=20261011-photo-sampled-reference-v2';
+import { BOARD_THEMES, THEME_ORDER, getBoardTheme } from './themes.mjs?v=20261011-lichess-wood4-original-v1';
 import { DEFAULT_BOARD_PREFERENCES, normalizePreferences } from './preferences.mjs';
 
 const STORAGE_KEY = 'shatranj:v2:board-preferences';
