@@ -93,15 +93,16 @@ assert.match(guestAuthCss,/body\.desktop-board-workspace #desktopGuestAuth\s*\{[
 
 const pieceCodes=['wp','wn','wb','wr','wq','wk','bp','bn','bb','br','bq','bk'];
 const pieceBounds=Object.fromEntries(pieceCodes.map(code=>[code,pieceVisualBounds(`assets/pieces/${code}.png`)]));
-const expectedPositions={
-  wp:['50.21%','34.37%','1.12'],wn:['49.91%','43.67%','1'],wb:['49.91%','46.42%','1'],wr:['50%','43.30%','1'],wq:['50.09%','45.59%','1'],wk:['50%','49.17%','1'],
-  bp:['50%','32.93%','1.12'],bn:['50%','42.47%','1'],bb:['50.09%','44.22%','1'],br:['50%','42.11%','1'],bq:['50.09%','44.95%','1'],bk:['50%','49.17%','1']
-};
-for(const [code,[left,top,scale]] of Object.entries(expectedPositions)){
-  const escapedCode=code.replace(/[.*+?^${}()|[\]\\]/g,'\\$&');
-  const re=new RegExp(`\\.inline-play-piece\\[src\\$=["']${escapedCode}\\.png["']\\]\\s*\\{[\\s\\S]*?--piece-left:${left.replace('.','\\.')}[\\s\\S]*?--piece-top:${top.replace('.','\\.')}[\\s\\S]*?--piece-scale:${scale.replace('.','\\.')}`);
-  assert.match(inlineCss,re,`يجب تطبيق تمركز بصري دقيق للقطعة ${code}`);
+// The new approved files have a matched transparent canvas and identical baseline.
+for(const code of pieceCodes){
+  const b=pieceBounds[code];
+  assert.equal(b.width,128,`Expected a normalized width for ${code}`);
+  assert.equal(b.height,128,`Expected a normalized height for ${code}`);
+  assert.ok(Math.abs(b.centerX-b.canvasCenterX)<6,`Artwork must be horizontally centered for ${code}`);
 }
+assert.doesNotMatch(inlineCss,/\\.inline-play-piece\\[src\\$=/,'Legacy piece-specific offsets must be removed');
+assert.match(inlineCss,/left:var\\(--piece-left,50%\\)/,'Default horizontal position must be centered');
+assert.match(inlineCss,/top:var\\(--piece-top,50%\\)/,'Default vertical position must be centered');
 
 console.log('PIECE_BOUNDS',JSON.stringify(pieceBounds));
 console.log('home inline play verification passed');
