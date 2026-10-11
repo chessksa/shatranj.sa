@@ -4,11 +4,15 @@
     height:100%;
     min-height:0;
     display:grid;
-    grid-template-rows:minmax(96px,110px) minmax(0,1fr) minmax(96px,110px);
+    /* Keep the two enlarged player cards and the controls together, vertically
+       centered instead of stretching the setup into a tall empty box. */
+    grid-template-rows:clamp(134px,14.5dvh,164px) auto clamp(134px,14.5dvh,164px);
     align-items:stretch;
     justify-items:center;
     align-content:center;
-    gap:9px;
+    gap:clamp(12px,1.7dvh,20px);
+    padding-block:8px;
+    box-sizing:border-box;
     overflow:hidden;
   }
 
@@ -20,30 +24,30 @@
 
   .inline-computer-panel .inline-play-player-card{
     min-width:0;
-    width:94%;
+    width:100%;
     height:100%;
     min-height:0;
     max-height:none;
-    padding:10px 12px;
+    padding:14px 13px;
     box-sizing:border-box;
-    overflow:visible;
+    overflow:hidden;
     justify-self:center;
-    display:flex;
+    display:grid;
+    grid-template-columns:minmax(0,1fr) minmax(104px,116px);
     align-items:center;
-    justify-content:space-between;
-    gap:12px;
+    justify-content:center;
+    gap:10px;
     direction:rtl;
   }
 
   .inline-computer-panel .inline-play-player-copy{
-    flex:1 1 auto;
     min-width:0;
     max-width:none;
-    overflow:visible;
-    text-align:right;
-    align-items:flex-start;
+    overflow:hidden;
+    text-align:center;
+    align-items:center;
     justify-content:center;
-    gap:4px;
+    gap:7px;
     direction:rtl;
   }
 
@@ -52,8 +56,10 @@
     max-width:none;
     overflow:visible;
     text-overflow:clip;
-    white-space:nowrap;
-    text-align:right;
+    white-space:normal;
+    overflow-wrap:anywhere;
+    text-align:center;
+    font-size:21px;
     line-height:1.25;
   }
 
@@ -65,22 +71,28 @@
     text-overflow:clip;
     white-space:normal;
     overflow-wrap:anywhere;
-    text-align:right;
+    text-align:center;
     direction:rtl;
     unicode-bidi:plaintext;
-    line-height:1.45;
-    font-size:13px!important;
+    line-height:1.4;
+    font-size:14px!important;
   }
 
   .inline-computer-panel .inline-play-clock{
-    flex:0 0 108px;
-    min-width:108px;
-    max-width:108px;
+    width:100%;
+    min-width:0;
+    max-width:none;
+    padding:13px 4px;
+    box-sizing:border-box;
+    font-size:clamp(30px,2.35vw,36px);
+    line-height:1.15;
+    place-self:center;
   }
 
   .inline-computer-setup{
     min-height:0;
-    width:94%;
+    height:max-content;
+    width:100%;
     justify-self:center;
     padding:10px 12px;
     border:1px solid rgba(224,181,103,.34);
@@ -159,7 +171,7 @@
 
   .inline-computer-panel .inline-play-actions{
     min-height:0;
-    width:94%;
+    width:100%;
     justify-self:center;
     align-self:center;
     padding:10px;
@@ -262,5 +274,33 @@
     box-shadow:
       0 12px 28px rgba(0,0,0,.14),
       inset 0 0 0 1px rgba(255,115,115,.16)!important;
+  }
+
+  /* Preserve legibility and prevent cropping on short desktop viewports. */
+  @media(max-height:620px){
+    .inline-computer-panel{
+      grid-template-rows:104px auto 104px;
+      gap:7px;
+      padding-block:0;
+    }
+    .inline-computer-panel .inline-play-player-card{
+      padding:7px 8px;
+      grid-template-columns:minmax(0,1fr) minmax(93px,103px);
+      gap:6px;
+    }
+    .inline-computer-panel .inline-play-player-copy{gap:3px}
+    .inline-computer-panel .inline-play-player-name{font-size:17px}
+    .inline-computer-panel .inline-play-player-meta,
+    .inline-computer-panel .inline-play-status{font-size:11px!important;line-height:1.3}
+    .inline-computer-panel .inline-play-clock{font-size:28px;padding:8px 2px}
+    .inline-computer-setup{
+      padding:7px 8px;
+      gap:5px;
+      grid-template-rows:auto 38px auto 38px 38px;
+    }
+    .inline-computer-options button{height:38px;min-height:38px;padding:3px;font-size:11px}
+    .inline-computer-options button small{font-size:10px;margin-top:2px}
+    .inline-computer-label{font-size:12px}
+    .inline-computer-start{height:38px;min-height:38px}
   }
 }
