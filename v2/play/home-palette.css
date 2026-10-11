@@ -40,15 +40,15 @@ body.shatranj-play-home-palette .v2-board[data-board-theme="shatranj"]{
 }
 body.shatranj-play-home-palette .v2-board:not([data-board-theme]) .v2-square.light,
 body.shatranj-play-home-palette .v2-board[data-board-theme="shatranj"] .v2-square.light{
-  background:#F1EEE8!important;
+  background:rgba(255,247,224,.43)!important;
 }
 body.shatranj-play-home-palette .v2-board:not([data-board-theme]) .v2-square.dark,
 body.shatranj-play-home-palette .v2-board[data-board-theme="shatranj"] .v2-square.dark{
-  background:#925A4E!important;
+  background:rgba(49,24,11,.36)!important;
 }
 body.shatranj-play-home-palette .v2-board{
   border-color:rgba(224,181,103,.82)!important;
-  background:#07363d!important;
+  background:#ad8a65 url('../../assets/boards/wood4.jpg') center/100% 100% no-repeat!important;
   box-shadow:0 8px 23px rgba(0,0,0,.22)!important;
 }
 body.shatranj-play-home-palette .v2-player-card{
