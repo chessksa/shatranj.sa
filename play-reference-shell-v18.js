@@ -93,18 +93,11 @@
       leave.style.setProperty('z-index', '12', 'important');
     }
 
-    document.querySelectorAll('.reference-board-control-v19').forEach(control => {
-      if (control !== boardControl) control.classList.remove('reference-board-control-v19');
-    });
-    if (boardControl) {
-      boardControl.classList.add('reference-board-control-v19');
-      boardControl.style.setProperty('position', 'absolute', 'important');
-      boardControl.style.setProperty('right', '54px', 'important');
-      boardControl.style.setProperty('left', 'auto', 'important');
-      boardControl.style.setProperty('top', '50%', 'important');
-      boardControl.style.setProperty('transform', 'translateY(-50%)', 'important');
-      boardControl.style.setProperty('z-index', '11', 'important');
-    }
+    // Board customization belongs to the Settings page, not to the play
+    // header. Remove the injected navigation control rather than shifting
+    // it beside the back button (applies during level selection and games).
+    document.querySelectorAll('.reference-board-control-v19').forEach(control => control.remove());
+    if (boardControl?.isConnected) boardControl.remove();
 
     if (notifications) notifications.style.setProperty('display', 'none', 'important');
   }
