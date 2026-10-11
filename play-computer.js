@@ -277,6 +277,13 @@ function forceBoardSquareColors() {
         image.setAttribute('height', '1');
         image.setAttribute('preserveAspectRatio', 'none');
         pattern.appendChild(image);
+        // Tint the existing shared wood texture without creating another image.
+        const tint = document.createElementNS(ns, 'rect');
+        tint.setAttribute('width', '1');
+        tint.setAttribute('height', '1');
+        tint.setAttribute('fill', id === 'shatranj-square-ivory' ? '#CDA97D' : '#D3A884');
+        tint.setAttribute('fill-opacity', id === 'shatranj-square-ivory' ? '.20' : '.14');
+        pattern.appendChild(tint);
         defs.appendChild(pattern);
       }
       svg.insertBefore(defs, svg.firstChild);
@@ -284,10 +291,10 @@ function forceBoardSquareColors() {
     ready = true;
   }
   boardEl.querySelectorAll('.cm-chessboard .square.white').forEach((square) => {
-    square.style.setProperty('fill', ready ? 'url(#shatranj-square-ivory)' : '#E7E4DB', 'important');
+    square.style.setProperty('fill', ready ? 'url(#shatranj-square-ivory)' : '#E2D8C8', 'important');
   });
   boardEl.querySelectorAll('.cm-chessboard .square.black').forEach((square) => {
-    square.style.setProperty('fill', ready ? 'url(#shatranj-square-walnut)' : '#6C4437', 'important');
+    square.style.setProperty('fill', ready ? 'url(#shatranj-square-walnut)' : '#7A5242', 'important');
   });
 }
 
