@@ -63,7 +63,7 @@ let resignButton=null;
 let quickTimeButtons=[];
 
 function pieceAsset(color,type){
-  return `${PIECE_ROOT}${color}${type}.png`;
+  return `${PIECE_ROOT}${color}${type}.png?v=20261012-custom-white-graphite-pieces-v1`;
 }
 
 function parseFen(fen){

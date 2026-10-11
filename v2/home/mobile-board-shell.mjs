@@ -87,7 +87,7 @@ if(mobile.matches&&document.querySelector('#homeHero')){
       if(piece){
         const img=document.createElement('img');
         img.className='mobile-board-piece';
-        img.src=`assets/pieces/${piece}.png`;
+        img.src=`assets/pieces/${piece}.png?v=20261012-custom-white-graphite-pieces-v1`;
         img.alt='';
         img.draggable=false;
         square.appendChild(img);

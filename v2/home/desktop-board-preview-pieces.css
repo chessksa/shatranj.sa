@@ -15,11 +15,7 @@
     background-position:center;
     background-size:contain;
     pointer-events:none;
-    filter:
-      drop-shadow(.22px 0 0 rgba(0,0,0,.78))
-      drop-shadow(-.22px 0 0 rgba(0,0,0,.78))
-      drop-shadow(0 .22px 0 rgba(0,0,0,.78))
-      drop-shadow(0 -.22px 0 rgba(0,0,0,.78));
+    filter:none;
   }
 
   body.desktop-board-workspace #homeBoardPreview.inline-play-active .desktop-board-square::after{
@@ -29,26 +25,26 @@
 
   body.desktop-board-workspace #homeBoardPreview:not(.inline-play-active) .desktop-board-square:nth-child(1)::after,
   body.desktop-board-workspace #homeBoardPreview:not(.inline-play-active) .desktop-board-square:nth-child(8)::after{
-    background-image:url('../../assets/pieces/br.png');
-    --piece-left:50%;--piece-top:42.11%;--piece-scale:1;
+    background-image:url('../../assets/pieces/br.png?v=20261012-custom-white-graphite-pieces-v1');
+    --piece-left:50%;--piece-top:50%;--piece-scale:1;
   }
   body.desktop-board-workspace #homeBoardPreview:not(.inline-play-active) .desktop-board-square:nth-child(2)::after,
   body.desktop-board-workspace #homeBoardPreview:not(.inline-play-active) .desktop-board-square:nth-child(7)::after{
-    background-image:url('../../assets/pieces/bn.png');
-    --piece-left:50%;--piece-top:42.47%;--piece-scale:1;
+    background-image:url('../../assets/pieces/bn.png?v=20261012-custom-white-graphite-pieces-v1');
+    --piece-left:50%;--piece-top:50%;--piece-scale:1;
   }
   body.desktop-board-workspace #homeBoardPreview:not(.inline-play-active) .desktop-board-square:nth-child(3)::after,
   body.desktop-board-workspace #homeBoardPreview:not(.inline-play-active) .desktop-board-square:nth-child(6)::after{
-    background-image:url('../../assets/pieces/bb.png');
-    --piece-left:50.09%;--piece-top:44.22%;--piece-scale:1;
+    background-image:url('../../assets/pieces/bb.png?v=20261012-custom-white-graphite-pieces-v1');
+    --piece-left:50%;--piece-top:50%;--piece-scale:1;
   }
   body.desktop-board-workspace #homeBoardPreview:not(.inline-play-active) .desktop-board-square:nth-child(4)::after{
-    background-image:url('../../assets/pieces/bq.png');
-    --piece-left:50.09%;--piece-top:44.95%;--piece-scale:1;
+    background-image:url('../../assets/pieces/bq.png?v=20261012-custom-white-graphite-pieces-v1');
+    --piece-left:50%;--piece-top:50%;--piece-scale:1;
   }
   body.desktop-board-workspace #homeBoardPreview:not(.inline-play-active) .desktop-board-square:nth-child(5)::after{
-    background-image:url('../../assets/pieces/bk.png');
-    --piece-left:50%;--piece-top:49.17%;--piece-scale:1;
+    background-image:url('../../assets/pieces/bk.png?v=20261012-custom-white-graphite-pieces-v1');
+    --piece-left:50%;--piece-top:50%;--piece-scale:1;
   }
   body.desktop-board-workspace #homeBoardPreview:not(.inline-play-active) .desktop-board-square:nth-child(9)::after,
   body.desktop-board-workspace #homeBoardPreview:not(.inline-play-active) .desktop-board-square:nth-child(10)::after,
@@ -58,8 +54,8 @@
   body.desktop-board-workspace #homeBoardPreview:not(.inline-play-active) .desktop-board-square:nth-child(14)::after,
   body.desktop-board-workspace #homeBoardPreview:not(.inline-play-active) .desktop-board-square:nth-child(15)::after,
   body.desktop-board-workspace #homeBoardPreview:not(.inline-play-active) .desktop-board-square:nth-child(16)::after{
-    background-image:url('../../assets/pieces/bp.png');
-    --piece-left:50%;--piece-top:32.93%;--piece-scale:1.12;
+    background-image:url('../../assets/pieces/bp.png?v=20261012-custom-white-graphite-pieces-v1');
+    --piece-left:50%;--piece-top:50%;--piece-scale:1;
   }
 
   body.desktop-board-workspace #homeBoardPreview:not(.inline-play-active) .desktop-board-square:nth-child(49)::after,
@@ -70,30 +66,30 @@
   body.desktop-board-workspace #homeBoardPreview:not(.inline-play-active) .desktop-board-square:nth-child(54)::after,
   body.desktop-board-workspace #homeBoardPreview:not(.inline-play-active) .desktop-board-square:nth-child(55)::after,
   body.desktop-board-workspace #homeBoardPreview:not(.inline-play-active) .desktop-board-square:nth-child(56)::after{
-    background-image:url('../../assets/pieces/wp.png');
-    --piece-left:50.21%;--piece-top:34.37%;--piece-scale:1.12;
+    background-image:url('../../assets/pieces/wp.png?v=20261012-custom-white-graphite-pieces-v1');
+    --piece-left:50%;--piece-top:50%;--piece-scale:1;
   }
   body.desktop-board-workspace #homeBoardPreview:not(.inline-play-active) .desktop-board-square:nth-child(57)::after,
   body.desktop-board-workspace #homeBoardPreview:not(.inline-play-active) .desktop-board-square:nth-child(64)::after{
-    background-image:url('../../assets/pieces/wr.png');
-    --piece-left:50%;--piece-top:43.30%;--piece-scale:1;
+    background-image:url('../../assets/pieces/wr.png?v=20261012-custom-white-graphite-pieces-v1');
+    --piece-left:50%;--piece-top:50%;--piece-scale:1;
   }
   body.desktop-board-workspace #homeBoardPreview:not(.inline-play-active) .desktop-board-square:nth-child(58)::after,
   body.desktop-board-workspace #homeBoardPreview:not(.inline-play-active) .desktop-board-square:nth-child(63)::after{
-    background-image:url('../../assets/pieces/wn.png');
-    --piece-left:49.91%;--piece-top:43.67%;--piece-scale:1;
+    background-image:url('../../assets/pieces/wn.png?v=20261012-custom-white-graphite-pieces-v1');
+    --piece-left:50%;--piece-top:50%;--piece-scale:1;
   }
   body.desktop-board-workspace #homeBoardPreview:not(.inline-play-active) .desktop-board-square:nth-child(59)::after,
   body.desktop-board-workspace #homeBoardPreview:not(.inline-play-active) .desktop-board-square:nth-child(62)::after{
-    background-image:url('../../assets/pieces/wb.png');
-    --piece-left:49.91%;--piece-top:46.42%;--piece-scale:1;
+    background-image:url('../../assets/pieces/wb.png?v=20261012-custom-white-graphite-pieces-v1');
+    --piece-left:50%;--piece-top:50%;--piece-scale:1;
   }
   body.desktop-board-workspace #homeBoardPreview:not(.inline-play-active) .desktop-board-square:nth-child(60)::after{
-    background-image:url('../../assets/pieces/wq.png');
-    --piece-left:50.09%;--piece-top:45.59%;--piece-scale:1;
+    background-image:url('../../assets/pieces/wq.png?v=20261012-custom-white-graphite-pieces-v1');
+    --piece-left:50%;--piece-top:50%;--piece-scale:1;
   }
   body.desktop-board-workspace #homeBoardPreview:not(.inline-play-active) .desktop-board-square:nth-child(61)::after{
-    background-image:url('../../assets/pieces/wk.png');
-    --piece-left:50%;--piece-top:49.17%;--piece-scale:1;
+    background-image:url('../../assets/pieces/wk.png?v=20261012-custom-white-graphite-pieces-v1');
+    --piece-left:50%;--piece-top:50%;--piece-scale:1;
   }
 }

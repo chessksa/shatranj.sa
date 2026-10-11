@@ -34,32 +34,17 @@
   isolation:isolate;
 }
 .piece > svg,.piece::before,.piece::after{display:none !important;}
-.piece-image{
-  display:block !important;
-  width:100% !important;
-  height:100% !important;
-  background-repeat:no-repeat !important;
-  background-size:600% 100% !important;
-  background-position-y:center !important;
-  opacity:1 !important;
-  visibility:visible !important;
-  filter:drop-shadow(0 4px 3px rgba(0,0,0,.30));
-  pointer-events:none;
-  user-select:none;
-}
-.piece.black .piece-image{background-image:url("assets/pieces/approved-dark-20260904.png?v=20260904-1") !important;}
-.piece.white .piece-image{background-image:url("assets/pieces/approved-light-20260904.png?v=20260904-1") !important;}
-.piece-r .piece-image{background-position-x:0% !important;}
-.piece-n .piece-image{background-position-x:20% !important;}
-.piece-b .piece-image{background-position-x:40% !important;}
-.piece-q .piece-image{background-position-x:60% !important;}
-.piece-k .piece-image{background-position-x:80% !important;}
-.piece-p .piece-image{background-position-x:100% !important;}
-@media (max-width:900px){
-  .board-frame{padding:7px 7px 15px !important;border-radius:11px !important;}
-  .piece{width:98% !important;height:98% !important;}
-}
-.piece-p .piece-image{
-  transform: translateY(-14%) scale(1.15);
-  transform-origin: center;
-}
+.piece-image{display:block!important;width:100%!important;height:100%!important;background-repeat:no-repeat!important;background-size:contain!important;background-position:center!important;opacity:1!important;visibility:visible!important;filter:none!important;pointer-events:none;user-select:none;}
+.piece.white.piece-p .piece-image{background-image:url("assets/pieces/wp.png?v=20261012-custom-white-graphite-pieces-v1")!important;}
+.piece.white.piece-r .piece-image{background-image:url("assets/pieces/wr.png?v=20261012-custom-white-graphite-pieces-v1")!important;}
+.piece.white.piece-n .piece-image{background-image:url("assets/pieces/wn.png?v=20261012-custom-white-graphite-pieces-v1")!important;}
+.piece.white.piece-b .piece-image{background-image:url("assets/pieces/wb.png?v=20261012-custom-white-graphite-pieces-v1")!important;}
+.piece.white.piece-q .piece-image{background-image:url("assets/pieces/wq.png?v=20261012-custom-white-graphite-pieces-v1")!important;}
+.piece.white.piece-k .piece-image{background-image:url("assets/pieces/wk.png?v=20261012-custom-white-graphite-pieces-v1")!important;}
+.piece.black.piece-p .piece-image{background-image:url("assets/pieces/bp.png?v=20261012-custom-white-graphite-pieces-v1")!important;}
+.piece.black.piece-r .piece-image{background-image:url("assets/pieces/br.png?v=20261012-custom-white-graphite-pieces-v1")!important;}
+.piece.black.piece-n .piece-image{background-image:url("assets/pieces/bn.png?v=20261012-custom-white-graphite-pieces-v1")!important;}
+.piece.black.piece-b .piece-image{background-image:url("assets/pieces/bb.png?v=20261012-custom-white-graphite-pieces-v1")!important;}
+.piece.black.piece-q .piece-image{background-image:url("assets/pieces/bq.png?v=20261012-custom-white-graphite-pieces-v1")!important;}
+.piece.black.piece-k .piece-image{background-image:url("assets/pieces/bk.png?v=20261012-custom-white-graphite-pieces-v1")!important;}
+@media(max-width:900px){.board-frame{padding:7px 7px 15px!important;border-radius:11px!important}.piece{width:98%!important;height:98%!important}}
