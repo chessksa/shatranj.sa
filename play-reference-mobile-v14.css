@@ -582,9 +582,18 @@
     margin-inline:auto!important;
     flex:0 0 auto!important;
   }
-  body.computer-game.live-game.reference-play-layout #gamePage #bottomPlayerCard,
+  /* Compact the two rows only as the visible height gets tighter;
+     avatar, name and clock still fit, and the chessboard stays larger. */
   body.computer-game.live-game.reference-play-layout #gamePage #topPlayerCard,
+  body.computer-game.live-game.reference-play-layout #gamePage #bottomPlayerCard{
+    height:clamp(84px,12.5dvh,108px)!important;
+    min-height:clamp(84px,12.5dvh,108px)!important;
+    flex:0 0 clamp(84px,12.5dvh,108px)!important;
+    padding-block:6px!important;
+  }
   body.computer-game.live-game.reference-play-layout #gamePage #gameActions{
-    flex-shrink:0!important;
+    height:clamp(60px,9dvh,68px)!important;
+    min-height:clamp(60px,9dvh,68px)!important;
+    flex:0 0 clamp(60px,9dvh,68px)!important;
   }
 }
