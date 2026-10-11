@@ -33,10 +33,10 @@
   stroke-opacity:.32;
 }
 .cm-board-host .cm-chessboard.shatranj .board .square.white{
-  fill:#E2D8C8 !important;
+  fill:#F1EEE8 !important;
 }
 .cm-board-host .cm-chessboard.shatranj .board .square.black{
-  fill:#7A5242 !important;
+  fill:#925A4E !important;
 }
 .cm-board-host .cm-chessboard use.piece{
   display:inline !important;
