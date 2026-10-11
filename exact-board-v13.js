@@ -14,17 +14,22 @@
   let boardObserver = null;
 
   let computerFitFrame = 0;
+  let chooserHudObserver = null;
+  const chooserHudObserved = new WeakSet();
 
-  // Prefer a full-width chessboard. The mobile computer stylesheet compacts
-  // the header/player rows and permits scrolling only on unusually short screens.
-  // Safari visualViewport reports the usable height excluding browser chrome.
+  // Fit the full player card before allocating the remaining space to the
+  // chooser board. Use visualViewport for Safari's changing browser bars.
+  // Live games retain their existing edge-to-edge full-width board.
   function fitMobileComputerGame() {
     const root = document.documentElement;
-    if (!mobileQuery.matches ||
-        !document.body.classList.contains('computer-game') ||
-        !document.body.classList.contains('live-game')) {
+    const classes = document.body.classList;
+    const isComputer = mobileQuery.matches && classes.contains('computer-game');
+    const isPregame = isComputer && classes.contains('pregame');
+    const isLive = isComputer && classes.contains('live-game');
+    if (!isPregame && !isLive) {
       root.style.removeProperty('--computer-mobile-visible-height');
       root.style.removeProperty('--computer-mobile-board-size');
+      root.style.removeProperty('--computer-mobile-pregame-board-size');
       return;
     }
 
@@ -36,9 +41,40 @@
     if (root.style.getPropertyValue('--computer-mobile-visible-height') !== viewportHeight + 'px') {
       root.style.setProperty('--computer-mobile-visible-height', viewportHeight + 'px');
     }
-    // Preserve the complete 8x8 board at the phone's full content width.
-    if (root.style.getPropertyValue('--computer-mobile-board-size') !== screenWidth + 'px') {
-      root.style.setProperty('--computer-mobile-board-size', screenWidth + 'px');
+
+    if (isLive) {
+      root.style.removeProperty('--computer-mobile-pregame-board-size');
+      if (root.style.getPropertyValue('--computer-mobile-board-size') !== screenWidth + 'px') {
+        root.style.setProperty('--computer-mobile-board-size', screenWidth + 'px');
+      }
+      return;
+    }
+
+    root.style.removeProperty('--computer-mobile-board-size');
+    const page = document.getElementById('gamePage');
+    const header = stack.querySelector('.side-head-stack');
+    const chooser = document.getElementById('topPlayerCard');
+    const player = document.getElementById('bottomPlayerCard');
+    if (!page || !header || !chooser || !player) return;
+
+    const reserved = [header, chooser, player].reduce(
+      (total, element) => total + element.getBoundingClientRect().height, 0
+    );
+    const pagePadding = parseFloat(getComputedStyle(page).paddingBottom) || 0;
+    // A small buffer covers Safari's fractional measurements/safe-area changes.
+    const available = Math.floor(viewportHeight - reserved - pagePadding - 8);
+    const boardSize = Math.min(screenWidth, Math.max(220, available));
+    if (root.style.getPropertyValue('--computer-mobile-pregame-board-size') !== boardSize + 'px') {
+      root.style.setProperty('--computer-mobile-pregame-board-size', boardSize + 'px');
+    }
+
+    if (typeof ResizeObserver === 'function') {
+      chooserHudObserver ||= new ResizeObserver(scheduleMobileComputerFit);
+      [header, chooser, player].forEach(element => {
+        if (chooserHudObserved.has(element)) return;
+        chooserHudObserved.add(element);
+        chooserHudObserver.observe(element);
+      });
     }
   }
 
@@ -63,7 +99,7 @@
       const link = document.createElement('link');
       link.id = pregameCssId;
       link.rel = 'stylesheet';
-      link.href = 'play-reference-pregame-v15.css?v=20261011-level-cards-v1';
+      link.href = 'play-reference-pregame-v15.css?v=20261011-chooser-card-fit-v1';
       document.head.appendChild(link);
     }
   }
