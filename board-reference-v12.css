@@ -65,14 +65,10 @@
   border-bottom:1px solid rgba(4,47,48,.38) !important;
 }
 .square.light{
-  background:
-    radial-gradient(circle at 34% 24%,rgba(255,255,255,.20),transparent 42%),
-    linear-gradient(145deg,var(--ref-cream-warm),var(--ref-cream)) !important;
+  background:#F3EBDD !important;
 }
 .square.dark{
-  background:
-    radial-gradient(circle at 32% 22%,rgba(255,255,255,.035),transparent 44%),
-    linear-gradient(145deg,#105354,var(--ref-teal)) !important;
+  background:#7B4A2C !important;
 }
 
 .piece{
