@@ -1,7 +1,7 @@
 /* Approved realistic chess board: direct piece images for reliable rendering. */
 :root{
-  --real-board-dark:#0b4850;
-  --real-board-light:#d6cfbf;
+  --real-board-dark:#925A4E;
+  --real-board-light:#F1EEE8;
   --real-board-edge:#063a40;
   --real-board-gold:#e0b567;
 }
