@@ -63,7 +63,7 @@
       const link = document.createElement('link');
       link.id = pregameCssId;
       link.rel = 'stylesheet';
-      link.href = 'play-reference-pregame-v15.css?v=20260913-1';
+      link.href = 'play-reference-pregame-v15.css?v=20261011-level-cards-v1';
       document.head.appendChild(link);
     }
   }
