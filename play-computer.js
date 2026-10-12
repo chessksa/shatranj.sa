@@ -251,10 +251,10 @@ function showMoveHints(square) {
 
 function forceBoardSquareColors() {
   boardEl.querySelectorAll('.cm-chessboard .square.white').forEach(square => {
-    square.style.setProperty('fill', 'rgba(255,247,224,.43)', 'important');
+    square.style.setProperty('fill', window.matchMedia('(max-width:900px)').matches ? 'transparent' : 'rgba(255,247,224,.43)', 'important');
   });
   boardEl.querySelectorAll('.cm-chessboard .square.black').forEach(square => {
-    square.style.setProperty('fill', 'rgba(49,24,11,.36)', 'important');
+    square.style.setProperty('fill', window.matchMedia('(max-width:900px)').matches ? 'transparent' : 'rgba(49,24,11,.36)', 'important');
   });
 }
 
