@@ -5,6 +5,7 @@ import {
   pollMatchmaking,
   cancelMatchmaking,
   getGameState,
+  getGameMoves,
   submitMove,
   subscribeGame,
   graceEnd,
@@ -15,6 +16,7 @@ import {
 } from '../play/api.js?v=20261010-play-connection-v1';
 import { remainingAt, formatClock, isFinalMinute } from '../play/clock.mjs';
 import { normalizeGameState } from '../play/state.mjs';
+import { decorateBoardCoordinate, openMoveNotebook, updateMoveNotebook, closeMoveNotebook } from './move-notebook.mjs';
 
 // index.html preloads the canonical desktop stylesheet. Keep one fallback for
 // standalone imports, never add another copy during a normal homepage refresh.
@@ -257,7 +259,7 @@ function renderPosition(fen=START_FEN,color=orientation){
   if(!board) return;
   renderedPosition=parseFen(fen);
   const fragment=document.createDocumentFragment();
-  for(const squareName of orderedSquares(color)){
+  for(const [displayIndex,squareName] of orderedSquares(color).entries()){
     const file=squareName.charCodeAt(0)-97;
     const rank=Number(squareName[1]);
     const square=document.createElement('button');
@@ -275,6 +277,7 @@ function renderPosition(fen=START_FEN,color=orientation){
       image.draggable=false;
       square.appendChild(image);
     }
+    decorateBoardCoordinate(square,displayIndex,squareName);
     fragment.appendChild(square);
   }
   board.replaceChildren(fragment);
@@ -428,6 +431,19 @@ function updateSelectableSquares(){
   });
 }
 
+async function refreshMoveNotebook(){
+  if(!currentGame?.id) return;
+  const gameId=currentGame.id;
+  try{
+    const moves=await getGameMoves(gameId);
+    if(currentGame?.id===gameId){
+      updateMoveNotebook('online',moves,{finished:!playableGame()});
+    }
+  }catch(error){
+    console.warn('تعذر تحميل سجل النقلات',error);
+  }
+}
+
 async function refreshGame(){
   if(!currentGame?.id) return null;
   if(refreshPromise) return refreshPromise;
@@ -439,6 +455,7 @@ async function refreshGame(){
     renderPosition(currentGame.fen,orientation);
     updateControls();
     renderClocks();
+    await refreshMoveNotebook();
     const message=gameFinishedMessage();
     if(message) setStatus(message);
     return currentGame;
@@ -464,12 +481,14 @@ async function openGame(gameId){
   if(!state) throw new Error('تعذر تحميل المباراة');
   currentGame=state;
   orientation=gameColor()||'w';
+  openMoveNotebook('online');
   updateHistoryGame(gameId);
   setStatus('تم العثور على الخصم');
   updateCurrentRatingFromGame();
   updateOpponent();
   renderPosition(currentGame.fen,orientation);
   updateControls();
+  await refreshMoveNotebook();
   startClockLoop();
   beginSubscription(gameId);
 }
@@ -508,6 +527,7 @@ async function pollOnce(){
 async function beginSearch(minutes=selectedMinutes){
   if(polling||playableGame()||!identityReady) return;
   if(currentGame&&!playableGame()){
+    closeMoveNotebook('online');
     currentGame=null;
     stopSubscription();
     stopClockLoop();
@@ -744,6 +764,7 @@ function exitInlinePlay(){
   }
   stopClockLoop();
   stopSubscription();
+  closeMoveNotebook('online');
   selectedSquare=null;
   if(panel) panel.hidden=true;
   const home=document.getElementById('desktopDashboardHome');
@@ -815,6 +836,7 @@ window.addEventListener('pagehide',()=>{
   stopPolling();
   stopClockLoop();
   stopSubscription();
+  closeMoveNotebook('online');
 });
 
 boot();
