@@ -267,25 +267,41 @@
     width:100%;min-width:0;display:flex;flex-direction:column;
     align-items:center;gap:6px;
   }
-  .desktop-suggested-avatar{
-    width:40px;height:40px;border:1px solid rgba(215,182,108,.58);
-    border-radius:50%;display:grid;place-items:center;
-    background:rgba(83,114,116,.28);color:#f3dfad;
-    font-size:21px;font-weight:900;
+  .desktop-mini-puzzle-solvers{
+    display:flex;align-items:center;justify-content:center;gap:7px;
+    color:#dce6e1;font-size:clamp(10px,.78vw,12px);
+    font-weight:800;line-height:1.4;
+  }
+  .desktop-mini-puzzle-solvers strong{
+    min-width:23px;text-align:center;font-weight:900;
+    color:#e4c788;font-size:clamp(12px,.95vw,15px);
   }
   .desktop-suggested-name{
     max-width:100%;font-size:clamp(12px,.94vw,15px);font-weight:900;
     color:#f4efe6;line-height:1.4;overflow-wrap:anywhere;
   }
-  .desktop-suggested-meta{
-    max-width:100%;font-size:clamp(10px,.74vw,11px);
-    line-height:1.4;color:#c8d7d2;overflow-wrap:anywhere;
+  .desktop-suggested-time{
+    width:100%;display:grid;gap:5px;
+    color:#d4deda;font-size:11px;line-height:1.4;
+    font-weight:800;
   }
-  .desktop-suggested-state{
-    font-size:10px;line-height:1.35;color:#c4cfcb;
+  .desktop-suggested-time[hidden],
+  .desktop-suggested-message[hidden]{display:none!important}
+  .desktop-suggested-time select{
+    width:100%;min-width:0;min-height:34px;
+    border:.5px solid rgba(102,172,173,.65);
+    background:rgba(24,79,82,.86);color:#f4efe6;
+    border-radius:7px;padding:5px 6px;box-sizing:border-box;
+    font:800 11px/1.4 Arial,sans-serif;cursor:pointer;
   }
-  .desktop-suggested-state[hidden]{display:none!important}
-  .desktop-suggested-state.is-online{color:#8cddad}
+  .desktop-suggested-time select:focus-visible{
+    outline:1px solid #d7b66c;outline-offset:1px;
+  }
+  .desktop-home-side-card button:disabled{opacity:.65;cursor:not-allowed}
+  .desktop-suggested-message{
+    display:block;min-height:13px;
+    font-size:10px;line-height:1.4;color:#e4c788;
+  }
   .desktop-home-side-card h3{
     margin:0;
     font-size:clamp(13px,1vw,17px);
@@ -325,7 +341,6 @@
     .desktop-home-side-rail{gap:7px}
     .desktop-home-side-card{gap:5px;padding:9px 7px}
     .desktop-mini-puzzle-board{width:min(100%,126px)}
-    .desktop-suggested-avatar{width:32px;height:32px;font-size:18px}
     .desktop-home-side-card button{min-height:31px}
   }
 
