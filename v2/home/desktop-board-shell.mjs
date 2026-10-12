@@ -690,7 +690,7 @@ if(desktop.matches && document.querySelector('#homeHero')){
     if(id==='settings'&&!desktopSignedIn)id='home';
     if(!preserveRoute&&DASHBOARD_ROUTES.has(id)){
       const url=new URL(location.href);
-      url.hash='#'+id;
+      url.hash='#'+(id==='puzzles'&&initialPuzzleMode==='daily'?'puzzles-daily':id);
       history.replaceState(history.state,'',url.pathname+url.search+url.hash);
     }
     if(id!=='computer') stopInlineComputer();
@@ -1111,8 +1111,11 @@ if(desktop.matches && document.querySelector('#homeHero')){
       // Preserve #play for the online-play controller loaded immediately after the shell.
       showDashboard('home',{preserveRoute:true});
     }else{
-      showDashboard(DASHBOARD_ROUTES.has(initialHash)?initialHash:'home',{
-        preserveRoute:!DASHBOARD_ROUTES.has(initialHash)
+      const dailyPuzzle=initialHash==='puzzles-daily';
+      const initialView=dailyPuzzle?'puzzles':DASHBOARD_ROUTES.has(initialHash)?initialHash:'home';
+      showDashboard(initialView,{
+        preserveRoute:dailyPuzzle||!DASHBOARD_ROUTES.has(initialHash),
+        initialPuzzleMode:dailyPuzzle?'daily':'rated'
       });
     }
 
@@ -1120,6 +1123,10 @@ if(desktop.matches && document.querySelector('#homeHero')){
       const next=location.hash.replace(/^#/,'');
       if(next==='play'){
         window.dispatchEvent(new CustomEvent('desktop:inline-play-open'));
+        return;
+      }
+      if(next==='puzzles-daily'){
+        showDashboard('puzzles',{preserveRoute:true,initialPuzzleMode:'daily'});
         return;
       }
       if(DASHBOARD_ROUTES.has(next))showDashboard(next,{preserveRoute:true});
