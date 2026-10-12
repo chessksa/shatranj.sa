@@ -125,13 +125,13 @@
     const root=document.createElement('main');
     root.id='mobileFixedWorkspace';
     root.innerHTML=
+      '<nav class="mfw-tabs">'+tabs.map(([id,icon,label])=>'<button type="button" class="mfw-tab" data-mfw="'+id+'"><i>'+icon+'</i><span>'+label+'</span></button>').join('')+'</nav>'+
       '<header class="mfw-header">'+
-        '<div class="mfw-member"><span class="mfw-avatar">♟</span><span class="mfw-member-copy"><strong id="mfwName">شطرنج العرب</strong><small id="mfwState">المنصة العربية للشطرنج</small></span></div>'+
+        '<div class="mfw-member"><span class="mfw-avatar"><img id="mfwAvatarImage" alt="الصورة الشخصية" hidden><span id="mfwAvatarFallback" aria-hidden="true">♟</span></span><span class="mfw-member-copy"><strong id="mfwName">شطرنج العرب</strong><small id="mfwState">المنصة العربية للشطرنج</small></span></div>'+
         '<button type="button" class="mfw-login-btn" id="mfwLoginButton" aria-haspopup="dialog">تسجيل الدخول</button>'+
         '<div class="mfw-points"><small>النقاط</small><b id="mfwPoints">1500</b></div>'+
       '</header>'+
       '<section class="mfw-board" id="mfwBoard" aria-label="رقعة الشطرنج"><div class="mfw-board-grid">'+boardHtml()+'</div></section>'+
-      '<nav class="mfw-tabs">'+tabs.map(([id,icon,label])=>'<button type="button" class="mfw-tab" data-mfw="'+id+'"><i>'+icon+'</i><span>'+label+'</span></button>').join('')+'</nav>'+
       '<section class="mfw-panel"><div class="mfw-panel-body" id="mfwPanelBody"></div></section>';
     document.body.appendChild(root);
     // The dialog must live outside the board's four-row grid to prevent mobile layout overflow.
@@ -151,6 +151,12 @@
     root.querySelectorAll('[data-mfw]').forEach(btn=>btn.addEventListener('click',()=>show(btn.dataset.mfw)));
     root.querySelector('#mfwBoard').addEventListener('click',()=>{if(!root.querySelector('#mfwBoard')?.dataset.tournamentSpectating)show('play')});
     root.querySelector('#mfwLoginButton').addEventListener('click',()=>openAuth('login'));
+    const avatarImage=root.querySelector('#mfwAvatarImage');
+    avatarImage.addEventListener('load',syncMobileAvatar);
+    avatarImage.addEventListener('error',()=>{
+      avatarImage.hidden=true;
+      root.querySelector('#mfwAvatarFallback').hidden=false;
+    });
     overlay.querySelector('#mfwAuthClose').addEventListener('click',()=>closeAuth());
     overlay.addEventListener('click',event=>{
       if(event.target===event.currentTarget) closeAuth();
@@ -304,11 +310,40 @@
     }else more(body);
   }
 
+  // Mirror the Supabase profile image from the existing page header.
+  // If no picture was uploaded, use the member initial instead.
+  function syncMobileAvatar(){
+    const image=document.getElementById('mfwAvatarImage');
+    const fallback=document.getElementById('mfwAvatarFallback');
+    if(!image||!fallback)return;
+    const original=document.getElementById('headerMemberAvatar');
+    const originalFallback=document.getElementById('headerMemberFallback');
+    const name=txt('headerMemberName','العضو');
+    fallback.textContent=signedIn()?(originalFallback?.textContent?.trim()||Array.from(name)[0]||'♟'):'♟';
+    const photoReady=signedIn()&&original&&!original.hidden&&original.complete&&original.naturalWidth>0;
+    const url=photoReady?(original.currentSrc||original.src):'';
+    if(!url){
+      image.hidden=true;
+      fallback.hidden=false;
+      return;
+    }
+    if(image.getAttribute('src')!==url){
+      image.hidden=true;
+      fallback.hidden=false;
+      image.src=url;
+    }
+    if(image.complete&&image.naturalWidth>0){
+      image.hidden=false;
+      fallback.hidden=true;
+    }
+  }
+
   function syncHeader(){
     const n=document.getElementById('mfwName'),p=document.getElementById('mfwPoints'),s=document.getElementById('mfwState');
     if(n)n.textContent=signedIn()?txt('headerMemberName','العضو'):'شطرنج العرب';
     if(p)p.textContent=signedIn()?txt('headerMemberRating','1500'):'—';
     if(s)s.textContent=signedIn()?'متصل الآن':'المنصة العربية للشطرنج';
+    syncMobileAvatar();
     const loginButton=document.getElementById('mfwLoginButton');
     const points=document.querySelector('#mobileFixedWorkspace .mfw-points');
     if(loginButton)loginButton.hidden=signedIn();
@@ -341,6 +376,15 @@
       const node=document.getElementById(id);
       if(!node)return;
       new MutationObserver(refreshHome).observe(node,{subtree:true,childList:true,characterData:true});
+    });
+
+    // Profile photos are loaded asynchronously after account authentication.
+    ['headerMemberAvatar','headerMemberFallback'].forEach(id=>{
+      const node=document.getElementById(id);
+      if(node)new MutationObserver(syncMobileAvatar).observe(node,{
+        attributes:true,attributeFilter:['src','hidden'],childList:true,
+        characterData:true,subtree:true
+      });
     });
 
     let wasSignedIn=signedIn();

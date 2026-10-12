@@ -487,3 +487,29 @@
   #mobileFixedWorkspace .mfw-ranking-grid tbody tr.podium-2 :is(.mfw-ranking-place,.mfw-ranking-points){color:#c5d1d1}
   #mobileFixedWorkspace .mfw-ranking-grid tbody tr.podium-3 :is(.mfw-ranking-place,.mfw-ranking-points){color:#caa48c}
 }
+
+/* Mobile-only layout: navigation, player identity, unchanged board, statistics. */
+@media(max-width:900px){
+  #mobileFixedWorkspace{
+    grid-template-rows:var(--mfw-tabs-height) var(--mfw-header-height) minmax(0,1fr) var(--mfw-panel-height)!important;
+  }
+  #mobileFixedWorkspace .mfw-tabs{grid-row:1!important}
+  #mobileFixedWorkspace .mfw-header{grid-row:2!important}
+  #mobileFixedWorkspace .mfw-board{grid-row:3!important}
+  #mobileFixedWorkspace .mfw-panel{grid-row:4!important}
+  #mobileFixedWorkspace .mfw-avatar{
+    width:44px!important;height:44px!important;flex:0 0 44px!important;
+    overflow:hidden!important;position:relative!important;border-radius:50%!important;
+    display:grid!important;place-items:center!important;
+  }
+  #mobileFixedWorkspace .mfw-avatar img{
+    display:block;width:100%;height:100%;object-fit:cover;
+    border:0;border-radius:50%;background:transparent;
+  }
+  #mobileFixedWorkspace .mfw-avatar img[hidden],
+  #mobileFixedWorkspace .mfw-avatar span[hidden]{display:none!important}
+  #mobileFixedWorkspace .mfw-avatar span{
+    display:grid;place-items:center;width:100%;height:100%;
+    font-size:22px;font-weight:800;line-height:1;
+  }
+}
