@@ -94,7 +94,7 @@ if(board){
       cssClass:'shatranj',
       showCoordinates:false,
       borderType:BORDER_TYPE.none,
-      pieces:{file:'pieces/shatranj-approved-20260904.svg?v=20260905-3',tileSize:40},
+      pieces:{file:'pieces/shatranj-approved-20260904.svg?v=20261012-pawns94-v1',tileSize:40},
       animationDuration:0
     }
   });
