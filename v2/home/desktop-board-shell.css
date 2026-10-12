@@ -874,7 +874,7 @@
   }
   .desktop-play-choice-icon svg{width:23px;height:23px;display:block}
   .desktop-play-options :is(button,a):focus-visible{
-    outline:2px solid #d7b66c;outline-offset:2px;
+    outline:1px solid #d7b66c;outline-offset:1px;
   }
   @media(max-height:700px){
     .desktop-play-options{gap:7px}
@@ -883,5 +883,154 @@
     .desktop-play-choice-list>button{min-height:39px;padding:5px 9px}
     .desktop-play-time-options button{min-height:35px}
     .desktop-play-primary{min-height:37px}
+  }
+}
+
+/* Variant chess stays on the one approved home board. No floating board layers. */
+@media(min-width:901px){
+  body.desktop-board-workspace #homeBoardPreview.inline-variants-active{
+    overflow:hidden!important;isolation:isolate;
+  }
+  body.desktop-board-workspace #homeBoardPreview.inline-variants-active > .variant-board{
+    width:100%!important;height:100%!important;min-height:0!important;
+    display:grid!important;grid-template-columns:repeat(8,minmax(0,1fr))!important;
+    grid-template-rows:repeat(8,minmax(0,1fr))!important;
+    direction:ltr!important;gap:0!important;border:0!important;
+    padding:0!important;margin:0!important;
+    background:#ad8a65 url('../../assets/boards/wood4.jpg') center/100% 100% no-repeat;
+  }
+  body.desktop-board-workspace #homeBoardPreview.inline-variants-active .variant-square{
+    position:relative;display:grid;place-items:center;
+    width:100%;height:100%;min-width:0;min-height:0;padding:0;
+    border:.5px solid rgba(54,33,25,.16)!important;border-radius:0!important;
+    box-shadow:none;background:transparent;
+    cursor:pointer;user-select:none;overflow:hidden;
+  }
+  body.desktop-board-workspace #homeBoardPreview.inline-variants-active .variant-square.light{
+    background:rgba(255,247,224,.43)!important;
+  }
+  body.desktop-board-workspace #homeBoardPreview.inline-variants-active .variant-square.dark{
+    background:rgba(49,24,11,.36)!important;
+  }
+  body.desktop-board-workspace #homeBoardPreview.inline-variants-active .variant-square.selected{
+    box-shadow:inset 0 0 0 2px #d7b66c!important;
+  }
+  body.desktop-board-workspace #homeBoardPreview.inline-variants-active .variant-square.target::after{
+    content:"";position:absolute;z-index:2;
+    width:21%;height:21%;border-radius:50%;
+    background:rgba(6,62,59,.65);pointer-events:none;
+  }
+  body.desktop-board-workspace #homeBoardPreview.inline-variants-active .variant-square.center::before{
+    content:"";position:absolute;inset:6%;z-index:1;
+    border:1px solid rgba(215,182,108,.48);pointer-events:none;
+  }
+  body.desktop-board-workspace #homeBoardPreview.inline-variants-active .variant-piece{
+    width:100%;height:100%;max-width:none;object-fit:contain;
+    display:block;margin:auto;pointer-events:none;user-select:none;
+    transform:scale(.95);transform-origin:center;
+  }
+  body.desktop-board-workspace #homeBoardPreview.inline-variants-active .variant-piece:is([src*="/wp.png"],[src*="/bp.png"]){
+    transform:scale(.90);
+  }
+  body.desktop-board-workspace .desktop-dashboard-view.variants-view .desktop-dashboard-view-head{
+    display:none!important;
+  }
+  body.desktop-board-workspace .desktop-dashboard-view.variants-view .desktop-dashboard-view-body{
+    overflow-y:auto!important;overflow-x:hidden!important;
+    padding:9px!important;background:rgba(2,39,43,.35)!important;
+    scrollbar-width:thin;scrollbar-color:rgba(110,160,158,.4) transparent;
+  }
+  .inline-variants-panel{
+    direction:rtl;display:flex;flex-direction:column;gap:8px;
+    box-sizing:border-box;min-width:0;width:100%;color:#f4efe6;
+    font-family:Arial,sans-serif;
+  }
+  .inline-variants-panel *{box-sizing:border-box}
+  .inline-variants-panel button,.inline-variants-panel select{
+    font-family:inherit;cursor:pointer;
+  }
+  .inline-variants-title{text-align:center;padding:2px 0 5px}
+  .inline-variants-title h2{
+    font-size:19px;font-weight:900;color:#efcf91;margin:0 0 4px;
+  }
+  .inline-variants-title p{font-size:11px;color:#c9d9d3;margin:0}
+  .inline-variants-players{display:grid;gap:6px}
+  .inline-variant-player{
+    display:flex;justify-content:space-between;align-items:center;gap:8px;
+    min-width:0;min-height:45px;padding:8px;
+    border:1px solid rgba(105,166,162,.34);
+    border-radius:8px;background:rgba(4,48,52,.70);
+  }
+  .inline-variant-player.turn{border-color:#c7a969}
+  .inline-variant-player>span{min-width:0;display:grid;gap:2px}
+  .inline-variant-player strong{font-size:14px;line-height:1.2}
+  .inline-variant-player small{font-size:10px;color:#c9d5d1}
+  .inline-variant-clock{font-size:19px;white-space:nowrap;color:#e9d29c;direction:ltr;font-variant-numeric:tabular-nums}
+  .inline-variant-status{font-size:12px;text-align:center;line-height:1.45;min-height:18px;color:#e2ece8}
+  .inline-variant-actions,.inline-variant-queue-buttons,.inline-variant-options{
+    display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:7px;
+  }
+  .inline-variant-actions button,.inline-variant-queue-buttons button{
+    min-height:35px;padding:5px 7px;color:#f6f3e9;font-size:12px;font-weight:900;
+    background:rgba(23,85,88,.82);border:1px solid rgba(107,165,160,.42);border-radius:8px;
+  }
+  .inline-variant-actions button:disabled,.inline-variant-queue-buttons button:disabled{
+    opacity:.45;cursor:default;
+  }
+  #variantResign{color:#e6aca7}
+  #variantQueue{background:#27755a;border-color:#579b7d}
+  .inline-variant-controls{
+    display:flex;flex-direction:column;gap:7px;min-width:0;
+    border:1px solid rgba(102,164,161,.33);border-radius:10px;
+    padding:10px;background:rgba(4,49,53,.84);
+  }
+  .inline-variant-controls>label{font-size:13px;font-weight:900;color:#f0d39a}
+  .inline-variant-controls select{
+    min-width:0;width:100%;height:37px;padding:6px;
+    border:1px solid rgba(118,177,172,.40);border-radius:7px;
+    background:#17484a;color:#f4efe6;font-size:13px;
+  }
+  .inline-variant-rules{
+    min-height:0;margin:0;padding:5px 1px;
+    font-size:11px;color:#c7d8d4;line-height:1.55;
+  }
+  #variantQueueState{font-size:11px;color:#d7e3dd;min-height:0;line-height:1.4}
+  .inline-variant-games-panel{display:grid;gap:6px}
+  .inline-variant-games-panel h3{margin:3px 0 0;font-size:13px;color:#efcf91}
+  .inline-variant-games{display:grid;gap:5px;font-size:11px;color:#c7d8d4}
+  .inline-variant-games .variant-game-row{
+    display:flex;justify-content:space-between;align-items:center;gap:8px;
+    padding:8px 7px;border:1px solid rgba(104,164,160,.30);
+    border-radius:7px;background:rgba(6,56,59,.75);
+    color:#f3eee7;text-decoration:none;min-width:0;
+  }
+  .inline-variant-games .variant-game-row:hover{border-color:#d7b66c}
+  .inline-variant-games .variant-game-row small{font-size:10px;color:#cad8d2}
+  .inline-variant-pocket{display:none;align-items:center;gap:5px;flex-wrap:wrap;
+    padding:5px;border:1px solid rgba(104,164,160,.30);border-radius:8px}
+  .inline-variant-pocket.show{display:flex}
+  .inline-variant-pocket .variant-pocket-piece{
+    position:relative;min-width:31px;height:32px;padding:2px;border:1px solid rgba(105,166,162,.35);
+    border-radius:5px;background:rgba(255,255,255,.04);color:#fff;
+  }
+  .inline-variant-pocket .variant-pocket-piece.selected{border-color:#d7b66c}
+  .inline-variant-pocket .variant-pocket-piece:disabled{opacity:.4}
+  .inline-variant-pocket .variant-pocket-piece img{width:24px;height:24px;object-fit:contain}
+  .inline-variant-pocket .variant-pocket-piece b{position:absolute;bottom:0;left:1px;font-size:10px}
+  .inline-variant-pocket .variant-pocket-label{font-size:10px;margin-inline-start:auto}
+  .inline-variants-panel :is(button,select,a):focus-visible{outline:1px solid #d7b66c;outline-offset:1px}
+  .inline-variant-controls .variant-searching{display:inline-flex;gap:3px}
+  .inline-variant-controls .variant-searching i{
+    display:block;width:4px;height:4px;border-radius:50%;background:#c6dfc8;
+    animation:inlineVariantPulse 1.1s infinite;
+  }
+  @keyframes inlineVariantPulse{0%,70%,100%{opacity:.3}35%{opacity:1}}
+  @media(max-height:720px){
+    .inline-variants-panel{gap:5px}
+    .inline-variants-title{padding:0 0 2px}
+    .inline-variants-title h2{font-size:16px}
+    .inline-variant-player{min-height:37px;padding:5px}
+    .inline-variant-controls{gap:5px;padding:7px}
+    .inline-variant-controls select{height:32px}
   }
 }
