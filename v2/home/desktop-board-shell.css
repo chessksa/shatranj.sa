@@ -217,6 +217,56 @@
   .desktop-welcome-art i,.desktop-welcome-art b{position:absolute;color:rgba(0,20,23,.48);font-family:"Times New Roman",serif;font-style:normal;font-weight:400;filter:blur(1.6px)}
   .desktop-welcome-art i{right:4%;top:16%;font-size:66px}.desktop-welcome-art b{left:2%;bottom:10%;font-size:62px}
 
+  /* Three verified champions occupy the reclaimed half of the welcome card. */
+  .desktop-champions-grid{
+    min-height:0;display:grid;grid-template-rows:repeat(3,minmax(0,1fr));
+    gap:6px;overflow:hidden;
+  }
+  .desktop-champion-card{
+    min-height:0;display:grid;grid-template-columns:50px minmax(0,1fr);
+    align-items:center;gap:10px;padding:8px 12px;
+    border:1px solid rgba(210,180,110,.40);border-radius:11px;
+    background:linear-gradient(135deg,rgba(4,60,65,.95),rgba(3,48,53,.96));
+    box-shadow:0 7px 18px rgba(0,0,0,.10);
+    color:#f5efe4;text-decoration:none;direction:rtl;overflow:hidden;
+    transition:border-color .18s ease,background .18s ease;
+  }
+  .desktop-champion-card:hover,.desktop-champion-card:focus-visible{
+    border-color:rgba(235,202,126,.90);background:rgba(9,76,79,.98);
+    outline:none;
+  }
+  .desktop-champion-icon{
+    width:46px;height:46px;border:1px solid rgba(220,186,111,.36);
+    background:rgba(223,182,95,.075);border-radius:10px;
+    display:grid;place-items:center;color:#e5c37b;
+    box-sizing:border-box;
+  }
+  .desktop-champion-icon svg{width:27px;height:27px;display:block}
+  .desktop-champion-card[data-champion="week"] .desktop-champion-icon{color:#e4c17b}
+  .desktop-champion-card[data-champion="month"] .desktop-champion-icon{color:#d8dfe4}
+  .desktop-champion-card[data-champion="site"] .desktop-champion-icon{color:#f0c06a}
+  .desktop-champion-info{
+    min-width:0;display:flex;flex-direction:column;gap:5px;
+    align-items:flex-start;justify-content:center;
+  }
+  .desktop-champion-info strong{
+    font-size:15px;line-height:1.15;font-weight:900;color:#f0d396;
+  }
+  .desktop-champion-name{
+    max-width:100%;font-size:15px;line-height:1.2;font-weight:850;
+    color:#f9f7f0;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;
+  }
+  .desktop-champion-meta{font-size:11px;line-height:1.15;color:#a9c7c3;white-space:nowrap}
+  .desktop-champion-card:not(.has-champion) .desktop-champion-name{color:#c7d5d0;font-size:12px}
+  @media(max-height:720px) and (min-width:901px){
+    .desktop-champion-card{grid-template-columns:36px minmax(0,1fr);gap:7px;padding:4px 8px}
+    .desktop-champion-icon{width:34px;height:34px}
+    .desktop-champion-icon svg{width:22px;height:22px}
+    .desktop-champion-info{gap:3px}
+    .desktop-champion-info strong,.desktop-champion-name{font-size:12px}
+    .desktop-champion-meta{font-size:9px}
+  }
+
   .desktop-live-stats{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:7px;min-height:0}
   .desktop-live-stat{border-radius:13px;display:flex;flex-direction:column;align-items:center;justify-content:center;min-width:0;padding:6px 4px;text-align:center}
   .desktop-stat-icon{font-size:17px;line-height:1;font-weight:900;letter-spacing:-3px}.desktop-stat-icon.gold{color:#f0bd50}.desktop-stat-icon.green{color:#45d778}.desktop-stat-icon.cyan{color:#45bff0}
