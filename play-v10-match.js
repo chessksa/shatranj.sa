@@ -56,10 +56,10 @@ function ensureCmStyles(){
 
 function forceBoardSquareColors(){
   boardEl.querySelectorAll('.cm-chessboard .square.white').forEach((square)=>{
-    square.style.setProperty('fill','#d6cfbf','important');
+    square.style.setProperty('fill',window.matchMedia('(max-width:900px)').matches?'transparent':'rgba(255,247,224,.43)','important');
   });
   boardEl.querySelectorAll('.cm-chessboard .square.black').forEach((square)=>{
-    square.style.setProperty('fill','#246f77','important');
+    square.style.setProperty('fill',window.matchMedia('(max-width:900px)').matches?'transparent':'rgba(49,24,11,.36)','important');
   });
 }
 
