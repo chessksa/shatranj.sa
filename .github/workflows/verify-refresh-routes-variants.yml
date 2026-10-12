@@ -1,0 +1,36 @@
+name: Verify refresh routes and variant boards
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - 'index.html'
+      - 'mobile-home-fixed-v1.js'
+      - 'v2/home/desktop-board-shell.mjs'
+      - 'v2/home/inline-play.mjs'
+      - 'v2/home/desktop-board-shell.css'
+      - 'v2/home/desktop-sidebar-cleanup.css'
+      - 'v3/variants/app.mjs'
+      - 'tests/refresh-routes-and-variants.mjs'
+      - '.github/workflows/verify-refresh-routes-variants.yml'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  verify:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+      - name: Check JavaScript syntax
+        run: |
+          node --check mobile-home-fixed-v1.js
+          node --check v2/home/desktop-board-shell.mjs
+          node --check v3/variants/app.mjs
+          node --check tests/refresh-routes-and-variants.mjs
+      - name: Verify refresh, variants and borders
+        run: node tests/refresh-routes-and-variants.mjs
