@@ -22,6 +22,7 @@ on:
       - 'tests/desktop-auth-observer-loop.test.mjs'
       - 'tests/desktop-board-preview-pieces.test.mjs'
       - 'tests/desktop-single-layer.test.mjs'
+      - 'tests/desktop-move-notebook.test.mjs'
       - '.github/workflows/home-inline-play-verify.yml'
   pull_request:
     paths:
@@ -44,6 +45,7 @@ on:
       - 'tests/desktop-auth-observer-loop.test.mjs'
       - 'tests/desktop-board-preview-pieces.test.mjs'
       - 'tests/desktop-single-layer.test.mjs'
+      - 'tests/desktop-move-notebook.test.mjs'
       - '.github/workflows/home-inline-play-verify.yml'
 
 jobs:
@@ -63,6 +65,9 @@ jobs:
       - run: node tests/desktop-auth-observer-loop.test.mjs
       - run: node tests/desktop-board-preview-pieces.test.mjs
       - run: node tests/desktop-single-layer.test.mjs
+      - run: node tests/desktop-move-notebook.test.mjs
+      - run: node --check v2/home/move-notebook.mjs
+      - run: node --check v2/home/inline-computer.mjs
       - run: python tests/test_desktop_member_profile_inline.py
       - run: python tests/test_profile_dashboard_clean.py
       - run: python tests/test_member_profile_toolbar.py
