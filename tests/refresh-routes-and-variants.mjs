@@ -5,6 +5,7 @@ const read=path=>fs.readFileSync(path,'utf8');
 const desktop=read('v2/home/desktop-board-shell.mjs');
 const mobile=read('mobile-home-fixed-v1.js');
 const inlinePuzzles=read('v2/home/inline-puzzles.mjs');
+const rail=read('v2/home/home-side-rail.mjs');
 const play=read('v2/home/inline-play.mjs');
 const variants=read('v3/variants/app.mjs');
 const sidebar=read('v2/home/desktop-sidebar-cleanup.css');
@@ -45,7 +46,7 @@ assert.match(styles,/\.desktop-play-choice-list > button\.is-selected[\s\S]*?bor
 assert.match(styles,/\.desktop-play-primary\{[\s\S]*?border:0\.5px solid #d7b66c!important/);
 assert.doesNotMatch(styles,/\.desktop-play-primary\{[^}]*background:#367e62/);
 assert.doesNotMatch(styles,/inset 0 0 0 2px #d7b66c/);
-assert.match(html,/home-side-daily-friend-v1/);
+assert.match(html,/home-mini-puzzle-suggested-friend-v1/);
 
 assert.doesNotMatch(desktop,/data-play-choice="online"/,'Duplicate internet play tile should be removed');
 assert.match(styles,/\.desktop-play-time-options button\.is-selected[\s\S]*?border:0\.5px solid #d7b66c!important/);
@@ -64,4 +65,20 @@ assert.match(inlinePuzzles,/mode=initialMode==='daily'\?'daily':'rated'/);
 assert.match(inlinePuzzles,/mode==='daily'\?'#puzzles-daily':'#puzzles'/);
 assert.match(desktop,/initialHash==='puzzles-daily'/);
 
-console.log('Routes, variants and daily puzzle/friend home rail: PASS');
+// Live daily FEN (read-only) and actual accepted friends: no placeholders or invented names.
+assert.match(desktop,/populateHomeSideRail\(rail\)/);
+assert.match(desktop,/class="desktop-mini-puzzle-board"/);
+assert.match(desktop,/class="desktop-suggested-friend"/);
+assert.match(desktop,/مباراة مقترحة/);
+assert.match(rail,/supabase\.rpc\('home_get_daily_puzzle_preview'\)/);
+assert.match(rail,/drawMiniPuzzle\(mini,record\.fen\)/);
+assert.match(rail,/supabase\.rpc\('get_my_friends'\)/);
+assert.match(rail,/online\.length\?online:friends/);
+assert.match(rail,/supabase\.rpc\('send_player_challenge'/);
+assert.match(rail,/p_minutes:10/);
+assert.match(rail,/presentFriend\(eligible\[index\]\|\|null\)/);
+assert.match(styles,/\.desktop-mini-puzzle-board\{/);
+assert.match(styles,/\.desktop-mini-puzzle-square\.light\{/);
+assert.match(styles,/\.desktop-mini-puzzle-square\.dark\{/);
+assert.match(styles,/\.desktop-suggested-friend\{/);
+console.log('Routes, live daily chessboard and real friend suggestions: PASS');
