@@ -1,36 +1,6 @@
 const tuneAssetVersion=encodeURIComponent(document.querySelector('meta[name="shatranj-asset-version"]')?.content||'20261009-fresh-ui-refresh-v1');
 await import(`./inline-play.mjs?v=${tuneAssetVersion}`);
 
-const inlinePlayCss=document.createElement('link');
-inlinePlayCss.rel='stylesheet';
-inlinePlayCss.href=`v2/home/inline-play.css?v=${tuneAssetVersion}`;
-document.head.appendChild(inlinePlayCss);
-
-const css=document.createElement('link');
-css.rel='stylesheet';
-css.href=`v2/home/desktop-board-shell-tune.css?v=${tuneAssetVersion}`;
-document.head.appendChild(css);
-
-const cleanupCss=document.createElement('link');
-cleanupCss.rel='stylesheet';
-cleanupCss.href=`v2/home/desktop-sidebar-cleanup.css?v=${tuneAssetVersion}`;
-document.head.appendChild(cleanupCss);
-
-const boardThemeCss=document.createElement('link');
-boardThemeCss.rel='stylesheet';
-boardThemeCss.href=`v2/home/board-theme-override.css?v=${tuneAssetVersion}`;
-document.head.appendChild(boardThemeCss);
-
-
-const statsOrderCss=document.createElement('style');
-statsOrderCss.textContent=`@media(min-width:901px){
-  .desktop-live-stat small{margin-top:0!important}
-  .desktop-live-stat strong{margin-top:6px!important}
-  .inline-play-square{position:relative!important}
-  .inline-play-piece{width:100%!important;height:100%!important}
-}`;
-document.head.appendChild(statsOrderCss);
-
 const desktop=window.matchMedia('(min-width:901px)');
 const FILES=['a','b','c','d','e','f','g','h'];
 const WHITE_BOARD_ORDER=[8,7,6,5,4,3,2,1].flatMap(rank=>FILES.map(file=>`${file}${rank}`));
@@ -78,20 +48,6 @@ function copyText(sourceId,targetId,fallback='0'){
   if(target)target.textContent=source?.textContent?.trim()||fallback;
 }
 
-function makeQuickAction({id,label,sub,icon,href}){
-  const el=href?document.createElement('a'):document.createElement('button');
-  if(href)el.href=href;
-  else el.type='button';
-  el.className=`desktop-quick-action${id==='play'?' primary':''}`;
-  el.dataset.tuneAction=id;
-  el.innerHTML=`<span class="desktop-quick-copy"><strong>${label}</strong><small>${sub}</small></span><span class="desktop-quick-icon">${icon}</span>`;
-  return el;
-}
-
-function removeDailyTipCard(){
-  document.querySelector('.desktop-tip-card')?.remove();
-}
-
 function restoreDashboardBlocks(){
   if(!desktop.matches)return false;
   const home=document.getElementById('desktopDashboardHome');
@@ -110,39 +66,10 @@ function restoreDashboardBlocks(){
     welcome.insertAdjacentElement('afterend',stats);
   }
 
-  let card=home.querySelector('.desktop-quick-card');
-  if(!card){
-    card=document.createElement('section');
-    card.className='desktop-quick-card desktop-quick-card-no-title';
-    const actions=document.createElement('div');
-    actions.className='desktop-quick-actions';
-    actions.append(
-      makeQuickAction({id:'tournaments',label:'البطولات',sub:'شارك في البطولات',icon:'♜',href:'tournaments.html'}),
-      makeQuickAction({id:'ranking',label:'الترتيب',sub:'عرض الترتيب',icon:'▥'}),
-      makeQuickAction({id:'invite',label:'دعوة لاعب',sub:'ادعُ أصدقاءك',icon:'＋'}),
-      makeQuickAction({id:'play',label:'ابدأ اللعب',sub:'مباراة جديدة',icon:'⚔',href:'#play'})
-    );
-    card.appendChild(actions);
-    stats.insertAdjacentElement('afterend',card);
-  }
-
-  removeDailyTipCard();
   copyText('headerMatchesCount','desktopMatchesCount','0');
   copyText('headerOnlineCount','desktopOnlineCount','0');
   copyText('headerPlayersCount','desktopPlayersCount','0');
   return true;
-}
-
-function bindTuneActions(){
-  document.addEventListener('click',event=>{
-    const action=event.target.closest('[data-tune-action]');
-    if(!action)return;
-    const id=action.dataset.tuneAction;
-    if(id==='ranking'||id==='invite'){
-      event.preventDefault();
-      document.querySelector(`[data-desktop-nav="${id}"]`)?.click();
-    }
-  });
 }
 
 function watchCounts(){
@@ -163,7 +90,6 @@ function removeSidebarFooter(){
 
 if(desktop.matches){
   removeSidebarFooter();
-  removeDailyTipCard();
   watchInlineBoardOrientation();
   let attempts=0;
   const timer=setInterval(()=>{
@@ -174,9 +100,8 @@ if(desktop.matches){
       bindTuneActions();
       watchCounts();
           removeSidebarFooter();
-      removeDailyTipCard();
-      setTimeout(()=>{restoreDashboardBlocks();removeSidebarFooter();removeDailyTipCard();normalizeInlineBoardOrientation();},300);
-      setTimeout(()=>{restoreDashboardBlocks();removeSidebarFooter();removeDailyTipCard();normalizeInlineBoardOrientation();},1000);
+        setTimeout(()=>{restoreDashboardBlocks();removeSidebarFooter();normalizeInlineBoardOrientation();},300);
+      setTimeout(()=>{restoreDashboardBlocks();removeSidebarFooter();normalizeInlineBoardOrientation();},1000);
     }
   },50);
 }
