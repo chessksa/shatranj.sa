@@ -31,7 +31,7 @@
   .desktop-dashboard-home{
     height:100%!important;
     display:grid!important;
-    /* Welcome takes half its previous height; champions fill the other half. */
+    /* Personal statistics and champion cards share the center workspace above live counts. */
     grid-template-rows:minmax(0,1fr) minmax(0,1fr) 94px!important;
     gap:var(--desktop-gap)!important;
     align-content:stretch!important;
@@ -64,25 +64,9 @@
     font-size:11px!important;
   }
 
-  .desktop-welcome-card{
-    min-height:0!important;
-    height:100%!important;
-  }
-
-  .desktop-welcome-copy{
-    padding:16px 8px 14px 14px!important;
-  }
-
-  .desktop-welcome-copy small{font-size:18px!important}
-  .desktop-welcome-copy h2{font-size:clamp(27px,2vw,36px)!important}
-  .desktop-welcome-copy p{font-size:13px!important}
-  .desktop-welcome-copy blockquote{font-size:11px!important}
-  /* The oversized decorative knight is reduced to half its former scale. */
-  .desktop-welcome-art span{font-size:clamp(39px,3.5vw,60px)!important}
-  .desktop-welcome-art i{font-size:33px!important}
-  .desktop-welcome-art b{font-size:31px!important}
+  .desktop-home-statistics{min-height:0!important;height:100%!important}
   .desktop-champions-grid{min-height:0!important}
 
 
-  /* Legacy hidden cards and extra grid rows were removed. */
+  /* No legacy welcome illustrations or duplicate statistics layers. */
 }
