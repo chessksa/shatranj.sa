@@ -47,4 +47,6 @@
 .piece.black.piece-b .piece-image{background-image:url("assets/pieces/bb.png?v=20261012-extracted-photo-pieces-v3")!important;}
 .piece.black.piece-q .piece-image{background-image:url("assets/pieces/bq.png?v=20261012-extracted-photo-pieces-v3")!important;}
 .piece.black.piece-k .piece-image{background-image:url("assets/pieces/bk.png?v=20261012-extracted-photo-pieces-v3")!important;}
+/* Legacy live-game route uses the same approved PNGs; pawns are 90%. */
+.piece.piece-p .piece-image{transform:scale(.90)!important;transform-origin:center center!important}
 @media(max-width:900px){.board-frame{padding:7px 7px 15px!important;border-radius:11px!important}.piece{width:98%!important;height:98%!important}}
