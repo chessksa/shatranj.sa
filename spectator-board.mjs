@@ -112,7 +112,7 @@ export class SpectatorBoard {
         cssClass: 'shatranj',
         showCoordinates: false,
         borderType: BORDER_TYPE.none,
-        pieces: { file: 'pieces/shatranj-approved-20260904.svg?v=20260905-3', tileSize: 40 },
+        pieces: { file: 'pieces/shatranj-approved-20260904.svg?v=20261012-pawns90-allboards-v3', tileSize: 40 },
         animationDuration: 180
       }
     });
