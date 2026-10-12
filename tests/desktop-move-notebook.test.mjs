@@ -15,10 +15,10 @@ assert.match(notebook,/stage\.insertBefore\(root,stage\.firstChild\)/,'History b
 assert.match(style,/desktop-move-notebook-active \.desktop-board-stage/,'Layout must reserve space only during play');
 assert.match(style,/display:grid!important;place-items:center start!important/,'The board must retain its original grid layout');
 assert.doesNotMatch(style,/calc\(100vw[^\n]*chess-notebook-width/,'Move notebook must not subtract width from the board');
-assert.match(style,/position:absolute/,'Left-side notation is independent of the board geometry');
+assert.match(style,/position:fixed/,'Left-side notation must use viewport coordinates without moving the board');
 assert.match(style,/data-mode="docked"/,'Wide monitors should dock the notation on the left');
 assert.match(style,/data-mode="compact"/,'Tight monitors must use a collapsible notation drawer');
-assert.match(notebook,/const availableLeft=Math\.max\(0,Math\.floor\(boardRect\.left-stageRect\.left\)\)/,'Notebook docks only when there is real space on the LEFT of the board');
+assert.match(notebook,/const usableLeft=Math\.max\(0,Math\.floor\(rect\.left-edge-gap\)\)/,'Notebook must measure free space left of the board in viewport coordinates');
 assert.doesNotMatch(style,/transform:translateX\(calc\(var\(--chess-notebook-width\)/,'The live board must never be translated when the notebook appears');
 assert.match(notebook,/root\.dataset\.open=root\.dataset\.open==='true'\?'false':'true'/,'Drawer should toggle without shrinking the board');
 assert.match(style,/\-\-chess-notebook-width/);
