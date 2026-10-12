@@ -618,14 +618,17 @@ if(desktop.matches && document.querySelector('#homeHero')){
       renderApprovedPreview(target);
     }
   }
-  function showDashboard(id='home'){
+  const DASHBOARD_ROUTES=new Set(['home','play-options','variants','ranking','tournaments','watch','settings','invite','computer','puzzles','learn','profile','admin']);
+  function showDashboard(id='home',{preserveRoute=false}={}){
     // Navigation always ends active online play before touching the home chessboard.
     window.dispatchEvent(new CustomEvent('desktop:inline-play-stop'));
     stopVariants();
     if(id==='admin'&&!desktopAdminAccess)id='home';
     if(id==='settings'&&!desktopSignedIn)id='home';
-    if(['home','play-options','variants','ranking','tournaments','watch','settings','invite','computer','puzzles','learn','profile','admin'].includes(id)){
-      history.replaceState(null,'','#'+id);
+    if(!preserveRoute&&DASHBOARD_ROUTES.has(id)){
+      const url=new URL(location.href);
+      url.hash='#'+id;
+      history.replaceState(history.state,'',url.pathname+url.search+url.hash);
     }
     if(id!=='computer') stopInlineComputer();
     if(id!=='puzzles') stopInlinePuzzles();
@@ -1040,12 +1043,23 @@ if(desktop.matches && document.querySelector('#homeHero')){
 
     await refreshDesktopPermissions();
     const initialHash=location.hash.replace(/^#/,'');
-    const initialView=['home','ranking','tournaments','watch','settings','invite','computer','puzzles','learn','profile','admin'].includes(initialHash)?initialHash:'home';
-    showDashboard(initialView);
+    if(initialHash==='play'){
+      // Preserve #play for the online-play controller loaded immediately after the shell.
+      showDashboard('home',{preserveRoute:true});
+    }else{
+      showDashboard(DASHBOARD_ROUTES.has(initialHash)?initialHash:'home',{
+        preserveRoute:!DASHBOARD_ROUTES.has(initialHash)
+      });
+    }
 
     window.addEventListener('hashchange',()=>{
       const next=location.hash.replace(/^#/,'');
-      showDashboard(['home','ranking','tournaments','watch','settings','invite','computer','puzzles','learn','profile','admin'].includes(next)?next:'home');
+      if(next==='play'){
+        window.dispatchEvent(new CustomEvent('desktop:inline-play-open'));
+        return;
+      }
+      if(DASHBOARD_ROUTES.has(next))showDashboard(next,{preserveRoute:true});
+      else if(!next)showDashboard('home',{preserveRoute:true});
     });
   }
 
