@@ -20,7 +20,7 @@ assert.doesNotMatch(style,/data-mode="docked"|data-mode="compact"/,'Collapsed UI
 assert.doesNotMatch(notebook,/root\.dataset\.mode|root\.dataset\.open/,'Notation must never auto-collapse');
 assert.match(notebook,/const availableLeft=Math\.max\(0,Math\.floor\(rect\.left-edge-gap\)\)/,'Measure actual free viewport space');
 assert.doesNotMatch(style,/transform:translateX\(calc\(var\(--chess-notebook-width\)/,'The live board must never be translated when the notebook appears');
-assert.match(notebook,/const width=Math\.max\(250,Math\.min\(680,availableLeft\)\)/,'Show readable panel instead of 38px strip');
+assert.match(notebook,/const width=Math\.min\(680,availableLeft\)/,'Never enlarge the notation beyond the real space left of the board');
 assert.match(style,/\-\-chess-notebook-width/);
 assert.match(play,/getGameMoves,/,'Online history must come from persisted match moves');
 assert.match(play,/await refreshMoveNotebook\(\)/,'Online history must refresh alongside every position');
