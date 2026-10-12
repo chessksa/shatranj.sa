@@ -16,7 +16,7 @@ assert.match(desktop,/const DASHBOARD_ROUTES=new Set\(\[[^\]]*'play-options'[^\]
 assert.match(desktop,/DASHBOARD_ROUTES\.has\(initialHash\)\?initialHash:'home'/);
 assert.match(desktop,/DASHBOARD_ROUTES\.has\(next\)\)showDashboard\(next,\{preserveRoute:true\}\)/);
 assert.match(desktop,/initialHash==='play'[\s\S]*?showDashboard\('home',\{preserveRoute:true\}\)/);
-assert.match(desktop,/url\.hash='#'\+id/);
+assert.match(desktop,/url\.hash='#'\+\(id==='puzzles'&&initialPuzzleMode==='daily'/);
 assert.match(desktop,/url\.pathname\+url\.search\+url\.hash/);
 assert.match(play,/desktop:inline-play-open/);
 
