@@ -153,9 +153,9 @@
     width:min(calc(100vw - var(--desktop-board-sidebar) - var(--desktop-dashboard-width) - 40px),calc(100dvh - 20px))!important;
     height:min(calc(100vw - var(--desktop-board-sidebar) - var(--desktop-dashboard-width) - 40px),calc(100dvh - 20px))!important;
     max-width:none!important;max-height:none!important;aspect-ratio:1/1!important;
-    margin:0!important;padding:2px!important;
-    border:1px solid #8b6c50!important;border-radius:0!important;
-    background:#66503b!important;
+    margin:0!important;padding:0!important;
+    border:0!important;border-radius:0!important;
+    background:transparent!important;
     box-shadow:0 14px 34px rgba(0,0,0,.26)!important;
     pointer-events:auto;overflow:hidden;
   }
