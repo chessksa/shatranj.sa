@@ -839,17 +839,27 @@
     transition:background-color .15s,border-color .15s;
   }
   .desktop-play-time-options button:hover{background:rgba(105,158,155,.20)}
-  .desktop-play-time-options button.is-selected{
-    border-color:#d7b66c;background:rgba(215,182,108,.08);
-    box-shadow:none;
+  .desktop-play-time-options button.is-selected,
+  .desktop-play-time-options button.is-selected:hover{
+    border-color:#d7b66c!important;
+    background:rgba(255,255,255,.075)!important;
+    box-shadow:none!important;
+    outline:none!important;
   }
   .desktop-play-primary{
     min-height:45px;padding:8px 12px;
-    border:1px solid rgba(145,200,160,.58);border-radius:9px;
-    background:#367e62;color:#fff;font-size:16px;font-weight:900;
+    border:1px solid #d7b66c!important;border-radius:9px;
+    background:rgba(83,114,116,.28)!important;
+    color:#f4efe6;font-size:16px;font-weight:900;
+    box-shadow:none!important;outline:none!important;
     transition:background-color .15s;
   }
-  .desktop-play-primary:hover{background:#418d6d}
+  .desktop-play-primary:hover,
+  .desktop-play-primary:focus{
+    border-color:#d7b66c!important;
+    background:rgba(83,114,116,.28)!important;
+    box-shadow:none!important;outline:none!important;
+  }
   .desktop-play-choice-list{display:grid;grid-template-columns:minmax(0,1fr);gap:8px;min-width:0}
   .desktop-play-choice-list > button{
     width:100%;min-width:0;min-height:52px;
@@ -865,8 +875,10 @@
   }
   .desktop-play-choice-list > button.is-selected,
   .desktop-play-choice-list > button.is-selected:hover{
-    border:1px solid #d7b66c;
-    background:rgba(215,182,108,.07);
+    border-color:#d7b66c!important;
+    background:rgba(83,114,116,.28)!important;
+    box-shadow:none!important;
+    outline:none!important;
   }
   .desktop-play-choice-list > button.is-selected .desktop-play-choice-icon{color:#e4c786}
   .desktop-play-choice-icon{
@@ -876,8 +888,11 @@
   .desktop-play-options :is(button,a):focus-visible{
     outline:1px solid #d7b66c;outline-offset:-1px;
   }
-  .desktop-play-options :is(.desktop-play-choice-list>button.is-selected,.desktop-play-time-options>button.is-selected):focus-visible{
-    outline:none;
+  .desktop-play-choice-list > button.is-selected:focus-visible,
+  .desktop-play-time-options > button.is-selected:focus-visible,
+  .desktop-play-primary:focus-visible{
+    outline:none!important;
+    box-shadow:none!important;
   }
   @media(max-height:700px){
     .desktop-play-options{gap:7px}
