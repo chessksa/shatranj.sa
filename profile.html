@@ -7,14 +7,14 @@
 <title>لوحة العضو | شطرنج العرب</title>
 <style>
 :root{
-  --profile-bg:#063236;--profile-panel:rgba(6,57,61,.88);
-  --profile-panel-hi:rgba(11,70,73,.85);--profile-line:rgba(217,183,103,.27);
-  --profile-gold:#e1bb67;--profile-text:#f5eee1;--profile-muted:#b9c9c5;
+  --profile-bg:#302e2b;--profile-panel:rgba(69,66,62,0.88);
+  --profile-panel-hi:rgba(69,66,62,0.85);--profile-line:rgba(165,162,158,0.27);
+  --profile-gold:#e2dcd3;--profile-text:#e2dcd3;--profile-muted:#b9c9c5;
 }
 *{box-sizing:border-box}
 html,body{width:100%;min-width:0;margin:0;min-height:100%;font-family:Arial,sans-serif}
-html{background:#052e32;color:var(--profile-text)}
-body{background:linear-gradient(160deg,#052c31,#073d40);color:var(--profile-text);overflow-x:hidden}
+html{background:#302e2b;color:var(--profile-text)}
+body{background:linear-gradient(160deg,#302e2b,#302e2b);color:var(--profile-text);overflow-x:hidden}
 a{color:inherit;text-decoration:none}
 button,input,select{font:inherit}
 button{cursor:pointer}
@@ -36,8 +36,8 @@ button{cursor:pointer}
 .profile-dashboard-grid .profile-stat,
 .profile-dashboard-grid .profile-action{
   min-width:0;width:100%;height:58px;min-height:58px;max-height:58px;padding:1px 3px;overflow:hidden;
-  border:1px solid rgba(139,190,188,.26);border-radius:10px;
-  background:linear-gradient(145deg,rgba(10,76,79,.65),rgba(4,45,49,.76));
+  border:1px solid rgba(114,111,107,0.26);border-radius:10px;
+  background:linear-gradient(145deg,rgba(69,66,62,0.65),rgba(69,66,62,0.76));
   display:flex;flex-direction:column;align-items:center;justify-content:center;
   gap:0;text-align:center;text-decoration:none;
 }
@@ -59,8 +59,8 @@ button{cursor:pointer}
 }
 .profile-dashboard-grid .profile-action:hover,
 .profile-dashboard-grid .profile-action:focus-visible{
-  outline:none;border-color:rgba(225,187,103,.72);
-  background:rgba(17,81,84,.85)
+  outline:none;border-color:rgba(165,162,158,0.72);
+  background:rgba(69,66,62,0.85)
 }
 .profile-recent-block{padding:10px 8px 8px}
 .profile-games-title{
@@ -71,16 +71,16 @@ button{cursor:pointer}
 .profile-games-table{
   width:100%;min-width:0;table-layout:fixed;direction:rtl;
   border-collapse:collapse;border-spacing:0;
-  border:1px solid rgba(152,196,190,.40)
+  border:1px solid rgba(114,111,107,0.4)
 }
 .profile-games-table thead tr{
-  background:linear-gradient(135deg,rgba(35,91,91,.98),rgba(10,60,65,.98))
+  background:linear-gradient(135deg,rgba(69,66,62,0.98),rgba(69,66,62,0.98))
 }
 .profile-games-table th{
   padding:10px 3px;
-  background:rgba(213,183,109,.12);
-  color:#f0d69c;font-size:12px;font-weight:900;text-align:center;
-  border:1px solid rgba(225,187,103,.50);
+  background:rgba(165,162,158,0.12);
+  color:#e2dcd3;font-size:12px;font-weight:900;text-align:center;
+  border:1px solid rgba(165,162,158,0.5);
   white-space:nowrap;overflow:hidden;text-overflow:ellipsis
 }
 .profile-games-table th:nth-child(1){width:32%}
@@ -89,16 +89,16 @@ button{cursor:pointer}
 .profile-games-table th:nth-child(4){width:19%}
 .profile-games-table td{
   min-width:0;height:38px;padding:7px 3px;
-  border:1px solid rgba(152,196,190,.30);
-  background:rgba(4,49,53,.68);
+  border:1px solid rgba(114,111,107,0.3);
+  background:rgba(69,66,62,0.68);
   font-size:12px;line-height:1.35;text-align:center;
   vertical-align:middle;white-space:nowrap;overflow:hidden;text-overflow:ellipsis
 }
-.profile-games-table tbody tr:nth-child(even) td{background:rgba(9,66,68,.70)}
-.profile-games-table tbody tr:hover td{background:rgba(25,79,81,.88)}
+.profile-games-table tbody tr:nth-child(even) td{background:rgba(69,66,62,0.7)}
+.profile-games-table tbody tr:hover td{background:rgba(69,66,62,0.88)}
 .profile-game-name{font-size:13px;font-weight:800;color:var(--profile-text)}
 .profile-game-date{font-size:12px;color:var(--profile-muted);direction:ltr;unicode-bidi:isolate}
-.profile-game-kind{font-size:12px;color:#e8d198}
+.profile-game-kind{font-size:12px;color:#e2dcd3}
 .profile-game-result{
   display:inline-block;vertical-align:middle;width:11px;height:11px;
   padding:0;border-radius:50%;border:1px solid rgba(255,255,255,.16);
@@ -106,7 +106,7 @@ button{cursor:pointer}
 }
 .profile-game-result.win{background:#48c879}
 .profile-game-result.loss{background:#e46b69}
-.profile-game-result.draw{background:#e6c34b}
+.profile-game-result.draw{background:#e2dcd3}
 .profile-games-table .empty{
   padding:16px 5px;color:var(--profile-muted);
   text-align:center;font-size:11px;border-radius:8px
@@ -115,11 +115,11 @@ button{cursor:pointer}
 .profile-top-action{
  min-width:0;min-height:67px;padding:8px 4px;display:flex;flex-direction:column;
  align-items:center;justify-content:center;gap:6px;text-align:center;cursor:pointer;
- border:1px solid rgba(225,187,103,.31);border-radius:11px;
- background:linear-gradient(145deg,rgba(10,76,79,.75),rgba(4,49,53,.84));
+ border:1px solid rgba(165,162,158,0.31);border-radius:11px;
+ background:linear-gradient(145deg,rgba(69,66,62,0.75),rgba(69,66,62,0.84));
  color:var(--profile-text);font-size:11px;font-weight:800;line-height:1.3
 }
-.profile-top-action:hover,.profile-top-action:focus-visible{outline:none;border-color:var(--profile-gold);background:rgba(17,84,85,.95)}
+.profile-top-action:hover,.profile-top-action:focus-visible{outline:none;border-color:var(--profile-gold);background:rgba(69,66,62,0.95)}
 .profile-top-action .profile-tool-icon{width:18px;height:18px;display:block;flex:0 0 18px;stroke:var(--profile-gold);fill:none;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round}
 .profile-top-action span{text-align:center;width:100%;overflow-wrap:anywhere}
 .profile-top-action.danger{border-color:rgba(225,116,116,.36)}
@@ -132,19 +132,19 @@ button{cursor:pointer}
 }
 .modal-card{
   width:min(380px,100%);padding:16px;border-radius:14px;
-  background:#0b4143;border:1px solid var(--profile-line);
+  background:#302e2b;border:1px solid var(--profile-line);
   box-shadow:0 16px 40px rgba(0,0,0,.27)
 }
 .modal-card h3{font-size:17px;color:var(--profile-gold);margin:0 0 10px}
 .modal-card p{font-size:13px;color:var(--profile-muted);line-height:1.5}
-.select{width:100%;padding:10px;border-radius:9px;border:1px solid var(--profile-line);background:#062e32;color:var(--profile-text)}
+.select{width:100%;padding:10px;border-radius:9px;border:1px solid var(--profile-line);background:#302e2b;color:var(--profile-text)}
 .modal-actions{display:flex;gap:8px;margin-top:12px}
-.btn{min-height:38px;padding:9px;border:1px solid var(--profile-line);border-radius:9px;background:#0c4a4c;color:var(--profile-text)}
-.btn.gold{background:var(--profile-gold);color:#143738;font-weight:900}
+.btn{min-height:38px;padding:9px;border:1px solid var(--profile-line);border-radius:9px;background:#302e2b;color:var(--profile-text)}
+.btn.gold{background:var(--profile-gold);color:#302e2b;font-weight:900}
 .modal-actions .btn{flex:1}
 .toast{
   position:fixed;z-index:60;bottom:14px;right:10px;
-  max-width:calc(100% - 20px);background:#0b4143;color:var(--profile-text);
+  max-width:calc(100% - 20px);background:#302e2b;color:var(--profile-text);
   border:1px solid var(--profile-line);border-radius:9px;padding:10px;
   opacity:0;pointer-events:none;transition:opacity .17s;font-size:12px
 }

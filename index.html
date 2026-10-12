@@ -9,7 +9,7 @@ if (location.protocol === 'http:' && /^(?:www\.)?arabchees\.com$/i.test(location
 <meta name="shatranj-asset-version" content="20261012-charcoal-all-v3">
 <style id="approvedHomeGate">
 html:not(.approved-home-ready) body > :not(#approvedHomeBoot){visibility:hidden!important}
-#approvedHomeBoot{position:fixed;inset:0;z-index:2147483000;display:grid;place-items:center;text-align:center;padding:24px;background:#042628;color:#f4eddc;font-family:Arial,sans-serif}
+#approvedHomeBoot{position:fixed;inset:0;z-index:2147483000;display:grid;place-items:center;text-align:center;padding:24px;background:#302e2b;color:#e2dcd3;font-family:Arial,sans-serif}
 #approvedHomeBoot strong{font-size:20px}
 #approvedHomeBoot small{display:block;margin-top:10px;color:#b7c7c2}
 html.approved-home-ready #approvedHomeBoot{display:none!important}
@@ -55,11 +55,11 @@ html.approved-home-ready #approvedHomeBoot{display:none!important}
 html{scroll-behavior:smooth}
 
 :root{
-  --green:#0d3b2e;
-  --green2:#176148;
-  --gold:#c5a34d;
-  --cream:#f5f3ed;
-  --cream2:#ebe7dd;
+  --green:#302e2b;
+  --green2:#3b3937;
+  --gold:#9b958d;
+  --cream:#e2dcd3;
+  --cream2:#e2dcd3;
   --text:#14221c;
   --muted:#6f7773;
   --line:#ddd7ca;
@@ -134,7 +134,7 @@ header{
 
 .header-box strong{
   font-size:14px;
-  color:#f0d77c
+  color:#e2dcd3
 }
 
 .header-box span{
@@ -167,24 +167,24 @@ header{
 }
 
 .links a:hover{
-  color:#e2c96f;
+  color:#e2dcd3;
   background:rgba(255,255,255,.05)
 }
 
 .links .play-link{
   background:var(--gold);
-  color:#17231e;
+  color:#302e2b;
   padding:9px 14px
 }
 
 .links .play-link:hover{
-  color:#17231e;
-  background:#d0ad54
+  color:#302e2b;
+  background:#9b958d
 }
 
 /* HERO */
 .hero{
-  background:linear-gradient(180deg,#f5f1e7,#ebe7dd);
+  background:linear-gradient(180deg,#343230,#343230);
   border-bottom:1px solid var(--line);
   padding:15px 0 13px
 }
@@ -206,8 +206,8 @@ header{
 .tag{
   display:inline-block;
   width:max-content;
-  background:#ecddb0;
-  color:#735a14;
+  background:#484644;
+  color:#625f5b;
   padding:4px 9px;
   border-radius:20px;
   font-size:11px;
@@ -256,7 +256,7 @@ header{
 }
 
 .btn.light{
-  background:#fff;
+  background:#343230;
   border:1px solid #d7d1c6;
   color:var(--green)
 }
@@ -270,7 +270,7 @@ header{
   display:flex;
   flex-direction:column;
   justify-content:center;
-  box-shadow:0 6px 16px rgba(13,59,46,.08)
+  box-shadow:0 6px 16px rgba(69,66,62,0.08)
 }
 
 .hero-box .piece{
@@ -314,7 +314,7 @@ header{
 .quick-icon{
   min-height:58px;
   border:1px solid #ded8cd;
-  background:#fff;
+  background:#343230;
   border-radius:9px;
   display:flex;
   flex-direction:column;
@@ -332,9 +332,9 @@ header{
 }
 
 .quick-icon.soon{
-  color:#79621f;
-  background:#fff9e9;
-  border-color:#e4d39d;
+  color:#625f5b;
+  background:#343230;
+  border-color:#68635e;
 }
 
 @media(max-width:520px){
@@ -361,7 +361,7 @@ header{
 }
 
 .stat{
-  background:#fff;
+  background:#343230;
   border:1px solid #ded8cd;
   padding:8px 10px;
   border-radius:8px
@@ -414,7 +414,7 @@ input,select{
   height:39px;
   border:1px solid #ccc6bb;
   border-radius:8px;
-  background:#fff;
+  background:#343230;
   padding:0 10px;
   font-size:13px;
   color:var(--text)
@@ -423,11 +423,11 @@ input,select{
 input:focus,select:focus{
   outline:none;
   border-color:var(--green2);
-  box-shadow:0 0 0 3px rgba(23,97,72,.08)
+  box-shadow:0 0 0 3px rgba(69,66,62,0.08)
 }
 
 select:disabled{
-  background:#eee;
+  background:#343230;
   color:#888
 }
 
@@ -440,7 +440,7 @@ select:disabled{
 }
 
 .podium{
-  background:#fff;
+  background:#343230;
   border:1px solid #dfd9ce;
   border-radius:9px;
   padding:8px 10px;
@@ -448,8 +448,8 @@ select:disabled{
 }
 
 .podium:first-child{
-  background:#fff8e4;
-  border-color:#e4d39d
+  background:#343230;
+  border-color:#68635e
 }
 
 .podium h3{
@@ -478,7 +478,7 @@ select:disabled{
 
 /* TABLE */
 .table-card{
-  background:#fff;
+  background:#343230;
   border:1px solid #dfd9ce;
   border-radius:9px;
   overflow:hidden
@@ -489,7 +489,7 @@ select:disabled{
   display:flex;
   justify-content:space-between;
   align-items:center;
-  border-bottom:1px solid #eee;
+  border-bottom:1px solid #53514e;
   font-size:12px
 }
 
@@ -504,17 +504,17 @@ table{
 th,td{
   padding:8px 10px;
   text-align:right;
-  border-bottom:1px solid #eee
+  border-bottom:1px solid #53514e
 }
 
 th{
-  background:#faf9f6;
+  background:#343230;
   color:#777;
   font-size:10px
 }
 
 td{font-size:12px}
-tbody tr:hover{background:#fcfbf8}
+tbody tr:hover{background:#343230}
 
 .rating{
   color:var(--green);
@@ -538,7 +538,7 @@ tbody tr:hover{background:#fcfbf8}
 
 .badge{
   display:inline-block;
-  background:#eee;
+  background:#343230;
   border-radius:20px;
   padding:3px 7px;
   font-size:10px
@@ -553,7 +553,7 @@ tbody tr:hover{background:#fcfbf8}
 
 /* REGISTER */
 .register{
-  background:#ebe8df;
+  background:#343230;
   border-top:1px solid #ddd7cc;
   border-bottom:1px solid #ddd7cc
 }
@@ -574,7 +574,7 @@ tbody tr:hover{background:#fcfbf8}
 }
 
 .form-card{
-  background:#fff;
+  background:#343230;
   padding:10px;
   border:1px solid #ddd7cc;
   border-radius:9px
@@ -605,7 +605,7 @@ label span{
   color:#777;
 }
 
-.username-status.checking{color:#79621f}
+.username-status.checking{color:#625f5b}
 .username-status.available{color:#17633f}
 .username-status.taken{color:#a53a3a}
 
@@ -649,7 +649,7 @@ label span{
   height:39px;
   border:1px solid #d6d0c4;
   border-radius:8px;
-  background:#f7f4ed;
+  background:#343230;
   color:var(--green);
   font-weight:900;
   cursor:pointer;
@@ -689,7 +689,7 @@ label span{
   height:30px;
   border:0;
   border-radius:7px;
-  background:#eee9df;
+  background:#343230;
   color:var(--green);
   font-size:10px;
   font-weight:900;
@@ -712,8 +712,8 @@ label span{
 
 .account-stat{
   padding:8px 9px;
-  border:1px solid #e4ded2;
-  background:#faf8f3;
+  border:1px solid #53514e;
+  background:#343230;
   border-radius:8px;
 }
 
@@ -769,7 +769,7 @@ label span{
 }
 
 .nav-account{
-  color:#f0d77c!important;
+  color:#e2dcd3!important;
 }
 
 footer{
@@ -913,7 +913,7 @@ footer{
     height:48px;
     border-radius:12px;
     background:var(--gold);
-    color:#17231e;
+    color:#302e2b;
     align-items:center;
     justify-content:center;
     font-weight:900;
@@ -964,13 +964,13 @@ footer{
 #navAccount[hidden]{display:none!important}
 
 
-.welcome-ticker{width:100%;height:34px;display:flex;align-items:center;overflow:hidden;background:#0a302f;color:#f7f3e7;border-top:0;border-bottom:1px solid rgba(197,163,77,.55);position:relative;z-index:19;flex:none;direction:rtl}
-.welcome-ticker-label{flex:0 0 auto;height:100%;display:flex;align-items:center;padding:0 18px;white-space:nowrap;background:#0d3b39;color:#efcf7c;border-left:1px solid rgba(197,163,77,.5);font-size:12px;font-weight:900;line-height:1;position:relative;z-index:2;box-shadow:-8px 0 18px rgba(0,0,0,.12)}
+.welcome-ticker{width:100%;height:34px;display:flex;align-items:center;overflow:hidden;background:#302e2b;color:#e2dcd3;border-top:0;border-bottom:1px solid rgba(165,162,158,0.55);position:relative;z-index:19;flex:none;direction:rtl}
+.welcome-ticker-label{flex:0 0 auto;height:100%;display:flex;align-items:center;padding:0 18px;white-space:nowrap;background:#302e2b;color:#e2dcd3;border-left:1px solid rgba(165,162,158,0.5);font-size:12px;font-weight:900;line-height:1;position:relative;z-index:2;box-shadow:-8px 0 18px rgba(0,0,0,.12)}
 .welcome-ticker-viewport{min-width:0;flex:1;overflow:hidden;height:100%;display:flex;align-items:center;direction:ltr}
 .welcome-ticker-track{display:flex;align-items:center;width:max-content;min-width:max-content;will-change:transform;animation:welcomeTickerInlineMove 52s linear infinite;direction:ltr}
 .welcome-ticker-group{display:flex;align-items:center;flex:none}
 .welcome-ticker-item{display:inline-flex;align-items:center;white-space:nowrap;direction:rtl;font-size:12px;font-weight:800;line-height:1;padding:0 22px}
-.welcome-ticker-separator{width:5px;height:5px;border-radius:50%;background:#c5a34d;flex:none}
+.welcome-ticker-separator{width:5px;height:5px;border-radius:50%;background:#9b958d;flex:none}
 .welcome-ticker-loading{display:inline-flex;align-items:center;white-space:nowrap;padding:0 20px;font-size:12px;font-weight:800;direction:rtl}
 .welcome-ticker-single{animation:none!important;transform:none!important}
 @keyframes welcomeTickerInlineMove{from{transform:translateX(-50%)}to{transform:translateX(0)}}
