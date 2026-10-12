@@ -46,14 +46,13 @@ function drawMiniPuzzle(board,fen){
 export function populateHomeSideRail(rail){
   if(!rail||!supabase)return;
   const mini=rail.querySelector('.desktop-mini-puzzle-board');
-  const dailyInfo=rail.querySelector('[data-daily-puzzle-info]');
   const solvers=rail.querySelector('[data-daily-solver-count]');
   const friendName=rail.querySelector('[data-suggested-friend-name]');
   const timeLabel=rail.querySelector('[data-suggested-time-label]');
   const minutesSelect=rail.querySelector('[data-suggested-time]');
   const message=rail.querySelector('[data-suggested-message]');
   const challenge=rail.querySelector('[data-home-side-action="friend"]');
-  if(!mini||!dailyInfo||!solvers||!friendName||!timeLabel||!minutesSelect||!message||!challenge)return;
+  if(!mini||!solvers||!friendName||!timeLabel||!minutesSelect||!message||!challenge)return;
   let suggestedFriend=null;
   let friendsRequest=0;
   let challengeBusy=false;
@@ -80,23 +79,22 @@ export function populateHomeSideRail(rail){
     const today=new Date().toISOString().slice(0,10);
     if(!force&&loadedDate===today)return;
     loadedDate=today;
-    dailyInfo.textContent='جارٍ تحميل لغز اليوم…';
+    mini.setAttribute('aria-busy','true');
     try{
       const {data,error}=await supabase.rpc('home_get_daily_puzzle_preview');
       if(error)throw error;
       const record=Array.isArray(data)?data[0]:data;
       if(!record?.fen)throw new Error('daily_puzzle_not_found');
       drawMiniPuzzle(mini,record.fen);
-      const rating=Number(record.rating);
-      dailyInfo.textContent=(record.title||'لغز تكتيكي صعب')+
-        (Number.isFinite(rating)?' · '+rating+' نقطة':'');
+      mini.setAttribute('aria-label','لغز اليوم: اضغط على الرقعة للحل');
     }catch(error){
       console.warn('تعذر جلب معاينة لغز اليوم',error);
       loadedDate='';
       mini.replaceChildren();
       mini.removeAttribute('data-puzzle-ready');
-      dailyInfo.textContent='اللغز متاح عند الضغط على زر الحل';
+      mini.setAttribute('aria-label','تعذر عرض معاينة اللغز؛ اضغط على الرقعة للمحاولة');
     }
+    mini.removeAttribute('aria-busy');
     void loadSolverCount();
   }
 
