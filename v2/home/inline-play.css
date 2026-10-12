@@ -53,7 +53,7 @@
 
   /* Keep both pawn colors visually balanced without affecting other pieces. */
   .inline-play-piece:is([src*="/wp.png"],[src*="/bp.png"]){
-    --piece-scale:.94;
+    --piece-scale:.82;
   }
 
 
