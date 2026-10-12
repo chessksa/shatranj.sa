@@ -97,11 +97,8 @@ if(desktop.matches){
     removeSidebarFooter();
     if(restoreDashboardBlocks()||attempts>50){
       clearInterval(timer);
-      bindTuneActions();
       watchCounts();
-          removeSidebarFooter();
-        setTimeout(()=>{restoreDashboardBlocks();removeSidebarFooter();normalizeInlineBoardOrientation();},300);
-      setTimeout(()=>{restoreDashboardBlocks();removeSidebarFooter();normalizeInlineBoardOrientation();},1000);
+      normalizeInlineBoardOrientation();
     }
   },50);
 }
