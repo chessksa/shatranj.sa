@@ -1,7 +1,7 @@
 import { Chess } from 'https://cdn.jsdelivr.net/npm/chess.js@1.4.0/+esm';
 import { supabase, getSessionPlayer, rpc } from '../platform/api.mjs';
 
-import { renderApprovedPreview } from './move-notebook.mjs?v=20261012-unified-board-colors-v9';
+import { renderApprovedPreview } from './move-notebook.mjs?v=20261012-notebook-fullpanel-v10';
 const desktop=window.matchMedia('(min-width:901px)');
 const PIECE_ROOT='assets/pieces/';
 const FILES=['a','b','c','d','e','f','g','h'];
@@ -27,7 +27,7 @@ function ensureCss(){
     const link=document.createElement('link');
     link.id='inlinePuzzleCss';
     link.rel='stylesheet';
-    link.href=new URL('./inline-puzzles.css?v=20261012-unified-board-colors-v9',import.meta.url).href;
+    link.href=new URL('./inline-puzzles.css?v=20261012-notebook-fullpanel-v10',import.meta.url).href;
     document.head.appendChild(link);
   }
   // Reuse the stylesheet preloaded by index.html. An old second copy caused
@@ -38,7 +38,7 @@ function ensureCss(){
     const base=document.createElement('link');
     base.id='inlinePuzzleBoardBaseCss';
     base.rel='stylesheet';
-    const version=encodeURIComponent(document.querySelector('meta[name="shatranj-asset-version"]')?.content||'20261012-unified-board-colors-v9');
+    const version=encodeURIComponent(document.querySelector('meta[name="shatranj-asset-version"]')?.content||'20261012-notebook-fullpanel-v10');
     base.href=new URL('./inline-play.css?v='+version,import.meta.url).href;
     document.head.appendChild(base);
   }
