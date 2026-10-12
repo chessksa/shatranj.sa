@@ -1,7 +1,8 @@
 import fs from 'node:fs';
 import assert from 'node:assert/strict';
 
-const source=fs.readFileSync('v2/home/desktop-board-shell.mjs','utf8');
+const source=fs.readFileSync('v2/home/move-notebook.mjs','utf8');
+const shell=fs.readFileSync('v2/home/desktop-board-shell.mjs','utf8');
 const style=fs.readFileSync('v2/home/desktop-board-shell.css','utf8');
 const play=fs.readFileSync('v2/home/inline-play.css','utf8');
 const mobile=fs.readFileSync('mobile-home-fixed-v1.css','utf8');
@@ -9,6 +10,7 @@ const sprite=fs.readFileSync('assets/pieces/shatranj-approved-20260904.svg','utf
 
 assert.match(source,/desktop-board-preview-piece/,'Desktop preview must render canonical PNG images, not the legacy detached CSS');
 assert.match(source,/assets\/pieces\//,'Desktop preview must use the canonical image directory');
+assert.match(shell,/renderApprovedPreview\(preview\)/,'Homepage must call the canonical preview renderer');
 assert.match(source,/firstRank=\['r','n','b','q','k','b','n','r'\]/,'Pieces must appear in their initial chess position');
 assert.match(style,/\.desktop-board-square > \.desktop-board-preview-piece/,'The preview must center the real PNG images');
 assert.match(style,/preview-piece:is\(\[src\*="\/wp\.png"\],\[src\*="\/bp\.png"\]\)/,'Both colors must use the same pawn sizing rule');
