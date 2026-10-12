@@ -195,7 +195,7 @@ function ensureCmStyles() {
   if (window.matchMedia('(max-width:900px)').matches && !document.querySelector('link[data-mobile-computer-homeboard]')) {
     const style = document.createElement('link');
     style.rel = 'stylesheet';
-    style.href = 'computer-home-board-mobile.css?v=20261012-home-board-parity-v1';
+    style.href = 'computer-home-board-mobile.css?v=20261012-mobile-home-board-visible-v2';
     style.media = '(max-width:900px)';
     style.dataset.mobileComputerHomeboard = '1';
     document.head.appendChild(style);
@@ -263,16 +263,17 @@ function forceBoardSquareColors() {
   // leaving a black board. Restore warm, semi-transparent chess squares.
   // Desktop colors remain unchanged.
   const mobile = window.matchMedia('(max-width:900px)').matches;
-  // The homepage-matching HTML grid owns the color on phones.
-  const light = mobile ? 'transparent' : 'rgba(255,247,224,.43)';
-  const dark = mobile ? 'transparent' : 'rgba(49,24,11,.36)';
+  // Never hide the engine board until the replacement homepage grid is ready.
+  const homepageGridReady = mobile && boardEl.parentElement?.classList.contains('has-mobile-home-board');
+  const light = homepageGridReady ? 'transparent' : 'rgba(255,247,224,.43)';
+  const dark = homepageGridReady ? 'transparent' : 'rgba(49,24,11,.36)';
   boardEl.querySelectorAll('.cm-chessboard .square.white').forEach(square => {
     square.style.setProperty('fill', light, 'important');
-    if (mobile) square.style.setProperty('fill-opacity', '0', 'important');
+    if (mobile) square.style.setProperty('fill-opacity', homepageGridReady ? '0' : '1', 'important');
   });
   boardEl.querySelectorAll('.cm-chessboard .square.black').forEach(square => {
     square.style.setProperty('fill', dark, 'important');
-    if (mobile) square.style.setProperty('fill-opacity', '0', 'important');
+    if (mobile) square.style.setProperty('fill-opacity', homepageGridReady ? '0' : '1', 'important');
   });
 }
 
@@ -333,6 +334,10 @@ function syncMobileHomepageBoard(fen){
     img.alt='';
     img.draggable=false;
     square.appendChild(img);
+  }
+  // Reveal the new grid only after all the squares and pieces exist.
+  if(index===64){
+    shell.classList.add('has-mobile-home-board');
   }
 }
 
