@@ -6,10 +6,11 @@ if (location.protocol === 'http:' && /^(?:www\.)?arabchees\.com$/i.test(location
   location.replace('https://arabchees.com' + location.pathname + location.search + location.hash);
 }
 </script>
-<meta name="shatranj-asset-version" content="20261012-live-matches-watch-v9">
+<meta name="shatranj-asset-version" content="20261012-desktop-clean-bootstrap-v10">
 <style id="approvedHomeGate">
-html:not(.approved-home-ready) body > :not(#approvedHomeBoot){visibility:hidden!important}
-#approvedHomeBoot{position:fixed;inset:0;z-index:2147483000;display:grid;place-items:center;text-align:center;padding:24px;background:#302e2b;color:#e2dcd3;font-family:Arial,sans-serif}
+html:not(.approved-home-ready) body > :not(#approvedHomeBoot){opacity:0!important;pointer-events:none!important}
+html:not(.approved-home-ready) body::before,html:not(.approved-home-ready) body::after{visibility:hidden!important}
+#approvedHomeBoot{position:fixed;inset:0;z-index:2147483647;isolation:isolate;display:grid;place-items:center;text-align:center;padding:24px;background:#302e2b;color:#e2dcd3;font-family:Arial,sans-serif}
 #approvedHomeBoot strong{font-size:20px}
 #approvedHomeBoot small{display:block;margin-top:10px;color:#b7c7c2}
 html.approved-home-ready #approvedHomeBoot{display:none!important}
@@ -1104,6 +1105,14 @@ footer{
 <link rel="stylesheet" data-desktop-sidebar-cleanup href="v2/home/desktop-sidebar-cleanup.css?v=20261012-source-palette-v5" media="(min-width:901px)">
 <link rel="stylesheet" data-inline-play href="v2/home/inline-play.css?v=20261012-source-palette-v5" media="(min-width:901px)">
 <link rel="stylesheet" data-move-notebook href="v2/home/move-notebook.css?v=20261012-source-palette-v5" media="(min-width:901px)">
+<!-- Stable source order: shared desktop CSS and mobile CSS are present before the first paint, never injected over the visible page. -->
+<link rel="stylesheet" data-v2-typography href="v2/site/typography-system.css?v=20261012-desktop-clean-bootstrap-v10">
+<link rel="stylesheet" data-desktop-guest-auth href="v2/home/desktop-guest-auth.css?v=20261012-desktop-clean-bootstrap-v10" media="(min-width:901px)">
+<link rel="stylesheet" data-v2-mobile-ui href="v2/site/mobile-ui-professional.css?v=20261012-desktop-clean-bootstrap-v10" media="(max-width:900px)">
+<link rel="stylesheet" data-v2-mobile-home href="v2/site/mobile-home-no-scroll.css?v=20261012-desktop-clean-bootstrap-v10" media="(max-width:900px)">
+<link rel="stylesheet" data-v2-mobile-home-polish href="v2/site/mobile-home-polish.css?v=20261012-desktop-clean-bootstrap-v10" media="(max-width:900px)">
+<link rel="stylesheet" data-v2-mobile-home-cleanup href="v2/site/mobile-home-cleanup.css?v=20261012-desktop-clean-bootstrap-v10" media="(max-width:900px)">
+<link rel="preload" as="image" href="assets/boards/wood4.jpg">
 <link rel="stylesheet" href="site-charcoal-theme.css?v=20261012-live-matches-watch-v9">
 </head>
 
@@ -2638,6 +2647,9 @@ setInterval(loadCurrentMatchesCount,3000);
     const desktop=matchMedia('(min-width:901px)').matches;
     const built=desktop?
       document.body.classList.contains('desktop-board-workspace')&&
+      document.body.classList.contains('desktop-workspace-initialized')&&
+      !!document.querySelector('.v2-global-sidebar .desktop-sidebar-brand')&&
+      document.querySelectorAll('.v2-global-sidebar .desktop-home-nav-link').length>=7&&
       !!document.querySelector('.desktop-dashboard-column')&&
       !!document.querySelector('.desktop-board-stage')&&
       !!document.querySelector('.v2-global-sidebar'):
@@ -2650,12 +2662,17 @@ setInterval(loadCurrentMatchesCount,3000);
       const idle=preview&&!preview.classList.contains('inline-play-active')&&
         !preview.classList.contains('inline-puzzle-active')&&
         !preview.classList.contains('inline-learn-active')&&
+        !preview.classList.contains('inline-computer-active')&&
+        !preview.classList.contains('inline-variants-active')&&
         !preview.classList.contains('inline-tournament-spectator');
-      if(idle&&preview.querySelectorAll('.desktop-board-grid > .desktop-board-square > .desktop-board-preview-piece').length!==32)return false;
+      if(idle){
+        const pieces=preview.querySelectorAll('.desktop-board-grid > .desktop-board-square > .desktop-board-preview-piece');
+        if(pieces.length!==32||[...pieces].some(piece=>!piece.complete))return false;
+      }
       if(!document.querySelector('#desktopDashboardHome .desktop-live-stats'))return false;
     }
     const styles=desktop?
-      ['desktop-board-shell.css','desktop-board-shell-tune.css','desktop-sidebar-cleanup.css','inline-play.css','move-notebook.css']:
+      ['desktop-board-shell.css','desktop-board-shell-tune.css','desktop-sidebar-cleanup.css','inline-play.css','move-notebook.css','desktop-guest-auth.css','typography-system.css']:
       ['mobile-home-fixed-v1.css'];
     return styles.every(filename=>{
       const link=[...document.querySelectorAll('link[rel="stylesheet"]')].find(link=>link.href.includes(filename));
