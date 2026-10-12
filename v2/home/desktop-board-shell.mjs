@@ -1,4 +1,4 @@
-import { renderApprovedPreview } from './move-notebook.mjs?v=20261012-unified-board-colors-v9';
+import { renderApprovedPreview } from './move-notebook.mjs?v=20261012-notebook-fullpanel-v10';
 import { supabase } from '../platform/api.mjs';
 const desktopAssetVersion=encodeURIComponent(document.querySelector('meta[name="shatranj-asset-version"]')?.content||'20261009-fresh-ui-refresh-v1');
 const [computerModule,puzzlesModule,learnModule]=await Promise.all([
