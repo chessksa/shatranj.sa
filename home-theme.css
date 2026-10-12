@@ -31,9 +31,9 @@
 
 /* Unified hero stat frames 20260908 */
 html body .home-hero .hero-stat{
-  border:1px solid rgba(216,182,101,.42)!important;
+  border:1px solid rgba(165,162,158,0.42)!important;
   border-radius:17px!important;
-  background:linear-gradient(145deg,rgba(216,182,101,.11),rgba(7,52,54,.92))!important;
+  background:linear-gradient(145deg,rgba(165,162,158,0.11),rgba(69,66,62,0.92))!important;
 }
 
 /* Mobile live stats vertical spacing 20260907 */
@@ -58,8 +58,8 @@ html body .home-hero .hero-stat{
 /* Reliable orange-cyan hero title pulse 20260908 */
 .home-hero h1,
 .home-hero h1 span{
-  color:#ffad4d!important;
-  -webkit-text-fill-color:#ffad4d!important;
+  color:#e2dcd3!important;
+  -webkit-text-fill-color:#e2dcd3!important;
 }
 .home-hero h1{
   animation:heroTitleOrangeCyanPulse 3s ease-in-out infinite!important;
@@ -69,12 +69,12 @@ html body .home-hero .hero-stat{
   0%,100%{
     filter:hue-rotate(0deg);
     -webkit-filter:hue-rotate(0deg);
-    text-shadow:0 0 5px rgba(255,173,77,.18);
+    text-shadow:0 0 5px rgba(165,162,158,0.18);
   }
   50%{
     filter:hue-rotate(151deg);
     -webkit-filter:hue-rotate(151deg);
-    text-shadow:0 0 7px rgba(114,227,241,.24);
+    text-shadow:0 0 7px rgba(114,111,107,0.24);
   }
 }
 
@@ -179,7 +179,7 @@ html body .welcome-ticker{
     position:sticky!important;
     top:0!important;
     z-index:5!important;
-    background:#0b4143!important;
+    background:#302e2b!important;
   }
 }
 

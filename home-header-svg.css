@@ -372,8 +372,8 @@
   width:118px!important;
   justify-content:center!important;
   padding:0 12px!important;
-  border-left:1px solid rgba(216,182,101,.52)!important;
-  background:linear-gradient(180deg,rgba(216,182,101,.13),rgba(13,59,57,.96))!important;
+  border-left:1px solid rgba(165,162,158,0.52)!important;
+  background:linear-gradient(180deg,rgba(165,162,158,0.13),rgba(69,66,62,0.96))!important;
   color:var(--hero-gold-2)!important;
   font-size:13px!important;
   font-weight:900!important;

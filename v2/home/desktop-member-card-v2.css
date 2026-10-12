@@ -8,9 +8,9 @@
     align-items:center!important;
     justify-content:flex-start!important;
     gap:7px!important;
-    border:1px solid rgba(224,181,103,.34)!important;
+    border:1px solid rgba(165,162,158,0.34)!important;
     border-radius:16px!important;
-    background:linear-gradient(160deg,rgba(7,65,69,.82),rgba(3,45,49,.72))!important;
+    background:linear-gradient(160deg,rgba(69,66,62,0.82),rgba(69,66,62,0.72))!important;
     box-shadow:0 10px 24px rgba(0,0,0,.12),inset 0 1px 0 rgba(255,255,255,.035)!important;
   }
 
@@ -25,9 +25,9 @@
   .desktop-member-avatar-wrap{
     width:82px!important;
     height:82px!important;
-    border:1px solid rgba(224,181,103,.58)!important;
+    border:1px solid rgba(165,162,158,0.58)!important;
     border-radius:11px!important;
-    background:rgba(2,38,42,.72)!important;
+    background:rgba(69,66,62,0.72)!important;
     box-shadow:inset 0 0 0 1px rgba(255,255,255,.025)!important;
     overflow:visible!important;
   }
@@ -66,7 +66,7 @@
     font-size:18px!important;
     line-height:1.2!important;
     font-weight:900!important;
-    color:#f4efe6!important;
+    color:#e2dcd3!important;
     text-align:center!important;
     white-space:nowrap!important;
     overflow:hidden!important;
@@ -76,12 +76,12 @@
   .desktop-member-username{
     display:block!important;width:100%!important;max-width:100%!important;
     font-size:12px!important;line-height:1.3!important;font-weight:700!important;
-    color:#d8cda9!important;direction:ltr!important;unicode-bidi:plaintext!important;
+    color:#e2dcd3!important;direction:ltr!important;unicode-bidi:plaintext!important;
     text-align:center!important;white-space:nowrap!important;
     overflow:hidden!important;text-overflow:ellipsis!important;
   }
   .desktop-member-username[hidden]{display:none!important}
-  .desktop-member-profile:hover .desktop-member-name{text-decoration:underline;text-decoration-color:rgba(239,207,124,.6)}
+  .desktop-member-profile:hover .desktop-member-name{text-decoration:underline;text-decoration-color:rgba(165,162,158,0.6)}
 
   .desktop-member-score{
     width:100%!important;
@@ -93,13 +93,13 @@
     align-items:center!important;
     justify-content:center!important;
     gap:2px!important;
-    border:1px solid rgba(224,181,103,.28)!important;
+    border:1px solid rgba(165,162,158,0.28)!important;
     border-radius:12px!important;
-    background:rgba(2,43,47,.42)!important;
+    background:rgba(69,66,62,0.42)!important;
   }
 
   .desktop-member-score b{
-    color:#f4efe6!important;
+    color:#e2dcd3!important;
     font-size:30px!important;
     line-height:1!important;
     font-weight:900!important;
@@ -115,7 +115,7 @@
 
   .desktop-member-location{
     max-width:100%!important;
-    color:#f2ecdf!important;
+    color:#e2dcd3!important;
     font-size:12px!important;
     line-height:1.25!important;
     font-weight:800!important;
