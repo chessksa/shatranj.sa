@@ -658,9 +658,21 @@ function ratingSuffix(rating) {
   return ' — 0 نقطة.';
 }
 
+// Only guest computer games need Realtime presence. Signed-in games are
+// already counted by list_public_current_games(), which reads computer_games.
+function setGuestComputerMatchPresence(active) {
+  const on = active === true && ratedMode === false;
+  if (window.SHATRANJ_GUEST_COMPUTER_ACTIVE === on) return;
+  window.SHATRANJ_GUEST_COMPUTER_ACTIVE = on;
+  window.dispatchEvent(new CustomEvent('shatranj:guest-computer-game', {
+    detail: { active: on }
+  }));
+}
+
 function finishGame(message, rating = null, outcome = null) {
   if (finished) return;
   finished = true;
+  setGuestComputerMatchPresence(false);
   thinking = false;
   activeRatedMoveId = null;
   clearInterval(clockTimer);
@@ -1123,6 +1135,7 @@ function setPlayingLayout(levelKey, minutes, player = null) {
   captureComputerSideWidth();
   document.body.classList.remove('pregame');
   document.body.classList.add('live-game', 'computer-game');
+  setGuestComputerMatchPresence(true);
   lockComputerPlayerCards();
   requestAnimationFrame(lockComputerPlayerCards);
   setTimeout(lockComputerPlayerCards, 100);
@@ -1313,6 +1326,7 @@ function setupTimeChooser(levelKey) {
 }
 
 function setupLevelChooser() {
+  setGuestComputerMatchPresence(false);
   opponentSearchSetup?.querySelector('.computer-time-back')?.remove();
   selectedLevel = null;
   selectedMinutes = null;
@@ -1398,6 +1412,7 @@ drawOfferBtn?.addEventListener('click', () => {
 });
 
 window.addEventListener('pagehide', () => {
+  setGuestComputerMatchPresence(false);
   clearInterval(clockTimer);
   if (engine) engine.terminate();
   if (!ratedMode || !ratedGameId || !ratedAccessToken || finished || leaving || !cfg.url || !cfg.anonKey) return;
