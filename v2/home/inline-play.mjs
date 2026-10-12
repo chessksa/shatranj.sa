@@ -16,11 +16,16 @@ import {
 import { remainingAt, formatClock, isFinalMinute } from '../play/clock.mjs';
 import { normalizeGameState } from '../play/state.mjs';
 
-const css=document.createElement('link');
-css.rel='stylesheet';
-const inlineVersion=encodeURIComponent(document.querySelector('meta[name="shatranj-asset-version"]')?.content||'20261009-fresh-ui-refresh-v1');
-css.href=new URL(`./inline-play.css?v=${inlineVersion}`,import.meta.url).href;
-document.head.appendChild(css);
+// index.html preloads the canonical desktop stylesheet. Keep one fallback for
+// standalone imports, never add another copy during a normal homepage refresh.
+if(!document.querySelector('link[data-inline-play]')){
+  const css=document.createElement('link');
+  css.rel='stylesheet';
+  css.dataset.inlinePlay='1';
+  const inlineVersion=encodeURIComponent(document.querySelector('meta[name="shatranj-asset-version"]')?.content||'20261012-desktop-canonical-v4');
+  css.href=new URL(`./inline-play.css?v=${inlineVersion}`,import.meta.url).href;
+  document.head.appendChild(css);
+}
 
 const desktop=window.matchMedia('(min-width:901px)');
 const START_FEN='rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1';
