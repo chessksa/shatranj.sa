@@ -381,6 +381,9 @@ function startRush(){
 
 function setMode(next){
   mode=next;
+  const route=new URL(location.href);
+  route.hash=mode==='daily'?'#puzzles-daily':'#puzzles';
+  history.replaceState(history.state,'',route.pathname+route.search+route.hash);
   host?.querySelectorAll('[data-inline-puzzle-mode]').forEach(button=>{
     button.classList.toggle('active',button.dataset.inlinePuzzleMode===mode);
   });
@@ -502,8 +505,8 @@ export function mountInlinePuzzles(body,{initialMode='rated'}={}){
   void loadPuzzle();
 
   const url=new URL(location.href);
-  url.hash='#puzzles';
-  history.replaceState({},'',`${url.pathname}${url.search}${url.hash}`);
+  url.hash=mode==='daily'?'#puzzles-daily':'#puzzles';
+  history.replaceState(history.state,'',`${url.pathname}${url.search}${url.hash}`);
 }
 
 export function stopInlinePuzzles({restoreBoard=true}={}){
