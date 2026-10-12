@@ -39,11 +39,16 @@ function ensureCss(){
   link.rel='stylesheet';
   link.href=new URL('./inline-computer.css?v=20261011-computer-cards-centered-v1',import.meta.url).href;
   document.head.appendChild(link);
-  if(!document.getElementById('inlinePlayComputerBaseCss')){
+  // Avoid loading an outdated duplicate of inline-play.css after the current
+  // stylesheet: the later copy used to override the pawn-size correction.
+  const sharedBaseLoaded=[...document.querySelectorAll('link[rel="stylesheet"]')]
+    .some(link=>link.href.includes('/v2/home/inline-play.css'));
+  if(!sharedBaseLoaded){
     const base=document.createElement('link');
     base.id='inlinePlayComputerBaseCss';
     base.rel='stylesheet';
-    base.href=new URL('./inline-play.css?v=20261012-extracted-photo-pieces-v3',import.meta.url).href;
+    const currentVersion=encodeURIComponent(document.querySelector('meta[name="shatranj-asset-version"]')?.content||'20261012-pawns82-visible-v2');
+    base.href=new URL('./inline-play.css?v='+currentVersion,import.meta.url).href;
     document.head.appendChild(base);
   }
 }
