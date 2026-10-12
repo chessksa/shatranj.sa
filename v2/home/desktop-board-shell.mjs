@@ -482,6 +482,8 @@ if(desktop.matches && document.querySelector('#homeHero')){
     }catch(error){
       if(generation!==variantGeneration||!body.isConnected)return;
       console.error('تعذر تشغيل نماذج اللعب في الرقعة الرئيسية',error);
+      preview.classList.remove('inline-variants-active');
+      renderApprovedPreview(preview);
       const status=panel.querySelector('#variantStatus');
       if(status)status.textContent='تعذر تحميل نماذج اللعب. حاول إعادة فتح القائمة.';
     }
