@@ -218,8 +218,25 @@ async function loadPuzzle(){
     setStatus('استخدم الرقعة الرئيسية لتنفيذ النقلة.');
     renderBoard();
   }catch(error){
-    console.error(error);
-    setStatus('تعذر تحميل اللغز حاليًا.','error');
+    console.error('تعذر بدء جلسة اللغز',error);
+    puzzle=null;
+    if(mode==='daily'&&supabase){
+      try{
+        const {data, error:previewError}=await supabase.rpc('home_get_daily_puzzle_preview');
+        if(previewError)throw previewError;
+        const fallback=Array.isArray(data)?data[0]:data;
+        if(fallback?.fen){
+          chess=new Chess(fallback.fen);
+          userColor=chess.turn();
+          const title=host?.querySelector('#inlinePuzzleTitle');
+          const prompt=host?.querySelector('#inlinePuzzlePrompt');
+          if(title)title.textContent=fallback.title||'لغز اليوم';
+          if(prompt)prompt.textContent='انظر إلى وضعية اللغز';
+          renderBoard();
+        }
+      }catch(previewError){console.warn('تعذر عرض معاينة اللغز',previewError);}
+    }
+    setStatus('تعذر بدء جلسة الحل. حاول مرة أخرى.','error');
   }finally{
     board?.classList.remove('busy');
   }
@@ -245,6 +262,7 @@ async function finishPuzzle(success,row={}){
     return;
   }
   if(success){
+    if(mode==='daily')window.dispatchEvent(new CustomEvent('shatranj:daily-puzzle-solved'));
     setStatus(`صحيح!${row?.delta?` ${row.delta>0?'+':''}${row.delta} نقطة ألغاز`:''}`,'ok');
   }else{
     setStatus('ليست النقلة المطلوبة. اختر لغزًا جديدًا.','error');
