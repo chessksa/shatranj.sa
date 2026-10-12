@@ -55,7 +55,7 @@ assert.match(sql,/is_synthetic, false\) = false/,'Reject synthetic accounts');
 assert.match(sql,/interval '7 days'/);
 assert.match(sql,/interval '30 days'/);
 assert.match(sql,/grant execute on function public\.get_public_home_champions\(\) to anon, authenticated/);
-assert.match(home,/shatranj-asset-version" content="20261012-champions-evenpadding-v19"/);
+assert.match(home,/shatranj-asset-version" content="20261012-source-palette-v5"/);
 
 const begin=shell.indexOf('  async function refreshDesktopChampions(){');
 const end=shell.indexOf('\n  function setActiveNav(',begin);
