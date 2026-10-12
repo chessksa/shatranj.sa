@@ -1,4 +1,4 @@
-import { decorateBoardCoordinate } from './move-notebook.mjs';
+import { renderApprovedPreview } from './move-notebook.mjs';
 import { supabase } from '../platform/api.mjs';
 const desktopAssetVersion=encodeURIComponent(document.querySelector('meta[name="shatranj-asset-version"]')?.content||'20261009-fresh-ui-refresh-v1');
 const [computerModule,puzzlesModule,learnModule]=await Promise.all([
@@ -129,37 +129,7 @@ if(desktop.matches && document.querySelector('#homeHero')){
     }
     preview.classList.add('desktop-board-preview');
     preview.setAttribute('aria-label','فتح اللعب');
-    preview.replaceChildren();
-    const grid=document.createElement('span');
-    grid.className='desktop-board-grid';
-    const firstRank=['r','n','b','q','k','b','n','r'];
-    for(let i=0;i<64;i+=1){
-      const row=Math.floor(i/8),col=i%8;
-      const square=document.createElement('span');
-      square.className=`desktop-board-square ${(row+col)%2?'dark':'light'}`;
-      const displayName=`${'abcdefgh'[col]}${8-row}`;
-      // The desktop preview previously relied on an unlinked, legacy stylesheet.
-      // Use the same twelve canonical PNG files as gameplay and mobile.
-      const type=row===0||row===7?firstRank[col]:(row===1||row===6?'p':null);
-      if(type){
-        const piece=document.createElement('img');
-        const color=row<2?'b':'w';
-        piece.className='desktop-board-preview-piece';
-        if(type==='p'){
-          piece.classList.add('chess-pawn');
-          // The idle desktop board retains its 90% pawn size even if an old
-          // browser stylesheet is applied during reload.
-          piece.style.setProperty('transform','translate(-50%, -50%) scale(.90)','important');
-        }
-        piece.src=`assets/pieces/${color}${type}.png?v=${desktopAssetVersion}`;
-        piece.alt='';
-        piece.draggable=false;
-        square.appendChild(piece);
-      }
-      decorateBoardCoordinate(square,i,displayName);
-      grid.appendChild(square);
-    }
-    preview.append(grid);
+    renderApprovedPreview(preview);
     const stage=document.createElement('div');
     stage.className='desktop-board-stage';
     preview.parentNode.insertBefore(stage,preview);
