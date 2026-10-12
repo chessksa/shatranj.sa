@@ -59,6 +59,13 @@ jobs:
                 persistent:typeof persistedLiveMatchesCount!=='undefined'?persistedLiveMatchesCount:null
               }));
               console.log('COUNTER_DURING',JSON.stringify(during));
+              console.log('COUNTER_DEBUG',JSON.stringify(await home.evaluate(()=>({
+                hookReady:!!window.SHATRANJ_LIVE_MATCHES,
+                hookCounts:window.SHATRANJ_LIVE_MATCHES?.getCounts?.(),
+                scripts:[...document.scripts].filter(x=>x.id==='shatranjLiveMatchesCounter').map(x=>x.textContent.length),
+                headerElements:document.querySelectorAll('#headerMatchesCount').length,
+                headHtml:document.querySelector('#headerMatchesCount')?.outerHTML
+              }))));
               if(Number(during.displayed)<during.guest)throw Error('Visible counter omits guest games');
               game.once('dialog',d=>d.accept());
               await game.locator('#resignBtn').click();
