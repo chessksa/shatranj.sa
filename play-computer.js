@@ -187,7 +187,7 @@ function ensureCmStyles() {
   if (!document.querySelector('link[data-cm-chessboard-shatranj]')) {
     const theme = document.createElement('link');
     theme.rel = 'stylesheet';
-    theme.href = 'cm-chessboard-shatranj-v3.css?v=20261012-stable-board-wood4-v5';
+    theme.href = 'cm-chessboard-shatranj-v3.css?v=20261012-mobile-computer-board-v8';
     theme.dataset.cmChessboardShatranj = '1';
     document.head.appendChild(theme);
   }
@@ -250,11 +250,19 @@ function showMoveHints(square) {
 }
 
 function forceBoardSquareColors() {
+  // Transparent SVG squares masked the wood texture on mobile Safari,
+  // leaving a black board. Restore warm, semi-transparent chess squares.
+  // Desktop colors remain unchanged.
+  const mobile = window.matchMedia('(max-width:900px)').matches;
+  const light = mobile ? 'rgba(247,232,206,.86)' : 'rgba(255,247,224,.43)';
+  const dark = mobile ? 'rgba(118,83,55,.73)' : 'rgba(49,24,11,.36)';
   boardEl.querySelectorAll('.cm-chessboard .square.white').forEach(square => {
-    square.style.setProperty('fill', window.matchMedia('(max-width:900px)').matches ? 'transparent' : 'rgba(255,247,224,.43)', 'important');
+    square.style.setProperty('fill', light, 'important');
+    if (mobile) square.style.setProperty('fill-opacity', '1', 'important');
   });
   boardEl.querySelectorAll('.cm-chessboard .square.black').forEach(square => {
-    square.style.setProperty('fill', window.matchMedia('(max-width:900px)').matches ? 'transparent' : 'rgba(49,24,11,.36)', 'important');
+    square.style.setProperty('fill', dark, 'important');
+    if (mobile) square.style.setProperty('fill-opacity', '1', 'important');
   });
 }
 
