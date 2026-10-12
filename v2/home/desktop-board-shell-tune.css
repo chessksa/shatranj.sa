@@ -15,9 +15,9 @@
   }
 
   body.desktop-board-workspace #homeBoardPreview.desktop-board-preview{
-    width:min(calc(100vw - var(--desktop-board-sidebar) - var(--desktop-dashboard-width) - 18px),calc(100dvh - 12px))!important;
-    height:min(calc(100vw - var(--desktop-board-sidebar) - var(--desktop-dashboard-width) - 18px),calc(100dvh - 12px))!important;
-    padding:8px!important;
+    width:min(calc(100vw - var(--desktop-board-sidebar) - var(--desktop-dashboard-width) - 12px),calc(100dvh - 12px))!important;
+    height:min(calc(100vw - var(--desktop-board-sidebar) - var(--desktop-dashboard-width) - 12px),calc(100dvh - 12px))!important;
+    padding:0!important;
   }
 
   .desktop-dashboard-column{
