@@ -149,9 +149,27 @@ function updateStats(){
   const rating=host?.querySelector('#inlinePuzzleRating');
   const heartsEl=host?.querySelector('#inlinePuzzleHearts');
   const rushEl=host?.querySelector('#inlinePuzzleRush');
+  const rushLabel=host?.querySelector('#inlinePuzzleRushLabel');
+  if(rushLabel)rushLabel.textContent=mode==='daily'?'حلّوا اللغز':'النتيجة/الوقت';
   if(rating&&rating.dataset.value) rating.textContent=rating.dataset.value;
   if(heartsEl) heartsEl.textContent=mode==='daily'?String(hearts):'—';
-  if(rushEl&&!rush.active) rushEl.textContent=mode==='rush'?'180ث':'—';
+  if(rushEl&&!rush.active)rushEl.textContent=mode==='rush'?'180ث':mode==='daily'?'…':'—';
+}
+
+async function refreshDailySolvers(){
+  if(!active||mode!=='daily'||!supabase)return;
+  try{
+    const result=await rpc('home_get_daily_puzzle_solvers');
+    const count=Number(Array.isArray(result)?result[0]:result);
+    const target=host?.querySelector('#inlinePuzzleRush');
+    if(active&&mode==='daily'&&target){
+      target.textContent=Number.isFinite(count)?String(Math.max(0,count)):'—';
+    }
+  }catch(error){
+    console.warn('تعذر تحديث عداد حلّال لغز اليوم',error);
+    const target=host?.querySelector('#inlinePuzzleRush');
+    if(active&&mode==='daily'&&target)target.textContent='—';
+  }
 }
 
 function first(value){ return Array.isArray(value)?value[0]||null:value||null; }
@@ -217,6 +235,7 @@ async function loadPuzzle(){
     if(prompt) prompt.textContent=userColor==='w'?'دور الأبيض: ابحث عن أفضل نقلة':'دور الأسود: ابحث عن أفضل نقلة';
     setStatus('استخدم الرقعة الرئيسية لتنفيذ النقلة.');
     renderBoard();
+    if(mode==='daily')void refreshDailySolvers();
   }catch(error){
     console.error('تعذر بدء جلسة اللغز',error);
     puzzle=null;
@@ -262,7 +281,10 @@ async function finishPuzzle(success,row={}){
     return;
   }
   if(success){
-    if(mode==='daily')window.dispatchEvent(new CustomEvent('shatranj:daily-puzzle-solved'));
+    if(mode==='daily'){
+      window.dispatchEvent(new CustomEvent('shatranj:daily-puzzle-solved'));
+      void refreshDailySolvers();
+    }
     setStatus(`صحيح!${row?.delta?` ${row.delta>0?'+':''}${row.delta} نقطة ألغاز`:''}`,'ok');
   }else{
     setStatus('ليست النقلة المطلوبة. اختر لغزًا جديدًا.','error');
@@ -430,7 +452,7 @@ function buildPanel(body){
       <section class="inline-puzzle-stats">
         <div><small>تقييم الألغاز</small><strong id="inlinePuzzleRating">—</strong></div>
         <div><small>القلوب</small><strong id="inlinePuzzleHearts">—</strong></div>
-        <div><small>النتيجة/الوقت</small><strong id="inlinePuzzleRush">—</strong></div>
+        <div><small id="inlinePuzzleRushLabel">النتيجة/الوقت</small><strong id="inlinePuzzleRush">—</strong></div>
       </section>
 
       <section class="inline-puzzle-card">
