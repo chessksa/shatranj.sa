@@ -61,7 +61,11 @@
     object-fit:contain;transform:translate(-50%,-50%);
     transform-origin:center;pointer-events:none;user-select:none;
   }
-  /* Pawns only: 10% smaller, identical centering for both colors. */
+  /* All non-pawns 5% smaller than the approved 101% mobile baseline. */
+  .mfw-square > .mfw-piece:not(.inline-spectator-piece):not([src*="/wp.png"]):not([src*="/bp.png"]){
+    width:95.95%;height:95.95%;
+  }
+  /* Pawns stay 10% smaller, identical centering for both colors. */
   .mfw-square > .mfw-piece:not(.inline-spectator-piece):is([src*="/wp.png"],[src*="/bp.png"]){
     width:90.9%;height:90.9%;
   }
