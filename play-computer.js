@@ -183,7 +183,7 @@ function ensureCmStyles() {
     if (!document.querySelector('link[data-mobile-computer-singleboard]')) {
       const link = document.createElement('link');
       link.rel = 'stylesheet';
-      link.href = 'computer-single-board-mobile.css?v=20261012-canonical-mobile-v2';
+      link.href = 'computer-single-board-mobile.css?v=20261012-mobile-computer-input-v3';
       link.media = '(max-width:900px)';
       link.dataset.mobileComputerSingleboard = '1';
       document.head.insertBefore(link,document.querySelector('link[href*="site-charcoal-theme.css"]'));
@@ -432,7 +432,7 @@ function createMobileComputerBoard() {
           mobileSquare(from)?.classList.add('mobile-selected');
         }
       }
-    } else if (distance <= 10) {
+    } else if (to === from || distance <= 10) {
       // Process taps on pointerup; no dependency on iOS synthetic clicks.
       handleMobileSquarePress(to);
     }
