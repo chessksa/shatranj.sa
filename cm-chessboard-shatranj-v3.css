@@ -49,17 +49,6 @@
     fill:transparent!important;
     fill-opacity:0!important;
   }
-  body.computer-game .board-shell .cm-board-host .cm-chessboard.shatranj .board .square.white,
-  body.computer-game .board-shell .cm-board-host .cm-chessboard.shatranj .board .square.black{
-    fill-opacity:1!important;
-  }
-  /* Paint Wood 4 on the SVG surface as well: iOS Safari sometimes
-     composites a transparent chessboard over an opaque black SVG surface. */
-  body.computer-game .board-shell .cm-board-host .cm-chessboard,
-  body.computer-game .board-shell .cm-board-host .cm-chessboard > svg{
-    background:#ad8a65 url('assets/boards/wood4.jpg') center/100% 100% no-repeat!important;
-  }
-
   .board-shell .cm-board-host{
     background:#ad8a65 url('assets/boards/wood4.jpg') center/100% 100% no-repeat!important;
   }
