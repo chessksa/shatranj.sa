@@ -584,3 +584,55 @@ html.admin-embedded body :is(.stat-card strong,.stat-card.pro-stat strong,
  .admin-inline-header>strong,.admin-inline-tab.active){color:#f1efeb!important}
 /* Final-minute clock, game-result indicators, error/success feedback and actual
    chessboard squares, wooden texture and pieces retain their functional colors. */
+
+
+/* Final audit: hardcoded icon details, headings and popover backgrounds.
+   Chess-piece sprites and square rendering deliberately excluded. */
+html body.desktop-board-workspace :is(
+ .desktop-mini-puzzle-solvers,.desktop-mini-puzzle-solvers strong,
+ .desktop-suggested-name,.desktop-suggested-time,.desktop-suggested-message,
+ .desktop-home-side-card h3,.desktop-dashboard-message-card h3,
+ .desktop-play-online-choice h3,.desktop-play-choice-icon,
+ .desktop-welcome-copy small,.desktop-welcome-copy h2,
+ .desktop-champion-card .desktop-champion-title strong,
+ .desktop-champion-card .desktop-champion-count,
+ .desktop-champion-card .desktop-champion-meta
+){
+ color:#e2dcd3!important;
+}
+html body.desktop-board-workspace .desktop-home-side-card button,
+html body.desktop-board-workspace .desktop-suggested-time select{
+ background:linear-gradient(180deg,#484644,#343230)!important;
+ border-color:#53514e!important;
+ color:#f1efeb!important;
+}
+html body.desktop-board-workspace :is(.desktop-home-side-card button,
+ .desktop-suggested-time select):is(:hover,:focus-visible){
+ border-color:#817d77!important;
+ outline-color:#817d77!important;
+}
+html body.desktop-board-workspace .desktop-welcome-art :is(span,i,b){
+ color:#292825!important;text-shadow:none!important;
+}
+html body :is(.inline-variant-controls select,
+ .inline-learn-filters button,.inline-puzzle-custom select,
+ .desktop-suggested-time select){
+ background:#343230!important;color:#f1efeb!important;border-color:#53514e!important;
+}
+html body :is(.inline-learn-filters button.active,
+ .inline-play-times button.active,.desktop-play-time-options button.is-selected){
+ background:#45423f!important;color:#fff!important;border-color:#817d77!important;
+}
+html body :is(.desktop-dashboard-view.profile-view .desktop-dashboard-view-body,
+ .desktop-dashboard-view.embedded-view .desktop-dashboard-view-body,
+ .desktop-dashboard-embed,.desktop-guest-auth-card,
+ .desktop-auth-dialog,.desktop-auth-modal,.desktop-auth-panel){
+ background:#343230!important;background-image:none!important;
+ color:#f1efeb!important;
+}
+html body :is(.desktop-mini-puzzle-solvers strong,
+ .desktop-champion-icon,.desktop-play-choice-icon,
+ .desktop-home-nav-icon,.desktop-stat-icon){
+ filter:none!important;text-shadow:none!important;
+}
+/* Keep colored online/danger indicators, chess square highlights and all actual pieces. */
