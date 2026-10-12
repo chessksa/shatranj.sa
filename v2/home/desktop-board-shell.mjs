@@ -490,7 +490,7 @@ if(desktop.matches && document.querySelector('#homeHero')){
   }
 
   // Single desktop entry point for online games, friends, computer, and variants.
-  let selectedPlayChoice='online';
+  let selectedPlayChoice='';
   function playOptionsView(body){
     const panel=document.createElement('section');
     panel.className='desktop-play-options';
@@ -508,7 +508,6 @@ if(desktop.matches && document.querySelector('#homeHero')){
         '<button type="button" class="desktop-play-primary" data-play-choice="quick">بدء المباراة</button>',
       '</section>',
       '<nav class="desktop-play-choice-list" aria-label="طرق اللعب">',
-        '<button type="button" data-play-choice="online"><span class="desktop-play-choice-icon">'+sidebarIcon('play')+'</span><span>اللعب عبر الإنترنت</span></button>',
         '<button type="button" data-play-choice="computer"><span class="desktop-play-choice-icon">'+sidebarIcon('computer')+'</span><span>اللعب ضد الكمبيوتر</span></button>',
         '<button type="button" data-play-choice="friend"><span class="desktop-play-choice-icon">'+sidebarIcon('invite')+'</span><span>اللعب مع صديق</span></button>',
         '<button type="button" data-play-choice="variants"><span class="desktop-play-choice-icon">'+sidebarIcon('puzzles')+'</span><span>نماذج اللعب</span></button>',
@@ -543,9 +542,9 @@ if(desktop.matches && document.querySelector('#homeHero')){
           button.setAttribute('aria-pressed',String(selected));
         });
       }
-      if(type==='quick'||type==='online'){
+      if(type==='quick'){
         window.dispatchEvent(new CustomEvent('desktop:inline-play-open',{
-          detail:{minutes:selectedMinutes,autoStart:type!=='online'}
+          detail:{minutes:selectedMinutes,autoStart:true}
         }));
       }else if(type==='computer'){
         showDashboard('computer');
