@@ -1,4 +1,4 @@
-name: Verify single mobile computer chessboard
+name: Verify mobile homepage and computer board parity
 on:
   push:
     branches: [main]
@@ -6,6 +6,7 @@ on:
       - 'play-computer.js'
       - 'play-v10.html'
       - 'computer-single-board-mobile.css'
+      - 'mobile-home-fixed-v1.css'
       - '.github/workflows/verify-mobile-computer-board.yml'
   workflow_dispatch:
 permissions:
@@ -13,79 +14,114 @@ permissions:
 jobs:
   verify-mobile-board:
     runs-on: ubuntu-latest
-    timeout-minutes: 8
+    timeout-minutes: 9
     steps:
       - uses: actions/checkout@v4
-      - name: Install browser automation
+      - name: Install browser
         run: |
-          npm install --no-audit --no-fund --prefix /tmp/phone-board-check playwright-core@1.56.1 pngjs@7.0.0
+          npm install --no-audit --no-fund --prefix /tmp/chess-board-check playwright-core@1.56.1 pngjs@7.0.0
           command -v google-chrome
-      - name: Test mobile chessboard without overlay, then make a real move
+      - name: Compare actual homepage board against computer game and test legal move
         shell: bash
         run: |
-          python3 -m http.server 8765 --bind 127.0.0.1 >/tmp/computer-board-http.log 2>&1 &
+          python3 -m http.server 8765 --bind 127.0.0.1 >/tmp/board-check-server.log 2>&1 &
           export CHROME_PATH="$(command -v google-chrome)"
           node <<'JS'
-          const {chromium}=require('/tmp/phone-board-check/node_modules/playwright-core');
-          const {PNG}=require('/tmp/phone-board-check/node_modules/pngjs');
+          const {chromium}=require('/tmp/chess-board-check/node_modules/playwright-core');
+          const {PNG}=require('/tmp/chess-board-check/node_modules/pngjs');
+          const fs=require('fs');
           (async()=>{
             const browser=await chromium.launch({executablePath:process.env.CHROME_PATH,headless:true,args:['--no-sandbox','--disable-dev-shm-usage']});
             try{
               const context=await browser.newContext({viewport:{width:390,height:844},deviceScaleFactor:2,isMobile:true,hasTouch:true});
               const page=await context.newPage();
-              page.on('pageerror',error=>console.log('PAGE_ERROR:',error.message));
+              page.on('pageerror',e=>console.log('PAGE_ERROR:',e.message));
+              await page.goto('http://127.0.0.1:8765/index.html?test='+Date.now(),{waitUntil:'domcontentloaded',timeout:60000});
+              await page.waitForSelector('#mfwBoard .mfw-board-grid .mfw-square',{timeout:30000});
+              await page.waitForFunction(()=>[...document.querySelectorAll('#mfwBoard img.mfw-piece')].filter(x=>x.complete&&x.naturalWidth).length===32,null,{timeout:20000});
+              const homeBoard=page.locator('#mfwBoard .mfw-board-grid');
+              const original=await homeBoard.evaluate(e=>{
+                const square=e.querySelector('.mfw-square');
+                const dark=e.querySelector('.mfw-square.dark');
+                const img=e.querySelector('.mfw-piece:not([src*="/wp.png"]):not([src*="/bp.png"])');
+                const pawn=e.querySelector('.mfw-piece[src*="/wp.png"]');
+                const styles={};
+                for(const [k,node] of [['grid',e],['square',square],['dark',dark],['piece',img],['pawn',pawn]]){
+                  const g=getComputedStyle(node);
+                  styles[k]={background:g.backgroundImage,color:g.backgroundColor,border:g.borderRightWidth,
+                    width:g.width,height:g.height,objectFit:g.objectFit,transform:g.transform};
+                }
+                return {classes:e.className,squares:e.children.length,
+                  pieces:e.querySelectorAll('img.mfw-piece').length,
+                  coordinates:e.querySelectorAll('.mfw-coordinate').length,
+                  images:[...e.querySelectorAll('img.mfw-piece')].map(i=>i.getAttribute('src')),
+                  styles};
+              });
+              const homeBuffer=await homeBoard.screenshot({path:'/tmp/real-mobile-home-board.png'});
+              console.log('REAL_HOME_BOARD',JSON.stringify(original));
               await page.goto('http://127.0.0.1:8765/play-entry-v16.html?computer=1&test='+Date.now(),{waitUntil:'domcontentloaded',timeout:60000});
-              await page.waitForSelector('body.computer-game',{timeout:35000});
-              await page.waitForSelector('#board.mobile-computer-single-board .mobile-board-square',{timeout:25000});
-              await page.waitForFunction(()=>[...document.querySelectorAll('#board img')].filter(img=>img.complete && img.naturalWidth).length===32,null,{timeout:25000});
-              async function check(phase){
-                const result=await page.evaluate(()=>{
-                  const board=document.getElementById('board');
-                  const squares=[...board.querySelectorAll('.mobile-board-square')];
-                  const imgs=[...board.querySelectorAll('.mobile-board-piece')];
-                  const css=getComputedStyle(board);
-                  return {
-                    className:board.className,children:board.children.length,squares:squares.length,pieces:imgs.length,
-                    loaded:imgs.filter(img=>img.complete&&img.naturalWidth>0).length,svgLayers:document.querySelectorAll('#board svg').length,
-                    extraGrids:document.querySelectorAll('.mobile-computer-main-grid,.has-mobile-home-board').length,
-                    background:css.backgroundImage,light:getComputedStyle(board.querySelector('.light')).backgroundColor,
-                    dark:getComputedStyle(board.querySelector('.dark')).backgroundColor,
-                    rect:board.getBoundingClientRect().toJSON()
-                  };
+              await page.waitForSelector('#board.mfw-board-grid.mobile-computer-single-board .mfw-square',{timeout:30000});
+              await page.waitForFunction(()=>[...document.querySelectorAll('#board img.mfw-piece')].filter(x=>x.complete&&x.naturalWidth).length===32,null,{timeout:20000});
+              const board=page.locator('#board.mobile-computer-single-board');
+              async function test(phase){
+                const state=await board.evaluate(e=>{
+                  const square=e.querySelector('.mfw-square');
+                  const dark=e.querySelector('.mfw-square.dark');
+                  const img=e.querySelector('.mfw-piece:not([src*="/wp.png"]):not([src*="/bp.png"])');
+                  const pawn=e.querySelector('.mfw-piece[src*="/wp.png"]');
+                  const styles={};
+                  for(const [k,node] of [['grid',e],['square',square],['dark',dark],['piece',img],['pawn',pawn]]){
+                    const g=getComputedStyle(node);
+                    styles[k]={background:g.backgroundImage,color:g.backgroundColor,border:g.borderRightWidth,
+                      width:g.width,height:g.height,objectFit:g.objectFit,transform:g.transform};
+                  }
+                  return {classes:e.className,squares:e.children.length,svg:e.querySelectorAll('svg').length,
+                    pieces:e.querySelectorAll('img.mfw-piece').length,
+                    coordinates:e.querySelectorAll('.mfw-coordinate').length,
+                    images:[...e.querySelectorAll('img.mfw-piece')].map(i=>i.getAttribute('src')),styles};
                 });
-                console.log(phase,JSON.stringify(result));
-                if(result.squares!==64||result.children!==64||result.pieces!==32||result.loaded!==32||
-                   result.svgLayers!==0||result.extraGrids!==0||!result.background.includes('wood4.jpg')||
-                   result.rect.width<300||result.light==='rgba(0, 0, 0, 0)')throw Error('Single board contract failed at '+phase);
+                console.log(phase,JSON.stringify(state));
+                if(state.squares!==64||state.svg!==0||state.pieces!==32||state.coordinates!==16||
+                   state.styles.grid.background!==original.styles.grid.background||
+                   state.styles.square.color!==original.styles.square.color||
+                   state.styles.dark.color!==original.styles.dark.color||
+                   state.styles.piece.width!==original.styles.piece.width||
+                   state.styles.pawn.width!==original.styles.pawn.width) throw Error('Not an identical homepage mobile board: '+phase);
+                return state;
               }
-              await check('level-picker');
-              const boardBounds=await page.locator('#board').boundingBox();
-              const pixels=PNG.sync.read(await page.screenshot({path:'/tmp/mobile-single-board-before.png'}));
-              const x=Math.floor((boardBounds.x+boardBounds.width*4.5/8)*2);
-              const y=Math.floor((boardBounds.y+boardBounds.height*3.5/8)*2);
-              const i=4*(y*pixels.width+x);
-              const color=[...pixels.data.slice(i,i+3)];
-              console.log('VISIBLE_BOARD_PIXEL',color);
-              if(color.every(n=>n<25)) throw Error('Board appears black');
+              await test('COMPUTER_CHOOSER_BOARD');
+              const computerBuffer=await board.screenshot({path:'/tmp/real-mobile-computer-board.png'});
+              const a=PNG.sync.read(homeBuffer),b=PNG.sync.read(computerBuffer);
+              const get=(img,fx,fy)=>{
+                const x=Math.min(img.width-1,Math.floor(img.width*fx));
+                const y=Math.min(img.height-1,Math.floor(img.height*fy));
+                const j=(y*img.width+x)*4;
+                return Array.from(img.data.slice(j,j+3));
+              };
+              const samples=[[.43,.43],[.53,.44],[.31,.32],[.67,.25],[.06,.06],[.94,.94]];
+              for(const [fx,fy] of samples){
+                const one=get(a,fx,fy),two=get(b,fx,fy);
+                const diff=one.reduce((sum,c,i)=>sum+Math.abs(c-two[i]),0);
+                console.log('IMAGE_COMPARE',fx,fy,one,two,diff);
+                if(diff>70)throw Error('Homepage and computer pixel difference too large');
+              }
               await page.locator('.opponent-time-option[data-level="easy"]').click();
-              await check('after-level');
+              await test('AFTER_DIFFICULTY');
               await page.locator('.opponent-time-option[data-minutes="5"]').click();
-              await page.waitForFunction(()=>document.body.classList.contains('live-game'),null,{timeout:25000});
-              await check('playing');
+              await page.waitForFunction(()=>document.body.classList.contains('live-game'),null,{timeout:23000});
+              await test('MATCH_STARTED');
               await page.locator('#board [data-square="e2"]').click();
-              await page.waitForSelector('#board [data-square="e2"].mobile-selected',{timeout:8000});
               await page.locator('#board [data-square="e4"]').click();
-              await page.waitForFunction(()=>document.querySelector('#board [data-square="e4"]')?.dataset.piece==='wp',null,{timeout:16000});
-              console.log('MOVE_E2_E4_VERIFIED');
-              await page.screenshot({path:'/tmp/mobile-single-board-after.png'});
-              console.log('SINGLE_BOARD_VERIFIED');
+              await page.waitForFunction(()=>document.querySelector('#board [data-square="e4"] img')?.src.includes('/wp.png'),null,{timeout:16000});
+              await page.screenshot({path:'/tmp/real-mobile-computer-playing.png'});
+              console.log('CANONICAL_MOBILE_BOARD_AND_MOVE_VERIFIED');
             }finally{await browser.close()}
-          })().catch(e=>{console.error(e);process.exit(1)});
+          })().catch(error=>{console.error(error);process.exit(1)});
           JS
-      - name: Save before and after screenshots
+      - name: Capture baseline and game screenshots
         if: always()
         uses: actions/upload-artifact@v4
         with:
-          name: mobile-single-board-test
-          path: /tmp/mobile-single-board-*.png
+          name: canonical-mobile-board-parity
+          path: /tmp/real-mobile-*.png
           if-no-files-found: ignore
