@@ -1,22 +1,21 @@
 import fs from 'node:fs';
 import assert from 'node:assert/strict';
 
-const previewCss=fs.readFileSync('v2/home/desktop-board-preview-pieces.css','utf8');
-const playCss=fs.readFileSync('v2/home/inline-play.css','utf8');
+const source=fs.readFileSync('v2/home/desktop-board-shell.mjs','utf8');
+const style=fs.readFileSync('v2/home/desktop-board-shell.css','utf8');
+const play=fs.readFileSync('v2/home/inline-play.css','utf8');
+const mobile=fs.readFileSync('mobile-home-fixed-v1.css','utf8');
+const sprite=fs.readFileSync('assets/pieces/shatranj-approved-20260904.svg','utf8');
 
-assert.match(previewCss,/#homeBoardPreview:not\(\.inline-play-active\) \.desktop-board-square::after/,'طبقة قطع المعاينة يجب أن تختفي فور دخول وضع اللعب لمنع تراكب طقمين');
-assert.match(previewCss,/width:100%/,'قطع معاينة الرئيسية يجب أن تستخدم نفس عرض قطع اللعب');
-assert.match(previewCss,/height:100%/,'قطع معاينة الرئيسية يجب أن تستخدم نفس ارتفاع قطع اللعب');
-assert.match(previewCss,/transform:translate\(-50%,-50%\) scale\(var\(--piece-scale,1\)\)/,'قطع المعاينة يجب أن تستخدم نفس طريقة تمركز قطع اللعب');
-
-for(const code of ['wp','wn','wb','wr','wq','wk','bp','bn','bb','br','bq','bk']){
-  assert.ok(previewCss.includes(`assets/pieces/${code}.png`),`Preview needs artwork for ${code}`);
+assert.match(source,/desktop-board-preview-piece/,'Desktop preview must render canonical PNG images, not the legacy detached CSS');
+assert.match(source,/assets\/pieces\//,'Desktop preview must use the canonical image directory');
+assert.match(source,/firstRank=\['r','n','b','q','k','b','n','r'\]/,'Pieces must appear in their initial chess position');
+assert.match(style,/\.desktop-board-square > \.desktop-board-preview-piece/,'The preview must center the real PNG images');
+assert.match(style,/preview-piece:is\(\[src\*="\/wp\.png"\],\[src\*="\/bp\.png"\]\)/,'Both colors must use the same pawn sizing rule');
+assert.match(style,/scale\(\.90\)!important/,'Desktop preview pawns must be scaled to 90%');
+assert.match(play,/--piece-scale:\.90/,'Desktop online, computer, puzzles and lessons must scale pawns to 90%');
+assert.match(mobile,/width:90\.9%;height:90\.9%/,'Mobile pawns must be 90% of the original 101% display size');
+for(const color of ['wp','bp']){
+  assert.match(sprite,new RegExp('<g id="'+color+'" transform="translate\\(2 2\\) scale\\(0\\.90\\)">'),'SVG-based games must center pawns at 90%');
 }
-const placements=[...previewCss.matchAll(/--piece-left:50%;--piece-top:50%;--piece-scale:1;/g)];
-assert.equal(placements.length,12,'All twelve types must be centered');
-assert.ok(playCss.includes('left:var(--piece-left,50%)'),'Live board horizontal placement must match preview');
-assert.ok(playCss.includes('top:var(--piece-top,50%)'),'Live board vertical placement must match preview');
-
-assert.doesNotMatch(previewCss,/\.desktop-board-square::after\s*\{[\s\S]*?inset:2%/,'يجب إزالة الحجم القديم الأصغر من قطع المعاينة');
-
-console.log('desktop board preview pieces verification passed');
+console.log('Unified pawn size and preview verification passed');
