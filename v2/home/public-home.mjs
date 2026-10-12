@@ -65,27 +65,23 @@ function renderTicker(members){
 function renderSnapshot(snapshot){
   latestSnapshot=snapshot||{};
   const players=document.querySelector('#headerPlayersCount');
-  const matches=document.querySelector('#headerMatchesCount');
   if(players) players.textContent=String(Number(latestSnapshot.registered_count||0));
-  if(matches) matches.textContent=String(Number(latestSnapshot.active_matches||0));
+  // Matches are owned by SHATRANJ_LIVE_MATCHES (human, rated computer,
+  // and live guest computer presence). Do not overwrite that live count.
   renderTicker(latestSnapshot.latest_members||[]);
 }
 
 function protectLiveValues(){
   const players=document.querySelector('#headerPlayersCount');
-  const matches=document.querySelector('#headerMatchesCount');
   const track=document.querySelector('#welcomeTickerTrack');
 
   const resetNumbers=()=>{
     if(!latestSnapshot) return;
     const registered=String(Number(latestSnapshot.registered_count||0));
-    const active=String(Number(latestSnapshot.active_matches||0));
     if(players&&players.textContent!==registered) players.textContent=registered;
-    if(matches&&matches.textContent!==active) matches.textContent=active;
   };
 
   if(players) new MutationObserver(resetNumbers).observe(players,{childList:true,characterData:true,subtree:true});
-  if(matches) new MutationObserver(resetNumbers).observe(matches,{childList:true,characterData:true,subtree:true});
   if(track){
     new MutationObserver(()=>{
       if(!latestSnapshot||renderingTicker) return;
