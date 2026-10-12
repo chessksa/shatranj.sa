@@ -154,7 +154,9 @@
 
   // On mobile use the original Wood 4 image only; no old brown SVG overlays.
   function applyReferenceBoardPalette() {
-    if (!isReferenceMobile()) return;
+    // Computer mode owns its SVG palette; keep the opaque-square fallback.
+    // Older mobile-only transparency made the board appear completely black.
+    if (!isReferenceMobile() || document.body.classList.contains('computer-game')) return;
     const board = document.getElementById('board');
     if (!board) return;
     board.querySelectorAll('.cm-chessboard .square.white').forEach((square) => {
@@ -166,7 +168,7 @@
   }
 
   function watchReferenceBoardPalette() {
-    if (!isReferenceMobile()) return;
+    if (!isReferenceMobile() || document.body.classList.contains('computer-game')) return;
     const board = document.getElementById('board');
     if (!board || boardObserver) {
       applyReferenceBoardPalette();
