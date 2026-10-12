@@ -3,14 +3,46 @@ import { supabase } from '../platform/api.mjs';
 import { populateHomeSideRail } from './home-side-rail.mjs?v=20261012-large-daily-board-v3';
 import { mountPersonalStatistics } from './personal-statistics.mjs?v=20261012-home-stats-v1';
 const desktopAssetVersion=encodeURIComponent(document.querySelector('meta[name="shatranj-asset-version"]')?.content||'20261009-fresh-ui-refresh-v1');
-const [computerModule,puzzlesModule,learnModule]=await Promise.all([
-  import(`./inline-computer.mjs?v=${desktopAssetVersion}`),
-  import(`./inline-puzzles.mjs?v=${desktopAssetVersion}`),
-  import(`./inline-learn.mjs?v=${desktopAssetVersion}`)
-]);
-const {mountInlineComputer,stopInlineComputer}=computerModule;
-const {mountInlinePuzzles,stopInlinePuzzles}=puzzlesModule;
-const {mountInlineLearn,stopInlineLearn}=learnModule;
+// Game-mode modules load only when chosen. A slow chess-engine or CDN import
+// must never hold the whole desktop homepage behind its startup curtain.
+function optionalMode(file,mountMethod,stopMethod,viewClass){
+  let loaded=null;
+  let generation=0;
+  return {
+    mount(body,options){
+      const current=++generation;
+      loaded ||= import(`./${file}?v=${desktopAssetVersion}`).catch(error=>{
+        loaded=null;
+        throw error;
+      });
+      void loaded.then(module=>{
+        if(current!==generation || !body?.isConnected ||
+           !document.getElementById('desktopDashboardView')?.classList.contains(viewClass))return;
+        module[mountMethod](body,options);
+      }).catch(error=>{
+        if(current!==generation || !body?.isConnected)return;
+        console.error('تعذر فتح قسم الشطرنج',file,error);
+        const message=document.createElement('p');
+        message.className='desktop-dashboard-message-card';
+        message.textContent='تعذر تحميل هذا القسم حاليًا. حاول فتحه مجددًا.';
+        body.replaceChildren(message);
+      });
+    },
+    stop(){
+      ++generation;
+      if(loaded)void loaded.then(module=>module[stopMethod]()).catch(()=>{});
+    }
+  };
+}
+const computerMode=optionalMode('inline-computer.mjs','mountInlineComputer','stopInlineComputer','computer-view');
+const puzzlesMode=optionalMode('inline-puzzles.mjs','mountInlinePuzzles','stopInlinePuzzles','puzzle-view');
+const learnMode=optionalMode('inline-learn.mjs','mountInlineLearn','stopInlineLearn','learn-view');
+const mountInlineComputer=(...args)=>computerMode.mount(...args);
+const stopInlineComputer=()=>computerMode.stop();
+const mountInlinePuzzles=(...args)=>puzzlesMode.mount(...args);
+const stopInlinePuzzles=()=>puzzlesMode.stop();
+const mountInlineLearn=(...args)=>learnMode.mount(...args);
+const stopInlineLearn=()=>learnMode.stop();
 let spectatorModulePromise=null;
 const spectatorModule=()=>spectatorModulePromise||(spectatorModulePromise=import(`./inline-tournament-spectator.mjs?v=${desktopAssetVersion}`).catch(error=>{spectatorModulePromise=null;throw error;}));
 function stopSpectatingTournament(){
