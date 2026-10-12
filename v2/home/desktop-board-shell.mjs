@@ -1,6 +1,6 @@
 import { renderApprovedPreview } from './move-notebook.mjs?v=20261012-notebook-aligned-v13';
 import { supabase } from '../platform/api.mjs';
-import { populateHomeSideRail } from './home-side-rail.mjs?v=20261012-hard-daily-count-select-time-v2';
+import { populateHomeSideRail } from './home-side-rail.mjs?v=20261012-large-daily-board-v3';
 const desktopAssetVersion=encodeURIComponent(document.querySelector('meta[name="shatranj-asset-version"]')?.content||'20261009-fresh-ui-refresh-v1');
 const [computerModule,puzzlesModule,learnModule]=await Promise.all([
   import(`./inline-computer.mjs?v=${desktopAssetVersion}`),
