@@ -173,8 +173,12 @@
   }
   .desktop-board-square.light{background:rgba(255,247,224,.43)!important}
   .desktop-board-square.dark{background:rgba(49,24,11,.36)!important}
-  .desktop-board-hint{position:absolute;z-index:3;left:14px;bottom:14px;min-height:40px;padding:0 12px;display:flex;align-items:center;gap:7px;border:1px solid rgba(224,181,103,.48);border-radius:12px;background:rgba(2,47,51,.94);color:#f4efe6;font-size:11px;font-weight:900;box-shadow:0 7px 18px rgba(0,0,0,.18);pointer-events:none}
-  .desktop-board-hint-icon{font-size:17px;color:#efcf7c}
+  /* Prevent historical CSS sprite pseudo-layers from painting on top of current images.
+     Restrict to the idle preview; legal move markers in active boards stay untouched. */
+  body.desktop-board-workspace #homeBoardPreview.desktop-board-preview:not(.inline-play-active):not(.inline-computer-active):not(.inline-puzzle-active):not(.inline-learn-active):not(.inline-tournament-spectator) .desktop-board-square::after,
+  body.desktop-board-workspace #homeBoardPreview.desktop-board-preview:not(.inline-play-active):not(.inline-computer-active):not(.inline-puzzle-active):not(.inline-learn-active):not(.inline-tournament-spectator) .desktop-board-square::before{
+    content:none!important;display:none!important;background-image:none!important;
+  }
 
   /* Center dashboard: occupies the former empty area and stays visible beside the board. */
   .desktop-dashboard-column{
@@ -189,11 +193,9 @@
     direction:rtl;
   }
   .desktop-dashboard-home{height:100%;display:grid;grid-template-rows:minmax(0,1fr) auto;gap:9px}
-  body.desktop-board-workspace .desktop-quick-card,
-  body.desktop-board-workspace .desktop-quick-actions{display:none!important}
   .desktop-dashboard-home[hidden]{display:none!important}
 
-  .desktop-welcome-card,.desktop-live-stat,.desktop-quick-card,.desktop-tip-card,.desktop-dashboard-view{
+  .desktop-welcome-card,.desktop-live-stat,.desktop-dashboard-view{
     border:1px solid rgba(102,172,173,.34);
     background:linear-gradient(145deg,rgba(6,59,63,.94),rgba(3,45,49,.94));
     box-shadow:0 12px 28px rgba(0,0,0,.14),inset 0 1px 0 rgba(255,255,255,.03);
@@ -216,18 +218,6 @@
   .desktop-stat-icon{font-size:17px;line-height:1;font-weight:900;letter-spacing:-3px}.desktop-stat-icon.gold{color:#f0bd50}.desktop-stat-icon.green{color:#45d778}.desktop-stat-icon.cyan{color:#45bff0}
   .desktop-live-stat strong{margin-top:5px;color:#f4efe6;font-size:22px;line-height:1;font-weight:900;direction:ltr}
   .desktop-live-stat small{margin-top:5px;color:#d8d1c5;font-size:12px;font-weight:700;white-space:nowrap}
-
-  .desktop-quick-card{border-radius:14px;padding:10px;display:flex;flex-direction:column;min-height:0}
-  .desktop-card-title{flex:0 0 auto;display:flex;align-items:center;justify-content:flex-start;gap:6px;margin-bottom:8px;font-size:13px;color:#f4efe6}
-  .desktop-card-title>span{color:#efc05a;font-size:18px}.desktop-card-title strong{font-weight:900}
-  .desktop-quick-actions{flex:1;min-height:0;display:grid;grid-template-columns:repeat(2,minmax(0,1fr));grid-template-rows:repeat(2,minmax(0,1fr));gap:7px}
-  .desktop-quick-action{min-width:0;min-height:0;padding:7px 8px;border:1px solid rgba(102,172,173,.36);border-radius:11px;background:linear-gradient(145deg,rgba(6,64,68,.96),rgba(4,51,55,.96));color:#f4efe6;font-family:Arial,sans-serif;text-decoration:none;display:grid;grid-template-columns:14px minmax(0,1fr) 34px;align-items:center;gap:5px;cursor:pointer;text-align:right}
-  button.desktop-quick-action{width:100%}
-  .desktop-quick-action:hover{border-color:rgba(224,181,103,.62);transform:translateY(-1px)}
-  .desktop-quick-action.primary{background:linear-gradient(135deg,#efca72,#d9aa4f);border-color:#f0cf82;color:#173536}
-  .desktop-quick-chevron{font-size:22px;line-height:1;opacity:.9}.desktop-quick-copy{min-width:0;display:flex;flex-direction:column;gap:3px}.desktop-quick-copy strong{font-size:14px;font-weight:900;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}.desktop-quick-copy small{font-size:12px;font-weight:700;opacity:.82;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}.desktop-quick-icon{display:grid;place-items:center;width:32px;height:32px;border-radius:9px;background:rgba(224,181,103,.08);color:#efcf7c;font-size:24px;font-weight:900}.desktop-quick-action.primary .desktop-quick-icon{background:rgba(23,53,54,.10);color:#173536}
-
-  .desktop-tip-card{border-radius:14px;padding:10px 13px;display:flex;align-items:center;gap:10px;min-height:0}.desktop-tip-icon{flex:0 0 auto;color:#efc45f;font-size:23px}.desktop-tip-card>div{min-width:0;display:flex;flex-direction:column;gap:5px}.desktop-tip-card strong{font-size:14px;font-weight:900}.desktop-tip-card p{margin:0;color:#e5ded1;font-size:12px;font-weight:700;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
 
   /* The center panel changes while the board stays fixed. */
   .desktop-dashboard-view{height:100%;border-radius:15px;overflow:hidden;display:flex;flex-direction:column}
@@ -505,7 +495,7 @@
 @media(min-width:901px) and (max-height:720px){
   .desktop-dashboard-home{grid-template-rows:minmax(0,1fr) auto;gap:7px}
   .desktop-welcome-copy{padding:11px 6px 10px 12px}.desktop-welcome-copy small{font-size:13px}.desktop-welcome-copy h2{font-size:23px}.desktop-welcome-copy p{font-size:9px}.desktop-welcome-rule{margin:7px 0 6px}.desktop-welcome-copy blockquote{font-size:8px}
-  .desktop-live-stat small{font-size:8px}.desktop-live-stat strong{font-size:18px}.desktop-quick-card{padding:7px}.desktop-card-title{margin-bottom:5px}.desktop-quick-copy strong{font-size:10px}.desktop-tip-card{padding:7px 10px}
+  .desktop-live-stat small{font-size:8px}.desktop-live-stat strong{font-size:18px}
   .desktop-member-card{min-height:94px;padding:7px}.desktop-member-avatar-wrap{width:50px;height:50px}.desktop-member-copy>strong{font-size:13px}
   body.desktop-board-workspace .desktop-home-nav-link{min-height:39px!important}
 }
