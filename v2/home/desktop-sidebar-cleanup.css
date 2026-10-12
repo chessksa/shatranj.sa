@@ -280,22 +280,15 @@
   body.desktop-board-workspace .v2-global-sidebar.desktop-sidebar-refined .desktop-home-nav-link.active,
   body.desktop-board-workspace .v2-global-sidebar.desktop-sidebar-refined .desktop-home-nav-link[aria-current="page"]{
     position:relative!important;
-    border:0!important;
+    border:1px solid #d7b66c!important;
     border-radius:0!important;
-    background:rgba(39,125,130,.14)!important;
+    background:rgba(215,182,108,.05)!important;
     box-shadow:none!important;
     color:#f4eddb!important;
   }
   body.desktop-board-workspace .v2-global-sidebar.desktop-sidebar-refined .desktop-home-nav-link.active::before,
   body.desktop-board-workspace .v2-global-sidebar.desktop-sidebar-refined .desktop-home-nav-link[aria-current="page"]::before{
-    content:"";
-    position:absolute;
-    top:0;
-    right:0;
-    bottom:0;
-    width:4px;
-    border-radius:0;
-    background:#efc77b;
+    content:none!important;
   }
   body.desktop-board-workspace .desktop-home-nav-icon{
     display:grid!important;
