@@ -23,6 +23,7 @@ on:
       - 'tests/desktop-board-preview-pieces.test.mjs'
       - 'tests/desktop-single-layer.test.mjs'
       - 'tests/desktop-move-notebook.test.mjs'
+      - 'tests/desktop-move-grid-pieces95.test.mjs'
       - 'tests/desktop-home-board-return.test.mjs'
       - 'tests/mobile-play-wood4-palette.test.mjs'
       - '.github/workflows/home-inline-play-verify.yml'
@@ -48,6 +49,7 @@ on:
       - 'tests/desktop-board-preview-pieces.test.mjs'
       - 'tests/desktop-single-layer.test.mjs'
       - 'tests/desktop-move-notebook.test.mjs'
+      - 'tests/desktop-move-grid-pieces95.test.mjs'
       - 'tests/desktop-home-board-return.test.mjs'
       - 'tests/mobile-play-wood4-palette.test.mjs'
       - '.github/workflows/home-inline-play-verify.yml'
@@ -70,6 +72,7 @@ jobs:
       - run: node tests/desktop-board-preview-pieces.test.mjs
       - run: node tests/desktop-single-layer.test.mjs
       - run: node tests/desktop-move-notebook.test.mjs
+      - run: node tests/desktop-move-grid-pieces95.test.mjs
       - run: node tests/desktop-home-board-return.test.mjs
       - run: node tests/mobile-play-wood4-palette.test.mjs
       - run: node --check exact-board-v13.js
