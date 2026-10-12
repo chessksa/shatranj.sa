@@ -429,6 +429,24 @@
     font-size:clamp(10px,.72vw,11.5px);
     line-height:1.15;font-weight:900;white-space:nowrap;
   }
+  /* Two barely visible vertical dividers between title, player and score.
+     Keep the icon and its label together in the first section. */
+  .desktop-champion-title,
+  .desktop-champion-name{
+    position:relative;
+  }
+  .desktop-champion-title::after,
+  .desktop-champion-name::after{
+    content:"";
+    position:absolute;
+    inset-inline-end:0;
+    top:50%;
+    transform:translateY(-50%);
+    inline-size:1px;
+    block-size:18px;
+    background:rgba(245,244,240,.14);
+    pointer-events:none;
+  }
   .desktop-champion-icon{
     flex:0 0 21px;width:21px;height:21px;min-width:21px;
     display:grid;place-items:center;
