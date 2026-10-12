@@ -46,8 +46,8 @@
   display:grid;
   place-items:center;
   border-radius:7px;
-  background:rgba(224,181,103,.10);
-  color:#efc878;
+  background:rgba(165,162,158,0.1);
+  color:#e2dcd3;
   font:800 14px/1 Arial,sans-serif;
 }
 
@@ -235,7 +235,7 @@
     min-height:42px!important;
     border:0!important;
     border-radius:12px!important;
-    background:#b9782d!important;
+    background:#9b958d!important;
     color:#fff!important;
     font-size:12px!important;
     font-weight:900!important;

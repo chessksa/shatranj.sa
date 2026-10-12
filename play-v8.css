@@ -1,9 +1,9 @@
 /* Approved realistic chess board: direct piece images for reliable rendering. */
 :root{
   --real-board-dark:#925A4E;
-  --real-board-light:#F1EEE8;
-  --real-board-edge:#063a40;
-  --real-board-gold:#e0b567;
+  --real-board-light:#e2dcd3;
+  --real-board-edge:#302e2b;
+  --real-board-gold:#e2dcd3;
 }
 .board-frame{
   padding:10px 10px 18px !important;
