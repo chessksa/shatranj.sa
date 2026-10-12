@@ -7,6 +7,10 @@
   right:auto!important;
   left:auto!important;
   z-index:8!important;
+  border-bottom:1px solid rgba(54,143,144,.34)!important;
+}
+#chessNewsTicker .welcome-ticker-label{
+  border-left:1px solid rgba(54,143,144,.34)!important;
 }
 #chessNewsTicker .chess-news-label{
   color:inherit;
@@ -109,7 +113,7 @@ html body #tournamentResultsTicker{
     flex:none!important;
     margin:0!important;
     border-top:0!important;
-    border-bottom:1px solid rgba(224,181,103,.38)!important;
+    border-bottom:1px solid rgba(54,143,144,.34)!important;
   }
 
   body .home-hero{order:3!important}
