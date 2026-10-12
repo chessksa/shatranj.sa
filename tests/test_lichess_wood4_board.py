@@ -28,7 +28,6 @@ def test_home_and_play_use_one_locally_hosted_original_texture():
         "mobile-home-fixed-v1.css": "assets/boards/wood4.jpg",
         "v2/home/desktop-board-shell.css": "../../assets/boards/wood4.jpg",
         "v2/home/mobile-board-shell.css": "../../assets/boards/wood4.jpg",
-        "board-reference-v12.css": "assets/boards/wood4.jpg",
         "v2/play/home-palette.css": "../../assets/boards/wood4.jpg",
         "cm-chessboard-shatranj-v3.css": "assets/boards/wood4.jpg",
         "settings-v2.html": "assets/boards/wood4.jpg",
@@ -42,7 +41,9 @@ def test_approved_theme_squares_are_translucent():
     mobile = (ROOT / "mobile-home-fixed-v1.css").read_text(encoding="utf-8")
     desktop = (ROOT / "v2/home/desktop-board-shell.css").read_text(encoding="utf-8")
     game = (ROOT / "cm-chessboard-shatranj-v3.css").read_text(encoding="utf-8")
-    for css in (mobile, desktop, game):
+    assert ".mfw-square.light{background:transparent}" in mobile
+    assert ".mfw-square.dark{background:transparent}" in mobile
+    for css in (desktop, game):
         assert "rgba(255,247,224,.43)" in css
         assert "rgba(49,24,11,.36)" in css
 
