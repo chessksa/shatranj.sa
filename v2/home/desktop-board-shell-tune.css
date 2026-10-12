@@ -1,6 +1,7 @@
 @media(min-width:901px){
   :root{
-    --desktop-dashboard-width:clamp(320px,20.2vw,350px)!important;
+    /* Reallocate the full width saved by narrowing the right sidebar to the center column. */
+    --desktop-dashboard-width:calc(clamp(320px,20.2vw,350px) + clamp(215px,16vw,265px) - clamp(185px,13.5vw,205px))!important;
     --desktop-workspace-gap:6px!important;
     --desktop-gap:6px;
   }
