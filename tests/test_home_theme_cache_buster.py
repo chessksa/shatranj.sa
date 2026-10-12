@@ -27,7 +27,7 @@ def test_desktop_sidebar_has_one_authoritative_active_style():
 
     assert sidebar_css.count('body.desktop-board-workspace .v2-global-sidebar.desktop-sidebar-refined .desktop-home-nav-link.active,') == 1
     assert 'gap:2px!important' in sidebar_css
-    assert 'border:1px solid #d7b66c!important;' in sidebar_css
+    assert 'border:0.5px solid #d7b66c!important;' in sidebar_css
     assert 'content:none!important;' in sidebar_css
     assert 'outline:1px solid rgba(215,182,108,.70)!important;' in sidebar_css
     assert 'data-desktop-sidebar-cleanup' in html
