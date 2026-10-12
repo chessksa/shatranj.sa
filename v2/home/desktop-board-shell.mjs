@@ -1,4 +1,4 @@
-import { renderApprovedPreview } from './move-notebook.mjs?v=20261012-notebook-grid-pieces95-v7';
+import { renderApprovedPreview } from './move-notebook.mjs?v=20261012-notebook-viewport-fix-v8';
 import { supabase } from '../platform/api.mjs';
 const desktopAssetVersion=encodeURIComponent(document.querySelector('meta[name="shatranj-asset-version"]')?.content||'20261009-fresh-ui-refresh-v1');
 const [computerModule,puzzlesModule,learnModule]=await Promise.all([
