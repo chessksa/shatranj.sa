@@ -20,6 +20,7 @@ def test_home_theme_cache_buster_matches_latest_header_layout():
 
 
 def test_desktop_sidebar_has_one_authoritative_active_style():
+    html = Path('index.html').read_text(encoding='utf-8')
     sidebar_css = Path('v2/home/desktop-sidebar-cleanup.css').read_text(encoding='utf-8')
     tune_js = Path('v2/home/desktop-board-shell-tune.mjs').read_text(encoding='utf-8')
     dashboard_js = Path('v2/home/dashboard.mjs').read_text(encoding='utf-8')
