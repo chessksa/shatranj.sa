@@ -136,6 +136,70 @@ if(desktop.matches && document.querySelector('#homeHero')){
     stage.appendChild(preview);
   }
 
+  // Homepage-only action cards occupy measured free space on the LEFT of the
+  // approved chessboard. They never resize, move, or cover the board.
+  function buildHomeSideRail(){
+    const stage=document.querySelector('.desktop-board-stage');
+    const preview=document.getElementById('homeBoardPreview');
+    if(!stage||!preview||stage.querySelector('.desktop-home-side-rail'))return;
+    const rail=document.createElement('aside');
+    rail.className='desktop-home-side-rail';
+    rail.setAttribute('aria-label','أنشطة بجانب الرقعة');
+    rail.hidden=true;
+    rail.innerHTML=`
+      <section class="desktop-home-side-card desktop-home-daily-card">
+        <span class="desktop-home-side-icon" aria-hidden="true">${sidebarIcon('puzzles')}</span>
+        <h3>لغز اليوم</h3>
+        <p>هل تستطيع إيجاد أفضل نقلة؟</p>
+        <button type="button" data-home-side-action="daily">حل لغز اليوم</button>
+      </section>
+      <section class="desktop-home-side-card desktop-home-friend-card">
+        <span class="desktop-home-side-icon" aria-hidden="true">${sidebarIcon('invite')}</span>
+        <h3>العب مع صديق</h3>
+        <p>اختر أحد أصدقائك وتحدّه إلى مباراة.</p>
+        <button type="button" data-home-side-action="friend">دعوة صديق</button>
+      </section>`;
+    stage.appendChild(rail);
+    rail.addEventListener('click',event=>{
+      const button=event.target.closest('[data-home-side-action]');
+      if(!button||!rail.contains(button))return;
+      if(button.dataset.homeSideAction==='daily'){
+        if(!document.body.classList.contains('home-signed-in')){
+          document.getElementById('desktopGuestLogin')?.click();
+          return;
+        }
+        showDashboard('puzzles',{initialPuzzleMode:'daily'});
+      }else if(button.dataset.homeSideAction==='friend'){
+        if(!document.body.classList.contains('home-signed-in')){
+          document.getElementById('desktopGuestLogin')?.click();
+          return;
+        }
+        showDashboard('invite');
+      }
+    });
+    const sync=()=>{
+      const home=document.getElementById('desktopDashboardHome');
+      const boardInactive=!['inline-play-active','inline-computer-active',
+        'inline-puzzle-active','inline-learn-active','inline-variants-active',
+        'inline-tournament-spectator'].some(name=>preview.classList.contains(name));
+      const freeSpace=Math.floor(preview.getBoundingClientRect().left-stage.getBoundingClientRect().left)-12;
+      const canShow=Boolean(home&&!home.hidden&&boardInactive&&freeSpace>=125);
+      rail.hidden=!canShow;
+      if(canShow)rail.style.width=Math.min(250,freeSpace)+'px';
+    };
+    const observer=new MutationObserver(sync);
+    const home=document.getElementById('desktopDashboardHome');
+    if(home)observer.observe(home,{attributes:true,attributeFilter:['hidden']});
+    observer.observe(preview,{attributes:true,attributeFilter:['class']});
+    if(typeof ResizeObserver!=='undefined'){
+      const sizes=new ResizeObserver(sync);
+      sizes.observe(stage);
+      sizes.observe(preview);
+    }
+    window.addEventListener('resize',sync,{passive:true});
+    requestAnimationFrame(sync);
+  }
+
   function captureMoveTargets(){
     rankingNode=document.getElementById('ranking');
     if(rankingNode?.parentNode){
@@ -618,7 +682,7 @@ if(desktop.matches && document.querySelector('#homeHero')){
     }
   }
   const DASHBOARD_ROUTES=new Set(['home','play-options','variants','ranking','tournaments','watch','settings','invite','computer','puzzles','learn','profile','admin']);
-  function showDashboard(id='home',{preserveRoute=false}={}){
+  function showDashboard(id='home',{preserveRoute=false,initialPuzzleMode='rated'}={}){
     // Navigation always ends active online play before touching the home chessboard.
     window.dispatchEvent(new CustomEvent('desktop:inline-play-stop'));
     stopVariants();
@@ -730,7 +794,7 @@ if(desktop.matches && document.querySelector('#homeHero')){
     }
     if(id==='puzzles'){
       showViewTitle('الألغاز');
-      mountInlinePuzzles(body);
+      mountInlinePuzzles(body,{initialMode:initialPuzzleMode});
       return;
     }
     if(id==='learn'){
@@ -974,6 +1038,7 @@ if(desktop.matches && document.querySelector('#homeHero')){
     buildSidebar();
     forceSidebarSurface();
     buildDashboard();
+    buildHomeSideRail();
     void refreshDesktopChampions();
     window.addEventListener('shatranj:tournament-spectator-stopped',()=>{
       // Spectator restores a saved DOM fragment asynchronously; repaint if it was
