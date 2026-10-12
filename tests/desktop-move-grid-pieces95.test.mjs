@@ -25,7 +25,7 @@ assert.match(notebookJs,/Math\.min\(690,usableLeft\)/,'Notebook should expand in
 assert.match(notebookJs,/--notebook-docked-width/,'Available width must be applied to the notation panel only');
 assert.match(notebookJs,/--notebook-board-height/,'Notation height must track actual board height');
 assert.doesNotMatch(notebookCss,/transform:translateX\(/,'Notebook must never shift the board');
-assert.match(home,/20261012-notebook-grid-pieces95-v7/,'Homepage must use latest asset cache');
+assert.match(home,/20261012-notebook-viewport-fix-v8/,'Homepage must use latest asset cache');
 
 assert.match(previewCss,/\.desktop-board-square > \.desktop-board-preview-piece:not\(\[src\*="\/wp\.png"\]\):not\(\[src\*="\/bp\.png"\]\)/);
 assert.match(previewCss,/scale\(\.95\)!important/,'Idle desktop major pieces must be scaled to 95%');
