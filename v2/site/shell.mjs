@@ -140,21 +140,30 @@ if (!embeddedPanel && !skip.test(location.pathname)) {
     const sidebar = document.createElement('aside');
     sidebar.className = 'v2-global-sidebar';
     sidebar.setAttribute('aria-label','التنقل الرئيسي');
-    const brand = document.createElement('a');
-    brand.className = 'v2-global-brand';
-    brand.href = 'index.html';
-    brand.innerHTML = '<span class="v2-global-brand-mark">♞</span><span class="v2-global-brand-copy">شطرنج<br>العرب</span>';
     const nav = document.createElement('nav');
     nav.className = 'v2-global-nav';
-    for (const item of SITE_NAV) {
-      const link = document.createElement('a');
-      link.className = `v2-global-link ${item.id === activeId ? 'active' : ''}`;
-      link.href = item.href;
-      link.innerHTML = `<span class="v2-global-icon">${item.icon}</span><span>${item.label}</span>`;
-      nav.appendChild(link);
+    // On the desktop homepage, the board-shell builds the definitive sidebar.
+    // Mount an empty host instead of a second navigation that is immediately discarded.
+    const canonicalDesktopHome=activeId==='home'&&window.matchMedia('(min-width:901px)').matches;
+    if(!canonicalDesktopHome){
+      const brand = document.createElement('a');
+      brand.className = 'v2-global-brand';
+      brand.href = 'index.html';
+      brand.innerHTML = '<span class="v2-global-brand-mark">♞</span><span class="v2-global-brand-copy">شطرنج<br>العرب</span>';
+      for(const item of SITE_NAV){
+        const link=document.createElement('a');
+        link.className=`v2-global-link ${item.id===activeId?'active':''}`;
+        link.href=item.href;
+        link.innerHTML=`<span class="v2-global-icon">${item.icon}</span><span>${item.label}</span>`;
+        nav.appendChild(link);
+      }
+      const note=document.createElement('div');
+      note.className='v2-global-note';
+      note.textContent='شطرنج العرب';
+      sidebar.append(brand,nav,note);
+    }else{
+      sidebar.append(nav);
     }
-    const note = document.createElement('div'); note.className = 'v2-global-note'; note.textContent = 'شطرنج العرب';
-    sidebar.append(brand, nav, note);
     document.body.prepend(sidebar);
   }
 
@@ -259,17 +268,6 @@ if (!embeddedPanel && !skip.test(location.pathname)) {
     }
   }
 
-  function addPhase3Links(){
-    if(activeId==='home'){
-      if(window.matchMedia('(max-width:900px)').matches)return;
-      const actions=document.querySelector('.home-board-actions');
-      if(actions&&!actions.querySelector('[data-phase3="variants"]')){
-        const variants=document.createElement('a');variants.className='btn light';variants.href='variants.html';variants.dataset.phase3='variants';variants.textContent='Chess960';
-        actions.append(variants);
-      }
-    }
-  }
-
   async function refreshPhase3Progress(){
     try{
       const api=await import('../platform/api.mjs');
@@ -282,7 +280,6 @@ if (!embeddedPanel && !skip.test(location.pathname)) {
     }
   }
 
-  addPhase3Links();
   void setupAdminNavigation();
   void refreshPhase3Progress();
 }
