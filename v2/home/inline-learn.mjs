@@ -1,6 +1,6 @@
 import { supabase, getSessionPlayer, rpc, escapeHtml } from '../platform/api.mjs';
 
-import { renderApprovedPreview } from './move-notebook.mjs?v=20261012-notebook-viewport-fix-v8';
+import { renderApprovedPreview } from './move-notebook.mjs?v=20261012-unified-board-colors-v9';
 const desktop=window.matchMedia('(min-width:901px)');
 const PIECE_ROOT='assets/pieces/';
 const START_FEN='rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1';
