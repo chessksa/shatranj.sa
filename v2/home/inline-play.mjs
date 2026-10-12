@@ -16,7 +16,7 @@ import {
 } from '../play/api.js?v=20261010-play-connection-v1';
 import { remainingAt, formatClock, isFinalMinute } from '../play/clock.mjs';
 import { normalizeGameState } from '../play/state.mjs';
-import { decorateBoardCoordinate, renderApprovedPreview, openMoveNotebook, updateMoveNotebook, closeMoveNotebook } from './move-notebook.mjs?v=20261012-unified-board-colors-v9';
+import { decorateBoardCoordinate, renderApprovedPreview, openMoveNotebook, updateMoveNotebook, closeMoveNotebook } from './move-notebook.mjs?v=20261012-notebook-fullpanel-v10';
 
 // index.html preloads the canonical desktop stylesheet. Keep one fallback for
 // standalone imports, never add another copy during a normal homepage refresh.
