@@ -179,3 +179,32 @@
   body.pregame.reference-play-layout .panel-stack>.player-card:not(#topPlayerCard){height:98px!important;min-height:98px!important;flex-basis:98px!important}
   body.pregame.reference-play-layout #gameActions{height:60px!important;min-height:60px!important;flex-basis:60px!important}
 }
+/* Mobile computer setup: match Shatranj Arab teal-and-gold site palette. */
+@media(max-width:900px){
+  body.computer-game.pregame.reference-play-layout,
+  body.computer-game.pregame.reference-play-layout #gamePage{
+    background:#042c30!important;
+    color:#f4efe6!important;
+  }
+  body.computer-game.pregame.reference-play-layout .side-header{
+    background:#04282c!important;
+    border-bottom:1px solid rgba(224,181,103,.22)!important;
+  }
+  body.computer-game.pregame.reference-play-layout #topPlayerCard,
+  body.computer-game.pregame.reference-play-layout #bottomPlayerCard{
+    background:#07383e!important;
+  }
+  body.computer-game.pregame.reference-play-layout .opponent-search-title{
+    color:#d4e2dd!important;
+  }
+  body.computer-game.pregame.reference-play-layout .side-brand,
+  body.computer-game.pregame.reference-play-layout .player-card .name{
+    color:#f4efe6!important;
+  }
+  body.computer-game.pregame.reference-play-layout .side-brand-mark{
+    color:#e0b567!important;
+  }
+  body.computer-game.pregame.reference-play-layout .player-card .avatar{
+    background:#0a4549!important;
+  }
+}
