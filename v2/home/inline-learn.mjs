@@ -1,6 +1,6 @@
 import { supabase, getSessionPlayer, rpc, escapeHtml } from '../platform/api.mjs';
 
-import { renderApprovedPreview } from './move-notebook.mjs?v=20261012-unified-board-colors-v9';
+import { renderApprovedPreview } from './move-notebook.mjs?v=20261012-notebook-fullpanel-v10';
 const desktop=window.matchMedia('(min-width:901px)');
 const PIECE_ROOT='assets/pieces/';
 const START_FEN='rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1';
@@ -22,7 +22,7 @@ function ensureCss(){
     const link=document.createElement('link');
     link.id='inlineLearnCss';
     link.rel='stylesheet';
-    link.href=new URL('./inline-learn.css?v=20261012-unified-board-colors-v9',import.meta.url).href;
+    link.href=new URL('./inline-learn.css?v=20261012-notebook-fullpanel-v10',import.meta.url).href;
     document.head.appendChild(link);
   }
   // Reuse the stylesheet preloaded by index.html. An old second copy caused
@@ -33,7 +33,7 @@ function ensureCss(){
     const base=document.createElement('link');
     base.id='inlineLearnBoardBaseCss';
     base.rel='stylesheet';
-    const version=encodeURIComponent(document.querySelector('meta[name="shatranj-asset-version"]')?.content||'20261012-unified-board-colors-v9');
+    const version=encodeURIComponent(document.querySelector('meta[name="shatranj-asset-version"]')?.content||'20261012-notebook-fullpanel-v10');
     base.href=new URL('./inline-play.css?v='+version,import.meta.url).href;
     document.head.appendChild(base);
   }
