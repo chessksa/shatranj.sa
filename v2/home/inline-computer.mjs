@@ -1,3 +1,4 @@
+import { decorateBoardCoordinate, openMoveNotebook, updateMoveNotebook, closeMoveNotebook } from './move-notebook.mjs';
 const desktop=window.matchMedia('(min-width:901px)');
 const START_FEN='rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1';
 const PIECE_ROOT='assets/pieces/';
@@ -182,6 +183,7 @@ function applyUciMove(uci){
 
   lastMove={from,to,color:piece.color};
   moveHistory.push(move);
+  updateMoveNotebook('computer',moveHistory.map(uci=>({uci})));
   currentTurn=currentTurn==='w'?'b':'w';
   return true;
 }
@@ -292,7 +294,7 @@ function renderBoard(){
   if(!board) return;
   const fragment=document.createDocumentFragment();
   const legalMap=new Map(legalTargets.map(move=>[move.to,move]));
-  orderedSquares().forEach(squareName=>{
+  orderedSquares().forEach((squareName,displayIndex)=>{
     const file=squareName.charCodeAt(0)-97;
     const rank=Number(squareName[1]);
     const square=document.createElement('button');
@@ -314,6 +316,7 @@ function renderBoard(){
       img.draggable=false;
       square.appendChild(img);
     }
+    decorateBoardCoordinate(square,displayIndex,squareName);
     fragment.appendChild(square);
   });
   board.replaceChildren(fragment);
@@ -443,6 +446,8 @@ function bindPanel(){
 function startGame(){
   if(started) return;
   started=true;
+  openMoveNotebook('computer');
+  updateMoveNotebook('computer',[]);
   clearResultColors();
   resetLocalGame();
   selectedSquare=null;
@@ -493,6 +498,7 @@ function applyResultColors(outcome){
 }
 
 function resetToSetup(){
+  closeMoveNotebook('computer');
   started=false;
   clearResultColors();
   stopClock();
@@ -511,6 +517,7 @@ function resetToSetup(){
 function finish(message,outcome=null){
   if(!started) return;
   started=false;
+  updateMoveNotebook('computer',moveHistory.map(uci=>({uci})),{finished:true});
   stopClock();
   selectedSquare=null;
   legalTargets=[];
@@ -643,6 +650,7 @@ export function mountInlineComputer(body){
 }
 
 export function stopInlineComputer({restoreBoard=true}={}){
+  closeMoveNotebook('computer');
   if(!active) return;
   active=false;
   started=false;
