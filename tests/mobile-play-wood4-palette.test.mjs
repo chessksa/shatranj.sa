@@ -29,5 +29,5 @@ assert.match(desktopShell,/margin:0!important;padding:0!important;/,'The desktop
 assert.match(desktopShell,/border:0!important;border-radius:0!important;\s*background:transparent!important;/,'The old brown inner border and fill must be removed');
 assert.match(desktopTune,/padding:0!important/,'Desktop tune must not restore a brown inner gap');
 assert.doesNotMatch(notebook,/width:min\(\s*calc\(100vw[^;]+chess-notebook-width/,'Move log must never make the live desktop board smaller');
-assert.match(notebook,/data-mode="compact"/,'Provide a collapsible notebook on narrower monitors');
+assert.doesNotMatch(notebook,/data-mode="compact"|width:38px/,'Move table must no longer collapse into a hamburger strip');
 console.log('Mobile game board Wood 4 palette and fixed desktop board: PASS');
