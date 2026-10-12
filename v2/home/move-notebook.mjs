@@ -119,15 +119,18 @@ async function enrichComputerMoves(expected){
     const {Chess}=await chessModule();
     if(expected!==token||owner!=='computer')return;
     const chess=new Chess();
+    const originalLength=records.length;
     const next=records.map(record=>{
       const uci=uciFor(record);
       if(!uci)return record;
       try{
-        const move=chess.move({from:uci.slice(0,2),to:uci.slice(2,4),promotion:uci[4]||'q'});
+        const options={from:uci.slice(0,2),to:uci.slice(2,4)};
+        if(uci[4])options.promotion=uci[4];
+        const move=chess.move(options);
         return {...record,san:move?.san||record.display,fen_after:chess.fen()};
       }catch{return record;}
     });
-    if(expected===token&&owner==='computer'){records=next;showRecords();}
+    if(expected===token&&owner==='computer'&&records.length===originalLength){records=next;showRecords();}
   }catch{/* Keep readable coordinate notation when the chess library is offline. */}
 }
 async function runReview(expected,sourceMoves){
@@ -196,6 +199,36 @@ export function decorateBoardCoordinate(square,index,name){
     file.setAttribute('aria-hidden','true');
     square.append(file);
   }
+}
+/* Exactly one canonical idle-board painter is shared by homepage and both game exits. */
+export function renderApprovedPreview(target){
+  if(!target)return;
+  const grid=document.createElement('span');
+  grid.className='desktop-board-grid';
+  const firstRank=['r','n','b','q','k','b','n','r'];
+  const version=encodeURIComponent(document.querySelector('meta[name="shatranj-asset-version"]')?.content||'20261012-move-notebook-v1');
+  for(let index=0;index<64;index++){
+    const row=Math.floor(index/8),col=index%8;
+    const square=document.createElement('span');
+    square.className=`desktop-board-square ${(row+col)%2?'dark':'light'}`;
+    const type=(row===0||row===7)?firstRank[col]:((row===1||row===6)?'p':null);
+    if(type){
+      const color=row<2?'b':'w';
+      const piece=document.createElement('img');
+      piece.className='desktop-board-preview-piece';
+      if(type==='p'){
+        piece.classList.add('chess-pawn');
+        piece.style.setProperty('transform','translate(-50%, -50%) scale(.90)','important');
+      }
+      piece.src=`assets/pieces/${color}${type}.png?v=${version}`;
+      piece.alt='';
+      piece.draggable=false;
+      square.append(piece);
+    }
+    decorateBoardCoordinate(square,index,`${'abcdefgh'[col]}${8-row}`);
+    grid.append(square);
+  }
+  target.replaceChildren(grid);
 }
 export function openMoveNotebook(source){
   if(!window.matchMedia('(min-width:901px)').matches)return;
