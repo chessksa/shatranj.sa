@@ -15,7 +15,7 @@ assert.match(notebook,/for\(let index=0;index<64;index\+\+\)/);
 assert.match(notebook,/target\.replaceChildren\(grid\)/);
 assert.match(notebook,/assets\/pieces\/\$\{color\}\$\{type\}\.png/);
 assert.doesNotMatch(notebookCss,/transform:translateX\(calc\(var\(--chess-notebook-width\)/,'Starting to play must never move the board');
-assert.match(notebook,/const availableLeft=board\.getBoundingClientRect\(\)\.left-stage\.getBoundingClientRect\(\)\.left/,'The notebook must not treat space right of the board as room to shift it');
+assert.match(notebook,/const availableLeft=Math\.max\(0,Math\.floor\(boardRect\.left-stageRect\.left\)\)/,'The notebook must not treat space right of the board as room to shift it');
 
 for(const [name,source] of [['online',online],['computer',computer],['puzzles',puzzles],['learn',learn]]){
   assert.match(source,/function restoreStaticBoard\(\)/,`${name} needs a proper home restoration path`);
