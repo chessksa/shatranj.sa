@@ -271,7 +271,7 @@ if(desktop.matches && document.querySelector('#homeHero')){
           <a class="desktop-champion-card" data-champion="week" href="#ranking" aria-label="بطل الأسبوع">
             <span class="desktop-champion-title">
               <span class="desktop-champion-icon" aria-hidden="true">
-              <svg viewBox="0 0 32 32" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="16" cy="12" r="8"/><path d="m11 19-2 10 7-4 7 4-2-10"/><path d="m13 12 2 2 4-4"/></svg>
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="8" r="5"/><path d="M8.2 12 6 21l6-3 6 3-2.2-9"/><path d="m10 8 1.4 1.4 2.8-3"/></svg>
             </span>
             <strong>بطل الأسبوع</strong></span>
             <span class="desktop-champion-name">جارٍ التحديث…</span>
@@ -280,7 +280,7 @@ if(desktop.matches && document.querySelector('#homeHero')){
           <a class="desktop-champion-card" data-champion="month" href="#ranking" aria-label="بطل الشهر">
             <span class="desktop-champion-title">
               <span class="desktop-champion-icon" aria-hidden="true">
-              <svg viewBox="0 0 32 32" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M10 4h12v10a6 6 0 0 1-12 0V4Z"/><path d="M10 7H5v4a6 6 0 0 0 6 6M22 7h5v4a6 6 0 0 1-6 6M16 20v6M11 27h10M9 30h14"/></svg>
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M7 4h10v7a5 5 0 0 1-10 0V4Z"/><path d="M7 6H4v3a4 4 0 0 0 4 4M17 6h3v3a4 4 0 0 1-4 4"/><path d="M12 16v3M8 21h8"/></svg>
             </span>
             <strong>بطل الشهر</strong></span>
             <span class="desktop-champion-name">جارٍ التحديث…</span>
@@ -289,7 +289,7 @@ if(desktop.matches && document.querySelector('#homeHero')){
           <a class="desktop-champion-card" data-champion="site" href="#ranking" aria-label="بطل الموقع">
             <span class="desktop-champion-title">
               <span class="desktop-champion-icon" aria-hidden="true">
-              <svg viewBox="0 0 32 32" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="m3 10 6 6 7-10 7 10 6-6-3 15H6L3 10Z"/><path d="M6 29h20M12 20h8"/></svg>
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="m3 8 5 4 4-7 4 7 5-4-2 11H5L3 8Z"/><path d="M5 22h14"/></svg>
             </span>
             <strong>بطل الموقع</strong></span>
             <span class="desktop-champion-name">جارٍ التحديث…</span>
