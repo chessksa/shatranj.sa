@@ -222,12 +222,12 @@
     min-height:0;display:grid;grid-template-rows:repeat(3,minmax(0,1fr));
     gap:6px;overflow:hidden;
   }
-  /* Full-width three-zone trophy cards: icon | identity | actual result.
-     No more stacked three-line text stranded at the right edge. */
+  /* One horizontal line: title & icon (right) | larger centered player
+     name | result (left). The central column always has the largest share. */
   .desktop-champion-card{
     min-height:0;display:grid;
-    grid-template-columns:42px minmax(0,1fr) minmax(78px,.72fr);
-    align-items:center;column-gap:9px;padding:7px 10px;
+    grid-template-columns:minmax(0,1fr) minmax(0,2.7fr) minmax(0,.88fr);
+    align-items:center;column-gap:10px;padding:7px 11px;
     border:1px solid rgba(210,180,110,.40);border-radius:11px;
     background:linear-gradient(135deg,rgba(4,60,65,.95),rgba(3,48,53,.96));
     box-shadow:0 7px 18px rgba(0,0,0,.10);
@@ -238,59 +238,62 @@
     border-color:rgba(235,202,126,.90);background:rgba(9,76,79,.98);
     outline:none;
   }
+  .desktop-champion-title{
+    min-width:0;display:flex;flex-direction:row;align-items:center;
+    justify-content:flex-start;gap:7px;white-space:nowrap;
+    color:#f0d396;
+  }
+  .desktop-champion-title strong{
+    font-size:13px;line-height:1;font-weight:900;white-space:nowrap;
+  }
   .desktop-champion-icon{
-    width:42px;height:42px;border:1px solid rgba(220,186,111,.36);
+    width:38px;height:38px;min-width:38px;
+    border:1px solid rgba(220,186,111,.36);
     background:rgba(223,182,95,.075);border-radius:9px;
     display:grid;place-items:center;color:#e5c37b;box-sizing:border-box;
   }
-  .desktop-champion-icon svg{width:26px;height:26px;display:block}
+  .desktop-champion-icon svg{width:24px;height:24px;display:block}
   .desktop-champion-card[data-champion="week"] .desktop-champion-icon{color:#e4c17b}
   .desktop-champion-card[data-champion="month"] .desktop-champion-icon{color:#d8dfe4}
   .desktop-champion-card[data-champion="site"] .desktop-champion-icon{color:#f0c06a}
-  .desktop-champion-info{
-    min-width:0;max-width:100%;display:flex;flex-direction:column;
-    gap:6px;align-items:flex-start;justify-content:center;
-    text-align:right;
-  }
-  .desktop-champion-info strong{
-    max-width:100%;font-size:13px;line-height:1.2;font-weight:900;
-    color:#f0d396;white-space:nowrap;
-  }
   .desktop-champion-name{
-    display:block;max-width:100%;font-size:17px;line-height:1.2;
-    font-weight:900;color:#f9f7f0;white-space:nowrap;
-    overflow:hidden;text-overflow:ellipsis;direction:auto;
+    display:block;min-width:0;width:100%;
+    font-size:clamp(18px,1.55vw,23px);line-height:1.1;
+    font-weight:900;color:#f9f7f0;text-align:center;
+    white-space:nowrap;overflow:hidden;text-overflow:ellipsis;
+    unicode-bidi:plaintext;
   }
   .desktop-champion-result{
-    min-width:0;height:60%;padding-inline-start:6px;
+    min-width:0;display:flex;flex-direction:row;
+    justify-content:center;align-items:center;gap:5px;
+    white-space:nowrap;text-align:center;
     border-inline-start:1px solid rgba(220,186,111,.26);
-    display:flex;flex-direction:column;justify-content:center;
-    align-items:center;gap:4px;text-align:center;
+    padding-inline-start:7px;
   }
   .desktop-champion-count{
-    display:block;max-width:100%;font-size:24px;line-height:1.05;
+    display:inline;flex:0 0 auto;font-size:21px;line-height:1.1;
     font-weight:900;color:#f3d18b;direction:ltr;
     white-space:nowrap;font-variant-numeric:tabular-nums;
   }
   .desktop-champion-meta{
-    max-width:100%;font-size:10px;line-height:1.2;
+    display:inline;flex:0 0 auto;font-size:11px;line-height:1;
     color:#b5d2cd;white-space:nowrap;
   }
   .desktop-champion-card:not(.has-champion) .desktop-champion-name{
-    color:#c7d5d0;font-size:12px;
+    color:#c7d5d0;font-size:clamp(12px,1vw,15px);
   }
   @media(max-height:720px) and (min-width:901px){
     .desktop-champion-card{
-      grid-template-columns:34px minmax(0,1fr) minmax(68px,.72fr);
-      gap:7px;padding:4px 8px;
+      grid-template-columns:minmax(0,1fr) minmax(0,2.7fr) minmax(0,.88fr);
+      column-gap:5px;padding:4px 7px;
     }
-    .desktop-champion-icon{width:34px;height:34px}
-    .desktop-champion-icon svg{width:22px;height:22px}
-    .desktop-champion-info{gap:3px}
-    .desktop-champion-info strong{font-size:11px}
-    .desktop-champion-name{font-size:14px}
-    .desktop-champion-count{font-size:20px}
-    .desktop-champion-meta{font-size:9px}
+    .desktop-champion-title{gap:4px}
+    .desktop-champion-title strong{font-size:11px}
+    .desktop-champion-icon{width:30px;height:30px;min-width:30px}
+    .desktop-champion-icon svg{width:20px;height:20px}
+    .desktop-champion-name{font-size:clamp(15px,1.3vw,19px)}
+    .desktop-champion-count{font-size:17px}
+    .desktop-champion-meta{font-size:10px}
   }
 
   .desktop-live-stats{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:7px;min-height:0}
