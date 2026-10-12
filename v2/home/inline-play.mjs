@@ -16,7 +16,7 @@ import {
 } from '../play/api.js?v=20261010-play-connection-v1';
 import { remainingAt, formatClock, isFinalMinute } from '../play/clock.mjs';
 import { normalizeGameState } from '../play/state.mjs';
-import { decorateBoardCoordinate, openMoveNotebook, updateMoveNotebook, closeMoveNotebook } from './move-notebook.mjs';
+import { decorateBoardCoordinate, renderApprovedPreview, openMoveNotebook, updateMoveNotebook, closeMoveNotebook } from './move-notebook.mjs';
 
 // index.html preloads the canonical desktop stylesheet. Keep one fallback for
 // standalone imports, never add another copy during a normal homepage refresh.
@@ -141,19 +141,7 @@ function restoreStaticBoard(){
   const target=document.getElementById('homeBoardPreview');
   if(!target) return;
   target.classList.remove('inline-play-active');
-  target.replaceChildren();
-  const grid=document.createElement('span');
-  grid.className='desktop-board-grid';
-  for(let i=0;i<64;i+=1){
-    const row=Math.floor(i/8),col=i%8;
-    const square=document.createElement('span');
-    square.className=`desktop-board-square ${(row+col)%2?'dark':'light'}`;
-    grid.appendChild(square);
-  }
-  const hint=document.createElement('span');
-  hint.className='desktop-board-hint';
-  hint.innerHTML='<span class="desktop-board-hint-icon">☝</span><span>اضغط على الرقعة للعب</span>';
-  target.append(grid,hint);
+  renderApprovedPreview(target);
 }
 
 function ensurePanel(){
