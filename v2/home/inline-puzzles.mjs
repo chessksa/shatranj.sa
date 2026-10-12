@@ -475,13 +475,13 @@ function buildPanel(body){
   });
 }
 
-export function mountInlinePuzzles(body){
+export function mountInlinePuzzles(body,{initialMode='rated'}={}){
   if(!desktop.matches||!body) return;
   if(active) stopInlinePuzzles({restoreBoard:false});
   ensureCss();
   window.dispatchEvent(new CustomEvent('desktop:inline-play-stop'));
   window.dispatchEvent(new CustomEvent('desktop:inline-computer-stop'));
-  mode='rated';
+  mode=initialMode==='daily'?'daily':'rated';
   hearts=5;
   active=true;
   const home=document.getElementById('desktopDashboardHome');
@@ -489,7 +489,11 @@ export function mountInlinePuzzles(body){
   if(home) home.hidden=true;
   if(view) view.hidden=false;
   buildPanel(body);
-  if(!ensureBoard()){
+  host?.querySelectorAll('[data-inline-puzzle-mode]').forEach(button=>{
+    button.classList.toggle('active',button.dataset.inlinePuzzleMode===mode);
+    button.setAttribute('aria-pressed',String(button.dataset.inlinePuzzleMode===mode));
+  });
+  if(!ensureBoard(){
     setStatus('تعذر تجهيز الرقعة الرئيسية.','error');
     return;
   }
