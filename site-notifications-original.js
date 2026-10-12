@@ -21,7 +21,7 @@
     const style = document.createElement('style');
     style.id = 'welcomeTickerFont16Styles';
     style.textContent = `#welcomeTicker .welcome-ticker-label,#welcomeTicker .welcome-ticker-item,#welcomeTicker .welcome-ticker-loading{font-size:16px!important}`;
-    if (!document.getElementById(style.id)) document.head.appendChild(style);
+    if (!document.getElementById(style.id)) document.head.insertBefore(style,document.querySelector('link[href*="site-charcoal-theme.css"]'));
   }
 
   function flagCodeForCountry(country) {
@@ -32,7 +32,7 @@
     const style = document.createElement('style');
     style.id = 'welcomeTickerCountryFlagStyles';
     style.textContent = `#welcomeTicker .welcome-country-flag{width:18px!important;height:13px!important;display:inline-block!important;flex:0 0 18px;object-fit:cover;border-radius:2px;margin-inline-end:6px;vertical-align:middle;box-shadow:0 0 0 1px rgba(255,255,255,.18)}`;
-    if (!document.getElementById(style.id)) document.head.appendChild(style);
+    if (!document.getElementById(style.id)) document.head.insertBefore(style,document.querySelector('link[href*="site-charcoal-theme.css"]'));
 
     const decorate = () => {
       document.querySelectorAll('#welcomeTicker .welcome-ticker-item').forEach(item => {
@@ -84,7 +84,7 @@
     const style = document.createElement('style');
     style.id = 'welcomeTickerInteractionStyles';
     style.textContent = `#welcomeTicker:hover .welcome-ticker-track,#welcomeTicker:focus-within .welcome-ticker-track{animation-play-state:paused!important}#welcomeTicker .welcome-player-link{color:inherit;text-decoration:none;font:inherit;font-weight:inherit;cursor:pointer}#welcomeTicker .welcome-player-link:hover,#welcomeTicker .welcome-player-link:focus-visible{text-decoration:underline;text-underline-offset:2px}`;
-    if (!document.getElementById(style.id)) document.head.appendChild(style);
+    if (!document.getElementById(style.id)) document.head.insertBefore(style,document.querySelector('link[href*="site-charcoal-theme.css"]'));
 
     const decorateLinks = () => {
       const players = tickerPlayers();
@@ -136,7 +136,7 @@
     const style = document.createElement('style');
     style.id = 'mobileRankingTenStyles';
     style.textContent = `@media(max-width:${MOBILE_BREAKPOINT}px){#ranking #tbody tr:nth-child(n+${MOBILE_RANKING_LIMIT + 1}){display:none!important}}`;
-    if (!document.getElementById(style.id)) document.head.appendChild(style);
+    if (!document.getElementById(style.id)) document.head.insertBefore(style,document.querySelector('link[href*="site-charcoal-theme.css"]'));
 
     const syncCount = () => {
       const result = document.getElementById('results');
@@ -217,7 +217,7 @@
         }
       }
     `;
-    if (!document.getElementById(style.id)) document.head.appendChild(style);
+    if (!document.getElementById(style.id)) document.head.insertBefore(style,document.querySelector('link[href*="site-charcoal-theme.css"]'));
   }
 
   function tournamentCountryForRegion(region) {
@@ -251,9 +251,9 @@
     const style = document.createElement('style');
     style.id = 'tournamentResultsTickerStyles';
     style.textContent = `
-      #tournamentResultsTicker{width:100%;height:34px;display:flex;align-items:center;overflow:hidden;background:#0a302f;color:#f7f3e7;border-top:0;border-bottom:1px solid rgba(197,163,77,.55);position:relative;z-index:18;flex:none;direction:rtl}
+      #tournamentResultsTicker{width:100%;height:34px;display:flex;align-items:center;overflow:hidden;background:#302e2b;color:#e2dcd3;border-top:0;border-bottom:1px solid rgba(165,162,158,0.55);position:relative;z-index:18;flex:none;direction:rtl}
       #tournamentResultsTicker .welcome-ticker-label,#tournamentResultsTicker .welcome-ticker-item,#tournamentResultsTicker .welcome-ticker-loading{font-size:16px!important}
-      #tournamentResultsTicker .tournament-name-highlight{color:#ffbd73;font-weight:900}
+      #tournamentResultsTicker .tournament-name-highlight{color:#e2dcd3;font-weight:900}
       #tournamentResultsTicker .tournament-winner-link{color:inherit;text-decoration:none;font:inherit;font-weight:900;cursor:pointer}
       #tournamentResultsTicker .tournament-winner-link:hover,#tournamentResultsTicker .tournament-winner-link:focus-visible{text-decoration:underline;text-underline-offset:2px}
       #tournamentResultsTicker .tournament-country-flag{width:18px;height:13px;display:inline-block;flex:0 0 18px;object-fit:cover;border-radius:2px;margin:0 6px;vertical-align:middle;box-shadow:0 0 0 1px rgba(255,255,255,.18)}
@@ -283,7 +283,7 @@
       @media(max-width:800px){#tournamentResultsTicker{height:30px}#tournamentResultsTicker .welcome-ticker-label,#tournamentResultsTicker .welcome-ticker-item,#tournamentResultsTicker .welcome-ticker-loading{font-size:14px!important}}
       @media(max-width:430px){#tournamentResultsTicker .welcome-ticker-label{padding:0 8px}#tournamentResultsTicker .welcome-ticker-item{padding:0 12px}}
     `;
-    if (!document.getElementById(style.id)) document.head.appendChild(style);
+    if (!document.getElementById(style.id)) document.head.insertBefore(style,document.querySelector('link[href*="site-charcoal-theme.css"]'));
 
     let ticker = document.getElementById('tournamentResultsTicker');
     if (!ticker) {

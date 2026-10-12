@@ -186,7 +186,7 @@ function ensureCmStyles() {
       link.href = 'computer-single-board-mobile.css?v=20261012-canonical-mobile-v2';
       link.media = '(max-width:900px)';
       link.dataset.mobileComputerSingleboard = '1';
-      document.head.appendChild(link);
+      document.head.insertBefore(link,document.querySelector('link[href*="site-charcoal-theme.css"]'));
     }
     return;
   }
@@ -278,7 +278,7 @@ function showMoveHints(square) {
 function forceBoardSquareColors() {
   if (window.matchMedia('(max-width:900px)').matches) return;
   boardEl.querySelectorAll('.cm-chessboard .square.white').forEach(square => {
-    square.style.setProperty('fill', 'rgba(255,247,224,.43)', 'important');
+    square.style.setProperty('fill', 'rgba(165,162,158,0.43)', 'important');
   });
   boardEl.querySelectorAll('.cm-chessboard .square.black').forEach(square => {
     square.style.setProperty('fill', 'rgba(49,24,11,.36)', 'important');
@@ -1269,7 +1269,7 @@ function addTimeChooserBack() {
   back.className = 'computer-time-back';
   back.setAttribute('aria-label', 'الرجوع لاختيار مستوى الكمبيوتر');
   back.innerHTML = '<span aria-hidden="true">›</span><span>رجوع</span>';
-  back.style.cssText = 'min-width:72px;height:36px;border:1px solid rgba(224,181,103,.4);border-radius:10px;background:rgba(2,28,33,.44);color:#f6ead8;font:700 14px/1 Arial,sans-serif;cursor:pointer;display:inline-flex;align-items:center;justify-content:center;gap:5px;padding:0 10px;z-index:3;direction:rtl;';
+  back.style.cssText = 'min-width:72px;height:36px;border:1px solid rgba(165,162,158,0.4);border-radius:10px;background:rgba(69,66,62,0.44);color:#e2dcd3;font:700 14px/1 Arial,sans-serif;cursor:pointer;display:inline-flex;align-items:center;justify-content:center;gap:5px;padding:0 10px;z-index:3;direction:rtl;';
   back.onclick = () => {
     back.remove();
     setupLevelChooser();

@@ -127,10 +127,10 @@ function initTournamentLayoutPolish() {
       .tournament-matches-panel{
         min-width:0;
         min-height:0;
-        border:1px solid rgba(216,182,101,.22);
+        border:1px solid rgba(165,162,158,0.22);
         border-radius:14px;
         overflow:hidden;
-        background:rgba(3,38,40,.24);
+        background:rgba(69,66,62,0.24);
         display:flex;
         flex-direction:column;
       }
@@ -140,9 +140,9 @@ function initTournamentLayoutPolish() {
         display:flex;
         align-items:center;
         justify-content:center;
-        border-bottom:1px solid rgba(216,182,101,.22);
-        background:rgba(4,38,40,.58);
-        color:var(--hero-gold-2,#efcf7c);
+        border-bottom:1px solid rgba(165,162,158,0.22);
+        background:rgba(69,66,62,0.58);
+        color:var(--hero-gold-2,#e2dcd3);
         font-size:14px;
         font-weight:900;
       }
@@ -156,32 +156,32 @@ function initTournamentLayoutPolish() {
         width:100%;
         border-collapse:collapse;
         table-layout:fixed;
-        background:rgba(3,38,40,.24);
+        background:rgba(69,66,62,0.24);
       }
       .tournament-detail-table th,
       .tournament-detail-table td{
         height:34px;
         padding:5px 9px;
-        border-bottom:1px solid rgba(216,182,101,.2);
+        border-bottom:1px solid rgba(165,162,158,0.2);
         vertical-align:middle;
       }
       .tournament-detail-table th{
         width:39%;
         text-align:center;
-        color:#d9c58f;
-        background:rgba(4,38,40,.42);
+        color:#e2dcd3;
+        background:rgba(69,66,62,0.42);
         font-size:14px;
         font-weight:900;
       }
       .tournament-detail-table td{
         text-align:center;
-        color:var(--hero-cream,#f4eddc);
+        color:var(--hero-cream,#e2dcd3);
         font-size:14px;
         font-weight:800;
         overflow-wrap:anywhere;
       }
       .tournament-detail-table th+td{
-        border-inline-start:1px solid rgba(216,182,101,.2);
+        border-inline-start:1px solid rgba(165,162,158,0.2);
       }
       .tournament-detail-table .detail-value{
         display:inline-block;
@@ -193,7 +193,7 @@ function initTournamentLayoutPolish() {
         flex:0 0 auto;
         margin:0!important;
         padding:10px!important;
-        border-top:1px solid rgba(216,182,101,.2)!important;
+        border-top:1px solid rgba(165,162,158,0.2)!important;
         justify-content:center!important;
       }
       .tournament-info-panel .register-btn{
@@ -221,7 +221,7 @@ function initTournamentLayoutPolish() {
         overflow-x:hidden;
         overscroll-behavior:contain;
         scrollbar-width:thin;
-        scrollbar-color:rgba(216,182,101,.55) rgba(4,39,41,.45);
+        scrollbar-color:rgba(165,162,158,0.55) rgba(69,66,62,0.45);
       }
       .tournament-matches-table{
         width:100%;
@@ -232,7 +232,7 @@ function initTournamentLayoutPolish() {
       .tournament-matches-table td{
         height:42px;
         padding:5px 7px;
-        border-bottom:1px solid rgba(216,182,101,.18);
+        border-bottom:1px solid rgba(165,162,158,0.18);
         text-align:center;
         vertical-align:middle;
         font-size:11px;
@@ -241,13 +241,13 @@ function initTournamentLayoutPolish() {
         position:sticky;
         top:0;
         z-index:2;
-        background:#07383a;
-        color:#d9c58f;
+        background:#302e2b;
+        color:#e2dcd3;
         font-weight:900;
       }
       .tournament-matches-table th:not(:last-child),
       .tournament-matches-table td:not(:last-child){
-        border-inline-end:1px solid rgba(216,182,101,.16);
+        border-inline-end:1px solid rgba(165,162,158,0.16);
       }
       .tournament-matches-table th:nth-child(1){width:92px}
       .tournament-matches-table th:nth-child(3){width:104px}
@@ -283,7 +283,7 @@ function initTournamentLayoutPolish() {
         font-size:10px!important;
       }
       .tournament-matches-table tr.mine td{
-        background:rgba(239,207,124,.05);
+        background:rgba(165,162,158,0.05);
       }
       @media(max-width:700px){
         #tournamentDetailCard{padding:8px!important}
@@ -307,7 +307,7 @@ function initTournamentLayoutPolish() {
         .tournament-match-action .register-btn{min-height:27px!important;font-size:8px!important;padding:0 5px!important}
       }
     `;
-    document.head.appendChild(style);
+    document.head.insertBefore(style,document.querySelector('link[href*="site-charcoal-theme.css"]'));
   }
 
   const detailCard = document.getElementById('tournamentDetailCard');

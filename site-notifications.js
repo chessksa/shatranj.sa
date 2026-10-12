@@ -35,7 +35,7 @@
     style.id = 'tournamentTickerMotionStyles';
     style.textContent = `
       /* Welcome ticker top gold divider */
-      #welcomeTicker{border-top:1px solid rgba(197,163,77,.55)!important;}
+      #welcomeTicker{border-top:1px solid rgba(165,162,158,0.55)!important;}
       #tournamentResultsTicker .welcome-ticker-track{
         animation-duration:52s!important;
       }
@@ -54,7 +54,7 @@
         #tournamentResultsTicker .tournament-ticker-single{animation:none!important;transform:none!important}
       }
     `;
-    document.head.appendChild(style);
+    document.head.insertBefore(style,document.querySelector('link[href*="site-charcoal-theme.css"]'));
   }
 
   function installHeroTitleLineup() {
@@ -84,7 +84,7 @@
         }
       }
     `;
-    document.head.appendChild(style);
+    document.head.insertBefore(style,document.querySelector('link[href*="site-charcoal-theme.css"]'));
   }
 
   function installMobileRankingFrame() {
@@ -113,11 +113,11 @@
           position:sticky!important;
           top:0!important;
           z-index:6!important;
-          background:#0b4143!important;
+          background:#302e2b!important;
         }
       }
     `;
-    document.head.appendChild(style);
+    document.head.insertBefore(style,document.querySelector('link[href*="site-charcoal-theme.css"]'));
   }
 
   function installRankingPullGuard() {
@@ -161,7 +161,7 @@
         .dashboard-icon-label{font-size:10px!important;}
       }
     `;
-    document.head.appendChild(style);
+    document.head.insertBefore(style,document.querySelector('link[href*="site-charcoal-theme.css"]'));
   }
 
   function mobileFilteredPlayers() {

@@ -41,7 +41,7 @@
     min-width:22px!important;
     flex:0 0 22px!important;
     place-items:center!important;
-    color:#efcf7c!important;
+    color:#e2dcd3!important;
     font-size:18px!important;
     line-height:1!important;
     margin:0!important;
@@ -67,17 +67,17 @@
     display:grid!important;
     place-items:center!important;
     margin:0!important;
-    border:1px solid rgba(239,207,124,.46)!important;
+    border:1px solid rgba(165,162,158,0.46)!important;
     border-radius:10px!important;
-    background:rgba(239,207,124,.07)!important;
-    color:#efcf7c!important;
+    background:rgba(165,162,158,0.07)!important;
+    color:#e2dcd3!important;
     font:900 20px/1 Arial,sans-serif!important;
   }
 
   .hero-play-btn .mobile-play-glyph{
-    color:#07363d!important;
-    border-color:rgba(7,54,61,.24)!important;
-    background:rgba(7,54,61,.08)!important;
+    color:#302e2b!important;
+    border-color:rgba(69,66,62,0.24)!important;
+    background:rgba(69,66,62,0.08)!important;
   }
 
   .mobile-control-exit-icon{
@@ -87,12 +87,12 @@
     height:22px!important;
     min-width:22px!important;
     margin:0!important;
-    color:#efcf7c!important;
+    color:#e2dcd3!important;
     font:900 18px/1 Arial,sans-serif!important;
   }
 }
 `;
-    document.head.appendChild(style);
+    document.head.insertBefore(style,document.querySelector('link[href*="site-charcoal-theme.css"]'));
   }
 
   function ensureTournamentTicker() {
@@ -208,7 +208,7 @@
         'display': 'block', 'grid-row': '1', 'order': '1',
         'width': '100%', 'height': '110px', 'min-height': '110px', 'max-height': '110px',
         'margin': '0', 'overflow': 'hidden',
-        'background': 'rgba(2,47,51,.98)', 'border-bottom': '1px solid rgba(224,181,103,.22)'
+        'background': 'rgba(69,66,62,0.98)', 'border-bottom': '1px solid rgba(165,162,158,0.22)'
       });
       imp(nav, {
         'display': 'block', 'width': 'calc(100% - 12px)', 'height': '110px',
@@ -233,8 +233,8 @@
           'display': 'flex', 'width': '100%', 'height': '52px', 'min-height': '52px', 'max-height': '52px',
           'padding': '4px 10px', 'flex-direction': 'row', 'align-items': 'center', 'justify-content': 'flex-start',
           'gap': '9px', 'direction': 'rtl', 'overflow': 'hidden',
-          'border': '1px solid rgba(224,181,103,.30)', 'border-radius': '14px',
-          'background': 'linear-gradient(145deg,rgba(9,68,70,.96),rgba(6,47,49,.96))'
+          'border': '1px solid rgba(165,162,158,0.3)', 'border-radius': '14px',
+          'background': 'linear-gradient(145deg,rgba(69,66,62,0.96),rgba(69,66,62,0.96))'
         });
         const avatarWrap = q('.header-member-avatar-wrap', member);
         const avatar = q('.header-member-avatar', member);
@@ -254,7 +254,7 @@
         const name = q('.header-member-copy>strong', member);
         imp(name, {
           'display': 'block', 'min-width': '0', 'max-width': 'none', 'margin': '0', 'padding': '0',
-          'color': '#f4efe6', 'font-size': '17px', 'font-weight': '900', 'line-height': '1.1',
+          'color': '#e2dcd3', 'font-size': '17px', 'font-weight': '900', 'line-height': '1.1',
           'white-space': 'nowrap', 'overflow': 'hidden', 'text-overflow': 'ellipsis', 'text-align': 'right'
         });
         const points = q('.header-member-points', member);
@@ -263,7 +263,7 @@
           'flex-direction': 'column', 'align-items': 'center', 'justify-content': 'center', 'gap': '1px', 'line-height': '1'
         });
         imp(q('small', points), { 'display': 'block', 'font-size': '8px', 'line-height': '1', 'color': '#b9c9c4', 'margin': '0' });
-        imp(q('b', points), { 'font-size': '22px', 'font-weight': '900', 'line-height': '1', 'color': '#efcf7c', 'margin': '0', 'padding': '0' });
+        imp(q('b', points), { 'font-size': '22px', 'font-weight': '900', 'line-height': '1', 'color': '#e2dcd3', 'margin': '0', 'padding': '0' });
       }
 
       const dashboard = document.getElementById('dashboardNav');
@@ -273,11 +273,11 @@
         'display': 'flex', 'grid-area': 'dashboard', 'width': '100%', 'height': '42px', 'min-height': '42px', 'max-height': '42px',
         'min-width': '0', 'max-width': 'none', 'margin': '0', 'padding': '3px',
         'flex-direction': 'column', 'align-items': 'center', 'justify-content': 'center', 'gap': '2px',
-        'border': '1px solid rgba(224,181,103,.25)', 'border-radius': '12px', 'background': 'rgba(255,255,255,.035)',
-        'color': '#f4efe6', 'font-size': '8px', 'font-weight': '800', 'line-height': '1'
+        'border': '1px solid rgba(165,162,158,0.25)', 'border-radius': '12px', 'background': 'rgba(255,255,255,.035)',
+        'color': '#e2dcd3', 'font-size': '8px', 'font-weight': '800', 'line-height': '1'
       });
       const dashIcon = q('.header-tile-icon', dashboard);
-      imp(dashIcon, { 'display': 'grid', 'width': '22px', 'height': '22px', 'min-width': '22px', 'place-items': 'center', 'font-size': '18px', 'line-height': '1', 'color': '#efcf7c' });
+      imp(dashIcon, { 'display': 'grid', 'width': '22px', 'height': '22px', 'min-width': '22px', 'place-items': 'center', 'font-size': '18px', 'line-height': '1', 'color': '#e2dcd3' });
 
       const host = document.getElementById('siteNotificationHost');
       imp(host, { 'display': 'flex', 'grid-area': 'notifications', 'width': '100%', 'height': '42px', 'min-width': '0', 'max-width': 'none', 'margin': '0' });
@@ -286,10 +286,10 @@
         'display': 'flex', 'width': '100%', 'height': '42px', 'min-height': '42px', 'max-height': '42px',
         'min-width': '0', 'max-width': 'none', 'padding': '3px', 'margin': '0',
         'flex-direction': 'column', 'align-items': 'center', 'justify-content': 'center', 'gap': '2px',
-        'border': '1px solid rgba(224,181,103,.25)', 'border-radius': '12px', 'background': 'rgba(255,255,255,.035)',
-        'color': '#f4efe6', 'font-size': '8px', 'font-weight': '800', 'line-height': '1'
+        'border': '1px solid rgba(165,162,158,0.25)', 'border-radius': '12px', 'background': 'rgba(255,255,255,.035)',
+        'color': '#e2dcd3', 'font-size': '8px', 'font-weight': '800', 'line-height': '1'
       });
-      imp(q('.header-tile-icon', bell), { 'display': 'grid', 'width': '22px', 'height': '22px', 'min-width': '22px', 'place-items': 'center', 'color': '#efcf7c', 'margin': '0' });
+      imp(q('.header-tile-icon', bell), { 'display': 'grid', 'width': '22px', 'height': '22px', 'min-width': '22px', 'place-items': 'center', 'color': '#e2dcd3', 'margin': '0' });
       imp(q('.header-tile-label', bell), { 'display': 'block', 'font-size': '8px', 'line-height': '1', 'margin': '0' });
 
       const logout = document.getElementById('navLogout');
@@ -299,8 +299,8 @@
           'display': 'flex', 'grid-area': 'logout', 'width': '100%', 'height': '42px', 'min-height': '42px', 'max-height': '42px',
           'min-width': '0', 'max-width': 'none', 'margin': '0', 'padding': '3px',
           'flex-direction': 'column', 'align-items': 'center', 'justify-content': 'center', 'gap': '2px',
-          'border': '1px solid rgba(224,181,103,.25)', 'border-radius': '12px', 'background': 'rgba(255,255,255,.035)',
-          'color': '#f4efe6', 'font-size': '8px', 'font-weight': '800', 'line-height': '1'
+          'border': '1px solid rgba(165,162,158,0.25)', 'border-radius': '12px', 'background': 'rgba(255,255,255,.035)',
+          'color': '#e2dcd3', 'font-size': '8px', 'font-weight': '800', 'line-height': '1'
         });
         imp(q('.mobile-control-label', logout), { 'display': 'block', 'font-size': '8px', 'line-height': '1', 'margin': '0' });
       }
