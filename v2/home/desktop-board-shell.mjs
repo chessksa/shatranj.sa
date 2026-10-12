@@ -380,6 +380,62 @@ if(desktop.matches && document.querySelector('#homeHero')){
     body.appendChild(card);
   }
 
+
+  // Single desktop entry point for online games, friends, computer, and variants.
+  function playOptionsView(body){
+    const panel=document.createElement('section');
+    panel.className='desktop-play-options';
+    panel.setAttribute('aria-label','اختر طريقة اللعب');
+    panel.innerHTML=[
+      '<h2 class="desktop-play-options-intro">اختر طريقة اللعب</h2>',
+      '<section class="desktop-play-online-choice" aria-label="اللعب عبر الإنترنت">',
+        '<h3>اللعب عبر الإنترنت</h3>',
+        '<p>اختر وقت المباراة</p>',
+        '<div class="desktop-play-time-options" role="group" aria-label="وقت المباراة">',
+          '<button type="button" data-play-minutes="5" aria-pressed="false">5 دقائق</button>',
+          '<button type="button" data-play-minutes="10" aria-pressed="true" class="is-selected">10 دقائق</button>',
+          '<button type="button" data-play-minutes="15" aria-pressed="false">15 دقيقة</button>',
+        '</div>',
+        '<button type="button" class="desktop-play-primary" data-play-choice="quick">بدء المباراة</button>',
+      '</section>',
+      '<nav class="desktop-play-choice-list" aria-label="طرق اللعب">',
+        '<button type="button" data-play-choice="online"><span class="desktop-play-choice-icon">'+sidebarIcon('play')+'</span><span>اللعب عبر الإنترنت</span></button>',
+        '<button type="button" data-play-choice="computer"><span class="desktop-play-choice-icon">'+sidebarIcon('computer')+'</span><span>اللعب ضد الكمبيوتر</span></button>',
+        '<button type="button" data-play-choice="random"><span class="desktop-play-choice-icon">'+sidebarIcon('watch')+'</span><span>اللعب ضد خصم عشوائي</span></button>',
+        '<button type="button" data-play-choice="friend"><span class="desktop-play-choice-icon">'+sidebarIcon('invite')+'</span><span>الأصدقاء والتحديات</span></button>',
+        '<button type="button" data-play-choice="variants"><span class="desktop-play-choice-icon">'+sidebarIcon('puzzles')+'</span><span>نماذج اللعب</span></button>',
+      '</nav>'
+    ].join('');
+    body.appendChild(panel);
+    let selectedMinutes=10;
+    panel.addEventListener('click',event=>{
+      const time=event.target.closest('[data-play-minutes]');
+      if(time&&panel.contains(time)){
+        selectedMinutes=Number(time.dataset.playMinutes);
+        panel.querySelectorAll('[data-play-minutes]').forEach(button=>{
+          const selected=button===time;
+          button.classList.toggle('is-selected',selected);
+          button.setAttribute('aria-pressed',String(selected));
+        });
+        return;
+      }
+      const choice=event.target.closest('[data-play-choice]');
+      if(!choice||!panel.contains(choice))return;
+      const type=choice.dataset.playChoice;
+      if(type==='quick'||type==='random'||type==='online'){
+        window.dispatchEvent(new CustomEvent('desktop:inline-play-open',{
+          detail:{minutes:selectedMinutes,autoStart:type!=='online'}
+        }));
+      }else if(type==='computer'){
+        showDashboard('computer');
+      }else if(type==='friend'){
+        showDashboard('invite');
+      }else if(type==='variants'){
+        location.assign('variants.html');
+      }
+    });
+  }
+
   function computerView(body){
     mountInlineComputer(body);
   }
