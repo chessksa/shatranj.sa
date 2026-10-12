@@ -21,7 +21,7 @@ if(mobile.matches&&document.querySelector('#homeHero')){
     link.rel='stylesheet';
     link.dataset.mobileBoardShell='1';
     const url=new URL('./mobile-board-shell.css',import.meta.url);
-    url.searchParams.set('v','20261012-extracted-photo-pieces-v3');
+    url.searchParams.set('v','20261012-pawns90-allboards-v3');
     link.href=url.href;
     document.head.appendChild(link);
   }
