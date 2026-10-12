@@ -43,7 +43,7 @@
     }
   }
   let tournamentSpectatorPromise=null;
-  const spectatorModule=()=>tournamentSpectatorPromise||(tournamentSpectatorPromise=import('./v2/home/inline-tournament-spectator.mjs?v=20261009-inline-tournament-v1'));
+  const spectatorModule=()=>tournamentSpectatorPromise||(tournamentSpectatorPromise=import('./v2/home/inline-tournament-spectator.mjs?v=20261012-pawns94-v1'));
 
 
   function txt(id,fallback='0'){return document.getElementById(id)?.textContent?.trim()||fallback}
