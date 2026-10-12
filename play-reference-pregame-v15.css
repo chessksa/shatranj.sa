@@ -242,7 +242,7 @@
     border-radius:0!important;
     box-shadow:none!important;
     overflow:hidden!important;
-    background:linear-gradient(90deg,#a9784d,#8e623f 46%,#aa7b4f)!important;
+    background:#ad8a65 url('assets/boards/wood4.jpg') center/100% 100% no-repeat!important;
   }
   body.pregame.reference-play-layout #board,
   body.pregame.reference-play-layout #board .cm-chessboard,
