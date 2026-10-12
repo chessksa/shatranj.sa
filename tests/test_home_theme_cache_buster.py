@@ -27,5 +27,7 @@ def test_desktop_sidebar_has_one_authoritative_active_style():
     assert sidebar_css.count('body.desktop-board-workspace .v2-global-sidebar.desktop-sidebar-refined .desktop-home-nav-link.active,') == 1
     assert 'gap:2px!important' in sidebar_css
     assert 'background:#efc77b;' in sidebar_css
-    assert 'desktop-sidebar-cleanup.css?v=${tuneAssetVersion}' in tune_js
+    assert 'data-desktop-sidebar-cleanup' in html
+    assert 'desktop-sidebar-cleanup.css?v=' in html
+    assert "document.head.appendChild(cleanupCss)" not in tune_js
     assert 'desktop-board-shell-tune.mjs?v=${homeAssetVersion}' in dashboard_js
