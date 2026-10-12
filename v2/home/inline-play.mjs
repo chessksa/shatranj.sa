@@ -49,6 +49,7 @@ let submittingMove=false;
 let actionInFlight=false;
 let timeoutRequested=false;
 let active=false;
+let playGeneration=0;
 let mounted=false;
 let identityReady=false;
 
@@ -433,10 +434,15 @@ async function refreshMoveNotebook(){
 }
 
 async function refreshGame(){
-  if(!currentGame?.id) return null;
+  if(!active||!currentGame?.id) return null;
   if(refreshPromise) return refreshPromise;
+  const gameId=currentGame.id;
+  const generation=playGeneration;
   refreshPromise=(async()=>{
-    currentGame=normalizeGameState(await getGameState(currentGame.id));
+    const latest=normalizeGameState(await getGameState(gameId));
+    // Never let a late API response repaint an idle homepage after navigation.
+    if(!active||generation!==playGeneration||currentGame?.id!==gameId)return null;
+    currentGame=latest;
     orientation=gameColor()||orientation;
     updateCurrentRatingFromGame();
     updateOpponent();
@@ -464,8 +470,11 @@ function stopSubscription(){
 }
 
 async function openGame(gameId){
+  if(!active)return;
+  const generation=playGeneration;
   stopPolling();
   const state=normalizeGameState(await getGameState(gameId));
+  if(!active||generation!==playGeneration)return;
   if(!state) throw new Error('تعذر تحميل المباراة');
   currentGame=state;
   orientation=gameColor()||'w';
@@ -477,6 +486,7 @@ async function openGame(gameId){
   renderPosition(currentGame.fen,orientation);
   updateControls();
   await refreshMoveNotebook();
+  if(!active||generation!==playGeneration)return;
   startClockLoop();
   beginSubscription(gameId);
 }
@@ -704,6 +714,7 @@ async function enterInlinePlay({gameId=null}={}){
 
   document.body.classList.add('desktop-inline-play-active');
   active=true;
+  const generation=++playGeneration;
   updatePlayRoute(true);
   const home=document.getElementById('desktopDashboardHome');
   const view=document.getElementById('desktopDashboardView');
@@ -718,7 +729,7 @@ async function enterInlinePlay({gameId=null}={}){
   renderPosition(currentGame?.fen||START_FEN,currentGame?orientation:'w');
   updateControls();
 
-  if(!await initializeIdentity()) return;
+  if(!await initializeIdentity()||!active||generation!==playGeneration) return;
 
   const requested=gameId||new URLSearchParams(location.search).get('game');
   if(requested){
@@ -745,6 +756,7 @@ async function enterInlinePlay({gameId=null}={}){
 function exitInlinePlay(){
   if(!active) return;
   active=false;
+  ++playGeneration;
   document.body.classList.remove('desktop-inline-play-active');
   if(polling){
     cancelMatchmaking().catch(()=>{});
