@@ -6,7 +6,7 @@ on:
   workflow_dispatch:
 permissions:
   contents: read
-  pages: write
+  pages: read
 jobs:
   dns_https:
     runs-on: ubuntu-latest
@@ -17,28 +17,6 @@ jobs:
         shell: bash
         run: |
           curl -fsS --max-time 15 -H "Accept: application/vnd.github+json" -H "Authorization: Bearer $GH_TOKEN" "https://api.github.com/repos/${GITHUB_REPOSITORY}/pages" | python3 -c 'import json,sys; x=json.load(sys.stdin); print("cname:",x.get("cname")); print("https_enforced:",x.get("https_enforced")); print("https_certificate:",x.get("https_certificate")); print("pending_domain_unverified_at:",x.get("pending_domain_unverified_at")); print("protected_domain_state:",x.get("protected_domain_state"))'
-      - name: Check Pages domain health and request certificate provisioning
-        env:
-          GH_TOKEN: ${{ github.token }}
-        shell: bash
-        run: |
-          echo '--- GitHub Pages DNS health ---'
-          curl -sS --max-time 15 -H "Accept: application/vnd.github+json" -H "Authorization: Bearer $GH_TOKEN" "https://api.github.com/repos/${GITHUB_REPOSITORY}/pages/health" | python3 -c 'import json,sys; d=json.load(sys.stdin); print(json.dumps(d,ensure_ascii=False)[:3500])'
-          echo '--- Request an idempotent custom domain refresh ---'
-          http_code=$(curl --max-time 15 -sS -o /tmp/pages-repair.json -w '%{http_code}' -X PUT \
-            -H "Accept: application/vnd.github+json" \
-            -H "Authorization: Bearer $GH_TOKEN" \
-            -H "Content-Type: application/json" \
-            "https://api.github.com/repos/${GITHUB_REPOSITORY}/pages" \
-            -d '{"cname":"arabchees.com"}')
-          echo "Pages update HTTP status: $http_code"
-          cat /tmp/pages-repair.json
-          echo
-          if [[ "$http_code" != "204" ]]; then
-            echo 'Token cannot update Pages settings; preserving existing domain.'
-          else
-            echo 'Pages accepted the custom domain refresh.'
-          fi
       - name: Verify new DNS delegation and GitHub Pages
         shell: bash
         run: |
