@@ -170,7 +170,8 @@
   }
 
   function home(body){
-    body.innerHTML='<div class="mfw-stats"><div class="mfw-stat"><small>المشتركون</small><b>'+txt('headerPlayersCount')+'</b></div><div class="mfw-stat"><small>المتواجدون</small><b>'+txt('headerOnlineCount')+'</b></div><div class="mfw-stat"><small>المباريات الآن</small><b>'+txt('headerMatchesCount')+'</b></div></div>';
+    body.innerHTML='<div class="mfw-stats"><div class="mfw-stat"><small>المشتركون</small><b>'+txt('headerPlayersCount')+'</b></div><div class="mfw-stat"><small>المتواجدون</small><b>'+txt('headerOnlineCount')+'</b></div><a class="mfw-stat mfw-stat-watch no-live-matches" data-live-matches-watch aria-disabled="true" tabindex="-1" title="لا توجد مباريات جارية الآن"><small>المباريات الآن</small><b>'+txt('headerMatchesCount')+'</b></a></div>';
+    window.SHATRANJ_LIVE_MATCHES?.syncLinks?.();
   }
 
   function action(body,title,text,href,label){

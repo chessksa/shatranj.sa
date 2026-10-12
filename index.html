@@ -6,7 +6,7 @@ if (location.protocol === 'http:' && /^(?:www\.)?arabchees\.com$/i.test(location
   location.replace('https://arabchees.com' + location.pathname + location.search + location.hash);
 }
 </script>
-<meta name="shatranj-asset-version" content="20261012-colorful-icons-v8">
+<meta name="shatranj-asset-version" content="20261012-live-matches-watch-v9">
 <style id="approvedHomeGate">
 html:not(.approved-home-ready) body > :not(#approvedHomeBoot){visibility:hidden!important}
 #approvedHomeBoot{position:fixed;inset:0;z-index:2147483000;display:grid;place-items:center;text-align:center;padding:24px;background:#302e2b;color:#e2dcd3;font-family:Arial,sans-serif}
@@ -1104,7 +1104,7 @@ footer{
 <link rel="stylesheet" data-desktop-sidebar-cleanup href="v2/home/desktop-sidebar-cleanup.css?v=20261012-source-palette-v5" media="(min-width:901px)">
 <link rel="stylesheet" data-inline-play href="v2/home/inline-play.css?v=20261012-source-palette-v5" media="(min-width:901px)">
 <link rel="stylesheet" data-move-notebook href="v2/home/move-notebook.css?v=20261012-source-palette-v5" media="(min-width:901px)">
-<link rel="stylesheet" href="site-charcoal-theme.css?v=20261012-colorful-icons-v8">
+<link rel="stylesheet" href="site-charcoal-theme.css?v=20261012-live-matches-watch-v9">
 </head>
 
 <body>
@@ -1176,7 +1176,7 @@ footer{
         <div class="hero-stat">
           <div><small>المتواجدين</small><strong id="headerOnlineCount">0</strong></div>
         </div>
-        <a class="hero-stat hero-stat-watch" href="watch.html?v=20261009-tiles58-gridtable-v1">
+        <a class="hero-stat hero-stat-watch no-live-matches" data-live-matches-watch aria-disabled="true" tabindex="-1" title="لا توجد مباريات جارية الآن">
           <div><small>المباريات الآن</small><strong id="headerMatchesCount">0</strong></div>
         </a>
       </div>
@@ -1503,13 +1503,40 @@ footer{
   let persisted=0;
   let guest=Number(window.SHATRANJ_GUEST_COMPUTER_COUNT)||0;
   const nonnegative=n=>Number.isSafeInteger(n)&&n>=0?n:0;
+  // The same live count drives the desktop and mobile "المباريات الآن" links.
+  // Zero means no link; a positive count opens the *current* watch list.
+  const watchHref='watch.html#current';
+  const syncLinks=()=>{
+    const total=persisted+guest;
+    document.querySelectorAll('[data-live-matches-watch]').forEach(link=>{
+      const active=total>0;
+      link.classList.toggle('has-live-matches',active);
+      link.classList.toggle('no-live-matches',!active);
+      if(active){
+        link.setAttribute('href',watchHref);
+        link.removeAttribute('aria-disabled');
+        link.removeAttribute('tabindex');
+        link.title='مشاهدة المباريات الجارية ('+total+')';
+        link.setAttribute('aria-label','مشاهدة المباريات الجارية: '+total);
+      }else{
+        link.removeAttribute('href');
+        link.setAttribute('aria-disabled','true');
+        link.setAttribute('tabindex','-1');
+        link.title='لا توجد مباريات جارية الآن';
+        link.setAttribute('aria-label','المباريات الآن: 0، لا توجد مباريات جارية');
+      }
+    });
+  };
   const render=()=>{
+    const total=persisted+guest;
     const node=document.getElementById('headerMatchesCount');
-    if(node)node.textContent=String(persisted+guest);
+    if(node&&node.textContent!==String(total))node.textContent=String(total);
+    syncLinks();
   };
   window.SHATRANJ_LIVE_MATCHES={
     setPersisted(value){persisted=nonnegative(Number(value));render();},
-    getCounts(){return {persisted,guest,total:persisted+guest};}
+    getCounts(){return {persisted,guest,total:persisted+guest};},
+    syncLinks
   };
   window.addEventListener('shatranj:guest-computer-match-count',event=>{
     guest=nonnegative(Number(event.detail?.count));
@@ -2604,7 +2631,7 @@ setInterval(loadCurrentMatchesCount,3000);
 <script src="site-notifications.js?v=20261012-source-palette-v5"></script>
 <script src="home-invite.js?v=20261012-runtime-contrast-v6"></script>
 <script type="module" src="site-presence.js?v=20261012-source-palette-v5"></script>
-<script src="config-base.js?v=20261009-tiles58-gridtable-v1"></script><script src="home-tickers-bootstrap.js?v=20261012-source-palette-v5"></script><script type="module" src="v2/home/dashboard.mjs?v=20261012-source-palette-v5"></script><script type="module" src="v2/site/shell.mjs?v=20261012-source-palette-v5"></script><script src="mobile-home-fixed-v1.js?v=20261012-restore-routes-variants-v3"></script><script type="module" src="v2/home/chess-news-ticker.mjs?v=20261009-tiles58-gridtable-v1"></script><script id="approvedHomeReadyScript">
+<script src="config-base.js?v=20261009-tiles58-gridtable-v1"></script><script src="home-tickers-bootstrap.js?v=20261012-source-palette-v5"></script><script type="module" src="v2/home/dashboard.mjs?v=20261012-source-palette-v5"></script><script type="module" src="v2/site/shell.mjs?v=20261012-source-palette-v5"></script><script src="mobile-home-fixed-v1.js?v=20261012-live-matches-watch-v9"></script><script type="module" src="v2/home/chess-news-ticker.mjs?v=20261009-tiles58-gridtable-v1"></script><script id="approvedHomeReadyScript">
 (()=>{
   const root=document.documentElement,started=Date.now();
   const ready=()=>{

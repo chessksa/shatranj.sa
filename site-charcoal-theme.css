@@ -905,3 +905,60 @@ html body .header-tile-icon{color:var(--icon-settings)!important}
 html body .hero-stat-icon{color:var(--icon-play)!important}
 html body .site-notification-bell svg{color:#f0a5d7!important}
 /* Keep the status colors, 1px board frame, square textures and chess-piece SVG assets untouched. */
+
+
+/* Active current-games navigation — both desktop and phone reuse the live counter.
+   Ordinary spectator navigation remains accessible independently. */
+html body .hero-stat-watch,
+html body #mobileFixedWorkspace .mfw-stat-watch{
+  text-decoration:none!important;
+  position:relative;
+  transition:background-color .15s ease,border-color .15s ease,box-shadow .15s ease;
+}
+html body .hero-stat-watch.no-live-matches,
+html body #mobileFixedWorkspace .mfw-stat-watch.no-live-matches{
+  cursor:default!important;
+  border-color:#454841!important;
+  box-shadow:none!important;
+}
+html body .hero-stat-watch.has-live-matches,
+html body #mobileFixedWorkspace .mfw-stat-watch.has-live-matches{
+  cursor:pointer!important;
+  background:linear-gradient(180deg,#303e3b,#282f2c)!important;
+  border-color:#70cbb6!important;
+  box-shadow:inset 0 0 0 1px rgba(112,203,182,.13)!important;
+}
+html body .hero-stat-watch.has-live-matches:hover,
+html body #mobileFixedWorkspace .mfw-stat-watch.has-live-matches:hover{
+  background:#344741!important;
+  border-color:#a0e6d2!important;
+}
+html body .hero-stat-watch.has-live-matches::after,
+html body #mobileFixedWorkspace .mfw-stat-watch.has-live-matches::after{
+  content:"";
+  position:absolute;
+  top:8px;
+  inset-inline-start:9px;
+  width:7px;
+  height:7px;
+  border-radius:50%;
+  background:#70e0aa;
+  box-shadow:0 0 0 2px rgba(112,224,170,.13);
+  pointer-events:none;
+}
+html body :is(.hero-stat-watch,.mfw-stat-watch):focus-visible{
+  outline:2px solid #a0e6d2!important;
+  outline-offset:2px!important;
+}
+html body #mobileFixedWorkspace .mfw-stat-watch{
+  display:flex!important;
+  flex-direction:column;
+  align-items:center;
+  justify-content:center;
+  min-width:0;
+  color:#f5f4f0!important;
+}
+html body #mobileFixedWorkspace .mfw-stat-watch small,
+html body #mobileFixedWorkspace .mfw-stat-watch b{
+  color:inherit!important;
+}
