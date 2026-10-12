@@ -1,4 +1,6 @@
 const tuneAssetVersion=encodeURIComponent(document.querySelector('meta[name="shatranj-asset-version"]')?.content||'20261009-fresh-ui-refresh-v1');
+// Start the real online-match controller; its CSS is already preloaded once by index.html.
+await import(`./inline-play.mjs?v=${tuneAssetVersion}`);
 await import(`./inline-play.mjs?v=${tuneAssetVersion}`);
 
 const desktop=window.matchMedia('(min-width:901px)');
