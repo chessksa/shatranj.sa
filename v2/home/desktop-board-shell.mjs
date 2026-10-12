@@ -149,15 +149,16 @@ if(desktop.matches && document.querySelector('#homeHero')){
     rail.hidden=true;
     rail.innerHTML=`
       <section class="desktop-home-side-card desktop-home-daily-card">
-        <h3>لغز اليوم</h3>
+        <div class="desktop-daily-puzzle-heading">
+          <h3>لغز اليوم</h3>
+          <span>اضغط على الرقعة للحل</span>
+        </div>
         <div class="desktop-mini-puzzle-board" role="button" tabindex="0"
-          data-home-side-action="daily" aria-label="معاينة لغز اليوم، اضغط للحل"></div>
-        <p class="desktop-mini-puzzle-caption" data-daily-puzzle-info>جارٍ تحميل لغز اليوم…</p>
+          data-home-side-action="daily" aria-label="لغز اليوم: اضغط على الرقعة للحل"></div>
         <div class="desktop-mini-puzzle-solvers" aria-live="polite">
           <span>حلّوا لغز اليوم</span>
           <strong data-daily-solver-count>0</strong>
         </div>
-        <button type="button" data-home-side-action="daily">حل لغز اليوم</button>
       </section>
       <section class="desktop-home-side-card desktop-home-friend-card">
         <h3>مباراة مقترحة</h3>
