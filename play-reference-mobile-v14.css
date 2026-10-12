@@ -406,9 +406,7 @@
     border-radius:0!important;
     box-shadow:none!important;
     overflow:hidden!important;
-    background:
-      repeating-linear-gradient(90deg,rgba(255,255,255,.028) 0 2px,rgba(0,0,0,.025) 2px 5px),
-      linear-gradient(90deg,#a9784d,#8e623f 46%,#aa7b4f)!important;
+    background:#ad8a65 url('assets/boards/wood4.jpg') center/100% 100% no-repeat!important;
   }
   body.live-game #board,
   body.live-game #board .cm-chessboard,
