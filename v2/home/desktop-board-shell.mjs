@@ -1,4 +1,4 @@
-import { renderApprovedPreview } from './move-notebook.mjs?v=20261012-stable-board-wood4-v5';
+import { renderApprovedPreview } from './move-notebook.mjs?v=20261012-home-board-return-v6';
 import { supabase } from '../platform/api.mjs';
 const desktopAssetVersion=encodeURIComponent(document.querySelector('meta[name="shatranj-asset-version"]')?.content||'20261009-fresh-ui-refresh-v1');
 const [computerModule,puzzlesModule,learnModule]=await Promise.all([
