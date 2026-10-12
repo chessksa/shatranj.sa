@@ -143,6 +143,12 @@ if(desktop.matches && document.querySelector('#homeHero')){
         const piece=document.createElement('img');
         const color=row<2?'b':'w';
         piece.className='desktop-board-preview-piece';
+        if(type==='p'){
+          piece.classList.add('chess-pawn');
+          // The idle desktop board retains its 90% pawn size even if an old
+          // browser stylesheet is applied during reload.
+          piece.style.setProperty('transform','translate(-50%, -50%) scale(.90)','important');
+        }
         piece.src=`assets/pieces/${color}${type}.png?v=${desktopAssetVersion}`;
         piece.alt='';
         piece.draggable=false;
@@ -150,10 +156,7 @@ if(desktop.matches && document.querySelector('#homeHero')){
       }
       grid.appendChild(square);
     }
-    const hint=document.createElement('span');
-    hint.className='desktop-board-hint';
-    hint.innerHTML='<span class="desktop-board-hint-icon">☝</span><span>اضغط على الرقعة للعب</span>';
-    preview.append(grid,hint);
+    preview.append(grid);
     const stage=document.createElement('div');
     stage.className='desktop-board-stage';
     preview.parentNode.insertBefore(stage,preview);
@@ -292,10 +295,6 @@ if(desktop.matches && document.querySelector('#homeHero')){
           <div class="desktop-welcome-art" aria-hidden="true"><span>♞</span><i>♟</i><b>♜</b></div>
         </section>
 
-        <section class="desktop-tip-card">
-          <span class="desktop-tip-icon">◉</span>
-          <div><strong>معلومة اليوم</strong><p>التفكير المسبق هو سر الفوز في الشطرنج.</p></div>
-        </section>
       </div>
       <section id="desktopDashboardView" class="desktop-dashboard-view" hidden>
         <header class="desktop-dashboard-view-head"><strong id="desktopDashboardViewTitle">الترتيب</strong><button id="desktopDashboardBack" type="button">الرئيسية</button></header>
