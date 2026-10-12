@@ -47,7 +47,7 @@ function ensureCss(){
     const base=document.createElement('link');
     base.id='inlinePlayComputerBaseCss';
     base.rel='stylesheet';
-    const currentVersion=encodeURIComponent(document.querySelector('meta[name="shatranj-asset-version"]')?.content||'20261012-pawns82-visible-v2');
+    const currentVersion=encodeURIComponent(document.querySelector('meta[name="shatranj-asset-version"]')?.content||'20261012-pawns90-allboards-v3');
     base.href=new URL('./inline-play.css?v='+currentVersion,import.meta.url).href;
     document.head.appendChild(base);
   }
