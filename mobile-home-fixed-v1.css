@@ -47,8 +47,8 @@
     position:relative;display:grid;place-items:center;overflow:hidden;
     border-right:1px solid rgba(54,33,25,.17);border-bottom:1px solid rgba(54,33,25,.17);
   }
-  .mfw-square.light{background:rgba(255,247,224,.43)}
-  .mfw-square.dark{background:rgba(49,24,11,.36)}
+  .mfw-square.light{background:transparent}
+  .mfw-square.dark{background:transparent}
   /* Optical centering compensates for transparent space in the approved
      piece PNGs. Keep mobile sizing isolated from desktop and game engines. */
   .mfw-piece{
