@@ -152,15 +152,16 @@
     document.body.appendChild(script);
   }
 
+  // On mobile use the original Wood 4 image only; no old brown SVG overlays.
   function applyReferenceBoardPalette() {
     if (!isReferenceMobile()) return;
     const board = document.getElementById('board');
     if (!board) return;
     board.querySelectorAll('.cm-chessboard .square.white').forEach((square) => {
-      square.style.setProperty('fill', 'rgba(216,179,126,.92)', 'important');
+      square.style.setProperty('fill', 'transparent', 'important');
     });
     board.querySelectorAll('.cm-chessboard .square.black').forEach((square) => {
-      square.style.setProperty('fill', 'rgba(141,96,59,.92)', 'important');
+      square.style.setProperty('fill', 'transparent', 'important');
     });
   }
 
