@@ -7,9 +7,8 @@
     display:grid!important;place-items:center start!important;
     overflow:visible!important;
   }
-  body.desktop-board-workspace.desktop-move-notebook-active .desktop-board-stage:has(> .desktop-move-notebook[data-mode="docked"]) #homeBoardPreview.desktop-board-preview{
-    transform:translateX(calc(var(--chess-notebook-width) + var(--chess-notebook-gap)))!important;
-  }
+  /* Do not translate/reposition the chessboard on opening the move log.
+     The left-hand log expands as an overlay when space is insufficient. */
   .desktop-move-notebook{
     position:absolute;
     z-index:42;
