@@ -441,8 +441,8 @@
 
   /* Reference uses a warm amber last-move cue instead of the old red frame. */
   body.live-game .cm-chessboard .markers .marker.marker-frame-last-move{
-    fill:rgba(216,158,34,.36)!important;
-    stroke:rgba(216,158,34,.36)!important;
+    fill:rgba(126,123,119,0.36)!important;
+    stroke:rgba(126,123,119,0.36)!important;
     stroke-width:2px!important;
     opacity:1!important;
   }
@@ -502,7 +502,7 @@
     padding:0!important;
     border:0!important;
     border-radius:0!important;
-    color:#ffad55!important;
+    color:#e2dcd3!important;
     font-size:15px!important;
     line-height:1!important;
   }
@@ -663,7 +663,7 @@
     content:"♟"!important;
     display:block!important;
     font:900 24px/1 Arial,sans-serif!important;
-    color:#efcf7c!important;
+    color:#e2dcd3!important;
   }
 
   /* Full phone width; no height clamp or side gutters. */

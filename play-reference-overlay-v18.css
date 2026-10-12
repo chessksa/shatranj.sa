@@ -68,9 +68,9 @@
     margin:0!important;
     padding:0 10px!important;
     transform:translateY(-50%)!important;
-    border:1px solid rgba(224,181,103,.46)!important;
+    border:1px solid rgba(165,162,158,0.46)!important;
     border-radius:12px!important;
-    background:#182124!important;
+    background:#302e2b!important;
     box-shadow:none!important;
     color:#f2f2f2!important;
     font-size:13px!important;
@@ -183,28 +183,28 @@
 @media(max-width:900px){
   body.computer-game.pregame.reference-play-layout,
   body.computer-game.pregame.reference-play-layout #gamePage{
-    background:#042c30!important;
-    color:#f4efe6!important;
+    background:#302e2b!important;
+    color:#e2dcd3!important;
   }
   body.computer-game.pregame.reference-play-layout .side-header{
-    background:#04282c!important;
-    border-bottom:1px solid rgba(224,181,103,.22)!important;
+    background:#302e2b!important;
+    border-bottom:1px solid rgba(165,162,158,0.22)!important;
   }
   body.computer-game.pregame.reference-play-layout #topPlayerCard,
   body.computer-game.pregame.reference-play-layout #bottomPlayerCard{
-    background:#07383e!important;
+    background:#302e2b!important;
   }
   body.computer-game.pregame.reference-play-layout .opponent-search-title{
-    color:#d4e2dd!important;
+    color:#c8c2ba!important;
   }
   body.computer-game.pregame.reference-play-layout .side-brand,
   body.computer-game.pregame.reference-play-layout .player-card .name{
-    color:#f4efe6!important;
+    color:#e2dcd3!important;
   }
   body.computer-game.pregame.reference-play-layout .side-brand-mark{
-    color:#e0b567!important;
+    color:#e2dcd3!important;
   }
   body.computer-game.pregame.reference-play-layout .player-card .avatar{
-    background:#0a4549!important;
+    background:#302e2b!important;
   }
 }

@@ -29,11 +29,11 @@
 
   .inline-play-square.movable{cursor:pointer}
   .inline-play-square.selected{
-    box-shadow:inset 0 0 0 4px rgba(239,202,114,.9)!important;
+    box-shadow:inset 0 0 0 4px rgba(165,162,158,0.9)!important;
   }
 
   .inline-play-square:focus-visible{
-    box-shadow:inset 0 0 0 3px rgba(239,202,114,.9);
+    box-shadow:inset 0 0 0 3px rgba(165,162,158,0.9);
   }
 
   .inline-play-piece{
@@ -78,8 +78,8 @@
   .inline-play-player-card,
   .inline-play-search-tools,
   .inline-play-actions{
-    border:1px solid rgba(102,172,173,.34);
-    background:linear-gradient(145deg,rgba(6,59,63,.94),rgba(3,45,49,.94));
+    border:1px solid rgba(114,111,107,0.34);
+    background:linear-gradient(145deg,rgba(69,66,62,0.94),rgba(69,66,62,0.94));
     box-shadow:0 12px 28px rgba(0,0,0,.14),inset 0 1px 0 rgba(255,255,255,.03);
   }
 
@@ -101,7 +101,7 @@
   }
 
   .inline-play-player-name{
-    color:#f4efe6;
+    color:#e2dcd3;
     font-size:17px;
     line-height:1.2;
     font-weight:900;
@@ -119,7 +119,7 @@
     font-weight:800;
   }
 
-  .inline-play-status.searching{color:#efc45f}
+  .inline-play-status.searching{color:#e2dcd3}
   .inline-play-status.error{color:#ff9a91}
 
   .inline-play-clock{
@@ -127,9 +127,9 @@
     min-width:96px;
     padding:10px 8px;
     border-radius:12px;
-    background:rgba(1,34,38,.76);
-    border:1px solid rgba(224,181,103,.28);
-    color:#f4efe6;
+    background:rgba(69,66,62,0.76);
+    border:1px solid rgba(165,162,158,0.28);
+    color:#e2dcd3;
     font-size:29px;
     line-height:1;
     font-weight:900;
@@ -167,10 +167,10 @@
   .inline-play-search-button,
   .inline-play-actions button{
     min-height:45px;
-    border:1px solid rgba(102,172,173,.34);
+    border:1px solid rgba(114,111,107,0.34);
     border-radius:11px;
-    background:rgba(2,47,51,.82);
-    color:#f4efe6;
+    background:rgba(69,66,62,0.82);
+    color:#e2dcd3;
     font:inherit;
     font-weight:900;
     cursor:pointer;
@@ -178,29 +178,29 @@
 
   .inline-play-times button:hover,
   .inline-play-actions button:hover:not(:disabled){
-    border-color:rgba(224,181,103,.56);
-    background:rgba(5,62,66,.95);
+    border-color:rgba(165,162,158,0.56);
+    background:rgba(69,66,62,0.95);
   }
 
   .inline-play-times button.active{
-    background:linear-gradient(135deg,#efca72,#d9aa4f);
-    border-color:#efca72;
-    color:#173536;
+    background:linear-gradient(135deg,#e2dcd3,#e2dcd3);
+    border-color:#e2dcd3;
+    color:#302e2b;
   }
 
   .inline-play-times button:disabled{opacity:.48;cursor:default}
 
   .inline-play-search-button{
     width:100%;
-    background:linear-gradient(135deg,#efca72,#d9aa4f);
-    border-color:#efca72;
-    color:#173536;
+    background:linear-gradient(135deg,#e2dcd3,#e2dcd3);
+    border-color:#e2dcd3;
+    color:#302e2b;
     font-size:14px;
   }
 
   .inline-play-search-button.searching{
-    background:#26747b;
-    border-color:#4f9297;
+    background:#3b3937;
+    border-color:#625f5b;
     color:#fff;
   }
 
@@ -217,7 +217,7 @@
   .inline-play-actions button{min-height:48px;font-size:12px}
   .inline-play-actions button:disabled{opacity:.34;cursor:default}
   .inline-play-actions .inline-play-danger{color:#ffb0aa}
-  .inline-play-actions .inline-play-grace{color:#efca72}
+  .inline-play-actions .inline-play-grace{color:#e2dcd3}
   .inline-play-actions .inline-play-grace span{display:block;margin-top:2px;font-size:15px}
 
   .inline-play-spacer{flex:1 1 auto;min-height:0}

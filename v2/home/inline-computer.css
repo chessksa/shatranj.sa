@@ -95,9 +95,9 @@
     width:100%;
     justify-self:center;
     padding:10px 12px;
-    border:1px solid rgba(224,181,103,.34);
+    border:1px solid rgba(165,162,158,0.34);
     border-radius:14px;
-    background:linear-gradient(145deg,rgba(6,59,63,.94),rgba(3,45,49,.94));
+    background:linear-gradient(145deg,rgba(69,66,62,0.94),rgba(69,66,62,0.94));
     box-shadow:0 12px 28px rgba(0,0,0,.14),inset 0 1px 0 rgba(255,255,255,.03);
     display:grid;
     grid-template-rows:auto 46px auto 46px 44px;
@@ -110,7 +110,7 @@
 
   .inline-computer-label{
     margin:0;
-    color:#efcf7c;
+    color:#e2dcd3;
     font:900 14px/1.2 Arial,sans-serif;
     text-align:center;
   }
@@ -127,10 +127,10 @@
     height:46px;
     min-height:46px;
     padding:5px 4px;
-    border:1px solid rgba(102,172,173,.34);
+    border:1px solid rgba(114,111,107,0.34);
     border-radius:10px;
-    background:rgba(2,47,51,.82);
-    color:#f4efe6;
+    background:rgba(69,66,62,0.82);
+    color:#e2dcd3;
     font:900 13px/1.15 Arial,sans-serif;
     cursor:pointer;
     overflow:hidden;
@@ -139,31 +139,31 @@
   .inline-computer-options button small{
     display:block;
     margin-top:4px;
-    color:#d9b35f;
+    color:#e2dcd3;
     font-size:11px;
     line-height:1;
   }
 
   /* Selected level/time and Start: one-pixel orange outline, dark surface. */
   .inline-computer-options button.active{
-    border:1px solid #e69b36;
-    background:rgba(2,47,51,.82);
-    color:#f4efe6;
+    border:1px solid #9b958d;
+    background:rgba(69,66,62,0.82);
+    color:#e2dcd3;
     box-shadow:none;
   }
 
   .inline-computer-options button.active small{
-    color:#e69b36;
+    color:#9b958d;
   }
 
   .inline-computer-start{
     width:100%;
     height:44px;
     min-height:44px;
-    border:1px solid #e69b36;
+    border:1px solid #9b958d;
     border-radius:11px;
-    background:rgba(2,47,51,.82);
-    color:#f4efe6;
+    background:rgba(69,66,62,0.82);
+    color:#e2dcd3;
     font:900 15px/1 Arial,sans-serif;
     box-shadow:none;
     cursor:pointer;
@@ -175,9 +175,9 @@
     justify-self:center;
     align-self:center;
     padding:10px;
-    border:1px solid rgba(102,172,173,.34);
+    border:1px solid rgba(114,111,107,0.34);
     border-radius:14px;
-    background:linear-gradient(145deg,rgba(6,59,63,.94),rgba(3,45,49,.94));
+    background:linear-gradient(145deg,rgba(69,66,62,0.94),rgba(69,66,62,0.94));
     display:grid;
     grid-template-columns:repeat(2,minmax(0,1fr));
     gap:8px;
@@ -189,10 +189,10 @@
     height:58px;
     min-height:58px;
     padding:0 8px;
-    border:1px solid rgba(102,172,173,.34);
+    border:1px solid rgba(114,111,107,0.34);
     border-radius:11px;
-    background:rgba(2,47,51,.82);
-    color:#f4efe6;
+    background:rgba(69,66,62,0.82);
+    color:#e2dcd3;
     font:900 14px/1 Arial,sans-serif;
     display:flex;
     align-items:center;
@@ -206,7 +206,7 @@
     width:30px;
     height:30px;
     font:900 26px/1 Arial,sans-serif;
-    color:#efca72;
+    color:#e2dcd3;
   }
 
   #inlineComputerNew::before{
@@ -261,7 +261,7 @@
   .inline-computer-panel .inline-play-player-card.result-winner{
     border-color:rgba(67,201,105,.92)!important;
     background:
-      linear-gradient(145deg,rgba(19,97,57,.86),rgba(5,61,43,.94))!important;
+      linear-gradient(145deg,rgba(19,97,57,.86),rgba(69,66,62,0.94))!important;
     box-shadow:
       0 12px 28px rgba(0,0,0,.14),
       inset 0 0 0 1px rgba(89,225,126,.20)!important;

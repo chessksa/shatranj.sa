@@ -9,7 +9,7 @@
     padding:0;
     overflow:hidden;
     direction:rtl;
-    color:#f4efe6;
+    color:#e2dcd3;
   }
 
   .inline-puzzle-panel [hidden]{display:none!important}
@@ -17,9 +17,9 @@
   .inline-puzzle-head{
     min-height:64px;
     padding:10px 12px;
-    border:1px solid rgba(224,181,103,.28);
+    border:1px solid rgba(165,162,158,0.28);
     border-radius:14px;
-    background:linear-gradient(145deg,rgba(6,59,63,.94),rgba(3,45,49,.94));
+    background:linear-gradient(145deg,rgba(69,66,62,0.94),rgba(69,66,62,0.94));
     display:flex;
     align-items:center;
     justify-content:space-between;
@@ -35,15 +35,15 @@
 
   .inline-puzzle-head h2{
     margin:0;
-    color:#efcf7c;
+    color:#e2dcd3;
     font:900 20px/1.15 Arial,sans-serif;
   }
 
   .inline-puzzle-board-note{
     padding:6px 9px;
-    border:1px solid rgba(224,181,103,.28);
+    border:1px solid rgba(165,162,158,0.28);
     border-radius:999px;
-    color:#e8dfcf;
+    color:#e2dcd3;
     background:rgba(255,255,255,.025);
     font:800 9px/1 Arial,sans-serif;
     white-space:nowrap;
@@ -59,7 +59,7 @@
     min-width:0;
     min-height:64px;
     padding:8px 6px;
-    border:1px solid rgba(224,181,103,.25);
+    border:1px solid rgba(165,162,158,0.25);
     border-radius:12px;
     background:rgba(255,255,255,.025);
     display:grid;
@@ -75,16 +75,16 @@
   }
 
   .inline-puzzle-stats strong{
-    color:#efca72;
+    color:#e2dcd3;
     font:900 18px/1 Arial,sans-serif;
   }
 
   .inline-puzzle-card{
     min-height:0;
     padding:12px;
-    border:1px solid rgba(224,181,103,.34);
+    border:1px solid rgba(165,162,158,0.34);
     border-radius:14px;
-    background:linear-gradient(145deg,rgba(6,59,63,.94),rgba(3,45,49,.94));
+    background:linear-gradient(145deg,rgba(69,66,62,0.94),rgba(69,66,62,0.94));
     display:flex;
     flex-direction:column;
     gap:9px;
@@ -96,24 +96,24 @@
     min-height:28px;
     padding:0 10px;
     border-radius:999px;
-    border:1px solid rgba(224,181,103,.32);
+    border:1px solid rgba(165,162,158,0.32);
     display:flex;
     align-items:center;
-    color:#efca72;
-    background:rgba(224,181,103,.08);
+    color:#e2dcd3;
+    background:rgba(165,162,158,0.08);
     font:900 10px/1 Arial,sans-serif;
   }
 
   .inline-puzzle-card h3{
     margin:0;
-    color:#f4efe6;
+    color:#e2dcd3;
     font:900 16px/1.4 Arial,sans-serif;
   }
 
   .inline-puzzle-status{
     min-height:54px;
     padding:10px 11px;
-    border:1px solid rgba(102,172,173,.25);
+    border:1px solid rgba(114,111,107,0.25);
     border-radius:11px;
     background:rgba(0,0,0,.12);
     color:#d8e0dc;
@@ -128,17 +128,17 @@
     grid-template-columns:auto 1fr;
     align-items:center;
     gap:8px;
-    color:#d9d1c2;
+    color:#e2dcd3;
     font:800 10px/1.2 Arial,sans-serif;
   }
 
   .inline-puzzle-custom select{
     min-width:0;
     height:38px;
-    border:1px solid rgba(102,172,173,.34);
+    border:1px solid rgba(114,111,107,0.34);
     border-radius:9px;
-    background:#07383c;
-    color:#f4efe6;
+    background:#302e2b;
+    color:#e2dcd3;
     padding:0 8px;
     font:800 10px/1 Arial,sans-serif;
   }
@@ -154,19 +154,19 @@
   .inline-puzzle-modes button{
     min-width:0;
     height:42px;
-    border:1px solid rgba(102,172,173,.34);
+    border:1px solid rgba(114,111,107,0.34);
     border-radius:10px;
-    background:rgba(2,47,51,.82);
-    color:#f4efe6;
+    background:rgba(69,66,62,0.82);
+    color:#e2dcd3;
     font:900 11px/1 Arial,sans-serif;
     cursor:pointer;
   }
 
   .inline-puzzle-actions button.primary,
   .inline-puzzle-modes button.active{
-    border-color:#efca72;
-    background:linear-gradient(135deg,#efca72,#d9aa4f);
-    color:#173536;
+    border-color:#e2dcd3;
+    background:linear-gradient(135deg,#e2dcd3,#e2dcd3);
+    color:#302e2b;
   }
 
   .inline-puzzle-modes{
@@ -213,6 +213,6 @@
   }
 
   #homeBoardPreview.inline-puzzle-active .inline-puzzle-square.selected{
-    box-shadow:inset 0 0 0 4px rgba(239,196,95,.88)!important;
+    box-shadow:inset 0 0 0 4px rgba(165,162,158,0.88)!important;
   }
 }

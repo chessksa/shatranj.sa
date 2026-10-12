@@ -373,10 +373,10 @@
     align-items:center!important;
     justify-content:center!important;
     gap:4px!important;
-    border:1px solid rgba(224,181,103,.46)!important;
+    border:1px solid rgba(165,162,158,0.46)!important;
     border-radius:11px!important;
-    background:linear-gradient(155deg,#10383b,#082a2e)!important;
-    color:#f4efe6!important;
+    background:linear-gradient(155deg,#302e2b,#302e2b)!important;
+    color:#e2dcd3!important;
     box-shadow:inset 0 1px 0 rgba(255,255,255,.05)!important;
     text-align:center!important;
     cursor:pointer!important;
@@ -387,7 +387,7 @@
     display:block!important;
     margin:0!important;
     font:900 clamp(16px,4.5vw,19px)/1.1 Arial,sans-serif!important;
-    color:#f5efe7!important;
+    color:#e2dcd3!important;
     white-space:nowrap!important;
   }
   body.computer-game.pregame.reference-play-layout .opponent-time-option[data-level] .computer-level-points{
@@ -396,7 +396,7 @@
     font:800 clamp(11px,3vw,13px)/1.2 Arial,sans-serif!important;
     direction:rtl!important;
     unicode-bidi:isolate!important;
-    color:#e7bc6f!important;
+    color:#e2dcd3!important;
     white-space:nowrap!important;
   }
   body.computer-game.pregame.reference-play-layout .computer-level-meter{
@@ -412,7 +412,7 @@
     display:block!important;
     width:5px!important;
     border-radius:2px 2px 0 0!important;
-    background:#ecaf51!important;
+    background:#e2dcd3!important;
     opacity:.2!important;
   }
   body.computer-game.pregame.reference-play-layout .computer-level-meter b:nth-child(1){height:7px!important}
@@ -425,13 +425,13 @@
   }
   body.computer-game.pregame.reference-play-layout .opponent-time-option[data-level]:hover,
   body.computer-game.pregame.reference-play-layout .opponent-time-option[data-level]:focus-visible{
-    border-color:#e69b36!important;
-    background:linear-gradient(155deg,#124349,#0a3035)!important;
+    border-color:#9b958d!important;
+    background:linear-gradient(155deg,#302e2b,#302e2b)!important;
     outline:0!important;
   }
   body.computer-game.pregame.reference-play-layout .opponent-time-option[data-level]:active{
-    border-color:#e69b36!important;
-    box-shadow:inset 0 0 0 1px rgba(230,155,54,.25)!important;
+    border-color:#9b958d!important;
+    box-shadow:inset 0 0 0 1px rgba(165,162,158,0.25)!important;
   }
 }
 
