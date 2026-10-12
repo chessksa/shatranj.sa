@@ -217,83 +217,91 @@
   .desktop-welcome-art i,.desktop-welcome-art b{position:absolute;color:rgba(0,20,23,.48);font-family:"Times New Roman",serif;font-style:normal;font-weight:400;filter:blur(1.6px)}
   .desktop-welcome-art i{right:4%;top:16%;font-size:66px}.desktop-welcome-art b{left:2%;bottom:10%;font-size:62px}
 
-  /* Three verified champions occupy the reclaimed half of the welcome card. */
+  /* Champion strips: a single balanced line, with the name in the center. */
   .desktop-champions-grid{
-    min-height:0;display:grid;grid-template-rows:repeat(3,minmax(0,1fr));
-    gap:6px;overflow:hidden;
-  }
-  /* Balanced side slots with more room for the labels and points at 320px.
-     The player-name column remains larger than each of the two sides. */
-  .desktop-champion-card{
     min-height:0;display:grid;
-    /* Balanced left/right slots keep the player name at the true card center.
-       The middle takes twice each side's width, without clipping 1980 نقطة. */
-    grid-template-columns:minmax(0,1fr) minmax(0,1.45fr) minmax(0,1fr);
-    align-items:center;column-gap:6px;padding:7px 8px;
-    border:1px solid rgba(210,180,110,.40);border-radius:11px;
-    background:linear-gradient(135deg,rgba(4,60,65,.95),rgba(3,48,53,.96));
-    box-shadow:0 7px 18px rgba(0,0,0,.10);
-    color:#f5efe4;text-decoration:none;direction:rtl;overflow:hidden;
-    transition:border-color .18s ease,background .18s ease;
+    grid-template-rows:repeat(3,minmax(0,1fr));
+    gap:7px;overflow:hidden;
+  }
+  .desktop-champion-card{
+    --champion-accent:#dbc393;
+    position:relative;min-width:0;min-height:0;
+    display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1.42fr) minmax(0,1fr);
+    align-items:center;column-gap:2px;
+    padding:5px 9px;box-sizing:border-box;
+    border:1px solid rgba(199,183,140,.24);border-radius:8px;
+    background:rgba(5,51,55,.84);
+    color:#f5efe6;text-decoration:none;direction:rtl;overflow:hidden;
+    box-shadow:inset 0 1px 0 rgba(255,255,255,.025);
+    transition:background-color .16s ease,border-color .16s ease;
+  }
+  .desktop-champion-card[data-champion="week"]{--champion-accent:#d6bb8a}
+  .desktop-champion-card[data-champion="month"]{--champion-accent:#c9d4d6}
+  .desktop-champion-card[data-champion="site"]{
+    --champion-accent:#f1cf83;
+    border-color:rgba(224,191,120,.35);
+    background:rgba(7,58,62,.90);
+  }
+  .desktop-champion-card::before{
+    content:"";position:absolute;right:0;top:11px;bottom:11px;width:3px;
+    border-radius:0 3px 3px 0;background:var(--champion-accent);
+    opacity:.87;pointer-events:none;
   }
   .desktop-champion-card:hover,.desktop-champion-card:focus-visible{
-    border-color:rgba(235,202,126,.90);background:rgba(9,76,79,.98);
+    border-color:var(--champion-accent);
+    background:rgba(12,72,76,.94);
     outline:none;
   }
+  .desktop-champion-title,.desktop-champion-result{
+    min-width:0;width:100%;box-sizing:border-box;
+    display:flex;flex-direction:row;align-items:center;justify-content:center;
+    white-space:nowrap;
+  }
   .desktop-champion-title{
-    min-width:0;width:100%;display:flex;flex-direction:row;align-items:center;
-    justify-content:center;gap:3px;padding-inline:0;box-sizing:border-box;
-    white-space:nowrap;color:#f0d396;
+    gap:4px;color:var(--champion-accent);
+    overflow:hidden;
   }
   .desktop-champion-title strong{
-    font-size:clamp(10px,.68vw,11px);line-height:1.1;font-weight:900;white-space:nowrap;
+    font-size:clamp(10px,.72vw,11.5px);
+    line-height:1.15;font-weight:900;white-space:nowrap;
   }
   .desktop-champion-icon{
-    width:clamp(21px,1.5vw,24px);height:clamp(21px,1.5vw,24px);min-width:clamp(21px,1.5vw,24px);
-    border:1px solid rgba(220,186,111,.36);
-    background:rgba(223,182,95,.075);border-radius:6px;
-    display:grid;place-items:center;color:#e5c37b;box-sizing:border-box;
+    flex:0 0 21px;width:21px;height:21px;min-width:21px;
+    display:grid;place-items:center;
+    color:var(--champion-accent);
   }
-  .desktop-champion-icon svg{width:70%;height:70%;display:block}
-  .desktop-champion-card[data-champion="week"] .desktop-champion-icon{color:#e4c17b}
-  .desktop-champion-card[data-champion="month"] .desktop-champion-icon{color:#d8dfe4}
-  .desktop-champion-card[data-champion="site"] .desktop-champion-icon{color:#f0c06a}
+  .desktop-champion-icon svg{width:20px;height:20px;display:block}
   .desktop-champion-name{
-    display:block;min-width:0;width:100%;padding-inline:2px;box-sizing:border-box;
-    font-size:clamp(18px,1.4vw,21px);line-height:1.1;
-    font-weight:900;color:#f9f7f0;text-align:center;
-    white-space:nowrap;overflow:hidden;text-overflow:ellipsis;
-    unicode-bidi:plaintext;
+    min-width:0;width:100%;display:block;box-sizing:border-box;
+    padding:0 3px;margin:0;
+    color:#fffaf1;font-size:clamp(16px,1.33vw,20px);
+    line-height:1.16;font-weight:900;
+    text-align:center;white-space:nowrap;
+    overflow:hidden;text-overflow:ellipsis;unicode-bidi:plaintext;
   }
-  .desktop-champion-result{
-    min-width:0;width:100%;display:flex;flex-direction:row;
-    justify-content:center;align-items:center;gap:3px;
-    padding-inline:0;box-sizing:border-box;
-    white-space:nowrap;text-align:center;
-  }
+  .desktop-champion-result{gap:4px;text-align:center}
   .desktop-champion-count{
-    display:inline;flex:0 1 auto;font-size:clamp(16px,1.5vw,21px);line-height:1.1;
-    font-weight:900;color:#f3d18b;direction:ltr;
+    flex:0 1 auto;min-width:0;
+    font-size:clamp(16px,1.32vw,19px);line-height:1.12;
+    font-weight:900;color:#f2d79f;direction:ltr;
     white-space:nowrap;font-variant-numeric:tabular-nums;
   }
   .desktop-champion-meta{
-    display:inline;flex:0 0 auto;font-size:clamp(10px,.85vw,11px);line-height:1;
-    color:#b5d2cd;white-space:nowrap;
+    flex:0 0 auto;font-size:11px;line-height:1.1;
+    font-weight:700;color:#c7d8d4;white-space:nowrap;
   }
   .desktop-champion-card:not(.has-champion) .desktop-champion-name{
-    color:#c7d5d0;font-size:clamp(12px,1vw,15px);
+    color:#cbd8d5;font-size:clamp(12px,1vw,14px);
   }
   @media(max-height:720px) and (min-width:901px){
-    .desktop-champion-card{
-      grid-template-columns:minmax(0,1fr) minmax(0,1.45fr) minmax(0,1fr);
-      column-gap:5px;padding:4px 7px;
-    }
+    .desktop-champions-grid{gap:5px}
+    .desktop-champion-card{padding:3px 7px;column-gap:2px}
+    .desktop-champion-icon{width:18px;height:18px;min-width:18px;flex-basis:18px}
+    .desktop-champion-icon svg{width:17px;height:17px}
     .desktop-champion-title{gap:3px}
     .desktop-champion-title strong{font-size:10px}
-    .desktop-champion-icon{width:21px;height:21px;min-width:21px}
-    .desktop-champion-icon svg{width:15px;height:15px}
-    .desktop-champion-name{font-size:clamp(15px,1.3vw,19px)}
-    .desktop-champion-count{font-size:17px}
+    .desktop-champion-name{font-size:clamp(15px,1.24vw,18px)}
+    .desktop-champion-count{font-size:16px}
     .desktop-champion-meta{font-size:10px}
   }
 
