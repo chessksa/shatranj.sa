@@ -4,6 +4,7 @@ on:
   push:
     paths:
       - 'v2/home/**'
+      - 'index.html'
       - 'profile.html'
       - 'profile.js'
       - 'player.html'
@@ -33,6 +34,7 @@ on:
   pull_request:
     paths:
       - 'v2/home/**'
+      - 'index.html'
       - 'profile.html'
       - 'profile.js'
       - 'player.html'
