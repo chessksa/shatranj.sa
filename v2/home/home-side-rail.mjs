@@ -47,21 +47,39 @@ export function populateHomeSideRail(rail){
   if(!rail||!supabase)return;
   const mini=rail.querySelector('.desktop-mini-puzzle-board');
   const dailyInfo=rail.querySelector('[data-daily-puzzle-info]');
+  const solvers=rail.querySelector('[data-daily-solver-count]');
   const friendName=rail.querySelector('[data-suggested-friend-name]');
-  const friendMeta=rail.querySelector('[data-suggested-friend-meta]');
-  const friendState=rail.querySelector('[data-suggested-friend-state]');
-  const friendAvatar=rail.querySelector('[data-suggested-friend-avatar]');
+  const timeLabel=rail.querySelector('[data-suggested-time-label]');
+  const minutesSelect=rail.querySelector('[data-suggested-time]');
+  const message=rail.querySelector('[data-suggested-message]');
   const challenge=rail.querySelector('[data-home-side-action="friend"]');
-  if(!mini||!dailyInfo||!friendName||!friendMeta||!friendState||!friendAvatar||!challenge)return;
+  if(!mini||!dailyInfo||!solvers||!friendName||!timeLabel||!minutesSelect||!message||!challenge)return;
   let suggestedFriend=null;
   let friendsRequest=0;
   let challengeBusy=false;
   let loadedDate='';
 
+  function setMessage(value){
+    message.textContent=value||'';
+    message.hidden=!value;
+  }
+
+  async function loadSolverCount(){
+    try{
+      const {data,error}=await supabase.rpc('home_get_daily_puzzle_solvers');
+      if(error)throw error;
+      const count=Number(Array.isArray(data)?data[0]:data);
+      solvers.textContent=Number.isFinite(count)?String(Math.max(0,count)):'—';
+    }catch(error){
+      console.warn('تعذر تحديث عدد من حلوا لغز اليوم',error);
+      solvers.textContent='—';
+    }
+  }
+
   async function loadDailyPuzzle(force=false){
-    const date=new Date().toISOString().slice(0,10);
-    if(!force&&loadedDate===date)return;
-    loadedDate=date;
+    const today=new Date().toISOString().slice(0,10);
+    if(!force&&loadedDate===today)return;
+    loadedDate=today;
     dailyInfo.textContent='جارٍ تحميل لغز اليوم…';
     try{
       const {data,error}=await supabase.rpc('home_get_daily_puzzle_preview');
@@ -70,9 +88,8 @@ export function populateHomeSideRail(rail){
       if(!record?.fen)throw new Error('daily_puzzle_not_found');
       drawMiniPuzzle(mini,record.fen);
       const rating=Number(record.rating);
-      dailyInfo.textContent=record.title
-        ?String(record.title).slice(0,80)+(Number.isFinite(rating)?' · '+rating+' نقطة':'')
-        :'ابحث عن أفضل نقلة';
+      dailyInfo.textContent=(record.title||'لغز تكتيكي صعب')+
+        (Number.isFinite(rating)?' · '+rating+' نقطة':'');
     }catch(error){
       console.warn('تعذر جلب معاينة لغز اليوم',error);
       loadedDate='';
@@ -80,35 +97,27 @@ export function populateHomeSideRail(rail){
       mini.removeAttribute('data-puzzle-ready');
       dailyInfo.textContent='اللغز متاح عند الضغط على زر الحل';
     }
+    void loadSolverCount();
   }
 
   function presentFriend(friend){
     suggestedFriend=friend||null;
     challengeBusy=false;
+    setMessage('');
+    minutesSelect.value='';
     challenge.disabled=false;
     if(!friend){
-      friendAvatar.textContent='♟';
       friendName.textContent='لا يوجد صديق مقترح';
-      friendMeta.textContent='أضف صديقًا لتحدّيه هنا';
-      friendState.textContent='';
-      friendState.hidden=true;
+      timeLabel.hidden=true;
       challenge.dataset.homeSideAction='friend';
-      challenge.textContent='ابحث عن صديق';
+      challenge.textContent='اختر صديقًا';
       return;
     }
-    const name=String(friend.name||'صديق').trim();
-    friendAvatar.textContent=name.charAt(0)||'♟';
-    friendName.textContent=name;
-    const points=Number(friend.rating);
-    friendMeta.textContent=[
-      String(friend.city||'').trim(),
-      Number.isFinite(points)?points+' نقطة':''
-    ].filter(Boolean).join(' · ')||'مباراة 10 دقائق';
-    friendState.hidden=false;
-    friendState.textContent=friend.is_online?'متصل الآن':'غير متصل حاليًا';
-    friendState.classList.toggle('is-online',friend.is_online===true);
+    friendName.textContent='العب مع '+String(friend.name).trim();
+    timeLabel.hidden=false;
     challenge.dataset.homeSideAction='challenge';
-    challenge.textContent='تحدّه الآن · 10 دقائق';
+    challenge.textContent='اختر وقت المباراة';
+    challenge.disabled=true;
   }
 
   async function loadFriend(){
@@ -118,61 +127,64 @@ export function populateHomeSideRail(rail){
       if(request!==friendsRequest)return;
       if(!session){
         presentFriend(null);
-        friendName.textContent='مباراة مع صديق';
-        friendMeta.textContent='سجّل الدخول لعرض صديق من قائمتك';
+        friendName.textContent='سجّل الدخول لاختيار صديق';
         challenge.textContent='تسجيل الدخول';
         return;
       }
       friendName.textContent='جارٍ اختيار صديق…';
-      friendMeta.textContent='';
-      friendState.hidden=true;
+      timeLabel.hidden=true;
       challenge.disabled=true;
       const {data,error}=await supabase.rpc('get_my_friends');
       if(request!==friendsRequest)return;
       if(error)throw error;
       const friends=(Array.isArray(data)?data:[])
-        .filter(row=>row?.friend_id&&row?.name)
+        .filter(friend=>friend?.friend_id&&friend?.name)
         .sort((a,b)=>String(a.name).localeCompare(String(b.name),'ar'));
-      const online=friends.filter(row=>row.is_online===true);
-      const eligible=online.length?online:friends;
-      // Stable for the day; prefer online friends without inventing a friendship.
-      const index=eligible.length?Number(new Date().toISOString().slice(0,10).replace(/-/g,''))%eligible.length:0;
-      presentFriend(eligible[index]||null);
+      const available=friends.filter(friend=>friend.is_online===true);
+      const eligible=available.length?available:friends;
+      const day=Math.floor(Date.now()/86400000);
+      presentFriend(eligible.length?eligible[day%eligible.length]:null);
     }catch(error){
       if(request!==friendsRequest)return;
-      console.warn('تعذر تحميل الصديق المقترح',error);
+      console.warn('تعذر تحميل الأصدقاء',error);
       presentFriend(null);
-      friendName.textContent='تعذر تحميل الأصدقاء';
-      friendMeta.textContent='يمكنك اختيار صديق يدويًا';
+      friendName.textContent='تعذر اختيار صديق حاليًا';
     }
   }
+
+  minutesSelect.addEventListener('change',()=>{
+    if(!suggestedFriend||challengeBusy)return;
+    const valid=['5','10','15'].includes(minutesSelect.value);
+    challenge.disabled=!valid;
+    challenge.textContent=valid?'أرسل التحدي':'اختر وقت المباراة';
+    setMessage('');
+  });
 
   challenge.addEventListener('click',async event=>{
     if(challenge.dataset.homeSideAction!=='challenge'||!suggestedFriend)return;
     event.stopPropagation();
-    if(challengeBusy)return;
+    const minutes=Number(minutesSelect.value);
+    if(![5,10,15].includes(minutes)||challengeBusy)return;
     challengeBusy=true;
+    minutesSelect.disabled=true;
     challenge.disabled=true;
     challenge.textContent='جارٍ إرسال التحدي…';
     try{
       const {error}=await supabase.rpc('send_player_challenge',{
-        p_player_id:suggestedFriend.friend_id,p_minutes:10
+        p_player_id:suggestedFriend.friend_id,p_minutes:minutes
       });
       if(error)throw error;
       challenge.textContent='تم إرسال التحدي';
-      friendState.hidden=false;
-      friendState.textContent='بانتظار قبول الصديق';
-      friendState.classList.remove('is-online');
+      setMessage('بانتظار قبول الصديق');
     }catch(error){
       console.warn('تعذر إرسال المباراة المقترحة',error);
       const detail=String(error?.message||'').toLowerCase();
-      friendState.hidden=false;
-      friendState.textContent=detail.includes('already pending')?'يوجد تحدٍّ معلّق بالفعل':
-        detail.includes('active game')?'أحدكما في مباراة حاليًا':'تعذر إرسال التحدي، حاول مرة أخرى';
-      friendState.classList.remove('is-online');
+      setMessage(detail.includes('already pending')?'يوجد تحدٍّ معلّق بالفعل':
+        detail.includes('active game')?'أحدكما في مباراة حاليًا':'تعذر إرسال التحدي، حاول مرة أخرى');
       challengeBusy=false;
+      minutesSelect.disabled=false;
       challenge.disabled=false;
-      challenge.textContent='تحدّه الآن · 10 دقائق';
+      challenge.textContent='أرسل التحدي';
     }
   });
   mini.addEventListener('keydown',event=>{
@@ -181,16 +193,17 @@ export function populateHomeSideRail(rail){
       mini.click();
     }
   });
-  // Refresh friend suggestions after login/logout, not on every presence heartbeat.
   supabase.auth.onAuthStateChange(event=>{
     if(['SIGNED_IN','SIGNED_OUT'].includes(event)){
       ++friendsRequest;
       setTimeout(()=>void loadFriend(),0);
     }
   });
+  window.addEventListener('shatranj:daily-puzzle-solved',()=>void loadSolverCount());
   document.addEventListener('visibilitychange',()=>{
     if(!document.hidden){
       void loadDailyPuzzle();
+      void loadSolverCount();
       void loadFriend();
     }
   });
