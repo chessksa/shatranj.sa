@@ -1,0 +1,332 @@
+/* Shatranj Al Arab / unified charcoal palette / 2026-10-12.
+   Pixel samples from approved image:
+   canvas #262522, separator #302e2b, rail #343230,
+   raised surface top #484644 -> bottom #32302e.
+   UI-only rules: chess boards, squares and piece assets are untouched. */
+:root {
+  color-scheme:dark;
+  --coal-bg:#262522;
+  --coal-separator:#302e2b;
+  --coal-rail:#343230;
+  --coal-card:#3b3937;
+  --coal-top:#484644;
+  --coal-bottom:#32302e;
+  --coal-border:#53514e;
+  --coal-border-soft:#45433f;
+  --coal-text:#f1efeb;
+  --coal-muted:#bdb8b1;
+  --coal-highlight:#dcd6cd;
+  --coal-raise:linear-gradient(180deg,#484644 0%,#3d3b39 48%,#32302e 100%);
+  --coal-rail-gradient:linear-gradient(180deg,#343230 0%,#2f2d2a 100%);
+
+  /* UI design tokens only, never --board-*, square/piece or board artwork. */
+  --hero-deep:#302e2b; --hero-deeper:#262522;
+  --hero-panel:#3b3937; --hero-panel-2:#343230;
+  --hero-gold:#dcd6cd; --hero-gold-2:#ebe6df;
+  --hero-cream:#f1efeb; --hero-muted:#bdb8b1;
+  --hero-line:#53514e; --hero-cyan-line:#45433f;
+  --shell-bg:#262522; --shell-bg-2:#302e2b;
+  --shell-panel:#3b3937; --shell-panel-2:#343230;
+  --shell-gold:#dcd6cd; --shell-cream:#f1efeb;
+  --shell-muted:#bdb8b1; --shell-line:#53514e;
+  --p-bg:#262522; --p-deep:#302e2b;
+  --p-panel:#3b3937; --p-panel2:#343230;
+  --p-gold:#dcd6cd; --p-gold2:#ebe6df;
+  --p-cream:#f1efeb; --p-muted:#bdb8b1; --p-line:#53514e;
+  --bg:#262522; --bg1:#262522; --bg2:#302e2b; --bg3:#343230;
+  --panel:#3b3937; --panel2:#343230;
+  --surface:#3b3937; --surface-soft:#343230;
+  --text:#f1efeb; --muted:#bdb8b1; --line:#53514e;
+  --gold:#dcd6cd; --gold2:#ebe6df;
+  --green-900:#262522; --green-800:#302e2b; --green-700:#343230;
+  --green-600:#3b3937; --green-500:#484644;
+  --gold-500:#dcd6cd; --gold-200:#ebe6df;
+  --mobile-workspace-gold:#dcd6cd; --mobile-workspace-cream:#f1efeb;
+  --mobile-workspace-panel:#3b3937; --mobile-workspace-line:#53514e;
+  --v2-petrol-deep:#262522; --v2-petrol:#302e2b;
+  --v2-panel:#3b3937; --v2-panel-soft:#343230;
+  --v2-text:#f1efeb; --v2-muted:#bdb8b1;
+  --v2-clock:#343230; --v2-clock-text:#f1efeb;
+}
+html,html:has(body.mobile-board-workspace),html:has(body.live-game){
+  background:#262522!important;color-scheme:dark!important;
+}
+html body,
+html body.home-signed-in,
+html body.v2-shell-active,
+html body.v2-shell-active.desktop-board-workspace,
+html body.mobile-board-workspace,
+html body.platform-page,
+html body.live-game,
+html body.pregame.reference-play-layout,
+html body.computer-game,
+html body.admin-page,
+html body.admin-embedded{
+  background:#262522!important;background-image:none!important;color:#f1efeb!important;
+}
+html body #gamePage,
+html body.live-game #gamePage,
+html body.pregame.reference-play-layout #gamePage,
+html body #mobileFixedWorkspace{
+  background:#262522!important;background-image:none!important;color:#f1efeb!important;
+}
+/* Screen frames, header, ticker and fixed navigation. */
+html body :is(.home-header,.site-header,.v2-global-sidebar,.v2-mobile-nav,
+ .v2-mobile-more-card,.mfw-header,.side-header,.side-head-stack,
+ .desktop-sidebar-brand,.desktop-dashboard-view-head,.platform-head,
+ .admin-inline-nav,.admin-inline-header,.tournament-tabs,
+ .tournament-table-head){
+  background:var(--coal-rail-gradient)!important;
+  border-color:var(--coal-border-soft)!important;color:var(--coal-text)!important;
+}
+html body.desktop-board-workspace .v2-global-sidebar,
+html body.desktop-board-workspace .v2-global-sidebar.desktop-sidebar-refined,
+html body.mobile-board-workspace .home-header,
+html body #mobileFixedWorkspace .mfw-header{
+  background:var(--coal-rail-gradient)!important;border-color:var(--coal-border-soft)!important;
+}
+html body :is(.welcome-ticker,#welcomeTicker,#tournamentResultsTicker,
+ .news-ticker,.chess-news-ticker){
+  background:#302e2b!important;background-image:none!important;
+  border-color:#45433f!important;color:#ebe6df!important;
+}
+html body :is(.desktop-dashboard-column,.desktop-board-stage,
+ #homeHero,.home-hero,#ranking,.platform-shell,.admin-shell,.page,
+ .desktop-home-side-rail){
+  background-color:transparent!important;background-image:none!important;
+}
+/* Reference raised-card gradient. No general button/div rule: board squares are excluded. */
+html body :is(.desktop-welcome-card,.desktop-live-stat,.desktop-dashboard-view,
+ .desktop-home-side-card,.desktop-champion-card,.desktop-dashboard-message-card,
+ .desktop-play-online-choice,.desktop-play-options-intro,.desktop-dashboard-embed,
+ .desktop-move-notebook,.desktop-member-card,.v2-mobile-more-link,
+ .v2-player-card,.v2-side-panel,.v2-settings-card,
+ .platform-card,.profile-card,.profile-panel,.player-card,.stat-card,
+ .table-card,.table-wrap,.panel,.card,.tournament-table-shell,
+ .tournament-list-item,.tournament-card,.tournament-detail,
+ .inline-play-player-card,.inline-play-search-tools,.inline-play-actions,
+ .inline-puzzle-panel,.inline-puzzle-card,.mfw-panel,.mfw-stat,.mfw-action,
+ .mfw-auth-dialog,.mfw-play-tile,.mfw-rank-row,.mfw-more,
+ .mobile-workspace-panel,.mobile-home-stat,.mobile-home-message,
+ .admin-card,.admin-tile,.admin-stat,.stat-box,.summary-card,.info-card,
+ .profile-section){
+  background:var(--coal-raise)!important;border-color:var(--coal-border)!important;
+  color:var(--coal-text)!important;
+}
+/* Previously high-specificity desktop/phone/live/embedded panel skins. */
+html body.desktop-board-workspace :is(.desktop-welcome-card,.desktop-live-stat,
+ .desktop-dashboard-view,.desktop-champion-card,.desktop-home-side-card,
+ .desktop-dashboard-message-card,.desktop-member-card),
+html body.desktop-board-workspace .desktop-dashboard-view.play-options-view .desktop-dashboard-view-body,
+html body.desktop-board-workspace .desktop-dashboard-view.admin-view .desktop-dashboard-embed,
+html body #mobileFixedWorkspace :is(.mfw-panel,.mfw-stat,.mfw-action,.mfw-play-tile,
+ .mfw-auth-dialog,.mfw-rank-row),
+html.admin-embedded body :is(.stat-card,.panel,.toolbar,.table-wrap),
+html body.live-game :is(#topPlayerCard,#bottomPlayerCard,.player-card,.reference-move-strip),
+html body.pregame.reference-play-layout :is(#topPlayerCard,#bottomPlayerCard,
+ #opponentSearchPanel,.opponent-time-option,.player-card),
+html body .platform-card,html body .desktop-move-notebook{
+  background:var(--coal-raise)!important;border-color:var(--coal-border)!important;
+}
+html body :is(.desktop-dashboard-view-head,.mfw-panel-head,.mfw-auth-head,
+ .panel-header,.table-head,.move-notebook-columns,.move-notebook-header,
+ .admin-inline-header,.toolbar,.tournament-table-head){
+  background:#343230!important;background-image:none!important;
+  border-color:var(--coal-border-soft)!important;
+}
+html body.desktop-board-workspace .desktop-champion-card[data-champion="site"],
+html body .desktop-champion-card[data-champion="site"]{
+  background:var(--coal-raise)!important;border-color:var(--coal-border)!important;
+}
+/* Navigation states and neutral focus, preserving existing geometry. */
+html body :is(.desktop-home-nav-link,.v2-global-link,.v2-mobile-link,
+ .v2-mobile-more-link,.desktop-play-choice-list>button,
+ .desktop-play-time-options button,.mfw-tab,.mobile-workspace-tab,
+ .admin-inline-tab,.tournament-tab,.auth-tab,.platform-tab,.nav-item,.nav-link){
+  color:var(--coal-text)!important;border-color:var(--coal-border-soft)!important;
+}
+html body :is(.desktop-home-nav-link,.v2-global-link,.v2-mobile-link,
+ .v2-mobile-more-link,.desktop-play-choice-list>button,.desktop-play-time-options button,
+ .mfw-tab,.mobile-workspace-tab,.admin-inline-tab,.tournament-tab,
+ .auth-tab,.platform-tab,.nav-item,.nav-link):hover{
+  background:#44423f!important;color:#fff!important;
+}
+html body :is(.desktop-home-nav-link.active,.v2-global-link.active,
+ .v2-mobile-link.active,.v2-mobile-more-link.active,.mfw-tab.active,
+ .mobile-workspace-tab.active,.admin-inline-tab.active,.tournament-tab.is-active,
+ .desktop-play-time-options button.is-selected,.desktop-play-choice-list>button.is-selected,
+ .auth-tab.active,.platform-tab.active,.nav-item.active,.nav-link.active,
+ .desktop-home-nav-link[aria-current="page"]){
+  background:#45423f!important;background-image:none!important;
+  color:#fff!important;border-color:#817d77!important;box-shadow:none!important;
+}
+html body.desktop-board-workspace .v2-global-sidebar.desktop-sidebar-refined
+ :is(.desktop-home-nav-link.active,.desktop-home-nav-link[aria-current="page"]){
+  background:#45423f!important;background-image:none!important;
+  border-color:#817d77!important;color:#fff!important;box-shadow:none!important;
+}
+html body.desktop-board-workspace :is(.desktop-sidebar-brand strong,
+ .desktop-sidebar-brand-mark,.desktop-member-score-star,.desktop-champion-title,
+ .desktop-champion-name,.desktop-champion-count,.desktop-dashboard-view-head>strong,
+ .desktop-welcome-copy h2,.desktop-home-side-card h3,.desktop-live-stat strong,
+ .desktop-stat-icon.gold,.desktop-stat-icon.green,.desktop-stat-icon.cyan,
+ .desktop-home-nav-link.active .desktop-home-nav-icon,
+ .desktop-home-nav-link.active .desktop-home-nav-label){
+  color:#ebe6df!important;text-shadow:none!important;
+}
+/* Text hierarchy, ranking, badges and table strips. */
+html body :is(h1,h2,h3,h4,h5,h6,strong,b,legend){color:var(--coal-text)}
+html body :is(.desktop-welcome-copy p,.desktop-welcome-copy small,
+ .desktop-home-side-card p,.desktop-suggested-name,.desktop-suggested-time,
+ .desktop-champion-meta,.desktop-live-stat small,.desktop-member-location,
+ .desktop-member-username,.desktop-member-status,.platform-muted,
+ .v2-player-meta,.v2-search-status,.inline-play-player-meta,.inline-play-status,
+ .inline-puzzle-status,.mfw-member-copy small,.mfw-points small,.mfw-stat small,
+ .mfw-rank-row small,.player-info .location,.player-card .rating-label,
+ .table-muted,.ranking-muted,.muted,.subtle,.helper-text){
+  color:var(--coal-muted)!important;
+}
+html body :is(.hero-stat strong,.stat-card strong,.desktop-champion-count,
+ .desktop-member-score b,.desktop-live-stat strong,.mobile-home-stat strong,
+ .mfw-points b,.mfw-stat b,.platform-stat,.inline-puzzle-stats strong,
+ .move-notebook-accuracy strong){color:var(--coal-text)!important}
+html body :is(.ranking-filter-control,.ranking-filters select,.table-card,
+ .table-wrap,.rank-badge,.ranking-badge,.tournament-list-meta,
+ .tournament-list-status,.tournament-capacity-track,.mfw-ranking-grid,
+ .mfw-ranking-grid th,.mfw-ranking-grid td){
+  border-color:var(--coal-border-soft)!important;color:var(--coal-text)!important;
+}
+html body :is(table,thead,tbody,tr,td,th){border-color:var(--coal-border-soft)!important}
+html body :is(th,thead th,.table-head,.tournament-table-head){
+  background:#343230!important;color:var(--coal-text)!important;
+}
+html body :is(tbody tr:nth-child(even),.move-notebook-row:nth-child(even)){
+  background:rgba(72,70,68,.21)!important;
+}
+html body :is(tbody tr:hover,.mfw-ranking-grid tbody tr:hover){
+  background:rgba(72,70,68,.42)!important;
+}
+html body.desktop-board-workspace .desktop-dashboard-view-body #ranking
+ :is(.head,.ranking-filter-control,.ranking-filters select,.table-card,th,td,.rank-badge),
+html body #mobileFixedWorkspace .mfw-ranking-grid :is(th,td){
+  border-color:var(--coal-border-soft)!important;color:var(--coal-text)!important;
+}
+html body.desktop-board-workspace .desktop-dashboard-view-body #ranking :is(th,thead th),
+html body #mobileFixedWorkspace .mfw-ranking-grid thead th{
+  background:#343230!important;
+}
+html body.desktop-board-workspace .desktop-dashboard-view-body #ranking tbody tr:not(.ranking-placeholder),
+html body #mobileFixedWorkspace .mfw-ranking-grid tbody tr{
+  background:transparent!important;
+}
+html body.desktop-board-workspace .desktop-dashboard-view-body #ranking tbody tr:not(.ranking-placeholder):nth-child(even),
+html body #mobileFixedWorkspace .mfw-ranking-grid tbody tr:nth-child(even){
+  background:rgba(72,70,68,.24)!important;
+}
+/* Form fields, commands and clocks; NOT the board's clickable square buttons. */
+html body :is(input:not([type="checkbox"]):not([type="radio"]),
+ select,textarea,.platform-input,.platform-select,.platform-textarea,
+ .ranking-filters select,.desktop-suggested-time select,
+ .inline-puzzle-custom select,.v2-play-setting-grid select,
+ .admin-inline-control,.mfw-auth-host input){
+  background:#343230!important;background-image:none!important;
+  color:var(--coal-text)!important;border-color:var(--coal-border)!important;
+}
+html body :is(input,select,textarea)::placeholder{color:#a8a39e!important;opacity:1}
+html body :is(.btn,.primary,.gold,.platform-btn,.desktop-dashboard-primary-link,
+ .desktop-play-primary,.desktop-home-side-card button,.desktop-dashboard-view-head>button,
+ .desktop-play-time-options button,.desktop-play-choice-list>button,
+ .v2-search-button,.v2-action,.v2-settings-button,.v2-quick-times button,
+ .inline-play-times button,.inline-play-search-button,.inline-play-actions button,
+ .inline-puzzle-actions button,.inline-puzzle-modes button,
+ .opponent-time-option,.tournament-admin-create,.detail-inline-back,
+ .action-btn,.admin-inline-control,.mfw-primary,.mfw-login-btn,
+ .mfw-auth-head button,.mfw-auth-host .auth-tab,.mfw-auth-host #loginBtn,
+ .mfw-auth-host #signupBtn,.mfw-auth-host #recoveryBtn){
+  background:linear-gradient(180deg,#484644,#343230)!important;
+  color:var(--coal-text)!important;border-color:var(--coal-border)!important;
+  box-shadow:none!important;
+}
+html body.desktop-board-workspace :is(.desktop-play-primary,.desktop-dashboard-primary-link,
+ .desktop-home-side-card button),
+html body #mobileFixedWorkspace :is(.mfw-primary,.mfw-login-btn,
+ .mfw-auth-host #loginBtn,.mfw-auth-host #signupBtn),
+html body.pregame.reference-play-layout .opponent-time-option{
+  background:linear-gradient(180deg,#484644,#343230)!important;
+  border-color:var(--coal-border)!important;color:var(--coal-text)!important;
+}
+html body :is(.btn,.platform-btn,.desktop-play-primary,.desktop-home-side-card button,
+ .inline-play-search-button,.mfw-primary,.opponent-time-option):hover{
+  background:#4b4946!important;
+}
+html body :is(.inline-play-clock,.v2-clock,.clock-box,.player-card .clock,
+ .move-notebook-index,.move-notebook-review){
+  background:#302e2b!important;background-image:none!important;
+  color:#f1efeb!important;border-color:var(--coal-border)!important;
+}
+html body.live-game .player-card .clock,
+html body.pregame.reference-play-layout .player-card .clock,
+html body.live-game .reference-move-strip,
+html body.live-game .reference-move-strip .move-token.is-last,
+html body .inline-play-clock{
+  background:#302e2b!important;color:#f1efeb!important;
+  border-color:var(--coal-border-soft)!important;
+}
+/* Overlays and popovers. */
+html body :is(.modal,.modal-content,.modal-card,.dialog,.dialog-card,
+ .auth-dialog,.auth-card,.auth-modal,.mfw-auth-dialog,.v2-settings-modal,
+ .v2-settings-card,.v2-mobile-more,.v2-mobile-more-card,.notification-menu,
+ .site-notification-menu,.dropdown-menu){
+  border-color:var(--coal-border)!important;color:var(--coal-text)!important;
+}
+html body :is(.modal-content,.modal-card,.dialog-card,.auth-dialog,.auth-card,
+ .mfw-auth-dialog,.v2-settings-card,.v2-mobile-more-card,.notification-menu,
+ .site-notification-menu,.dropdown-menu){background:var(--coal-raise)!important}
+html body :is(.modal,.auth-modal,.v2-settings-modal,.v2-mobile-more,.mfw-auth-overlay){
+  background:rgba(24,23,22,.78)!important;
+}
+html body .site-notification-bell{border-color:var(--coal-border)!important;color:#f1efeb!important}
+/* Full-page admin plus middle-column embedded administration. */
+html.admin-embedded body,
+html body .admin-shell,html body .admin-wrapper{
+  background:#262522!important;color:#f1efeb!important;
+}
+html.admin-embedded body :is(.access-gate,.admin-inline-nav,.admin-inline-header,
+ .admin-inline-tab,.admin-inline-control,.stat-card,.panel,.toolbar,.table-wrap),
+html body :is(.admin-nav,.admin-sidebar,.admin-main,.admin-header){
+  border-color:var(--coal-border)!important;color:var(--coal-text)!important;
+}
+html.admin-embedded body :is(.access-gate,.stat-card,.panel,.toolbar,.table-wrap),
+html body :is(.admin-nav,.admin-sidebar,.admin-main){
+  background:var(--coal-raise)!important;
+}
+html.admin-embedded body :is(.admin-inline-nav,.admin-inline-header){
+  background:#343230!important;
+}
+html.admin-embedded body :is(.stat-card strong,.stat-card.pro-stat strong,
+ .admin-inline-header>strong){color:#f1efeb!important}
+/* Same charcoal tone on phone, never overlay the original board/pieces. */
+@media(max-width:900px){
+  html body :is(.v2-mobile-nav,.v2-mobile-more-card),
+  html body #mobileFixedWorkspace,
+  html body.mobile-board-workspace .home-header{
+    background:#262522!important;border-color:var(--coal-border-soft)!important;
+  }
+  html body #mobileFixedWorkspace .mfw-header,
+  html body .v2-mobile-nav{background:var(--coal-rail-gradient)!important}
+  html body #mobileFixedWorkspace :is(.mfw-tab.active,.mfw-play-tile-primary,
+   .mfw-auth-host .auth-tab.active),
+  html body .v2-mobile-link.active{
+    background:#45423f!important;color:#fff!important;
+    border-color:#817d77!important;box-shadow:none!important;
+  }
+  html body #mobileFixedWorkspace .mfw-ranking-grid tbody tr.podium-1,
+  html body #mobileFixedWorkspace .mfw-ranking-grid tbody tr.podium-2,
+  html body #mobileFixedWorkspace .mfw-ranking-grid tbody tr.podium-3{
+    background:rgba(72,70,68,.22)!important;
+  }
+  html body #mobileFixedWorkspace .mfw-ranking-grid tbody tr
+   :is(.mfw-ranking-place,.mfw-ranking-points){color:#f1efeb!important}
+}
+/* All .board*, .square*, .piece*, chessboard assets and last-move marks
+   remain governed solely by their existing chess styling. */
