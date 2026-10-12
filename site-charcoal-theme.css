@@ -176,8 +176,7 @@ html body.desktop-board-workspace :is(.desktop-sidebar-brand strong,
 }
 /* Text hierarchy, ranking, badges and table strips. */
 html body :is(h1,h2,h3,h4,h5,h6,strong,b,legend){color:var(--coal-text)}
-html body :is(.desktop-welcome-copy p,.desktop-welcome-copy small,
- .desktop-home-side-card p,.desktop-suggested-name,.desktop-suggested-time,
+html body :is(.desktop-home-side-card p,.desktop-suggested-name,.desktop-suggested-time,
  .desktop-champion-meta,.desktop-live-stat small,.desktop-member-location,
  .desktop-member-username,.desktop-member-status,.platform-muted,
  .v2-player-meta,.v2-search-status,.inline-play-player-meta,.inline-play-status,
@@ -605,9 +604,6 @@ html body.desktop-board-workspace :is(.desktop-home-side-card button,
  .desktop-suggested-time select):is(:hover,:focus-visible){
  border-color:#6b6e66!important;
  outline-color:#6b6e66!important;
-}
-html body.desktop-board-workspace .desktop-welcome-art :is(span,i,b){
- color:#292825!important;text-shadow:none!important;
 }
 html body :is(.inline-variant-controls select,
  .inline-learn-filters button,.inline-puzzle-custom select,
