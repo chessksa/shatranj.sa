@@ -11,10 +11,10 @@
     min-width:102px!important;
     height:38px!important;
     padding:6px 10px!important;
-    border:1px solid #efca72!important;
+    border:1px solid #e2dcd3!important;
     border-radius:10px!important;
-    background:linear-gradient(135deg,#efca72,#d9aa4f)!important;
-    color:#173536!important;
+    background:linear-gradient(135deg,#e2dcd3,#e2dcd3)!important;
+    color:#302e2b!important;
     box-shadow:none!important;
     font:900 12px/1.2 Arial,sans-serif!important;
     white-space:nowrap!important;
@@ -32,8 +32,8 @@
     align-items:center!important;
     justify-content:center!important;
     overflow:hidden!important;
-    background:rgba(0,20,23,.88)!important;
-    color:#f4efe6!important;
+    background:rgba(69,66,62,0.88)!important;
+    color:#e2dcd3!important;
     -webkit-backdrop-filter:blur(6px);
     backdrop-filter:blur(6px);
     direction:rtl!important;
@@ -50,11 +50,11 @@
     margin:auto!important;
     padding:0!important;
     overflow:hidden!important;
-    border:1px solid rgba(224,181,103,.60)!important;
+    border:1px solid rgba(165,162,158,0.6)!important;
     border-radius:17px!important;
-    background:linear-gradient(155deg,#073a40,#022f33)!important;
+    background:linear-gradient(155deg,#302e2b,#302e2b)!important;
     box-shadow:0 22px 55px rgba(0,0,0,.50)!important;
-    color:#f4efe6!important;
+    color:#e2dcd3!important;
   }
   #mfwAuthOverlay .mfw-auth-head{
     position:relative!important;
@@ -67,13 +67,13 @@
     min-height:54px!important;
     margin:0!important;
     padding:9px 13px!important;
-    border-bottom:1px solid rgba(224,181,103,.27)!important;
-    background:#073a40!important;
+    border-bottom:1px solid rgba(165,162,158,0.27)!important;
+    background:#302e2b!important;
   }
   #mfwAuthOverlay .mfw-auth-head h2{
     margin:0!important;
     padding:0!important;
-    color:#f4efe6!important;
+    color:#e2dcd3!important;
     font:900 17px/1.25 Arial,sans-serif!important;
     text-align:right!important;
   }
@@ -86,10 +86,10 @@
     min-height:0!important;
     margin:0!important;
     padding:0!important;
-    border:1px solid rgba(224,181,103,.35)!important;
+    border:1px solid rgba(165,162,158,0.35)!important;
     border-radius:9px!important;
-    background:#052f34!important;
-    color:#f4efe6!important;
+    background:#302e2b!important;
+    color:#e2dcd3!important;
     font-size:22px!important;
     font-weight:400!important;
     cursor:pointer!important;
@@ -112,7 +112,7 @@
     margin:0!important;
     padding:0!important;
     min-width:0!important;
-    color:#f4efe6!important;
+    color:#e2dcd3!important;
   }
   #mfwAuthOverlay #guestAuth[hidden],
   #mfwAuthOverlay #signupForm[hidden],
@@ -129,17 +129,17 @@
     min-width:0!important;
     height:42px!important;
     padding:6px 9px!important;
-    border:1px solid rgba(224,181,103,.35)!important;
+    border:1px solid rgba(165,162,158,0.35)!important;
     border-radius:10px!important;
-    background:#052f34!important;
-    color:#f4efe6!important;
+    background:#302e2b!important;
+    color:#e2dcd3!important;
     font:900 12px/1.2 Arial,sans-serif!important;
     box-shadow:none!important;
   }
   #mfwAuthOverlay .auth-tabs .auth-tab.active{
-    background:linear-gradient(135deg,#efca72,#d9aa4f)!important;
-    border-color:#efca72!important;
-    color:#173536!important;
+    background:linear-gradient(135deg,#e2dcd3,#e2dcd3)!important;
+    border-color:#e2dcd3!important;
+    color:#302e2b!important;
   }
   #mfwAuthOverlay .auth-form:not([hidden]){
     display:grid!important;
@@ -155,7 +155,7 @@
     min-width:0!important;
     margin:0!important;
     padding:0!important;
-    color:#f4efe6!important;
+    color:#e2dcd3!important;
     font:800 12px/1.45 Arial,sans-serif!important;
     text-align:right!important;
   }
@@ -171,17 +171,17 @@
     height:46px!important;
     margin:0!important;
     padding:8px 12px!important;
-    border:1px solid rgba(224,181,103,.34)!important;
+    border:1px solid rgba(165,162,158,0.34)!important;
     border-radius:9px!important;
-    background:#052f34!important;
+    background:#302e2b!important;
     color:#fff!important;
     font:500 14px/1.3 Arial,sans-serif!important;
     outline-offset:2px!important;
   }
   #mfwAuthOverlay .auth-form input::placeholder{color:#aabdb9!important;opacity:1!important}
   #mfwAuthOverlay .auth-form input:focus{
-    border-color:#efca72!important;
-    outline:2px solid rgba(239,202,114,.30)!important;
+    border-color:#e2dcd3!important;
+    outline:2px solid rgba(165,162,158,0.3)!important;
   }
   #mfwAuthOverlay .auth-form .password-wrap{position:relative!important}
   #mfwAuthOverlay .auth-form .password-wrap input{padding-left:73px!important}
@@ -194,8 +194,8 @@
     padding:3px!important;
     border:0!important;
     border-radius:7px!important;
-    background:rgba(224,181,103,.13)!important;
-    color:#efcf7c!important;
+    background:rgba(165,162,158,0.13)!important;
+    color:#e2dcd3!important;
     font-size:11px!important;
     font-weight:800!important;
   }
@@ -210,10 +210,10 @@
     min-height:46px!important;
     margin:4px 0 0!important;
     padding:9px!important;
-    border:1px solid #efca72!important;
+    border:1px solid #e2dcd3!important;
     border-radius:10px!important;
-    background:linear-gradient(135deg,#efca72,#d9aa4f)!important;
-    color:#173536!important;
+    background:linear-gradient(135deg,#e2dcd3,#e2dcd3)!important;
+    color:#302e2b!important;
     font:900 14px/1.2 Arial,sans-serif!important;
   }
   #mfwAuthOverlay .login-help{
@@ -221,7 +221,7 @@
     justify-content:flex-start!important;
     margin:0!important;
   }
-  #mfwAuthOverlay .text-link{color:#efcf7c!important;font-size:12px!important}
+  #mfwAuthOverlay .text-link{color:#e2dcd3!important;font-size:12px!important}
   #mfwAuthOverlay .auth-note,
   #mfwAuthOverlay .username-status{
     color:#bfc9c5!important;
@@ -240,5 +240,5 @@
     gap:7px!important;
     color:#d2dbd7!important;
   }
-  #mfwAuthOverlay .check input{width:18px!important;height:18px!important;accent-color:#e0b567!important}
+  #mfwAuthOverlay .check input{width:18px!important;height:18px!important;accent-color:#e2dcd3!important}
 }

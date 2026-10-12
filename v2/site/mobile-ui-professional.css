@@ -37,9 +37,9 @@
     display:grid!important;
     grid-template-columns:repeat(5,1fr)!important;
     gap:4px!important;
-    border:1px solid rgba(224,181,103,.28)!important;
+    border:1px solid rgba(165,162,158,0.28)!important;
     border-radius:20px!important;
-    background:linear-gradient(180deg,rgba(7,54,61,.97),rgba(2,47,51,.98))!important;
+    background:linear-gradient(180deg,rgba(69,66,62,0.97),rgba(69,66,62,0.98))!important;
     box-shadow:0 16px 38px rgba(0,0,0,.34),inset 0 1px 0 rgba(255,255,255,.04)!important;
     backdrop-filter:blur(18px)!important;
     -webkit-backdrop-filter:blur(18px)!important;
@@ -71,8 +71,8 @@
   }
 
   .v2-mobile-link.active{
-    color:#173536!important;
-    background:linear-gradient(145deg,#efc878,#dca957)!important;
+    color:#302e2b!important;
+    background:linear-gradient(145deg,#e2dcd3,#e2dcd3)!important;
     box-shadow:0 6px 14px rgba(0,0,0,.18)!important;
   }
 
@@ -89,7 +89,7 @@
     align-items:end!important;
     justify-items:stretch!important;
     padding:18px 10px calc(var(--mobile-nav-h) + env(safe-area-inset-bottom) + 10px)!important;
-    background:rgba(0,20,22,.72)!important;
+    background:rgba(69,66,62,0.72)!important;
     backdrop-filter:blur(8px)!important;
     -webkit-backdrop-filter:blur(8px)!important;
   }
@@ -102,10 +102,10 @@
     margin:0 auto!important;
     overflow:auto!important;
     overscroll-behavior:contain!important;
-    border:1px solid rgba(224,181,103,.28)!important;
+    border:1px solid rgba(165,162,158,0.28)!important;
     border-radius:24px!important;
     padding:14px!important;
-    background:linear-gradient(180deg,#0a4349,#052f34 66%,#02292d)!important;
+    background:linear-gradient(180deg,#302e2b,#302e2b 66%,#302e2b)!important;
     box-shadow:0 28px 70px rgba(0,0,0,.46)!important;
   }
 
@@ -119,9 +119,9 @@
     min-height:50px!important;
     margin:-4px -2px 10px!important;
     padding:4px 4px 10px!important;
-    color:#f4efe6!important;
-    background:#0a4349!important;
-    border-bottom:1px solid rgba(224,181,103,.18)!important;
+    color:#e2dcd3!important;
+    background:#302e2b!important;
+    border-bottom:1px solid rgba(165,162,158,0.18)!important;
   }
 
   .v2-mobile-more-head strong{
@@ -132,10 +132,10 @@
   .v2-mobile-more-head button{
     width:40px!important;
     height:40px!important;
-    border:1px solid rgba(224,181,103,.25)!important;
+    border:1px solid rgba(165,162,158,0.25)!important;
     border-radius:13px!important;
     background:rgba(255,255,255,.045)!important;
-    color:#f4efe6!important;
+    color:#e2dcd3!important;
     font-size:24px!important;
   }
 
@@ -149,7 +149,7 @@
   .v2-mobile-more-link{
     min-height:64px!important;
     padding:10px 12px!important;
-    border:1px solid rgba(224,181,103,.16)!important;
+    border:1px solid rgba(165,162,158,0.16)!important;
     border-radius:16px!important;
     background:rgba(255,255,255,.045)!important;
     display:flex!important;
@@ -157,7 +157,7 @@
     align-items:center!important;
     justify-content:flex-start!important;
     gap:10px!important;
-    color:#f4efe6!important;
+    color:#e2dcd3!important;
     font-size:12px!important;
     font-weight:900!important;
     text-align:right!important;
@@ -172,27 +172,27 @@
     border-radius:12px!important;
     display:grid!important;
     place-items:center!important;
-    background:rgba(224,181,103,.12)!important;
-    color:#e0b567!important;
+    background:rgba(165,162,158,0.12)!important;
+    color:#e2dcd3!important;
     font-size:20px!important;
   }
 
   .v2-mobile-more-link.active{
-    background:linear-gradient(145deg,#efc878,#dca957)!important;
-    color:#173536!important;
+    background:linear-gradient(145deg,#e2dcd3,#e2dcd3)!important;
+    color:#302e2b!important;
     border-color:transparent!important;
   }
 
   .v2-mobile-more-link.active .v2-global-icon{
-    color:#173536!important;
-    background:rgba(23,53,54,.10)!important;
+    color:#302e2b!important;
+    background:rgba(69,66,62,0.1)!important;
   }
 
   /* Home: compact premium hierarchy */
   body.v2-route-home .home-header{
     min-height:52px!important;
-    border-bottom:1px solid rgba(224,181,103,.16)!important;
-    background:rgba(2,47,51,.96)!important;
+    border-bottom:1px solid rgba(165,162,158,0.16)!important;
+    background:rgba(69,66,62,0.96)!important;
   }
 
   body.v2-route-home .home-header .wrap{
@@ -279,7 +279,7 @@
 
   body.v2-route-home .hero-stat strong{
     display:block!important;
-    color:#f1c879!important;
+    color:#e2dcd3!important;
     font-size:18px!important;
     line-height:1!important;
   }
@@ -416,9 +416,9 @@
     width:100%!important;
     min-height:72px!important;
     padding:9px!important;
-    border:1px solid rgba(224,181,103,.16)!important;
+    border:1px solid rgba(165,162,158,0.16)!important;
     border-radius:16px!important;
-    background:linear-gradient(145deg,rgba(11,72,80,.92),rgba(7,54,61,.96))!important;
+    background:linear-gradient(145deg,rgba(69,66,62,0.92),rgba(69,66,62,0.96))!important;
     box-shadow:0 8px 20px rgba(0,0,0,.14)!important;
   }
 
@@ -427,7 +427,7 @@
     padding:0!important;
     border:0!important;
     background:transparent!important;
-    color:#f4efe6!important;
+    color:#e2dcd3!important;
     font-size:11px!important;
     overflow:hidden!important;
     text-overflow:ellipsis!important;
@@ -441,8 +441,8 @@
     display:grid!important;
     place-items:center!important;
     border-radius:12px!important;
-    background:rgba(224,181,103,.10)!important;
-    color:#e0b567!important;
+    background:rgba(165,162,158,0.1)!important;
+    color:#e2dcd3!important;
     font-size:13px!important;
     font-weight:900!important;
   }
@@ -472,8 +472,8 @@
     display:grid!important;
     place-items:center!important;
     border-radius:12px!important;
-    background:linear-gradient(145deg,#efc878,#dca957)!important;
-    color:#173536!important;
+    background:linear-gradient(145deg,#e2dcd3,#e2dcd3)!important;
+    color:#302e2b!important;
     font-size:13px!important;
     font-weight:900!important;
   }
@@ -493,9 +493,9 @@
 
   body.v2-route-home .form-card{
     padding:13px!important;
-    border:1px solid rgba(224,181,103,.18)!important;
+    border:1px solid rgba(165,162,158,0.18)!important;
     border-radius:18px!important;
-    background:linear-gradient(145deg,rgba(11,72,80,.88),rgba(7,54,61,.95))!important;
+    background:linear-gradient(145deg,rgba(69,66,62,0.88),rgba(69,66,62,0.95))!important;
     box-shadow:0 12px 28px rgba(0,0,0,.18)!important;
   }
 

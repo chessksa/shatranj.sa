@@ -3,10 +3,10 @@
   :root{
     --mobile-board-gap:6px;
     --mobile-board-size:min(calc(100vw - 12px),46dvh,430px);
-    --mobile-workspace-gold:#e0b567;
-    --mobile-workspace-cream:#f4efe6;
-    --mobile-workspace-panel:#07363d;
-    --mobile-workspace-line:rgba(224,181,103,.34);
+    --mobile-workspace-gold:#e2dcd3;
+    --mobile-workspace-cream:#e2dcd3;
+    --mobile-workspace-panel:#302e2b;
+    --mobile-workspace-line:rgba(165,162,158,0.34);
   }
 
   html:has(body.mobile-board-workspace),
@@ -17,7 +17,7 @@
     max-height:100dvh!important;
     overflow:hidden!important;
     overscroll-behavior:none!important;
-    background:radial-gradient(circle at 18% 10%,rgba(20,105,112,.22),transparent 28%),linear-gradient(155deg,#022f33,#063a40 58%,#0b4850)!important;
+    background:radial-gradient(circle at 18% 10%,rgba(69,66,62,0.22),transparent 28%),linear-gradient(155deg,#302e2b,#302e2b 58%,#302e2b)!important;
   }
 
   body.mobile-board-workspace{
@@ -40,9 +40,9 @@
     margin:0!important;
     padding:4px 0!important;
     overflow:hidden!important;
-    background:rgba(2,43,47,.98)!important;
+    background:rgba(69,66,62,0.98)!important;
     border:0!important;
-    border-bottom:1px solid rgba(224,181,103,.22)!important;
+    border-bottom:1px solid rgba(165,162,158,0.22)!important;
     box-shadow:none!important;
     z-index:60!important;
   }
@@ -97,7 +97,7 @@
     justify-content:flex-start!important;
     gap:7px!important;
     overflow:hidden!important;
-    border:1px solid rgba(224,181,103,.20)!important;
+    border:1px solid rgba(165,162,158,0.2)!important;
     border-radius:12px!important;
     background:rgba(255,255,255,.025)!important;
   }
@@ -131,7 +131,7 @@
     min-width:54px!important;
     height:38px!important;
     padding:2px 5px!important;
-    border-inline-start:1px solid rgba(224,181,103,.20)!important;
+    border-inline-start:1px solid rgba(165,162,158,0.2)!important;
   }
 
   body.mobile-board-workspace.home-signed-in .compact-member-nav .header-member-points small{font-size:7px!important}
@@ -161,7 +161,7 @@
     height:50px!important;
     min-height:50px!important;
     padding:0!important;
-    border:1px solid rgba(224,181,103,.20)!important;
+    border:1px solid rgba(165,162,158,0.2)!important;
     border-radius:12px!important;
     background:rgba(255,255,255,.025)!important;
   }
@@ -178,7 +178,7 @@
     margin:0!important;
     padding:0 3px!important;
     display:flex!important;
-    border:1px solid rgba(224,181,103,.20)!important;
+    border:1px solid rgba(165,162,158,0.2)!important;
     border-radius:12px!important;
     background:rgba(255,255,255,.025)!important;
     font-size:9px!important;
@@ -242,9 +242,9 @@
     margin:0 auto!important;
     padding:5px!important;
     overflow:hidden!important;
-    border:1px solid rgba(224,181,103,.78)!important;
+    border:1px solid rgba(165,162,158,0.78)!important;
     border-radius:11px!important;
-    background:linear-gradient(145deg,#07363d,#022f33)!important;
+    background:linear-gradient(145deg,#302e2b,#302e2b)!important;
     box-shadow:0 12px 30px rgba(0,0,0,.28),inset 0 1px 0 rgba(255,255,255,.04)!important;
     text-decoration:none!important;
   }
@@ -258,7 +258,7 @@
     direction:ltr;
     overflow:hidden;
     border:1px solid rgba(0,0,0,.34);
-    background:#ad8a65 url('../../assets/boards/wood4.jpg') center/100% 100% no-repeat;
+    background:#9b958d url('../../assets/boards/wood4.jpg') center/100% 100% no-repeat;
   }
 
   .mobile-board-square{
@@ -296,10 +296,10 @@
     display:flex;
     align-items:center;
     justify-content:center;
-    border:1px solid rgba(224,181,103,.46);
+    border:1px solid rgba(165,162,158,0.46);
     border-radius:9px;
-    background:rgba(2,47,51,.90);
-    color:#f4efe6;
+    background:rgba(69,66,62,0.9);
+    color:#e2dcd3;
     font-size:10px;
     font-weight:900;
     pointer-events:none;
@@ -318,9 +318,9 @@
     min-width:0;
     height:58px;
     padding:3px 1px;
-    border:1px solid rgba(224,181,103,.22);
+    border:1px solid rgba(165,162,158,0.22);
     border-radius:11px;
-    background:linear-gradient(180deg,rgba(8,63,68,.96),rgba(4,48,52,.96));
+    background:linear-gradient(180deg,rgba(69,66,62,0.96),rgba(69,66,62,0.96));
     color:#d9d2c5;
     display:flex;
     flex-direction:column;
@@ -333,9 +333,9 @@
   }
   .mobile-workspace-tab span:first-child{font-size:19px;line-height:1}
   .mobile-workspace-tab.active{
-    background:linear-gradient(145deg,#efca72,#d9aa4f);
-    border-color:#efca72;
-    color:#173536;
+    background:linear-gradient(145deg,#e2dcd3,#e2dcd3);
+    border-color:#e2dcd3;
+    color:#302e2b;
     box-shadow:0 6px 14px rgba(0,0,0,.16);
   }
 
@@ -343,9 +343,9 @@
     grid-row:3;
     min-height:0;
     overflow:hidden;
-    border:1px solid rgba(102,172,173,.30);
+    border:1px solid rgba(114,111,107,0.3);
     border-radius:13px;
-    background:linear-gradient(145deg,rgba(6,59,63,.95),rgba(3,45,49,.96));
+    background:linear-gradient(145deg,rgba(69,66,62,0.95),rgba(69,66,62,0.96));
     box-shadow:0 10px 24px rgba(0,0,0,.16),inset 0 1px 0 rgba(255,255,255,.025);
     color:var(--mobile-workspace-cream);
   }
@@ -367,8 +367,8 @@
     align-items:center;
     justify-content:space-between;
     gap:8px;
-    border-bottom:1px solid rgba(224,181,103,.20);
-    color:#efcf7c;
+    border-bottom:1px solid rgba(165,162,158,0.2);
+    color:#e2dcd3;
     font-size:11px;
     font-weight:900;
   }
@@ -399,7 +399,7 @@
     min-width:0;
     min-height:54px;
     padding:6px 3px;
-    border:1px solid rgba(224,181,103,.18);
+    border:1px solid rgba(165,162,158,0.18);
     border-radius:10px;
     background:rgba(255,255,255,.025);
     display:flex;
@@ -409,12 +409,12 @@
     text-align:center;
   }
   .mobile-home-stat small{font-size:8px;color:#cfc8bb}
-  .mobile-home-stat strong{margin-top:4px;font-size:18px;color:#efcf7c}
+  .mobile-home-stat strong{margin-top:4px;font-size:18px;color:#e2dcd3}
 
   .mobile-home-message{
     min-height:0;
     padding:8px 10px;
-    border:1px solid rgba(224,181,103,.16);
+    border:1px solid rgba(165,162,158,0.16);
     border-radius:10px;
     background:rgba(255,255,255,.025);
     display:flex;
@@ -423,7 +423,7 @@
     justify-content:center;
     text-align:center;
   }
-  .mobile-home-message strong{font-size:15px;color:#f4efe6}
+  .mobile-home-message strong{font-size:15px;color:#e2dcd3}
   .mobile-home-message span{margin-top:4px;font-size:9px;color:#cfc8bb}
 
   .mobile-workspace-action-card{
@@ -437,15 +437,15 @@
     gap:8px;
     text-align:center;
   }
-  .mobile-workspace-action-card h3{margin:0;color:#efcf7c;font-size:15px}
+  .mobile-workspace-action-card h3{margin:0;color:#e2dcd3;font-size:15px}
   .mobile-workspace-action-card p{margin:0;color:#d7d0c4;font-size:10px;line-height:1.6}
   .mobile-workspace-primary{
     min-height:42px;
     padding:0 12px;
-    border:1px solid #efca72;
+    border:1px solid #e2dcd3;
     border-radius:10px;
-    background:linear-gradient(135deg,#efca72,#d9aa4f);
-    color:#173536;
+    background:linear-gradient(135deg,#e2dcd3,#e2dcd3);
+    color:#302e2b;
     display:flex;
     align-items:center;
     justify-content:center;
@@ -462,10 +462,10 @@
   .mobile-more-link{
     min-height:56px;
     padding:5px;
-    border:1px solid rgba(224,181,103,.17);
+    border:1px solid rgba(165,162,158,0.17);
     border-radius:10px;
     background:rgba(255,255,255,.025);
-    color:#f4efe6;
+    color:#e2dcd3;
     display:flex;
     flex-direction:column;
     align-items:center;
@@ -476,7 +476,7 @@
     font-weight:800;
     text-align:center;
   }
-  .mobile-more-link span:first-child{font-size:18px;color:#efcf7c}
+  .mobile-more-link span:first-child{font-size:18px;color:#e2dcd3}
 
   body.mobile-board-workspace .mobile-workspace-view-body #ranking{
     display:block!important;
@@ -570,7 +570,7 @@
     padding:8px!important;
     border-radius:10px!important;
     box-shadow:none!important;
-    background:rgba(245,243,237,.98)!important;
+    background:rgba(165,162,158,0.98)!important;
   }
   body.mobile-board-workspace .mobile-workspace-view-body .home-invite-results{max-height:150px!important}
   body.mobile-board-workspace .mobile-workspace-view-body #register{
