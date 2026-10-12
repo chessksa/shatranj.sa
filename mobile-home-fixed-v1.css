@@ -49,6 +49,10 @@
   }
   .mfw-square.light{background:transparent}
   .mfw-square.dark{background:transparent}
+  .mfw-square .mfw-coordinate{position:absolute;z-index:3;pointer-events:none;user-select:none;font:800 clamp(7px,1.8vw,10px)/1 Arial,sans-serif;color:rgba(32,48,42,.75)}
+  .mfw-square.dark .mfw-coordinate{color:rgba(255,246,226,.84);text-shadow:0 1px 1px rgba(0,0,0,.21)}
+  .mfw-coordinate-rank{left:2px;top:2px}
+  .mfw-coordinate-file{bottom:2px;right:3px}
   /* Optical centering compensates for transparent space in the approved
      piece PNGs. Keep mobile sizing isolated from desktop and game engines. */
   .mfw-piece{
