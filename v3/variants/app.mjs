@@ -8,7 +8,9 @@ export async function mountVariantGame({boardElement=null,scope=document,embedde
 const $=id=>scope.querySelector('#'+id);
 const board=boardElement||$('variantBoard');
 if(!board)throw new Error('variant_board_not_found');
-const {player}=embedded?await getSessionPlayer():await requirePlayer();
+// Guest previews must not redirect the main site. Authenticated play still needs a profile.
+const account=embedded?await getSessionPlayer().catch(error=>{console.warn('تعذر تحميل حساب نماذج اللعب',error);return {player:null};}):await requirePlayer();
+const player=account?.player||null;
 if(!player&&!embedded)throw new Error('login_required');
 let disposed=false;
 
@@ -115,4 +117,7 @@ scope.addEventListener('click',gameLinkClick);
 window.addEventListener('pagehide',stop);
 return stop;
 }
-if(document.getElementById('variantBoard'))void mountVariantGame().catch(error=>console.error('تعذر فتح نماذج اللعب',error));
+// Standalone boot only: the homepage mounts this controller explicitly once.
+if(/(?:^|\/)variants\.html$/i.test(location.pathname)&&document.getElementById('variantBoard')){
+  void mountVariantGame().catch(error=>console.error('تعذر فتح نماذج اللعب',error));
+}
