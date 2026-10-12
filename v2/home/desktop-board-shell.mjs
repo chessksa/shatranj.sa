@@ -360,7 +360,22 @@ if(desktop.matches && document.querySelector('#homeHero')){
     });
   }
 
+  function ensureApprovedHomePieces(){
+    const target=document.getElementById('homeBoardPreview');
+    const home=document.getElementById('desktopDashboardHome');
+    if(!target||!home||home.hidden)return;
+    if(target.classList.contains('inline-tournament-spectator')
+      || target.classList.contains('inline-play-active')
+      || target.classList.contains('inline-computer-active')
+      || target.classList.contains('inline-puzzle-active')
+      || target.classList.contains('inline-learn-active'))return;
+    if(target.querySelectorAll('.desktop-board-square > .desktop-board-preview-piece').length!==32){
+      renderApprovedPreview(target);
+    }
+  }
   function showDashboard(id='home'){
+    // Navigation always ends active online play before touching the home chessboard.
+    window.dispatchEvent(new CustomEvent('desktop:inline-play-stop'));
     if(id==='admin'&&!desktopAdminAccess)id='home';
     if(id==='settings'&&!desktopSignedIn)id='home';
     if(['home','ranking','tournaments','watch','settings','invite','computer','puzzles','learn','profile','admin'].includes(id)){
@@ -389,6 +404,7 @@ if(desktop.matches && document.querySelector('#homeHero')){
       home.hidden=false;
       view.hidden=true;
       setActiveNav('home');
+      ensureApprovedHomePieces();
       return;
     }
 
@@ -699,6 +715,9 @@ if(desktop.matches && document.querySelector('#homeHero')){
     forceSidebarSurface();
     buildDashboard();
     window.addEventListener('shatranj:tournament-spectator-stopped',()=>{
+      // Spectator restores a saved DOM fragment asynchronously; repaint if it was
+      // an old empty version of the homepage.
+      ensureApprovedHomePieces();
       const frame=document.querySelector('.desktop-dashboard-view.embedded-view .desktop-dashboard-embed');
       if(frame?.contentWindow)frame.contentWindow.postMessage({type:'shatranj-tournament-spectate-stopped'},location.origin);
     });
