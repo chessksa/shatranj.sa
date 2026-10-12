@@ -1,5 +1,21 @@
-import { Chess as Chess960, GAME_VARIANT } from 'https://cdn.jsdelivr.net/npm/cm-chess@4.0.0/+esm';
-import { Chess as StandardChess } from 'https://cdn.jsdelivr.net/npm/chess.js@1.4.0/+esm';
+// Load optional local move validators without blocking the variant chooser.
+let Chess960=null, GAME_VARIANT=null, StandardChess=null, enginesPromise=null;
+function loadChessEngines(){
+  if(!enginesPromise)enginesPromise=Promise.all([
+    import('https://cdn.jsdelivr.net/npm/cm-chess@4.0.0/+esm'),
+    import('https://cdn.jsdelivr.net/npm/chess.js@1.4.0/+esm')
+  ]).then(([cm,standard])=>{
+    Chess960=cm.Chess;
+    GAME_VARIANT=cm.GAME_VARIANT;
+    StandardChess=standard.Chess;
+    return true;
+  }).catch(error=>{
+    enginesPromise=null;
+    console.warn('تعذر تحميل محركات تحقق نقلات نماذج اللعب',error);
+    return false;
+  });
+  return enginesPromise;
+}
 import { requirePlayer, getSessionPlayer, rpc, supabase, escapeHtml } from '../../v2/platform/api.mjs';
 import { loadBoardPreferences } from '../../v2/board/preferences.mjs';
 import { getBoardTheme } from '../../v2/board/themes.mjs';
@@ -33,6 +49,9 @@ const centerSquares=new Set(['d4','e4','d5','e5']);
 const pocketRoleCode={pawn:'P',knight:'N',bishop:'B',rook:'R',queen:'Q'};
 const pocketRoles=['pawn','knight','bishop','rook','queen'];
 const previewFen={
+  chess960:'rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1',
+  threecheck:'rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1',
+  kingofthehill:'rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1',
   crazyhouse:'rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR[] w KQkq - 0 1',
   atomic:'rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1',
   antichess:'rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w - - 0 1',
@@ -60,8 +79,8 @@ function pieceAt(square){if(isAdvanced())return parse(boardFen()).get(square)||n
 function localLegalFor(square){try{return chess?.moves({square,verbose:true})||[]}catch{return[]}}
 function serverLegalFor(square){return legalMoves.filter(uci=>/^[a-h][1-8][a-h][1-8]/.test(uci)&&uci.slice(0,2)===square).map(uci=>({from:square,to:uci.slice(2,4),promotion:uci[4]||null,uci}))}
 function legalFor(square){return isAdvanced()?serverLegalFor(square):localLegalFor(square)}
-function createEngine(game){if(game?.variant==='chess960')return new Chess960({fen:game.fen,gameVariant:GAME_VARIANT.chess960});if(!isAdvanced(game?.variant))return new StandardChess(game?.fen);return null}
-function previewEngine(){const mode=$('variantMode').value;if(mode==='chess960')return new Chess960({gameVariant:GAME_VARIANT.chess960});if(!advancedModes.has(mode))return new StandardChess();return null}
+function createEngine(game){if(game?.variant==='chess960')return Chess960?new Chess960({fen:game.fen,gameVariant:GAME_VARIANT.chess960}):null;if(!isAdvanced(game?.variant))return StandardChess?new StandardChess(game?.fen):null;return null}
+function previewEngine(){const mode=$('variantMode').value;if(mode==='chess960')return Chess960?new Chess960({gameVariant:GAME_VARIANT.chess960}):null;if(!advancedModes.has(mode))return StandardChess?new StandardChess():null;return null}
 
 function renderBoard(){if(disposed)return;const pos=parse(boardFen()),frag=document.createDocumentFragment();for(const name of squares()){const file=name.charCodeAt(0)-97,rank=Number(name[1]),sq=document.createElement('button');sq.type='button';sq.dataset.square=name;sq.className=`variant-square ${(file+rank)%2===1?'light':'dark'}${selected===name?' selected':''}${current?.variant==='kingofthehill'&&centerSquares.has(name)?' center':''}`;const p=pos.get(name);if(p){const img=document.createElement('img');img.className='variant-piece';img.src=`assets/pieces/${p.color}${p.type}.png`;img.alt='';sq.appendChild(img)}frag.appendChild(sq)}board.replaceChildren(frag);for(const m of legal)board.querySelector(`[data-square="${m.to}"]`)?.classList.add('target');renderPockets()}
 function renderPocket(hostId,color){const host=$(hostId);const show=(current?.variant||$('variantMode').value)==='crazyhouse';host.classList.toggle('show',show);if(!show){host.replaceChildren();return}const values=pockets?.[color]||{};const colorCode=color==='white'?'w':'b';const canUse=Boolean(current&&current.my_color===colorCode&&canMove());const frag=document.createDocumentFragment();for(const role of pocketRoles){const count=Number(values[role]||0);const button=document.createElement('button');button.type='button';button.className=`variant-pocket-piece ${selectedPocketRole===role&&current?.my_color===colorCode?'selected':''}`;button.dataset.role=role;button.disabled=!canUse||count<1;button.innerHTML=`<img src="assets/pieces/${colorCode}${role[0]==='k'?'n':role[0]}.png" alt=""><b>${count}</b>`;button.addEventListener('click',()=>selectPocket(role,colorCode));frag.appendChild(button)}const label=document.createElement('span');label.className='variant-pocket-label';label.textContent=color==='white'?'جيب الأبيض':'جيب الأسود';frag.appendChild(label);host.replaceChildren(frag)}
@@ -82,7 +101,7 @@ async function makeMove(move){if(!current||!canMove())return;try{board.style.poi
 const boardClick=async e=>{if(disposed||!canMove())return;const el=e.target.closest('.variant-square');if(!el)return;const sq=el.dataset.square;if(selectedPocketRole){const drop=legal.find(m=>m.to===sq);if(drop){selectedPocketRole=null;legal=[];await makeMove(drop)}else{selectedPocketRole=null;legal=[];renderBoard()}return}const p=pieceAt(sq);if(!selected){if(p?.color===current.my_color){selected=sq;legal=legalFor(sq);renderBoard()}return}if(sq===selected){selected=null;legal=[];renderBoard();return}const move=legal.find(m=>m.to===sq);if(move){selected=null;legal=[];await makeMove(move);return}if(p?.color===current.my_color){selected=sq;legal=legalFor(sq);renderBoard()}else{selected=null;legal=[];renderBoard()}};
 board.addEventListener('click',boardClick);
 
-async function queue(){if(searching||disposed)return;if(!player){$('variantQueueState').textContent='سجّل الدخول للبحث عن خصم.';document.getElementById('desktopGuestLogin')?.click();return;}searching=true;searchVariant=$('variantMode').value;$('variantQueue').disabled=true;$('variantCancel').disabled=false;$('variantMode').disabled=true;$('variantQueueState').innerHTML=`جارٍ البحث عن ${escapeHtml(variantLabel[searchVariant])} <span class="variant-searching"><i></i><i></i><i></i></span>`;const [base,inc]=$('variantTime').value.split(',').map(Number);const rated=$('variantRated').value==='1';const body={action:'queue',variant:searchVariant,baseSeconds:base,incrementSeconds:inc,rated};const acceptGame=async result=>{if(disposed)return false;const g=result?.game;if(!g)return false;searching=false;clearInterval(queueTimer);$('variantCancel').disabled=true;await loadGame(g.game_id||g.id);return true};try{const result=await invoke(body,searchVariant);if(disposed)return;if(await acceptGame(result))return;queueTimer=setInterval(async()=>{if(!searching||disposed)return;try{const r=await invoke(body,searchVariant);await acceptGame(r)}catch(e){console.error(e)}},2500)}catch(e){console.error(e);searching=false;$('variantQueueState').textContent='تعذر بدء البحث.'}finally{if(!disposed){$('variantQueue').disabled=searching;$('variantMode').disabled=searching||Boolean(current?.status==='active')}}}
+async function queue(){if(searching||disposed)return;if(!advancedModes.has($('variantMode').value)&&!(await loadChessEngines())){$('variantQueueState').textContent='تعذر تحميل محرك هذا النموذج. أعد المحاولة أو اختر نموذجًا آخر.';return;}if(disposed)return;if(!player){$('variantQueueState').textContent='سجّل الدخول للبحث عن خصم.';document.getElementById('desktopGuestLogin')?.click();return;}searching=true;searchVariant=$('variantMode').value;$('variantQueue').disabled=true;$('variantCancel').disabled=false;$('variantMode').disabled=true;$('variantQueueState').innerHTML=`جارٍ البحث عن ${escapeHtml(variantLabel[searchVariant])} <span class="variant-searching"><i></i><i></i><i></i></span>`;const [base,inc]=$('variantTime').value.split(',').map(Number);const rated=$('variantRated').value==='1';const body={action:'queue',variant:searchVariant,baseSeconds:base,incrementSeconds:inc,rated};const acceptGame=async result=>{if(disposed)return false;const g=result?.game;if(!g)return false;searching=false;clearInterval(queueTimer);$('variantCancel').disabled=true;await loadGame(g.game_id||g.id);return true};try{const result=await invoke(body,searchVariant);if(disposed)return;if(await acceptGame(result))return;queueTimer=setInterval(async()=>{if(!searching||disposed)return;try{const r=await invoke(body,searchVariant);await acceptGame(r)}catch(e){console.error(e)}},2500)}catch(e){console.error(e);searching=false;$('variantQueueState').textContent='تعذر بدء البحث.'}finally{if(!disposed){$('variantQueue').disabled=searching;$('variantMode').disabled=searching||Boolean(current?.status==='active')}}}
 function updateModeInfo(refresh=true){$('variantModeInfo').textContent=ruleText[$('variantMode').value]||'';if(refresh&&!current){chess=previewEngine();legalMoves=[];pockets=null;selected=null;selectedPocketRole=null;legal=[];renderBoard();renderMeta()}else renderPockets()}
 $('variantMode').addEventListener('change',()=>updateModeInfo(true));
 $('variantQueue').addEventListener('click',queue);
@@ -90,7 +109,15 @@ $('variantCancel').addEventListener('click',async()=>{searching=false;clearInter
 $('variantResign').addEventListener('click',async()=>{if(!current||!confirm('هل تريد الاستسلام؟'))return;try{await invoke({action:'resign',gameId:current.game_id},current.variant);await loadGame(current.game_id)}catch(e){console.error(e)}});
 $('variantDraw').addEventListener('click',async()=>{if(!current)return;try{if(current.draw_offered_by&&current.draw_offered_by!==player.id){const accept=confirm('الخصم يعرض التعادل. قبول؟');await invoke({action:'respond_draw',gameId:current.game_id,accept},current.variant)}else await invoke({action:'offer_draw',gameId:current.game_id},current.variant);await loadGame(current.game_id)}catch(e){console.error(e)}});
 
-theme();updateModeInfo(true);const games=player?await listGames():[];const requested=embedded?null:new URLSearchParams(location.search).get('game');await loadGame(requested||(games.find(g=>g.status==='active')?.game_id||''));if(disposed)return()=>{};
+theme();
+updateModeInfo(true);
+void loadChessEngines().then(loaded=>{
+  if(loaded&&!disposed&&!current){
+    chess=previewEngine();
+    renderBoard();
+  }
+});
+const games=player?await listGames():[];const requested=embedded?null:new URLSearchParams(location.search).get('game');await loadGame(requested||(games.find(g=>g.status==='active')?.game_id||''));if(disposed)return()=>{};
 clockTimer=setInterval(renderMeta,250);
 poll=setInterval(()=>{if(disposed)return;if(current?.game_id)void loadGame(current.game_id);else void listGames()},5000);
 const stop=()=>{
