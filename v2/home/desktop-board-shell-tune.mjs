@@ -1,6 +1,8 @@
 const tuneAssetVersion=encodeURIComponent(document.querySelector('meta[name="shatranj-asset-version"]')?.content||'20261009-fresh-ui-refresh-v1');
-// Start the real online-match controller; its CSS is already preloaded once by index.html.
-await import(`./inline-play.mjs?v=${tuneAssetVersion}`);
+// Load online-match interactions in parallel, without blocking the home counters
+// or keeping the whole page hidden if a match-controller dependency is slow.
+void import(`./inline-play.mjs?v=${tuneAssetVersion}`)
+  .catch(error=>console.error('تعذر تحميل محرك اللعب المباشر',error));
 
 const desktop=window.matchMedia('(min-width:901px)');
 const FILES=['a','b','c','d','e','f','g','h'];
