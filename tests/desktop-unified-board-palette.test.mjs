@@ -28,7 +28,7 @@ for(const [name,script] of [['puzzles',puzzleScript],['learn',learnScript]]){
   assert.match(script,/baseLoaded=\[\.\.\.document\.querySelectorAll\('link\[rel="stylesheet"\]'\)\]/,`${name} must reuse the preloaded common board stylesheet`);
   assert.doesNotMatch(script,/20261006-board-colors1|20260918-inline-play1/,`${name} must not load old palette or board layers`);
 }
-assert.match(home,/shatranj-asset-version" content="20261012-home-champions-v15"/);
+assert.match(home,/shatranj-asset-version" content="20261012-home-champions-layout-v16"/);
 assert.match(home,/data-desktop-board-shell href="v2\/home\/desktop-board-shell\.css\?v=20261012-home-champions-v15"/);
 assert.match(play,/\.inline-play-square > \.inline-play-piece/,'Live play retains the common square and pieces CSS');
 assert.match(mobile,/\.mfw-board-grid\{[^}]*wood4\.jpg/,'Mobile home remains on the approved Wood 4 board');
