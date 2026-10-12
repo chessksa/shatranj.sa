@@ -1,0 +1,75 @@
+/* Desktop live chess notebook — only present while an actual match is in progress or reviewed. */
+@media(min-width:901px){
+  :root{--chess-notebook-width:clamp(180px,17vw,250px);--chess-notebook-gap:9px}
+  body.desktop-board-workspace.desktop-move-notebook-active .desktop-board-stage{
+    display:flex!important;flex-direction:row!important;direction:ltr!important;
+    align-items:center!important;justify-content:center!important;
+    gap:var(--chess-notebook-gap)!important;
+  }
+  body.desktop-board-workspace.desktop-move-notebook-active #homeBoardPreview.desktop-board-preview{
+    flex:0 0 auto!important;
+    width:min(
+      calc(100vw - var(--desktop-board-sidebar) - var(--desktop-dashboard-width) - 18px - var(--chess-notebook-width) - var(--chess-notebook-gap)),
+      calc(100dvh - 12px)
+    )!important;
+    height:min(
+      calc(100vw - var(--desktop-board-sidebar) - var(--desktop-dashboard-width) - 18px - var(--chess-notebook-width) - var(--chess-notebook-gap)),
+      calc(100dvh - 12px)
+    )!important;
+  }
+  .desktop-move-notebook{
+    direction:rtl;
+    flex:0 0 var(--chess-notebook-width);
+    width:var(--chess-notebook-width);
+    height:min(calc(100dvh - 12px),680px);
+    max-height:100%;
+    min-height:0;
+    display:flex;flex-direction:column;gap:0;
+    border:1px solid rgba(194,169,112,.42);
+    border-radius:12px;
+    background:linear-gradient(155deg,rgba(7,54,58,.97),rgba(2,37,42,.98));
+    box-shadow:0 10px 26px rgba(0,0,0,.21);
+    overflow:hidden;pointer-events:auto;
+    color:#f4efe6;
+    font-family:Arial,Tahoma,sans-serif;
+  }
+  .move-notebook-header{padding:13px 11px;display:flex;align-items:center;gap:9px;border-bottom:1px solid rgba(224,181,103,.25);min-height:64px}
+  .move-notebook-emblem{color:#e6bf78;font:normal 24px/1 serif}
+  .move-notebook-header>div{display:flex;flex-direction:column;min-width:0;gap:5px}
+  .move-notebook-header strong{font-size:14px;color:#f0d39b;line-height:1.2}
+  .move-notebook-header small{font-size:10px;color:#a8bec1}
+  .move-notebook-columns,.move-notebook-row{display:grid;grid-template-columns:38px minmax(0,1fr) minmax(0,1fr);direction:rtl;align-items:center}
+  .move-notebook-columns{padding:9px 5px;border-bottom:1px solid rgba(224,181,103,.17);background:rgba(255,255,255,.03);font-size:10px;font-weight:800;color:#d6c8b3;text-align:center}
+  .move-notebook-rows{overflow-y:auto;min-height:55px;flex:1 1 50%;scrollbar-width:thin;scrollbar-color:rgba(185,177,136,.45) transparent;overscroll-behavior:contain}
+  .move-notebook-row{height:32px;padding:0 5px;border-bottom:1px solid rgba(224,181,103,.09);font-variant-numeric:tabular-nums}
+  .move-notebook-row:nth-child(even){background:rgba(255,255,255,.025)}
+  .move-notebook-row:last-child{background:rgba(232,181,103,.1)}
+  .move-notebook-index{font-size:11px;color:#b1ae9f;text-align:center;direction:ltr}
+  .move-notebook-move{font-size:12px;font-weight:700;letter-spacing:.1px;color:#eee9de;text-align:center;direction:ltr;overflow:hidden;white-space:nowrap;text-overflow:ellipsis}
+  .move-notebook-empty{margin:20px 12px;text-align:center;font-size:11px;line-height:1.8;color:#b2c6c1}
+  .move-notebook-review{flex:0 0 auto;max-height:43%;overflow-y:auto;padding:11px;border-top:1px solid rgba(224,181,103,.25);color:#bbc9c5;font-size:11px;line-height:1.7;scrollbar-width:thin}
+  .move-notebook-review-title{display:block;margin-bottom:7px;font-size:12px;color:#f0d39b}
+  .move-notebook-accuracy{display:grid;grid-template-columns:1fr 1fr;gap:6px;margin:7px 0}
+  .move-notebook-accuracy>div{padding:7px 4px;background:rgba(255,255,255,.035);border:1px solid rgba(224,181,103,.13);border-radius:7px;text-align:center}
+  .move-notebook-accuracy small{display:block;font-size:10px;color:#abbebb}
+  .move-notebook-accuracy strong{display:block;font-size:19px;color:#f2d393;direction:ltr}
+  .move-notebook-note{font-size:10px;color:#aec0c1;margin:7px 0;line-height:1.6}
+  .move-notebook-key-title{font-weight:800;color:#e9d0a0;display:block;margin:7px 0 4px}
+  .move-notebook-key{padding:5px 0;border-bottom:1px solid rgba(224,181,103,.1);font-size:10px}
+  .desktop-board-square .board-coordinate{
+    position:absolute;z-index:8;display:block;font:800 clamp(8px,.65vw,11px)/1 Arial,sans-serif;
+    color:rgba(35,55,52,.72);text-shadow:0 1px rgba(255,255,255,.15);
+    pointer-events:none;user-select:none;
+  }
+  .desktop-board-square.dark .board-coordinate{color:rgba(255,245,219,.82);text-shadow:0 1px 1px rgba(0,0,0,.23)}
+  .desktop-board-square .board-coordinate-rank{top:3px;left:4px}
+  .desktop-board-square .board-coordinate-file{bottom:3px;right:4px}
+}
+@media(min-width:901px) and (max-width:1170px){
+  :root{--chess-notebook-width:155px;--chess-notebook-gap:5px}
+  .desktop-move-notebook{border-radius:8px}
+  .move-notebook-header{min-height:52px;padding:8px}
+  .move-notebook-header strong{font-size:12px}
+  .move-notebook-columns,.move-notebook-row{grid-template-columns:28px 1fr 1fr}
+  .move-notebook-move{font-size:10px}
+}
