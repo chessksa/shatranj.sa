@@ -264,11 +264,8 @@
     line-height:1.45;
   }
   .desktop-daily-puzzle-heading h3{
-    margin:0;white-space:nowrap;font-size:clamp(13px,1vw,17px);
-  }
-  .desktop-daily-puzzle-heading>span{
-    font-size:clamp(9px,.71vw,11px);
-    color:#dce9e3;font-weight:700;white-space:nowrap;
+    margin:0;font-size:clamp(13px,1vw,17px);
+    font-weight:900;line-height:1.45;text-align:center;
   }
   .desktop-suggested-friend{
     width:100%;min-width:0;display:flex;flex-direction:column;
