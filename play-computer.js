@@ -128,7 +128,6 @@ function renderComputerReviewedFen(index) {
   computerReviewIndex = index;
   clearMoveHints();
   ensureBoard().setPosition(computerReviewFens[index], false);
-  syncMobileHomepageBoard(computerReviewFens[index]);
   forceBoardSquareColors();
   renderLastMoveHighlight();
   updateComputerMoveReviewControls();
@@ -178,6 +177,19 @@ function startComputerGraceWindow() {
 }
 
 function ensureCmStyles() {
+  // The phone reuses the homepage's one DOM board, not cm-chessboard,
+  // SVG masking, a second grid, or any old layered overrides.
+  if (window.matchMedia('(max-width:900px)').matches) {
+    if (!document.querySelector('link[data-mobile-computer-singleboard]')) {
+      const link = document.createElement('link');
+      link.rel = 'stylesheet';
+      link.href = 'computer-single-board-mobile.css?v=20261012-clean-single-v1';
+      link.media = '(max-width:900px)';
+      link.dataset.mobileComputerSingleboard = '1';
+      document.head.appendChild(link);
+    }
+    return;
+  }
   if (!document.querySelector('link[data-cm-chessboard-core]')) {
     const core = document.createElement('link');
     core.rel = 'stylesheet';
@@ -188,17 +200,9 @@ function ensureCmStyles() {
   if (!document.querySelector('link[data-cm-chessboard-shatranj]')) {
     const theme = document.createElement('link');
     theme.rel = 'stylesheet';
-    theme.href = 'cm-chessboard-shatranj-v3.css?v=20261012-mobile-computer-board-v9';
+    theme.href = 'cm-chessboard-shatranj-v3.css?v=20261012-clean-single-v1';
     theme.dataset.cmChessboardShatranj = '1';
     document.head.appendChild(theme);
-  }
-  if (window.matchMedia('(max-width:900px)').matches && !document.querySelector('link[data-mobile-computer-homeboard]')) {
-    const style = document.createElement('link');
-    style.rel = 'stylesheet';
-    style.href = 'computer-home-board-mobile.css?v=20261012-mobile-home-board-visible-v2';
-    style.media = '(max-width:900px)';
-    style.dataset.mobileComputerHomeboard = '1';
-    document.head.appendChild(style);
   }
 }
 
@@ -226,6 +230,11 @@ function squarePosition(square) {
 }
 
 function clearMoveHints() {
+  if (boardEl.classList.contains('mobile-computer-single-board')) {
+    boardEl.querySelectorAll('.mobile-legal-target,.mobile-capture-target').forEach(
+      el=>el.classList.remove('mobile-legal-target','mobile-capture-target')
+    );
+  }
   if (!moveHintsEl) return;
   moveHintsEl.querySelectorAll('.move-hint').forEach((hint) => hint.remove());
 }
@@ -248,6 +257,14 @@ function showMoveHints(square) {
   if (!moveHintsEl) return;
   clearMoveHints();
   const moves = game.moves({ square, verbose: true });
+  if (boardEl.classList.contains('mobile-computer-single-board')) {
+    for (const move of moves) {
+      mobileSquare(move.to)?.classList.add(
+        move.flags.includes('c') || move.flags.includes('e') ? 'mobile-capture-target' : 'mobile-legal-target'
+      );
+    }
+    return;
+  }
   moves.forEach((move) => {
     const pos = squarePosition(move.to);
     const hint = document.createElement('span');
@@ -259,91 +276,149 @@ function showMoveHints(square) {
 }
 
 function forceBoardSquareColors() {
-  // Transparent SVG squares masked the wood texture on mobile Safari,
-  // leaving a black board. Restore warm, semi-transparent chess squares.
-  // Desktop colors remain unchanged.
-  const mobile = window.matchMedia('(max-width:900px)').matches;
-  // Never hide the engine board until the replacement homepage grid is ready.
-  const homepageGridReady = mobile && boardEl.parentElement?.classList.contains('has-mobile-home-board');
-  const light = homepageGridReady ? 'transparent' : 'rgba(255,247,224,.43)';
-  const dark = homepageGridReady ? 'transparent' : 'rgba(49,24,11,.36)';
+  if (window.matchMedia('(max-width:900px)').matches) return;
   boardEl.querySelectorAll('.cm-chessboard .square.white').forEach(square => {
-    square.style.setProperty('fill', light, 'important');
-    if (mobile) square.style.setProperty('fill-opacity', homepageGridReady ? '0' : '1', 'important');
+    square.style.setProperty('fill', 'rgba(255,247,224,.43)', 'important');
   });
   boardEl.querySelectorAll('.cm-chessboard .square.black').forEach(square => {
-    square.style.setProperty('fill', dark, 'important');
-    if (mobile) square.style.setProperty('fill-opacity', homepageGridReady ? '0' : '1', 'important');
+    square.style.setProperty('fill', 'rgba(49,24,11,.36)', 'important');
   });
 }
 
 function watchBoardSquareColors() {
-  if (boardEl._shatranjColorObserver) return;
-  const observer = new MutationObserver(() => forceBoardSquareColors());
+  if (window.matchMedia('(max-width:900px)').matches || boardEl._shatranjColorObserver) return;
+  const observer = new MutationObserver(forceBoardSquareColors);
   observer.observe(boardEl, { childList: true, subtree: true });
   boardEl._shatranjColorObserver = observer;
 }
 
-// The phone homepage and computer game must render the same board.
-const PHONE_BOARD_PIECES='20261012-extracted-photo-pieces-v3';
-function syncMobileHomepageBoard(fen){
-  if(!window.matchMedia('(max-width:900px)').matches || !document.body.classList.contains('computer-game')) return;
-  const shell=boardEl?.parentElement;
-  if(!shell) return;
-  let grid=shell.querySelector('.mobile-computer-main-grid');
-  if(!grid){
-    grid=document.createElement('div');
-    grid.className='mobile-computer-main-grid';
-    grid.setAttribute('aria-hidden','true');
-    for(let rank=8;rank>=1;rank--){
-      for(let file=0;file<8;file++){
-        const square=document.createElement('span');
-        square.className='mobile-computer-main-square '+((file+rank)%2===1?'light':'dark');
-        square.dataset.piece='';
-        grid.appendChild(square);
-      }
-    }
-    // Behind the interactive SVG: no pointer handlers are moved or changed.
-    shell.insertBefore(grid,boardEl);
-  }
-  const ranks=String(fen||'').split(' ')[0].split('/');
-  if(ranks.length!==8) return;
-  const squares=grid.children;
-  let index=0;
-  for(const rank of ranks){
-    for(const character of rank){
-      const empty=Number(character);
-      if(Number.isInteger(empty)&&empty>=1&&empty<=8){
-        for(let i=0;i<empty;i++) updateSquare('');
-      }else{
-        const code=(character===character.toUpperCase()?'w':'b')+character.toLowerCase();
-        updateSquare(code);
+// One board only: exact homepage Wood 4 squares and original piece images.
+const PHONE_BOARD_PIECES = '20261012-extracted-photo-pieces-v3';
+let mobileSelectedSquare = null;
+function mobileSquare(square) {
+  return boardEl.querySelector('[data-square="'+square+'"]');
+}
+function clearMobileSelection() {
+  mobileSelectedSquare = null;
+  boardEl.querySelectorAll('.mobile-selected,.mobile-legal-target,.mobile-capture-target').forEach(
+    el => el.classList.remove('mobile-selected','mobile-legal-target','mobile-capture-target')
+  );
+}
+function renderMobileChessBoard(fen) {
+  const rows = String(fen || '').split(' ')[0].split('/');
+  if (rows.length !== 8) return;
+  const squares = boardEl.children;
+  let index = 0;
+  for (const row of rows) {
+    for (const char of row) {
+      const count = Number(char);
+      if (count >= 1 && count <= 8 && Number.isInteger(count)) {
+        for (let n=0;n<count;n++) paint('');
+      } else {
+        paint((char===char.toUpperCase()?'w':'b')+char.toLowerCase());
       }
     }
   }
-  function updateSquare(piece){
-    if(index>=64)return;
-    const square=squares[index++];
-    if(square.dataset.piece===piece)return;
-    square.dataset.piece=piece;
+  function paint(code) {
+    const square = squares[index++];
+    if (!square || square.dataset.piece === code) return;
+    square.dataset.piece = code;
     square.replaceChildren();
-    if(!piece)return;
-    const img=document.createElement('img');
-    img.className='mobile-computer-main-piece';
-    img.src='assets/pieces/'+piece+'.png?v='+PHONE_BOARD_PIECES;
-    img.alt='';
-    img.draggable=false;
+    if (!code) return;
+    const img = document.createElement('img');
+    img.className = 'mobile-board-piece';
+    img.src = 'assets/pieces/'+code+'.png?v='+PHONE_BOARD_PIECES;
+    img.alt = '';
+    img.draggable = false;
     square.appendChild(img);
   }
-  // Reveal the new grid only after all the squares and pieces exist.
-  if(index===64){
-    shell.classList.add('has-mobile-home-board');
+}
+
+function handleMobileSquarePress(square) {
+  if (mobileSelectedSquare) {
+    if (square === mobileSelectedSquare) {
+      clearMobileSelection();
+      return;
+    }
+    const from = mobileSelectedSquare;
+    if (handleBoardInput({ type: INPUT_EVENT_TYPE.validateMoveInput, squareFrom:from, squareTo:square })) {
+      clearMobileSelection();
+      return;
+    }
   }
+  clearMobileSelection();
+  if (handleBoardInput({ type:INPUT_EVENT_TYPE.moveInputStarted, squareFrom:square })) {
+    mobileSelectedSquare = square;
+    mobileSquare(square)?.classList.add('mobile-selected');
+  }
+}
+
+function createMobileComputerBoard() {
+  boardEl.className = 'mobile-board-grid mobile-computer-single-board';
+  boardEl.replaceChildren();
+  for (let rank=8;rank>=1;rank--) {
+    for (let file=0;file<8;file++) {
+      const square = document.createElement('span');
+      const name = String.fromCharCode(97+file)+rank;
+      square.className = 'mobile-board-square '+((file+rank)%2===1?'light':'dark');
+      square.dataset.square = name;
+      square.dataset.piece = '';
+      square.setAttribute('role','button');
+      square.setAttribute('tabindex','0');
+      square.setAttribute('aria-label',name);
+      boardEl.appendChild(square);
+    }
+  }
+  boardEl.addEventListener('click',event=>{
+    const square=event.target.closest?.('[data-square]');
+    if (square && boardEl.contains(square)) handleMobileSquarePress(square.dataset.square);
+  });
+  boardEl.addEventListener('keydown',event=>{
+    if (event.key !== 'Enter' && event.key !== ' ') return;
+    const square=event.target.closest?.('[data-square]');
+    if (!square || !boardEl.contains(square)) return;
+    event.preventDefault();
+    handleMobileSquarePress(square.dataset.square);
+  });
+  // Touch-drag is handled on the same squares; no overlay/hitbox is created.
+  let start = null;
+  let suppressClickUntil = 0;
+  boardEl.addEventListener('pointerdown',event=>{
+    start=event.target.closest?.('[data-square]')?.dataset.square || null;
+  });
+  boardEl.addEventListener('pointerup',event=>{
+    if (!start) return;
+    const from=start;
+    start=null;
+    const square=document.elementFromPoint(event.clientX,event.clientY)?.closest?.('[data-square]');
+    const to=square && boardEl.contains(square) ? square.dataset.square : null;
+    if (!to || to===from) return;
+    if (handleBoardInput({type:INPUT_EVENT_TYPE.moveInputStarted,squareFrom:from}) &&
+      handleBoardInput({type:INPUT_EVENT_TYPE.validateMoveInput,squareFrom:from,squareTo:to})) {
+      clearMobileSelection();
+      suppressClickUntil=Date.now()+400;
+    }
+  });
+  boardEl.addEventListener('click',event=>{
+    if (Date.now()>suppressClickUntil) return;
+    event.stopImmediatePropagation();
+  },true);
+  renderMobileChessBoard(game.fen());
+  return {
+    setPosition(fen) { renderMobileChessBoard(fen); },
+    removeMarkers() { boardEl.querySelectorAll('.mobile-last-move').forEach(el=>el.classList.remove('mobile-last-move')); },
+    addMarker(_marker,square) { mobileSquare(square)?.classList.add('mobile-last-move'); },
+    disableMoveInput() { clearMobileSelection(); boardEl.classList.add('mobile-input-disabled'); }
+  };
 }
 
 function ensureBoard() {
   if (cmBoard) return cmBoard;
   ensureCmStyles();
+  if (window.matchMedia('(max-width:900px)').matches) {
+    cmBoard = createMobileComputerBoard();
+    return cmBoard;
+  }
   boardEl.className = 'cm-board-host';
   cmBoard = new Chessboard(boardEl, {
     position: game.fen(),
@@ -360,7 +435,6 @@ function ensureBoard() {
     }
   });
   cmBoard.enableMoveInput(handleBoardInput, COLOR.white);
-  syncMobileHomepageBoard(game.fen());
   forceBoardSquareColors();
   watchBoardSquareColors();
   return cmBoard;
@@ -369,7 +443,6 @@ function ensureBoard() {
 function renderBoard(animated = true) {
   if (selectedLevel && selectedMinutes) rememberComputerFen(game.fen());
   ensureBoard().setPosition(game.fen(), animated);
-  syncMobileHomepageBoard(game.fen());
   forceBoardSquareColors();
   renderLastMoveHighlight();
 }
