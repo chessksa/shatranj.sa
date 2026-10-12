@@ -8,6 +8,7 @@ const dashboard=read('v2/home/dashboard.mjs');
 const guestAuthCss=read('v2/home/desktop-guest-auth.css');
 const inlinePath='v2/home/inline-play.mjs';
 const inlineCss=read('v2/home/inline-play.css');
+const shell=read('v2/home/desktop-board-shell.mjs');
 
 function pieceVisualBounds(path){
   const png=fs.readFileSync(path);
@@ -74,7 +75,9 @@ assert.ok(fs.existsSync(inlinePath),'يجب وجود وحدة لعب داخلي�
 const inline=read(inlinePath);
 
 assert.match(tune,/inline-play\.mjs/,'يجب تحميل وحدة اللعب الداخلي من الواجهة الرئيسية');
-assert.match(inline,/data-desktop-nav=["']play["']/,'وحدة اللعب الداخلي يجب أن تعالج زر اللعب في القائمة');
+assert.match(shell,/navItem\(\{id:'play',label:'العب الآن'/,'زر اللعب يجب أن يبقى ظاهرًا في القائمة الرئيسية');
+assert.match(shell,/showDashboard\(nav.dataset.desktopNav==='play'\?'play-options'/,'زر اللعب يجب أن يفتح خيارات اللعب داخل العمود الأوسط');
+assert.match(inline,/desktop:inline-play-open/,'زر بدء المباراة يجب أن يشغل محرك اللعب الموجود داخل الرقعة');
 assert.match(inline,/data-tune-action=["']play["']/,'وحدة اللعب الداخلي يجب أن تعالج زر ابدأ اللعب');
 assert.match(inline,/homeBoardPreview/,'وحدة اللعب الداخلي يجب أن تستخدم الرقعة الحالية');
 assert.match(inline,/preventDefault\(\)/,'الضغط على اللعب يجب أن يمنع الانتقال إلى صفحة أخرى');
