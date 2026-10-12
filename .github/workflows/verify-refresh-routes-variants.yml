@@ -7,6 +7,7 @@ on:
       - 'index.html'
       - 'mobile-home-fixed-v1.js'
       - 'v2/home/desktop-board-shell.mjs'
+      - 'v2/home/home-side-rail.mjs'
       - 'v2/home/inline-play.mjs'
       - 'v2/home/inline-puzzles.mjs'
       - 'v2/home/desktop-board-shell.css'
@@ -31,6 +32,7 @@ jobs:
         run: |
           node --check mobile-home-fixed-v1.js
           node --check v2/home/desktop-board-shell.mjs
+          node --check v2/home/home-side-rail.mjs
           node --check v2/home/inline-puzzles.mjs
           node --check v3/variants/app.mjs
           node --check tests/refresh-routes-and-variants.mjs
