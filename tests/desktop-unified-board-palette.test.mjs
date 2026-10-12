@@ -22,7 +22,7 @@ for(const [name,css] of [['puzzles',puzzles],['learn',learn]]){
   assert.doesNotMatch(css,/\.desktop-board-square\s*\{\s*border:/,`${name} must not override the common square grid border`);
 }
 for(const [name,script] of [['puzzles',puzzleScript],['learn',learnScript]]){
-  assert.match(script,/\.className=`desktop-board-grid inline-play-grid inline-/,`${name} must use the shared board grid`);
+  assert.match(script,/\.className='desktop-board-grid inline-play-grid inline-/,`${name} must use the shared board grid`);
   assert.match(script,/\.className=`desktop-board-square inline-play-square inline-/,`${name} must use the shared square CSS classes`);
   assert.match(script,/link\.href=new URL\('\.\/inline-(puzzles|learn)\.css\?v=20261012-unified-board-colors-v9'/,`${name} must fetch the updated styles`);
   assert.match(script,/baseLoaded=\[\.\.\.document\.querySelectorAll\('link\[rel="stylesheet"\]'\)\]/,`${name} must reuse the preloaded common board stylesheet`);
