@@ -37,13 +37,15 @@ assert.match(variants,/chess960:'rnbqkbnr/);
 assert.match(variants,/advancedModes\.has/);
 
 // One golden border, not an added two-pixel focus/selection frame.
-assert.match(sidebar,/border:1px solid #d7b66c!important/);
+assert.match(sidebar,/border:0\.5px solid #d7b66c!important/);
 assert.match(sidebar,/\.desktop-home-nav-link\.active:focus-visible/);
 assert.match(sidebar,/outline:none!important/);
-assert.match(styles,/\.desktop-play-choice-list > button\.is-selected[\s\S]*?border-color:#d7b66c!important/);
-assert.match(styles,/\.desktop-play-primary\{[\s\S]*?border:1px solid #d7b66c!important/);
+assert.match(styles,/\.desktop-play-choice-list > button\.is-selected[\s\S]*?border:0\.5px solid #d7b66c!important/);
+assert.match(styles,/\.desktop-play-primary\{[\s\S]*?border:0\.5px solid #d7b66c!important/);
 assert.doesNotMatch(styles,/\.desktop-play-primary\{[^}]*background:#367e62/);
 assert.doesNotMatch(styles,/inset 0 0 0 2px #d7b66c/);
 assert.match(html,/gold-thin-neutral-buttons-v1/);
 
-console.log('Desktop/mobile refresh routes, canonical variant board and 1px gold selection: PASS');
+assert.doesNotMatch(desktop,/data-play-choice="online"/,'Duplicate internet play tile should be removed');
+assert.match(styles,/\.desktop-play-time-options button\.is-selected[\s\S]*?border:0\.5px solid #d7b66c!important/);
+console.log('Desktop/mobile routes, canonical variant board and half-pixel gold selection: PASS');
