@@ -23,6 +23,7 @@ on:
       - 'tests/desktop-board-preview-pieces.test.mjs'
       - 'tests/desktop-single-layer.test.mjs'
       - 'tests/desktop-move-notebook.test.mjs'
+      - 'tests/desktop-move-notebook-layout-runtime.test.mjs'
       - 'tests/desktop-unified-board-palette.test.mjs'
       - 'tests/desktop-move-grid-pieces95.test.mjs'
       - 'tests/desktop-home-board-return.test.mjs'
@@ -50,6 +51,7 @@ on:
       - 'tests/desktop-board-preview-pieces.test.mjs'
       - 'tests/desktop-single-layer.test.mjs'
       - 'tests/desktop-move-notebook.test.mjs'
+      - 'tests/desktop-move-notebook-layout-runtime.test.mjs'
       - 'tests/desktop-unified-board-palette.test.mjs'
       - 'tests/desktop-move-grid-pieces95.test.mjs'
       - 'tests/desktop-home-board-return.test.mjs'
@@ -74,6 +76,7 @@ jobs:
       - run: node tests/desktop-board-preview-pieces.test.mjs
       - run: node tests/desktop-single-layer.test.mjs
       - run: node tests/desktop-move-notebook.test.mjs
+      - run: node tests/desktop-move-notebook-layout-runtime.test.mjs
       - run: node tests/desktop-unified-board-palette.test.mjs
       - run: node tests/desktop-move-grid-pieces95.test.mjs
       - run: node tests/desktop-home-board-return.test.mjs
