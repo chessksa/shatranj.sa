@@ -8,6 +8,7 @@ on:
       - 'mobile-home-fixed-v1.js'
       - 'v2/home/desktop-board-shell.mjs'
       - 'v2/home/inline-play.mjs'
+      - 'v2/home/inline-puzzles.mjs'
       - 'v2/home/desktop-board-shell.css'
       - 'v2/home/desktop-sidebar-cleanup.css'
       - 'v3/variants/app.mjs'
@@ -30,6 +31,7 @@ jobs:
         run: |
           node --check mobile-home-fixed-v1.js
           node --check v2/home/desktop-board-shell.mjs
+          node --check v2/home/inline-puzzles.mjs
           node --check v3/variants/app.mjs
           node --check tests/refresh-routes-and-variants.mjs
       - name: Verify refresh, variants and borders
