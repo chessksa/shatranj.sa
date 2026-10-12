@@ -13,7 +13,13 @@ assert.match(home,/data-move-notebook href="v2\/home\/move-notebook\.css\?v=/,'N
 assert.equal(tune.match(/await import\(`\.\/inline-play\.mjs\?v=\$\{tuneAssetVersion\}`\)/g)?.length,1,'Online play controller must load exactly once');
 assert.match(notebook,/stage\.insertBefore\(root,stage\.firstChild\)/,'History belongs left of the board');
 assert.match(style,/desktop-move-notebook-active \.desktop-board-stage/,'Layout must reserve space only during play');
-assert.match(style,/flex-direction:row!important;direction:ltr!important/,'Move panel must be physically left of the board');
+assert.match(style,/display:grid!important;place-items:center start!important/,'The board must retain its original grid layout');
+assert.doesNotMatch(style,/calc\(100vw[^\n]*chess-notebook-width/,'Move notebook must not subtract width from the board');
+assert.match(style,/position:absolute/,'Left-side notation is independent of the board geometry');
+assert.match(style,/data-mode="docked"/,'Wide monitors should dock the notation on the left');
+assert.match(style,/data-mode="compact"/,'Tight monitors must use a collapsible notation drawer');
+assert.match(notebook,/const available=stage\.getBoundingClientRect\(\)\.width-board\.offsetWidth/,'Layout mode is chosen by actual free space');
+assert.match(notebook,/root\.dataset\.open=root\.dataset\.open==='true'\?'false':'true'/,'Drawer should toggle without shrinking the board');
 assert.match(style,/\-\-chess-notebook-width/);
 assert.match(play,/getGameMoves,/,'Online history must come from persisted match moves');
 assert.match(play,/await refreshMoveNotebook\(\)/,'Online history must refresh alongside every position');
