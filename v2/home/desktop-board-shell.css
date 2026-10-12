@@ -246,7 +246,7 @@
     white-space:nowrap;color:#f0d396;
   }
   .desktop-champion-title strong{
-    font-size:clamp(10px,.76vw,11px);line-height:1.1;font-weight:900;white-space:nowrap;
+    font-size:clamp(10px,.68vw,11px);line-height:1.1;font-weight:900;white-space:nowrap;
   }
   .desktop-champion-icon{
     width:clamp(21px,1.5vw,24px);height:clamp(21px,1.5vw,24px);min-width:clamp(21px,1.5vw,24px);
