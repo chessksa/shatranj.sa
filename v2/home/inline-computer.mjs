@@ -431,9 +431,21 @@ function bindPanel(){
   host.querySelector('#inlineComputerResign')?.addEventListener('click',()=>finish('استسلمت — فاز الكمبيوتر','computer'));
 }
 
+// Desktop inline computer matches are local (no computer_games DB row).
+// Advertise their active lifecycle through the existing visitor presence.
+function setInlineComputerMatchPresence(active){
+  const on = active === true;
+  if(window.SHATRANJ_GUEST_COMPUTER_ACTIVE === on)return;
+  window.SHATRANJ_GUEST_COMPUTER_ACTIVE = on;
+  window.dispatchEvent(new CustomEvent('shatranj:guest-computer-game',{
+    detail:{active:on}
+  }));
+}
+
 function startGame(){
   if(started) return;
   started=true;
+  setInlineComputerMatchPresence(true);
   openMoveNotebook('computer');
   updateMoveNotebook('computer',[]);
   clearResultColors();
@@ -488,6 +500,7 @@ function applyResultColors(outcome){
 function resetToSetup(){
   closeMoveNotebook('computer');
   started=false;
+  setInlineComputerMatchPresence(false);
   clearResultColors();
   stopClock();
   game=null;
@@ -505,6 +518,7 @@ function resetToSetup(){
 function finish(message,outcome=null){
   if(!started) return;
   started=false;
+  setInlineComputerMatchPresence(false);
   updateMoveNotebook('computer',moveHistory.map(uci=>({uci})),{finished:true});
   stopClock();
   selectedSquare=null;
@@ -639,6 +653,7 @@ export function mountInlineComputer(body){
 
 export function stopInlineComputer({restoreBoard=true}={}){
   closeMoveNotebook('computer');
+  setInlineComputerMatchPresence(false);
   if(!active) return;
   active=false;
   started=false;
