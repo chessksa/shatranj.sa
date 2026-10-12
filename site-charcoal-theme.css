@@ -753,3 +753,126 @@ html body :is(.platform-btn,.v2-search-button,.v2-action,.mfw-primary,
   color:#f5f4f0!important;
   border-color:#50534b!important;
 }
+
+
+/* 2026-10-12 — multicolor icon identities.
+   Dark high-contrast cards, buttons and text remain unchanged.
+   UI pictograms only. No board, square, clock or piece rules. */
+:root{
+ --icon-home:#6ac6f5;
+ --icon-play:#78aaff;
+ --icon-computer:#b9a0ff;
+ --icon-friends:#70e0aa;
+ --icon-puzzles:#ef9bd4;
+ --icon-tournaments:#ffd174;
+ --icon-ranking:#c3a0ff;
+ --icon-watch:#6cd9d7;
+ --icon-learning:#80d5ab;
+ --icon-settings:#9ec0e5;
+ --icon-admin:#ffa28c;
+ --icon-profile:#f0b987;
+ --icon-stats:#9bc6fd;
+}
+/* Desktop signed-in rail. Color only the symbol, never the label. */
+html body.desktop-board-workspace .desktop-home-nav-link[data-desktop-nav="home"] .desktop-home-nav-icon{color:var(--icon-home)!important}
+html body.desktop-board-workspace .desktop-home-nav-link[data-desktop-nav="play"] .desktop-home-nav-icon{color:var(--icon-play)!important}
+html body.desktop-board-workspace .desktop-home-nav-link[data-desktop-nav="tournaments"] .desktop-home-nav-icon{color:var(--icon-tournaments)!important}
+html body.desktop-board-workspace .desktop-home-nav-link[data-desktop-nav="ranking"] .desktop-home-nav-icon{color:var(--icon-ranking)!important}
+html body.desktop-board-workspace .desktop-home-nav-link[data-desktop-nav="watch"] .desktop-home-nav-icon{color:var(--icon-watch)!important}
+html body.desktop-board-workspace .desktop-home-nav-link[data-desktop-nav="puzzles"] .desktop-home-nav-icon{color:var(--icon-puzzles)!important}
+html body.desktop-board-workspace .desktop-home-nav-link[data-desktop-nav="learn"] .desktop-home-nav-icon{color:var(--icon-learning)!important}
+html body.desktop-board-workspace .desktop-home-nav-link[data-desktop-nav="settings"] .desktop-home-nav-icon{color:var(--icon-settings)!important}
+html body.desktop-board-workspace .desktop-home-nav-link[data-desktop-nav="admin"] .desktop-home-nav-icon{color:var(--icon-admin)!important}
+html body.desktop-board-workspace .desktop-sidebar-bottom .desktop-sidebar-logout .desktop-home-nav-icon{color:#efaaa7!important}
+html body.desktop-board-workspace .desktop-home-nav-link[data-desktop-nav] .desktop-home-nav-icon svg{
+ color:inherit!important;
+}
+/* Play Now: the actual action icons, not the button texts. */
+html body.desktop-board-workspace .desktop-play-choice-list > button[data-play-choice="computer"] .desktop-play-choice-icon{color:var(--icon-computer)!important}
+html body.desktop-board-workspace .desktop-play-choice-list > button[data-play-choice="friend"] .desktop-play-choice-icon{color:var(--icon-friends)!important}
+html body.desktop-board-workspace .desktop-play-choice-list > button[data-play-choice="variants"] .desktop-play-choice-icon{color:var(--icon-puzzles)!important}
+html body.desktop-board-workspace .desktop-play-choice-list > button[data-play-choice] .desktop-play-choice-icon{
+ background:#292c29!important;
+ border-radius:7px;
+ color:inherit;
+}
+html body.desktop-board-workspace .desktop-play-choice-list > button[data-play-choice] .desktop-play-choice-icon svg{
+ color:inherit!important;
+}
+html body.desktop-board-workspace .desktop-play-choice-list > button[data-play-choice="computer"] .desktop-play-choice-icon svg{color:var(--icon-computer)!important}
+html body.desktop-board-workspace .desktop-play-choice-list > button[data-play-choice="friend"] .desktop-play-choice-icon svg{color:var(--icon-friends)!important}
+html body.desktop-board-workspace .desktop-play-choice-list > button[data-play-choice="variants"] .desktop-play-choice-icon svg{color:var(--icon-puzzles)!important}
+/* Three champions get separate medal colors without coloring their names. */
+html body.desktop-board-workspace .desktop-champion-card[data-champion="week"]{--champion-accent:#ffd174!important;--medal-icon:#ffd174}
+html body.desktop-board-workspace .desktop-champion-card[data-champion="month"]{--champion-accent:#79c6f3!important;--medal-icon:#79c6f3}
+html body.desktop-board-workspace .desktop-champion-card[data-champion="site"]{--champion-accent:#c2a5ff!important;--medal-icon:#c2a5ff}
+html body.desktop-board-workspace .desktop-champion-card[data-champion] .desktop-champion-icon,
+html body.desktop-board-workspace .desktop-champion-card[data-champion] .desktop-champion-icon svg{
+ color:var(--medal-icon)!important;
+ stroke:currentColor;
+}
+html body.desktop-board-workspace .desktop-champion-card[data-champion]::before{
+ background:var(--medal-icon)!important;
+}
+html body.desktop-board-workspace .desktop-champion-card[data-champion] :is(.desktop-champion-title strong,.desktop-champion-name,.desktop-champion-count){
+ color:#f5f4f0!important;
+}
+/* Live count pictograms: different colors with readable white numbers. */
+html body.desktop-board-workspace .desktop-live-stat .desktop-stat-icon.gold{color:#ffd174!important}
+html body.desktop-board-workspace .desktop-live-stat .desktop-stat-icon.green{color:#70e0aa!important}
+html body.desktop-board-workspace .desktop-live-stat .desktop-stat-icon.cyan{color:#79c6f3!important}
+html body.desktop-board-workspace .desktop-member-score-star{color:#ffd174!important}
+/* Mobile homepage: every tab has an individual color (tab order is fixed). */
+html body #mobileFixedWorkspace .mfw-tab[data-mfw="home"] i{color:var(--icon-home)!important}
+html body #mobileFixedWorkspace .mfw-tab[data-mfw="play"] i{color:var(--icon-play)!important}
+html body #mobileFixedWorkspace .mfw-tab[data-mfw="computer"] i{color:var(--icon-computer)!important}
+html body #mobileFixedWorkspace .mfw-tab[data-mfw="ranking"] i{color:var(--icon-ranking)!important}
+html body #mobileFixedWorkspace .mfw-tab[data-mfw="invite"] i{color:var(--icon-friends)!important}
+html body #mobileFixedWorkspace .mfw-tab[data-mfw="more"] i{color:var(--icon-tournaments)!important}
+/* Mobile choices: direct play, friend, computer, spectate. */
+html body #mobileFixedWorkspace .mfw-play-grid > .mfw-play-tile:nth-child(1) i{color:var(--icon-play)!important}
+html body #mobileFixedWorkspace .mfw-play-grid > .mfw-play-tile:nth-child(2) i{color:var(--icon-friends)!important}
+html body #mobileFixedWorkspace .mfw-play-grid > .mfw-play-tile:nth-child(3) i{color:var(--icon-computer)!important}
+html body #mobileFixedWorkspace .mfw-play-grid > .mfw-play-tile:nth-child(4) i{color:var(--icon-watch)!important}
+/* The More panel is built dynamically; use the destination, not a fragile position. */
+html body #mobileFixedWorkspace .mfw-more a[href*="tournaments"] i{color:var(--icon-tournaments)!important}
+html body #mobileFixedWorkspace .mfw-more a[href*="watch.html"] i{color:var(--icon-watch)!important}
+html body #mobileFixedWorkspace .mfw-more a[href*="puzzles.html"] i{color:var(--icon-puzzles)!important}
+html body #mobileFixedWorkspace .mfw-more a[href*="learn.html"] i{color:var(--icon-learning)!important}
+html body #mobileFixedWorkspace .mfw-more a[href*="analysis.html"] i{color:var(--icon-computer)!important}
+html body #mobileFixedWorkspace .mfw-more a[href*="stats.html"] i{color:var(--icon-stats)!important}
+html body #mobileFixedWorkspace .mfw-more a[href*="clubs.html"] i{color:var(--icon-friends)!important}
+html body #mobileFixedWorkspace .mfw-more a[href*="settings-v2.html"] i{color:var(--icon-settings)!important}
+html body #mobileFixedWorkspace .mfw-more a[href*="profile.html"] i{color:var(--icon-profile)!important}
+html body #mobileFixedWorkspace .mfw-more a[href*="admin.html"] i{color:var(--icon-admin)!important}
+/* Other pages share navigation components. Color glyphs only, including active links. */
+html body .v2-global-link[href*="index.html"] .v2-global-icon,
+html body .v2-mobile-link[href*="index.html"] .v2-global-icon{color:var(--icon-home)!important}
+html body .v2-global-link[href*="play-"] .v2-global-icon,
+html body .v2-mobile-link[href*="play-"] .v2-global-icon{color:var(--icon-play)!important}
+html body .v2-global-link[href*="tournaments"] .v2-global-icon,
+html body .v2-mobile-link[href*="tournaments"] .v2-global-icon{color:var(--icon-tournaments)!important}
+html body .v2-global-link[href*="puzzles"] .v2-global-icon,
+html body .v2-mobile-link[href*="puzzles"] .v2-global-icon{color:var(--icon-puzzles)!important}
+html body .v2-global-link[href*="learn"] .v2-global-icon,
+html body .v2-mobile-link[href*="learn"] .v2-global-icon{color:var(--icon-learning)!important}
+html body .v2-global-link[href*="watch"] .v2-global-icon,
+html body .v2-mobile-link[href*="watch"] .v2-global-icon{color:var(--icon-watch)!important}
+html body .v2-global-link[href*="analysis"] .v2-global-icon{color:var(--icon-computer)!important}
+html body .v2-global-link[href*="stats"] .v2-global-icon{color:var(--icon-stats)!important}
+html body .v2-global-link[href*="community"] .v2-global-icon,
+html body .v2-global-link[href*="clubs"] .v2-global-icon{color:var(--icon-friends)!important}
+html body .v2-global-link[href*="settings"] .v2-global-icon{color:var(--icon-settings)!important}
+html body .v2-global-link[href*="profile"] .v2-global-icon,
+html body .v2-mobile-link[href*="profile"] .v2-global-icon{color:var(--icon-profile)!important}
+html body .v2-global-link[href*="train"] .v2-global-icon,
+html body .v2-global-link[href*="daily"] .v2-global-icon{color:#ffd174!important}
+html body .v2-global-link[href*="notifications"] .v2-global-icon{color:#f29bd1!important}
+/* Small standalone pictograms. Preserve the previous neutral text colors. */
+html body :is(.inline-puzzle-badge,.inline-puzzle-stats .inline-puzzle-badge){color:var(--icon-puzzles)!important}
+html body .inline-learn-badge{color:var(--icon-learning)!important}
+html body .ranking-filter-icon{color:var(--icon-ranking)!important}
+html body .header-tile-icon{color:var(--icon-settings)!important}
+html body .hero-stat-icon{color:var(--icon-play)!important}
+html body .site-notification-bell svg{color:#f0a5d7!important}
+/* Keep the status colors, 1px board frame, square textures and chess-piece SVG assets untouched. */
