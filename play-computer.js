@@ -384,40 +384,61 @@ function createMobileComputerBoard() {
       boardEl.appendChild(square);
     }
   }
-  boardEl.addEventListener('click',event=>{
-    const square=event.target.closest?.('[data-square]');
+  // One input owner for touch/pen and a separate click fallback for mouse.
+  // Safari may synthesize a click after pointerup: consume that click once.
+  let touchStart = null;
+  let skipSyntheticClickUntil = 0;
+  boardEl.addEventListener('click', event => {
+    if (Date.now() < skipSyntheticClickUntil) {
+      event.preventDefault();
+      event.stopImmediatePropagation();
+      return;
+    }
+    const square = event.target.closest?.('[data-square]');
     if (square && boardEl.contains(square)) handleMobileSquarePress(square.dataset.square);
   });
-  boardEl.addEventListener('keydown',event=>{
+  boardEl.addEventListener('keydown', event => {
     if (event.key !== 'Enter' && event.key !== ' ') return;
-    const square=event.target.closest?.('[data-square]');
+    const square = event.target.closest?.('[data-square]');
     if (!square || !boardEl.contains(square)) return;
     event.preventDefault();
     handleMobileSquarePress(square.dataset.square);
   });
-  // Touch-drag is handled on the same squares; no overlay/hitbox is created.
-  let start = null;
-  let suppressClickUntil = 0;
-  boardEl.addEventListener('pointerdown',event=>{
-    start=event.target.closest?.('[data-square]')?.dataset.square || null;
+  boardEl.addEventListener('pointerdown', event => {
+    if (event.pointerType === 'mouse') return;
+    const square = event.target.closest?.('[data-square]');
+    touchStart = square && boardEl.contains(square)
+      ? { square: square.dataset.square, pointerId: event.pointerId, x: event.clientX, y: event.clientY }
+      : null;
   });
-  boardEl.addEventListener('pointerup',event=>{
-    if (!start) return;
-    const from=start;
-    start=null;
-    const square=document.elementFromPoint(event.clientX,event.clientY)?.closest?.('[data-square]');
-    const to=square && boardEl.contains(square) ? square.dataset.square : null;
-    if (!to || to===from) return;
-    if (handleBoardInput({type:INPUT_EVENT_TYPE.moveInputStarted,squareFrom:from}) &&
-      handleBoardInput({type:INPUT_EVENT_TYPE.validateMoveInput,squareFrom:from,squareTo:to})) {
-      clearMobileSelection();
-      suppressClickUntil=Date.now()+400;
+  boardEl.addEventListener('pointercancel', () => { touchStart = null; });
+  boardEl.addEventListener('pointerup', event => {
+    if (!touchStart || touchStart.pointerId !== event.pointerId) return;
+    const from = touchStart.square;
+    const distance = Math.hypot(event.clientX - touchStart.x, event.clientY - touchStart.y);
+    touchStart = null;
+    const target = document.elementFromPoint(event.clientX, event.clientY)?.closest?.('[data-square]');
+    if (!target || !boardEl.contains(target)) return;
+    const to = target.dataset.square;
+    if (distance > 10 && from !== to) {
+      // A genuine drag: validate one move. Invalid drops preserve the source
+      // selection so the player can finish the move with a tap.
+      if (handleBoardInput({ type: INPUT_EVENT_TYPE.moveInputStarted, squareFrom: from })) {
+        if (handleBoardInput({ type: INPUT_EVENT_TYPE.validateMoveInput, squareFrom: from, squareTo: to })) {
+          clearMobileSelection();
+        } else {
+          clearMobileSelection();
+          mobileSelectedSquare = from;
+          mobileSquare(from)?.classList.add('mobile-selected');
+        }
+      }
+    } else if (distance <= 10) {
+      // Process taps on pointerup; no dependency on iOS synthetic clicks.
+      handleMobileSquarePress(to);
     }
+    skipSyntheticClickUntil = Date.now() + 300;
+    event.preventDefault();
   });
-  boardEl.addEventListener('click',event=>{
-    if (Date.now()>suppressClickUntil) return;
-    event.stopImmediatePropagation();
-  },true);
   renderMobileChessBoard(game.fen());
   return {
     setPosition(fen) { renderMobileChessBoard(fen); },
@@ -790,6 +811,39 @@ async function initEngine() {
   return engineInitPromise;
 }
 
+// Keep casual computer games playable on mobile browsers that cannot
+// instantiate the local Stockfish WebAssembly worker.
+function fallbackComputerMove() {
+  const legal = game.moves({ verbose: true });
+  if (!legal.length) return null;
+  const values = { p: 100, n: 315, b: 335, r: 500, q: 900, k: 20000 };
+  const scores = legal.map(move => {
+    const played = game.move({ from: move.from, to: move.to, promotion: 'q' });
+    if (!played) return { move, score: -Infinity };
+    let score = (values[move.captured] || 0) * 10;
+    if (game.in_checkmate()) score += 1000000;
+    else {
+      if (game.in_check()) score += 45;
+      const f = move.to.charCodeAt(0) - 97;
+      const rank = Number(move.to[1]) - 1;
+      score += Math.round(20 - 5 * (Math.abs(f - 3.5) + Math.abs(rank - 3.5)));
+      if (move.promotion) score += (values[move.promotion] || 900) * 10;
+      const replies = game.moves({ verbose: true });
+      let whiteBestCapture = 0;
+      for (const reply of replies) {
+        const capture = values[reply.captured] || 0;
+        if (capture > whiteBestCapture) whiteBestCapture = capture;
+      }
+      score -= whiteBestCapture * (selectedLevel === 'hard' ? 8 : 4);
+    }
+    game.undo();
+    return { move, score: score + Math.random() * (selectedLevel === 'easy' ? 140 : 15) };
+  });
+  scores.sort((a,b) => b.score - a.score);
+  const best = scores[0]?.move;
+  return best ? best.from + best.to + (best.promotion || '') : null;
+}
+
 function requestBestMove() {
   if (!engineReady || !engine || !selectedLevel) return Promise.reject(new Error('engine not ready'));
   const level = LEVELS[selectedLevel];
@@ -813,7 +867,18 @@ async function computerTurn() {
   thinking = true;
   setComputerStatus('يفكر…');
   try {
-    const best = await requestBestMove();
+    let best;
+    if (engineFailed || !engineReady) {
+      best = fallbackComputerMove();
+    } else {
+      try {
+        best = await requestBestMove();
+      } catch (engineError) {
+        console.warn('Stockfish unavailable; continuing with local moves', engineError);
+        engineFailed = true;
+        best = fallbackComputerMove();
+      }
+    }
     if (finished) return;
     if (!best || best === '(none)' || best === '0000') {
       if (!checkGuestGameResult()) finishGame('تعذر على الكمبيوتر إكمال المباراة');
@@ -1199,8 +1264,12 @@ async function startComputerGame(levelKey, minutes) {
     } else {
       ratedGameId = null;
       currentRating = null;
-      await initEngine();
-      if (engineFailed) throw new Error('engine failed');
+      try {
+        await initEngine();
+      } catch (engineError) {
+        console.warn('Stockfish initialization unavailable; local fallback enabled', engineError);
+        engineFailed = true;
+      }
       setPlayingLayout(levelKey, selectedMinutes);
     }
 
