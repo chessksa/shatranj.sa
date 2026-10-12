@@ -50,7 +50,7 @@
       .home-invite-meta{margin-top:2px;color:#c8c2ba;font-size:10px}
       .home-invite-send{flex:0 0 auto;border:0;background:transparent;color:#e2dcd3;font-size:11px;font-weight:900;cursor:pointer;padding:6px 8px;border-radius:8px}.home-invite-send:hover{background:#403e3c}
       .home-invite-empty{padding:14px 8px;text-align:center;color:#c8c2ba;font-size:11px}
-      .home-invite-msg{min-height:17px;margin-top:6px;font-size:10px;font-weight:800;color:#3b3937}
+      .home-invite-msg{min-height:17px;margin-top:6px;font-size:10px;font-weight:800;color:#e2dcd3}
       .home-invite-msg.error{color:#a53a3a}
       @media(max-width:800px){
         .home-invite-wrap{width:100%}

@@ -70,9 +70,9 @@ body.shatranj-play-home-palette .v2-search-status.v2-status-error{
   color:#ffe1dc!important;
 }
 body.shatranj-play-home-palette .v2-clock:not(.final-minute){
-  background:#052f34!important;
-  color:var(--play-home-gold-light)!important;
-  border:1px solid rgba(224,181,103,.20)!important;
+  background:#343230!important;
+  color:#f1efeb!important;
+  border:1px solid #53514e!important;
 }
 body.shatranj-play-home-palette .v2-clock.final-minute{
   background:#b93d35!important;
