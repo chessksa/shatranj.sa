@@ -222,7 +222,7 @@ if(desktop.matches && document.querySelector('#homeHero')){
     ].join('');
     sidebar.insertBefore(member,nav);
 
-    // All nine sections stay visible, exactly as in the approved reference.
+    // The main navigation now includes only primary sections; game modes live under Play Now.
     nav.replaceChildren(
       navItem({id:'home',label:'الرئيسية',icon:'home',href:'#home'}),
       navItem({id:'play',label:'العب الآن',icon:'play',href:'#play-options'}),
@@ -402,7 +402,8 @@ if(desktop.matches && document.querySelector('#homeHero')){
         '<button type="button" data-play-choice="online"><span class="desktop-play-choice-icon">'+sidebarIcon('play')+'</span><span>اللعب عبر الإنترنت</span></button>',
         '<button type="button" data-play-choice="computer"><span class="desktop-play-choice-icon">'+sidebarIcon('computer')+'</span><span>اللعب ضد الكمبيوتر</span></button>',
         '<button type="button" data-play-choice="random"><span class="desktop-play-choice-icon">'+sidebarIcon('watch')+'</span><span>اللعب ضد خصم عشوائي</span></button>',
-        '<button type="button" data-play-choice="friend"><span class="desktop-play-choice-icon">'+sidebarIcon('invite')+'</span><span>الأصدقاء والتحديات</span></button>',
+        '<button type="button" data-play-choice="friend"><span class="desktop-play-choice-icon">'+sidebarIcon('invite')+'</span><span>اللعب مع صديق</span></button>',
+        '<button type="button" data-play-choice="challenges"><span class="desktop-play-choice-icon">'+sidebarIcon('tournaments')+'</span><span>التحديات</span></button>',
         '<button type="button" data-play-choice="variants"><span class="desktop-play-choice-icon">'+sidebarIcon('puzzles')+'</span><span>نماذج اللعب</span></button>',
       '</nav>'
     ].join('');
@@ -428,7 +429,7 @@ if(desktop.matches && document.querySelector('#homeHero')){
         }));
       }else if(type==='computer'){
         showDashboard('computer');
-      }else if(type==='friend'){
+      }else if(type==='friend'||type==='challenges'){
         showDashboard('invite');
       }else if(type==='variants'){
         location.assign('variants.html');
