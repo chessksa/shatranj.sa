@@ -3,12 +3,8 @@
   /* The board keeps exactly the idle width/height during play.
      The notebook is out of the board's layout flow, so it cannot shrink squares. */
   :root{--chess-notebook-width:clamp(250px,20vw,640px);--chess-notebook-gap:6px;--notebook-index-width:46px;--notebook-grid-line:rgba(188,219,209,.30)}
-  body.desktop-board-workspace.desktop-move-notebook-active .desktop-board-stage{
-    display:grid!important;place-items:center start!important;
-    overflow:visible!important;
-  }
-  /* Do not translate/reposition the chessboard on opening the move log.
-     The left-hand log expands as an overlay when space is insufficient. */
+  /* The notation is mounted on document.body; no game-state rule touches
+     desktop-board-stage or the approved chessboard position and dimensions. */
   .desktop-move-notebook{
     position:fixed;
     z-index:42;
@@ -30,55 +26,8 @@
     font-family:Arial,Tahoma,sans-serif;
     box-sizing:border-box;
   }
-  .move-notebook-toggle{
-    flex:0 0 29px;width:29px;height:29px;display:grid;place-items:center;
-    padding:0;border:1px solid rgba(235,198,127,.34);border-radius:0;
-    background:rgba(232,195,116,.06);color:#edca89;cursor:pointer;
-    font:800 15px/1 Arial,sans-serif;
-  }
-  .move-notebook-toggle:hover,.move-notebook-toggle:focus-visible{
-    background:rgba(232,195,116,.17);outline:1px solid rgba(239,207,124,.38)
-  }
-  .desktop-move-notebook[data-mode="docked"] .move-notebook-toggle{display:none}
-  /* Compact screens: a slim drawer can be expanded without resizing the board.
-     When expanded, its temporary overlay can be closed with the same control. */
-  .desktop-move-notebook[data-mode="compact"]{
-    width:38px;height:174px;top:var(--notebook-board-top,6px);transform:none;
-    border-radius:0;transition:width .16s ease,height .16s ease;
-  }
-  .desktop-move-notebook[data-mode="compact"] .move-notebook-header{
-    flex-direction:column;justify-content:flex-start;gap:9px;padding:8px 4px;
-    min-height:0;border:0;
-  }
-  .desktop-move-notebook[data-mode="compact"] .move-notebook-header>div{
-    writing-mode:vertical-rl;align-items:center;overflow:hidden
-  }
-  .desktop-move-notebook[data-mode="compact"] .move-notebook-header strong{font-size:11px;white-space:nowrap}
-  .desktop-move-notebook[data-mode="compact"] .move-notebook-header small,
-  .desktop-move-notebook[data-mode="compact"] .move-notebook-emblem,
-  .desktop-move-notebook[data-mode="compact"] .move-notebook-columns,
-  .desktop-move-notebook[data-mode="compact"] .move-notebook-rows,
-  .desktop-move-notebook[data-mode="compact"] .move-notebook-review{display:none}
-  .desktop-move-notebook[data-mode="compact"][data-open="true"]{
-    width:min(340px,calc(100vw - 20px));height:min(var(--notebook-board-height,calc(100dvh - 16px)),calc(100dvh - 16px));
-    top:var(--notebook-board-top,6px);transform:none;border-radius:0;
-  }
-  .desktop-move-notebook[data-mode="compact"][data-open="true"] .move-notebook-header{
-    flex-direction:row;justify-content:flex-start;gap:7px;padding:11px 8px;
-    min-height:60px;border-bottom:1px solid rgba(224,181,103,.25)
-  }
-  .desktop-move-notebook[data-mode="compact"][data-open="true"] .move-notebook-header>div{
-    writing-mode:horizontal-tb;align-items:stretch
-  }
-  .desktop-move-notebook[data-mode="compact"][data-open="true"] .move-notebook-emblem,
-  .desktop-move-notebook[data-mode="compact"][data-open="true"] .move-notebook-header small,
-  .desktop-move-notebook[data-mode="compact"][data-open="true"] .move-notebook-columns,
-  .desktop-move-notebook[data-mode="compact"][data-open="true"] .move-notebook-rows,
-  .desktop-move-notebook[data-mode="compact"][data-open="true"] .move-notebook-review{display:grid}
-  .desktop-move-notebook[data-mode="compact"][data-open="true"] .move-notebook-rows,
-  .desktop-move-notebook[data-mode="compact"][data-open="true"] .move-notebook-review{display:block}
-  .desktop-move-notebook[data-mode="compact"][data-open="true"] .move-notebook-header strong{font-size:13px}
-
+  /* A full-size notation table is shown throughout every desktop game.
+     No automatically collapsed hamburger strip exists. */
   .move-notebook-header{padding:12px 15px;display:flex;align-items:center;justify-content:center;gap:12px;border-bottom:1px solid rgba(224,181,103,.46);min-height:76px;flex:0 0 76px;background:linear-gradient(100deg,rgba(1,99,99,.54),rgba(2,57,63,.92))}
   .move-notebook-emblem{color:#e6c58c;font:normal 24px/1 serif;opacity:.90;flex:0 0 auto}
   .move-notebook-header>div{display:flex;flex-direction:column;align-items:center;justify-content:center;min-width:0;gap:6px;flex:1 1 auto;text-align:center}
