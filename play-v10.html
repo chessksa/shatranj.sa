@@ -237,7 +237,19 @@
       }
     }
     @media(max-width:900px){html.tournament-match{height:auto!important;overflow-y:auto!important}}
-  </style>
+  
+    /* On mobile, show the approved Lichess Wood 4 image unchanged.
+       Older opaque SVG fill and translucent HTML square colors were
+       blending with the image and distorting the natural wood tones. */
+    @media(max-width:900px){
+      .board-shell .square.light,
+      .board-shell .square.dark{background:transparent!important}
+      .board-shell .cm-board-host .cm-chessboard .board .square.white,
+      .board-shell .cm-board-host .cm-chessboard .board .square.black{
+        fill-opacity:0!important;
+      }
+    }
+</style>
   <link rel="stylesheet" href="exact-board-v13.css?v=20260909-tournamentbottomplayer1" />
 <style>
     /* FINAL COMPUTER DESKTOP CARD LOCK */
