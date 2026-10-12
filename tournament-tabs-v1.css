@@ -11,48 +11,48 @@ main>.wrap:not(.detail-active)>.registration-message{flex:0 0 auto}
   gap:7px;padding:0;margin:0;border:0;background:transparent
 }
 .tournament-tab{
-  min-width:0;min-height:73px;border:1px solid rgba(117,167,158,.32);
-  border-radius:13px;background:rgba(6,54,58,.68);
+  min-width:0;min-height:73px;border:1px solid rgba(114,111,107,0.32);
+  border-radius:13px;background:rgba(69,66,62,0.68);
   color:#dfebdf;display:flex;flex-direction:column;align-items:center;
   justify-content:center;gap:5px;padding:8px 5px;
   font:800 13px Arial,sans-serif;cursor:pointer;transition:background .15s,border-color .15s
 }
-.tournament-tab strong{font-size:24px;font-weight:900;color:#efcf7c;font-variant-numeric:tabular-nums}
-.tournament-tab:hover{background:rgba(15,73,76,.78)}
+.tournament-tab strong{font-size:24px;font-weight:900;color:#e2dcd3;font-variant-numeric:tabular-nums}
+.tournament-tab:hover{background:rgba(69,66,62,0.78)}
 .tournament-tab:focus-visible,.tournament-list-item:focus-visible,.detail-inline-back:focus-visible{
-  outline:2px solid #e7c777;outline-offset:2px
+  outline:2px solid #e2dcd3;outline-offset:2px
 }
 .tournament-tab.is-active{
-  background:linear-gradient(140deg,rgba(17,83,84,.94),rgba(5,48,52,.96));
-  border-color:rgba(220,185,107,.67);
-  box-shadow:inset 0 -2px 0 rgba(220,185,107,.67)
+  background:linear-gradient(140deg,rgba(69,66,62,0.94),rgba(69,66,62,0.96));
+  border-color:rgba(165,162,158,0.67);
+  box-shadow:inset 0 -2px 0 rgba(165,162,158,0.67)
 }
 .tournament-tools{flex:0 0 auto;display:flex;justify-content:flex-start;min-height:0}
 .tournament-tools:has(> .tournament-admin-create[hidden]){display:none}
 .tournament-admin-create{
   display:inline-flex;align-items:center;justify-content:center;
   min-height:31px;padding:4px 11px;border-radius:9px;
-  border:1px solid rgba(220,185,107,.45);
-  background:rgba(220,185,107,.08);color:#eac77f;
+  border:1px solid rgba(165,162,158,0.45);
+  background:rgba(165,162,158,0.08);color:#e2dcd3;
   font-size:11px;font-weight:900
 }
 .tournament-cards{
   min-height:0;flex:1 1 auto;overflow-y:auto;overflow-x:hidden;
   overscroll-behavior:contain;scrollbar-width:thin;
-  scrollbar-color:rgba(216,182,101,.45) transparent;
+  scrollbar-color:rgba(165,162,158,0.45) transparent;
   display:flex;flex-direction:column;gap:0;
-  border-radius:13px;border:1px solid rgba(63,137,132,.31);
-  background:rgba(4,46,49,.36);padding:4px 12px
+  border-radius:13px;border:1px solid rgba(114,111,107,0.31);
+  background:rgba(69,66,62,0.36);padding:4px 12px
 }
 .tournament-list-item{
   width:100%;min-width:0;min-height:76px;flex:0 0 auto;
   display:flex;align-items:center;gap:10px;padding:11px 3px;
-  border:0;border-bottom:1px solid rgba(139,189,180,.22);
-  border-radius:0;text-align:right;background:transparent;color:#f4eddc;
+  border:0;border-bottom:1px solid rgba(114,111,107,0.22);
+  border-radius:0;text-align:right;background:transparent;color:#e2dcd3;
   font-family:Arial,sans-serif;cursor:pointer;
 }
 .tournament-list-item:last-child{border-bottom:0}
-.tournament-list-item:hover{background:rgba(21,87,85,.31)}
+.tournament-list-item:hover{background:rgba(69,66,62,0.31)}
 .tournament-list-info{
   display:flex;flex-direction:column;align-items:flex-start;justify-content:center;
   min-width:0;flex:1 1 auto;gap:5px;overflow:hidden
@@ -67,8 +67,8 @@ main>.wrap:not(.detail-active)>.registration-message{flex:0 0 auto}
 }
 .tournament-list-status{
   flex:0 0 auto;max-width:76px;
-  padding:5px 8px;border:1px solid rgba(220,185,107,.32);
-  border-radius:999px;color:#dfd0ae;background:rgba(216,182,101,.075);
+  padding:5px 8px;border:1px solid rgba(165,162,158,0.32);
+  border-radius:999px;color:#e2dcd3;background:rgba(165,162,158,0.075);
   font-size:10px;font-weight:900;text-align:center;white-space:nowrap
 }
 .tournament-list-status.status-open{
@@ -76,16 +76,16 @@ main>.wrap:not(.detail-active)>.registration-message{flex:0 0 auto}
   background:rgba(78,163,115,.09);color:#99e0b4
 }
 .tournament-list-status.status-running{
-  color:#e9c675;background:rgba(216,182,101,.12)
+  color:#e2dcd3;background:rgba(165,162,158,0.12)
 }
 .tournament-list-status.status-finished{color:#b7c7c2}
-.tournament-list-status.status-upcoming{color:#b9dce0;border-color:rgba(98,168,181,.34)}
-.tournament-list-arrow{flex:0 0 auto;font-size:24px;line-height:1;color:#e1bb67}
+.tournament-list-status.status-upcoming{color:#c8c2ba;border-color:rgba(114,111,107,0.34)}
+.tournament-list-arrow{flex:0 0 auto;font-size:24px;line-height:1;color:#e2dcd3}
 .tournament-capacity-track{
   width:min(180px,100%);height:3px;border-radius:5px;overflow:hidden;
   display:block;background:rgba(186,210,198,.17)
 }
-.tournament-capacity-track i{display:block;height:100%;background:#d8b665;border-radius:5px}
+.tournament-capacity-track i{display:block;height:100%;background:#e2dcd3;border-radius:5px}
 .tournament-list-empty{
   flex:0 0 auto;min-height:110px;display:grid;place-items:center;padding:20px 5px;
   text-align:center;color:#c2d0ca;font-size:13px
@@ -93,9 +93,9 @@ main>.wrap:not(.detail-active)>.registration-message{flex:0 0 auto}
 .detail-toolbar{position:relative;padding-right:47px;padding-left:47px}
 .detail-inline-back{
   position:absolute;right:8px;top:50%;transform:translateY(-50%);
-  width:34px;height:34px;border:1px solid rgba(216,182,101,.34);
-  border-radius:9px;background:rgba(216,182,101,.06);
-  color:#e7c777;font:900 20px Arial,sans-serif;cursor:pointer
+  width:34px;height:34px;border:1px solid rgba(165,162,158,0.34);
+  border-radius:9px;background:rgba(165,162,158,0.06);
+  color:#e2dcd3;font:900 20px Arial,sans-serif;cursor:pointer
 }
 html.tournament-embedded main>.wrap{
   display:flex!important;flex-direction:column!important;

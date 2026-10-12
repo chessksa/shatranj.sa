@@ -1,8 +1,8 @@
 /* Restrained ranking podium: tint the row softly, no medals or heavy stripes. */
-#ranking tbody tr:not(.ranking-placeholder):nth-child(1){background:rgba(218,179,95,.075)!important}
-#ranking tbody tr:not(.ranking-placeholder):nth-child(2){background:rgba(180,194,202,.055)!important}
-#ranking tbody tr:not(.ranking-placeholder):nth-child(3){background:rgba(185,130,90,.050)!important}
+#ranking tbody tr:not(.ranking-placeholder):nth-child(1){background:rgba(165,162,158,0.075)!important}
+#ranking tbody tr:not(.ranking-placeholder):nth-child(2){background:rgba(114,111,107,0.055)!important}
+#ranking tbody tr:not(.ranking-placeholder):nth-child(3){background:rgba(165,162,158,0.05)!important}
 #ranking tbody tr:not(.ranking-placeholder):nth-child(-n+3) .rank-number{box-shadow:none!important;font-weight:900!important}
-#ranking tbody tr:not(.ranking-placeholder):nth-child(1) .rank-badge{color:#e2c47f!important}
+#ranking tbody tr:not(.ranking-placeholder):nth-child(1) .rank-badge{color:#e2dcd3!important}
 #ranking tbody tr:not(.ranking-placeholder):nth-child(2) .rank-badge{color:#c8d0d0!important}
 #ranking tbody tr:not(.ranking-placeholder):nth-child(3) .rank-badge{color:#cba187!important}

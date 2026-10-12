@@ -27,7 +27,7 @@ body.admin-home-compact-ready .stats-grid.pro-stats-grid{
   overflow:hidden;
   border:1px solid var(--pro-line-soft);
   border-radius:12px;
-  background:rgba(4,45,50,.48);
+  background:rgba(69,66,62,0.48);
 }
 
 body.admin-home-compact-ready .stat-card.pro-stat{
@@ -78,7 +78,7 @@ body.admin-home-compact-ready .stat-card.pro-stat strong{
   place-items:center;
   border:1px solid var(--pro-line);
   border-radius:9px;
-  background:rgba(221,185,109,.08);
+  background:rgba(165,162,158,0.08);
   color:var(--pro-gold-2);
   font-size:16px;
   line-height:1;
@@ -93,7 +93,7 @@ body.admin-home-compact-ready .stat-card.pro-stat strong{
   border:0;
   margin:0;
   padding:0;
-  background:rgba(0,18,21,.58);
+  background:rgba(69,66,62,0.58);
   backdrop-filter:blur(2px);
   -webkit-backdrop-filter:blur(2px);
   opacity:0;
