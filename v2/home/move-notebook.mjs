@@ -61,17 +61,24 @@ function syncNotebookDock(){
   const rect=board.getBoundingClientRect();
   const gap=7;
   const edge=10;
-  // A full moves table is ALWAYS shown on desktop. An early geometry reading
-  // must never switch it back to a tiny hamburger-only strip.
+  // Hard geometry constraint: the notebook's right edge must never enter
+  // the board, regardless of monitor size, CSS zoom or responsive layout.
+  // Do not impose a 250px minimum: that caused the reported overlap.
   const availableLeft=Math.max(0,Math.floor(rect.left-edge-gap));
-  const width=Math.max(250,Math.min(680,availableLeft));
-  const left=Math.max(edge,Math.round(rect.left-width-gap));
+  const width=Math.min(680,availableLeft);
+  const left=Math.max(edge,Math.floor(rect.left-gap-width));
   const top=Math.max(6,Math.round(rect.top));
   const height=Math.max(180,Math.min(Math.round(rect.height),window.innerHeight-top-6));
+  root.dataset.narrow=width<240?'true':'false';
   root.style.setProperty('--notebook-docked-width',width+'px');
   root.style.setProperty('--notebook-docked-left',left+'px');
   root.style.setProperty('--notebook-board-top',top+'px');
   root.style.setProperty('--notebook-board-height',height+'px');
+  // Inline width/left overrides protect against old CSS cache overrides.
+  root.style.setProperty('width',width+'px','important');
+  root.style.setProperty('left',left+'px','important');
+  // If there's physically no column beside the board, never cover the game.
+  root.style.setProperty('visibility',width>=94?'visible':'hidden','important');
 }
 
 function text(id,value){const n=document.getElementById(id);if(n)n.textContent=String(value??'');}
