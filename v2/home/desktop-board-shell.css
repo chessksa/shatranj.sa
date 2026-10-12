@@ -161,6 +161,16 @@
   }
   .desktop-board-grid{width:100%;height:100%;display:grid;grid-template-columns:repeat(8,1fr);grid-template-rows:repeat(8,1fr);border:0;overflow:hidden;background:#ad8a65 url('../../assets/boards/wood4.jpg') center/100% 100% no-repeat}
   .desktop-board-square{position:relative;border:.5px solid rgba(54,33,25,.16);user-select:none}
+  /* Original PNG artwork for the idle homepage board, no legacy CSS sprites. */
+  .desktop-board-square > .desktop-board-preview-piece{
+    position:absolute;left:50%;top:50%;display:block;
+    width:100%;height:100%;object-fit:contain;
+    transform:translate(-50%,-50%);transform-origin:center center;
+    pointer-events:none;user-select:none;-webkit-user-drag:none;
+  }
+  .desktop-board-square > .desktop-board-preview-piece:is([src*="/wp.png"],[src*="/bp.png"]){
+    transform:translate(-50%,-50%) scale(.90)!important;
+  }
   .desktop-board-square.light{background:rgba(255,247,224,.43)!important}
   .desktop-board-square.dark{background:rgba(49,24,11,.36)!important}
   .desktop-board-hint{position:absolute;z-index:3;left:14px;bottom:14px;min-height:40px;padding:0 12px;display:flex;align-items:center;gap:7px;border:1px solid rgba(224,181,103,.48);border-radius:12px;background:rgba(2,47,51,.94);color:#f4efe6;font-size:11px;font-weight:900;box-shadow:0 7px 18px rgba(0,0,0,.18);pointer-events:none}
