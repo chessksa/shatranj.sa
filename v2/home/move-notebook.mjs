@@ -269,7 +269,7 @@ export function renderApprovedPreview(target){
   const grid=document.createElement('span');
   grid.className='desktop-board-grid';
   const firstRank=['r','n','b','q','k','b','n','r'];
-  const version=encodeURIComponent(document.querySelector('meta[name="shatranj-asset-version"]')?.content||'20261012-notebook-viewport-fix-v8');
+  const version=encodeURIComponent(document.querySelector('meta[name="shatranj-asset-version"]')?.content||'20261012-unified-board-colors-v9');
   for(let index=0;index<64;index++){
     const row=Math.floor(index/8),col=index%8;
     const square=document.createElement('span');
