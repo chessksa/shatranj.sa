@@ -35,6 +35,11 @@ function ensureHost(){
         <span id="moveNotebookReviewStatus">يظهر التحليل بعد انتهاء المباراة.</span>
       </section>`;
     stage.insertBefore(root,stage.firstChild);
+    if(typeof ResizeObserver==='function'&&!root._notebookResizeObserver){
+      const observer=new ResizeObserver(()=>syncNotebookDock());
+      observer.observe(stage.querySelector('#homeBoardPreview')||stage);
+      root._notebookResizeObserver=observer;
+    }
     root.querySelector('.move-notebook-toggle').addEventListener('click',()=>{
       if(root.dataset.mode!=='compact')return;
       root.dataset.open=root.dataset.open==='true'?'false':'true';
@@ -62,15 +67,27 @@ function syncNotebookDock(){
   const stage=root?.parentElement;
   const board=stage?.querySelector('#homeBoardPreview');
   if(!root||!board||!document.body.classList.contains('desktop-move-notebook-active'))return;
-  // Dock only if the board ALREADY has vacant space to its left.
-  // Remaining width to its right does not authorize shifting the board.
-  const notebookWidth=window.innerWidth<=1170?180:Math.min(224,Math.max(180,window.innerWidth*0.14));
-  const gap=window.innerWidth<=1170?6:8;
-  const availableLeft=board.getBoundingClientRect().left-stage.getBoundingClientRect().left;
-  const next=availableLeft>=notebookWidth+gap+3?'docked':'compact';
+  // Measure the actual free space to the LEFT of the stationary board.
+  // The notebook may expand inside this gap but never changes board geometry.
+  const boardRect=board.getBoundingClientRect();
+  const stageRect=stage.getBoundingClientRect();
+  const gap=6;
+  const availableLeft=Math.max(0,Math.floor(boardRect.left-stageRect.left));
+  const next=availableLeft>=246?'docked':'compact';
   if(root.dataset.mode!==next){
     root.dataset.mode=next;
     root.dataset.open='false';
+  }
+  root.style.setProperty('--notebook-board-height',Math.max(200,Math.round(boardRect.height))+'px');
+  if(next==='docked'){
+    // Fill unused horizontal space, including gaps the old fixed 224px panel left behind.
+    const width=Math.min(680,availableLeft-gap);
+    const left=Math.max(0,availableLeft-width-gap);
+    root.style.setProperty('--notebook-docked-width',width+'px');
+    root.style.setProperty('--notebook-docked-left',left+'px');
+  }else{
+    root.style.removeProperty('--notebook-docked-width');
+    root.style.removeProperty('--notebook-docked-left');
   }
   updateNotebookToggle(root);
 }
@@ -275,6 +292,7 @@ export function openMoveNotebook(source){
   token++;owner=source;records=[];ended=false;
   document.body.classList.add('desktop-move-notebook-active');
   syncNotebookDock();
+  requestAnimationFrame(syncNotebookDock);
   text('moveNotebookTitle','سجل النقلات');
   text('moveNotebookSub',source==='computer'?'مباراة ضد الكمبيوتر':'مباراة مباشرة');
   const review=document.getElementById('moveNotebookReview');
@@ -307,5 +325,7 @@ export function closeMoveNotebook(source){
   owner='';ended=false;token++;records=[];
   activeReview?.destroy();activeReview=null;
   document.body.classList.remove('desktop-move-notebook-active');
-  document.getElementById(HOST_ID)?.remove();
+  const notebook=document.getElementById(HOST_ID);
+  notebook?._notebookResizeObserver?.disconnect();
+  notebook?.remove();
 }
