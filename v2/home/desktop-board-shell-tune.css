@@ -30,7 +30,8 @@
   .desktop-dashboard-home{
     height:100%!important;
     display:grid!important;
-    grid-template-rows:minmax(170px,1fr) 94px!important;
+    /* Welcome takes half its previous height; champions fill the other half. */
+    grid-template-rows:minmax(0,1fr) minmax(0,1fr) 94px!important;
     gap:var(--desktop-gap)!important;
     align-content:stretch!important;
   }
@@ -75,6 +76,11 @@
   .desktop-welcome-copy h2{font-size:clamp(27px,2vw,36px)!important}
   .desktop-welcome-copy p{font-size:13px!important}
   .desktop-welcome-copy blockquote{font-size:11px!important}
+  /* The oversized decorative knight is reduced to half its former scale. */
+  .desktop-welcome-art span{font-size:clamp(39px,3.5vw,60px)!important}
+  .desktop-welcome-art i{font-size:33px!important}
+  .desktop-welcome-art b{font-size:31px!important}
+  .desktop-champions-grid{min-height:0!important}
 
 
   /* Legacy hidden cards and extra grid rows were removed. */
