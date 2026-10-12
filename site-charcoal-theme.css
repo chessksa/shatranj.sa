@@ -330,3 +330,97 @@ html.admin-embedded body :is(.stat-card strong,.stat-card.pro-stat strong,
 }
 /* All .board*, .square*, .piece*, chessboard assets and last-move marks
    remain governed solely by their existing chess styling. */
+
+/* Additional existing standalone screens: none of these selectors are boards or pieces. */
+html body #approvedHomeBoot{background:#262522!important;color:#f1efeb!important}
+html body #approvedHomeBoot small{color:#bdb8b1!important}
+html body > :is(header,footer),
+html body :is(.site-footer,footer,.topbar,.sidebar,.mobile-top,.page-head,
+ .detail-toolbar,.moves-title,.profile-games-title,.tournament-table-head,
+ .table-head,.modal-head){
+  background:#343230!important;background-image:none!important;
+  border-color:var(--coal-border-soft)!important;color:var(--coal-text)!important;
+}
+html body :is(.hero,.header-box,.watch-box,.hero-box,.register,.form-card,
+ .podium,.account-stat,.mobile-play,.profile-block,.profile-summary-block,
+ .section-card,.stat,.achievement,.option,.match-shell,.current-shell,
+ .finished-shell,.detail-shell,.detail-item,.bracket-match,.matchmaking-card,
+ .matchmaking-profile,.report-card,.access-card,.recent-row,.tournament-row,
+ .tournament-table-scroll,.tournament-table-shell,.watch-badge,.player.active,
+ .tile,.row,.game-toast,.tournament-player-banner,.actions-card,.sidebar-foot){
+  background:var(--coal-raise)!important;border-color:var(--coal-border)!important;
+  color:var(--coal-text)!important;
+}
+html body :is(.quick-icon,.links .play-link,.nav-btn,.back,.back-site,
+ .refresh-btn,.ghost-btn,.side-icon-btn,.action-item,.action-icon,
+ .time-option,.cancel-search,.inline-cancel-search,.report-submit,
+ .report-cancel,.match-found-icon,.watch-btn,.register-btn,.detail-back,
+ .detail-inline-back,.tournament-enter-btn,.modal-actions button,
+ .profile-top-action,.settings-save,.settings-title,.select,.field,
+ .link-btn,.close-btn,.menu-btn,.show-pass){
+  background:linear-gradient(180deg,#484644,#343230)!important;
+  border-color:var(--coal-border)!important;color:var(--coal-text)!important;
+  box-shadow:none!important;
+}
+html body :is(.nav-btn.active,.time-option.active,.time-option.selected,
+ .tournament-enter-btn.active,.profile-top-action.active,.option.selected){
+  background:#45423f!important;color:#fff!important;
+  border-color:#817d77!important;
+}
+html body :is(.avatar,.avatar.light,.avatar-fallback,.brand-mark,
+ .side-brand-mark,.mark,.brand span,.player-rank-badge,.rank-icon,
+ .desktop-member-avatar-wrap,.desktop-member-fallback){
+  background-color:#3b3937!important;border-color:var(--coal-border)!important;
+  color:#ebe6df!important;
+}
+html body :is(.sidebar,.access-card,.access-gate,.matchmaking-card,
+ .report-card,.profile-block,.section-card,.match-shell,.tournament-table-shell){
+  background:var(--coal-raise)!important;
+}
+html body :is(.stat strong,.podium strong,.rating,.count,.player-rank-badge,
+ .tournament-name,.watch-badge,.bracket-title,.bracket-round-title,
+ .tournament-table-head strong,.page-head h1,.profile-games-title,
+ .moves-title,.site-logo,.brand,.brand span){
+  color:var(--coal-text)!important;
+}
+html body :is(.head p,.hero p,.header-box p,.hero-box p,.account-stat small,
+ .access-card p,.section-card p,.profile-game-date,.row-meta,
+ .detail-label,.tournament-list-meta,.bracket-meta,.meta,
+ .player-card .location,.stat small,.tile small,.empty,.loading){
+  color:var(--coal-muted)!important;
+}
+html body :is(.field,.select,.option select,.option input,.report-card textarea){
+  background:#343230!important;color:var(--coal-text)!important;
+  border-color:var(--coal-border)!important;
+}
+html body :is(.profile-games-table th,.tournament-table th,
+ .match-table th,.table-head,.moves-title){
+  background:#343230!important;color:#f1efeb!important;
+}
+html body :is(.profile-games-table tbody tr:nth-child(even) td,
+ .tournament-row.finished-row,.tournament-row:hover,
+ .match-row:hover td,.bracket-match.mine,.player.active){
+  background:rgba(72,70,68,.28)!important;
+}
+html body :is(.profile-games-table td,.tournament-table td,
+ .match-table td,.detail-item,.bracket-match,.recent-row){
+  border-color:var(--coal-border-soft)!important;
+}
+html body .tournament-table-scroll::-webkit-scrollbar-track,
+html body .table-wrap::-webkit-scrollbar-track{
+  background:#302e2b!important;
+}
+html body .tournament-table-scroll::-webkit-scrollbar-thumb,
+html body .table-wrap::-webkit-scrollbar-thumb{
+  background:#62605c!important;
+}
+/* Inline member profile / embedded tournaments require the same tokens. */
+html.tournament-embedded body,html.embedded-public-profile body,
+html body .profile-games-table,html body .tournament-table{
+  background:#262522!important;color:#f1efeb!important;
+}
+html body .tournament-table-shell .tournament-table-head,
+html body .current-tournaments .tournament-table-head{
+  background:#343230!important;border-color:var(--coal-border-soft)!important;
+}
+/* Preserve red final-minute clocks and gameplay feedback as functional signals. */
