@@ -493,7 +493,7 @@ export function mountInlinePuzzles(body,{initialMode='rated'}={}){
     button.classList.toggle('active',button.dataset.inlinePuzzleMode===mode);
     button.setAttribute('aria-pressed',String(button.dataset.inlinePuzzleMode===mode));
   });
-  if(!ensureBoard(){
+  if(!ensureBoard()){
     setStatus('تعذر تجهيز الرقعة الرئيسية.','error');
     return;
   }
