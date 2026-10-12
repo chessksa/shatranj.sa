@@ -17,6 +17,9 @@ assert.equal(css.split(spacing).length-1,2,'Gridlines must repeat at the 28px ro
 assert.doesNotMatch(css,/transparent 39px,var\(--notebook-grid-line\) 39px/,'Old 40px gridlines must be removed');
 
 // The title and column heading rows are compact and framed in gold.
+assert.match(css,/\.desktop-move-notebook\{[\s\S]*?border:0;/,'Notebook outer frame must not double the 1px gold header border');
+assert.match(css,/\.move-notebook-rows\{[^}]*border-inline:1px solid var\(--notebook-grid-line\)/,'Grid body keeps a single 1px side frame');
+assert.match(css,/\.move-notebook-header\{[^}]*border:1px solid var\(--notebook-header-gold\)/,'Gold frame must remain exactly 1px');
 assert.match(css,/--notebook-title-height:54px;/);
 assert.match(css,/--notebook-columns-height:30px;/);
 assert.match(css,/\.move-notebook-header\{[^}]*border:1px solid var\(--notebook-header-gold\);[^}]*min-height:var\(--notebook-title-height\);flex:0 0 var\(--notebook-title-height\)/);
