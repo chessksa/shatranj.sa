@@ -15,7 +15,7 @@ assert.match(source,/document\.body\.appendChild\(root\)/);
 
 function simulateBoard({left,top=7,height=800,viewportHeight=900}){
   const writes=new Map();
-  const root={style:{setProperty(key,value){writes.set(key,value)}}};
+  const root={dataset:{},style:{setProperty(key,value){writes.set(key,value)}}};
   let rectCalls=0;
   const board={getBoundingClientRect(){
     rectCalls++;
@@ -50,5 +50,24 @@ assert.equal(mediumGap.get('--notebook-docked-width'),'393px','Grow to fill a me
 assert.equal(mediumGap.get('--notebook-docked-left'),'10px');
 
 const tight=simulateBoard({left:180,height:650});
-assert.equal(tight.get('--notebook-docked-width'),'250px','Never collapse to a 38px hamburger even on a narrow desktop');
-console.log('Move log runtime geometry: full three-column table, left of board, no collapsed strip: PASS');
+assert.equal(tight.get('--notebook-docked-width'),'163px','Narrow monitors must fit inside the real left gap, never extend across the board');
+assert.equal(tight.get('--notebook-docked-left'),'10px');
+assert.equal(tight.get('visibility'),'visible');
+const noSpace=simulateBoard({left:70,height:650});
+assert.equal(noSpace.get('--notebook-docked-width'),'53px','Never impose the former 250px minimum');
+assert.equal(noSpace.get('visibility'),'hidden','When no real space exists, do not overlay the board');
+
+// Explicit nonintersection checks across desktop sizes and board placements.
+// Catch precisely the user-visible bug: width=250 even though availableLeft<250.
+for(const x of [10,30,70,110,150,180,215,230,260,350,410,550,780,900,1200]){
+  const layout=simulateBoard({left:x});
+  const left=parseFloat(layout.get('left'));
+  const width=parseFloat(layout.get('width'));
+  const visibility=layout.get('visibility');
+  assert.ok(width>=0,'No negative widths');
+  if(visibility==='visible'){
+    assert.ok(width>=94,'Only show a table if at least 94px fit');
+    assert.ok(left+width+7<=x,`Move log must not cover chessboard when boardLeft=${x}: panelRight=${left+width}`);
+  }
+}
+console.log('Move log runtime geometry: fully constrained to vacant space; board overlap impossible: PASS');
