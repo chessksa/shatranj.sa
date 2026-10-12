@@ -13,11 +13,16 @@ function chessModule(){
   });
 }
 function ensureHost(){
-  const stage=document.querySelector('.desktop-board-stage');
-  if(!stage)return null;
+  const board=document.getElementById('homeBoardPreview');
+  if(!board)return null;
+  // The log is a viewport-level sibling, NOT a child of the grid that holds
+  // the board. Grid alignment and direction cannot collapse or reposition it.
   let root=document.getElementById(HOST_ID);
-  if(root&&root.parentElement!==stage)root.remove();
-  root=document.getElementById(HOST_ID);
+  if(root&&root.parentElement!==document.body){
+    root._notebookResizeObserver?.disconnect();
+    root.remove();
+    root=null;
+  }
   if(!root){
     root=document.createElement('aside');
     root.id=HOST_ID;
@@ -25,7 +30,6 @@ function ensureHost(){
     root.setAttribute('aria-label','سجل نقلات الشطرنج وتحليل المباراة');
     root.innerHTML=`
       <header class="move-notebook-header">
-        <button type="button" class="move-notebook-toggle" aria-label="فتح سجل النقلات" aria-expanded="false" title="عرض سجل النقلات">☰</button>
         <span class="move-notebook-emblem" aria-hidden="true">♙</span>
         <div><strong id="moveNotebookTitle">سجل النقلات</strong><small id="moveNotebookSub">تتبع المباراة نقلة بنقلة</small></div>
       </header>
@@ -34,17 +38,12 @@ function ensureHost(){
       <section id="moveNotebookReview" class="move-notebook-review" aria-live="polite">
         <span id="moveNotebookReviewStatus">يظهر التحليل بعد انتهاء المباراة.</span>
       </section>`;
-    stage.insertBefore(root,stage.firstChild);
-    if(typeof ResizeObserver==='function'&&!root._notebookResizeObserver){
+    document.body.appendChild(root);
+    if(typeof ResizeObserver==='function'){
       const observer=new ResizeObserver(()=>syncNotebookDock());
-      observer.observe(stage.querySelector('#homeBoardPreview')||stage);
+      observer.observe(board);
       root._notebookResizeObserver=observer;
     }
-    root.querySelector('.move-notebook-toggle').addEventListener('click',()=>{
-      if(root.dataset.mode!=='compact')return;
-      root.dataset.open=root.dataset.open==='true'?'false':'true';
-      updateNotebookToggle(root);
-    });
     if(!notebookResizeBound){
       notebookResizeBound=true;
       window.addEventListener('resize',syncNotebookDock,{passive:true});
@@ -54,51 +53,27 @@ function ensureHost(){
   }
   return root;
 }
-function updateNotebookToggle(root){
-  const button=root?.querySelector('.move-notebook-toggle');
-  if(!button)return;
-  const expanded=root.dataset.mode!=='compact'||root.dataset.open==='true';
-  button.setAttribute('aria-expanded',expanded?'true':'false');
-  button.setAttribute('aria-label',expanded?'إغلاق سجل النقلات':'فتح سجل النقلات');
-  button.title=expanded?'إغلاق سجل النقلات':'فتح سجل النقلات';
-  button.textContent=expanded?'×':'☰';
-}
 function syncNotebookDock(){
   const root=document.getElementById(HOST_ID);
   const board=document.getElementById('homeBoardPreview');
   if(!root||!board||!document.body.classList.contains('desktop-move-notebook-active'))return;
 
-  // Use the board's VIEWPORT position, not its offset inside the stage.
-  // The stage may be shifted by the desktop shell, so its internal gap was
-  // zero even with hundreds of visible pixels free to the board's left.
   const rect=board.getBoundingClientRect();
   const gap=7;
-  const edge=12;
-  const usableLeft=Math.max(0,Math.floor(rect.left-edge-gap));
-  const next=usableLeft>=220?'docked':'compact';
-
-  // Position the log in viewport coordinates, without touching the board.
+  const edge=10;
+  // A full moves table is ALWAYS shown on desktop. An early geometry reading
+  // must never switch it back to a tiny hamburger-only strip.
+  const availableLeft=Math.max(0,Math.floor(rect.left-edge-gap));
+  const width=Math.max(250,Math.min(680,availableLeft));
+  const left=Math.max(edge,Math.round(rect.left-width-gap));
   const top=Math.max(6,Math.round(rect.top));
-  const height=Math.max(160,Math.min(Math.round(rect.height),window.innerHeight-top-6));
+  const height=Math.max(180,Math.min(Math.round(rect.height),window.innerHeight-top-6));
+  root.style.setProperty('--notebook-docked-width',width+'px');
+  root.style.setProperty('--notebook-docked-left',left+'px');
   root.style.setProperty('--notebook-board-top',top+'px');
   root.style.setProperty('--notebook-board-height',height+'px');
-
-  if(root.dataset.mode!==next){
-    root.dataset.mode=next;
-    root.dataset.open='false';
-  }
-  if(next==='docked'){
-    const width=Math.min(690,usableLeft);
-    const left=Math.max(edge,Math.round(rect.left-width-gap));
-    root.style.setProperty('--notebook-docked-width',width+'px');
-    root.style.setProperty('--notebook-docked-left',left+'px');
-  }else{
-    // Narrow windows retain a small, expandable left-hand tab.
-    root.style.setProperty('--notebook-docked-left',edge+'px');
-    root.style.removeProperty('--notebook-docked-width');
-  }
-  updateNotebookToggle(root);
 }
+
 function text(id,value){const n=document.getElementById(id);if(n)n.textContent=String(value??'');}
 function showRecords(){
   const node=document.getElementById('moveNotebookRows');
