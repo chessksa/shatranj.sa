@@ -13,6 +13,12 @@
     ['ranking','▥','الترتيب'],['invite','＋','دعوة'],['more','☰','المزيد']
   ];
   let active='home';
+  const mobileRoutes=new Set(['home','play','computer','ranking','invite','more','tournaments']);
+  function routeFromHash(){
+    const route=location.hash.replace(/^#/,'');
+    if(route==='play-options')return 'play';
+    return mobileRoutes.has(route)?route:null;
+  }
   let mobileAdminAllowed=false;
   let mobileAdminRequest=0;
   // This is the real mobile workspace. Admin access must come from the same
@@ -150,7 +156,12 @@
       if(event.target===event.currentTarget) closeAuth();
     });
     syncHeader();
-    show('home');
+    show(routeFromHash()||'home',{updateRoute:false});
+    window.addEventListener('hashchange',()=>{
+      const next=routeFromHash();
+      if(next)show(next,{updateRoute:false});
+      else if(!location.hash)show('home',{updateRoute:false});
+    });
   }
 
   function setActive(id,title){
@@ -265,8 +276,14 @@
     frame.loading='eager';
     body.appendChild(frame);
   }
-  function show(id){
+  function show(id,{updateRoute=true}={}){
     const body=document.getElementById('mfwPanelBody');if(!body)return;
+    if(!mobileRoutes.has(id))id='home';
+    if(updateRoute){
+      const url=new URL(location.href);
+      url.hash='#'+id;
+      history.replaceState(history.state,'',url.pathname+url.search+url.hash);
+    }
     if(active==='tournaments'&&id!=='tournaments'&&tournamentSpectatorPromise){
       void tournamentSpectatorPromise.then(module=>module.stopInlineTournamentSpectator()).catch(console.warn);
     }
