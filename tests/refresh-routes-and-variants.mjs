@@ -44,7 +44,7 @@ assert.match(styles,/\.desktop-play-choice-list > button\.is-selected[\s\S]*?bor
 assert.match(styles,/\.desktop-play-primary\{[\s\S]*?border:0\.5px solid #d7b66c!important/);
 assert.doesNotMatch(styles,/\.desktop-play-primary\{[^}]*background:#367e62/);
 assert.doesNotMatch(styles,/inset 0 0 0 2px #d7b66c/);
-assert.match(html,/gold-thin-neutral-buttons-v1/);
+assert.match(html,/play-menu-halfpixel-v1/);
 
 assert.doesNotMatch(desktop,/data-play-choice="online"/,'Duplicate internet play tile should be removed');
 assert.match(styles,/\.desktop-play-time-options button\.is-selected[\s\S]*?border:0\.5px solid #d7b66c!important/);
