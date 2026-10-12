@@ -7,7 +7,7 @@ def test_live_game_loads_cm_chessboard_assets_without_rebuilding_page():
     js = (ROOT / "play-v8.js").read_text(encoding="utf-8")
     assert "cm-chessboard@8/src/Chessboard.js" in js
     assert "cm-chessboard@8/assets/chessboard.css" in js
-    assert "cm-chessboard-shatranj.css" in js
+    assert "cm-chessboard-shatranj-v3.css" in js
     assert "boardEl.className='cm-board-host'" in js
 
 
@@ -21,7 +21,7 @@ def test_live_game_uses_cm_chessboard_for_rendering_and_input():
 
 
 def test_cm_chessboard_theme_matches_site_palette():
-    css = (ROOT / "cm-chessboard-shatranj.css").read_text(encoding="utf-8")
+    css = (ROOT / "cm-chessboard-shatranj-v3.css").read_text(encoding="utf-8")
     assert "rgba(255,247,224,.43)" in css
     assert "rgba(49,24,11,.36)" in css
     assert ".cm-chessboard.shatranj" in css
