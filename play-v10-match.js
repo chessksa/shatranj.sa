@@ -48,7 +48,7 @@ function ensureCmStyles(){
   if(!document.querySelector('link[data-cm-chessboard-shatranj]')){
     const theme = document.createElement('link');
     theme.rel = 'stylesheet';
-    theme.href = 'cm-chessboard-shatranj-v3.css?v=20260904-3';
+    theme.href = 'cm-chessboard-shatranj-v3.css?v=20261012-stable-board-wood4-v5';
     theme.dataset.cmChessboardShatranj = '1';
     document.head.appendChild(theme);
   }
