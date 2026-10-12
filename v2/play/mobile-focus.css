@@ -98,7 +98,7 @@
 
   .v2-board,
   .v2-player-card{
-    width:min(calc(100vw - 12px),calc(100dvh - 300px))!important;
+    width:min(calc(100vw - 12px),520px)!important;
     max-width:100%!important;
     align-self:center!important;
     margin-left:auto!important;
@@ -114,7 +114,7 @@
   }
 
   .v2-board[data-coordinates="outside"]{
-    width:min(calc(100vw - 34px),calc(100dvh - 322px))!important;
+    width:min(calc(100vw - 34px),498px)!important;
     margin:12px auto 17px!important;
   }
 
@@ -169,7 +169,7 @@
   }
 
   .v2-side-panel{
-    width:min(calc(100vw - 12px),calc(100dvh - 300px))!important;
+    width:min(calc(100vw - 12px),520px)!important;
     max-width:100%!important;
     min-height:0!important;
     margin:7px auto 0!important;
@@ -372,7 +372,7 @@
   .v2-board,
   .v2-player-card,
   .v2-side-panel{
-    width:min(calc(100vw - 10px),calc(100dvh - 294px))!important;
+    width:min(calc(100vw - 10px),520px)!important;
   }
 
   .v2-player-card{
