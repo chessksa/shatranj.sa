@@ -153,17 +153,28 @@ if(desktop.matches && document.querySelector('#homeHero')){
         <div class="desktop-mini-puzzle-board" role="button" tabindex="0"
           data-home-side-action="daily" aria-label="معاينة لغز اليوم، اضغط للحل"></div>
         <p class="desktop-mini-puzzle-caption" data-daily-puzzle-info>جارٍ تحميل لغز اليوم…</p>
+        <div class="desktop-mini-puzzle-solvers" aria-live="polite">
+          <span>حلّوا لغز اليوم</span>
+          <strong data-daily-solver-count>0</strong>
+        </div>
         <button type="button" data-home-side-action="daily">حل لغز اليوم</button>
       </section>
       <section class="desktop-home-side-card desktop-home-friend-card">
         <h3>مباراة مقترحة</h3>
         <div class="desktop-suggested-friend">
-          <span class="desktop-suggested-avatar" data-suggested-friend-avatar aria-hidden="true">♟</span>
           <strong class="desktop-suggested-name" data-suggested-friend-name>جارٍ اختيار صديق…</strong>
-          <small class="desktop-suggested-meta" data-suggested-friend-meta></small>
-          <span class="desktop-suggested-state" data-suggested-friend-state hidden></span>
         </div>
-        <button type="button" data-home-side-action="friend">دعوة صديق</button>
+        <label class="desktop-suggested-time" data-suggested-time-label hidden>
+          <span>اختر وقت المباراة</span>
+          <select data-suggested-time aria-label="اختر وقت المباراة">
+            <option value="" selected>اختر الوقت</option>
+            <option value="5">5 دقائق</option>
+            <option value="10">10 دقائق</option>
+            <option value="15">15 دقيقة</option>
+          </select>
+        </label>
+        <button type="button" data-home-side-action="friend">اختيار صديق</button>
+        <small class="desktop-suggested-message" data-suggested-message role="status" hidden></small>
       </section>`;
     stage.appendChild(rail);
     populateHomeSideRail(rail);
