@@ -281,6 +281,9 @@
     pointer-events:none;
     user-select:none;
   }
+  .mobile-board-piece:is([src*="/wp.png"],[src*="/bp.png"]){
+    width:90%;height:90%;
+  }
 
   .mobile-board-mode{
     position:absolute;
