@@ -227,7 +227,7 @@
     display:grid!important;
     flex:1 1 auto!important;
     grid-template-columns:minmax(0,1fr)!important;
-    grid-template-rows:repeat(9,minmax(0,1fr))!important;
+    grid-template-rows:repeat(7,minmax(0,1fr))!important;
     align-content:stretch!important;
     align-items:stretch!important;
     justify-content:stretch!important;
