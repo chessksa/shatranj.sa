@@ -184,6 +184,93 @@
     content:none!important;display:none!important;background-image:none!important;
   }
 
+  /* Two compact homepage actions use only actual unused LEFT-side board space.
+     The measured rail never participates in the board's grid sizing. */
+  .desktop-home-side-rail{
+    position:absolute;
+    z-index:2;
+    left:0;
+    top:50%;
+    transform:translateY(-50%);
+    display:grid;
+    grid-template-columns:minmax(0,1fr);
+    align-content:center;
+    gap:11px;
+    min-width:0;
+    max-height:calc(100% - 16px);
+    overflow:visible;
+    box-sizing:border-box;
+    direction:rtl;
+    pointer-events:auto;
+    color:#f4efe6;
+    font-family:Arial,sans-serif;
+  }
+  .desktop-home-side-rail[hidden]{display:none!important}
+  .desktop-home-side-card{
+    min-width:0;
+    display:flex;
+    flex-direction:column;
+    align-items:center;
+    justify-content:center;
+    gap:8px;
+    padding:16px 9px;
+    border:1px solid rgba(102,172,173,.34);
+    border-radius:12px;
+    background:rgba(3,49,53,.92);
+    text-align:center;
+    box-sizing:border-box;
+  }
+  .desktop-home-side-icon{
+    display:grid;
+    place-items:center;
+    color:#d5c28d;
+    width:29px;
+    height:29px;
+  }
+  .desktop-home-side-icon svg{width:27px;height:27px;display:block}
+  .desktop-home-side-card h3{
+    margin:0;
+    font-size:clamp(13px,1vw,17px);
+    line-height:1.35;
+    font-weight:900;
+    color:#f3e8ca;
+  }
+  .desktop-home-side-card p{
+    margin:0;
+    font-size:clamp(10px,.77vw,12px);
+    line-height:1.65;
+    color:#c9d8d4;
+  }
+  .desktop-home-side-card button{
+    width:100%;
+    min-height:37px;
+    padding:7px 3px;
+    margin:3px 0 0;
+    border:.5px solid #d7b66c;
+    border-radius:8px;
+    color:#f4efe6;
+    background:rgba(83,114,116,.28);
+    font:900 clamp(11px,.82vw,13px)/1.35 Arial,sans-serif;
+    cursor:pointer;
+    box-shadow:none;
+    touch-action:manipulation;
+  }
+  .desktop-home-side-card button:hover{
+    background:rgba(92,135,135,.27);
+    border-color:#e6c788;
+  }
+  .desktop-home-side-card button:focus-visible{
+    outline:1px solid #d7b66c;
+    outline-offset:2px;
+  }
+  @media(max-height:720px){
+    .desktop-home-side-rail{gap:7px}
+    .desktop-home-side-card{gap:5px;padding:9px 7px}
+    .desktop-home-side-icon{height:23px}
+    .desktop-home-side-icon svg{width:22px;height:22px}
+    .desktop-home-side-card button{min-height:31px}
+  }
+
   /* Center dashboard: occupies the former empty area and stays visible beside the board. */
   .desktop-dashboard-column{
     position:fixed;
