@@ -49,6 +49,7 @@ function ensureHost(){
       notebookResizeBound=true;
       window.addEventListener('resize',syncNotebookDock,{passive:true});
       window.visualViewport?.addEventListener('resize',syncNotebookDock,{passive:true});
+      window.addEventListener('scroll',syncNotebookDock,{passive:true,capture:true});
     }
   }
   return root;
@@ -64,30 +65,37 @@ function updateNotebookToggle(root){
 }
 function syncNotebookDock(){
   const root=document.getElementById(HOST_ID);
-  const stage=root?.parentElement;
-  const board=stage?.querySelector('#homeBoardPreview');
+  const board=document.getElementById('homeBoardPreview');
   if(!root||!board||!document.body.classList.contains('desktop-move-notebook-active'))return;
-  // Measure the actual free space to the LEFT of the stationary board.
-  // The notebook may expand inside this gap but never changes board geometry.
-  const boardRect=board.getBoundingClientRect();
-  const stageRect=stage.getBoundingClientRect();
-  const gap=6;
-  const availableLeft=Math.max(0,Math.floor(boardRect.left-stageRect.left));
-  const next=availableLeft>=246?'docked':'compact';
+
+  // Use the board's VIEWPORT position, not its offset inside the stage.
+  // The stage may be shifted by the desktop shell, so its internal gap was
+  // zero even with hundreds of visible pixels free to the board's left.
+  const rect=board.getBoundingClientRect();
+  const gap=7;
+  const edge=12;
+  const usableLeft=Math.max(0,Math.floor(rect.left-edge-gap));
+  const next=usableLeft>=220?'docked':'compact';
+
+  // Position the log in viewport coordinates, without touching the board.
+  const top=Math.max(6,Math.round(rect.top));
+  const height=Math.max(160,Math.min(Math.round(rect.height),window.innerHeight-top-6));
+  root.style.setProperty('--notebook-board-top',top+'px');
+  root.style.setProperty('--notebook-board-height',height+'px');
+
   if(root.dataset.mode!==next){
     root.dataset.mode=next;
     root.dataset.open='false';
   }
-  root.style.setProperty('--notebook-board-height',Math.max(200,Math.round(boardRect.height))+'px');
   if(next==='docked'){
-    // Fill unused horizontal space, including gaps the old fixed 224px panel left behind.
-    const width=Math.min(680,availableLeft-gap);
-    const left=Math.max(0,availableLeft-width-gap);
+    const width=Math.min(690,usableLeft);
+    const left=Math.max(edge,Math.round(rect.left-width-gap));
     root.style.setProperty('--notebook-docked-width',width+'px');
     root.style.setProperty('--notebook-docked-left',left+'px');
   }else{
+    // Narrow windows retain a small, expandable left-hand tab.
+    root.style.setProperty('--notebook-docked-left',edge+'px');
     root.style.removeProperty('--notebook-docked-width');
-    root.style.removeProperty('--notebook-docked-left');
   }
   updateNotebookToggle(root);
 }
