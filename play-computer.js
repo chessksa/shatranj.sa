@@ -183,7 +183,7 @@ function ensureCmStyles() {
     if (!document.querySelector('link[data-mobile-computer-singleboard]')) {
       const link = document.createElement('link');
       link.rel = 'stylesheet';
-      link.href = 'computer-single-board-mobile.css?v=20261012-clean-single-v1';
+      link.href = 'computer-single-board-mobile.css?v=20261012-canonical-mobile-v2';
       link.media = '(max-width:900px)';
       link.dataset.mobileComputerSingleboard = '1';
       document.head.appendChild(link);
@@ -323,14 +323,14 @@ function renderMobileChessBoard(fen) {
     const square = squares[index++];
     if (!square || square.dataset.piece === code) return;
     square.dataset.piece = code;
-    square.replaceChildren();
+    square.querySelector('.mfw-piece')?.remove();
     if (!code) return;
     const img = document.createElement('img');
-    img.className = 'mobile-board-piece';
+    img.className = 'mfw-piece';
     img.src = 'assets/pieces/'+code+'.png?v='+PHONE_BOARD_PIECES;
     img.alt = '';
     img.draggable = false;
-    square.appendChild(img);
+    square.prepend(img);
   }
 }
 
@@ -354,15 +354,30 @@ function handleMobileSquarePress(square) {
 }
 
 function createMobileComputerBoard() {
-  boardEl.className = 'mobile-board-grid mobile-computer-single-board';
+  // Reuse the exact live mobile homepage board markup and its stylesheet.
+  boardEl.className = 'mfw-board-grid mobile-computer-single-board';
   boardEl.replaceChildren();
   for (let rank=8;rank>=1;rank--) {
     for (let file=0;file<8;file++) {
       const square = document.createElement('span');
       const name = String.fromCharCode(97+file)+rank;
-      square.className = 'mobile-board-square '+((file+rank)%2===1?'light':'dark');
+      square.className = 'mfw-square '+((file+rank)%2===0?'dark':'light');
       square.dataset.square = name;
       square.dataset.piece = '';
+      if(file===0){
+        const label=document.createElement('span');
+        label.className='mfw-coordinate mfw-coordinate-rank';
+        label.setAttribute('aria-hidden','true');
+        label.textContent=String(rank);
+        square.appendChild(label);
+      }
+      if(rank===1){
+        const label=document.createElement('span');
+        label.className='mfw-coordinate mfw-coordinate-file';
+        label.setAttribute('aria-hidden','true');
+        label.textContent=String.fromCharCode(97+file);
+        square.appendChild(label);
+      }
       square.setAttribute('role','button');
       square.setAttribute('tabindex','0');
       square.setAttribute('aria-label',name);
