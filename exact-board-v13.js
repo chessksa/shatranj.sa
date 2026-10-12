@@ -92,14 +92,14 @@
       const link = document.createElement('link');
       link.id = referenceCssId;
       link.rel = 'stylesheet';
-      link.href = 'play-reference-mobile-v14.css?v=20261011-computer-fullwidth-v1';
+      link.href = 'play-reference-mobile-v14.css?v=20261012-stable-board-wood4-v5';
       document.head.appendChild(link);
     }
     if (!document.getElementById(pregameCssId)) {
       const link = document.createElement('link');
       link.id = pregameCssId;
       link.rel = 'stylesheet';
-      link.href = 'play-reference-pregame-v15.css?v=20261011-chooser-card-fit-v1';
+      link.href = 'play-reference-pregame-v15.css?v=20261012-stable-board-wood4-v5';
       document.head.appendChild(link);
     }
   }
