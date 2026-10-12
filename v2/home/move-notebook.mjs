@@ -62,12 +62,12 @@ function syncNotebookDock(){
   const stage=root?.parentElement;
   const board=stage?.querySelector('#homeBoardPreview');
   if(!root||!board||!document.body.classList.contains('desktop-move-notebook-active'))return;
-  // Compare free horizontal space with the CSS width of the notebook.
-  // Never reduce the computed board width; compact mode overlays only on demand.
+  // Dock only if the board ALREADY has vacant space to its left.
+  // Remaining width to its right does not authorize shifting the board.
   const notebookWidth=window.innerWidth<=1170?180:Math.min(224,Math.max(180,window.innerWidth*0.14));
   const gap=window.innerWidth<=1170?6:8;
-  const available=stage.getBoundingClientRect().width-board.offsetWidth;
-  const next=available>=notebookWidth+gap+3?'docked':'compact';
+  const availableLeft=board.getBoundingClientRect().left-stage.getBoundingClientRect().left;
+  const next=availableLeft>=notebookWidth+gap+3?'docked':'compact';
   if(root.dataset.mode!==next){
     root.dataset.mode=next;
     root.dataset.open='false';
