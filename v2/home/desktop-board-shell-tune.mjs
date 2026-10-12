@@ -52,8 +52,12 @@ function copyText(sourceId,targetId,fallback='0'){
 function restoreDashboardBlocks(){
   if(!desktop.matches)return false;
   const home=document.getElementById('desktopDashboardHome');
-  const welcome=home?.querySelector('.desktop-welcome-card');
-  if(!home||!welcome)return false;
+  // The legacy welcome card was replaced by personal statistics. A stale
+  // .desktop-welcome-card check previously blocked platform counters and kept
+  // the whole homepage behind the loading gate until its 20s timeout.
+  const personalStats=home?.querySelector('#desktopHomeStatistics.desktop-home-statistics');
+  const champions=home?.querySelector('.desktop-champions-grid');
+  if(!home||!personalStats||!champions)return false;
 
   let stats=home.querySelector('.desktop-live-stats');
   if(!stats){
@@ -93,14 +97,18 @@ function removeSidebarFooter(){
 if(desktop.matches){
   removeSidebarFooter();
   watchInlineBoardOrientation();
-  let attempts=0;
-  const timer=setInterval(()=>{
-    attempts+=1;
-    removeSidebarFooter();
-    if(restoreDashboardBlocks()||attempts>50){
-      clearInterval(timer);
-      watchCounts();
-      normalizeInlineBoardOrientation();
-    }
-  },50);
+  // Mount counters immediately when possible; otherwise wait only for the
+  // canonical dashboard shell. Never give up while it is still initializing.
+  if(restoreDashboardBlocks()){
+    watchCounts();
+  }else{
+    const timer=setInterval(()=>{
+      removeSidebarFooter();
+      if(restoreDashboardBlocks()){
+        clearInterval(timer);
+        watchCounts();
+        normalizeInlineBoardOrientation();
+      }
+    },50);
+  }
 }
