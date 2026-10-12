@@ -787,10 +787,13 @@ function handleEntryClick(event){
   const learnBoardClick=event.target.closest('#inlineLearnBoardGrid')
     || document.getElementById('homeBoardPreview')?.classList.contains('inline-learn-active')
     || location.hash==='#learn';
+  const variantBoardClick=event.target.closest('#variantBoard')
+    || document.getElementById('homeBoardPreview')?.classList.contains('inline-variants-active')
+    || location.hash==='#variants';
 
-  /* Computer, puzzle and learn modes own every click inside the main board.
-     Never hand those clicks to normal matchmaking/play navigation. */
-  if(previewClick&&(computerBoardClick||puzzleBoardClick||learnBoardClick)) return;
+  /* Active computer, puzzle, lesson, and variant boards own their clicks.
+     Never open standard matchmaking when moving a piece in another mode. */
+  if(previewClick&&(computerBoardClick||puzzleBoardClick||learnBoardClick||variantBoardClick)) return;
   if(active&&previewClick) return;
 
   if(quickPlay||previewClick){
