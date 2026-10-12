@@ -1,4 +1,4 @@
-import { decorateBoardCoordinate, openMoveNotebook, updateMoveNotebook, closeMoveNotebook } from './move-notebook.mjs';
+import { decorateBoardCoordinate, renderApprovedPreview, openMoveNotebook, updateMoveNotebook, closeMoveNotebook } from './move-notebook.mjs';
 const desktop=window.matchMedia('(min-width:901px)');
 const START_FEN='rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1';
 const PIECE_ROOT='assets/pieces/';
@@ -256,19 +256,7 @@ function restoreStaticBoard(){
   if(!target) return;
   target.classList.remove('inline-play-active','inline-computer-active');
   target.removeAttribute('href');
-  target.replaceChildren();
-  const grid=document.createElement('span');
-  grid.className='desktop-board-grid';
-  for(let i=0;i<64;i+=1){
-    const row=Math.floor(i/8),col=i%8;
-    const square=document.createElement('span');
-    square.className=`desktop-board-square ${(row+col)%2?'dark':'light'}`;
-    grid.appendChild(square);
-  }
-  const hint=document.createElement('span');
-  hint.className='desktop-board-hint';
-  hint.innerHTML='<span class="desktop-board-hint-icon">☝</span><span>اضغط على الرقعة للعب</span>';
-  target.append(grid,hint);
+  renderApprovedPreview(target);
 }
 
 function legalTargetFromUci(uci){
