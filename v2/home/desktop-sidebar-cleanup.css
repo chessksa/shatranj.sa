@@ -353,56 +353,7 @@
     outline:2px solid rgba(235,196,118,.75)!important;
     outline-offset:-2px!important;
   }
-  /* Preserve existing middle-column quick actions; no visual redesign outside the sidebar. */
-  .desktop-quick-icon,
-  .desktop-quick-action.primary .desktop-quick-icon{
-    background:transparent!important;
-    border:0!important;
-    outline:0!important;
-    box-shadow:none!important;
-    border-radius:0!important;
-  }
-
-  /* Daily tip: remove the decorative icon completely. */
-  .desktop-tip-icon{
-    display:none!important;
-  }
-
-  .desktop-tip-card{
-    display:flex!important;
-    align-items:center!important;
-    gap:0!important;
-    padding:10px 14px!important;
-  }
-
-  .desktop-tip-card>div{
-    min-width:0!important;
-    width:100%!important;
-    display:flex!important;
-    flex-direction:column!important;
-    justify-content:center!important;
-    gap:4px!important;
-  }
-
-  /* Quick play: no outer frame, consistent 6px spacing. */
-  .desktop-quick-card{
-    border:0!important;
-    background:transparent!important;
-    box-shadow:none!important;
-    padding:0!important;
-    margin:0!important;
-  }
-
-  .desktop-quick-card-no-title .desktop-quick-actions{
-    gap:6px!important;
-    padding:0!important;
-    margin:0!important;
-  }
-
-  .desktop-dashboard-home{
-    gap:6px!important;
-  }
-
+  /* No legacy quick-action or tip-card overrides: these panels are not rendered. */
 }
 @media(min-width:901px) and (max-height:670px){
   body.desktop-board-workspace .desktop-sidebar-brand{min-height:40px;padding:5px 8px 8px}
