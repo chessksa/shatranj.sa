@@ -10,7 +10,7 @@ if (!document.querySelector('link[data-v2-typography]')) {
   const typographyUrl = new URL('./typography-system.css', import.meta.url);
   typographyUrl.searchParams.set('v',shellAssetVersion);
   typography.href = typographyUrl.href;
-  document.head.appendChild(typography);
+  document.head.insertBefore(typography,document.querySelector('link[href*="site-charcoal-theme.css"]'));
 }
 
 if (!embeddedPanel && !skip.test(location.pathname)) {
@@ -21,7 +21,7 @@ if (!embeddedPanel && !skip.test(location.pathname)) {
     const mobileUiUrl = new URL('./mobile-ui-professional.css', import.meta.url);
     mobileUiUrl.searchParams.set('v',shellAssetVersion);
     mobileUi.href = mobileUiUrl.href;
-    document.head.appendChild(mobileUi);
+    document.head.insertBefore(mobileUi,document.querySelector('link[href*="site-charcoal-theme.css"]'));
   }
   if (!document.querySelector('link[data-v2-mobile-home]')) {
     const mobileHome = document.createElement('link');
@@ -30,7 +30,7 @@ if (!embeddedPanel && !skip.test(location.pathname)) {
     const mobileHomeUrl = new URL('./mobile-home-no-scroll.css', import.meta.url);
     mobileHomeUrl.searchParams.set('v',shellAssetVersion);
     mobileHome.href = mobileHomeUrl.href;
-    document.head.appendChild(mobileHome);
+    document.head.insertBefore(mobileHome,document.querySelector('link[href*="site-charcoal-theme.css"]'));
   }
   if (!document.querySelector('link[data-v2-mobile-home-polish]')) {
     const mobileHomePolish = document.createElement('link');
@@ -39,7 +39,7 @@ if (!embeddedPanel && !skip.test(location.pathname)) {
     const mobileHomePolishUrl = new URL('./mobile-home-polish.css', import.meta.url);
     mobileHomePolishUrl.searchParams.set('v',shellAssetVersion);
     mobileHomePolish.href = mobileHomePolishUrl.href;
-    document.head.appendChild(mobileHomePolish);
+    document.head.insertBefore(mobileHomePolish,document.querySelector('link[href*="site-charcoal-theme.css"]'));
   }
   if (!document.querySelector('link[data-v2-mobile-home-cleanup]')) {
     const mobileHomeCleanup = document.createElement('link');
@@ -48,7 +48,7 @@ if (!embeddedPanel && !skip.test(location.pathname)) {
     const mobileHomeCleanupUrl = new URL('./mobile-home-cleanup.css', import.meta.url);
     mobileHomeCleanupUrl.searchParams.set('v',shellAssetVersion);
     mobileHomeCleanup.href = mobileHomeCleanupUrl.href;
-    document.head.appendChild(mobileHomeCleanup);
+    document.head.insertBefore(mobileHomeCleanup,document.querySelector('link[href*="site-charcoal-theme.css"]'));
   }
 
   document.querySelectorAll('a[href]').forEach((anchor)=>{

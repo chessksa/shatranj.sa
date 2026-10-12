@@ -26,7 +26,7 @@ if(!document.querySelector('link[data-inline-play]')){
   css.dataset.inlinePlay='1';
   const inlineVersion=encodeURIComponent(document.querySelector('meta[name="shatranj-asset-version"]')?.content||'20261012-desktop-canonical-v4');
   css.href=new URL(`./inline-play.css?v=${inlineVersion}`,import.meta.url).href;
-  document.head.appendChild(css);
+  document.head.insertBefore(css,document.querySelector('link[href*="site-charcoal-theme.css"]'));
 }
 
 const desktop=window.matchMedia('(min-width:901px)');

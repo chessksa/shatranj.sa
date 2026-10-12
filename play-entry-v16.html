@@ -26,6 +26,7 @@
     .replace(/play-v10\.html/g,'play-entry-v16.html');
 
   const freshStyles=`<link rel="stylesheet" href="play-reference-mobile-v14.css?v=${version}"><link rel="stylesheet" href="play-reference-pregame-v15.css?v=${version}"><link rel="stylesheet" href="play-reference-overlay-v18.css?v=${version}"><link rel="stylesheet" href="play-desktop-fit-v20.css?v=${version}"><link rel="stylesheet" href="play-notification-icon-v21.css?v=${version}">`;
+  html=html.replace(/<link[^>]*href="site-charcoal-theme\.css[^\"]*"[^>]*>/g,'');
   html=html.replace('</head>',freshStyles+`<style>
     /* FINAL COMPUTER DESKTOP CARD LOCK */
     @media(min-width:901px){
@@ -73,7 +74,7 @@
         box-sizing:border-box!important;
       }
     }
-</style>`+'</head>');
+</style>`+'<link rel="stylesheet" href="site-charcoal-theme.css?v=20261012-palette-source-v4">'+'</head>');
   html=html.replace('</body>',`<script src="play-reference-shell-v18.js?v=${version}"><\/script><script type="module" src="play-computer-profile-v21.js?v=${version}"><\/script></body>`);
 
   document.open();

@@ -22,7 +22,7 @@ if(!document.querySelector('link[data-desktop-board-shell]')){
   const url=new URL('./desktop-board-shell.css',import.meta.url);
   url.searchParams.set('v',desktopAssetVersion);
   css.href=url.href;
-  document.head.appendChild(css);
+  document.head.insertBefore(css,document.querySelector('link[href*="site-charcoal-theme.css"]'));
 }
 
 const desktop=window.matchMedia('(min-width:901px)');

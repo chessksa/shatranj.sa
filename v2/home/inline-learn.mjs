@@ -23,7 +23,7 @@ function ensureCss(){
     link.id='inlineLearnCss';
     link.rel='stylesheet';
     link.href=new URL('./inline-learn.css?v=20261012-notebook-no-overlap-v11',import.meta.url).href;
-    document.head.appendChild(link);
+    document.head.insertBefore(link,document.querySelector('link[href*="site-charcoal-theme.css"]'));
   }
   // Reuse the stylesheet preloaded by index.html. An old second copy caused
   // stale square and piece styles to reappear when entering learn.
@@ -35,7 +35,7 @@ function ensureCss(){
     base.rel='stylesheet';
     const version=encodeURIComponent(document.querySelector('meta[name="shatranj-asset-version"]')?.content||'20261012-notebook-no-overlap-v11');
     base.href=new URL('./inline-play.css?v='+version,import.meta.url).href;
-    document.head.appendChild(base);
+    document.head.insertBefore(base,document.querySelector('link[href*="site-charcoal-theme.css"]'));
   }
 }
 

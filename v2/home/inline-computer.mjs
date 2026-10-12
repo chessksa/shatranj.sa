@@ -39,7 +39,7 @@ function ensureCss(){
   link.id='inlineComputerCss';
   link.rel='stylesheet';
   link.href=new URL('./inline-computer.css?v=20261011-computer-cards-centered-v1',import.meta.url).href;
-  document.head.appendChild(link);
+  document.head.insertBefore(link,document.querySelector('link[href*="site-charcoal-theme.css"]'));
   // Avoid loading an outdated duplicate of inline-play.css after the current
   // stylesheet: the later copy used to override the pawn-size correction.
   const sharedBaseLoaded=[...document.querySelectorAll('link[rel="stylesheet"]')]
@@ -50,7 +50,7 @@ function ensureCss(){
     base.rel='stylesheet';
     const currentVersion=encodeURIComponent(document.querySelector('meta[name="shatranj-asset-version"]')?.content||'20261012-pawns90-allboards-v3');
     base.href=new URL('./inline-play.css?v='+currentVersion,import.meta.url).href;
-    document.head.appendChild(base);
+    document.head.insertBefore(base,document.querySelector('link[href*="site-charcoal-theme.css"]'));
   }
 }
 

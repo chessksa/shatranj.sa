@@ -23,7 +23,7 @@ if(mobile.matches&&document.querySelector('#homeHero')){
     const url=new URL('./mobile-board-shell.css',import.meta.url);
     url.searchParams.set('v','20261012-pawns90-allboards-v3');
     link.href=url.href;
-    document.head.appendChild(link);
+    document.head.insertBefore(link,document.querySelector('link[href*="site-charcoal-theme.css"]'));
   }
 
   const sleep=ms=>new Promise(resolve=>setTimeout(resolve,ms));
@@ -364,16 +364,16 @@ if(mobile.matches&&document.querySelector('#homeHero')){
     document.body.classList.add('mobile-board-workspace');
     removeLegacyMobileLayers();
     const workspaceCss=document.querySelector('link[data-mobile-board-shell]');
-    if(workspaceCss) document.head.appendChild(workspaceCss);
+    if(workspaceCss) document.head.insertBefore(workspaceCss,document.querySelector('link[href*="site-charcoal-theme.css"]'));
     setTimeout(()=>{
       removeLegacyMobileLayers();
       const css=document.querySelector('link[data-mobile-board-shell]');
-      if(css) document.head.appendChild(css);
+      if(css) document.head.insertBefore(css,document.querySelector('link[href*="site-charcoal-theme.css"]'));
     },0);
     setTimeout(()=>{
       removeLegacyMobileLayers();
       const css=document.querySelector('link[data-mobile-board-shell]');
-      if(css) document.head.appendChild(css);
+      if(css) document.head.insertBefore(css,document.querySelector('link[href*="site-charcoal-theme.css"]'));
     },250);
     captureOriginalNodes();
     buildBoard();

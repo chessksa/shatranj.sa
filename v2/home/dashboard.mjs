@@ -9,7 +9,7 @@ if(!document.querySelector('link[data-desktop-guest-auth]')){
   const url=new URL('./desktop-guest-auth.css',import.meta.url);
   url.searchParams.set('v',homeAssetVersion);
   css.href=url.href;
-  document.head.appendChild(css);
+  document.head.insertBefore(css,document.querySelector('link[href*="site-charcoal-theme.css"]'));
 }
 
 const sleep=(ms)=>new Promise(resolve=>setTimeout(resolve,ms));
