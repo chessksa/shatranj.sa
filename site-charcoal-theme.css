@@ -96,7 +96,7 @@ html body :is(.desktop-dashboard-column,.desktop-board-stage,
   background-color:transparent!important;background-image:none!important;
 }
 /* Reference raised-card gradient. No general button/div rule: board squares are excluded. */
-html body :is(.desktop-welcome-card,.desktop-live-stat,.desktop-dashboard-view,
+html body :is(.desktop-home-statistics,.desktop-live-stat,.desktop-dashboard-view,
  .desktop-home-side-card,.desktop-champion-card,.desktop-dashboard-message-card,
  .desktop-play-online-choice,.desktop-play-options-intro,.desktop-dashboard-embed,
  .desktop-move-notebook,.desktop-member-card,.v2-mobile-more-link,
@@ -114,7 +114,7 @@ html body :is(.desktop-welcome-card,.desktop-live-stat,.desktop-dashboard-view,
   color:var(--coal-text)!important;
 }
 /* Previously high-specificity desktop/phone/live/embedded panel skins. */
-html body.desktop-board-workspace :is(.desktop-welcome-card,.desktop-live-stat,
+html body.desktop-board-workspace :is(.desktop-home-statistics,.desktop-live-stat,
  .desktop-dashboard-view,.desktop-champion-card,.desktop-home-side-card,
  .desktop-dashboard-message-card,.desktop-member-card),
 html body.desktop-board-workspace .desktop-dashboard-view.play-options-view .desktop-dashboard-view-body,
@@ -168,7 +168,7 @@ html body.desktop-board-workspace .v2-global-sidebar.desktop-sidebar-refined
 html body.desktop-board-workspace :is(.desktop-sidebar-brand strong,
  .desktop-sidebar-brand-mark,.desktop-member-score-star,.desktop-champion-title,
  .desktop-champion-name,.desktop-champion-count,.desktop-dashboard-view-head>strong,
- .desktop-welcome-copy h2,.desktop-home-side-card h3,.desktop-live-stat strong,
+ .desktop-home-side-card h3,.desktop-live-stat strong,
  .desktop-stat-icon.gold,.desktop-stat-icon.green,.desktop-stat-icon.cyan,
  .desktop-home-nav-link.active .desktop-home-nav-icon,
  .desktop-home-nav-link.active .desktop-home-nav-label){
@@ -498,10 +498,6 @@ html body .desktop-champion-card::before{background:#79746f!important}
 html body .desktop-champion-card:is(:hover,:focus-visible){
   background:var(--coal-raise)!important;border-color:#817b74!important;
 }
-html body.desktop-board-workspace .desktop-welcome-rule{background:#918a80!important}
-html body.desktop-board-workspace .desktop-welcome-art{
-  background:linear-gradient(145deg,rgba(72,70,68,.24),rgba(38,37,34,.4))!important;
-}
 html body.desktop-board-workspace .desktop-member-fallback{background-color:#292a27!important}
 html body.desktop-board-workspace :is(.desktop-member-avatar-wrap,.desktop-member-score){
   background-color:#292a27!important;border-color:#484a43!important;
@@ -593,7 +589,6 @@ html body.desktop-board-workspace :is(
  .desktop-suggested-name,.desktop-suggested-time,.desktop-suggested-message,
  .desktop-home-side-card h3,.desktop-dashboard-message-card h3,
  .desktop-play-online-choice h3,.desktop-play-choice-icon,
- .desktop-welcome-copy small,.desktop-welcome-copy h2,
  .desktop-champion-card .desktop-champion-title strong,
  .desktop-champion-card .desktop-champion-count,
  .desktop-champion-card .desktop-champion-meta
