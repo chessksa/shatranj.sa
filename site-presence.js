@@ -1,5 +1,5 @@
 import './pull-to-refresh.js?v=20260910-tournament-pull1';
-import './site-presence-base.js?v=20260910-tournament-detail-table2';
+import './site-presence-base.js?v=20261012-guest-computer-presence-v1';
 
 if(!document.querySelector('link[data-v2-shell]')){
   const shellStyle=document.createElement('link');
