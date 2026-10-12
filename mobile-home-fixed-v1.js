@@ -9,8 +9,8 @@
     a1:'wr',b1:'wn',c1:'wb',d1:'wq',e1:'wk',f1:'wb',g1:'wn',h1:'wr'
   };
   const tabs=[
-    ['home','⌂','الرئيسية'],['play','⚔','العب'],['computer','▣','كمبيوتر'],
-    ['ranking','▥','الترتيب'],['invite','＋','دعوة'],['more','☰','المزيد']
+    ['home','⌂','الرئيسية'],['play','⚔','العب'],
+    ['ranking','▥','الترتيب'],['more','☰','المزيد']
   ];
   let active='home';
   const mobileRoutes=new Set(['home','play','computer','ranking','invite','more','tournaments']);
