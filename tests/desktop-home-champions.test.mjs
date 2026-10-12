@@ -13,7 +13,7 @@ const home=read('index.html');
 assert.match(tuneCss,/grid-template-rows:minmax\(0,1fr\) minmax\(0,1fr\) 94px!important/,'Welcome must be half its previous height; champions occupy the other half');
 assert.match(tuneCss,/\.desktop-welcome-art span\{font-size:clamp\(39px,3\.5vw,60px\)!important\}/,'Main decorative chess knight is halved');
 assert.match(css,/\.desktop-champions-grid\{[\s\S]*?grid-template-rows:repeat\(3,minmax\(0,1fr\)\)/,'The three cards must have equal heights');
-assert.match(css,/grid-template-columns:minmax\(0,1fr\) minmax\(0,1\.45fr\) minmax\(0,1fr\)/,'Both sides have equal width; player-name center is twice as wide');
+assert.match(css,/grid-template-columns:minmax\(0,1fr\) minmax\(0,1\.45fr\) minmax\(0,1fr\)/,'Both sides have equal width; the player-name center remains the widest');
 assert.match(css,/\.desktop-champion-result\{[^}]*flex-direction:row/,'Result and unit must be on the same horizontal line');
 assert.match(css,/\.desktop-champion-result\{[^}]*justify-content:center;align-items:center;gap:3px;[^}]*padding-inline:0;box-sizing:border-box/,'Left score must be centered with symmetric padding and no clipped overflow');
 assert.match(css,/\.desktop-champion-title\{[^}]*justify-content:center;gap:3px;padding-inline:0;box-sizing:border-box/,'Right icon and title must be centered in an equally wide area');
@@ -29,7 +29,7 @@ for(const available of [320,350]){
   assert.ok(side>=80,`The ${available}px dashboard must leave room for the title and score`);
 }
 assert.match(css,/\.desktop-champion-title strong\{[^}]*font-size:clamp\(10px,\.68vw,11px\)/,'The right-hand title must fit compact cards');
-assert.match(css,/\.desktop-champion-icon\{[^}]*width:clamp\(21px,1\.5vw,24px\)/,'Icon must not consume the right-hand label's space');
+assert.match(css,/\.desktop-champion-icon\{[^}]*width:clamp\(21px,1\.5vw,24px\)/,'Icon must not crowd the championship title');
 assert.match(css,/\.desktop-champion-name\{[^}]*text-align:center;[^}]*white-space:nowrap;overflow:hidden;text-overflow:ellipsis/,'Player name must be centered, single-line and safely truncated');
 assert.match(css,/\.desktop-champion-title\{[^}]*flex-direction:row/,'Icon and title remain on the right in a single row');
 assert.match(css,/@media\(max-height:720px\) and \(min-width:901px\)\{[\s\S]*?grid-template-columns:minmax\(0,1fr\) minmax\(0,1\.45fr\) minmax\(0,1fr\)/,'Short screens preserve equal sides and wider center');
