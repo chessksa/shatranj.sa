@@ -254,15 +254,9 @@
     cursor:default!important;
   }
 
-  #homeBoardPreview.inline-learn-active .desktop-board-square.light{
-    background:#e8dec8!important;
-  }
-  #homeBoardPreview.inline-learn-active .desktop-board-square.dark{
-    background:#87966a!important;
-  }
-  #homeBoardPreview.inline-learn-active .desktop-board-square{
-    border:.5px solid rgba(35,42,32,.28)!important;
-  }
+  /* Board texture, light/dark square overlays and fine square borders are
+     inherited unchanged from desktop-board-shell.css, like the home board.
+     Do not reinstate a separate puzzle/lesson chessboard palette here. */
 
   #homeBoardPreview.inline-learn-active .inline-learn-piece{
     pointer-events:none;
