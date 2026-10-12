@@ -168,6 +168,10 @@
     transform:translate(-50%,-50%);transform-origin:center center;
     pointer-events:none;user-select:none;-webkit-user-drag:none;
   }
+  /* All major pieces: a uniform 5% optical reduction; pawns remain at 90%. */
+  .desktop-board-square > .desktop-board-preview-piece:not([src*="/wp.png"]):not([src*="/bp.png"]){
+    transform:translate(-50%,-50%) scale(.95)!important;
+  }
   .desktop-board-square > .desktop-board-preview-piece:is([src*="/wp.png"],[src*="/bp.png"]){
     transform:translate(-50%,-50%) scale(.90)!important;
   }
