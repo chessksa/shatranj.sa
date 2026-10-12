@@ -46,7 +46,7 @@ assert.match(styles,/\.desktop-play-choice-list > button\.is-selected[\s\S]*?bor
 assert.match(styles,/\.desktop-play-primary\{[\s\S]*?border:0\.5px solid #d7b66c!important/);
 assert.doesNotMatch(styles,/\.desktop-play-primary\{[^}]*background:#367e62/);
 assert.doesNotMatch(styles,/inset 0 0 0 2px #d7b66c/);
-assert.match(html,/large-daily-puzzle-v3/);
+assert.match(html,/daily-heading-equal-font-v4/);
 
 assert.doesNotMatch(desktop,/data-play-choice="online"/,'Duplicate internet play tile should be removed');
 assert.match(styles,/\.desktop-play-time-options button\.is-selected[\s\S]*?border:0\.5px solid #d7b66c!important/);
@@ -95,11 +95,14 @@ assert.match(inlinePuzzles,/supabase\.rpc\('home_get_daily_puzzle_preview'\)/);
 assert.match(styles,/\.desktop-mini-puzzle-solvers\{/);
 assert.match(styles,/\.desktop-suggested-time select\{/);
 assert.match(desktop,/class="desktop-daily-puzzle-heading"/);
-assert.match(desktop,/اضغط على الرقعة للحل/);
+assert.match(desktop,/لغز اليوم - اضغط على الرقعة للحل/);
+assert.doesNotMatch(desktop,/<span>اضغط على الرقعة للحل<\/span>/);
 assert.doesNotMatch(desktop,/data-daily-puzzle-info/);
 assert.doesNotMatch(desktop,/data-home-side-action="daily">حل لغز اليوم/);
 assert.doesNotMatch(rail,/dailyInfo/);
 assert.match(styles,/\.desktop-daily-puzzle-heading\{/);
+assert.match(styles,/\.desktop-daily-puzzle-heading h3\{[\s\S]*?font-size:clamp\(13px,1vw,17px\)/);
+assert.doesNotMatch(styles,/\.desktop-daily-puzzle-heading>span\{/);
 assert.match(styles,/width:min\(100%, calc\(100dvh - 275px\)\)/);
 assert.doesNotMatch(styles,/width:min\(100%,154px\)/);
 assert.doesNotMatch(styles,/width:min\(100%,126px\)/);
