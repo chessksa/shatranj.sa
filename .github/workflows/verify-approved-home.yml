@@ -5,6 +5,10 @@ on:
     branches: [main]
     paths:
       - 'index.html'
+      - 'v2/home/desktop-board-shell.mjs'
+      - 'v2/home/desktop-board-shell-tune.mjs'
+      - 'v2/home/personal-statistics.mjs'
+      - 'tests/desktop-home-bootstrap.test.mjs'
       - 'tests/test_home_refresh_freshness.py'
       - 'tests/test_home_theme_cache_buster.py'
       - 'tests/test_home_bottom_gap.py'
@@ -35,6 +39,12 @@ jobs:
           PY
       - name: Validate legacy refresh and mobile gap invariants
         run: python tests/test_home_bottom_gap.py
+      - name: Verify desktop boot cannot stall on missing legacy UI
+        run: |
+          node --check v2/home/desktop-board-shell.mjs
+          node --check v2/home/desktop-board-shell-tune.mjs
+          node --check v2/home/personal-statistics.mjs
+          node tests/desktop-home-bootstrap.test.mjs
       - name: Parse all inline homepage scripts
         run: |
           python - <<'PY'
