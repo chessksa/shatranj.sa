@@ -57,9 +57,9 @@
     object-fit:contain;transform:translate(-50%,-50%);
     transform-origin:center;pointer-events:none;user-select:none;
   }
-  /* Pawns only: about 18% smaller, identical centering for both colors. */
+  /* Pawns only: 10% smaller, identical centering for both colors. */
   .mfw-square > .mfw-piece:not(.inline-spectator-piece):is([src*="/wp.png"],[src*="/bp.png"]){
-    width:83%;height:83%;
+    width:90.9%;height:90.9%;
   }
   .mfw-board-label{position:absolute;z-index:2;top:9px;right:9px;min-height:27px;padding:0 9px;display:flex;align-items:center;border:1px solid rgba(224,181,103,.45);border-radius:9px;background:rgba(2,47,51,.91);color:#f4efe6;font-size:9px;font-weight:900;pointer-events:none}
   .mfw-tabs{display:grid;grid-template-columns:repeat(6,minmax(0,1fr));gap:3px;height:58px;min-height:58px;align-self:stretch}
