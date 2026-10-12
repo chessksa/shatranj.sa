@@ -390,7 +390,7 @@
   .desktop-champion-card{
     --champion-accent:#e2dcd3;
     position:relative;min-width:0;min-height:0;
-    display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1.42fr) minmax(0,1fr);
+    display:grid;grid-template-columns:minmax(0,1.36fr) minmax(0,1.38fr) minmax(0,.88fr);
     align-items:center;column-gap:2px;
     padding:5px 9px;box-sizing:border-box;
     border:1px solid rgba(165,162,158,0.24);border-radius:8px;
@@ -423,10 +423,10 @@
   }
   .desktop-champion-title{
     gap:4px;color:var(--champion-accent);
-    overflow:hidden;
+    overflow:hidden;padding-inline:2px 5px;
   }
   .desktop-champion-title strong{
-    font-size:clamp(10px,.72vw,11.5px);
+    font-size:clamp(12px,.95vw,13.5px);
     line-height:1.15;font-weight:900;white-space:nowrap;
   }
   /* Two barely visible vertical dividers between title, player and score.
@@ -448,11 +448,11 @@
     pointer-events:none;
   }
   .desktop-champion-icon{
-    flex:0 0 21px;width:21px;height:21px;min-width:21px;
+    flex:0 0 26px;width:26px;height:26px;min-width:26px;
     display:grid;place-items:center;
     color:var(--champion-accent);
   }
-  .desktop-champion-icon svg{width:20px;height:20px;display:block}
+  .desktop-champion-icon svg{width:25px;height:25px;display:block}
   .desktop-champion-name{
     min-width:0;width:100%;display:block;box-sizing:border-box;
     padding:0 3px;margin:0;
@@ -478,10 +478,10 @@
   @media(max-height:720px) and (min-width:901px){
     .desktop-champions-grid{gap:5px}
     .desktop-champion-card{padding:3px 7px;column-gap:2px}
-    .desktop-champion-icon{width:18px;height:18px;min-width:18px;flex-basis:18px}
-    .desktop-champion-icon svg{width:17px;height:17px}
+    .desktop-champion-icon{width:23px;height:23px;min-width:23px;flex-basis:23px}
+    .desktop-champion-icon svg{width:22px;height:22px}
     .desktop-champion-title{gap:3px}
-    .desktop-champion-title strong{font-size:10px}
+    .desktop-champion-title strong{font-size:12px}
     .desktop-champion-name{font-size:clamp(15px,1.24vw,18px)}
     .desktop-champion-count{font-size:16px}
     .desktop-champion-meta{font-size:10px}
