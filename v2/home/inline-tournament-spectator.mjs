@@ -16,7 +16,7 @@ function installStyle(){
     '.inline-tournament-spectator .desktop-board-grid{direction:ltr!important;display:grid!important;grid-template-columns:repeat(8,minmax(0,1fr))!important;grid-template-rows:repeat(8,minmax(0,1fr))!important;}',
     '.inline-tournament-spectator .desktop-board-square,.inline-tournament-spectator .mfw-square{display:grid!important;place-items:center!important;min-width:0!important;min-height:0!important;overflow:hidden!important;}',
     '.inline-tournament-spectator .inline-spectator-piece{display:block;width:92%;height:92%;max-width:100%;max-height:100%;object-fit:contain;pointer-events:none;user-select:none;}',
-    '.inline-tournament-spectator .inline-spectator-piece:is([src*="/wp.png"],[src*="/bp.png"]){width:75%;height:75%;}',
+    '.inline-tournament-spectator .inline-spectator-piece:is([src*="/wp.png"],[src*="/bp.png"]){width:82.8%;height:82.8%;}',
     '.inline-tournament-spectator .inline-spectator-last{box-shadow:inset 0 0 0 3px rgba(218,170,74,.58)!important;}',
     '.inline-tournament-spectator .inline-spectator-hud{position:absolute;z-index:9;left:9px;right:9px;display:flex;align-items:center;gap:6px;justify-content:space-between;min-width:0;pointer-events:none;direction:rtl;}',
     '.inline-tournament-spectator .inline-spectator-hud.top{top:9px}.inline-tournament-spectator .inline-spectator-hud.bottom{bottom:9px;}',
