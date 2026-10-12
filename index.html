@@ -2589,6 +2589,15 @@ setInterval(loadCurrentMatchesCount,3000);
       !!document.getElementById('mobileFixedWorkspace')&&
       !!document.getElementById('mfwBoard');
     if(!built)return false;
+    if(desktop){
+      const preview=document.getElementById('homeBoardPreview');
+      const idle=preview&&!preview.classList.contains('inline-play-active')&&
+        !preview.classList.contains('inline-puzzle-active')&&
+        !preview.classList.contains('inline-learn-active')&&
+        !preview.classList.contains('inline-tournament-spectator');
+      if(idle&&preview.querySelectorAll('.desktop-board-grid > .desktop-board-square > .desktop-board-preview-piece').length!==32)return false;
+      if(!document.querySelector('#desktopDashboardHome .desktop-live-stats'))return false;
+    }
     const styles=desktop?
       ['desktop-board-shell.css','desktop-board-shell-tune.css','desktop-sidebar-cleanup.css','inline-play.css']:
       ['mobile-home-fixed-v1.css'];
