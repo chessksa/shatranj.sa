@@ -244,14 +244,17 @@ function installHomeAuthActions(){
 }
 
 async function loadOptionalHomeModules(){
-  const results=await Promise.allSettled([
-    import(`./public-home.mjs?v=${homeAssetVersion}`),
-    import(`./desktop-board-shell.mjs?v=${homeAssetVersion}`),
-    import(`./desktop-board-shell-tune.mjs?v=${homeAssetVersion}`)
-  ]);
-  results.forEach((result,index)=>{
-    if(result.status==='rejected') console.warn('تعذر تحميل وحدة واجهة اختيارية',index,result.reason);
-  });
+  // Public features can load concurrently, but desktop tuning must follow
+  // the board-shell module. Otherwise refreshes race two DOM/style writers.
+  const publicLoad=import(`./public-home.mjs?v=${homeAssetVersion}`)
+    .catch(error=>console.warn('تعذر تحميل الواجهة العامة',error));
+  try{
+    await import(`./desktop-board-shell.mjs?v=${homeAssetVersion}`);
+    await import(`./desktop-board-shell-tune.mjs?v=${homeAssetVersion}`);
+  }catch(error){
+    console.error('تعذر تحميل واجهة الكمبيوتر',error);
+  }
+  await publicLoad;
 }
 
 function renderWelcomeSubscribers(rows,totalCount=null){
