@@ -841,14 +841,14 @@
   .desktop-play-time-options button:hover{background:rgba(105,158,155,.20)}
   .desktop-play-time-options button.is-selected,
   .desktop-play-time-options button.is-selected:hover{
-    border-color:#d7b66c!important;
+    border:0.5px solid #d7b66c!important;
     background:rgba(255,255,255,.075)!important;
     box-shadow:none!important;
     outline:none!important;
   }
   .desktop-play-primary{
     min-height:45px;padding:8px 12px;
-    border:1px solid #d7b66c!important;border-radius:9px;
+    border:0.5px solid #d7b66c!important;border-radius:9px;
     background:rgba(83,114,116,.28)!important;
     color:#f4efe6;font-size:16px;font-weight:900;
     box-shadow:none!important;outline:none!important;
@@ -875,7 +875,7 @@
   }
   .desktop-play-choice-list > button.is-selected,
   .desktop-play-choice-list > button.is-selected:hover{
-    border-color:#d7b66c!important;
+    border:0.5px solid #d7b66c!important;
     background:rgba(83,114,116,.28)!important;
     box-shadow:none!important;
     outline:none!important;
