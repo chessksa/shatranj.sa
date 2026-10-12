@@ -40,11 +40,11 @@ body.shatranj-play-home-palette .v2-board[data-board-theme="shatranj"]{
 }
 body.shatranj-play-home-palette .v2-board:not([data-board-theme]) .v2-square.light,
 body.shatranj-play-home-palette .v2-board[data-board-theme="shatranj"] .v2-square.light{
-  background:rgba(255,247,224,.43)!important;
+  background:transparent!important;
 }
 body.shatranj-play-home-palette .v2-board:not([data-board-theme]) .v2-square.dark,
 body.shatranj-play-home-palette .v2-board[data-board-theme="shatranj"] .v2-square.dark{
-  background:rgba(49,24,11,.36)!important;
+  background:transparent!important;
 }
 body.shatranj-play-home-palette .v2-board{
   border-color:rgba(224,181,103,.82)!important;
