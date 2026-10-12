@@ -27,14 +27,19 @@ function ensureCss(){
     const link=document.createElement('link');
     link.id='inlinePuzzleCss';
     link.rel='stylesheet';
-    link.href=new URL('./inline-puzzles.css?v=20261006-board-colors1',import.meta.url).href;
+    link.href=new URL('./inline-puzzles.css?v=20261012-unified-board-colors-v9',import.meta.url).href;
     document.head.appendChild(link);
   }
-  if(!document.getElementById('inlinePuzzleBoardBaseCss')){
+  // Reuse the stylesheet preloaded by index.html. An old second copy caused
+  // stale square and piece styles to reappear when entering puzzle.
+  const baseLoaded=[...document.querySelectorAll('link[rel="stylesheet"]')]
+    .some(link=>link.href.includes('/v2/home/inline-play.css'));
+  if(!baseLoaded){
     const base=document.createElement('link');
     base.id='inlinePuzzleBoardBaseCss';
     base.rel='stylesheet';
-    base.href=new URL('./inline-play.css?v=20260918-inline-play1',import.meta.url).href;
+    const version=encodeURIComponent(document.querySelector('meta[name="shatranj-asset-version"]')?.content||'20261012-unified-board-colors-v9');
+    base.href=new URL('./inline-play.css?v='+version,import.meta.url).href;
     document.head.appendChild(base);
   }
 }
