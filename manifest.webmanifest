@@ -3,8 +3,16 @@
   "short_name": "شطرنج العرب",
   "start_url": "./",
   "display": "standalone",
-  "background_color": "#f4f3ef",
-  "theme_color": "#111111",
+  "background_color": "#1b1c1a",
+  "theme_color": "#1b1c1a",
   "lang": "ar",
-  "dir": "rtl"
+  "dir": "rtl",
+  "icons": [
+    {
+      "src": "/favicon.ico",
+      "type": "image/x-icon",
+      "sizes": "48x48",
+      "purpose": "any"
+    }
+  ]
 }
