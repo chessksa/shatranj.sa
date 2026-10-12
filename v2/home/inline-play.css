@@ -52,8 +52,10 @@
   }
 
   /* Keep both pawn colors visually balanced without affecting other pieces. */
-  .inline-play-piece:is([src*="/wp.png"],[src*="/bp.png"]){
-    --piece-scale:.82;
+  /* Same approved pawns on online play, computer, lessons and puzzles. */
+  .inline-play-square > .inline-play-piece:is([src*="/wp.png"],[src*="/bp.png"]){
+    --piece-scale:.90;
+    transform:translate(-50%,-50%) scale(.90)!important;
   }
 
 
