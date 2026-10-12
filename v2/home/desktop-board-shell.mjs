@@ -1,3 +1,4 @@
+import { decorateBoardCoordinate } from './move-notebook.mjs';
 import { supabase } from '../platform/api.mjs';
 const desktopAssetVersion=encodeURIComponent(document.querySelector('meta[name="shatranj-asset-version"]')?.content||'20261009-fresh-ui-refresh-v1');
 const [computerModule,puzzlesModule,learnModule]=await Promise.all([
@@ -136,6 +137,7 @@ if(desktop.matches && document.querySelector('#homeHero')){
       const row=Math.floor(i/8),col=i%8;
       const square=document.createElement('span');
       square.className=`desktop-board-square ${(row+col)%2?'dark':'light'}`;
+      const displayName=`${'abcdefgh'[col]}${8-row}`;
       // The desktop preview previously relied on an unlinked, legacy stylesheet.
       // Use the same twelve canonical PNG files as gameplay and mobile.
       const type=row===0||row===7?firstRank[col]:(row===1||row===6?'p':null);
@@ -154,6 +156,7 @@ if(desktop.matches && document.querySelector('#homeHero')){
         piece.draggable=false;
         square.appendChild(piece);
       }
+      decorateBoardCoordinate(square,i,displayName);
       grid.appendChild(square);
     }
     preview.append(grid);
