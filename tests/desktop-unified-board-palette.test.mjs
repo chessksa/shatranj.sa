@@ -24,12 +24,12 @@ for(const [name,css] of [['puzzles',puzzles],['learn',learn]]){
 for(const [name,script] of [['puzzles',puzzleScript],['learn',learnScript]]){
   assert.match(script,/\.className='desktop-board-grid inline-play-grid inline-/,`${name} must use the shared board grid`);
   assert.match(script,/\.className=`desktop-board-square inline-play-square inline-/,`${name} must use the shared square CSS classes`);
-  assert.match(script,/link\.href=new URL\('\.\/inline-(puzzles|learn)\.css\?v=20261012-unified-board-colors-v9'/,`${name} must fetch the updated styles`);
+  assert.match(script,/link\.href=new URL\('\.\/inline-(puzzles|learn)\.css\?v=20261012-notebook-fullpanel-v10'/,`${name} must fetch the updated styles`);
   assert.match(script,/baseLoaded=\[\.\.\.document\.querySelectorAll\('link\[rel="stylesheet"\]'\)\]/,`${name} must reuse the preloaded common board stylesheet`);
   assert.doesNotMatch(script,/20261006-board-colors1|20260918-inline-play1/,`${name} must not load old palette or board layers`);
 }
-assert.match(home,/shatranj-asset-version" content="20261012-unified-board-colors-v9"/);
-assert.match(home,/data-desktop-board-shell href="v2\/home\/desktop-board-shell\.css\?v=20261012-unified-board-colors-v9"/);
+assert.match(home,/shatranj-asset-version" content="20261012-notebook-fullpanel-v10"/);
+assert.match(home,/data-desktop-board-shell href="v2\/home\/desktop-board-shell\.css\?v=20261012-notebook-fullpanel-v10"/);
 assert.match(play,/\.inline-play-square > \.inline-play-piece/,'Live play retains the common square and pieces CSS');
 assert.match(mobile,/\.mfw-board-grid\{[^}]*wood4\.jpg/,'Mobile home remains on the approved Wood 4 board');
 assert.match(v2,/\.v2-board\{[^}]*wood4\.jpg/,'Alternative game boards remain on Wood 4');
