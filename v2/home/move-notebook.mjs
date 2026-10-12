@@ -59,7 +59,8 @@ function syncNotebookDock(){
   if(!root||!board||!document.body.classList.contains('desktop-move-notebook-active'))return;
 
   const rect=board.getBoundingClientRect();
-  const gap=7;
+  // Keep only a 3px visual separation; board dimensions stay unchanged.
+  const gap=3;
   const edge=10;
   // Hard geometry constraint: the notebook's right edge must never enter
   // the board, regardless of monitor size, CSS zoom or responsive layout.
@@ -67,8 +68,10 @@ function syncNotebookDock(){
   const availableLeft=Math.max(0,Math.floor(rect.left-edge-gap));
   const width=Math.min(680,availableLeft);
   const left=Math.max(edge,Math.floor(rect.left-gap-width));
-  const top=Math.max(6,Math.round(rect.top));
-  const height=Math.max(180,Math.min(Math.round(rect.height),window.innerHeight-top-6));
+  // Use the board's measured box, not the viewport height. Cropping the log
+  // at window.innerHeight caused the lower edges to stop at different levels.
+  const top=rect.top;
+  const height=rect.height;
   root.dataset.narrow=width<240?'true':'false';
   root.style.setProperty('--notebook-docked-width',width+'px');
   root.style.setProperty('--notebook-docked-left',left+'px');
