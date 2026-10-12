@@ -12,6 +12,12 @@
 }
 
 /* Uniform 10% pawn reduction on both mobile and desktop v2 boards. */
+/* A centered 5% reduction for king, queen, rook, bishop and knight. */
+body .v2-board .v2-square > .v2-piece:not([src*="/wp.png"]):not([src*="/bp.png"]),
+body.shatranj-play-home-palette .v2-board .v2-square > .v2-piece:not([src*="/wp.png"]):not([src*="/bp.png"]){
+  scale:.95!important;
+  transform-origin:center center!important;
+}
 body .v2-board .v2-square > .v2-piece:is([src*="/wp.png"],[src*="/bp.png"]),
 body.shatranj-play-home-palette .v2-board .v2-square > .v2-piece:is([src*="/wp.png"],[src*="/bp.png"]){
   scale:.90!important;
