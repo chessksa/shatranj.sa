@@ -1,5 +1,6 @@
 import { renderApprovedPreview } from './move-notebook.mjs?v=20261012-notebook-aligned-v13';
 import { supabase } from '../platform/api.mjs';
+import { populateHomeSideRail } from './home-side-rail.mjs?v=20261012-mini-puzzle-friend-v1';
 const desktopAssetVersion=encodeURIComponent(document.querySelector('meta[name="shatranj-asset-version"]')?.content||'20261009-fresh-ui-refresh-v1');
 const [computerModule,puzzlesModule,learnModule]=await Promise.all([
   import(`./inline-computer.mjs?v=${desktopAssetVersion}`),
@@ -148,18 +149,24 @@ if(desktop.matches && document.querySelector('#homeHero')){
     rail.hidden=true;
     rail.innerHTML=`
       <section class="desktop-home-side-card desktop-home-daily-card">
-        <span class="desktop-home-side-icon" aria-hidden="true">${sidebarIcon('puzzles')}</span>
         <h3>لغز اليوم</h3>
-        <p>هل تستطيع إيجاد أفضل نقلة؟</p>
+        <div class="desktop-mini-puzzle-board" role="button" tabindex="0"
+          data-home-side-action="daily" aria-label="معاينة لغز اليوم، اضغط للحل"></div>
+        <p class="desktop-mini-puzzle-caption" data-daily-puzzle-info>جارٍ تحميل لغز اليوم…</p>
         <button type="button" data-home-side-action="daily">حل لغز اليوم</button>
       </section>
       <section class="desktop-home-side-card desktop-home-friend-card">
-        <span class="desktop-home-side-icon" aria-hidden="true">${sidebarIcon('invite')}</span>
-        <h3>العب مع صديق</h3>
-        <p>اختر أحد أصدقائك وتحدّه إلى مباراة.</p>
+        <h3>مباراة مقترحة</h3>
+        <div class="desktop-suggested-friend">
+          <span class="desktop-suggested-avatar" data-suggested-friend-avatar aria-hidden="true">♟</span>
+          <strong class="desktop-suggested-name" data-suggested-friend-name>جارٍ اختيار صديق…</strong>
+          <small class="desktop-suggested-meta" data-suggested-friend-meta></small>
+          <span class="desktop-suggested-state" data-suggested-friend-state hidden></span>
+        </div>
         <button type="button" data-home-side-action="friend">دعوة صديق</button>
       </section>`;
     stage.appendChild(rail);
+    populateHomeSideRail(rail);
     rail.addEventListener('click',event=>{
       const button=event.target.closest('[data-home-side-action]');
       if(!button||!rail.contains(button))return;
