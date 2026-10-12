@@ -128,6 +128,7 @@ function renderComputerReviewedFen(index) {
   computerReviewIndex = index;
   clearMoveHints();
   ensureBoard().setPosition(computerReviewFens[index], false);
+  syncMobileHomepageBoard(computerReviewFens[index]);
   forceBoardSquareColors();
   renderLastMoveHighlight();
   updateComputerMoveReviewControls();
@@ -190,6 +191,14 @@ function ensureCmStyles() {
     theme.href = 'cm-chessboard-shatranj-v3.css?v=20261012-mobile-computer-board-v9';
     theme.dataset.cmChessboardShatranj = '1';
     document.head.appendChild(theme);
+  }
+  if (window.matchMedia('(max-width:900px)').matches && !document.querySelector('link[data-mobile-computer-homeboard]')) {
+    const style = document.createElement('link');
+    style.rel = 'stylesheet';
+    style.href = 'computer-home-board-mobile.css?v=20261012-home-board-parity-v1';
+    style.media = '(max-width:900px)';
+    style.dataset.mobileComputerHomeboard = '1';
+    document.head.appendChild(style);
   }
 }
 
@@ -254,15 +263,16 @@ function forceBoardSquareColors() {
   // leaving a black board. Restore warm, semi-transparent chess squares.
   // Desktop colors remain unchanged.
   const mobile = window.matchMedia('(max-width:900px)').matches;
-  const light = mobile ? 'rgba(247,232,206,.86)' : 'rgba(255,247,224,.43)';
-  const dark = mobile ? 'rgba(118,83,55,.73)' : 'rgba(49,24,11,.36)';
+  // The homepage-matching HTML grid owns the color on phones.
+  const light = mobile ? 'transparent' : 'rgba(255,247,224,.43)';
+  const dark = mobile ? 'transparent' : 'rgba(49,24,11,.36)';
   boardEl.querySelectorAll('.cm-chessboard .square.white').forEach(square => {
     square.style.setProperty('fill', light, 'important');
-    if (mobile) square.style.setProperty('fill-opacity', '1', 'important');
+    if (mobile) square.style.setProperty('fill-opacity', '0', 'important');
   });
   boardEl.querySelectorAll('.cm-chessboard .square.black').forEach(square => {
     square.style.setProperty('fill', dark, 'important');
-    if (mobile) square.style.setProperty('fill-opacity', '1', 'important');
+    if (mobile) square.style.setProperty('fill-opacity', '0', 'important');
   });
 }
 
@@ -271,6 +281,59 @@ function watchBoardSquareColors() {
   const observer = new MutationObserver(() => forceBoardSquareColors());
   observer.observe(boardEl, { childList: true, subtree: true });
   boardEl._shatranjColorObserver = observer;
+}
+
+// The phone homepage and computer game must render the same board.
+const PHONE_BOARD_PIECES='20261012-extracted-photo-pieces-v3';
+function syncMobileHomepageBoard(fen){
+  if(!window.matchMedia('(max-width:900px)').matches || !document.body.classList.contains('computer-game')) return;
+  const shell=boardEl?.parentElement;
+  if(!shell) return;
+  let grid=shell.querySelector('.mobile-computer-main-grid');
+  if(!grid){
+    grid=document.createElement('div');
+    grid.className='mobile-computer-main-grid';
+    grid.setAttribute('aria-hidden','true');
+    for(let rank=8;rank>=1;rank--){
+      for(let file=0;file<8;file++){
+        const square=document.createElement('span');
+        square.className='mobile-computer-main-square '+((file+rank)%2===1?'light':'dark');
+        square.dataset.piece='';
+        grid.appendChild(square);
+      }
+    }
+    // Behind the interactive SVG: no pointer handlers are moved or changed.
+    shell.insertBefore(grid,boardEl);
+  }
+  const ranks=String(fen||'').split(' ')[0].split('/');
+  if(ranks.length!==8) return;
+  const squares=grid.children;
+  let index=0;
+  for(const rank of ranks){
+    for(const character of rank){
+      const empty=Number(character);
+      if(Number.isInteger(empty)&&empty>=1&&empty<=8){
+        for(let i=0;i<empty;i++) updateSquare('');
+      }else{
+        const code=(character===character.toUpperCase()?'w':'b')+character.toLowerCase();
+        updateSquare(code);
+      }
+    }
+  }
+  function updateSquare(piece){
+    if(index>=64)return;
+    const square=squares[index++];
+    if(square.dataset.piece===piece)return;
+    square.dataset.piece=piece;
+    square.replaceChildren();
+    if(!piece)return;
+    const img=document.createElement('img');
+    img.className='mobile-computer-main-piece';
+    img.src='assets/pieces/'+piece+'.png?v='+PHONE_BOARD_PIECES;
+    img.alt='';
+    img.draggable=false;
+    square.appendChild(img);
+  }
 }
 
 function ensureBoard() {
@@ -292,6 +355,7 @@ function ensureBoard() {
     }
   });
   cmBoard.enableMoveInput(handleBoardInput, COLOR.white);
+  syncMobileHomepageBoard(game.fen());
   forceBoardSquareColors();
   watchBoardSquareColors();
   return cmBoard;
@@ -300,6 +364,7 @@ function ensureBoard() {
 function renderBoard(animated = true) {
   if (selectedLevel && selectedMinutes) rememberComputerFen(game.fen());
   ensureBoard().setPosition(game.fen(), animated);
+  syncMobileHomepageBoard(game.fen());
   forceBoardSquareColors();
   renderLastMoveHighlight();
 }
