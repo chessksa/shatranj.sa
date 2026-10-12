@@ -15,6 +15,8 @@ jobs:
         run: |
           echo '--- Parent delegation ---'
           dig +time=3 +tries=1 @a.gtld-servers.net arabchees.com NS +noall +answer +authority +comments || true
+          echo '--- Public recursive DNS CAA (certificate authority) ---'
+          dig +time=3 +tries=1 @8.8.8.8 arabchees.com CAA +noall +answer +comments || true
           echo '--- Public recursive DNS A ---'
           dig +time=3 +tries=1 @8.8.8.8 arabchees.com A +noall +answer +comments || true
           echo '--- Public recursive DNS www CNAME ---'
