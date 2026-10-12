@@ -7,10 +7,10 @@
   right:auto!important;
   left:auto!important;
   z-index:8!important;
-  border-bottom:1px solid rgba(54,143,144,.34)!important;
+  border-bottom:1px solid rgba(83,81,78,.72)!important;
 }
 #chessNewsTicker .welcome-ticker-label{
-  border-left:1px solid rgba(54,143,144,.34)!important;
+  border-left:1px solid rgba(83,81,78,.72)!important;
 }
 #chessNewsTicker .chess-news-label{
   color:inherit;
@@ -26,7 +26,7 @@
 #chessNewsTicker .chess-news-item:focus-visible,
 #chessNewsTicker .chess-news-label:hover,
 #chessNewsTicker .chess-news-label:focus-visible{
-  color:var(--hero-gold-2,#efcf7c);
+  color:#fff;
   outline:none;
 }
 #chessNewsTicker .chess-news-fallback{
@@ -113,7 +113,7 @@ html body #tournamentResultsTicker{
     flex:none!important;
     margin:0!important;
     border-top:0!important;
-    border-bottom:1px solid rgba(54,143,144,.34)!important;
+    border-bottom:1px solid rgba(83,81,78,.72)!important;
   }
 
   body .home-hero{order:3!important}
@@ -174,9 +174,3 @@ html body #tournamentResultsTicker{
 }
 
 
-/* board frame color override: higher specificity than the desktop shell */
-@media(min-width:901px){
-  html body.desktop-board-workspace #homeBoardPreview.desktop-board-preview{
-    border:1px solid #5c8f92!important;
-  }
-}

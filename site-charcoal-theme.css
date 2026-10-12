@@ -424,3 +424,163 @@ html body .current-tournaments .tournament-table-head{
   background:#343230!important;border-color:var(--coal-border-soft)!important;
 }
 /* Preserve red final-minute clocks and gameplay feedback as functional signals. */
+
+
+
+/* 2026-10-12 UI audit: inherited gold / petrol remnants.
+   Nonboard interface only. Geometry of chessboards and piece imagery unchanged. */
+:root{
+  --notebook-grid-line:rgba(142,139,134,.34);
+  --notebook-header-gold:#53514e;
+}
+html body #chessNewsTicker{
+  background:#302e2b!important;background-image:none!important;
+  border-bottom-color:#53514e!important;color:#f1efeb!important;
+}
+html body #chessNewsTicker .welcome-ticker-label.chess-news-label{
+  background:linear-gradient(180deg,#484644,#343230)!important;
+  border:0!important;border-inline-end:1px solid #64615d!important;
+  border-radius:0!important;color:#f1efeb!important;box-shadow:none!important;
+}
+html body #chessNewsTicker :is(.welcome-ticker-viewport,.welcome-ticker-track){
+  background:#302e2b!important;background-image:none!important;color:#e7e4df!important;
+}
+html body #chessNewsTicker :is(.chess-news-label,.chess-news-item):is(:hover,:focus-visible){
+  color:#fff!important;
+}
+/* Exactly one understated 1px frame on the outer board container. */
+@media(min-width:901px){
+ html body.desktop-board-workspace #homeBoardPreview.desktop-board-preview{
+  border:1px solid #625f5b!important;border-radius:0!important;
+  padding:0!important;background:transparent!important;
+  outline:none!important;box-shadow:0 4px 14px rgba(0,0,0,.16)!important;
+ }
+}
+@media(max-width:900px){
+ html body.mobile-board-workspace #homeBoardPreview.mobile-fixed-board{
+  border:1px solid #625f5b!important;border-radius:0!important;
+  background:linear-gradient(145deg,#393734,#302e2b)!important;
+  box-shadow:0 4px 14px rgba(0,0,0,.15)!important;
+ }
+ html body #mobileFixedWorkspace .mfw-board{
+  border:0!important;outline:1px solid #625f5b!important;
+  outline-offset:-1px!important;border-radius:0!important;
+ }
+}
+/* Icons, ranks and badges keep their forms, but follow one neutral color system. */
+html body :is(.desktop-home-nav-icon,.desktop-home-nav-icon svg,.v2-global-icon,
+ .v2-global-brand-mark,.desktop-sidebar-brand-mark,.desktop-play-choice-icon,
+ .desktop-play-choice-icon svg,.desktop-stat-icon,.desktop-champion-icon,
+ .desktop-champion-icon svg,.hero-stat-icon,.ranking-filter-icon,.rank-badge,
+ .rank-icon,.inline-puzzle-badge,.inline-learn-badge,.inline-computer-label,
+ .mobile-workspace-tab i,.mfw-tab i,.site-notification-bell,
+ .v5-time-icon,.v5-home-link-icon){
+  color:#e2dcd3!important;text-shadow:none!important;
+}
+html body.desktop-board-workspace :is(.desktop-home-nav-icon,
+ .desktop-sidebar-brand strong,.desktop-sidebar-brand-mark,
+ .desktop-member-score-star,.desktop-champion-icon,
+ .desktop-champion-title,.desktop-stat-icon){
+  color:#e2dcd3!important;text-shadow:none!important;
+}
+html body.desktop-board-workspace .v2-global-sidebar.desktop-sidebar-refined
+ .desktop-home-nav-link:is(.active,[aria-current="page"]) .desktop-home-nav-icon{
+  color:#fff!important;
+}
+html body.desktop-board-workspace .desktop-sidebar-bottom .desktop-sidebar-logout,
+html body.desktop-board-workspace .desktop-sidebar-bottom .desktop-sidebar-logout .desktop-home-nav-icon{
+  color:#d0cac2!important;
+}
+html body .desktop-champion-card:is([data-champion="week"],[data-champion="month"],[data-champion="site"]){
+  --champion-accent:#c9c3b9!important;
+}
+html body .desktop-champion-card::before{background:#79746f!important}
+html body .desktop-champion-card:is(:hover,:focus-visible){
+  background:var(--coal-raise)!important;border-color:#817b74!important;
+}
+html body.desktop-board-workspace .desktop-welcome-rule{background:#918a80!important}
+html body.desktop-board-workspace .desktop-welcome-art{
+  background:linear-gradient(145deg,rgba(72,70,68,.24),rgba(38,37,34,.4))!important;
+}
+html body.desktop-board-workspace .desktop-member-fallback{background-color:#343230!important}
+html body.desktop-board-workspace :is(.desktop-member-avatar-wrap,.desktop-member-score){
+  background-color:#343230!important;border-color:#53514e!important;
+}
+html body.desktop-board-workspace :is(.desktop-member-location,.desktop-member-username){
+  color:#c8c2ba!important;
+}
+/* Old home/header/login backgrounds were not included in the first color pass. */
+html body :is(.hero-stat,.home-feature-card,.account-stat,
+ .compact-member-nav,.header-member-link,.header-tile,
+ .home-board-actions>.btn,.home-invite-wrap>.btn,.hero-play-btn,
+ .hero-computer-btn,.hero-tournaments-btn,.desktop-guest-auth-btn,
+ .desktop-guest-auth-signup,.desktop-guest-auth-card,.desktop-auth-dialog,
+ .mobile-dashboard-link,.dashboard-link){
+  background:var(--coal-raise)!important;border-color:#53514e!important;
+  color:#f1efeb!important;box-shadow:none!important;
+}
+html body .home-hero :is(.hero-play-btn,.hero-computer-btn,
+ .hero-tournaments-btn,#homeInviteToggle),
+html body.desktop-board-workspace #desktopGuestAuth
+ :is(.desktop-guest-auth-btn,.desktop-guest-auth-signup),
+html body.desktop-board-workspace.desktop-auth-open #register .btn{
+  background:linear-gradient(180deg,#484644,#343230)!important;
+  border-color:#53514e!important;color:#f1efeb!important;box-shadow:none!important;
+}
+html body .home-hero :is(.hero-play-btn::before,.home-board-actions>.btn::before,
+ .home-invite-wrap>.btn::before),html body .hero-stat-icon,
+html body .hero-stat strong,html body .compact-member-nav .header-member-points b{
+ color:#e2dcd3!important;border-color:#53514e!important;
+}
+html body .header-member-avatar{
+  background-color:#343230!important;border-color:#53514e!important;
+}
+/* Remaining phone icon tiles, badges, filters and miniature panels. */
+html body #mobileFixedWorkspace :is(.mfw-play-tile i,.mfw-stat b,.mfw-avatar){
+  color:#e2dcd3!important;background-color:#343230!important;
+  border-color:#53514e!important;
+}
+html body #mobileFixedWorkspace .mfw-board-label{
+  background:#343230!important;color:#f1efeb!important;border-color:#53514e!important;
+}
+html body #mobileFixedWorkspace .mfw-tournament-embed{background:#262522!important}
+html body :is(.mobile-home-stat strong,.v2-mobile-more-link .v2-global-icon,
+ .ranking-filter-icon,.rank-badge,.inline-puzzle-badge,.inline-learn-badge){
+  color:#e2dcd3!important;border-color:#53514e!important;
+}
+html body :is(.v2-mobile-more-link .v2-global-icon,
+ .v2-mobile-more-link.active .v2-global-icon){
+  background:#403e3c!important;color:#e2dcd3!important;
+}
+html body :is(.inline-puzzle-badge,.inline-learn-badge,.inline-learn-filters button,
+ .inline-puzzle-custom,.inline-variant-controls,.desktop-play-choice-icon,
+ .ranking-filter-icon,.rank-badge){
+  background-color:#343230!important;border-color:#53514e!important;
+}
+html body :is(.inline-learn-filters button.active,.inline-puzzle-modes button.active,
+ .inline-play-times button.active,.mobile-workspace-tab.active){
+  background:#45423f!important;color:#fff!important;border-color:#817d77!important;
+}
+html body :is(.inline-puzzle-stats strong,.inline-learn-badge,.inline-computer-label){
+  color:#e2dcd3!important;
+}
+/* Keep notebook grid lines; only recolor its ground and decorative labels. */
+html body .desktop-move-notebook .move-notebook-rows{background-color:#302e2b!important}
+html body .desktop-move-notebook :is(.move-notebook-emblem,
+ .move-notebook-header small,.move-notebook-header strong){color:#e2dcd3!important}
+html body :is(.tournament-tab,.tournament-list-status,.tournament-list-arrow,
+ .tournament-capacity-track,.ranking-filter-control,.profile-top-action,
+ .platform-tab,.v5-play-topbar .v5-home-link,.v5-time-picker-button){
+  border-color:#53514e!important;color:#e2dcd3!important;
+}
+html body :is(.v5-play-topbar .v5-home-link,.v5-time-picker-button,
+ .v5-time-option,.v2-mobile-more-link,.tournament-tab){
+  background:var(--coal-raise)!important;background-image:var(--coal-raise)!important;
+}
+html body :is(.ranking-filter-icon,.rank-badge,.inline-puzzle-badge,.inline-learn-badge){
+  box-shadow:none!important;text-shadow:none!important;
+}
+html.admin-embedded body :is(.stat-card strong,.stat-card.pro-stat strong,
+ .admin-inline-header>strong,.admin-inline-tab.active){color:#f1efeb!important}
+/* Final-minute clock, game-result indicators, error/success feedback and actual
+   chessboard squares, wooden texture and pieces retain their functional colors. */
