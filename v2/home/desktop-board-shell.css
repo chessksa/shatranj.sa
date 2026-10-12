@@ -363,23 +363,89 @@
   .desktop-dashboard-home{height:100%;display:grid;grid-template-rows:minmax(0,1fr) auto;gap:9px}
   .desktop-dashboard-home[hidden]{display:none!important}
 
-  .desktop-welcome-card,.desktop-live-stat,.desktop-dashboard-view{
+  .desktop-home-statistics,.desktop-live-stat,.desktop-dashboard-view{
     border:1px solid rgba(114,111,107,0.34);
     background:linear-gradient(145deg,rgba(69,66,62,0.94),rgba(69,66,62,0.94));
     box-shadow:0 12px 28px rgba(0,0,0,.14),inset 0 1px 0 rgba(255,255,255,.03);
   }
-  .desktop-welcome-card{position:relative;overflow:hidden;border-radius:15px;display:grid;grid-template-columns:minmax(0,1fr) 42%;min-height:0}
-  .desktop-welcome-card::after{content:"";position:absolute;inset:0;background:linear-gradient(90deg,rgba(69,66,62,0.12),transparent 55%,rgba(0,0,0,.13));pointer-events:none}
-  .desktop-welcome-copy{position:relative;z-index:2;padding:18px 8px 14px 16px;display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;min-width:0}
-  .desktop-welcome-copy small{font-size:16px;font-weight:800;color:#e2dcd3;line-height:1.15}
-  .desktop-welcome-copy h2{margin:4px 0 5px;color:#e2dcd3;font-size:24px;line-height:1.12;font-weight:900;white-space:nowrap}
-  .desktop-welcome-copy p{margin:0;color:#e2dcd3;font-size:13px;font-weight:700}
-  .desktop-welcome-rule{width:38px;height:3px;margin:11px 0 8px;border-radius:999px;background:#e2dcd3}
-  .desktop-welcome-copy blockquote{margin:0;color:#d7d2c7;font-size:12px;font-weight:700;white-space:nowrap}
-  .desktop-welcome-art{position:relative;z-index:1;display:grid;place-items:center;overflow:hidden;background:radial-gradient(circle at 42% 42%,rgba(69,66,62,0.34),transparent 48%),linear-gradient(145deg,rgba(69,66,62,0.12),rgba(69,66,62,0.42))}
-  .desktop-welcome-art span{position:relative;z-index:3;color:#302e2b;font-family:"Times New Roman",serif;font-size:clamp(78px,7vw,120px);line-height:1;filter:drop-shadow(0 8px 10px rgba(0,0,0,.48));text-shadow:0 1px 0 rgba(255,255,255,.08)}
-  .desktop-welcome-art i,.desktop-welcome-art b{position:absolute;color:rgba(69,66,62,0.48);font-family:"Times New Roman",serif;font-style:normal;font-weight:400;filter:blur(1.6px)}
-  .desktop-welcome-art i{right:4%;top:16%;font-size:66px}.desktop-welcome-art b{left:2%;bottom:10%;font-size:62px}
+  /* Personal achievement summary: one clean card replaces the legacy welcome illustration. */
+  .desktop-home-statistics{
+    display:grid;
+    grid-template-rows:49px minmax(0,3fr) minmax(0,3fr) minmax(0,2fr);
+    height:100%;min-height:0;min-width:0;
+    direction:rtl;overflow:hidden;
+    border-radius:9px;
+    color:#f5f4f0;
+  }
+  .desktop-statistics-header{
+    min-width:0;
+    display:flex;align-items:center;gap:7px;
+    padding:7px 12px;
+    border-bottom:1px solid rgba(245,244,240,.15);
+  }
+  .desktop-statistics-header>strong{
+    font-size:clamp(17px,1.15vw,20px);
+    font-weight:900;white-space:nowrap;color:#f5f4f0;
+  }
+  .desktop-statistics-header>span{
+    flex:1 1 auto;min-width:0;text-align:left;
+    color:#aaa9a3;font-size:clamp(9px,.67vw,11px);
+    white-space:nowrap;overflow:hidden;text-overflow:ellipsis;
+  }
+  .desktop-statistics-header>button{
+    flex:0 0 auto;border:1px solid rgba(245,244,240,.3);
+    border-radius:6px;background:#333632;color:#f5f4f0;
+    font:800 11px Arial,sans-serif;padding:5px 7px;cursor:pointer;
+  }
+  .desktop-home-statistics [hidden]{display:none!important}
+  .desktop-statistics-group{
+    display:grid;grid-template-rows:repeat(3,minmax(0,1fr));
+    min-height:0;min-width:0;
+  }
+  .desktop-statistics-group:last-child{grid-template-rows:repeat(2,minmax(0,1fr))}
+  .desktop-statistics-group + .desktop-statistics-group{
+    border-top:1px solid rgba(245,244,240,.22);
+  }
+  .desktop-statistics-row{
+    min-width:0;min-height:0;
+    display:flex;align-items:center;justify-content:space-between;
+    gap:7px;padding:2px 15px;
+    color:#f5f4f0;
+  }
+  .desktop-statistics-label{
+    min-width:0;display:inline-flex;align-items:center;gap:10px;
+    font-size:clamp(13px,1.03vw,17px);
+    font-weight:850;white-space:nowrap;
+  }
+  .desktop-statistics-icon{
+    flex:0 0 25px;width:25px;height:25px;
+    display:grid;place-items:center;color:var(--stat-color,#e9e9e5);
+  }
+  .desktop-statistics-icon svg{display:block;width:23px;height:23px}
+  .desktop-statistics-row[data-stat-row="games"]{--stat-color:#f5f4f0}
+  .desktop-statistics-row[data-stat-row="puzzles"]{--stat-color:#f2b469}
+  .desktop-statistics-row[data-stat-row="lessons"]{--stat-color:#a7d8f4}
+  .desktop-statistics-row[data-stat-row="rapid"]{--stat-color:#a5e475}
+  .desktop-statistics-row[data-stat-row="blitz"]{--stat-color:#ffe476}
+  .desktop-statistics-row[data-stat-row="bullet"]{--stat-color:#edbf65}
+  .desktop-statistics-row[data-stat-row="wins"]{--stat-color:#f5a978}
+  .desktop-statistics-row[data-stat-row="achievements"]{--stat-color:#c3adf6}
+  .desktop-statistics-row>[data-stat-value]{
+    flex:0 0 auto;min-width:40px;
+    font-size:clamp(16px,1.23vw,20px);font-weight:900;
+    text-align:left;line-height:1.1;
+    font-variant-numeric:tabular-nums;color:#f5f4f0;
+  }
+  @media (min-width:901px) and (max-height:720px){
+    .desktop-home-statistics{grid-template-rows:38px minmax(0,3fr) minmax(0,3fr) minmax(0,2fr)}
+    .desktop-statistics-header{padding:4px 9px}
+    .desktop-statistics-header>strong{font-size:16px}
+    .desktop-statistics-row{padding:0 9px}
+    .desktop-statistics-label{gap:6px;font-size:12px}
+    .desktop-statistics-icon{flex-basis:20px;width:20px;height:20px}
+    .desktop-statistics-icon svg{width:19px;height:19px}
+    .desktop-statistics-row>[data-stat-value]{font-size:15px}
+  }
 
   /* Champion strips: a single balanced line, with the name in the center. */
   .desktop-champions-grid{
