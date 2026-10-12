@@ -269,25 +269,31 @@ if(desktop.matches && document.querySelector('#homeHero')){
         </section>
         <section class="desktop-champions-grid" aria-label="أبطال شطرنج العرب">
           <a class="desktop-champion-card" data-champion="week" href="#ranking" aria-label="بطل الأسبوع">
-            <span class="desktop-champion-icon" aria-hidden="true">
+            <span class="desktop-champion-title">
+              <span class="desktop-champion-icon" aria-hidden="true">
               <svg viewBox="0 0 32 32" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="16" cy="12" r="8"/><path d="m11 19-2 10 7-4 7 4-2-10"/><path d="m13 12 2 2 4-4"/></svg>
             </span>
-            <span class="desktop-champion-info"><strong>بطل الأسبوع</strong><span class="desktop-champion-name">جارٍ التحديث…</span></span>
-            <span class="desktop-champion-result"><b class="desktop-champion-count">—</b><small class="desktop-champion-meta">آخر 7 أيام</small></span>
+            <strong>بطل الأسبوع</strong></span>
+            <span class="desktop-champion-name">جارٍ التحديث…</span>
+            <span class="desktop-champion-result"><b class="desktop-champion-count">—</b><small class="desktop-champion-meta">فوز</small></span>
           </a>
           <a class="desktop-champion-card" data-champion="month" href="#ranking" aria-label="بطل الشهر">
-            <span class="desktop-champion-icon" aria-hidden="true">
+            <span class="desktop-champion-title">
+              <span class="desktop-champion-icon" aria-hidden="true">
               <svg viewBox="0 0 32 32" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M10 4h12v10a6 6 0 0 1-12 0V4Z"/><path d="M10 7H5v4a6 6 0 0 0 6 6M22 7h5v4a6 6 0 0 1-6 6M16 20v6M11 27h10M9 30h14"/></svg>
             </span>
-            <span class="desktop-champion-info"><strong>بطل الشهر</strong><span class="desktop-champion-name">جارٍ التحديث…</span></span>
-            <span class="desktop-champion-result"><b class="desktop-champion-count">—</b><small class="desktop-champion-meta">آخر 30 يومًا</small></span>
+            <strong>بطل الشهر</strong></span>
+            <span class="desktop-champion-name">جارٍ التحديث…</span>
+            <span class="desktop-champion-result"><b class="desktop-champion-count">—</b><small class="desktop-champion-meta">فوز</small></span>
           </a>
           <a class="desktop-champion-card" data-champion="site" href="#ranking" aria-label="بطل الموقع">
-            <span class="desktop-champion-icon" aria-hidden="true">
+            <span class="desktop-champion-title">
+              <span class="desktop-champion-icon" aria-hidden="true">
               <svg viewBox="0 0 32 32" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="m3 10 6 6 7-10 7 10 6-6-3 15H6L3 10Z"/><path d="M6 29h20M12 20h8"/></svg>
             </span>
-            <span class="desktop-champion-info"><strong>بطل الموقع</strong><span class="desktop-champion-name">جارٍ التحديث…</span></span>
-            <span class="desktop-champion-result"><b class="desktop-champion-count">—</b><small class="desktop-champion-meta">الأعلى نقاطًا</small></span>
+            <strong>بطل الموقع</strong></span>
+            <span class="desktop-champion-name">جارٍ التحديث…</span>
+            <span class="desktop-champion-result"><b class="desktop-champion-count">—</b><small class="desktop-champion-meta">نقطة</small></span>
           </a>
         </section>
       </div>
@@ -316,17 +322,20 @@ if(desktop.matches && document.querySelector('#homeHero')){
         const champion=data?.[kind];
         card.classList.toggle('has-champion',Boolean(champion?.id));
         name.textContent=champion?.name||'بانتظار النتائج';
+        // Exactly one line per card. Site points are plain digits (1980),
+        // not a grouped number (1,980); wins are also displayed compactly.
         count.textContent=champion
-          ? Number(kind==='site'?champion.rating:champion.wins).toLocaleString('en-US')
+          ? String(Number(kind==='site'?champion.rating:champion.wins))
           : '—';
-        meta.textContent=kind==='site'
-          ? 'نقطة'
-          : `انتصار · ${kind==='week'?'7':'30'} أيام`;
+        meta.textContent=kind==='site'?'نقطة':'فوز';
+        card.title=kind==='site'
+          ? 'بطل الموقع حسب أعلى نقاط'
+          : `الأكثر فوزًا خلال آخر ${kind==='week'?'7':'30'} أيام`;
         card.href=champion?.id
           ? `player.html?id=${encodeURIComponent(champion.id)}`
           : '#ranking';
         card.setAttribute('aria-label',
-          `${kind==='week'?'بطل الأسبوع':kind==='month'?'بطل الشهر':'بطل الموقع'}: ${name.textContent}`);
+          `${kind==='week'?'بطل الأسبوع':kind==='month'?'بطل الشهر':'بطل الموقع'}: ${name.textContent}، ${count.textContent} ${meta.textContent}`);
       }
     }catch(error){
       console.warn('تعذر تحميل أبطال الموقع',error);
