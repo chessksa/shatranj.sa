@@ -98,12 +98,12 @@ jobs:
                 const j=(y*img.width+x)*4;
                 return Array.from(img.data.slice(j,j+3));
               };
-              const samples=[[.43,.43],[.53,.44],[.31,.32],[.67,.25],[.06,.06],[.94,.94]];
+              const samples=[[.43,.43],[.53,.44],[.31,.32],[.67,.29],[.07,.09],[.91,.92]];
               for(const [fx,fy] of samples){
                 const one=get(a,fx,fy),two=get(b,fx,fy);
                 const diff=one.reduce((sum,c,i)=>sum+Math.abs(c-two[i]),0);
                 console.log('IMAGE_COMPARE',fx,fy,one,two,diff);
-                if(diff>70)throw Error('Homepage and computer pixel difference too large');
+                if(diff>70)throw Error('Homepage and computer pixel difference too large at '+fx+','+fy);
               }
               await page.locator('.opponent-time-option[data-level="easy"]').click();
               await test('AFTER_DIFFICULTY');
