@@ -874,7 +874,10 @@
   }
   .desktop-play-choice-icon svg{width:23px;height:23px;display:block}
   .desktop-play-options :is(button,a):focus-visible{
-    outline:1px solid #d7b66c;outline-offset:1px;
+    outline:1px solid #d7b66c;outline-offset:-1px;
+  }
+  .desktop-play-options :is(.desktop-play-choice-list>button.is-selected,.desktop-play-time-options>button.is-selected):focus-visible{
+    outline:none;
   }
   @media(max-height:700px){
     .desktop-play-options{gap:7px}
@@ -913,7 +916,7 @@
     background:rgba(49,24,11,.36)!important;
   }
   body.desktop-board-workspace #homeBoardPreview.inline-variants-active .variant-square.selected{
-    box-shadow:inset 0 0 0 2px #d7b66c!important;
+    box-shadow:inset 0 0 0 1px #d7b66c!important;
   }
   body.desktop-board-workspace #homeBoardPreview.inline-variants-active .variant-square.target::after{
     content:"";position:absolute;z-index:2;
