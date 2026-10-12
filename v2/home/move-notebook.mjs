@@ -4,6 +4,7 @@
 const HOST_ID='desktopMoveNotebook';
 const START_FEN='rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1';
 let owner='', token=0, records=[], ended=false, activeReview=null, chessModulePromise=null;
+let notebookResizeBound=false;
 
 function chessModule(){
   return chessModulePromise ||= import('https://cdn.jsdelivr.net/npm/chess.js@1.4.0/+esm').catch(error=>{
@@ -24,6 +25,7 @@ function ensureHost(){
     root.setAttribute('aria-label','سجل نقلات الشطرنج وتحليل المباراة');
     root.innerHTML=`
       <header class="move-notebook-header">
+        <button type="button" class="move-notebook-toggle" aria-label="فتح سجل النقلات" aria-expanded="false" title="عرض سجل النقلات">☰</button>
         <span class="move-notebook-emblem" aria-hidden="true">♙</span>
         <div><strong id="moveNotebookTitle">سجل النقلات</strong><small id="moveNotebookSub">تتبع المباراة نقلة بنقلة</small></div>
       </header>
@@ -33,8 +35,44 @@ function ensureHost(){
         <span id="moveNotebookReviewStatus">يظهر التحليل بعد انتهاء المباراة.</span>
       </section>`;
     stage.insertBefore(root,stage.firstChild);
+    root.querySelector('.move-notebook-toggle').addEventListener('click',()=>{
+      if(root.dataset.mode!=='compact')return;
+      root.dataset.open=root.dataset.open==='true'?'false':'true';
+      updateNotebookToggle(root);
+    });
+    if(!notebookResizeBound){
+      notebookResizeBound=true;
+      window.addEventListener('resize',syncNotebookDock,{passive:true});
+      window.visualViewport?.addEventListener('resize',syncNotebookDock,{passive:true});
+    }
   }
   return root;
+}
+function updateNotebookToggle(root){
+  const button=root?.querySelector('.move-notebook-toggle');
+  if(!button)return;
+  const expanded=root.dataset.mode!=='compact'||root.dataset.open==='true';
+  button.setAttribute('aria-expanded',expanded?'true':'false');
+  button.setAttribute('aria-label',expanded?'إغلاق سجل النقلات':'فتح سجل النقلات');
+  button.title=expanded?'إغلاق سجل النقلات':'فتح سجل النقلات';
+  button.textContent=expanded?'×':'☰';
+}
+function syncNotebookDock(){
+  const root=document.getElementById(HOST_ID);
+  const stage=root?.parentElement;
+  const board=stage?.querySelector('#homeBoardPreview');
+  if(!root||!board||!document.body.classList.contains('desktop-move-notebook-active'))return;
+  // Compare free horizontal space with the CSS width of the notebook.
+  // Never reduce the computed board width; compact mode overlays only on demand.
+  const notebookWidth=window.innerWidth<=1170?180:Math.min(224,Math.max(180,window.innerWidth*0.14));
+  const gap=window.innerWidth<=1170?6:8;
+  const available=stage.getBoundingClientRect().width-board.offsetWidth;
+  const next=available>=notebookWidth+gap+3?'docked':'compact';
+  if(root.dataset.mode!==next){
+    root.dataset.mode=next;
+    root.dataset.open='false';
+  }
+  updateNotebookToggle(root);
 }
 function text(id,value){const n=document.getElementById(id);if(n)n.textContent=String(value??'');}
 function showRecords(){
@@ -236,6 +274,7 @@ export function openMoveNotebook(source){
   activeReview?.destroy();activeReview=null;
   token++;owner=source;records=[];ended=false;
   document.body.classList.add('desktop-move-notebook-active');
+  syncNotebookDock();
   text('moveNotebookTitle','سجل النقلات');
   text('moveNotebookSub',source==='computer'?'مباراة ضد الكمبيوتر':'مباراة مباشرة');
   const review=document.getElementById('moveNotebookReview');
@@ -250,6 +289,7 @@ export function updateMoveNotebook(source,moves,{finished=false}={}){
     return {...move,uci,display:uci?`${uci.slice(0,2)}–${uci.slice(2,4)}${uci[4]?'='+uci[4].toUpperCase():''}`:String(move.san||'—'),ply:i+1};
   });
   showRecords();
+  text('moveNotebookSub',`${source==='computer'?'ضد الكمبيوتر':'مباراة مباشرة'} · ${records.length} نقلة`);
   if(source==='computer'&&!finished)void enrichComputerMoves(token);
   if(finished&&!wasFinished){
     ended=true;
