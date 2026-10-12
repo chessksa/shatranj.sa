@@ -51,8 +51,13 @@
     filter:none;
   }
 
-  /* Keep both pawn colors visually balanced without affecting other pieces. */
-  /* Same approved pawns on online play, computer, lessons and puzzles. */
+  /* Non-pawns (king, queen, rooks, bishops and knights): 5% smaller.
+     Includes live play, computer, puzzles and lessons without touching pawns. */
+  .inline-play-square > .inline-play-piece:not([src*="/wp.png"]):not([src*="/bp.png"]){
+    --piece-scale:.95;
+    transform:translate(-50%,-50%) scale(.95)!important;
+  }
+  /* The approved 10% pawn reduction remains unchanged for both colors. */
   .inline-play-square > .inline-play-piece:is([src*="/wp.png"],[src*="/bp.png"]){
     --piece-scale:.90;
     transform:translate(-50%,-50%) scale(.90)!important;
