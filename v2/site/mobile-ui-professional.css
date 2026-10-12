@@ -626,3 +626,26 @@
     gap:2px 6px!important;
   }
 }
+
+/* 2026-10-13: Safari touch stability — navigation does not shift on press.
+   Keep links actionable while page content scrolls independently. */
+@media(max-width:900px){
+  html body .v2-mobile-nav{
+    position:fixed!important;
+    transform:none!important;
+    translate:none!important;
+    transition:none!important;
+    animation:none!important;
+    touch-action:manipulation!important;
+    pointer-events:auto!important;
+  }
+  html body .v2-mobile-nav .v2-mobile-link{
+    transform:none!important;
+    transition:background-color .12s ease,color .12s ease!important;
+    touch-action:manipulation!important;
+    pointer-events:auto!important;
+  }
+  html body .v2-mobile-nav .v2-mobile-link:active{
+    transform:none!important;
+  }
+}
