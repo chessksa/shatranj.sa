@@ -6,10 +6,17 @@ on:
   workflow_dispatch:
 permissions:
   contents: read
+  pages: read
 jobs:
   dns_https:
     runs-on: ubuntu-latest
     steps:
+      - name: Inspect GitHub Pages certificate status
+        env:
+          GH_TOKEN: ${{ github.token }}
+        shell: bash
+        run: |
+          curl -fsS --max-time 15 -H "Accept: application/vnd.github+json" -H "Authorization: Bearer $GH_TOKEN" "https://api.github.com/repos/${GITHUB_REPOSITORY}/pages" | python3 -c 'import json,sys; x=json.load(sys.stdin); print("cname:",x.get("cname")); print("https_enforced:",x.get("https_enforced")); print("https_certificate:",x.get("https_certificate")); print("pending_domain_unverified_at:",x.get("pending_domain_unverified_at")); print("protected_domain_state:",x.get("protected_domain_state"))'
       - name: Verify new DNS delegation and GitHub Pages
         shell: bash
         run: |
