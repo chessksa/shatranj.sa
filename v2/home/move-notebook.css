@@ -2,7 +2,7 @@
 @media(min-width:901px){
   /* The board keeps exactly the idle width/height during play.
      The notebook is out of the board's layout flow, so it cannot shrink squares. */
-  :root{--chess-notebook-width:clamp(250px,20vw,640px);--chess-notebook-gap:6px;--notebook-index-width:46px;--notebook-grid-line:rgba(188,219,209,.30);--notebook-row-height:28px;--notebook-title-height:54px;--notebook-columns-height:30px;--notebook-header-gold:rgba(224,181,103,.88)}
+  :root{--chess-notebook-width:clamp(250px,20vw,640px);--chess-notebook-gap:6px;--notebook-index-width:46px;--notebook-grid-line:rgba(188,219,209,.30);--notebook-row-height:28px;--notebook-title-height:54px;--notebook-columns-height:30px;--notebook-header-gold:rgba(224,181,103,.30)}
   /* The notation is mounted on document.body; no game-state rule touches
      desktop-board-stage or the approved chessboard position and dimensions. */
   .desktop-move-notebook{
