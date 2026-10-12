@@ -1169,8 +1169,15 @@ if(desktop.matches && document.querySelector('#homeHero')){
       if(!document.hidden)void heartbeatMemberPresence();
     });
 
-    await refreshDesktopPermissions();
     const initialHash=location.hash.replace(/^#/,'');
+    // Public home, rankings and game screens must not wait for an optional
+    // permission/network round-trip. Restricted deep links still resolve
+    // access rights before selecting their initial view.
+    if(initialHash==='admin'||initialHash==='settings'){
+      await refreshDesktopPermissions();
+    }else{
+      void refreshDesktopPermissions();
+    }
     if(initialHash==='play'){
       // Preserve #play for the online-play controller loaded immediately after the shell.
       showDashboard('home',{preserveRoute:true});
