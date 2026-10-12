@@ -37,18 +37,18 @@
     style.id = 'homeInviteStyles';
     style.textContent = `
       .home-invite-wrap{position:relative;display:inline-flex}
-      .home-invite-panel{position:fixed;top:50%;left:50%;right:auto;transform:translate(-50%,-50%);z-index:120;width:min(520px,calc(100vw - 32px));max-height:min(70vh,520px);overflow:auto;padding:14px;background:#343230;border:1px solid #d9d2c6;border-radius:14px;box-shadow:0 18px 46px rgba(0,0,0,.28)}
+      .home-invite-panel{position:fixed;top:50%;left:50%;right:auto;transform:translate(-50%,-50%);z-index:120;width:min(520px,calc(100vw - 32px));max-height:min(70vh,520px);overflow:auto;padding:14px;background:#343230;border:1px solid #53514e;border-radius:14px;box-shadow:0 18px 46px rgba(0,0,0,.28)}
       .home-invite-panel[hidden]{display:none!important}
-      .home-invite-title{font-size:12px;font-weight:900;color:#302e2b;margin-bottom:7px}
+      .home-invite-title{font-size:12px;font-weight:900;color:#f1efeb;margin-bottom:7px}
       .home-invite-search{height:39px!important;margin:0!important}
       .home-invite-results{margin-top:7px;max-height:270px;overflow:auto;border-radius:9px}
-      .home-invite-result{width:100%;border:0;border-bottom:1px solid #e2dcd3;background:#343230;padding:9px 10px;text-align:right;display:flex;align-items:center;justify-content:space-between;gap:10px;cursor:pointer;font:inherit;color:#f1efeb}
+      .home-invite-result{width:100%;border:0;border-bottom:1px solid #53514e;background:#343230;padding:9px 10px;text-align:right;display:flex;align-items:center;justify-content:space-between;gap:10px;cursor:pointer;font:inherit;color:#f1efeb}
       .home-invite-result:last-child{border-bottom:0}
-      .home-invite-result:hover{background:#e2dcd3}
+      .home-invite-result:hover{background:#484644}
       .home-invite-result:disabled{opacity:.58;cursor:wait}
       .home-invite-name{font-size:13px;font-weight:900}.home-invite-name-link{color:inherit;text-decoration:none}.home-invite-name-link:hover{text-decoration:underline}
       .home-invite-meta{margin-top:2px;color:#c8c2ba;font-size:10px}
-      .home-invite-send{flex:0 0 auto;border:0;background:transparent;color:#3b3937;font-size:11px;font-weight:900;cursor:pointer;padding:6px 8px;border-radius:8px}.home-invite-send:hover{background:#403e3c}
+      .home-invite-send{flex:0 0 auto;border:0;background:transparent;color:#e2dcd3;font-size:11px;font-weight:900;cursor:pointer;padding:6px 8px;border-radius:8px}.home-invite-send:hover{background:#403e3c}
       .home-invite-empty{padding:14px 8px;text-align:center;color:#c8c2ba;font-size:11px}
       .home-invite-msg{min-height:17px;margin-top:6px;font-size:10px;font-weight:800;color:#3b3937}
       .home-invite-msg.error{color:#a53a3a}

@@ -8,8 +8,8 @@ def test_mobile_home_frames_share_one_visual_contract():
 
     assert "Mobile unified interface frames 20260911" in css
     assert "@media(max-width:900px)" in css
-    assert "--mobile-frame-border:1px solid rgba(216,182,101,.42)" in css
-    assert "--mobile-frame-bg:linear-gradient(145deg,rgba(8,62,64,.86),rgba(7,49,51,.82))" in css
+    assert "--mobile-frame-border:1px solid rgba(165,162,158,0.42)" in css
+    assert "--mobile-frame-bg:linear-gradient(145deg,rgba(69,66,62,0.86),rgba(69,66,62,0.82))" in css
     assert "--mobile-frame-radius:14px" in css
     assert "--mobile-frame-shadow:0 8px 20px rgba(0,0,0,.14),inset 0 1px 0 rgba(255,255,255,.025)" in css
 
