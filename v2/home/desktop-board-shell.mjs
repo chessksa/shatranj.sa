@@ -381,6 +381,112 @@ if(desktop.matches && document.querySelector('#homeHero')){
   }
 
 
+
+  // Variant games reuse the existing approved chessboard; the center column
+  // holds controls only, and the existing variant engine owns the moves.
+  let variantGeneration=0;
+  let variantDisposer=null;
+  function stopVariants(){
+    ++variantGeneration;
+    if(variantDisposer){
+      variantDisposer();
+      variantDisposer=null;
+    }
+    const preview=document.getElementById('homeBoardPreview');
+    if(preview?.classList.contains('inline-variants-active')){
+      preview.classList.remove('inline-variants-active');
+      renderApprovedPreview(preview);
+    }
+  }
+
+  async function variantsView(body){
+    const generation=++variantGeneration;
+    const preview=document.getElementById('homeBoardPreview');
+    if(!preview){
+      body.textContent='تعذر فتح الرقعة الرئيسية.';
+      return;
+    }
+    const panel=document.createElement('section');
+    panel.className='inline-variants-panel';
+    panel.setAttribute('aria-label','نماذج اللعب');
+    panel.innerHTML=`
+      <header class="inline-variants-title"><h2>نماذج اللعب</h2><p>اختر النموذج، ثم ابدأ البحث عن خصم</p></header>
+      <section class="inline-variants-players">
+        <div id="blackPlayer" class="inline-variant-player">
+          <span><strong id="blackName">الأسود</strong><small id="blackMeta"></small></span>
+          <strong id="blackClock" class="inline-variant-clock">10:00</strong>
+        </div>
+        <div id="whitePlayer" class="inline-variant-player">
+          <span><strong id="whiteName">الأبيض</strong><small id="whiteMeta"></small></span>
+          <strong id="whiteClock" class="inline-variant-clock">10:00</strong>
+        </div>
+      </section>
+      <div id="variantStatus" class="inline-variant-status" role="status">جارٍ تجهيز نماذج اللعب…</div>
+      <div class="inline-variant-actions">
+        <button type="button" id="variantDraw" disabled>تعادل</button>
+        <button type="button" id="variantResign" disabled>استسلام</button>
+      </div>
+      <section class="inline-variant-controls">
+        <label for="variantMode">نموذج اللعب</label>
+        <select id="variantMode" aria-label="نموذج اللعب">
+          <option value="chess960">شطرنج 960</option>
+          <option value="threecheck">الكش الثلاثي</option>
+          <option value="kingofthehill">ملك التل</option>
+          <option value="crazyhouse">البيت المجنون</option>
+          <option value="atomic">الشطرنج الذري</option>
+          <option value="antichess">الشطرنج العكسي</option>
+          <option value="horde">شطرنج الحشد</option>
+          <option value="racingkings">سباق الملوك</option>
+        </select>
+        <p id="variantModeInfo" class="inline-variant-rules"></p>
+        <div class="inline-variant-options">
+          <select id="variantTime" aria-label="وقت المباراة">
+            <option value="300,0">5 دقائق</option>
+            <option value="600,0" selected>10 دقائق</option>
+            <option value="900,10">15 + 10</option>
+          </select>
+          <select id="variantRated" aria-label="نظام المباراة">
+            <option value="1">نقاط</option>
+            <option value="0">ودي</option>
+          </select>
+        </div>
+        <div class="inline-variant-queue-buttons">
+          <button type="button" id="variantQueue">ابدأ البحث</button>
+          <button type="button" id="variantCancel" disabled>إلغاء</button>
+        </div>
+        <div id="variantQueueState" role="status"></div>
+      </section>
+      <div id="variantBlackPocket" class="inline-variant-pocket variant-pocket" aria-label="جيب الأسود"></div>
+      <div id="variantWhitePocket" class="inline-variant-pocket variant-pocket" aria-label="جيب الأبيض"></div>
+      <section class="inline-variant-games-panel">
+        <h3>مبارياتي في الأنماط</h3>
+        <div id="variantGames" class="inline-variant-games">جارٍ التحميل…</div>
+      </section>`;
+    body.appendChild(panel);
+    const board=document.createElement('div');
+    board.id='variantBoard';
+    board.className='desktop-board-grid variant-board';
+    board.setAttribute('role','grid');
+    board.setAttribute('aria-label','الرقعة الرئيسية لنماذج اللعب');
+    preview.classList.add('inline-variants-active');
+    preview.replaceChildren(board);
+    try{
+      const {mountVariantGame}=await import(`../../v3/variants/app.mjs?v=${desktopAssetVersion}`);
+      if(generation!==variantGeneration||!body.isConnected)return;
+      const dispose=await mountVariantGame({boardElement:board,scope:body,embedded:true});
+      if(generation!==variantGeneration||!body.isConnected){
+        dispose?.();
+        return;
+      }
+      variantDisposer=dispose;
+    }catch(error){
+      if(generation!==variantGeneration||!body.isConnected)return;
+      console.error('تعذر تشغيل نماذج اللعب في الرقعة الرئيسية',error);
+      const status=panel.querySelector('#variantStatus');
+      if(status)status.textContent='تعذر تحميل نماذج اللعب. حاول إعادة فتح القائمة.';
+    }
+  }
+
   // Single desktop entry point for online games, friends, computer, and variants.
   let selectedPlayChoice='online';
   function playOptionsView(body){
@@ -444,7 +550,7 @@ if(desktop.matches && document.querySelector('#homeHero')){
       }else if(type==='friend'){
         showDashboard('invite');
       }else if(type==='variants'){
-        location.assign('variants.html');
+        showDashboard('variants');
       }
     });
   }
@@ -504,7 +610,8 @@ if(desktop.matches && document.querySelector('#homeHero')){
       || target.classList.contains('inline-play-active')
       || target.classList.contains('inline-computer-active')
       || target.classList.contains('inline-puzzle-active')
-      || target.classList.contains('inline-learn-active'))return;
+      || target.classList.contains('inline-learn-active')
+      || target.classList.contains('inline-variants-active'))return;
     if(target.querySelectorAll('.desktop-board-square > .desktop-board-preview-piece').length!==32){
       renderApprovedPreview(target);
     }
@@ -512,9 +619,10 @@ if(desktop.matches && document.querySelector('#homeHero')){
   function showDashboard(id='home'){
     // Navigation always ends active online play before touching the home chessboard.
     window.dispatchEvent(new CustomEvent('desktop:inline-play-stop'));
+    stopVariants();
     if(id==='admin'&&!desktopAdminAccess)id='home';
     if(id==='settings'&&!desktopSignedIn)id='home';
-    if(['home','play-options','ranking','tournaments','watch','settings','invite','computer','puzzles','learn','profile','admin'].includes(id)){
+    if(['home','play-options','variants','ranking','tournaments','watch','settings','invite','computer','puzzles','learn','profile','admin'].includes(id)){
       history.replaceState(null,'','#'+id);
     }
     if(id!=='computer') stopInlineComputer();
@@ -527,6 +635,7 @@ if(desktop.matches && document.querySelector('#homeHero')){
     if(!home||!view||!body)return;
 
     view.classList.toggle('play-options-view',id==='play-options');
+    view.classList.toggle('variants-view',id==='variants');
     view.classList.toggle('computer-view',id==='computer');
     view.classList.toggle('ranking-view',id==='ranking');
     view.classList.toggle('puzzle-view',id==='puzzles');
@@ -552,6 +661,11 @@ if(desktop.matches && document.querySelector('#homeHero')){
     if(id==='play-options'){
       showViewTitle('العب الآن');
       playOptionsView(body);
+      return;
+    }
+    if(id==='variants'){
+      showViewTitle('نماذج اللعب');
+      void variantsView(body);
       return;
     }
     if(id==='profile'){
