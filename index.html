@@ -1916,14 +1916,26 @@ async function loadPlayers(){
   applyFilter();
 }
 
-async function loadCurrentMatchesCount(){
+// Public RPC already includes all live player-vs-player games and rated
+// computer games. Realtime presence additionally counts unregistered
+// player-vs-computer games (including the desktop inline board) exactly once.
+let persistedLiveMatchesCount = 0;
+let guestComputerMatchesCount = Number(window.SHATRANJ_GUEST_COMPUTER_COUNT) || 0;
+function renderCurrentMatchesCount(){
   const el=document.querySelector('#headerMatchesCount');
-  if(!el) return;
-
+  if(el) el.textContent=String(persistedLiveMatchesCount+guestComputerMatchesCount);
+}
+window.addEventListener('shatranj:guest-computer-match-count',event=>{
+  const next=Number(event.detail?.count);
+  guestComputerMatchesCount=Number.isSafeInteger(next)&&next>=0?next:0;
+  renderCurrentMatchesCount();
+});
+async function loadCurrentMatchesCount(){
   try{
     const {data,error}=await supabase.rpc('list_public_current_games');
     if(error) throw error;
-    el.textContent=String(Array.isArray(data)?data.length:0);
+    persistedLiveMatchesCount=Array.isArray(data)?data.length:0;
+    renderCurrentMatchesCount();
   }catch(error){
     console.warn('تعذر تحميل عدد المباريات الجارية',error);
   }
@@ -2580,7 +2592,7 @@ setInterval(loadCurrentMatchesCount,3000);
 
 <script src="site-notifications.js?v=20261009-tiles58-gridtable-v1"></script>
 <script src="home-invite.js?v=20261009-tiles58-gridtable-v1"></script>
-<script type="module" src="site-presence.js?v=20261009-tiles58-gridtable-v1"></script>
+<script type="module" src="site-presence.js?v=20261012-computer-live-matches-v1"></script>
 <script src="config-base.js?v=20261009-tiles58-gridtable-v1"></script><script src="home-tickers-bootstrap.js?v=20261009-tiles58-gridtable-v1"></script><script type="module" src="v2/home/dashboard.mjs?v=20261012-champions-ribbon-v20"></script><script type="module" src="v2/site/shell.mjs?v=20261010-admin-tiles-entry-cachefix-v3"></script><script src="mobile-home-fixed-v1.js?v=20261012-move-notebook-v2"></script><script type="module" src="v2/home/chess-news-ticker.mjs?v=20261009-tiles58-gridtable-v1"></script><script id="approvedHomeReadyScript">
 (()=>{
   const root=document.documentElement,started=Date.now();
