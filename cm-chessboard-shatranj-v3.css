@@ -44,10 +44,14 @@
 /* Phone boards use the original textured Wood 4 artwork only. The fills
    remain opaque on desktop, so this does not change its established palette. */
 @media(max-width:900px){
-  .board-shell .cm-board-host .cm-chessboard.shatranj .board .square.white,
-  .board-shell .cm-board-host .cm-chessboard.shatranj .board .square.black{
+  body:not(.computer-game) .board-shell .cm-board-host .cm-chessboard.shatranj .board .square.white,
+  body:not(.computer-game) .board-shell .cm-board-host .cm-chessboard.shatranj .board .square.black{
     fill:transparent!important;
     fill-opacity:0!important;
+  }
+  body.computer-game .board-shell .cm-board-host .cm-chessboard.shatranj .board .square.white,
+  body.computer-game .board-shell .cm-board-host .cm-chessboard.shatranj .board .square.black{
+    fill-opacity:1!important;
   }
   .board-shell .cm-board-host{
     background:#ad8a65 url('assets/boards/wood4.jpg') center/100% 100% no-repeat!important;
