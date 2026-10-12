@@ -105,7 +105,9 @@
         const name=file+rank;
         const dark=((file.charCodeAt(0)-97)+rank)%2===0;
         const piece=PIECES[name];
-        out+='<span class="mfw-square '+(dark?'dark':'light')+'">'+(piece?'<img class="mfw-piece" src="assets/pieces/'+piece+'.png?v=20261012-extracted-photo-pieces-v3" alt="" draggable="false">':'')+'</span>';
+        const rankMark=file==='a'?'<span class="mfw-coordinate mfw-coordinate-rank" aria-hidden="true">'+rank+'</span>':'';
+        const fileMark=rank===1?'<span class="mfw-coordinate mfw-coordinate-file" aria-hidden="true">'+file+'</span>':'';
+        out+='<span class="mfw-square '+(dark?'dark':'light')+'">'+(piece?'<img class="mfw-piece" src="assets/pieces/'+piece+'.png?v=20261012-extracted-photo-pieces-v3" alt="" draggable="false">':'')+rankMark+fileMark+'</span>';
       }
     }
     return out;
