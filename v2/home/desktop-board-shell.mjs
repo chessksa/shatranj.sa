@@ -1137,6 +1137,10 @@ if(desktop.matches && document.querySelector('#homeHero')){
       });
     }
 
+    // Reveal the desktop only after the canonical board, sidebar, dashboard and
+    // initial route have been constructed. The entry gate reads this marker.
+    document.body.classList.add('desktop-workspace-initialized');
+
     window.addEventListener('hashchange',()=>{
       const next=location.hash.replace(/^#/,'');
       if(next==='play'){
