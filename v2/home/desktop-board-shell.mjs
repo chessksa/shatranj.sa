@@ -346,7 +346,7 @@ if(desktop.matches && document.querySelector('#homeHero')){
 
   function setActiveNav(id){
     document.querySelectorAll('.desktop-home-nav-link').forEach(link=>{
-      const active=link.dataset.desktopNav===(['play-options','computer','invite'].includes(id)?'play':id);
+      const active=link.dataset.desktopNav===(['play-options','computer','invite','variants'].includes(id)?'play':id);
       link.classList.toggle('active',active);
       if(active)link.setAttribute('aria-current','page');
       else link.removeAttribute('aria-current');
