@@ -4,7 +4,7 @@ ROOT = Path(__file__).resolve().parents[1]
 SPRITE = ROOT / "assets" / "pieces" / "shatranj-approved-20260904.svg"
 PIECE_CODES = ("wk", "wq", "wr", "wb", "wn", "wp", "bk", "bq", "br", "bb", "bn", "bp")
 PNG_CODES = ("wr", "wn", "wb", "wq", "wk", "wp", "br", "bn", "bb", "bq", "bk", "bp")
-CACHE = "20261012-extracted-photo-pieces-v3"
+CACHE = "20261012-pawns90-allboards-v3"
 
 
 def test_uploaded_png_piece_set_is_complete():
@@ -40,5 +40,8 @@ def test_play_page_loads_current_scripts():
 def test_board_theme_keeps_approved_colors():
     css = (ROOT / "cm-chessboard-shatranj-v3.css").read_text(encoding="utf-8")
     compact = css.replace(" ", "")
-    assert "fill:#d6cfbf" in compact
-    assert "fill:#246f77" in compact
+    assert "fill:rgba(255,247,224,.43)" in compact
+    assert "fill:rgba(49,24,11,.36)" in compact
+    sprite = SPRITE.read_text(encoding="utf-8")
+    assert '<g id="wp" transform="translate(2 2) scale(0.90)">' in sprite
+    assert '<g id="bp" transform="translate(2 2) scale(0.90)">' in sprite
