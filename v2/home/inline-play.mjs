@@ -104,7 +104,7 @@ function orderedSquares(color){
 }
 
 function normalizePlayLinks(){
-  document.querySelectorAll('[data-desktop-nav="play"],[data-tune-action="play"]').forEach(link=>{
+  document.querySelectorAll('[data-tune-action="play"]').forEach(link=>{
     link.setAttribute('href','#play');
   });
 }
@@ -706,7 +706,7 @@ function bindPanelOnce(){
   mounted=true;
 }
 
-async function enterInlinePlay({gameId=null}={}){
+async function enterInlinePlay({gameId=null,minutes=selectedMinutes,autoStart=false}={}){
   if(!desktop.matches) return;
   window.dispatchEvent(new CustomEvent('desktop:inline-computer-stop'));
   normalizePlayLinks();
@@ -724,7 +724,7 @@ async function enterInlinePlay({gameId=null}={}){
   setActiveNav('play');
 
   bindPanelOnce();
-  setSelectedMinutes(selectedMinutes);
+  setSelectedMinutes(minutes);
   resetOpponent();
   renderPosition(currentGame?.fen||START_FEN,currentGame?orientation:'w');
   updateControls();
@@ -750,6 +750,7 @@ async function enterInlinePlay({gameId=null}={}){
     }
   }else{
     setStatus('اختر وقت المباراة ثم ابدأ البحث');
+    if(autoStart)void beginSearch(minutes);
   }
 }
 
@@ -775,7 +776,6 @@ function exitInlinePlay(){
 
 function handleEntryClick(event){
   if(!desktop.matches) return;
-  const playNav=event.target.closest('[data-desktop-nav="play"]');
   const quickPlay=event.target.closest('[data-tune-action="play"]');
   const previewClick=event.target.closest('#homeBoardPreview');
   const computerBoardClick=event.target.closest('#inlineComputerBoardGrid')
@@ -793,9 +793,9 @@ function handleEntryClick(event){
   if(previewClick&&(computerBoardClick||puzzleBoardClick||learnBoardClick)) return;
   if(active&&previewClick) return;
 
-  if(playNav||quickPlay||previewClick){
+  if(quickPlay||previewClick){
     event.preventDefault();
-    if(playNav||quickPlay) event.stopPropagation();
+    if(quickPlay) event.stopPropagation();
     void enterInlinePlay();
     return;
   }
@@ -830,6 +830,10 @@ function boot(){
 }
 
 window.addEventListener('desktop:inline-play-stop',()=>exitInlinePlay());
+window.addEventListener('desktop:inline-play-open',event=>{
+  const minutes=Number(event.detail?.minutes);
+  void enterInlinePlay({minutes:validMinutes.includes(minutes)?minutes:10,autoStart:!!event.detail?.autoStart});
+});
 
 window.addEventListener('pagehide',()=>{
   if(polling) cancelMatchmaking().catch(()=>{});
