@@ -64,7 +64,8 @@ function restoreDashboardBlocks(){
       <div class="desktop-live-stat"><small>المباريات الآن</small><strong id="desktopMatchesCount">0</strong></div>
       <div class="desktop-live-stat"><small>المتواجدون</small><strong id="desktopOnlineCount">0</strong></div>
       <div class="desktop-live-stat"><small>المشتركون</small><strong id="desktopPlayersCount">0</strong></div>`;
-    welcome.insertAdjacentElement('afterend',stats);
+    // Champion cards occupy the second half; counters always stay in the bottom row.
+    home.appendChild(stats);
   }
 
   copyText('headerMatchesCount','desktopMatchesCount','0');
