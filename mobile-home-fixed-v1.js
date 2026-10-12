@@ -271,7 +271,7 @@
     const items=[['♜','البطولات','#tournaments'],['◉','شاهد','watch.html'],['◆','الألغاز','puzzles.html'],['▤','تعلّم','learn.html'],['⌁','التحليل','analysis.html'],['▥','الإحصائيات','stats.html'],['♙','الأندية','clubs.html'],['⚙','الإعدادات','settings-v2.html'],['●','حسابي','profile.html']];
     // Keep the administrator action first so it is visible without scrolling.
     if(mobileAdminAllowed&&signedIn())items.unshift(['♜','لوحة الإدارة','admin.html']);
-    body.innerHTML='<div class="mfw-more">'+items.map(([i,l,h])=>'<a href="'+h+'"><i>'+i+'</i><span>'+l+'</span></a>').join('')+'</div>';
+    body.innerHTML='<div class="mfw-more" data-count="'+items.length+'">'+items.map(([i,l,h])=>'<a href="'+h+'"><i>'+i+'</i><span>'+l+'</span></a>').join('')+'</div>';
     body.querySelector('a[href="#tournaments"]')?.addEventListener('click',event=>{event.preventDefault();show('tournaments');});
   }
 
@@ -294,7 +294,9 @@
     if(active==='tournaments'&&id!=='tournaments'&&tournamentSpectatorPromise){
       void tournamentSpectatorPromise.then(module=>module.stopInlineTournamentSpectator()).catch(console.warn);
     }
-    document.getElementById('mobileFixedWorkspace')?.classList.toggle('mfw-tournament-mode',id==='tournaments');
+    const workspace=document.getElementById('mobileFixedWorkspace');
+    workspace?.classList.toggle('mfw-tournament-mode',id==='tournaments');
+    workspace?.classList.toggle('mfw-more-mode',id==='more');
     body.replaceChildren();
     const titles={home:'الرئيسية',play:'العب الآن',computer:'اللعب مع الكمبيوتر',ranking:'الترتيب',invite:'دعوة لاعب',more:'المزيد',tournaments:'البطولات'};
     setActive(id,titles[id]||'شطرنج العرب');

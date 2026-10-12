@@ -513,3 +513,53 @@
     font-size:22px;font-weight:800;line-height:1;
   }
 }
+
+/* Keep all More actions visible in one phone panel without shrinking the board:
+   9 standard links = 3x3, 10 with administrator = 5x2. */
+@media(max-width:900px){
+  #mobileFixedWorkspace.mfw-more-mode .mfw-panel-body{
+    padding:6px!important;
+    overflow-x:hidden!important;
+    overflow-y:auto!important;
+  }
+  #mobileFixedWorkspace.mfw-more-mode .mfw-more{
+    width:100%!important;height:100%!important;min-height:0!important;
+    display:grid!important;
+    grid-template-columns:repeat(3,minmax(0,1fr))!important;
+    grid-template-rows:repeat(3,minmax(0,1fr))!important;
+    grid-auto-rows:minmax(0,1fr)!important;
+    gap:4px!important;
+    align-items:stretch!important;
+    align-content:stretch!important;
+  }
+  #mobileFixedWorkspace.mfw-more-mode .mfw-more[data-count="10"]{
+    grid-template-columns:repeat(5,minmax(0,1fr))!important;
+    grid-template-rows:repeat(2,minmax(0,1fr))!important;
+  }
+  #mobileFixedWorkspace.mfw-more-mode .mfw-more a{
+    width:100%!important;height:100%!important;min-width:0!important;
+    min-height:0!important;padding:3px 2px!important;margin:0!important;
+    box-sizing:border-box!important;border-radius:9px!important;
+    display:flex!important;flex-direction:column!important;
+    align-items:center!important;justify-content:center!important;gap:3px!important;
+    text-align:center!important;overflow:hidden!important;
+    font-size:10px!important;font-weight:800!important;line-height:1.15!important;
+  }
+  #mobileFixedWorkspace.mfw-more-mode .mfw-more a i{
+    flex:0 0 auto!important;font-size:19px!important;line-height:1!important;
+  }
+  #mobileFixedWorkspace.mfw-more-mode .mfw-more a span{
+    display:block!important;max-width:100%!important;
+    white-space:normal!important;overflow-wrap:normal!important;
+    text-align:center!important;line-height:1.15!important;
+  }
+  #mobileFixedWorkspace.mfw-more-mode .mfw-more[data-count="10"] a{
+    font-size:9.5px!important;
+  }
+}
+@media(max-width:900px) and (orientation:landscape){
+  #mobileFixedWorkspace.mfw-more-mode .mfw-more[data-count="9"]{
+    grid-template-columns:repeat(5,minmax(0,1fr))!important;
+    grid-template-rows:repeat(2,minmax(0,1fr))!important;
+  }
+}
