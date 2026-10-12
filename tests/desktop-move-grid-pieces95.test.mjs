@@ -21,7 +21,8 @@ assert.match(notebookCss,/\.move-notebook-columns,.move-notebook-row\{display:gr
 assert.match(notebookCss,/\.move-notebook-columns>span,\.move-notebook-row>span\{[^}]*border-inline-end:1px/,'Cells need vertical borders');
 assert.match(notebookCss,/repeating-linear-gradient\(to bottom/,'Empty part of notation area must still show horizontal grid rows');
 assert.match(notebookCss,/flex:1 1 auto/,'Notation rows must fill available height');
-assert.match(notebookJs,/Math\.max\(250,Math\.min\(680,availableLeft\)\)/,'Always show the full notation grid at a readable width');
+assert.match(notebookJs,/const width=Math\.min\(680,availableLeft\)/,'Move grid must never exceed the free left width');
+assert.match(notebookCss,/z-index:29/,'Board above at z-index 30 is a safe fallback against visual overlap');
 assert.match(notebookJs,/--notebook-docked-width/,'Available width must be applied to the notation panel only');
 assert.match(notebookJs,/--notebook-board-height/,'Notation height must track actual board height');
 assert.doesNotMatch(notebookCss,/transform:translateX\(/,'Notebook must never shift the board');
