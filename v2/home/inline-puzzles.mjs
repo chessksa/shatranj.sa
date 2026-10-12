@@ -1,7 +1,7 @@
 import { Chess } from 'https://cdn.jsdelivr.net/npm/chess.js@1.4.0/+esm';
 import { supabase, getSessionPlayer, rpc } from '../platform/api.mjs';
 
-import { renderApprovedPreview } from './move-notebook.mjs?v=20261012-notebook-viewport-fix-v8';
+import { renderApprovedPreview } from './move-notebook.mjs?v=20261012-unified-board-colors-v9';
 const desktop=window.matchMedia('(min-width:901px)');
 const PIECE_ROOT='assets/pieces/';
 const FILES=['a','b','c','d','e','f','g','h'];
