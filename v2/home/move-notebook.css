@@ -10,11 +10,11 @@
   /* Do not translate/reposition the chessboard on opening the move log.
      The left-hand log expands as an overlay when space is insufficient. */
   .desktop-move-notebook{
-    position:absolute;
+    position:fixed;
     z-index:42;
-    left:var(--notebook-docked-left,0px);
-    top:50%;
-    transform:translateY(-50%);
+    left:var(--notebook-docked-left,12px);
+    top:var(--notebook-board-top,6px);
+    transform:none;
     direction:rtl;
     width:var(--notebook-docked-width,var(--chess-notebook-width));
     height:var(--notebook-board-height,calc(100dvh - 16px));
@@ -43,7 +43,7 @@
   /* Compact screens: a slim drawer can be expanded without resizing the board.
      When expanded, its temporary overlay can be closed with the same control. */
   .desktop-move-notebook[data-mode="compact"]{
-    width:38px;height:174px;top:12px;transform:none;
+    width:38px;height:174px;top:var(--notebook-board-top,6px);transform:none;
     border-radius:0;transition:width .16s ease,height .16s ease;
   }
   .desktop-move-notebook[data-mode="compact"] .move-notebook-header{
@@ -61,7 +61,7 @@
   .desktop-move-notebook[data-mode="compact"] .move-notebook-review{display:none}
   .desktop-move-notebook[data-mode="compact"][data-open="true"]{
     width:min(340px,calc(100vw - 20px));height:min(var(--notebook-board-height,calc(100dvh - 16px)),calc(100dvh - 16px));
-    top:50%;transform:translateY(-50%);border-radius:0;
+    top:var(--notebook-board-top,6px);transform:none;border-radius:0;
   }
   .desktop-move-notebook[data-mode="compact"][data-open="true"] .move-notebook-header{
     flex-direction:row;justify-content:flex-start;gap:7px;padding:11px 8px;
