@@ -14,13 +14,14 @@ const sprite=read('assets/pieces/shatranj-approved-20260904.svg');
 const home=read('index.html');
 
 assert.match(notebookCss,/height:var\(--notebook-board-height/,'Moves panel must match the height of the board');
+assert.match(notebookCss,/position:fixed/,'Full-width notation must be viewport fixed, not lost inside the stage');
 assert.match(notebookCss,/border-radius:0;/,'Outer notebook corners must be square');
 assert.match(notebookCss,/\.desktop-move-notebook\[data-mode="compact"\]\[data-open="true"\][\s\S]*?border-radius:0;/,'Expanded notebook corners must be square');
 assert.match(notebookCss,/\.move-notebook-columns,.move-notebook-row\{display:grid/,'Headers and moves must share one real 3-column grid');
 assert.match(notebookCss,/\.move-notebook-columns>span,\.move-notebook-row>span\{[^}]*border-inline-end:1px/,'Cells need vertical borders');
 assert.match(notebookCss,/repeating-linear-gradient\(to bottom/,'Empty part of notation area must still show horizontal grid rows');
 assert.match(notebookCss,/flex:1 1 auto/,'Notation rows must fill available height');
-assert.match(notebookJs,/Math\.min\(680,availableLeft-gap\)/,'Notebook should expand into measured free space');
+assert.match(notebookJs,/Math\.min\(690,usableLeft\)/,'Notebook should expand into measured viewport space');
 assert.match(notebookJs,/--notebook-docked-width/,'Available width must be applied to the notation panel only');
 assert.match(notebookJs,/--notebook-board-height/,'Notation height must track actual board height');
 assert.doesNotMatch(notebookCss,/transform:translateX\(/,'Notebook must never shift the board');
