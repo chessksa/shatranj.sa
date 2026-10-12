@@ -131,10 +131,23 @@ if(desktop.matches && document.querySelector('#homeHero')){
     preview.replaceChildren();
     const grid=document.createElement('span');
     grid.className='desktop-board-grid';
+    const firstRank=['r','n','b','q','k','b','n','r'];
     for(let i=0;i<64;i+=1){
       const row=Math.floor(i/8),col=i%8;
       const square=document.createElement('span');
       square.className=`desktop-board-square ${(row+col)%2?'dark':'light'}`;
+      // The desktop preview previously relied on an unlinked, legacy stylesheet.
+      // Use the same twelve canonical PNG files as gameplay and mobile.
+      const type=row===0||row===7?firstRank[col]:(row===1||row===6?'p':null);
+      if(type){
+        const piece=document.createElement('img');
+        const color=row<2?'b':'w';
+        piece.className='desktop-board-preview-piece';
+        piece.src=`assets/pieces/${color}${type}.png?v=${desktopAssetVersion}`;
+        piece.alt='';
+        piece.draggable=false;
+        square.appendChild(piece);
+      }
       grid.appendChild(square);
     }
     const hint=document.createElement('span');
