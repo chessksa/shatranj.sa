@@ -6,7 +6,7 @@ if (location.protocol === 'http:' && /^(?:www\.)?arabchees\.com$/i.test(location
   location.replace('https://arabchees.com' + location.pathname + location.search + location.hash);
 }
 </script>
-<meta name="shatranj-asset-version" content="20261012-personal-statistics-v13">
+<meta name="shatranj-asset-version" content="20261012-home-loading-fix-v14">
 <style id="approvedHomeGate">
 html:not(.approved-home-ready) body > :not(#approvedHomeBoot){opacity:0!important;pointer-events:none!important}
 html:not(.approved-home-ready) body::before,html:not(.approved-home-ready) body::after{visibility:hidden!important}
@@ -2667,7 +2667,9 @@ setInterval(loadCurrentMatchesCount,3000);
         !preview.classList.contains('inline-tournament-spectator');
       if(idle){
         const pieces=preview.querySelectorAll('.desktop-board-grid > .desktop-board-square > .desktop-board-preview-piece');
-        if(pieces.length!==32||[...pieces].some(piece=>!piece.complete))return false;
+        // Loaded piece images may arrive progressively; the 32 canonical DOM
+        // pieces, not every image download, establish that the board is built.
+        if(pieces.length!==32)return false;
       }
       if(!document.querySelector('#desktopDashboardHome .desktop-live-stats'))return false;
     }
