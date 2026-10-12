@@ -16,7 +16,8 @@
     direction:rtl;
     width:var(--notebook-docked-width,var(--chess-notebook-width));
     height:var(--notebook-board-height,calc(100dvh - 16px));
-    max-height:100%;
+    /* Match the board's real bottom, even when its box exceeds the viewport. */
+    max-height:none;
     min-height:0;
     display:flex;flex-direction:column;gap:0;
     /* Only one 1px frame per top row, not a doubled parent + child border. */
