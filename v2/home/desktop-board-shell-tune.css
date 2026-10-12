@@ -30,7 +30,7 @@
   .desktop-dashboard-home{
     height:100%!important;
     display:grid!important;
-    grid-template-rows:minmax(170px,1fr) 94px 204px 82px!important;
+    grid-template-rows:minmax(170px,1fr) 94px!important;
     gap:var(--desktop-gap)!important;
     align-content:stretch!important;
   }
@@ -58,41 +58,9 @@
   }
 
   .desktop-live-stat small{
-    margin-top:6px!important;
+    margin-top:0!important;
     font-size:11px!important;
   }
-
-  .desktop-quick-card{
-    display:flex!important;
-    flex-direction:column!important;
-    min-height:0!important;
-    padding:9px!important;
-  }
-
-  .desktop-quick-card-no-title .desktop-quick-actions{
-    height:100%!important;
-    display:grid!important;
-    grid-template-columns:repeat(2,minmax(0,1fr))!important;
-    grid-template-rows:repeat(2,minmax(0,1fr))!important;
-    gap:var(--desktop-gap)!important;
-  }
-
-  .desktop-quick-action{
-    min-height:0!important;
-    padding:8px 10px!important;
-    display:grid!important;
-    grid-template-columns:minmax(0,1fr) 44px!important;
-    column-gap:var(--desktop-gap)!important;
-  }
-
-  .desktop-quick-icon{
-    width:44px!important;
-    height:44px!important;
-    font-size:24px!important;
-  }
-
-  .desktop-quick-copy strong{font-size:14px!important}
-  .desktop-quick-copy small{font-size:10px!important}
 
   .desktop-welcome-card{
     min-height:0!important;
@@ -108,12 +76,6 @@
   .desktop-welcome-copy p{font-size:13px!important}
   .desktop-welcome-copy blockquote{font-size:11px!important}
 
-  .desktop-tip-card{
-    min-height:82px!important;
-    padding:10px 12px!important;
-  }
 
-  .desktop-tip-icon{font-size:24px!important}
-  .desktop-tip-card strong{font-size:14px!important}
-  .desktop-tip-card p{font-size:10px!important}
+  /* Legacy hidden cards and extra grid rows were removed. */
 }
