@@ -18,12 +18,14 @@
     padding:0!important;
     overflow:hidden!important;
     box-sizing:border-box!important;
-    touch-action:manipulation;
+    touch-action:none;
     /* Exact homepage Wood 4 image and square colors come from the import. */
   }
   body.computer-game #gamePage #board.mobile-computer-single-board .mfw-square{
     cursor:pointer;
-    touch-action:manipulation;
+    touch-action:none;
+    user-select:none;
+    -webkit-user-select:none;
     -webkit-tap-highlight-color:transparent;
   }
   body.computer-game #gamePage #board.mobile-computer-single-board .mfw-square.mobile-selected{
