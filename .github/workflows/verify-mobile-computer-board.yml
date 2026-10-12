@@ -17,7 +17,7 @@ jobs:
     steps:
       - name: Install browser automation
         run: |
-          npm install --no-audit --no-fund --prefix /tmp/phone-board-check playwright-core@1.56.1
+          npm install --no-audit --no-fund --prefix /tmp/phone-board-check playwright-core@1.56.1 pngjs@7.0.0
           command -v google-chrome || command -v chromium || command -v chromium-browser
       - name: Verify 64 visible squares and 32 original PNG chess pieces on mobile
         shell: bash
@@ -75,7 +75,25 @@ jobs:
               await check('level-chooser');
               await page.locator('.opponent-time-option[data-level="easy"]').click();
               await check('time-chooser');
-              await page.screenshot({path:'/tmp/mobile-computer-board.png',fullPage:false});
+              const screen=await page.screenshot({path:'/tmp/mobile-computer-board.png',fullPage:false});
+              const PNG=require('/tmp/phone-board-check/node_modules/pngjs').PNG;
+              const png=PNG.sync.read(screen);
+              const rect=await page.locator('.mobile-computer-main-grid').boundingBox();
+              const px=(column,row)=>{
+                const x=Math.floor((rect.x+rect.width*(column+.5)/8)*2);
+                const y=Math.floor((rect.y+rect.height*(row+.5)/8)*2);
+                const offset=(png.width*y+x)*4;
+                return [...png.data.slice(offset,offset+3)];
+              };
+              const boardSamples={light:px(4,3),dark:px(3,3)};
+              console.log('BOARD_PIXELS',JSON.stringify(boardSamples));
+              for(const rgb of Object.values(boardSamples)){
+                if(rgb.every(value=>value<22))throw new Error('Black pixels still cover the board');
+              }
+              await page.locator('.opponent-time-option[data-minutes="5"]').click();
+              await page.waitForFunction(()=>document.body.classList.contains('live-game'),{timeout:22000});
+              await check('active-game');
+              await page.screenshot({path:'/tmp/mobile-computer-game.png',fullPage:false});
               console.log('MOBILE_BOARD_VERIFIED');
             } finally{await browser.close()}
           })().catch(e=>{console.error(e);process.exit(1)});
@@ -85,5 +103,5 @@ jobs:
         uses: actions/upload-artifact@v4
         with:
           name: mobile-computer-board-check
-          path: /tmp/mobile-computer-board.png
+          path: /tmp/mobile-computer-*.png
           if-no-files-found: ignore
