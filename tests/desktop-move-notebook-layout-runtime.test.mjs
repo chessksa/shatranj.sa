@@ -22,6 +22,7 @@ function simulateBoard({left,top=7,height=800,viewportHeight=900}){
     return {left,top,height};
   }};
   const context={
+    HOST_ID:'desktopMoveNotebook',
     document:{
       getElementById(id){
         if(id==='desktopMoveNotebook')return root;
