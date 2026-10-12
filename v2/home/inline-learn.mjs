@@ -1,5 +1,6 @@
 import { supabase, getSessionPlayer, rpc, escapeHtml } from '../platform/api.mjs';
 
+import { renderApprovedPreview } from './move-notebook.mjs?v=20261012-home-board-return-v6';
 const desktop=window.matchMedia('(min-width:901px)');
 const PIECE_ROOT='assets/pieces/';
 const START_FEN='rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1';
@@ -109,22 +110,10 @@ function ensureMainBoard(){
 function restoreStaticBoard(){
   const target=document.getElementById('homeBoardPreview');
   if(!target) return;
-  target.classList.remove('inline-play-active','inline-learn-active','inline-puzzle-active','inline-computer-active');
+  target.classList.remove('inline-play-active','inline-puzzle-active','inline-learn-active','inline-computer-active');
   target.removeAttribute('href');
-  target.replaceChildren();
-
-  const grid=document.createElement('span');
-  grid.className='desktop-board-grid';
-  for(let i=0;i<64;i+=1){
-    const row=Math.floor(i/8),col=i%8;
-    const square=document.createElement('span');
-    square.className=`desktop-board-square ${(row+col)%2?'dark':'light'}`;
-    grid.appendChild(square);
-  }
-  const hint=document.createElement('span');
-  hint.className='desktop-board-hint';
-  hint.innerHTML='<span class="desktop-board-hint-icon">☝</span><span>اضغط على الرقعة للعب</span>';
-  target.append(grid,hint);
+  // One approved renderer for all exits: 64 squares, 32 PNG pieces, no old empty grid.
+  renderApprovedPreview(target);
 }
 
 function setStatus(text,error=false){
