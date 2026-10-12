@@ -7,7 +7,9 @@
      desktop-board-stage or the approved chessboard position and dimensions. */
   .desktop-move-notebook{
     position:fixed;
-    z-index:42;
+    /* Board stage is z-index:30. Keep it visually above the notebook
+       as a final safeguard even if a stale stylesheet sets a wrong width. */
+    z-index:29;
     left:var(--notebook-docked-left,12px);
     top:var(--notebook-board-top,6px);
     transform:none;
@@ -28,6 +30,20 @@
   }
   /* A full-size notation table is shown throughout every desktop game.
      No automatically collapsed hamburger strip exists. */
+  /* Shorter viewports keep all three columns visible, never a hamburger.
+     Width is clamped to the real space beside the chessboard by JS. */
+  .desktop-move-notebook[data-narrow="true"]{--notebook-index-width:30px}
+  .desktop-move-notebook[data-narrow="true"] .move-notebook-header{
+    padding:6px 4px;min-height:56px;flex-basis:56px;gap:5px;
+  }
+  .desktop-move-notebook[data-narrow="true"] .move-notebook-header strong{font-size:12px}
+  .desktop-move-notebook[data-narrow="true"] .move-notebook-header small{font-size:9px}
+  .desktop-move-notebook[data-narrow="true"] .move-notebook-emblem{font-size:14px}
+  .desktop-move-notebook[data-narrow="true"] .move-notebook-columns{font-size:10px}
+  .desktop-move-notebook[data-narrow="true"] .move-notebook-move{font-size:11px}
+  .desktop-move-notebook[data-narrow="true"] .move-notebook-rows{
+    background-image:linear-gradient(to right,transparent calc(50% - 15.5px),var(--notebook-grid-line) calc(50% - 15.5px),var(--notebook-grid-line) calc(50% - 14.5px),transparent calc(50% - 14.5px)),linear-gradient(to right,transparent calc(100% - 30.5px),var(--notebook-grid-line) calc(100% - 30.5px),var(--notebook-grid-line) calc(100% - 29.5px),transparent calc(100% - 29.5px)),repeating-linear-gradient(to bottom,transparent 0px,transparent 39px,var(--notebook-grid-line) 39px,var(--notebook-grid-line) 40px);
+  }
   .move-notebook-header{padding:12px 15px;display:flex;align-items:center;justify-content:center;gap:12px;border-bottom:1px solid rgba(224,181,103,.46);min-height:76px;flex:0 0 76px;background:linear-gradient(100deg,rgba(1,99,99,.54),rgba(2,57,63,.92))}
   .move-notebook-emblem{color:#e6c58c;font:normal 24px/1 serif;opacity:.90;flex:0 0 auto}
   .move-notebook-header>div{display:flex;flex-direction:column;align-items:center;justify-content:center;min-width:0;gap:6px;flex:1 1 auto;text-align:center}
