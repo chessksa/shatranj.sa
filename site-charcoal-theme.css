@@ -868,6 +868,35 @@ html body .v2-mobile-link[href*="profile"] .v2-global-icon{color:var(--icon-prof
 html body .v2-global-link[href*="train"] .v2-global-icon,
 html body .v2-global-link[href*="daily"] .v2-global-icon{color:#ffd174!important}
 html body .v2-global-link[href*="notifications"] .v2-global-icon{color:#f29bd1!important}
+
+/* Active menu icon accents: high specificity beats legacy selected-white rules. */
+html body.desktop-board-workspace .v2-global-sidebar.desktop-sidebar-refined .desktop-home-nav-link[data-desktop-nav="home"] .desktop-home-nav-icon{color:var(--icon-home)!important}
+html body.desktop-board-workspace .v2-global-sidebar.desktop-sidebar-refined .desktop-home-nav-link[data-desktop-nav="play"] .desktop-home-nav-icon{color:var(--icon-play)!important}
+html body.desktop-board-workspace .v2-global-sidebar.desktop-sidebar-refined .desktop-home-nav-link[data-desktop-nav="tournaments"] .desktop-home-nav-icon{color:var(--icon-tournaments)!important}
+html body.desktop-board-workspace .v2-global-sidebar.desktop-sidebar-refined .desktop-home-nav-link[data-desktop-nav="ranking"] .desktop-home-nav-icon{color:var(--icon-ranking)!important}
+html body.desktop-board-workspace .v2-global-sidebar.desktop-sidebar-refined .desktop-home-nav-link[data-desktop-nav="watch"] .desktop-home-nav-icon{color:var(--icon-watch)!important}
+html body.desktop-board-workspace .v2-global-sidebar.desktop-sidebar-refined .desktop-home-nav-link[data-desktop-nav="puzzles"] .desktop-home-nav-icon{color:var(--icon-puzzles)!important}
+html body.desktop-board-workspace .v2-global-sidebar.desktop-sidebar-refined .desktop-home-nav-link[data-desktop-nav="learn"] .desktop-home-nav-icon{color:var(--icon-learning)!important}
+html body.desktop-board-workspace .v2-global-sidebar.desktop-sidebar-refined .desktop-home-nav-link[data-desktop-nav="settings"] .desktop-home-nav-icon{color:var(--icon-settings)!important}
+html body.desktop-board-workspace .v2-global-sidebar.desktop-sidebar-refined .desktop-home-nav-link[data-desktop-nav="admin"] .desktop-home-nav-icon{color:var(--icon-admin)!important}
+html body.desktop-board-workspace .v2-global-sidebar.desktop-sidebar-refined .desktop-home-nav-link[data-desktop-nav] .desktop-home-nav-icon svg{color:inherit!important}
+/* Additional navigation is a separate mobile overlay, not the six-tab workspace. */
+html body :is(.v2-mobile-more-link,.v2-mobile-link)[href*="computer"] .v2-global-icon,
+html body :is(.v2-mobile-more-link,.v2-mobile-link)[href*="play-v10"] .v2-global-icon,
+html body :is(.v2-mobile-more-link,.v2-mobile-link)[href*="play-entry"] .v2-global-icon{color:var(--icon-computer)!important}
+html body .v2-mobile-more-link[href*="puzzles"] .v2-global-icon{color:var(--icon-puzzles)!important}
+html body .v2-mobile-more-link[href*="tournaments"] .v2-global-icon{color:var(--icon-tournaments)!important}
+html body .v2-mobile-more-link[href*="watch"] .v2-global-icon{color:var(--icon-watch)!important}
+html body .v2-mobile-more-link[href*="learn"] .v2-global-icon{color:var(--icon-learning)!important}
+html body .v2-mobile-more-link[href*="analysis"] .v2-global-icon{color:var(--icon-computer)!important}
+html body .v2-mobile-more-link[href*="stats"] .v2-global-icon{color:var(--icon-stats)!important}
+html body :is(.v2-mobile-more-link,.v2-mobile-link)[href*="profile"] .v2-global-icon{color:var(--icon-profile)!important}
+html body .v2-mobile-more-link[href*="settings"] .v2-global-icon{color:var(--icon-settings)!important}
+html body .v2-mobile-more-link[href*="clubs"] .v2-global-icon{color:var(--icon-friends)!important}
+html body .v2-mobile-more-link[href*="variants"] .v2-global-icon{color:var(--icon-puzzles)!important}
+html body .v2-mobile-more-button .v2-global-icon{color:var(--icon-tournaments)!important}
+html body .v2-global-brand-mark{color:var(--icon-tournaments)!important}
+
 /* Small standalone pictograms. Preserve the previous neutral text colors. */
 html body :is(.inline-puzzle-badge,.inline-puzzle-stats .inline-puzzle-badge){color:var(--icon-puzzles)!important}
 html body .inline-learn-badge{color:var(--icon-learning)!important}
