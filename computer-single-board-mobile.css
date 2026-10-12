@@ -1,84 +1,51 @@
-/* Mobile computer mode: ONE chessboard, visually identical to the phone home board.
-   Uses the same Wood 4 image, two translucent square colors and PNG piece sizes.
-   No SVG board, no second grid, no masking, no artificial background layers. */
+/* The only mobile computer board is the same .mfw-board-grid used on the
+   actual mobile homepage. Import its ONE source of truth; do not recreate
+   piece scaling, square colors, texture, or coordinate styling here. */
+@import url('mobile-home-fixed-v1.css?v=20261012-canonical-mobile-v2');
 @media(max-width:900px){
   body.computer-game #gamePage .board-shell{
     background:transparent!important;
   }
-  body.computer-game #gamePage #board.mobile-computer-single-board{
+  body.computer-game #gamePage #board.mfw-board-grid.mobile-computer-single-board{
     position:absolute!important;
     inset:0!important;
     display:grid!important;
-    grid-template-columns:repeat(8,minmax(0,1fr))!important;
-    grid-template-rows:repeat(8,minmax(0,1fr))!important;
-    direction:ltr!important;
     width:100%!important;
     height:100%!important;
     min-width:0!important;
     min-height:0!important;
-    overflow:hidden!important;
-    border:1px solid rgba(0,0,0,.34)!important;
-    box-sizing:border-box!important;
-    background:#ad8a65 url('assets/boards/wood4.jpg') center/100% 100% no-repeat!important;
-    touch-action:none;
-  }
-  body.computer-game #gamePage #board.mobile-computer-single-board .mobile-board-square{
-    position:relative!important;
-    display:grid!important;
-    place-items:center!important;
-    min-width:0!important;
-    min-height:0!important;
-    width:100%!important;
-    height:100%!important;
     margin:0!important;
     padding:0!important;
     overflow:hidden!important;
-    border:0!important;
-    border-right:1px solid rgba(2,47,51,.24)!important;
-    border-bottom:1px solid rgba(2,47,51,.24)!important;
-    border-radius:0!important;
     box-sizing:border-box!important;
+    touch-action:manipulation;
+    /* Exact homepage Wood 4 image and square colors come from the import. */
+  }
+  body.computer-game #gamePage #board.mobile-computer-single-board .mfw-square{
     cursor:pointer;
-    user-select:none;
+    touch-action:manipulation;
     -webkit-tap-highlight-color:transparent;
   }
-  body.computer-game #gamePage #board.mobile-computer-single-board .mobile-board-square.light{
-    background:rgba(255,247,224,.43)!important;
+  body.computer-game #gamePage #board.mobile-computer-single-board .mfw-square.mobile-selected{
+    box-shadow:inset 0 0 0 3px rgba(242,184,75,.85);
   }
-  body.computer-game #gamePage #board.mobile-computer-single-board .mobile-board-square.dark{
-    background:rgba(49,24,11,.36)!important;
-  }
-  body.computer-game #gamePage #board.mobile-computer-single-board .mobile-board-piece{
-    display:block!important;
-    width:100%!important;
-    height:100%!important;
-    object-fit:contain!important;
-    pointer-events:none!important;
-    user-select:none!important;
-    -webkit-user-drag:none;
-  }
-  body.computer-game #gamePage #board.mobile-computer-single-board .mobile-board-piece:is([src*="/wp.png"],[src*="/bp.png"]){
-    width:90%!important;
-    height:90%!important;
-  }
-  body.computer-game #gamePage #board.mobile-computer-single-board .mobile-board-square.mobile-selected{
-    box-shadow:inset 0 0 0 3px rgba(242,184,75,.85)!important;
-  }
-  body.computer-game #gamePage #board.mobile-computer-single-board .mobile-board-square.mobile-last-move{
+  body.computer-game #gamePage #board.mobile-computer-single-board .mfw-square.mobile-last-move{
     outline:2px solid rgba(236,139,58,.55);
     outline-offset:-2px;
   }
-  body.computer-game #gamePage #board.mobile-computer-single-board .mobile-board-square.mobile-legal-target::after{
-    content:"";position:absolute;top:50%;left:50%;
+  body.computer-game #gamePage #board.mobile-computer-single-board .mfw-square.mobile-legal-target::after{
+    content:"";position:absolute;z-index:4;top:50%;left:50%;
     transform:translate(-50%,-50%);width:22%;height:22%;
     border-radius:50%;background:rgba(17,80,56,.53);
     pointer-events:none;
   }
-  body.computer-game #gamePage #board.mobile-computer-single-board .mobile-board-square.mobile-capture-target::after{
-    content:"";position:absolute;inset:3px;
+  body.computer-game #gamePage #board.mobile-computer-single-board .mfw-square.mobile-capture-target::after{
+    content:"";position:absolute;z-index:4;inset:3px;
     border:2px solid #ff8d30;border-radius:50%;
     pointer-events:none;
   }
-  body.computer-game #gamePage #board.mobile-computer-single-board.mobile-input-disabled .mobile-board-square{cursor:default}
+  body.computer-game #gamePage #board.mobile-computer-single-board.mobile-input-disabled .mfw-square{
+    cursor:default;
+  }
   body.computer-game #gamePage #moveHints{display:none!important}
 }
