@@ -26,7 +26,7 @@ assert.match(notebookCss,/z-index:29/,'Board above at z-index 30 is a safe fallb
 assert.match(notebookJs,/--notebook-docked-width/,'Available width must be applied to the notation panel only');
 assert.match(notebookJs,/--notebook-board-height/,'Notation height must track actual board height');
 assert.doesNotMatch(notebookCss,/transform:translateX\(/,'Notebook must never shift the board');
-assert.match(home,/20261012-home-champions-layout-v16/,'Homepage must use latest asset cache');
+assert.match(home,/20261012-champions-oneline-v17/,'Homepage must use latest asset cache');
 
 assert.match(previewCss,/\.desktop-board-square > \.desktop-board-preview-piece:not\(\[src\*="\/wp\.png"\]\):not\(\[src\*="\/bp\.png"\]\)/);
 assert.match(previewCss,/scale\(\.95\)!important/,'Idle desktop major pieces must be scaled to 95%');
