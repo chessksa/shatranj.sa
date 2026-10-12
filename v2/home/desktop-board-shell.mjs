@@ -150,8 +150,7 @@ if(desktop.matches && document.querySelector('#homeHero')){
     rail.innerHTML=`
       <section class="desktop-home-side-card desktop-home-daily-card">
         <div class="desktop-daily-puzzle-heading">
-          <h3>لغز اليوم</h3>
-          <span>اضغط على الرقعة للحل</span>
+          <h3>لغز اليوم - اضغط على الرقعة للحل</h3>
         </div>
         <div class="desktop-mini-puzzle-board" role="button" tabindex="0"
           data-home-side-action="daily" aria-label="لغز اليوم: اضغط على الرقعة للحل"></div>
