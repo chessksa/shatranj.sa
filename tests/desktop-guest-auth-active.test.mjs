@@ -18,26 +18,26 @@ assert.match(
 
 assert.match(
   css,
-  /desktop-auth-open #register \.form-card\s*\{[\s\S]*?background:linear-gradient\(145deg,#073f43,#032f33\)!important/,
-  'نافذة المصادقة على الكمبيوتر يجب أن تستخدم الخلفية البترولية الخاصة بالواجهة'
+  /desktop-auth-open #register \.form-card\s*\{[\s\S]*?background:linear-gradient\(145deg,#302e2b,#302e2b\)!important/,
+  'نافذة المصادقة على الكمبيوتر يجب أن تستخدم الخلفية الرمادية المتناسقة مع هوية الواجهة'
 );
 
 assert.match(
   css,
-  /desktop-auth-open #register \.auth-tab\.active\s*\{[\s\S]*?background:linear-gradient\(135deg,#efca72,#d9aa4f\)!important[\s\S]*?color:#173536!important/,
-  'التبويب النشط يجب أن يكون ذهبيًا بنفس هوية الواجهة'
+  /desktop-auth-open #register \.auth-tab\.active\s*\{[\s\S]*?background:linear-gradient\(135deg,#e2dcd3,#e2dcd3\)!important[\s\S]*?color:#302e2b!important/,
+  'التبويب النشط يجب أن يكون متناسقًا مع التدرج الرمادي'
 );
 
 assert.match(
   css,
-  /desktop-auth-open #register input[\s\S]*?background:#062f33!important[\s\S]*?color:#f4efe6!important/,
-  'حقول المصادقة يجب أن تكون بترولية داكنة ونصها سكري'
+  /desktop-auth-open #register input[\s\S]*?background:#302e2b!important[\s\S]*?color:#e2dcd3!important/,
+  'حقول المصادقة يجب أن تكون رمادية داكنة ونصها فاتح'
 );
 
 assert.match(
   css,
-  /desktop-auth-open #register \.btn[\s\S]*?background:linear-gradient\(135deg,#efca72,#d9aa4f\)!important[\s\S]*?color:#173536!important/,
-  'زر الإجراء الرئيسي في نافذة المصادقة يجب أن يستخدم اللون الذهبي للواجهة'
+  /desktop-auth-open #register \.btn[\s\S]*?background:linear-gradient\(135deg,#e2dcd3,#e2dcd3\)!important[\s\S]*?color:#302e2b!important/,
+  'زر الإجراء الرئيسي في نافذة المصادقة يجب أن يستخدم التدرج الرمادي للواجهة'
 );
 
 console.log('desktop guest auth activation verification passed');

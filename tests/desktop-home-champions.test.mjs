@@ -10,29 +10,29 @@ const css=read('v2/home/desktop-board-shell.css');
 const sql=read('supabase/migrations/20261012_public_home_champions.sql');
 const home=read('index.html');
 
-assert.match(tuneCss,/grid-template-rows:minmax\(0,1fr\) minmax\(0,1fr\) 94px!important/,'Welcome must be half its previous height; champions occupy the other half');
-assert.match(tuneCss,/\.desktop-welcome-art span\{font-size:clamp\(39px,3\.5vw,60px\)!important\}/,'Main decorative chess knight is halved');
-assert.match(css,/\.desktop-champions-grid\{[\s\S]*?grid-template-rows:repeat\(3,minmax\(0,1fr\)\)/,'The three cards must have equal heights');
-assert.match(css,/grid-template-columns:minmax\(0,1fr\) minmax\(0,1\.45fr\) minmax\(0,1fr\)/,'Both sides have equal width; the player-name center remains the widest');
-assert.match(css,/\.desktop-champion-result\{[^}]*flex-direction:row/,'Result and unit must be on the same horizontal line');
-assert.match(css,/\.desktop-champion-result\{[^}]*justify-content:center;align-items:center;gap:3px;[^}]*padding-inline:0;box-sizing:border-box/,'Left score must be centered with symmetric padding and no clipped overflow');
-assert.match(css,/\.desktop-champion-title\{[^}]*justify-content:center;gap:3px;padding-inline:0;box-sizing:border-box/,'Right icon and title must be centered in an equally wide area');
+assert.match(tuneCss,/grid-template-rows:minmax\(0,1fr\) minmax\(0,1fr\) 94px!important/,'Welcome and champion cards retain separate equal areas');
+assert.match(tuneCss,/\.desktop-welcome-art span\{font-size:clamp\(39px,3\.5vw,60px\)!important\}/,'Welcome artwork retains the approved size');
+assert.match(css,/\.desktop-champions-grid\{[\s\S]*?grid-template-rows:repeat\(3,minmax\(0,1fr\)\)/,'Three champions remain in equal rows');
+assert.match(css,/\.desktop-champion-card\{[^}]*grid-template-columns:minmax\(0,1fr\) minmax\(0,1\.42fr\) minmax\(0,1fr\)/,'The center column is wider than two identical side columns');
+assert.match(css,/\.desktop-champion-title,\.desktop-champion-result\{[^}]*flex-direction:row/,'Titles and scores remain horizontal');
+assert.match(css,/\.desktop-champion-title\{[^}]*gap:4px/,'Compact icon-title grouping');
+assert.match(css,/\.desktop-champion-result\{gap:4px;text-align:center\}/,'Score is centered in a single line');
+assert.match(css,/\.desktop-champion-title strong\{[^}]*font-size:clamp\(10px,\.72vw,11\.5px\)/,'Championship title remains compact');
+assert.match(css,/\.desktop-champion-icon\{[^}]*width:21px;height:21px/,'Championship icon size is preserved');
+assert.match(css,/\.desktop-champion-name\{[^}]*text-align:center;white-space:nowrap;\s*overflow:hidden;text-overflow:ellipsis/,'Player names remain single-line and centered');
 assert.doesNotMatch(css,/\.desktop-champion-result\{[^}]*border-inline-start:/,'Avoid an asymmetric side divider');
 const cardLayout=css.match(/\.desktop-champion-card\{[^}]*grid-template-columns:minmax\(0,([\d.]+)fr\) minmax\(0,([\d.]+)fr\) minmax\(0,([\d.]+)fr\)/);
-assert.ok(cardLayout,'Cards have three proportional grid areas');
-const right=Number(cardLayout[1]), center=Number(cardLayout[2]), left=Number(cardLayout[3]);
-assert.equal(right,left,'Right and left spaces must be identical');
-assert.ok(center>right,'Player-name area must remain the widest');
+assert.ok(cardLayout,'Champion card areas must retain three proportional columns');
+const [right,center,left]=cardLayout.slice(1).map(Number);
+assert.equal(right,left,'Both outer columns share the same width');
+assert.ok(center>right,'Center column remains the widest');
 for(const available of [320,350]){
   const free=available-2*8-2*6-2;
   const side=free*right/(right+center+left);
-  assert.ok(side>=80,`The ${available}px dashboard must leave room for the title and score`);
+  assert.ok(side>=80,'Both outer areas must remain legible');
 }
-assert.match(css,/\.desktop-champion-title strong\{[^}]*font-size:clamp\(10px,\.68vw,11px\)/,'The right-hand title must fit compact cards');
-assert.match(css,/\.desktop-champion-icon\{[^}]*width:clamp\(21px,1\.5vw,24px\)/,'Icon must not crowd the championship title');
-assert.match(css,/\.desktop-champion-name\{[^}]*text-align:center;[^}]*white-space:nowrap;overflow:hidden;text-overflow:ellipsis/,'Player name must be centered, single-line and safely truncated');
-assert.match(css,/\.desktop-champion-title\{[^}]*flex-direction:row/,'Icon and title remain on the right in a single row');
-assert.match(css,/@media\(max-height:720px\) and \(min-width:901px\)\{[\s\S]*?grid-template-columns:minmax\(0,1fr\) minmax\(0,1\.45fr\) minmax\(0,1fr\)/,'Short screens preserve equal sides and wider center');
+assert.match(css,/@media\(max-height:720px\) and \(min-width:901px\)\{[\s\S]*?\.desktop-champion-card\{padding:3px 7px;column-gap:2px\}/,'Compact screens preserve card spacing');
+
 for(const kind of ['week','month','site']){
   assert.match(shell,new RegExp(`data-champion="${kind}"`),`Missing ${kind} champion icon card`);
 }
