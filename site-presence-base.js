@@ -31,25 +31,70 @@ if (cfg.enabled !== false && cfg.url && cfg.anonKey) {
     config: { presence: { key: visitorId } }
   });
 
-  function renderOnlineCount() {
-    const state = channel.presenceState();
-    const count = Object.keys(state || {}).length;
-    document.querySelectorAll('#headerOnlineCount').forEach((el) => {
+  // One Realtime presence channel serves online visitors AND guest computer
+  // games. Rated computer games are already returned by the database RPC.
+  // Do not count them here, or a signed-in game would appear twice.
+  let guestComputerPlaying = window.SHATRANJ_GUEST_COMPUTER_ACTIVE === true;
+  let subscribed = false;
+  let tracking = Promise.resolve();
+  let presenceUpdatedAt = new Date().toISOString();
+
+  function renderPresenceCounts() {
+    const state = channel.presenceState() || {};
+    const count = Object.keys(state).length;
+    const guestGames = Object.values(state).reduce((sum, entries) =>
+      sum + (Array.isArray(entries)
+        ? entries.filter(item => item?.guest_computer_game === true).length
+        : 0), 0);
+    document.querySelectorAll('#headerOnlineCount').forEach(el => {
       el.textContent = String(count);
     });
+    window.SHATRANJ_GUEST_COMPUTER_COUNT = guestGames;
+    window.dispatchEvent(new CustomEvent('shatranj:guest-computer-match-count', {
+      detail: { count: guestGames }
+    }));
   }
 
+  function publishPresence() {
+    if (!subscribed) return;
+    // Serialize track calls to prevent a delayed START from winning over END.
+    const payload = {
+      online_at: presenceUpdatedAt,
+      guest_computer_game: guestComputerPlaying
+    };
+    tracking = tracking.then(() => {
+      if (!subscribed) return;
+      return channel.track(payload);
+    }).catch(error => console.warn('تعذر تحديث حضور مباريات الكمبيوتر', error));
+  }
+
+  window.addEventListener('shatranj:guest-computer-game', event => {
+    const active = event.detail?.active === true;
+    if (guestComputerPlaying === active) return;
+    guestComputerPlaying = active;
+    window.SHATRANJ_GUEST_COMPUTER_ACTIVE = active;
+    publishPresence();
+  });
+
   channel
-    .on('presence', { event: 'sync' }, renderOnlineCount)
-    .on('presence', { event: 'join' }, renderOnlineCount)
-    .on('presence', { event: 'leave' }, renderOnlineCount)
-    .subscribe(async (status) => {
-      if (status !== 'SUBSCRIBED') return;
-      await channel.track({ online_at: new Date().toISOString() });
-      renderOnlineCount();
+    .on('presence', { event: 'sync' }, renderPresenceCounts)
+    .on('presence', { event: 'join' }, renderPresenceCounts)
+    .on('presence', { event: 'leave' }, renderPresenceCounts)
+    .subscribe(status => {
+      if (status === 'SUBSCRIBED') {
+        subscribed = true;
+        presenceUpdatedAt = new Date().toISOString();
+        publishPresence();
+        renderPresenceCounts();
+      } else {
+        subscribed = false;
+      }
     });
 
   window.addEventListener('pagehide', () => {
+    guestComputerPlaying = false;
+    window.SHATRANJ_GUEST_COMPUTER_ACTIVE = false;
+    subscribed = false;
     channel.untrack().catch(() => {});
   }, { once: true });
 }
