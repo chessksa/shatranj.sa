@@ -267,7 +267,26 @@ if(desktop.matches && document.querySelector('#homeHero')){
           </div>
           <div class="desktop-welcome-art" aria-hidden="true"><span>♞</span><i>♟</i><b>♜</b></div>
         </section>
-
+        <section class="desktop-champions-grid" aria-label="أبطال شطرنج العرب">
+          <a class="desktop-champion-card" data-champion="week" href="#ranking" aria-label="بطل الأسبوع">
+            <span class="desktop-champion-icon" aria-hidden="true">
+              <svg viewBox="0 0 32 32" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="16" cy="12" r="8"/><path d="m11 19-2 10 7-4 7 4-2-10"/><path d="m13 12 2 2 4-4"/></svg>
+            </span>
+            <span class="desktop-champion-info"><strong>بطل الأسبوع</strong><span class="desktop-champion-name">جارٍ التحديث…</span><small class="desktop-champion-meta">آخر 7 أيام</small></span>
+          </a>
+          <a class="desktop-champion-card" data-champion="month" href="#ranking" aria-label="بطل الشهر">
+            <span class="desktop-champion-icon" aria-hidden="true">
+              <svg viewBox="0 0 32 32" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M10 4h12v10a6 6 0 0 1-12 0V4Z"/><path d="M10 7H5v4a6 6 0 0 0 6 6M22 7h5v4a6 6 0 0 1-6 6M16 20v6M11 27h10M9 30h14"/></svg>
+            </span>
+            <span class="desktop-champion-info"><strong>بطل الشهر</strong><span class="desktop-champion-name">جارٍ التحديث…</span><small class="desktop-champion-meta">آخر 30 يومًا</small></span>
+          </a>
+          <a class="desktop-champion-card" data-champion="site" href="#ranking" aria-label="بطل الموقع">
+            <span class="desktop-champion-icon" aria-hidden="true">
+              <svg viewBox="0 0 32 32" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="m3 10 6 6 7-10 7 10 6-6-3 15H6L3 10Z"/><path d="M6 29h20M12 20h8"/></svg>
+            </span>
+            <span class="desktop-champion-info"><strong>بطل الموقع</strong><span class="desktop-champion-name">جارٍ التحديث…</span><small class="desktop-champion-meta">الأعلى نقاطًا</small></span>
+          </a>
+        </section>
       </div>
       <section id="desktopDashboardView" class="desktop-dashboard-view" hidden>
         <header class="desktop-dashboard-view-head"><strong id="desktopDashboardViewTitle">الترتيب</strong><button id="desktopDashboardBack" type="button">الرئيسية</button></header>
@@ -275,6 +294,41 @@ if(desktop.matches && document.querySelector('#homeHero')){
       </section>`;
     document.body.appendChild(column);
     column.querySelector('#desktopDashboardBack').addEventListener('click',()=>showDashboard('home'));
+  }
+
+  // Public, verified ranking data only. Never announce an invented weekly
+  // or monthly winner when there have been no recorded wins.
+  async function refreshDesktopChampions(){
+    const grid=document.querySelector('#desktopDashboardHome .desktop-champions-grid');
+    if(!grid||!supabase)return;
+    try{
+      const {data,error}=await supabase.rpc('get_public_home_champions');
+      if(error)throw error;
+      for(const kind of ['week','month','site']){
+        const card=grid.querySelector(`[data-champion="${kind}"]`);
+        if(!card)continue;
+        const name=card.querySelector('.desktop-champion-name');
+        const meta=card.querySelector('.desktop-champion-meta');
+        const champion=data?.[kind];
+        card.classList.toggle('has-champion',Boolean(champion?.id));
+        name.textContent=champion?.name||'بانتظار النتائج';
+        meta.textContent=champion
+          ? kind==='site'
+            ? `${Number(champion.rating).toLocaleString('en-US')} نقطة`
+            : `${Number(champion.wins).toLocaleString('en-US')} انتصار · آخر ${kind==='week'?'7':'30'} أيام`
+          : kind==='site'?'لم يُحدد بعد':`آخر ${kind==='week'?'7':'30'} أيام`;
+        card.href=champion?.id
+          ? `player.html?id=${encodeURIComponent(champion.id)}`
+          : '#ranking';
+        card.setAttribute('aria-label',
+          `${kind==='week'?'بطل الأسبوع':kind==='month'?'بطل الشهر':'بطل الموقع'}: ${name.textContent}`);
+      }
+    }catch(error){
+      console.warn('تعذر تحميل أبطال الموقع',error);
+      grid.querySelectorAll('.desktop-champion-card').forEach(card=>{
+        card.querySelector('.desktop-champion-name').textContent='تعذر تحديث النتائج';
+      });
+    }
   }
 
   function setActiveNav(id){
@@ -714,6 +768,7 @@ if(desktop.matches && document.querySelector('#homeHero')){
     buildSidebar();
     forceSidebarSurface();
     buildDashboard();
+    void refreshDesktopChampions();
     window.addEventListener('shatranj:tournament-spectator-stopped',()=>{
       // Spectator restores a saved DOM fragment asynchronously; repaint if it was
       // an old empty version of the homepage.
