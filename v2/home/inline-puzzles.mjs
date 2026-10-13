@@ -28,7 +28,7 @@ function ensureCss(){
     const link=document.createElement('link');
     link.id='inlinePuzzleCss';
     link.rel='stylesheet';
-    link.href=new URL('./inline-puzzles.css?v=20261014-selection-visible-global-v1',import.meta.url).href;
+    link.href=new URL('./inline-puzzles.css?v=20261014-charcoal-66717d-final-v1',import.meta.url).href;
     document.head.insertBefore(link,document.querySelector('link[href*="site-charcoal-theme.css"]'));
   }
   // Reuse the stylesheet preloaded by index.html. An old second copy caused
