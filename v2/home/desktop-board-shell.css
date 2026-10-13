@@ -48,37 +48,6 @@
   body.desktop-board-workspace .v2-global-note{display:none!important}
   body.desktop-board-workspace [data-v2-admin-link]{display:none!important}
 
-  .desktop-member-card{
-    flex:0 0 auto;
-    min-height:112px;
-    padding:10px 9px;
-    display:grid;
-    grid-template-columns:18px minmax(0,1fr) 62px;
-    align-items:center;
-    gap:7px;
-    border:1px solid rgba(165,162,158,0.5);
-    border-radius:15px;
-    background:linear-gradient(145deg,rgba(69,66,62,0.94),rgba(69,66,62,0.94));
-    color:#e2dcd3;
-    text-decoration:none;
-    box-shadow:0 10px 24px rgba(0,0,0,.14),inset 0 1px 0 rgba(255,255,255,.035);
-  }
-  .desktop-member-card:hover{border-color:rgba(165,162,158,0.82);background:linear-gradient(145deg,rgba(69,66,62,0.96),rgba(69,66,62,0.96))}
-  .desktop-member-chevron{color:#e2dcd3;font-size:29px;line-height:1;text-align:center}
-  .desktop-member-copy{min-width:0;display:flex;flex-direction:column;align-items:flex-start;gap:3px;line-height:1.15}
-  .desktop-member-copy>strong{width:100%;font-size:15px;font-weight:900;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;color:#e2dcd3}
-  .desktop-member-city,.desktop-member-rating,.desktop-member-status{display:flex;align-items:center;gap:5px;color:#d8d2c5;font-size:10px;font-weight:700}
-  .desktop-member-rating b{color:#e2dcd3;font-size:14px;font-weight:900}
-  .desktop-member-status{margin-top:2px;color:#43db7a}
-  .desktop-member-status i{width:8px;height:8px;border-radius:50%;background:#43db7a;box-shadow:0 0 0 3px rgba(67,219,122,.09)}
-  .desktop-member-card.is-guest .desktop-member-status{color:#c9c1b4}.desktop-member-card.is-guest .desktop-member-status i{background:#8f9995;box-shadow:none}
-  .desktop-member-avatar-wrap{position:relative;width:58px;height:58px;border:1px solid rgba(165,162,158,0.5);border-radius:50%;background:rgba(69,66,62,0.72);display:grid;place-items:center;overflow:visible}
-  .desktop-member-avatar{width:100%;height:100%;object-fit:cover;border-radius:50%;display:block}
-  .desktop-member-avatar[hidden]{display:none!important}
-  .desktop-member-fallback{width:100%;height:100%;display:grid;place-items:center;border-radius:50%;color:#e2dcd3;font-size:31px;background:radial-gradient(circle at 38% 30%,#3b3937,#302e2b 65%,#302e2b)}
-  .desktop-member-fallback[hidden]{display:none!important}
-  .desktop-member-online-dot{position:absolute;right:1px;bottom:2px;width:11px;height:11px;border-radius:50%;background:#43db7a;border:2px solid #063a40}
-
   body.desktop-board-workspace .v2-global-nav{
     min-height:0!important;
     flex:1 1 auto!important;
@@ -846,7 +815,7 @@
   .desktop-dashboard-home{grid-template-rows:minmax(0,1fr) auto;gap:7px}
   .desktop-welcome-copy{padding:11px 6px 10px 12px}.desktop-welcome-copy small{font-size:13px}.desktop-welcome-copy h2{font-size:23px}.desktop-welcome-copy p{font-size:9px}.desktop-welcome-rule{margin:7px 0 6px}.desktop-welcome-copy blockquote{font-size:8px}
   .desktop-live-stat small{font-size:8px}.desktop-live-stat strong{font-size:18px}
-  .desktop-member-card{min-height:94px;padding:7px}.desktop-member-avatar-wrap{width:50px;height:50px}.desktop-member-copy>strong{font-size:13px}
+  
   body.desktop-board-workspace .desktop-home-nav-link{min-height:39px!important}
 }
 
