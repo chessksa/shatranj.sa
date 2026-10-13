@@ -1,18 +1,18 @@
 {
   "schema": 1,
-  "version": "2026.10.13.5",
+  "version": "2026.10.13.6",
   "files": {
     "index.html": {
-      "sha256": "5e18a51caf0f7d212180f08d518f05b98808c4566300d1089627103f0aaa1009",
-      "size": 8337
+      "sha256": "68eaae8248383d4fd2fd7c5a9740caeaabba588173ac37595b14c5da0c99cbfa",
+      "size": 8144
     },
     "style.css": {
-      "sha256": "a3e28dbe7f906266855478a342e648e70601a994c19e59c95ddb2963f868aae3",
-      "size": 15225
+      "sha256": "e3013f3f4a7ba05c1be889d9ff7c1c829a11d93a280182cfd1dee81f00463042",
+      "size": 14997
     },
     "app.js": {
-      "sha256": "86f7fb784f1fc43c9ce8ec171f97e38fc3d49771fc6686e2ac1f3b573267ea85",
-      "size": 12889
+      "sha256": "eed28b72508572ad8fb57524d4ab61dcdf90b1983a192a53c76e2b5d7e2ad069",
+      "size": 12494
     }
   }
 }
