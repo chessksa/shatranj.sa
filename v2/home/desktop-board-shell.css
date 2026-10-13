@@ -377,6 +377,7 @@
   }
   .desktop-statistics-header{
     grid-column:1/-1;min-width:0;display:flex;align-items:center;gap:7px;
+    position:relative;top:auto;z-index:auto;
     padding:5px 12px;border-bottom:1px solid rgba(245,244,240,.16);
   }
   .desktop-statistics-header>strong{
