@@ -151,17 +151,6 @@ if(desktop.matches && document.querySelector('#homeHero')){
     }
   }
 
-  const COUNTRY_FLAGS={
-    'السعودية':'🇸🇦','الأردن':'🇯🇴','مصر':'🇪🇬','الكويت':'🇰🇼','البحرين':'🇧🇭','قطر':'🇶🇦',
-    'الإمارات':'🇦🇪','الإمارات العربية المتحدة':'🇦🇪','عمان':'🇴🇲','سلطنة عمان':'🇴🇲','العراق':'🇮🇶',
-    'سوريا':'🇸🇾','لبنان':'🇱🇧','فلسطين':'🇵🇸','اليمن':'🇾🇪','المغرب':'🇲🇦','الجزائر':'🇩🇿',
-    'تونس':'🇹🇳','ليبيا':'🇱🇾','السودان':'🇸🇩','موريتانيا':'🇲🇷','الصومال':'🇸🇴','جيبوتي':'🇩🇯','جزر القمر':'🇰🇲'
-  };
-
-  function countryFlag(country){
-    return COUNTRY_FLAGS[String(country||'').trim()]||'🌐';
-  }
-
   function buildBoard(){
     let preview=document.getElementById('homeBoardPreview');
     if(!preview)return;
@@ -337,6 +326,20 @@ if(desktop.matches && document.querySelector('#homeHero')){
     sidebar.querySelector('.desktop-sidebar-bottom')?.remove();
     sidebar.querySelector('.desktop-sidebar-footer')?.remove();
 
+
+    // User picture takes the first icon slot. Do not recreate a name/score panel.
+    const member=document.createElement('div');
+    member.className='desktop-member-card desktop-sidebar-avatar-card';
+    member.innerHTML=[
+      '<button type="button" class="desktop-member-profile desktop-sidebar-avatar-button" title="حسابي" aria-label="حسابي">',
+      '<span class="desktop-member-avatar-wrap">',
+      '<img id="desktopMemberAvatar" class="desktop-member-avatar" alt="الصورة الشخصية" hidden>',
+      '<span id="desktopMemberFallback" class="desktop-member-fallback" aria-hidden="true"></span>',
+      '<i class="desktop-member-online-dot" aria-hidden="true"></i></span></button>',
+      '<span class="desktop-member-status" id="desktopMemberStatus" hidden><span>متصل الآن</span></span>'
+    ].join('');
+    sidebar.insertBefore(member,nav);
+
     // The main navigation now includes only primary sections; game modes live under Play Now.
     nav.replaceChildren(
       navItem({id:'home',label:'الرئيسية',icon:'home',href:'#home'}),
@@ -428,25 +431,6 @@ if(desktop.matches && document.querySelector('#homeHero')){
         <div id="desktopDashboardViewBody" class="desktop-dashboard-view-body"></div>
       </section>`;
 
-    // A single player identity row inside the wider center panel, above its statistics.
-    const member=document.createElement('section');
-    member.className='desktop-member-card';
-    member.innerHTML=[
-      '<a class="desktop-member-profile" href="profile.html" aria-label="عرض الملف الشخصي">',
-      '<span class="desktop-member-avatar-wrap">',
-      '<img id="desktopMemberAvatar" class="desktop-member-avatar" alt="" hidden>',
-      '<span id="desktopMemberFallback" class="desktop-member-fallback">♞</span>',
-      '<i class="desktop-member-online-dot" aria-hidden="true"></i></span>',
-      '<span class="desktop-member-identity">',
-      '<strong id="desktopMemberName" class="desktop-member-name">العضو</strong>',
-      '<small id="desktopMemberUsername" class="desktop-member-username" dir="ltr" hidden></small>',
-      '</span>',
-      '<span class="desktop-member-score" aria-label="نقاط اللاعب"><small>النقاط</small><b id="desktopMemberRating">1500</b></span>',
-      '<span id="desktopMemberFlag" class="desktop-member-flag" role="img" aria-label="الدولة">🌐</span>',
-      '</a>',
-      '<span class="desktop-member-status" id="desktopMemberStatus" hidden><i aria-hidden="true"></i><span>متصل الآن</span></span>'
-    ].join('');
-    column.prepend(member);
     document.body.appendChild(column);
     column.querySelector('#desktopDashboardBack').addEventListener('click',()=>showDashboard('home'));
   }
@@ -946,76 +930,20 @@ if(desktop.matches && document.querySelector('#homeHero')){
     }
   }
 
-  let memberUsernameUserId='';
-  let memberUsernamePending=false;
-  async function syncMemberUsername(){
-    const el=document.getElementById('desktopMemberUsername');
-    if(!el)return;
-    if(!document.body.classList.contains('home-signed-in')){
-      el.textContent='';
-      el.hidden=true;
-      memberUsernameUserId='';
-      return;
-    }
-    if(!supabase||memberUsernamePending)return;
-    memberUsernamePending=true;
-    let fallbackUsername='';
-    try{
-      const {data:{session},error:sessionError}=await supabase.auth.getSession();
-      if(sessionError||!session?.user?.id)return;
-      const userId=session.user.id;
-      if(memberUsernameUserId===userId)return;
-      fallbackUsername=String(session.user.user_metadata?.username||'').trim().replace(/^@/,'');
-      let username=fallbackUsername;
-      const {data:profileRows,error:profileError}=await supabase.rpc('get_my_player_profile');
-      if(profileError)throw profileError;
-      const profile=Array.isArray(profileRows)?profileRows[0]:profileRows;
-      if(profile?.id){
-        const {data:publicRows,error:publicError}=await supabase.rpc('get_public_player_profile',{p_player_id:profile.id});
-        if(publicError)throw publicError;
-        const publicProfile=Array.isArray(publicRows)?publicRows[0]:publicRows;
-        username=String(publicProfile?.username||username).trim().replace(/^@/,'');
-      }
-      if(!document.body.classList.contains('home-signed-in'))return;
-      el.textContent=username?'@'+username:'';
-      el.hidden=!username;
-      memberUsernameUserId=userId;
-    }catch(error){
-      if(fallbackUsername&&document.body.classList.contains('home-signed-in')){
-        el.textContent='@'+fallbackUsername;
-        el.hidden=false;
-      }
-      console.warn('تعذر تحميل اسم المستخدم لبطاقة اللاعب',error);
-    }finally{
-      memberUsernamePending=false;
-    }
-  }
-
   function syncLiveData(){
-    copyText('headerMemberName','desktopMemberName','العضو');
-    void syncMemberUsername();
-    copyText('headerMemberRating','desktopMemberRating','1500');
-
     const signedIn=document.body.classList.contains('home-signed-in');
     const member=document.querySelector('.desktop-member-card');
     member?.classList.toggle('is-guest',!signedIn);
 
-    const countryRaw=document.getElementById('accountRegion')?.textContent?.trim()||'';
-    const country=signedIn&&countryRaw&&countryRaw!=='—'?countryRaw:'';
-    const flag=document.getElementById('desktopMemberFlag');
-    if(flag){
-      flag.textContent=countryFlag(country);
-      flag.title=country||'الدولة';
-      flag.setAttribute('aria-label',country||'الدولة');
-    }
     setMemberPresence(signedIn,lastPresenceSeenAt);
 
     const sourceAvatar=document.getElementById('headerMemberAvatar');
     const targetAvatar=document.getElementById('desktopMemberAvatar');
     const fallback=document.getElementById('desktopMemberFallback');
     const src=sourceAvatar?.getAttribute('src')||'';
-    if(targetAvatar&&src){
-      targetAvatar.src=src;
+    if(targetAvatar&&src&&(!sourceAvatar||!sourceAvatar.hidden)){
+      // Reuse the same authenticated photo as the profile menu.
+      if(targetAvatar.getAttribute('src')!==src)targetAvatar.src=src;
       targetAvatar.hidden=false;
       if(fallback)fallback.hidden=true;
     }else{
@@ -1026,7 +954,7 @@ if(desktop.matches && document.querySelector('#homeHero')){
 
   function watchLiveData(){
     const observer=new MutationObserver(()=>queueMicrotask(syncLiveData));
-    ['headerMemberName','headerMemberRating','accountRegion','headerMemberAvatar'].forEach(id=>{
+    ['headerMemberAvatar'].forEach(id=>{
       const node=document.getElementById(id);
       if(node)observer.observe(node,{childList:true,characterData:true,subtree:true,attributes:true});
     });
