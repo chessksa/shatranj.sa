@@ -188,7 +188,6 @@
     gap:6px;
   }
 
-  .inline-play-times button,
   .inline-play-search-button,
   .inline-play-actions button{
     min-height:45px;
@@ -201,10 +200,18 @@
     cursor:pointer;
   }
 
-  .inline-play-times button:hover,
   .inline-play-actions button:hover:not(:disabled){
     border-color:rgba(165,162,158,0.56);
     background:rgba(69,66,62,0.95);
+  }
+
+  .inline-play-times button{
+    min-height:45px;border:1px solid #394149;border-radius:11px;
+    background:#292e35;color:#e9edf1;
+    font:inherit;font-weight:900;cursor:pointer;
+  }
+  .inline-play-times button:hover:not(:disabled):not(.active){
+    background:#363c45;border-color:#66717d;
   }
 
   /* Selected duration matches the approved right-hand sidebar. */
