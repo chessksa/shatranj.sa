@@ -123,8 +123,8 @@
     display:flex;align-items:center;justify-content:center;gap:6px;
     white-space:nowrap;box-sizing:border-box;
     padding:5px 4px;
-    border:1px solid #566574!important;border-radius:9px;
-    background:#252c34!important;color:#e9edf1!important;
+    border:1px solid #394149!important;border-radius:9px;
+    background:#292e35!important;color:#e9edf1!important;
     font:900 clamp(11px,.9vw,13px)/1.2 Arial,sans-serif;
     box-shadow:none!important;cursor:pointer;overflow:hidden;
     transition:background .12s ease,border-color .12s ease;
