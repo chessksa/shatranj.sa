@@ -16,6 +16,7 @@ import {
 } from '../play/api.js?v=20261010-play-connection-v1';
 import { remainingAt, formatClock, isFinalMinute } from '../play/clock.mjs';
 import { normalizeGameState } from '../play/state.mjs';
+import { playBoardMoveSound } from '../board/move-sound.mjs?v=20261013-movesound-v1';
 import { decorateBoardCoordinate, renderApprovedPreview, openMoveNotebook, updateMoveNotebook, closeMoveNotebook } from './move-notebook.mjs?v=20261012-notebook-aligned-v13';
 
 // index.html preloads the canonical desktop stylesheet. Keep one fallback for
@@ -442,11 +443,13 @@ async function refreshGame(){
     const latest=normalizeGameState(await getGameState(gameId));
     // Never let a late API response repaint an idle homepage after navigation.
     if(!active||generation!==playGeneration||currentGame?.id!==gameId)return null;
+    const priorFen=currentGame?.fen;
     currentGame=latest;
     orientation=gameColor()||orientation;
     updateCurrentRatingFromGame();
     updateOpponent();
     renderPosition(currentGame.fen,orientation);
+    playBoardMoveSound(priorFen,currentGame.fen);
     updateControls();
     renderClocks();
     await refreshMoveNotebook();
