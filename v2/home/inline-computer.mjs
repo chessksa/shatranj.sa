@@ -39,7 +39,7 @@ function ensureCss(){
   const link=document.createElement('link');
   link.id='inlineComputerCss';
   link.rel='stylesheet';
-  link.href=new URL('./inline-computer.css?v=20261011-computer-cards-centered-v1',import.meta.url).href;
+  link.href=new URL('./inline-computer.css?v=20261013-computer-identity-contrast-v1',import.meta.url).href;
   document.head.insertBefore(link,document.querySelector('link[href*="site-charcoal-theme.css"]'));
   // Avoid loading an outdated duplicate of inline-play.css after the current
   // stylesheet: the later copy used to override the pawn-size correction.
@@ -352,19 +352,64 @@ function setStatus(text,error=false){
   node.classList.toggle('error',error);
 }
 
+let playerIdentityObserver=null;
+
 function syncPlayer(){
-  const name=document.getElementById('desktopMemberName')?.textContent?.trim()||'أنت';
-  const rating=document.getElementById('desktopMemberRating')?.textContent?.trim()||'1500';
-  const n=host?.querySelector('#inlineComputerPlayerName');
-  const m=host?.querySelector('#inlineComputerPlayerMeta');
-  if(n) n.textContent=name;
-  if(m) m.textContent=`النقاط ${rating}`;
+  if(!host||!host.isConnected)return;
+  // The previous desktopMemberName/Rating elements were deliberately removed.
+  // Use the authenticated profile that the homepage already keeps in the DOM.
+  const signedIn=document.body.classList.contains('home-signed-in');
+  const headerName=document.getElementById('headerMemberName')?.textContent?.trim()||'';
+  const name=signedIn&&headerName&&headerName!=='العضو'?headerName:'أنت';
+  const rating=document.getElementById('headerMemberRating')?.textContent?.trim()||'1500';
+  const n=host.querySelector('#inlineComputerPlayerName');
+  const m=host.querySelector('#inlineComputerPlayerMeta');
+  if(n&&n.textContent!==name)n.textContent=name;
+  if(m)m.textContent=`النقاط ${rating}`;
+
+  const source=document.getElementById('headerMemberAvatar');
+  const photo=host.querySelector('#inlineComputerPlayerAvatar');
+  const fallback=host.querySelector('#inlineComputerPlayerFallback');
+  const src=signedIn&&!source?.hidden?source?.getAttribute('src')||'':'';
+  if(photo&&src){
+    if(photo.getAttribute('src')!==src)photo.setAttribute('src',src);
+    photo.hidden=false;
+    if(fallback)fallback.hidden=true;
+  }else{
+    if(photo){photo.hidden=true;photo.removeAttribute('src');}
+    if(fallback)fallback.hidden=false;
+  }
+}
+
+function watchPlayerIdentity(){
+  playerIdentityObserver?.disconnect();
+  playerIdentityObserver=new MutationObserver(syncPlayer);
+  for(const id of ['headerMemberName','headerMemberRating','headerMemberAvatar']){
+    const source=document.getElementById(id);
+    if(source)playerIdentityObserver.observe(source,{
+      attributes:id==='headerMemberAvatar',
+      attributeFilter:id==='headerMemberAvatar'?['src','hidden']:undefined,
+      childList:id!=='headerMemberAvatar',
+      characterData:id!=='headerMemberAvatar',
+      subtree:id!=='headerMemberAvatar'
+    });
+  }
+  syncPlayer();
 }
 
 function buildPanel(body){
   body.innerHTML=`
     <div class="inline-computer-panel">
       <section class="inline-play-player-card inline-computer-opponent">
+        <span class="inline-computer-identity-icon inline-computer-machine-icon" aria-hidden="true">
+          <svg viewBox="0 0 48 48" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <rect x="7" y="10" width="34" height="26" rx="5" stroke="currentColor" stroke-width="2.5"/>
+            <rect x="12" y="15" width="24" height="16" rx="2.5" stroke="currentColor" stroke-width="1.5"/>
+            <circle cx="19" cy="22" r="2" fill="currentColor"/>
+            <circle cx="29" cy="22" r="2" fill="currentColor"/>
+            <path d="M21 27h6M24 6v4M18 40h12M24 36v4" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"/>
+          </svg>
+        </span>
         <div class="inline-play-player-copy">
           <strong class="inline-play-player-name">الكمبيوتر</strong>
           <span id="inlineComputerOpponentMeta" class="inline-play-player-meta">مستوى متوسط — ±10 نقاط</span>
@@ -395,6 +440,10 @@ function buildPanel(body){
       </section>
 
       <section class="inline-play-player-card inline-computer-player">
+        <span class="inline-computer-identity-icon inline-computer-player-photo">
+          <img id="inlineComputerPlayerAvatar" alt="" hidden>
+          <span id="inlineComputerPlayerFallback" aria-hidden="true">♞</span>
+        </span>
         <div class="inline-play-player-copy">
           <strong id="inlineComputerPlayerName" class="inline-play-player-name">أنت</strong>
           <span id="inlineComputerPlayerMeta" class="inline-play-player-meta">النقاط 1500</span>
@@ -405,7 +454,7 @@ function buildPanel(body){
     </div>`;
 
   host=body.querySelector('.inline-computer-panel');
-  syncPlayer();
+  watchPlayerIdentity();
   bindPanel();
 }
 
@@ -655,6 +704,8 @@ export function mountInlineComputer(body){
 }
 
 export function stopInlineComputer({restoreBoard=true}={}){
+  playerIdentityObserver?.disconnect();
+  playerIdentityObserver=null;
   closeMoveNotebook('computer');
   setInlineComputerMatchPresence(false);
   if(!active) return;
