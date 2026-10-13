@@ -166,6 +166,14 @@ html body #tournamentResultsTicker{
 }
 
 
+/* Auth/dialog overlays must remain above the full-width news strip. */
+@media(min-width:901px){
+  html body.desktop-board-workspace.desktop-auth-open #chessNewsTicker{
+    z-index:90!important;
+  }
+}
+
+
 /* Pause news movement while the pointer is over the ticker */
 @media (hover:hover) and (pointer:fine){
   #chessNewsTicker:hover .welcome-ticker-track{
