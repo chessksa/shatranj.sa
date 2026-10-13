@@ -49,6 +49,16 @@
   }
   .mfw-square.light{background:transparent}
   .mfw-square.dark{background:transparent}
+  /* Theme overrides touch board colors only, never piece geometry. */
+  #mobileFixedWorkspace #mfwBoard[data-board-theme]:not([data-board-theme="shatranj"]) .mfw-board-grid{
+    background:var(--board-light)!important;background-image:none!important;
+  }
+  #mobileFixedWorkspace #mfwBoard[data-board-theme]:not([data-board-theme="shatranj"]) .mfw-square.light{
+    background:var(--board-light)!important;border-color:var(--board-line)!important;
+  }
+  #mobileFixedWorkspace #mfwBoard[data-board-theme]:not([data-board-theme="shatranj"]) .mfw-square.dark{
+    background:var(--board-dark)!important;border-color:var(--board-line)!important;
+  }
   .mfw-square .mfw-coordinate{position:absolute;z-index:3;pointer-events:none;user-select:none;font:800 clamp(7px,1.8vw,10px)/1 Arial,sans-serif;color:rgba(69,66,62,0.75)}
   .mfw-square.dark .mfw-coordinate{color:rgba(165,162,158,0.84);text-shadow:0 1px 1px rgba(0,0,0,.21)}
   .mfw-coordinate-rank{left:2px;top:2px}
