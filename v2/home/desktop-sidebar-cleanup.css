@@ -32,7 +32,8 @@
  }
  html body.desktop-board-workspace .v2-global-sidebar.desktop-sidebar-refined
  .desktop-home-nav-link:is(.active,[aria-current="page"]){
-   background:#353c45!important;border-color:#66717d!important;
+   background:#353c45!important;border-color:#aebdcc!important;
+   box-shadow:inset 0 0 0 1px rgba(174,189,204,.23)!important;
  }
  html body.desktop-board-workspace .v2-global-sidebar.desktop-sidebar-refined .desktop-home-nav-icon{
    display:grid!important;place-items:center!important;flex:0 0 29px!important;
