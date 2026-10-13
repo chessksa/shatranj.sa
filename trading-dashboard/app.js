@@ -23,7 +23,7 @@ function render(s){
  const dbOK=s.trades?.db_status==='ok';const open=dbOK?(s.trades.open||[]):[];const closed=dbOK?(s.trades.closed||[]):[];const rt=s.runtime||{};const acc=s.account||{};const prices=s.prices||{};
  setState('engineStatus',rt.running?'البوت يعمل · PID '+rt.pid:'البوت متوقف',rt.running?'good':'bad');
  setState('apiStatus',acc.status==='ok'?'Binance متصل':'Binance غير متصل',acc.status==='ok'?'good':'bad');
- $('dbStatus').textContent=dbOK?'قاعدة الصفقات: متاحة':'قاعدة الصفقات: غير متاحة';$('dbStatus').className='state '+(dbOK?'good':'bad');
+ $('dbStatus').textContent=dbOK?'قاعدة الصفقات: متاحة':'قاعدة الصفقات: غير متاحة';$('dbStatus').className='status-pill '+(dbOK?'good':'bad');
  $('timeStatus').textContent='تحديث '+clock(s.generated_at);
  const ui=s.ui_update||{};$('uiVersion').textContent='الواجهة '+escapeHTML(ui.version||'محلية')+(ui.connected===false?' · دون اتصال بالتحديثات':'');$('uiVersion').title=ui.message||'';
  $('startBot').disabled=Boolean(rt.running||rt.session_exists);
@@ -34,9 +34,9 @@ function render(s){
  setValue('openPnl',estimateText,allMarked&&dbOK?kind(estimate):'');setValue('unrealizedPnl',estimateText,allMarked&&dbOK?kind(estimate):'');
  $('openCountChip').textContent=dbOK?open.length+' مفتوحة':'غير متاح';
  $('openTradesBody').innerHTML=dbOK?(open.length?open.map(t=>openRow(t,s)).join(''):blank(7,'لا توجد مراكز مفتوحة مسجلة')):blank(7,'قاعدة الصفقات غير متاحة — لا يمكن تأكيد المراكز');
- const latest=[...closed].sort((a,b)=>new Date(b.close_date||0)-new Date(a.close_date||0)).slice(0,15);
+ const latest=[...closed].sort((a,b)=>new Date(b.close_date||0)-new Date(a.close_date||0));
  $('closedBody').innerHTML=dbOK?(latest.length?latest.map(closedRow).join(''):blank(6,'لا توجد صفقات مغلقة بعد')):blank(6,'سجل الصفقات غير متاح');
- $('closedLabel').textContent=dbOK?'آخر '+Math.min(15,closed.length)+' من '+closed.length:'غير متاح';
+ $('closedLabel').textContent=dbOK?'الأحدث أولًا · تمرير مستقل':'السجل غير متاح';
  const valid=closed.filter(t=>t.pnl!=null&&Number.isFinite(Number(t.pnl)));const sum=valid.reduce((a,t)=>a+Number(t.pnl),0);
  const now=new Date();const today=now.getFullYear()+'/'+now.getMonth()+'/'+now.getDate();const key=x=>{const d=new Date(x);return d.getFullYear()+'/'+d.getMonth()+'/'+d.getDate()};const doneToday=valid.filter(t=>t.close_date&&key(t.close_date)===today);const todayPnl=doneToday.reduce((a,t)=>a+Number(t.pnl),0);
  setValue('totalPnl',dbOK?signed(sum,3)+' USDT':'—',dbOK?kind(sum):'');setValue('todayPnl',dbOK?signed(todayPnl,3)+' USDT':'—',dbOK?kind(todayPnl):'');
@@ -59,9 +59,13 @@ function openDialog(action){if(!snapshot)return;pendingAction=action;const start
 function closeDialog(){$('confirmModal').hidden=true;pendingAction=null}
 async function submitControl(){const action=pendingAction;const required=action==='start'?'START LIVE V3':'STOP V3';if(!action)return;if($('confirmPhrase').value.trim()!==required){$('modalResult').textContent='عبارة التأكيد غير مطابقة';return}
  const b=$('modalSubmit');b.disabled=true;b.textContent='جارٍ إرسال الطلب...';try{const r=await fetch('/api/control',{method:'POST',headers:{'Content-Type':'application/json','X-Mad-Token':controlToken},body:JSON.stringify({action,phrase:required})});const answer=await r.json();if(!r.ok){$('modalResult').textContent=answer.message||answer.error||'تعذر تنفيذ الطلب';return}closeDialog();dismissedWarning='';$('noticeText').textContent=answer.message||'أُرسل الطلب';$('noticeBar').hidden=false;await refresh()}catch(e){$('modalResult').textContent='تعذر الاتصال بخادم اللوحة'}finally{b.disabled=false;b.textContent=action==='start'?'تأكيد التشغيل':'تأكيد الإيقاف'}}
+function toggleEvents(force){const panel=$('eventsPanel');const willShow=typeof force==='boolean'?force:panel.hidden;panel.hidden=!willShow;$('eventsToggle').setAttribute('aria-expanded',String(willShow));}
+$('eventsToggle').addEventListener('click',()=>toggleEvents());
+$('closeEvents').addEventListener('click',()=>toggleEvents(false));
+document.addEventListener('click',e=>{if(!$('eventsPanel').hidden&&!$('eventsPanel').contains(e.target)&&!$('eventsToggle').contains(e.target))toggleEvents(false)});
 $('refreshBtn').addEventListener('click',()=>window.location.reload());
 $('dismissNotice').addEventListener('click',()=>{dismissedWarning=$('noticeText').textContent;$('noticeBar').hidden=true});
 $('startBot').addEventListener('click',()=>openDialog('start'));$('stopBot').addEventListener('click',()=>openDialog('stop'));
 $('modalClose').addEventListener('click',closeDialog);$('modalCancel').addEventListener('click',closeDialog);$('modalSubmit').addEventListener('click',submitControl);
-$('confirmModal').addEventListener('click',e=>{if(e.target===$('confirmModal'))closeDialog()});document.addEventListener('keydown',e=>{if(e.key==='Escape')closeDialog()});
+$('confirmModal').addEventListener('click',e=>{if(e.target===$('confirmModal'))closeDialog()});document.addEventListener('keydown',e=>{if(e.key==='Escape'){closeDialog();toggleEvents(false)}});
 refresh();setInterval(refresh,8000);
