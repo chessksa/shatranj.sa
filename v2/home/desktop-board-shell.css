@@ -1098,8 +1098,8 @@
   .desktop-play-time-options button:hover{background:rgba(114,111,107,0.2)}
   .desktop-play-time-options button.is-selected,
   .desktop-play-time-options button.is-selected:hover{
-    border:0.5px solid #e2dcd3!important;
-    background:rgba(255,255,255,.075)!important;
+    border:1px solid #66717d!important;
+    background:#353c45!important;
     box-shadow:none!important;
     outline:none!important;
   }
@@ -1132,8 +1132,8 @@
   }
   .desktop-play-choice-list > button.is-selected,
   .desktop-play-choice-list > button.is-selected:hover{
-    border:0.5px solid #e2dcd3!important;
-    background:rgba(114,111,107,0.28)!important;
+    border:1px solid #66717d!important;
+    background:#353c45!important;
     box-shadow:none!important;
     outline:none!important;
   }
