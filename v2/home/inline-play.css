@@ -84,19 +84,25 @@
   }
 
   .inline-play-player-card{
-    min-height:116px;
-    padding:11px 12px;
+    /* One 1px border + 5px inner padding leaves exactly 6px around the portrait. */
+    --live-card-height:clamp(116px,16dvh,150px);
+    height:var(--live-card-height);
+    min-height:var(--live-card-height);
+    flex:0 0 var(--live-card-height);
+    box-sizing:border-box;
+    padding:5px;
     border-radius:12px;
     display:grid;
-    grid-template-columns:clamp(68px,6.3vw,82px) minmax(0,1fr) clamp(108px,10.5vw,145px);
+    grid-template-columns:calc(var(--live-card-height) - 12px) minmax(0,1fr) clamp(108px,10.5vw,145px);
+    grid-template-rows:minmax(0,1fr);
     align-items:center;
     gap:10px;
     direction:rtl;
     overflow:hidden;
   }
   .inline-play-player-avatar{
-    display:grid;place-items:center;align-self:center;justify-self:center;
-    width:100%;aspect-ratio:1/1;min-width:0;
+    display:grid;place-items:center;align-self:stretch;justify-self:stretch;
+    width:100%;height:100%;aspect-ratio:1/1;min-width:0;min-height:0;
     border:1px solid #61758a;border-radius:10px;
     background:#242e39;overflow:hidden;box-sizing:border-box;
   }
@@ -204,11 +210,13 @@
   /* Selected duration keeps the same surface; only the outline changes. */
   html body.desktop-inline-play-active .desktop-inline-play-panel .inline-play-times button.active,
   html body.desktop-inline-play-active .desktop-inline-play-panel .inline-play-times button.active:hover{
+    /* An unmistakable highlighted outline, never a different button fill. */
     background:linear-gradient(180deg,#323941,#282d33)!important;
     background-image:linear-gradient(180deg,#323941,#282d33)!important;
-    color:#e9edf1!important;
-    border:2px solid #9bc6fd!important;
-    box-shadow:none!important;
+    color:#fff!important;
+    border:3px solid #83dcff!important;
+    box-shadow:0 0 0 1px #e0f6ff,0 0 0 3px rgba(131,220,255,.18)!important;
+    outline:none!important;
   }
   html body.desktop-inline-play-active .desktop-inline-play-panel .inline-play-times button:focus-visible{
     outline:2px solid #9bc6fd!important;outline-offset:2px!important;
@@ -248,8 +256,8 @@
 
   @media(max-height:675px){
     .inline-play-player-card{
-      min-height:90px;padding:7px 9px;
-      grid-template-columns:58px minmax(0,1fr) 115px;
+      --live-card-height:clamp(94px,15dvh,112px);
+      grid-template-columns:calc(var(--live-card-height) - 12px) minmax(0,1fr) 115px;
       gap:7px;
     }
     .inline-play-player-name{font-size:15px}
