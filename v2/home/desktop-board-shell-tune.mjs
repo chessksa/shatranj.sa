@@ -67,9 +67,9 @@ function restoreDashboardBlocks(){
     stats.className='desktop-live-stats';
     stats.setAttribute('aria-label','إحصاءات المنصة');
     stats.innerHTML=`
-      <div class="desktop-live-stat"><small>المباريات الآن</small><strong id="desktopMatchesCount">0</strong></div>
-      <div class="desktop-live-stat"><small>المتواجدون</small><strong id="desktopOnlineCount">0</strong></div>
-      <div class="desktop-live-stat"><small>المشتركون</small><strong id="desktopPlayersCount">0</strong></div>`;
+      <div class="desktop-live-stat" data-live-stat="matches"><small>المباريات الآن</small><strong id="desktopMatchesCount">0</strong><span class="desktop-live-icon" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="m7 3 4 4-4 4-4-4 4-4Zm10 10 4 4-4 4-4-4 4-4Z"/><path d="m9 9 6 6M4 20l3-3M17 7l3-3"/></svg></span></div>
+      <div class="desktop-live-stat" data-live-stat="online"><small>المتواجدون</small><strong id="desktopOnlineCount">0</strong><span class="desktop-live-icon" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="9" cy="8" r="3"/><path d="M3.5 19v-2a5.5 5.5 0 0 1 11 0v2"/><circle cx="18" cy="7" r="3" fill="currentColor" stroke="none"/><path d="M18 13v6"/></svg></span></div>
+      <div class="desktop-live-stat" data-live-stat="players"><small>المشتركون</small><strong id="desktopPlayersCount">0</strong><span class="desktop-live-icon" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="9" cy="7" r="3"/><path d="M3 20v-2a6 6 0 0 1 12 0v2M17 5a3 3 0 0 1 0 6M17 15a5 5 0 0 1 4 5"/></svg></span></div>`;
     // Champion cards occupy the second half; counters always stay in the bottom row.
     home.appendChild(stats);
   }
