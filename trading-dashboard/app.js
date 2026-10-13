@@ -12,7 +12,7 @@ const priceFmt=n=>{if(n==null||!Number.isFinite(Number(n)))return '—';const v=
 const freshPrice=(pair,s)=>{if(!s.prices?.updated)return null;const t=new Date(s.prices.updated).getTime();if(!Number.isFinite(t)||Date.now()-t>90000||t-Date.now()>30000)return null;const n=Number(s.prices.rates?.[pair]);return n>0&&Number.isFinite(n)?n:null};
 function mark(t,s){const market=freshPrice(t.pair,s);if(market===null||t.open_rate==null||t.amount==null)return null;const pnl=(market-t.open_rate)*t.amount;const cost=Number(t.stake_amount)>0?Number(t.stake_amount):t.open_rate*t.amount;return {market,pnl,pct:cost>0?100*pnl/cost:null}}
 function setValue(id,value,col=''){const el=$(id);el.textContent=value;el.classList.remove('positive','negative');if(col)el.classList.add(col)}
-function setState(id,label,status){const el=$(id);el.classList.remove('good','bad','muted');el.classList.add(status);el.innerHTML='<i class="led" aria-hidden="true"></i>'+escapeHTML(label)}
+function setState(id,label,status){const el=$(id);el.classList.remove('good','bad','muted');el.classList.add(status);el.querySelector('.status-label').textContent=label}
 function warn(message){if(!message){$('noticeBar').hidden=true;return}if(dismissedWarning===message)return;$('noticeText').textContent=message;$('noticeBar').hidden=false}
 function blank(col,msg){return '<tr><td colspan="'+col+'" class="empty-cell">'+escapeHTML(msg)+'</td></tr>'}
 function openRow(t,s){const m=mark(t,s);const result=m?'<div class="value-stack '+kind(m.pnl)+'"><b>'+escapeHTML(signed(m.pnl))+' USDT</b><small class="'+kind(m.pnl)+'">'+escapeHTML(m.pct==null?'—':signed(m.pct,2)+'%')+'</small></div>':'<span class="faint">بانتظار السعر</span>';
@@ -23,12 +23,13 @@ function render(s){
  const dbOK=s.trades?.db_status==='ok';const open=dbOK?(s.trades.open||[]):[];const closed=dbOK?(s.trades.closed||[]):[];const rt=s.runtime||{};const acc=s.account||{};const prices=s.prices||{};
  setState('engineStatus',rt.running?'البوت يعمل · PID '+rt.pid:'البوت متوقف',rt.running?'good':'bad');
  setState('apiStatus',acc.status==='ok'?'Binance متصل':'Binance غير متصل',acc.status==='ok'?'good':'bad');
- $('dbStatus').textContent=dbOK?'قاعدة الصفقات: متاحة':'قاعدة الصفقات: غير متاحة';$('dbStatus').className='status-pill '+(dbOK?'good':'bad');
+ setState('dbStatus',dbOK?'قاعدة الصفقات: متاحة':'قاعدة الصفقات: غير متاحة',dbOK?'good':'bad');
  $('timeStatus').textContent='تحديث '+clock(s.generated_at);
  const ui=s.ui_update||{};$('uiVersion').textContent='الواجهة '+escapeHTML(ui.version||'محلية')+(ui.connected===false?' · دون اتصال بالتحديثات':'');$('uiVersion').title=ui.message||'';
  $('startBot').disabled=Boolean(rt.running||rt.session_exists);
  $('stopBot').disabled=!rt.running&&!rt.session_exists;
- $('modeStatus').textContent=s.settings?.dry_run===true?'الوضع: تجريبي':s.settings?.dry_run===false?'الوضع: حقيقي':'الوضع: غير محدد';
+ $('modeStatus').querySelector('.status-label').textContent=s.settings?.dry_run===true?'الوضع: تجريبي':s.settings?.dry_run===false?'الوضع: حقيقي':'الوضع: غير محدد';
+ $('modeStatus').classList.remove('mode-dry','mode-live','mode-unknown');$('modeStatus').classList.add(s.settings?.dry_run===true?'mode-dry':s.settings?.dry_run===false?'mode-live':'mode-unknown');
  const openMarks=open.map(t=>mark(t,s));const allMarked=openMarks.every(Boolean);const estimate=openMarks.reduce((a,m)=>a+(m?m.pnl:0),0);
  const estimateText=dbOK?(open.length?(allMarked?signed(estimate,3)+' USDT':'أسعار ناقصة'):'0.000 USDT'):'—';
  setValue('openPnl',estimateText,allMarked&&dbOK?kind(estimate):'');setValue('unrealizedPnl',estimateText,allMarked&&dbOK?kind(estimate):'');
