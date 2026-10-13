@@ -207,24 +207,23 @@
     background:rgba(69,66,62,0.95);
   }
 
-  /* Match-duration options only: a 1px gold border marks the selected time.
-     A warm gold glow appears on hover without changing the button background. */
-  html body.desktop-inline-play-active .desktop-inline-play-panel .inline-play-times button.active{
-    background:linear-gradient(180deg,#323941,#282d33)!important;
-    background-image:linear-gradient(180deg,#323941,#282d33)!important;
+  /* Selected duration matches the approved right-hand sidebar. */
+  html body.desktop-inline-play-active .desktop-inline-play-panel .inline-play-times button.active,
+  html body.desktop-inline-play-active .desktop-inline-play-panel .inline-play-times button.active:hover{
+    background:#353c45!important;
+    background-image:none!important;
     color:#e9edf1!important;
-    border:1px solid #d7b66c!important;
+    border:1px solid #66717d!important;
     box-shadow:none!important;
-    outline:none!important;
   }
-  html body.desktop-inline-play-active .desktop-inline-play-panel .inline-play-times button:hover:not(:disabled){
-    border:1px solid #d7b66c!important;
-    background:linear-gradient(180deg,#323941,#282d33)!important;
-    background-image:linear-gradient(180deg,#323941,#282d33)!important;
-    box-shadow:0 0 8px rgba(215,182,108,.45),inset 0 0 5px rgba(215,182,108,.12)!important;
+  html body.desktop-inline-play-active .desktop-inline-play-panel .inline-play-times button:hover:not(:disabled):not(.active){
+    background:#363c45!important;
+    background-image:none!important;
+    border-color:#48515b!important;
+    box-shadow:none!important;
   }
   html body.desktop-inline-play-active .desktop-inline-play-panel .inline-play-times button:focus-visible{
-    outline:1px solid #d7b66c!important;outline-offset:2px!important;
+    outline:2px solid #a5b4c4!important;outline-offset:1px!important;
   }
 
   .inline-play-times button:disabled{opacity:.48;cursor:default}
