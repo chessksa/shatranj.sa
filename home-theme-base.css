@@ -366,11 +366,11 @@ label,.account-panel,.form-info h2{color:var(--hero-cream)!important}
 }
 .account-stat strong{color:var(--hero-gold)!important}
 
-.home-invite-panel{background:#302e2b!important;border-color:rgba(165,162,158,0.34)!important}
-.home-invite-search,.home-invite-result{background:#302e2b!important;color:var(--hero-cream)!important;border-color:rgba(255,255,255,.08)!important}
-.home-invite-title,.home-invite-name,.home-invite-result{color:var(--hero-cream)!important}
-.home-invite-meta,.home-invite-empty{color:var(--hero-muted)!important}
-.home-invite-send{color:var(--hero-gold)!important}
+.home-invite-panel{background:linear-gradient(180deg,#363b43,#292e35)!important;border-color:#48515b!important}
+.home-invite-search,.home-invite-result{background:#20262d!important;color:#e9edf1!important;border-color:#48515b!important}
+.home-invite-title,.home-invite-name,.home-invite-result{color:#e9edf1!important}
+.home-invite-meta,.home-invite-empty{color:#c3cbd4!important}
+.home-invite-send{color:#e9edf1!important;background:#303944!important;border:1px solid #576777!important}
 
 footer{
   padding:20px 0!important;
