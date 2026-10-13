@@ -39,7 +39,7 @@ function ensureCss(){
   const link=document.createElement('link');
   link.id='inlineComputerCss';
   link.rel='stylesheet';
-  link.href=new URL('./inline-computer.css?v=20261014-charcoal-66717d-final-v2',import.meta.url).href;
+  link.href=new URL('./inline-computer.css?v=20261014-unified-game-tiles-v1',import.meta.url).href;
   document.head.insertBefore(link,document.querySelector('link[href*="site-charcoal-theme.css"]'));
   // Avoid loading an outdated duplicate of inline-play.css after the current
   // stylesheet: the later copy used to override the pawn-size correction.
