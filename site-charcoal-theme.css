@@ -1039,40 +1039,84 @@ html body.desktop-board-workspace .desktop-dashboard-view-body .home-invite-empt
   color:#c3cbd4!important;
 }
 
-/* Canonical selection styling. One source of truth for navigational and
-   choice controls on desktop, mobile, and embedded pages.
-   Never target board squares, pieces, move/capture indicators or action CTAs. */
+/* Approved right-rail control states; authoritative shared stylesheet.
+   Idle choices are matte charcoal and distinctly darker than the selected
+   #353C45 surface / #66717D 1px border. Board squares, pieces, indicators
+   and action buttons are intentionally excluded. */
 :root{
+  --site-choice-idle-bg:#292e35;
+  --site-choice-idle-border:#394149;
   --site-choice-bg:#353c45;
-  --site-choice-hover-bg:#363c45;
   --site-choice-border:#66717d;
-  --site-choice-normal-border:#394149;
-  --site-choice-text:#f5f6f8;
+  --site-choice-hover-bg:#363c45;
+  --site-choice-text:#e9edf1;
 }
+
+/* Game-mode choices and time controls use the same default tile as the main
+   navigation, not old bright gradient buttons. */
+html body.desktop-board-workspace :is(
+  .desktop-play-time-options>button,
+  .desktop-play-choice-list>button,
+  .desktop-inline-play-panel .inline-play-times>button,
+  .inline-computer-panel .inline-computer-options>button,
+  .inline-puzzle-modes>button,
+  .inline-learn-filters>button
+),
 html body :is(
- .desktop-home-nav-link,.v2-global-link,.v2-mobile-link,.v2-mobile-more-link,
- .mfw-tab,.mobile-workspace-tab,.v2-mobile-more-button,
- .desktop-play-time-options>button,.desktop-play-choice-list>button,
- .inline-computer-options>button,.inline-play-times>button,
- .inline-puzzle-modes>button,.inline-learn-filters>button,
- .platform-tab,.admin-inline-tab,.tournament-tab,.nav-btn,
- .auth-tab,.profile-top-action,.v2-theme-option,
- .nav-item,.nav-link,.time-option,.v2-quick-times>button
-):where(:hover):not(:disabled){
-  background:#363c45!important;
+  .v2-quick-times>button,
+  .time-option,
+  .nav-btn,
+  .mfw-play-tile
+){
+  background:var(--site-choice-idle-bg)!important;
   background-image:none!important;
-  border-color:#48515b!important;
+  border:1px solid var(--site-choice-idle-border)!important;
+  box-shadow:none!important;
+  color:var(--site-choice-text)!important;
 }
-/* Every persistent selected state uses the same border, no filled orange tiles. */
+
+/* Hover is visible but restrained, without a glow or an invented accent. */
+html body.desktop-board-workspace :is(
+  .desktop-play-time-options>button,
+  .desktop-play-choice-list>button,
+  .desktop-inline-play-panel .inline-play-times>button,
+  .inline-computer-panel .inline-computer-options>button,
+  .inline-puzzle-modes>button,
+  .inline-learn-filters>button
+):hover:not(:disabled),
 html body :is(
- .desktop-home-nav-link,.v2-global-link,.v2-mobile-link,.v2-mobile-more-link,
- .mfw-tab,.mobile-workspace-tab,.v2-mobile-more-button,
- .desktop-play-time-options>button,.desktop-play-choice-list>button,
- .inline-computer-options>button,.inline-play-times>button,
- .inline-puzzle-modes>button,.inline-learn-filters>button,
- .platform-tab,.admin-inline-tab,.tournament-tab,.nav-btn,
- .auth-tab,.profile-top-action,.v2-theme-option,
- .nav-item,.nav-link,.time-option,.v2-quick-times>button
+  .desktop-home-nav-link,.v2-global-link,.v2-mobile-link,
+  .v2-mobile-more-link,.mfw-tab,.mobile-workspace-tab,
+  .v2-quick-times>button,.v2-theme-option,
+  .platform-tab,.admin-inline-tab,.tournament-tab,
+  .auth-tab,.profile-top-action,.nav-item,.nav-link,.time-option,.nav-btn
+):hover:not(:disabled){
+  background:var(--site-choice-hover-bg)!important;
+  background-image:none!important;
+  border-color:var(--site-choice-border)!important;
+  box-shadow:none!important;
+}
+
+/* Single, persistent selected state shared by the homepage navigation,
+   online play, computer, puzzles, learning, settings, and mobile menus. */
+html body.desktop-board-workspace .v2-global-sidebar.desktop-sidebar-refined
+  .desktop-home-nav-link:is(.active,[aria-current="page"]),
+html body.desktop-board-workspace :is(
+  .desktop-play-time-options>button.is-selected,
+  .desktop-play-choice-list>button.is-selected,
+  .desktop-play-time-options>button[aria-pressed="true"],
+  .desktop-play-choice-list>button[aria-pressed="true"],
+  .desktop-inline-play-panel .inline-play-times>button.active,
+  .inline-computer-panel .inline-computer-options>button.active,
+  .inline-puzzle-modes>button.active,
+  .inline-learn-filters>button.active
+),
+html body :is(
+  .desktop-home-nav-link,.v2-global-link,.v2-mobile-link,
+  .v2-mobile-more-link,.mfw-tab,.mobile-workspace-tab,
+  .v2-mobile-more-button,.v2-quick-times>button,.v2-theme-option,
+  .platform-tab,.admin-inline-tab,.tournament-tab,
+  .auth-tab,.profile-top-action,.nav-item,.nav-link,.time-option,.nav-btn
 ):is(.active,.is-selected,.selected,.is-active,[aria-current="page"],[aria-selected="true"],[aria-pressed="true"]),
 html body [role="tab"][aria-selected="true"]{
   background:var(--site-choice-bg)!important;
@@ -1081,114 +1125,42 @@ html body [role="tab"][aria-selected="true"]{
   box-shadow:none!important;
   color:var(--site-choice-text)!important;
 }
-html body :is(
- .desktop-home-nav-link,.v2-global-link,.v2-mobile-link,.v2-mobile-more-link,
- .mfw-tab,.mobile-workspace-tab,.v2-mobile-more-button,
- .desktop-play-time-options>button,.desktop-play-choice-list>button,
- .inline-computer-options>button,.inline-play-times>button,
- .inline-puzzle-modes>button,.inline-learn-filters>button,
- .platform-tab,.admin-inline-tab,.tournament-tab,.nav-btn,
- .auth-tab,.profile-top-action,.v2-theme-option,
- .nav-item,.nav-link,.time-option,.v2-quick-times>button
-):is(.active,.is-selected,.selected,.is-active,[aria-current="page"],[aria-selected="true"],[aria-pressed="true"]):is(:hover,:focus-visible){
-  background:var(--site-choice-bg)!important;
-  background-image:none!important;
-  border:1px solid var(--site-choice-border)!important;
-  box-shadow:none!important;
-}
-/* Explicit strong scopes beat legacy !important rules injected by play
-   components and the desktop rail's own stylesheet. */
-html body.desktop-board-workspace .v2-global-sidebar.desktop-sidebar-refined
- .desktop-home-nav-link:is(.active,[aria-current="page"]),
-html body.desktop-board-workspace :is(
- .desktop-play-time-options>button.is-selected,
- .desktop-play-choice-list>button.is-selected,
- .desktop-play-time-options>button[aria-pressed="true"],
- .desktop-play-choice-list>button[aria-pressed="true"]
-),
-html body.desktop-board-workspace .inline-computer-panel .inline-computer-options>button.active,
-html body.desktop-inline-play-active .desktop-inline-play-panel .inline-play-times>button.active,
-html body #mobileFixedWorkspace .mfw-tab.active,
-html body #mobileFixedWorkspace .mobile-workspace-tab.active,
-html body .v2-mobile-link.active,
-html body .v2-mobile-more-link.active,
-html body .v2-theme-option.active{
-  background:var(--site-choice-bg)!important;
-  background-image:none!important;
-  border:1px solid var(--site-choice-border)!important;
-  box-shadow:none!important;
-  color:var(--site-choice-text)!important;
-}
-html body.desktop-board-workspace .v2-global-sidebar.desktop-sidebar-refined
- .desktop-home-nav-link:is(.active,[aria-current="page"]):hover,
-html body.desktop-board-workspace :is(
- .desktop-play-time-options>button.is-selected,
- .desktop-play-choice-list>button.is-selected
-):hover,
-html body.desktop-board-workspace .inline-computer-panel .inline-computer-options>button.active:hover,
-html body.desktop-inline-play-active .desktop-inline-play-panel .inline-play-times>button.active:hover,
-html body #mobileFixedWorkspace .mfw-tab.active:hover,
-html body .v2-mobile-link.active:hover{
-  background:var(--site-choice-bg)!important;
-  background-image:none!important;
-  border:1px solid var(--site-choice-border)!important;
-  box-shadow:none!important;
-}
-html body :is(
- .desktop-home-nav-link,.v2-global-link,.v2-mobile-link,
- .v2-mobile-more-link,.mfw-tab,.mobile-workspace-tab,
- .desktop-play-time-options>button,.desktop-play-choice-list>button,
- .inline-computer-options>button,.inline-play-times>button,
- .inline-puzzle-modes>button,.inline-learn-filters>button,
- .platform-tab,.admin-inline-tab,.tournament-tab,.auth-tab,
- .v2-theme-option
-):focus-visible{
-  outline:2px solid #a5b4c4!important;
-  outline-offset:2px!important;
-}
-/* Gameplay highlights, piece textures and clock/result states are excluded. */
 
-
-/* Keep unselected options visibly darker than the agreed 1px selected frame.
-   This fixes the confusing nearly-identical default borders in Play Now. */
-html body.desktop-board-workspace :is(
-  .desktop-play-time-options>button:not(.is-selected):not([aria-pressed="true"]),
-  .desktop-play-choice-list>button:not(.is-selected):not([aria-pressed="true"])
-),
-html body.desktop-board-workspace .inline-computer-panel .inline-computer-options>button:not(.active),
-html body.desktop-inline-play-active .desktop-inline-play-panel .inline-play-times>button:not(.active),
-html body.desktop-board-workspace .inline-puzzle-modes>button:not(.active),
-html body.desktop-board-workspace .inline-learn-filters>button:not(.active){
-  border:1px solid #394149!important;
-  box-shadow:none!important;
-}
-html body.desktop-board-workspace :is(
-  .desktop-play-time-options>button:not(.is-selected):not([aria-pressed="true"]),
-  .desktop-play-choice-list>button:not(.is-selected):not([aria-pressed="true"])
-):hover,
-html body.desktop-board-workspace .inline-computer-panel .inline-computer-options>button:not(.active):hover,
-html body.desktop-inline-play-active .desktop-inline-play-panel .inline-play-times>button:not(.active):hover{
-  border-color:#48515b!important;
-}
-/* App-wide final winning rules for game modes and sidebar: exactly one pixel,
-   no outlines layered over borders or box-shadow pretending to be a border. */
+/* Keep selected appearance stable on hover. */
 html body.desktop-board-workspace .v2-global-sidebar.desktop-sidebar-refined
-  .desktop-home-nav-link:is(.active,[aria-current="page"]),
+  .desktop-home-nav-link:is(.active,[aria-current="page"]):hover,
 html body.desktop-board-workspace :is(
   .desktop-play-time-options>button.is-selected,
   .desktop-play-choice-list>button.is-selected,
   .desktop-play-time-options>button[aria-pressed="true"],
-  .desktop-play-choice-list>button[aria-pressed="true"]
-),
-html body.desktop-board-workspace .inline-computer-panel .inline-computer-options>button.active,
-html body.desktop-inline-play-active .desktop-inline-play-panel .inline-play-times>button.active,
-html body.desktop-board-workspace .inline-puzzle-modes>button.active,
-html body.desktop-board-workspace .inline-learn-filters>button.active,
-html body #mobileFixedWorkspace .mfw-tab.active,
-html body #mobileFixedWorkspace .mobile-workspace-tab.active,
-html body .v2-theme-option.active{
-  background:#353c45!important;
+  .desktop-play-choice-list>button[aria-pressed="true"],
+  .desktop-inline-play-panel .inline-play-times>button.active,
+  .inline-computer-panel .inline-computer-options>button.active,
+  .inline-puzzle-modes>button.active,
+  .inline-learn-filters>button.active
+):hover,
+html body :is(
+  .desktop-home-nav-link,.v2-global-link,.v2-mobile-link,
+  .v2-mobile-more-link,.mfw-tab,.mobile-workspace-tab,
+  .v2-quick-times>button,.v2-theme-option,
+  .platform-tab,.admin-inline-tab,.tournament-tab,
+  .auth-tab,.profile-top-action,.nav-item,.nav-link,.time-option,.nav-btn
+):is(.active,.is-selected,.selected,.is-active,[aria-current="page"],[aria-selected="true"],[aria-pressed="true"]):hover{
+  background:var(--site-choice-bg)!important;
   background-image:none!important;
-  border:1px solid #66717d!important;
+  border:1px solid var(--site-choice-border)!important;
   box-shadow:none!important;
+}
+
+/* Keyboard focus remains accessible but is not an extra selected border. */
+html body :is(
+  .desktop-home-nav-link,.v2-global-link,.v2-mobile-link,
+  .v2-mobile-more-link,.mfw-tab,.mobile-workspace-tab,
+  .desktop-play-time-options>button,.desktop-play-choice-list>button,
+  .inline-computer-options>button,.inline-play-times>button,
+  .inline-puzzle-modes>button,.inline-learn-filters>button,
+  .platform-tab,.admin-inline-tab,.tournament-tab,.auth-tab,.v2-theme-option
+):focus-visible{
+  outline:1px solid #a5b4c4!important;
+  outline-offset:2px!important;
 }
