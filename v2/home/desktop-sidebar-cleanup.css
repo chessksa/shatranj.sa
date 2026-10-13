@@ -56,6 +56,26 @@
  html body.desktop-board-workspace .v2-global-sidebar.desktop-sidebar-refined :is(a,button):focus-visible{
    outline:2px solid #a5b4c4!important;outline-offset:-2px!important;
  }
+ /* Guests retain sign-in and registration as separate, clearly labeled icon actions. */
+ html body.desktop-board-workspace .v2-global-sidebar.desktop-sidebar-refined #desktopGuestAuth{
+   display:grid!important;grid-template-columns:1fr!important;
+   grid-template-rows:repeat(2,40px)!important;
+   flex:0 0 auto!important;gap:4px!important;margin:0 0 5px!important;
+   padding:0!important;
+ }
+ html body.desktop-board-workspace .v2-global-sidebar.desktop-sidebar-refined #desktopGuestAuth[hidden]{display:none!important}
+ html body.desktop-board-workspace .v2-global-sidebar.desktop-sidebar-refined #desktopGuestAuth .desktop-guest-auth-btn{
+   display:flex!important;align-items:center!important;justify-content:center!important;
+   height:40px!important;width:100%!important;min-width:0!important;
+   padding:0!important;border:1px solid #48515b!important;border-radius:8px!important;
+   font-size:0!important;color:#e9edf1!important;background:#292e35!important;
+ }
+ html body.desktop-board-workspace #desktopGuestLogin::before{
+   content:"⇥";font:900 27px/1 Arial,sans-serif!important;color:#70e0aa!important;
+ }
+ html body.desktop-board-workspace #desktopGuestSignup::before{
+   content:"＋";font:900 28px/1 Arial,sans-serif!important;color:#78aaff!important;
+ }
  /* Horizontal player summary directly over the center stats grid, preserving live IDs. */
  html body.desktop-board-workspace .desktop-dashboard-column>.desktop-member-card{
    display:flex!important;flex:0 0 66px!important;align-items:center!important;
