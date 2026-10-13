@@ -46,12 +46,12 @@ function render(s){
  setValue('closedCount',dbOK?String(closed.length):'—');const wins=valid.filter(t=>t.pnl>0).length,losses=valid.filter(t=>t.pnl<0).length;
  setValue('winsCount',dbOK?String(wins):'—');setValue('lossesCount',dbOK?String(losses):'—');setValue('winRate',dbOK&&valid.length?fmt(100*wins/valid.length,1)+'%':dbOK?'—':'—');
  const events=(s.events||[]).slice(0,6);$('recentEvents').innerHTML=events.length?events.map(eventRow).join(''):'<div class="blank">لا توجد أحداث في سجل التشغيل</div>';
- let message='';if(rt.session_exists&&!rt.running)message='جلسة البوت موجودة لكن العملية الفعلية غير نشطة. تحقق من حالتها قبل إعادة التشغيل.';else if(!dbOK)message='تعذرت قراءة قاعدة الصفقات. لا تُفسّر غياب الصفقات على أنه عدم وجود مراكز في Binance.';else if(acc.status==='error')message='فشل تحديث رصيد Binance. قد يكون الرصيد المعروض قديمًا.';
+ let message='';if(rt.session_exists&&!rt.running)message='جلسة البوت موجودة لكن العملية الفعلية غير نشطة. تحقق من حالتها قبل إعادة التشغيل.';else if(!dbOK)message='تعذرت قراءة قاعدة الصفقات. لا تُفسّر غياب الصفقات على أنه عدم وجود مراكز في Binance.';
  warn(message);
 }
 async function refresh(){if(loading)return;loading=true;$('refreshBtn').disabled=true;const controller=new AbortController();const timeout=setTimeout(()=>controller.abort(),6500);
  try{const response=await fetch('/api/state',{cache:'no-store',signal:controller.signal});if(!response.ok)throw new Error('HTTP '+response.status);const s=await response.json();if(!s?.trades||!s?.runtime)throw Error('Invalid snapshot');snapshot=s;controlToken=s.control_token;render(s)}
- catch(e){$('timeStatus').textContent='انقطع الاتصال باللوحة';setState('engineStatus','الحالة غير مؤكدة','bad');$('startBot').disabled=true;$('stopBot').disabled=true;warn('تعذر تحديث البيانات من خادم اللوحة؛ الأرقام المعروضة آخر قراءة وليست مباشرة.')}
+ catch(e){$('timeStatus').textContent='انقطع الاتصال باللوحة';setState('engineStatus','الحالة غير مؤكدة','bad');setState('apiStatus','الاتصال غير مؤكد','bad');setState('dbStatus','الاتصال غير مؤكد','bad');$('startBot').disabled=true;$('stopBot').disabled=true;warn('')}
  finally{clearTimeout(timeout);loading=false;$('refreshBtn').disabled=false}}
 function openDialog(action){if(!snapshot)return;pendingAction=action;const start=action==='start';$('modalTitle').textContent=start?'تشغيل البوت الحقيقي':'إيقاف البوت';
  $('modalDesc').textContent=start?'سيُستدعى ملف التشغيل الأصلي لـ V3 وقد ينفذ أوامر تداول حقيقية، بعد فحوصه الداخلية. لا يمكن ضمان خلو الحساب من مراكز وأوامر موجودة.':'سيُوقف برنامج التداول فقط. لن تُباع المراكز المفتوحة ولن تُلغى أوامر Binance تلقائيًا، وقد تبقى المراكز دون متابعة.';
