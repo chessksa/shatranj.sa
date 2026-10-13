@@ -38,31 +38,35 @@
     min-height:0!important;
     display:grid!important;
     /* Personal statistics and champion cards share the center workspace above live counts. */
-    grid-template-rows:minmax(218px,1.08fr) minmax(180px,.92fr) 84px!important;
-    gap:var(--desktop-gap)!important;
+    grid-template-rows:minmax(210px,1.08fr) minmax(174px,.92fr) 76px!important;
+    gap:5px!important;
+    /* Move the live counters up from the bottom edge without overlapping champions. */
+    padding-bottom:clamp(10px,2.6dvh,30px)!important;
+    box-sizing:border-box!important;
     align-content:stretch!important;
   }
 
   .desktop-live-stats{
     display:grid!important;
     grid-template-columns:repeat(3,minmax(0,1fr))!important;
-    gap:var(--desktop-gap)!important;
+    gap:5px!important;
     min-height:0!important;
   }
 
   .desktop-live-stat{
     min-height:0!important;
-    padding:6px 4px!important;
+    padding:5px 4px!important;
     display:flex!important;
     flex-direction:column-reverse!important;
     align-items:center!important;
     justify-content:center!important;
+    gap:3px!important;
     border-radius:9px!important;
   }
 
   .desktop-live-stat strong{
     margin:0!important;
-    font-size:clamp(22px,1.7vw,29px)!important;
+    font-size:clamp(20px,1.6vw,26px)!important;
   }
 
   .desktop-live-stat small{
@@ -80,8 +84,9 @@
 /* Short desktop windows: preserve the statistics and the full champion list. */
 @media(min-width:901px) and (max-height:670px){
   body.desktop-board-workspace .desktop-dashboard-home{
-    grid-template-rows:minmax(0,1.08fr) minmax(0,.92fr) 64px!important;
+    grid-template-rows:minmax(0,1.08fr) minmax(0,.92fr) 69px!important;
     gap:4px!important;
+    padding-bottom:7px!important;
   }
   body.desktop-board-workspace .desktop-dashboard-column{gap:4px!important}
   body.desktop-board-workspace .desktop-live-stat{padding:3px 2px!important}
