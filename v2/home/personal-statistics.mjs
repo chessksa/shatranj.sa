@@ -1,6 +1,6 @@
 // Canonical personal desktop statistics. All totals come from the authenticated user's
 // database records; anonymous visitors never see another player's statistics.
-const KEYS=['games','puzzles','lessons','rapid','blitz','bullet','wins','achievements'];
+const KEYS=['bullet','blitz','rapid','games','points','puzzles','lessons','wins','achievements'];
 const formatter=new Intl.NumberFormat('en-US',{maximumFractionDigits:0});
 export function mountPersonalStatistics(supabase){
   const panel=document.getElementById('desktopHomeStatistics');
