@@ -812,6 +812,28 @@ html body.desktop-board-workspace .desktop-champion-card[data-champion] :is(.des
 html body.desktop-board-workspace .desktop-live-stat .desktop-stat-icon.gold{color:#ffd174!important}
 html body.desktop-board-workspace .desktop-live-stat .desktop-stat-icon.green{color:#70e0aa!important}
 html body.desktop-board-workspace .desktop-live-stat .desktop-stat-icon.cyan{color:#79c6f3!important}
+/* Live homepage counters: restrained graphite fill and separate visible icon hues. */
+html body.desktop-board-workspace .desktop-dashboard-home .desktop-live-stat{
+  background:linear-gradient(180deg,#353d47,#252b32)!important;
+  border:1px solid #586674!important;
+  color:#e9edf1!important;
+  box-shadow:none!important;
+}
+html body.desktop-board-workspace .desktop-dashboard-home .desktop-live-stat::before{
+  opacity:.92;
+}
+html body.desktop-board-workspace .desktop-dashboard-home .desktop-live-stat .desktop-live-icon{
+  color:var(--live-accent)!important;
+}
+html body.desktop-board-workspace .desktop-dashboard-home .desktop-live-stat strong{
+  color:#f4f8fb!important;
+}
+html body.desktop-board-workspace .desktop-dashboard-home .desktop-live-stat small{
+  color:#c9d3dd!important;
+}
+html body.desktop-board-workspace .desktop-champion-card .desktop-champion-icon{
+  background:rgba(255,255,255,.055)!important;
+}
 html body.desktop-board-workspace .desktop-member-score-star{color:#ffd174!important}
 /* Mobile homepage: every tab has an individual color (tab order is fixed). */
 html body #mobileFixedWorkspace .mfw-tab[data-mfw="home"] i{color:var(--icon-home)!important}
