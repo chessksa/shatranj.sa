@@ -355,14 +355,14 @@
     background:var(--coal-raise,linear-gradient(180deg,#363b43,#22262b));
     box-shadow:none;
   }
-  /* One tidy eight-metric board instead of three vertically stacked sections. */
+  /* Nine personal statistics: play modes, matches and points on the right; achievements and learning on the left. */
   .desktop-home-statistics{
     display:grid;grid-template-columns:repeat(2,minmax(0,1fr));
-    grid-template-rows:44px repeat(4,minmax(0,1fr));
+    grid-template-rows:44px minmax(0,1fr);
     gap:0;height:100%;min-height:0;min-width:0;
     direction:rtl;overflow:hidden;border-radius:9px;color:#f5f4f0;
   }
-  /* No vertical separator between the two columns of statistic tiles. */
+  /* Two calm statistic columns with separators only inside each metric. */
   .desktop-statistics-header{
     grid-column:1/-1;min-width:0;
     display:grid;grid-template-columns:minmax(0,1fr) auto minmax(0,1fr);
@@ -385,8 +385,17 @@
     font:800 11px Arial,sans-serif;padding:5px 7px;cursor:pointer;
   }
   .desktop-home-statistics [hidden]{display:none!important}
-  /* The source markup keeps semantic groups, flattened only for layout. */
-  .desktop-statistics-group{display:contents!important}
+  /* Each column stacks its own statistics and uses all available vertical space. */
+  .desktop-statistics-group{
+    display:grid!important;grid-template-columns:minmax(0,1fr);
+    min-width:0;min-height:0;gap:0;
+  }
+  .desktop-statistics-group-play{
+    grid-column:1;grid-row:2;grid-template-rows:repeat(5,minmax(0,1fr));
+  }
+  .desktop-statistics-group-more{
+    grid-column:2;grid-row:2;grid-template-rows:repeat(4,minmax(0,1fr));
+  }
   .desktop-statistics-row{
     min-width:0;min-height:0;
     display:flex;align-items:center;justify-content:center;gap:8px;
@@ -412,6 +421,7 @@
   }
   .desktop-statistics-icon svg{display:block;width:19px;height:19px}
   .desktop-statistics-row[data-stat-row="games"]{--stat-color:#f5f4f0}
+  .desktop-statistics-row[data-stat-row="points"]{--stat-color:#f1c76e}
   .desktop-statistics-row[data-stat-row="puzzles"]{--stat-color:#f2b469}
   .desktop-statistics-row[data-stat-row="lessons"]{--stat-color:#a7d8f4}
   .desktop-statistics-row[data-stat-row="rapid"]{--stat-color:#a5e475}
@@ -421,8 +431,8 @@
   .desktop-statistics-row[data-stat-row="achievements"]{--stat-color:#c3adf6}
   .desktop-statistics-row>[data-stat-value]{
     flex:0 0 auto;min-width:24px;
-    padding-inline-start:8px;
-    border-inline-start:1px solid rgba(175,191,208,.30);
+    padding-inline-end:8px;
+    border-inline-end:1px solid rgba(175,191,208,.30);
     font-size:clamp(16px,1.15vw,21px);font-weight:900;
     text-align:center;line-height:1.12;
     font-variant-numeric:tabular-nums;color:#f5f4f0;
@@ -435,7 +445,7 @@
     .desktop-statistics-icon{flex-basis:17px;width:17px;height:17px}
     .desktop-statistics-icon svg{width:17px;height:17px}
     .desktop-statistics-row>[data-stat-value]{
-      min-width:20px;padding-inline-start:5px;font-size:15px
+      min-width:20px;padding-inline-end:5px;font-size:15px
     }
   }
 
