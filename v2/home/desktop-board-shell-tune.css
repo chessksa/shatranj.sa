@@ -1,7 +1,7 @@
 @media(min-width:901px){
   :root{
     /* Reallocate the full width saved by narrowing the right sidebar to the center column. */
-    --desktop-dashboard-width:calc(clamp(320px,20.2vw,350px) + clamp(215px,16vw,265px) - clamp(185px,13.5vw,205px))!important;
+    --desktop-dashboard-width:calc(clamp(320px,20.2vw,350px) + clamp(215px,16vw,265px) - var(--desktop-board-sidebar))!important;
     --desktop-workspace-gap:6px!important;
     --desktop-gap:6px;
   }
@@ -26,13 +26,19 @@
     bottom:6px!important;
     right:calc(var(--desktop-board-sidebar) + var(--desktop-workspace-gap))!important;
     width:var(--desktop-dashboard-width)!important;
+    display:flex!important;
+    flex-direction:column!important;
+    gap:6px!important;
   }
+  .desktop-dashboard-column>.desktop-dashboard-view{flex:1 1 auto!important;min-height:0!important;}
 
   .desktop-dashboard-home{
-    height:100%!important;
+    height:auto!important;
+    flex:1 1 auto!important;
+    min-height:0!important;
     display:grid!important;
     /* Personal statistics and champion cards share the center workspace above live counts. */
-    grid-template-rows:minmax(0,1fr) minmax(0,1fr) 94px!important;
+    grid-template-rows:minmax(235px,1.25fr) minmax(155px,.75fr) 90px!important;
     gap:var(--desktop-gap)!important;
     align-content:stretch!important;
   }
