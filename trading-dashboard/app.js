@@ -28,8 +28,7 @@ function render(s){
  const ui=s.ui_update||{};$('uiVersion').textContent='الواجهة '+escapeHTML(ui.version||'محلية')+(ui.connected===false?' · دون اتصال بالتحديثات':'');$('uiVersion').title=ui.message||'';
  $('startBot').disabled=Boolean(rt.running||rt.session_exists);
  $('stopBot').disabled=!rt.running&&!rt.session_exists;
- $('modeStatus').querySelector('.status-label').textContent=s.settings?.dry_run===true?'الوضع: تجريبي':s.settings?.dry_run===false?'الوضع: حقيقي':'الوضع: غير محدد';
- $('modeStatus').classList.remove('mode-dry','mode-live','mode-unknown');$('modeStatus').classList.add(s.settings?.dry_run===true?'mode-dry':s.settings?.dry_run===false?'mode-live':'mode-unknown');
+
  const openMarks=open.map(t=>mark(t,s));const allMarked=openMarks.every(Boolean);const estimate=openMarks.reduce((a,m)=>a+(m?m.pnl:0),0);
  const estimateText=dbOK?(open.length?(allMarked?signed(estimate,3)+' USDT':'أسعار ناقصة'):'0.000 USDT'):'—';
  setValue('openPnl',estimateText,allMarked&&dbOK?kind(estimate):'');setValue('unrealizedPnl',estimateText,allMarked&&dbOK?kind(estimate):'');
