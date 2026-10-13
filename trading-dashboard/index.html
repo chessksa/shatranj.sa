@@ -1,0 +1,68 @@
+<!doctype html>
+<html lang="ar" dir="rtl">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="#0a141c">
+  <title>MAD HUNTER X | مراقبة الصفقات</title>
+  <link rel="stylesheet" href="/style.css?v=3">
+</head>
+<body>
+<div class="monitor">
+  <header class="topbar">
+    <div class="brand"><span class="brand-mark" aria-hidden="true">♞</span><div><b>MAD HUNTER <em>X</em></b><small>مركز مراقبة التداول</small></div></div>
+    <div class="top-states" aria-label="حالة النظام">
+      <span class="state" id="engineStatus"><i class="led"></i> جارٍ الفحص</span>
+      <span class="state" id="apiStatus"><i class="led"></i> اتصال Binance: —</span>
+      <span class="state muted" id="dbStatus">قاعدة الصفقات: —</span>
+    </div>
+    <div class="top-tools"><span class="sync" id="uiVersion" title="التحديثات من GitHub">الواجهة: محلية</span><span class="sync" id="timeStatus" aria-live="polite">آخر تحديث: —</span><button type="button" class="refresh-btn" id="refreshBtn" aria-label="تحديث البيانات الآن" title="تحديث البيانات الآن">↻ <span>تحديث</span></button></div>
+  </header>
+  <div id="noticeBar" class="notice" role="alert" hidden><span id="noticeText"></span><button type="button" id="dismissNotice" aria-label="إخفاء التنبيه">×</button></div>
+  <main class="dashboard">
+    <section class="trades-zone" aria-label="مراقبة الصفقات">
+      <div class="zone-heading"><div><span class="overline">المتابعة المباشرة</span><h1>الصفقات <span class="count-chip" id="openCountChip">— مفتوحة</span></h1></div><div class="open-total"><small>التغير التقديري للمراكز المفتوحة</small><strong id="openPnl">—</strong></div></div>
+      <div class="panel open-panel">
+        <div class="panel-heading"><h2>المراكز المفتوحة الآن</h2><span class="soft-note">من قاعدة البوت · الأسعار من Binance</span></div>
+        <div class="table-viewport"><table aria-label="المراكز المفتوحة"><thead><tr><th>العملة</th><th>الشراء</th><th>الآن</th><th>القيمة</th><th>الربح / الخسارة</th><th>وقف الخسارة</th><th>المدة</th></tr></thead><tbody id="openTradesBody"><tr><td class="empty-cell" colspan="7">جارٍ تحميل الصفقات...</td></tr></tbody></table></div>
+      </div>
+      <div class="panel closed-panel">
+        <div class="panel-heading"><h2>آخر الصفقات المغلقة</h2><span class="soft-note" id="closedLabel">آخر 15 صفقة</span></div>
+        <div class="table-viewport"><table aria-label="الصفقات المغلقة"><thead><tr><th>العملة</th><th>سعر الدخول</th><th>سعر الخروج</th><th>النتيجة</th><th>المدة</th><th>الإغلاق</th></tr></thead><tbody id="closedBody"><tr><td class="empty-cell" colspan="6">جارٍ تحميل النتائج...</td></tr></tbody></table></div>
+      </div>
+    </section>
+    <section class="info-zone" aria-label="ملخص التداول">
+      <div class="info-heading"><h2>ملخص الحساب</h2><span>USDT · بيانات فعلية عند توفر الاتصال</span></div>
+      <div class="metric-grid">
+        <div class="metric"><span>الرصيد المتاح <small>Binance Spot</small></span><strong id="freeBalance">—</strong><small id="balanceSub">بانتظار الحساب</small></div>
+        <div class="metric"><span>ربح / خسارة اليوم <small>محقّق</small></span><strong id="todayPnl">—</strong><small id="todayCount">—</small></div>
+        <div class="metric"><span>صافي الربح المحقّق</span><strong id="totalPnl">—</strong><small>الصفقات المغلقة في سجل البوت</small></div>
+        <div class="metric"><span>ربح / خسارة مفتوحة <small>تقديري</small></span><strong id="unrealizedPnl">—</strong><small>من الأسعار الحديثة · بدون رسوم الخروج</small></div>
+      </div>
+      <div class="panel performance">
+        <div class="panel-heading"><h2>النتائج</h2><span class="soft-note">الصفقات المغلقة</span></div>
+        <div class="mini-stats"><div><strong id="closedCount">—</strong><small>إجمالي</small></div><div><strong class="green" id="winsCount">—</strong><small>رابحة</small></div><div><strong class="red" id="lossesCount">—</strong><small>خاسرة</small></div><div><strong id="winRate">—</strong><small>نسبة الربح</small></div></div>
+      </div>
+      <div class="panel activity-panel">
+        <div class="panel-heading"><h2>أحدث تحركات البوت</h2><span class="soft-note">مقتطف من السجل المباشر</span></div>
+        <div class="events" id="recentEvents"><div class="blank">بانتظار سجل البوت...</div></div>
+      </div>
+      <div class="panel controls-panel">
+        <div class="panel-heading"><h2>التحكم</h2><span class="soft-note" id="modeStatus">الوضع: —</span></div>
+        <div class="controls"><button class="control-btn start" id="startBot" type="button">▶ تشغيل البوت</button><button class="control-btn stop" id="stopBot" type="button">■ إيقاف البوت</button><span class="safety-note">الإيقاف لا يبيع المراكز المفتوحة</span></div>
+      </div>
+      <div class="fine-print" id="footnote">المراكز من قاعدة Freqtrade؛ المراكز غير المحققة تقديرية، ولا تعني ضمان التنفيذ أو الأرباح.</div>
+    </section>
+  </main>
+</div>
+<div class="modal-overlay" id="confirmModal" hidden>
+  <div class="modal" role="dialog" aria-modal="true" aria-labelledby="modalTitle">
+    <div class="modal-head"><h2 id="modalTitle">تأكيد العملية</h2><button type="button" id="modalClose" aria-label="إغلاق">×</button></div>
+    <p id="modalDesc"></p><label for="confirmPhrase">اكتب العبارة التالية حرفيًا للتأكيد</label><div class="confirm-string" id="expectedPhrase"></div>
+    <input id="confirmPhrase" dir="ltr" autocomplete="off" spellcheck="false" placeholder="عبارة التأكيد">
+    <div id="modalResult" role="status"></div>
+    <div class="modal-actions"><button type="button" id="modalCancel" class="outline-btn">إلغاء</button><button type="button" id="modalSubmit" class="control-btn start">تأكيد التنفيذ</button></div>
+  </div>
+</div>
+<script src="/app.js?v=3" defer></script>
+</body></html>
