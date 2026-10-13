@@ -347,7 +347,7 @@
     color:#e2dcd3;
     direction:rtl;
   }
-  .desktop-dashboard-home{height:100%;display:grid;grid-template-rows:minmax(0,1fr) auto;gap:9px}
+  .desktop-dashboard-home{height:100%;display:grid;grid-template-rows:100px minmax(180px,.72fr) minmax(210px,1.28fr);gap:6px}
   .desktop-dashboard-home[hidden]{display:none!important}
 
   .desktop-home-statistics,.desktop-live-stat,.desktop-dashboard-view{
@@ -427,139 +427,139 @@
     .desktop-statistics-row>[data-stat-value]{font-size:15px}
   }
 
-  /* Three stacked champion tiles with vertical medal/title composition. */
+  /* Champion showcase: three portrait cards side by side, stacked content top to bottom. */
   .desktop-champions-grid{
-    min-height:0;display:grid;grid-template-rows:repeat(3,minmax(0,1fr));
+    min-height:0;min-width:0;
+    display:grid;grid-template-columns:repeat(3,minmax(0,1fr));
+    grid-template-rows:minmax(0,1fr);
     gap:6px;overflow:hidden;
   }
   .desktop-champion-card{
-    --champion-accent:#e2dcd3;
-    position:relative;min-width:0;min-height:0;
-    display:grid;grid-template-columns:minmax(93px,.95fr) minmax(0,1.48fr) minmax(62px,.72fr);
-    align-items:center;column-gap:6px;
-    padding:5px 9px;box-sizing:border-box;
-    border:1px solid #48515b;border-radius:9px;
+    --champion-accent:#d5dbe2;
+    position:relative;min-height:0;min-width:0;
+    display:flex;flex-direction:column;align-items:center;justify-content:space-evenly;
+    gap:6px;box-sizing:border-box;
+    padding:12px 7px 10px;
+    border:1px solid #48515b;border-radius:10px;
     background:var(--coal-raise,linear-gradient(180deg,#363b43,#22262b));
-    color:#e2dcd3;text-decoration:none;direction:rtl;overflow:hidden;
-    box-shadow:inset 0 1px 0 rgba(255,255,255,.025);
+    color:#e9edf1;text-decoration:none;text-align:center;direction:rtl;
+    overflow:hidden;box-shadow:none;
     transition:background-color .16s ease,border-color .16s ease;
   }
-  .desktop-champion-card[data-champion="week"]{--champion-accent:#e2dcd3}
-  .desktop-champion-card[data-champion="month"]{--champion-accent:#c9d4d6}
-  .desktop-champion-card[data-champion="site"]{
-    --champion-accent:#e2dcd3;
-    border-color:#48515b;
-    background:var(--coal-raise,linear-gradient(180deg,#363b43,#22262b));
-  }
   .desktop-champion-card::before{
-    content:"";position:absolute;right:0;top:11px;bottom:11px;width:3px;
-    border-radius:0 3px 3px 0;background:var(--champion-accent);
-    opacity:.87;pointer-events:none;
+    content:"";position:absolute;top:0;bottom:auto;
+    right:18%;left:18%;width:auto;height:3px;
+    border-radius:0 0 4px 4px;background:var(--champion-accent);
+    opacity:.88;pointer-events:none;
   }
   .desktop-champion-card:hover,.desktop-champion-card:focus-visible{
-    border-color:#718195;
+    border-color:#7f90a2;outline:2px solid #7f90a2;outline-offset:-2px;
     background:linear-gradient(180deg,#3c444f,#292f38);
-    outline:none;
-  }
-  .desktop-champion-title,.desktop-champion-result{
-    min-width:0;width:100%;box-sizing:border-box;
-    display:flex;flex-direction:row;align-items:center;justify-content:center;
-    white-space:nowrap;
   }
   .desktop-champion-title{
-    height:100%;gap:3px;color:var(--champion-accent);
-    flex-direction:column;align-items:center;justify-content:center;
-    overflow:hidden;padding-inline:0 4px;
+    min-width:0;width:100%;max-width:100%;
+    display:flex;flex-direction:column;align-items:center;justify-content:center;
+    gap:5px;padding:0;margin:0;
+    color:var(--champion-accent);text-align:center;overflow:hidden;
   }
   .desktop-champion-title strong{
-    font-size:clamp(11px,.83vw,13px);
-    line-height:1.12;font-weight:900;white-space:nowrap;text-align:center;
+    font-size:clamp(11px,.90vw,14px);line-height:1.23;font-weight:900;
+    white-space:nowrap;text-align:center;
+    color:#e9edf1;
   }
-  /* Fine dividers separate the stacked medal title, player name, and score. */
-  .desktop-champion-title,
-  .desktop-champion-name{
-    position:relative;
-  }
-  .desktop-champion-title::after,
-  .desktop-champion-name::after{
-    content:"";
-    position:absolute;
-    inset-inline-end:0;
-    top:50%;
-    transform:translateY(-50%);
-    inline-size:1px;
-    block-size:18px;
-    background:rgba(245,244,240,.14);
-    pointer-events:none;
-  }
+  .desktop-champion-title::after,.desktop-champion-name::after{content:none;display:none}
   .desktop-champion-icon{
-    flex:0 0 29px;width:34px;height:29px;min-width:29px;
     display:grid;place-items:center;
-    border-radius:6px;background:rgba(255,255,255,.045);
+    flex:0 0 43px;width:48px;max-width:100%;height:43px;
+    border-radius:9px;background:rgba(255,255,255,.055);
     color:var(--champion-accent);
   }
-  .desktop-champion-icon svg{width:26px;height:26px;display:block}
-  .desktop-champion-name{
-    min-width:0;width:100%;display:block;box-sizing:border-box;
-    padding:0 4px;margin:0;
-    color:#e9edf1;font-size:clamp(15px,1.18vw,18px);
-    line-height:1.18;font-weight:900;
-    text-align:center;white-space:nowrap;
-    overflow:hidden;text-overflow:ellipsis;unicode-bidi:plaintext;
+  .desktop-champion-icon svg{
+    display:block;width:35px;height:35px;max-width:100%;
   }
-  .desktop-champion-result{gap:3px;text-align:center;justify-content:center}
+  .desktop-champion-name{
+    display:-webkit-box;-webkit-box-orient:vertical;-webkit-line-clamp:2;
+    min-width:0;width:100%;max-width:100%;
+    box-sizing:border-box;padding:0 2px;margin:0;
+    color:#f5f7fa;font-size:clamp(13px,1.05vw,17px);
+    font-weight:900;line-height:1.32;
+    min-height:1.32em;max-height:2.64em;
+    text-align:center;white-space:normal;overflow:hidden;
+    overflow-wrap:anywhere;unicode-bidi:plaintext;text-overflow:ellipsis;
+  }
+  .desktop-champion-result{
+    flex:0 0 auto;min-width:0;width:100%;max-width:100%;
+    display:flex;flex-direction:row;align-items:baseline;justify-content:center;
+    flex-wrap:wrap;column-gap:5px;row-gap:2px;
+    padding-top:7px;margin:0;
+    border-top:1px solid #47515c;
+    text-align:center;white-space:nowrap;
+  }
   .desktop-champion-count{
-    flex:0 1 auto;min-width:0;
-    font-size:clamp(16px,1.32vw,19px);line-height:1.12;
-    font-weight:900;color:#e2dcd3;direction:ltr;
-    white-space:nowrap;font-variant-numeric:tabular-nums;
+    min-width:0;max-width:100%;
+    font-size:clamp(17px,1.38vw,23px);
+    line-height:1.1;font-weight:900;color:#f0f4f8;
+    direction:ltr;white-space:nowrap;font-variant-numeric:tabular-nums;
   }
   .desktop-champion-meta{
-    flex:0 0 auto;font-size:11px;line-height:1.1;
-    font-weight:700;color:#c8c2ba;white-space:nowrap;
+    font-size:clamp(10px,.77vw,12px);line-height:1.2;
+    font-weight:850;color:#c9d3dd;white-space:nowrap;
   }
   .desktop-champion-card:not(.has-champion) .desktop-champion-name{
-    color:#cbd8d5;font-size:clamp(12px,1vw,14px);
-  }
-  @media(max-height:720px) and (min-width:901px){
-    .desktop-champions-grid{gap:5px}
-    .desktop-champion-card{padding:3px 7px;column-gap:2px}
-    .desktop-champion-icon{width:30px;height:25px;min-width:25px;flex-basis:25px}
-    .desktop-champion-icon svg{width:23px;height:23px}
-    .desktop-champion-title{gap:2px}
-    .desktop-champion-title strong{font-size:11px}
-    .desktop-champion-name{font-size:clamp(15px,1.24vw,18px)}
-    .desktop-champion-count{font-size:16px}
-    .desktop-champion-meta{font-size:10px}
+    color:#c2cbd6;font-size:clamp(11px,.88vw,14px);
   }
 
-  .desktop-live-stats{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:5px;min-height:0}
+  /* Top dashboard counters: enough height for icon, figure, and label. */
+  .desktop-live-stats{
+    min-height:0;min-width:0;
+    display:grid;grid-template-columns:repeat(3,minmax(0,1fr));
+    grid-template-rows:minmax(0,1fr);gap:6px;
+  }
   .desktop-live-stat{
     --live-accent:#79c6f3;
-    position:relative;border-radius:9px;
-    display:flex;flex-direction:column-reverse;align-items:center;justify-content:center;
-    gap:3px;min-width:0;padding:6px 5px;text-align:center;
-    overflow:hidden;
+    position:relative;min-height:0;min-width:0;
+    display:flex;flex-direction:column-reverse;
+    align-items:center;justify-content:center;gap:4px;
+    padding:7px 4px;border-radius:9px;
+    text-align:center;overflow:hidden;
   }
   .desktop-live-stat[data-live-stat="matches"]{--live-accent:#79c6f3}
   .desktop-live-stat[data-live-stat="online"]{--live-accent:#70e0aa}
   .desktop-live-stat[data-live-stat="players"]{--live-accent:#ffd174}
   .desktop-live-stat::before{
-    content:"";position:absolute;top:9px;bottom:9px;right:0;width:2px;
-    background:var(--live-accent);border-radius:3px;
+    content:"";position:absolute;top:10px;bottom:10px;
+    right:0;width:2px;border-radius:3px;
+    background:var(--live-accent);
   }
   .desktop-live-icon{
-    display:grid;place-items:center;flex:0 0 19px;
-    width:21px;height:19px;color:var(--live-accent);
+    display:grid;place-items:center;flex:0 0 23px;
+    width:26px;height:23px;color:var(--live-accent);
   }
-  .desktop-live-icon svg{width:19px;height:19px;display:block}
+  .desktop-live-icon svg{width:23px;height:23px;display:block}
   .desktop-live-stat strong{
-    margin:0;color:#f4f8fb;font-size:clamp(20px,1.65vw,26px);
-    line-height:1;font-weight:900;direction:ltr;font-variant-numeric:tabular-nums;
+    margin:0;color:#f4f8fb;font-size:clamp(22px,1.78vw,29px);
+    line-height:1.02;font-weight:900;direction:ltr;
+    font-variant-numeric:tabular-nums;
   }
   .desktop-live-stat small{
     margin:0;color:#c9d3dd;font-size:clamp(10px,.82vw,12px);
-    line-height:1.2;font-weight:850;white-space:nowrap;
+    line-height:1.15;font-weight:850;white-space:nowrap;
+  }
+  @media(min-width:901px) and (max-height:720px){
+    .desktop-champion-card{padding:7px 5px 6px;gap:3px}
+    .desktop-champion-icon{flex-basis:30px;width:34px;height:30px}
+    .desktop-champion-icon svg{width:27px;height:27px}
+    .desktop-champion-title{gap:2px}
+    .desktop-champion-title strong{font-size:11px}
+    .desktop-champion-name{font-size:clamp(11px,.90vw,14px)}
+    .desktop-champion-count{font-size:clamp(15px,1.2vw,20px)}
+    .desktop-champion-meta{font-size:10px}
+    .desktop-champion-result{padding-top:4px}
+    .desktop-live-stat{gap:2px;padding:5px 3px}
+    .desktop-live-icon{flex-basis:19px;width:21px;height:19px}
+    .desktop-live-icon svg{width:19px;height:19px}
+    .desktop-live-stat strong{font-size:clamp(18px,1.55vw,24px)}
+    .desktop-live-stat small{font-size:10px}
   }
 
   /* The center panel changes while the board stays fixed. */
