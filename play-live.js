@@ -1,4 +1,5 @@
 import { createClient } from 'https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/+esm';
+import { playBoardMoveSound } from './v2/board/move-sound.mjs?v=20261013-movesound-v1';
 
 const files = ['a','b','c','d','e','f','g','h'];
 const ranks = [8,7,6,5,4,3,2,1];
@@ -62,6 +63,8 @@ let myColor = null;
 let game = null;
 let serverState = null;
 let lastServerUpdate = '';
+let lastAudibleGameId = null;
+let lastAudibleFen = null;
 let selected = null;
 let legalTargets = [];
 let flipped = false;
@@ -484,6 +487,11 @@ function finishedMessage(result){
 function applyServerState(row, force=false){
   if(!row) return;
   const changed = force || row.updated_at !== lastServerUpdate;
+  // Track only server-confirmed board states, never optimistic moves or redraws.
+  if(lastAudibleGameId!==liveGameId){
+    lastAudibleGameId=liveGameId;
+    lastAudibleFen=null;
+  }
   serverState=row;
 
   if(!orientationInitialized){
@@ -506,6 +514,8 @@ function applyServerState(row, force=false){
     legalTargets=[];
     lastServerUpdate=row.updated_at || '';
     renderBoard();
+    if(lastAudibleFen)playBoardMoveSound(lastAudibleFen,row.fen);
+    lastAudibleFen=row.fen;
   }else{
     updateClockUI();
   }
