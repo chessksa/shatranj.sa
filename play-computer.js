@@ -2,6 +2,7 @@ import { Chessboard, COLOR, INPUT_EVENT_TYPE, BORDER_TYPE } from 'https://cdn.js
 import { Markers } from 'https://cdn.jsdelivr.net/npm/cm-chessboard@8/src/extensions/markers/Markers.js';
 import { createClient } from 'https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/+esm';
 import { fenPositionKey, inferLastMoveFromFens } from './last-move-highlight.mjs?v=20260909-pawnhighlight1';
+import { playBoardMoveSound } from './v2/board/move-sound.mjs?v=20261013-movesound-v1';
 
 const LAST_MOVE_MARKER = { class: 'marker-frame-last-move', slice: 'markerFrame', position: 'above' };
 
@@ -884,12 +885,14 @@ async function computerTurn() {
       if (!checkGuestGameResult()) finishGame('تعذر على الكمبيوتر إكمال المباراة');
       return;
     }
+    const previousFen=game.fen();
     const move = game.move({
       from: best.slice(0, 2),
       to: best.slice(2, 4),
       promotion: best[4] || 'q'
     });
     if (!move) throw new Error(`invalid engine move: ${best}`);
+    playBoardMoveSound(previousFen,game.fen());
     lastMove = { from: move.from, to: move.to };
     renderBoard(true);
     if (!checkGuestGameResult()) {
@@ -993,8 +996,10 @@ async function waitForRatedComputerReply(moveId, initialPayload = null, attempts
 
 function applyRatedComputerReply(payload, computerCapMs = null) {
   if (!payload?.fen) return false;
+  const previousFen=game.fen();
   loadComputerFen(payload.fen);
   renderBoard(true);
+  playBoardMoveSound(previousFen,game.fen());
   syncRatedClocks(payload, computerCapMs);
   if (payload.status === 'finished') finishRatedResult(payload, computerCapMs);
   else setComputerStatus('جاهز');
@@ -1045,8 +1050,10 @@ async function submitRatedMove(move, moveId) {
     }
 
     const localComputerRemaining = currentClockMs('computer');
+    const previousFen=game.fen();
     loadComputerFen(payload.fen);
     renderBoard(true);
+    playBoardMoveSound(previousFen,game.fen());
     syncRatedClocks(payload, localComputerRemaining);
     if (payload.status === 'finished') {
       finishRatedResult(payload, localComputerRemaining);
@@ -1101,8 +1108,10 @@ function handleBoardInput(event) {
     const candidate = legal.find((move) => move.to === event.squareTo);
     if (!candidate) return false;
     clearMoveHints();
+    const previousFen=game.fen();
     const move = game.move({ from: event.squareFrom, to: event.squareTo, promotion: 'q' });
     if (!move) return false;
+    playBoardMoveSound(previousFen,game.fen());
     lastMove = { from: move.from, to: move.to };
     renderLastMoveHighlight();
 
