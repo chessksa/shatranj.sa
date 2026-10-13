@@ -168,10 +168,10 @@
     color:#302e2b;
   }
   .inline-puzzle-modes button.active{
-    border:1px solid #e99a52;
+    border:1px solid #66717d;
     background:#353c45;
     color:#e9edf1;
-    box-shadow:inset 0 0 0 1px rgba(233,154,82,.16);
+    box-shadow:none;
   }
 
   .inline-puzzle-modes{
