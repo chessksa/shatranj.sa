@@ -1,306 +1,246 @@
+/* شطرنج العرب / Computer game panel — canonical graphite palette.
+   Scope all styling to the desktop computer setup, not the chessboard pieces. */
 @media(min-width:901px){
-  .inline-computer-panel{
-    width:100%;
-    height:100%;
-    min-height:0;
+  html body.desktop-board-workspace .inline-computer-panel{
+    width:100%;height:100%;min-height:0;
     display:grid;
-    /* Keep the two enlarged player cards and the controls together, vertically
-       centered instead of stretching the setup into a tall empty box. */
-    grid-template-rows:clamp(134px,14.5dvh,164px) auto clamp(134px,14.5dvh,164px);
-    align-items:stretch;
-    justify-items:center;
-    align-content:center;
-    gap:clamp(12px,1.7dvh,20px);
-    padding-block:8px;
-    box-sizing:border-box;
-    overflow:hidden;
+    grid-template-rows:clamp(112px,15dvh,154px) auto clamp(112px,15dvh,154px);
+    align-items:stretch;justify-items:stretch;align-content:center;
+    gap:clamp(9px,1.5dvh,16px);
+    padding:7px 0;box-sizing:border-box;overflow:hidden;
+    direction:rtl;color:#e9edf1;
   }
+  html body.desktop-board-workspace .inline-computer-panel [hidden]{display:none!important}
 
-  /* Respect the interface state. The shared inline-play stylesheet sets
-     display:grid on action groups, so computer-mode hidden sections must win. */
-  .inline-computer-panel [hidden]{
+  /* Identity cards: square picture/icon on the right, name in the middle, timer left. */
+  html body.desktop-board-workspace .inline-computer-panel .inline-play-player-card{
+    min-width:0;width:100%;height:100%;min-height:0;max-height:none;
+    box-sizing:border-box;overflow:hidden;
+    display:grid;grid-template-columns:54px minmax(0,1fr) minmax(96px,113px);
+    align-items:center;justify-content:stretch;gap:10px;
+    padding:11px 12px;
+    direction:rtl;
+    border:1px solid #48515b!important;
+    border-radius:12px;
+    background:linear-gradient(180deg,#363b43 0%,#292e35 100%)!important;
+    color:#e9edf1!important;box-shadow:none!important;
+  }
+  html body.desktop-board-workspace .inline-computer-panel .inline-computer-player{
+    border-right:2px solid #7fc5e3!important;
+  }
+  html body.desktop-board-workspace .inline-computer-panel .inline-computer-opponent{
+    border-right:2px solid #9ac4e1!important;
+  }
+  html body.desktop-board-workspace .inline-computer-panel .inline-computer-identity-icon{
+    display:grid;place-items:center;
+    width:54px;height:54px;min-width:54px;max-width:54px;
+    border:1px solid #617184;border-radius:10px;
+    background:#202a35;overflow:hidden;
+    box-sizing:border-box;color:#98ccea;
+  }
+  html body.desktop-board-workspace .inline-computer-panel .inline-computer-machine-icon svg{
+    display:block;width:37px;height:37px;
+  }
+  html body.desktop-board-workspace .inline-computer-panel .inline-computer-player-photo{
+    background:#222a34;
+  }
+  html body.desktop-board-workspace .inline-computer-panel .inline-computer-player-photo img{
+    width:100%;height:100%;display:block;object-fit:cover;
+    border-radius:8px;box-shadow:none;
+  }
+  html body.desktop-board-workspace .inline-computer-panel .inline-computer-player-photo img[hidden],
+  html body.desktop-board-workspace .inline-computer-panel .inline-computer-player-photo span[hidden]{
     display:none!important;
   }
-
-  .inline-computer-panel .inline-play-player-card{
-    min-width:0;
-    width:100%;
-    height:100%;
-    min-height:0;
-    max-height:none;
-    padding:14px 13px;
+  html body.desktop-board-workspace .inline-computer-panel .inline-computer-player-photo span{
+    display:grid;place-items:center;
+    width:100%;height:100%;
+    color:#d9e6f2;font-size:30px;line-height:1;
+    background:#222b34;
+  }
+  html body.desktop-board-workspace .inline-computer-panel .inline-play-player-copy{
+    min-width:0;width:100%;max-width:none;
+    display:flex;flex-direction:column;align-items:center;justify-content:center;
+    gap:5px;overflow:hidden;text-align:center;direction:rtl;
+  }
+  html body.desktop-board-workspace .inline-computer-panel .inline-play-player-name{
+    display:block;width:100%;max-width:100%;
+    color:#f6f8fb!important;font-size:clamp(17px,1.4vw,22px);
+    font-weight:900;line-height:1.2;text-align:center;
+    white-space:nowrap;overflow:hidden;text-overflow:ellipsis;
+  }
+  html body.desktop-board-workspace .inline-computer-panel .inline-play-player-meta{
+    display:block;width:100%;max-width:100%;
+    color:#cbd5df!important;
+    font-size:clamp(11px,.93vw,13px)!important;
+    line-height:1.35;font-weight:800;text-align:center;
+    white-space:normal;overflow-wrap:anywhere;
+  }
+  html body.desktop-board-workspace .inline-computer-panel .inline-play-status{
+    display:block;width:100%;
+    color:#a9d1e6!important;
+    font-size:clamp(10px,.85vw,12px)!important;
+    line-height:1.3;text-align:center;
+    white-space:normal;overflow-wrap:anywhere;
+  }
+  html body.desktop-board-workspace .inline-computer-panel .inline-play-status.error{
+    color:#ffb2ac!important;
+  }
+  html body.desktop-board-workspace .inline-computer-panel .inline-play-clock{
     box-sizing:border-box;
-    overflow:hidden;
-    justify-self:center;
-    display:grid;
-    grid-template-columns:minmax(0,1fr) minmax(104px,116px);
-    align-items:center;
-    justify-content:center;
-    gap:10px;
-    direction:rtl;
+    min-width:0;width:100%;max-width:none;
+    display:grid;place-items:center;justify-self:stretch;
+    padding:12px 3px;
+    border:1px solid #576675!important;
+    border-radius:11px;
+    background:#20262d!important;
+    color:#f5f8fa!important;
+    font-weight:900;font-size:clamp(27px,2.2vw,36px);
+    font-variant-numeric:tabular-nums;line-height:1.08;
+    box-shadow:none!important;
   }
 
-  .inline-computer-panel .inline-play-player-copy{
-    min-width:0;
-    max-width:none;
-    overflow:hidden;
-    text-align:center;
-    align-items:center;
-    justify-content:center;
-    gap:7px;
-    direction:rtl;
+  /* Setup shares the same surface, with stronger active and hover contrast. */
+  html body.desktop-board-workspace .inline-computer-panel .inline-computer-setup{
+    display:grid;grid-template-rows:auto 44px auto 44px 43px;
+    gap:7px;align-content:center;justify-items:stretch;
+    min-width:0;min-height:0;width:100%;height:max-content;
+    box-sizing:border-box;padding:12px;
+    border:1px solid #48515b!important;border-radius:12px;
+    background:linear-gradient(180deg,#363b43,#292e35)!important;
+    box-shadow:none!important;overflow:visible;
   }
-
-  .inline-computer-panel .inline-play-player-name{
-    width:100%;
-    max-width:none;
-    overflow:visible;
-    text-overflow:clip;
-    white-space:normal;
-    overflow-wrap:anywhere;
-    text-align:center;
-    font-size:21px;
-    line-height:1.25;
+  html body.desktop-board-workspace .inline-computer-panel .inline-computer-label{
+    margin:0;font:900 15px/1.2 Arial,sans-serif!important;
+    color:#e9edf1!important;text-align:center;
   }
-
-  .inline-computer-panel .inline-play-player-meta,
-  .inline-computer-panel .inline-play-status{
-    width:100%;
-    max-width:none;
-    overflow:visible;
-    text-overflow:clip;
-    white-space:normal;
-    overflow-wrap:anywhere;
-    text-align:center;
-    direction:rtl;
-    unicode-bidi:plaintext;
-    line-height:1.4;
-    font-size:14px!important;
+  html body.desktop-board-workspace .inline-computer-panel .inline-computer-options{
+    min-width:0;display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:7px;
   }
-
-  .inline-computer-panel .inline-play-clock{
-    width:100%;
-    min-width:0;
-    max-width:none;
-    padding:13px 4px;
-    box-sizing:border-box;
-    font-size:clamp(30px,2.35vw,36px);
-    line-height:1.15;
-    place-self:center;
-  }
-
-  .inline-computer-setup{
-    min-height:0;
-    height:max-content;
-    width:100%;
-    justify-self:center;
-    padding:10px 12px;
-    border:1px solid rgba(165,162,158,0.34);
-    border-radius:14px;
-    background:linear-gradient(145deg,rgba(69,66,62,0.94),rgba(69,66,62,0.94));
-    box-shadow:0 12px 28px rgba(0,0,0,.14),inset 0 1px 0 rgba(255,255,255,.03);
-    display:grid;
-    grid-template-rows:auto 46px auto 46px 44px;
-    align-content:center;
-    justify-items:stretch;
-    gap:8px;
-    overflow:visible;
-    box-sizing:border-box;
-  }
-
-  .inline-computer-label{
-    margin:0;
-    color:#e2dcd3;
-    font:900 14px/1.2 Arial,sans-serif;
-    text-align:center;
-  }
-
-  .inline-computer-options{
-    display:grid;
-    grid-template-columns:repeat(3,minmax(0,1fr));
-    gap:7px;
-    min-width:0;
-  }
-
-  .inline-computer-options button{
-    min-width:0;
-    height:46px;
-    min-height:46px;
+  html body.desktop-board-workspace .inline-computer-panel .inline-computer-options button,
+  html body.desktop-board-workspace .inline-computer-panel .inline-computer-start{
+    width:100%;height:44px;min-height:44px;min-width:0;
+    display:block;box-sizing:border-box;
     padding:5px 4px;
-    border:1px solid rgba(114,111,107,0.34);
-    border-radius:10px;
-    background:rgba(69,66,62,0.82);
-    color:#e2dcd3;
-    font:900 13px/1.15 Arial,sans-serif;
-    cursor:pointer;
-    overflow:hidden;
+    border:1px solid #566574!important;border-radius:9px;
+    background:#252c34!important;color:#e9edf1!important;
+    font:900 13px/1.2 Arial,sans-serif;
+    box-shadow:none!important;cursor:pointer;overflow:hidden;
+    transition:background .12s ease,border-color .12s ease;
+  }
+  html body.desktop-board-workspace .inline-computer-panel .inline-computer-options button small{
+    display:block;margin-top:4px;
+    color:#c3cdd8!important;font-size:11px;line-height:1;font-weight:800;
+  }
+  html body.desktop-board-workspace .inline-computer-panel .inline-computer-options button:hover,
+  html body.desktop-board-workspace .inline-computer-panel .inline-computer-start:hover{
+    background:#3b4652!important;border-color:#85abc6!important;
+  }
+  html body.desktop-board-workspace .inline-computer-panel .inline-computer-options button.active{
+    background:#374653!important;border:1px solid #9bc6fd!important;
+    color:#fff!important;box-shadow:inset 0 0 0 1px rgba(155,198,253,.28)!important;
+  }
+  html body.desktop-board-workspace .inline-computer-panel .inline-computer-options button.active small{
+    color:#dce9f8!important;
+  }
+  html body.desktop-board-workspace .inline-computer-panel .inline-computer-start{
+    height:43px;min-height:43px;
+    border-color:#82b5d7!important;
+    background:#354756!important;
+    font-size:15px;font-weight:900;
+  }
+  html body.desktop-board-workspace .inline-computer-panel button:focus-visible{
+    outline:2px solid #a4d1f0!important;outline-offset:-2px;
   }
 
-  .inline-computer-options button small{
-    display:block;
-    margin-top:4px;
-    color:#e2dcd3;
-    font-size:11px;
-    line-height:1;
+  html body.desktop-board-workspace .inline-computer-panel .inline-play-actions{
+    min-width:0;width:100%;min-height:0;
+    display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:8px;
+    align-self:center;justify-self:stretch;box-sizing:border-box;
+    padding:10px;border:1px solid #48515b!important;border-radius:12px;
+    background:linear-gradient(180deg,#363b43,#292e35)!important;
+    box-shadow:none!important;overflow:hidden;
+  }
+  html body.desktop-board-workspace .inline-computer-panel .inline-play-actions button{
+    display:flex;align-items:center;justify-content:center;gap:8px;
+    min-width:0;height:54px;min-height:54px;padding:0 6px;
+    border:1px solid #566574!important;border-radius:9px;
+    background:#252c34!important;color:#eef3f8!important;
+    font:900 13px/1.2 Arial,sans-serif;box-shadow:none!important;cursor:pointer;
+  }
+  html body.desktop-board-workspace .inline-computer-panel .inline-play-actions button::before{
+    display:inline-grid;place-items:center;
+    flex:0 0 26px;width:26px;height:26px;
+    font:900 24px/1 Arial,sans-serif;color:#9bc6fd;
+  }
+  html body.desktop-board-workspace .inline-computer-panel #inlineComputerNew::before{content:"↻"}
+  html body.desktop-board-workspace .inline-computer-panel #inlineComputerResign::before{
+    content:"⚑";color:#f4a7a7;
+  }
+  html body.desktop-board-workspace .inline-computer-panel #inlineComputerResign{color:#ffb7b6!important}
+  html body.desktop-board-workspace .inline-computer-panel .inline-play-actions button:hover{
+    background:#3b4652!important;border-color:#85abc6!important;
   }
 
-  /* Selected level/time and Start: one-pixel orange outline, dark surface. */
-  .inline-computer-options button.active{
-    border:1px solid #9b958d;
-    background:rgba(69,66,62,0.82);
-    color:#e2dcd3;
-    box-shadow:none;
-  }
-
-  .inline-computer-options button.active small{
-    color:#9b958d;
-  }
-
-  .inline-computer-start{
-    width:100%;
-    height:44px;
-    min-height:44px;
-    border:1px solid #9b958d;
-    border-radius:11px;
-    background:rgba(69,66,62,0.82);
-    color:#e2dcd3;
-    font:900 15px/1 Arial,sans-serif;
-    box-shadow:none;
-    cursor:pointer;
-  }
-
-  .inline-computer-panel .inline-play-actions{
-    min-height:0;
-    width:100%;
-    justify-self:center;
-    align-self:center;
-    padding:10px;
-    border:1px solid rgba(114,111,107,0.34);
-    border-radius:14px;
-    background:linear-gradient(145deg,rgba(69,66,62,0.94),rgba(69,66,62,0.94));
-    display:grid;
-    grid-template-columns:repeat(2,minmax(0,1fr));
-    gap:8px;
-    box-sizing:border-box;
-    overflow:hidden;
-  }
-
-  .inline-computer-panel .inline-play-actions button{
-    height:58px;
-    min-height:58px;
-    padding:0 8px;
-    border:1px solid rgba(114,111,107,0.34);
-    border-radius:11px;
-    background:rgba(69,66,62,0.82);
-    color:#e2dcd3;
-    font:900 14px/1 Arial,sans-serif;
-    display:flex;
-    align-items:center;
-    justify-content:center;
-    gap:7px;
-  }
-
-  .inline-computer-panel .inline-play-actions button::before{
-    display:inline-grid;
-    place-items:center;
-    width:30px;
-    height:30px;
-    font:900 26px/1 Arial,sans-serif;
-    color:#e2dcd3;
-  }
-
-  #inlineComputerNew::before{
-    content:"↻";
-  }
-
-  #inlineComputerResign::before{
-    content:"⚑";
-  }
-
-  #inlineComputerResign{
-    color:#ffb0aa;
-  }
-
-  .inline-computer-panel .inline-play-status.error{
-    color:#ff8d8d;
-  }
-
-  #homeBoardPreview.inline-computer-active{
-    cursor:default!important;
-  }
-
-  #homeBoardPreview.inline-computer-active .inline-computer-piece{
-    pointer-events:none;
-  }
-
+  /* Preserve established board highlighting and piece layout, untouched. */
+  #homeBoardPreview.inline-computer-active{cursor:default!important}
+  #homeBoardPreview.inline-computer-active .inline-computer-piece{pointer-events:none}
   #homeBoardPreview.inline-computer-active .inline-play-square.last-move{
     box-shadow:inset 0 0 0 999px rgba(239,196,95,.24)!important;
   }
-
-
-  /* Legal move choices: one subtle gray dot for every available square. */
   #homeBoardPreview.inline-computer-active .inline-play-square.move-option::after,
   #homeBoardPreview.inline-computer-active .inline-play-square.capture-option::after{
-    content:"";
-    position:absolute;
-    left:50%;
-    top:50%;
-    width:18%;
-    height:18%;
-    transform:translate(-50%,-50%);
-    border:0;
-    border-radius:50%;
-    background:rgba(88,92,94,.62);
-    box-shadow:none;
-    pointer-events:none;
-    z-index:5;
-    box-sizing:border-box;
+    content:"";position:absolute;left:50%;top:50%;
+    width:18%;height:18%;transform:translate(-50%,-50%);
+    border:0;border-radius:50%;background:rgba(88,92,94,.62);
+    box-shadow:none;pointer-events:none;z-index:5;box-sizing:border-box;
   }
 
-  /* Result colors: winner green, loser red. */
-  .inline-computer-panel .inline-play-player-card.result-winner{
-    border-color:rgba(67,201,105,.92)!important;
-    background:
-      linear-gradient(145deg,rgba(19,97,57,.86),rgba(69,66,62,0.94))!important;
-    box-shadow:
-      0 12px 28px rgba(0,0,0,.14),
-      inset 0 0 0 1px rgba(89,225,126,.20)!important;
+  html body.desktop-board-workspace .inline-computer-panel .inline-play-player-card.result-winner{
+    border-color:#70d7a0!important;
+    background:linear-gradient(180deg,#30443e,#293a35)!important;
+    box-shadow:none!important;
+  }
+  html body.desktop-board-workspace .inline-computer-panel .inline-play-player-card.result-loser{
+    border-color:#e69a9b!important;
+    background:linear-gradient(180deg,#45343a,#382c32)!important;
+    box-shadow:none!important;
   }
 
-  .inline-computer-panel .inline-play-player-card.result-loser{
-    border-color:rgba(239,79,79,.92)!important;
-    background:
-      linear-gradient(145deg,rgba(111,34,38,.88),rgba(67,22,27,.95))!important;
-    box-shadow:
-      0 12px 28px rgba(0,0,0,.14),
-      inset 0 0 0 1px rgba(255,115,115,.16)!important;
-  }
-
-  /* Preserve legibility and prevent cropping on short desktop viewports. */
-  @media(max-height:620px){
-    .inline-computer-panel{
-      grid-template-rows:104px auto 104px;
-      gap:7px;
-      padding-block:0;
+  @media(max-height:680px){
+    html body.desktop-board-workspace .inline-computer-panel{
+      grid-template-rows:clamp(94px,15dvh,120px) auto clamp(94px,15dvh,120px);
+      gap:7px;padding-block:0;
     }
-    .inline-computer-panel .inline-play-player-card{
-      padding:7px 8px;
-      grid-template-columns:minmax(0,1fr) minmax(93px,103px);
-      gap:6px;
+    html body.desktop-board-workspace .inline-computer-panel .inline-play-player-card{
+      grid-template-columns:42px minmax(0,1fr) minmax(85px,100px);
+      gap:7px;padding:6px 8px;
     }
-    .inline-computer-panel .inline-play-player-copy{gap:3px}
-    .inline-computer-panel .inline-play-player-name{font-size:17px}
-    .inline-computer-panel .inline-play-player-meta,
-    .inline-computer-panel .inline-play-status{font-size:11px!important;line-height:1.3}
-    .inline-computer-panel .inline-play-clock{font-size:28px;padding:8px 2px}
-    .inline-computer-setup{
-      padding:7px 8px;
-      gap:5px;
-      grid-template-rows:auto 38px auto 38px 38px;
+    html body.desktop-board-workspace .inline-computer-panel .inline-computer-identity-icon{
+      width:42px;height:42px;min-width:42px;max-width:42px;
     }
-    .inline-computer-options button{height:38px;min-height:38px;padding:3px;font-size:11px}
-    .inline-computer-options button small{font-size:10px;margin-top:2px}
-    .inline-computer-label{font-size:12px}
-    .inline-computer-start{height:38px;min-height:38px}
+    html body.desktop-board-workspace .inline-computer-panel .inline-computer-machine-icon svg{
+      width:31px;height:31px;
+    }
+    html body.desktop-board-workspace .inline-computer-panel .inline-play-player-copy{gap:3px}
+    html body.desktop-board-workspace .inline-computer-panel .inline-play-player-name{font-size:16px}
+    html body.desktop-board-workspace .inline-computer-panel .inline-play-player-meta,
+    html body.desktop-board-workspace .inline-computer-panel .inline-play-status{
+      font-size:10px!important;line-height:1.25;
+    }
+    html body.desktop-board-workspace .inline-computer-panel .inline-play-clock{
+      font-size:26px;padding:8px 2px;
+    }
+    html body.desktop-board-workspace .inline-computer-panel .inline-computer-setup{
+      grid-template-rows:auto 36px auto 36px 38px;gap:5px;padding:7px 8px;
+    }
+    html body.desktop-board-workspace .inline-computer-panel .inline-computer-options button{
+      height:36px;min-height:36px;font-size:11px;
+    }
+    html body.desktop-board-workspace .inline-computer-panel .inline-computer-options button small{
+      font-size:10px;margin-top:2px;
+    }
+    html body.desktop-board-workspace .inline-computer-panel .inline-computer-label{font-size:12px!important}
+    html body.desktop-board-workspace .inline-computer-panel .inline-computer-start{height:38px;min-height:38px}
   }
 }
