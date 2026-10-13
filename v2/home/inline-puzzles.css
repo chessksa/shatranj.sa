@@ -162,6 +162,13 @@
     cursor:pointer;
   }
 
+  .inline-puzzle-modes button{
+    border:1px solid #394149;background:#292e35;color:#e9edf1;
+  }
+  .inline-puzzle-modes button:hover:not(:disabled){
+    background:#363c45;border-color:#66717d;
+  }
+
   .inline-puzzle-actions button.primary{
     border-color:#e2dcd3;
     background:linear-gradient(135deg,#e2dcd3,#e2dcd3);
