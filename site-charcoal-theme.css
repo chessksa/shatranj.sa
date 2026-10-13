@@ -1152,6 +1152,36 @@ html body :is(
   box-shadow:none!important;
 }
 
+/* Standalone matchmaking/computer timers use these same three states.
+   These controls can start play immediately, so hover is their preview state. */
+html body :is(.opponent-time-option,.v5-time-option){
+  background:#292e35!important;
+  background-image:none!important;
+  border:1px solid #394149!important;
+  box-shadow:none!important;
+  color:#e9edf1!important;
+}
+html body.pregame.reference-play-layout .opponent-time-option{
+  background:#292e35!important;
+  background-image:none!important;
+  border:1px solid #394149!important;
+  box-shadow:none!important;
+  color:#e9edf1!important;
+}
+html body :is(.opponent-time-option,.v5-time-option):hover:not(:disabled),
+html body.pregame.reference-play-layout .opponent-time-option:hover:not(:disabled){
+  background:#363c45!important;
+  background-image:none!important;
+  border-color:#66717d!important;
+  box-shadow:none!important;
+}
+html body :is(.opponent-time-option,.v5-time-option):is(.active,.selected,[aria-pressed="true"]),
+html body.pregame.reference-play-layout .opponent-time-option:is(.active,.selected,[aria-pressed="true"]){
+  background:#353c45!important;
+  background-image:none!important;
+  border:1px solid #66717d!important;
+  box-shadow:none!important;
+}
 /* Keyboard focus remains accessible but is not an extra selected border. */
 html body :is(
   .desktop-home-nav-link,.v2-global-link,.v2-mobile-link,
