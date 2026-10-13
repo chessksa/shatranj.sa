@@ -15,10 +15,7 @@
 html,body{margin:0;min-height:100%;font-family:Arial,sans-serif}
 body{background:#1a1d21;color:var(--cream);direction:rtl}
 button,select,input{font:inherit}
-.settings-shell{width:min(100% - 20px,1000px);margin:0 auto;padding:14px 0 28px}
-.settings-title{display:flex;align-items:center;justify-content:space-between;gap:10px;margin-bottom:12px}
-.settings-title h1{margin:0;font-size:23px;font-weight:900}
-.settings-title p{margin:3px 0 0;color:var(--muted);font-size:12px;line-height:1.5}
+.settings-shell{width:min(100% - 16px,1000px);margin:0 auto;padding:4px 0 20px}
 .settings-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px;align-items:start}
 .card{min-width:0;background:linear-gradient(180deg,#363b43,#22262b);border:1px solid var(--line);border-radius:12px;padding:14px;box-shadow:none}
 .card h2{margin:0 0 11px;font-size:17px;font-weight:900}
@@ -30,13 +27,13 @@ button,select,input{font:inherit}
 .toggle{display:flex;align-items:center;justify-content:space-between;gap:10px}
 .toggle input{width:19px;height:19px;accent-color:#9bc6fd}
 .v2-theme-grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:8px}
-.v2-theme-option{min-width:0;border:1px solid #48515b;border-radius:9px;background:#292e35;color:var(--cream);padding:7px;display:grid;gap:6px;cursor:pointer;transition:border-color .15s,background-color .15s}
+.v2-theme-option{min-width:0;border:1px solid #48515b;border-radius:9px;background:#292e35;color:var(--cream);padding:0;display:grid;gap:0;overflow:hidden;cursor:pointer;transition:border-color .15s,background-color .15s}
 .v2-theme-option:hover{background:#363c45;border-color:#718196}
 .v2-theme-option.active{border-color:#9bc6fd;box-shadow:inset 0 0 0 1px #9bc6fd}
 .v2-theme-option:focus-visible{outline:2px solid #9bc6fd;outline-offset:2px}
-.v2-theme-preview{display:grid;grid-template-columns:1fr 1fr;aspect-ratio:2/1;border-radius:5px;overflow:hidden}
+.v2-theme-preview{display:grid;grid-template-columns:1fr 1fr;width:100%;aspect-ratio:2/1;border-radius:0;overflow:hidden}
 .v2-theme-preview i{display:block}
-.v2-theme-option strong{font-size:11px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.v2-theme-option strong{display:block;min-width:0;padding:7px 4px;font-size:11px;text-align:center;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
 .status{min-height:18px;margin-top:8px;color:#9bc6fd;font-size:12px;font-weight:800}
 .status:empty{min-height:0;margin-top:0}
 .status.error{color:#ffb6a8}
@@ -44,13 +41,12 @@ button,select,input{font:inherit}
 .settings-save:disabled{opacity:.55;cursor:not-allowed}
 .account-actions{display:flex;justify-content:flex-end;gap:10px;margin-top:10px}
 @media(max-width:900px){
-  .settings-shell{width:min(100% - 16px,1000px);padding-top:10px}
+  .settings-shell{width:min(100% - 12px,1000px);padding-top:2px}
   .settings-grid{grid-template-columns:1fr;gap:10px}
   .account-card{grid-column:auto}
   .card{padding:12px}
 }
 @media(max-width:560px){
-  .settings-title h1{font-size:20px}
   .options{grid-template-columns:1fr}
 }
 @media(max-width:360px){
@@ -75,11 +71,11 @@ button,select,input{font:inherit}
 </head>
 <body>
 <main class="settings-shell">
-  <div class="settings-title"><div><h1>الإعدادات</h1><p>إعدادات الحساب والخصوصية والرقعة في مكان واحد.</p></div></div>
+  
   <div class="settings-grid">
 
 
-    <section class="card board-colors-card"><h2>ألوان الرقعة</h2><div id="v2-settings-theme-picker" class="v2-theme-grid"></div><div id="v2-settings-status" class="status" role="status" aria-live="polite"></div></section>
+    <section class="card board-colors-card"><h2>اختر الرقعة التي تناسبك</h2><div id="v2-settings-theme-picker" class="v2-theme-grid"></div><div id="v2-settings-status" class="status" role="status" aria-live="polite"></div></section>
     <section class="card"><h2>خيارات اللعب والعرض</h2><div class="options">
       <label class="option"><span>الإحداثيات</span><select id="v2-setting-coordinates"><option value="inside">داخل الرقعة</option><option value="outside">خارج الرقعة</option><option value="off">بدون</option></select></label>
       <label class="option"><span>حركة القطع</span><select id="v2-setting-animation"><option value="none">بدون</option><option value="slow">بطيئة</option><option value="medium">متوسطة</option><option value="fast">سريعة</option><option value="natural">طبيعية</option><option value="arcade">Arcade</option></select></label>
