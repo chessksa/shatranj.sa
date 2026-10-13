@@ -1,5 +1,6 @@
 import { Chess } from 'https://cdn.jsdelivr.net/npm/chess.js@1.4.0/+esm';
 import { supabase, getSessionPlayer, rpc } from '../platform/api.mjs';
+import { playBoardMoveSound } from '../board/move-sound.mjs?v=20261013-movesound-v1';
 
 import { renderApprovedPreview } from './move-notebook.mjs?v=20261012-notebook-aligned-v13';
 const desktop=window.matchMedia('(min-width:901px)');
@@ -323,6 +324,7 @@ async function recoverSession(){
 async function tryMove(from,to){
   if(solved||!puzzle||!chess||chess.turn()!==userColor) return;
   let candidate;
+  const beforeFen=chess.fen();
   try{
     candidate=chess.move({from,to,promotion:'q'});
   }catch{
@@ -349,11 +351,14 @@ async function tryMove(from,to){
     }
     selected=null;
     renderBoard();
+    playBoardMoveSound(beforeFen,chess.fen());
     if(result.replyMove){
       await new Promise(resolve=>setTimeout(resolve,260));
+      const replyBeforeFen=chess.fen();
       const reply=applyUci(String(result.replyMove));
       if(!reply) throw new Error('invalid_server_reply');
       renderBoard();
+      playBoardMoveSound(replyBeforeFen,chess.fen());
     }
     if(result.completed){
       await finishPuzzle(Boolean(result.success),result);
