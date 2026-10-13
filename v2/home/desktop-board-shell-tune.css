@@ -53,12 +53,12 @@
 
   .desktop-live-stat{
     min-height:0!important;
-    padding:8px 4px!important;
+    padding:12px 4px 6px!important;
     display:flex!important;
-    flex-direction:column-reverse!important;
+    flex-direction:column!important;
     align-items:center!important;
-    justify-content:center!important;
-    gap:4px!important;
+    justify-content:flex-start!important;
+    gap:8px!important;
     border-radius:9px!important;
   }
 
@@ -69,8 +69,9 @@
 
   .desktop-live-stat small{
     margin-top:0!important;
-    font-size:11px!important;
+    font-size:12px!important;
     line-height:1.25!important;
+    text-align:center!important;
   }
 
   .desktop-home-statistics{min-height:0!important;height:100%!important;grid-row:3!important}
@@ -88,7 +89,7 @@
     padding:0!important;
   }
   body.desktop-board-workspace .desktop-dashboard-column{gap:4px!important}
-  body.desktop-board-workspace .desktop-live-stat{padding:5px 3px!important}
+  body.desktop-board-workspace .desktop-live-stat{padding:7px 3px 3px!important;gap:5px!important}
   body.desktop-board-workspace .desktop-live-stat strong{font-size:20px!important}
   body.desktop-board-workspace .desktop-live-stat small{font-size:10px!important}
 }
