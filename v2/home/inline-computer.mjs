@@ -1,4 +1,5 @@
 import { decorateBoardCoordinate, renderApprovedPreview, openMoveNotebook, updateMoveNotebook, closeMoveNotebook } from './move-notebook.mjs?v=20261012-notebook-aligned-v13';
+import { playBoardMoveSound } from '../board/move-sound.mjs?v=20261013-movesound-v1';
 const desktop=window.matchMedia('(min-width:901px)');
 const START_FEN='rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1';
 const PIECE_ROOT='assets/pieces/';
@@ -156,6 +157,7 @@ function applyUciMove(uci){
   const promotion=move[4]||'';
   const piece=position.get(from);
   if(!piece) return false;
+  const beforeFen=currentPositionFen();
 
   const target=position.get(to);
   if(piece.type==='p' && from[0]!==to[0] && !target){
@@ -185,6 +187,7 @@ function applyUciMove(uci){
   moveHistory.push(move);
   updateMoveNotebook('computer',moveHistory.map(uci=>({uci})));
   currentTurn=currentTurn==='w'?'b':'w';
+  playBoardMoveSound(beforeFen,currentPositionFen());
   return true;
 }
 
