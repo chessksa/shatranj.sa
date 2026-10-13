@@ -375,27 +375,6 @@ if(desktop.matches && document.querySelector('#homeHero')){
     column.className='desktop-dashboard-column';
     column.innerHTML=`
       <div id="desktopDashboardHome" class="desktop-dashboard-home">
-        <section id="desktopHomeStatistics" class="desktop-home-statistics" aria-labelledby="desktopHomeStatisticsTitle">
-          <header class="desktop-statistics-header">
-            <strong id="desktopHomeStatisticsTitle">الإحصاءات</strong>
-            <span id="desktopStatisticsStatus" aria-live="polite">بيانات إنجازاتك في شطرنج العرب</span>
-            <button type="button" data-stats-login hidden>تسجيل الدخول</button>
-          </header>
-          <div class="desktop-statistics-group">
-            <div class="desktop-statistics-row" data-stat-row="games"><span class="desktop-statistics-label"><span class="desktop-statistics-icon" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="7" height="7" rx="1"/><rect x="14" y="3" width="7" height="7" rx="1"/><rect x="3" y="14" width="7" height="7" rx="1"/><rect x="14" y="14" width="7" height="7" rx="1"/><path d="M6.5 3v7M17.5 14v7"/></svg></span><span>المباريات</span></span><strong data-stat-value="games" dir="ltr">—</strong></div>
-            <div class="desktop-statistics-row" data-stat-row="puzzles"><span class="desktop-statistics-label"><span class="desktop-statistics-icon" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M10 2h5v4a2.5 2.5 0 1 1 5 0h2v6h-4a2.5 2.5 0 1 0 0 5h4v5h-8v-4a2.5 2.5 0 1 0-5 0v4H2v-8h4a2.5 2.5 0 1 0 0-5H2V2h8z"/></svg></span><span>الألغاز</span></span><strong data-stat-value="puzzles" dir="ltr">—</strong></div>
-            <div class="desktop-statistics-row" data-stat-row="lessons"><span class="desktop-statistics-label"><span class="desktop-statistics-icon" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m2 9 10-6 10 6-10 6-10-6Z"/><path d="M6 12v6c4 3 8 3 12 0v-6M22 9v8"/></svg></span><span>الدروس</span></span><strong data-stat-value="lessons" dir="ltr">—</strong></div>
-          </div>
-          <div class="desktop-statistics-group">
-            <div class="desktop-statistics-row" data-stat-row="rapid"><span class="desktop-statistics-label"><span class="desktop-statistics-icon" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="13" r="9"/><path d="M12 13V7M9 2h6M12 4v1M17.5 8.5l2-2"/></svg></span><span>سريع</span></span><strong data-stat-value="rapid" dir="ltr">—</strong></div>
-            <div class="desktop-statistics-row" data-stat-row="blitz"><span class="desktop-statistics-label"><span class="desktop-statistics-icon" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M13.5 2 4 14h7l-1 8 10-13h-7l.5-7Z"/></svg></span><span>خاطف</span></span><strong data-stat-value="blitz" dir="ltr">—</strong></div>
-            <div class="desktop-statistics-row" data-stat-row="bullet"><span class="desktop-statistics-label"><span class="desktop-statistics-icon" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M19 3c-5 .1-9.4 2.6-12 7l7 7c4.4-2.6 6.9-7 7-12l-2-2Z"/><path d="m7 10-3 1-2 5 5-2m7 3-1 3-5 2 2-5M7 17l-4 4m1-7-2 2"/><circle cx="15" cy="9" r="1.5"/></svg></span><span>طلقة</span></span><strong data-stat-value="bullet" dir="ltr">—</strong></div>
-          </div>
-          <div class="desktop-statistics-group">
-            <div class="desktop-statistics-row" data-stat-row="wins"><span class="desktop-statistics-label"><span class="desktop-statistics-icon" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M7 3h10v7a5 5 0 0 1-10 0V3Z"/><path d="M7 5H4v4c0 3 1 4 4 4M17 5h3v4c0 3-1 4-4 4M12 15v5m-5 2h10"/></svg></span><span>الانتصارات</span></span><strong data-stat-value="wins" dir="ltr">—</strong></div>
-            <div class="desktop-statistics-row" data-stat-row="achievements"><span class="desktop-statistics-label"><span class="desktop-statistics-icon" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="8" r="5"/><path d="m8.5 12-2 9 5.5-3 5.5 3-2-9"/><path d="m10 8 1.3 1.3 2.9-2.9"/></svg></span><span>الإنجازات</span></span><strong data-stat-value="achievements" dir="ltr">—</strong></div>
-          </div>
-        </section>
         <section class="desktop-champions-grid" aria-label="أبطال شطرنج العرب">
           <a class="desktop-champion-card" data-champion="week" href="#ranking" aria-label="بطل الأسبوع">
             <span class="desktop-champion-title">
@@ -424,6 +403,27 @@ if(desktop.matches && document.querySelector('#homeHero')){
             <span class="desktop-champion-name">جارٍ التحديث…</span>
             <span class="desktop-champion-result"><b class="desktop-champion-count">—</b><small class="desktop-champion-meta">نقطة</small></span>
           </a>
+        </section>
+        <section id="desktopHomeStatistics" class="desktop-home-statistics" aria-labelledby="desktopHomeStatisticsTitle">
+          <header class="desktop-statistics-header">
+            <strong id="desktopHomeStatisticsTitle">الإحصاءات</strong>
+            <span id="desktopStatisticsStatus" aria-live="polite">بيانات إنجازاتك في شطرنج العرب</span>
+            <button type="button" data-stats-login hidden>تسجيل الدخول</button>
+          </header>
+          <div class="desktop-statistics-group">
+            <div class="desktop-statistics-row" data-stat-row="games"><span class="desktop-statistics-label"><span class="desktop-statistics-icon" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="7" height="7" rx="1"/><rect x="14" y="3" width="7" height="7" rx="1"/><rect x="3" y="14" width="7" height="7" rx="1"/><rect x="14" y="14" width="7" height="7" rx="1"/><path d="M6.5 3v7M17.5 14v7"/></svg></span><span>المباريات</span></span><strong data-stat-value="games" dir="ltr">—</strong></div>
+            <div class="desktop-statistics-row" data-stat-row="puzzles"><span class="desktop-statistics-label"><span class="desktop-statistics-icon" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M10 2h5v4a2.5 2.5 0 1 1 5 0h2v6h-4a2.5 2.5 0 1 0 0 5h4v5h-8v-4a2.5 2.5 0 1 0-5 0v4H2v-8h4a2.5 2.5 0 1 0 0-5H2V2h8z"/></svg></span><span>الألغاز</span></span><strong data-stat-value="puzzles" dir="ltr">—</strong></div>
+            <div class="desktop-statistics-row" data-stat-row="lessons"><span class="desktop-statistics-label"><span class="desktop-statistics-icon" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m2 9 10-6 10 6-10 6-10-6Z"/><path d="M6 12v6c4 3 8 3 12 0v-6M22 9v8"/></svg></span><span>الدروس</span></span><strong data-stat-value="lessons" dir="ltr">—</strong></div>
+          </div>
+          <div class="desktop-statistics-group">
+            <div class="desktop-statistics-row" data-stat-row="rapid"><span class="desktop-statistics-label"><span class="desktop-statistics-icon" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="13" r="9"/><path d="M12 13V7M9 2h6M12 4v1M17.5 8.5l2-2"/></svg></span><span>سريع</span></span><strong data-stat-value="rapid" dir="ltr">—</strong></div>
+            <div class="desktop-statistics-row" data-stat-row="blitz"><span class="desktop-statistics-label"><span class="desktop-statistics-icon" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M13.5 2 4 14h7l-1 8 10-13h-7l.5-7Z"/></svg></span><span>خاطف</span></span><strong data-stat-value="blitz" dir="ltr">—</strong></div>
+            <div class="desktop-statistics-row" data-stat-row="bullet"><span class="desktop-statistics-label"><span class="desktop-statistics-icon" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M19 3c-5 .1-9.4 2.6-12 7l7 7c4.4-2.6 6.9-7 7-12l-2-2Z"/><path d="m7 10-3 1-2 5 5-2m7 3-1 3-5 2 2-5M7 17l-4 4m1-7-2 2"/><circle cx="15" cy="9" r="1.5"/></svg></span><span>طلقة</span></span><strong data-stat-value="bullet" dir="ltr">—</strong></div>
+          </div>
+          <div class="desktop-statistics-group">
+            <div class="desktop-statistics-row" data-stat-row="wins"><span class="desktop-statistics-label"><span class="desktop-statistics-icon" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M7 3h10v7a5 5 0 0 1-10 0V3Z"/><path d="M7 5H4v4c0 3 1 4 4 4M17 5h3v4c0 3-1 4-4 4M12 15v5m-5 2h10"/></svg></span><span>الانتصارات</span></span><strong data-stat-value="wins" dir="ltr">—</strong></div>
+            <div class="desktop-statistics-row" data-stat-row="achievements"><span class="desktop-statistics-label"><span class="desktop-statistics-icon" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="8" r="5"/><path d="m8.5 12-2 9 5.5-3 5.5 3-2-9"/><path d="m10 8 1.3 1.3 2.9-2.9"/></svg></span><span>الإنجازات</span></span><strong data-stat-value="achievements" dir="ltr">—</strong></div>
+          </div>
         </section>
       </div>
       <section id="desktopDashboardView" class="desktop-dashboard-view" hidden>
