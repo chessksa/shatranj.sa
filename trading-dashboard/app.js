@@ -46,7 +46,7 @@ function render(s){
  setValue('closedCount',dbOK?String(closed.length):'—');const wins=valid.filter(t=>t.pnl>0).length,losses=valid.filter(t=>t.pnl<0).length;
  setValue('winsCount',dbOK?String(wins):'—');setValue('lossesCount',dbOK?String(losses):'—');setValue('winRate',dbOK&&valid.length?fmt(100*wins/valid.length,1)+'%':dbOK?'—':'—');
  const events=(s.events||[]).slice(0,6);$('recentEvents').innerHTML=events.length?events.map(eventRow).join(''):'<div class="blank">لا توجد أحداث في سجل التشغيل</div>';
- let message='';if(rt.session_exists&&!rt.running)message='جلسة البوت موجودة لكن العملية الفعلية غير نشطة. تحقق من حالتها قبل إعادة التشغيل.';else if(!dbOK)message='تعذرت قراءة قاعدة الصفقات. لا تُفسّر غياب الصفقات على أنه عدم وجود مراكز في Binance.';else if(acc.status==='error')message='فشل تحديث رصيد Binance. قد يكون الرصيد المعروض قديمًا.';else if(open.length&&!allMarked)message='تعذر الحصول على سعر حديث لبعض المراكز؛ لن نعرض ربحًا تقديريًا ناقصًا.';
+ let message='';if(rt.session_exists&&!rt.running)message='جلسة البوت موجودة لكن العملية الفعلية غير نشطة. تحقق من حالتها قبل إعادة التشغيل.';else if(!dbOK)message='تعذرت قراءة قاعدة الصفقات. لا تُفسّر غياب الصفقات على أنه عدم وجود مراكز في Binance.';else if(acc.status==='error')message='فشل تحديث رصيد Binance. قد يكون الرصيد المعروض قديمًا.';
  warn(message);
 }
 async function refresh(){if(loading)return;loading=true;$('refreshBtn').disabled=true;const controller=new AbortController();const timeout=setTimeout(()=>controller.abort(),6500);
