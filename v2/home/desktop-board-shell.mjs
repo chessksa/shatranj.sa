@@ -239,18 +239,19 @@ if(desktop.matches && document.querySelector('#homeHero')){
       }
     });
     const sync=()=>{
-      const home=document.getElementById('desktopDashboardHome');
-      const boardInactive=!['inline-play-active','inline-computer-active',
-        'inline-puzzle-active','inline-learn-active','inline-variants-active',
-        'inline-tournament-spectator'].some(name=>preview.classList.contains(name));
-      const freeSpace=Math.floor(preview.getBoundingClientRect().left-stage.getBoundingClientRect().left)-12;
-      const canShow=Boolean(home&&!home.hidden&&boardInactive&&freeSpace>=125);
+      // These two idle activities persist across dashboard navigation.
+      // Only an actual started online/computer game owns the left-hand space:
+      // openMoveNotebook() sets this exact class and mounts the notation panel.
+      const notebookActive=document.body.classList.contains('desktop-move-notebook-active');
+      const freeSpace=Math.floor(
+        preview.getBoundingClientRect().left-stage.getBoundingClientRect().left
+      )-12;
+      const canShow=!notebookActive&&freeSpace>=125;
       rail.hidden=!canShow;
       if(canShow)rail.style.width=Math.min(250,freeSpace)+'px';
     };
     const observer=new MutationObserver(sync);
-    const home=document.getElementById('desktopDashboardHome');
-    if(home)observer.observe(home,{attributes:true,attributeFilter:['hidden']});
+    observer.observe(document.body,{attributes:true,attributeFilter:['class']});
     observer.observe(preview,{attributes:true,attributeFilter:['class']});
     if(typeof ResizeObserver!=='undefined'){
       const sizes=new ResizeObserver(sync);
@@ -258,6 +259,7 @@ if(desktop.matches && document.querySelector('#homeHero')){
       sizes.observe(preview);
     }
     window.addEventListener('resize',sync,{passive:true});
+    window.addEventListener('pageshow',sync);
     requestAnimationFrame(sync);
   }
 
