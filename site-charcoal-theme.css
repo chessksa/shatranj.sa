@@ -1194,3 +1194,19 @@ html body :is(
   outline:1px solid #a5b4c4!important;
   outline-offset:2px!important;
 }
+
+
+/* White chess pieces only: clean neutral pure-white face, retained dark outlines.
+   Applies to standard img sprites, SVG image sprites, and the live-board CSS
+   background sprites. Black pieces, boards and their color palettes are untouched. */
+html body img:is(
+  [src*="/wp.png"],[src*="/wr.png"],[src*="/wn.png"],
+  [src*="/wb.png"],[src*="/wq.png"],[src*="/wk.png"]
+),
+html body svg image:is(
+  [href*="/wp.png"],[href*="/wr.png"],[href*="/wn.png"],
+  [href*="/wb.png"],[href*="/wq.png"],[href*="/wk.png"]
+),
+html body .piece.white .piece-image{
+  filter:grayscale(1) brightness(1.65) contrast(1.5)!important;
+}
