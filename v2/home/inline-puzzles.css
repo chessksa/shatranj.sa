@@ -162,11 +162,16 @@
     cursor:pointer;
   }
 
-  .inline-puzzle-actions button.primary,
-  .inline-puzzle-modes button.active{
+  .inline-puzzle-actions button.primary{
     border-color:#e2dcd3;
     background:linear-gradient(135deg,#e2dcd3,#e2dcd3);
     color:#302e2b;
+  }
+  .inline-puzzle-modes button.active{
+    border:1px solid #66717d;
+    background:#353c45;
+    color:#e9edf1;
+    box-shadow:none;
   }
 
   .inline-puzzle-modes{
