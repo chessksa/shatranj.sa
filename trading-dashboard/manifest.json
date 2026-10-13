@@ -1,14 +1,14 @@
 {
   "schema": 1,
-  "version": "2026.10.13.2",
+  "version": "2026.10.13.3",
   "files": {
     "index.html": {
-      "sha256": "5ef9b19ea19158025e9d8d81af90e6ac8551a23302c2808a2b46dc983f0ebeb3",
+      "sha256": "1e4e394bd4511f915dbcb50e89121e3ecccef3815d15d084874e2e7cfbbc6a3b",
       "size": 7587
     },
     "style.css": {
-      "sha256": "64231d9da4c8ede521e4b2f8a24c8edd8beaf2c0e63795764a32f4593b58302b",
-      "size": 11707
+      "sha256": "bad87ade1a0279c4bc82ccadee7b2e32f9578291d743a1d4a447c725edbf353f",
+      "size": 12847
     },
     "app.js": {
       "sha256": "90db1aac291fac70911c955cb7ff943078f5fd459d688cb7994078039f6a51a4",
