@@ -667,7 +667,7 @@ html body.desktop-board-workspace :is(
   background:linear-gradient(180deg,#353b43,#2d3239)!important;
   background-image:linear-gradient(180deg,#353b43,#2d3239)!important;
   color:#e9edf1!important;
-  border:1px solid #515c68!important;
+  border:1px solid #394149!important;
   box-shadow:none!important;
   text-shadow:none!important;
 }
@@ -678,7 +678,7 @@ html body.desktop-board-workspace :is(
 ){
   background:linear-gradient(180deg,#3e464f,#343b43)!important;
   background-image:linear-gradient(180deg,#3e464f,#343b43)!important;
-  border-color:#76818c!important;
+  border-color:#48515b!important;
   color:#fff!important;
 }
 html body.desktop-board-workspace :is(
@@ -687,9 +687,9 @@ html body.desktop-board-workspace :is(
   .desktop-play-time-options > button.is-selected:hover,
   .desktop-play-choice-list > button.is-selected:hover
 ){
-  background:#39424d!important;
+  background:#353c45!important;
   background-image:none!important;
-  border:1px solid #737f8c!important;
+  border:1px solid #66717d!important;
   color:#fff!important;
   box-shadow:none!important;
 }
