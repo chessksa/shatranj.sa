@@ -1,6 +1,19 @@
 (()=>{
   const mq=window.matchMedia('(max-width:900px)');
   if(!mq.matches)return;
+  let boardPreferencesModule=null;
+  async function syncMobileBoardPreferences(){
+    const board=document.getElementById('mfwBoard');
+    if(!board)return;
+    try{
+      boardPreferencesModule ||= import('./v2/board/controller.mjs?v=20261013-live-home-board-v1');
+      const {loadBoardPreferences,applyBoardPreferences}=await boardPreferencesModule;
+      if(board.isConnected)applyBoardPreferences(board,loadBoardPreferences());
+    }catch(error){
+      console.warn('تعذر تحديث ألوان الرقعة الرئيسية في الجوال',error);
+    }
+  }
+
 
   const PIECES={
     a8:'br',b8:'bn',c8:'bb',d8:'bq',e8:'bk',f8:'bb',g8:'bn',h8:'br',
@@ -109,7 +122,7 @@
     for(let rank=8;rank>=1;rank--){
       for(const file of ['a','b','c','d','e','f','g','h']){
         const name=file+rank;
-        const dark=((file.charCodeAt(0)-97)+rank)%2===0;
+        const dark=((file.charCodeAt(0)-97)+rank)%2===1;
         const piece=PIECES[name];
         const rankMark=file==='a'?'<span class="mfw-coordinate mfw-coordinate-rank" aria-hidden="true">'+rank+'</span>':'';
         const fileMark=rank===1?'<span class="mfw-coordinate mfw-coordinate-file" aria-hidden="true">'+file+'</span>':'';
@@ -356,6 +369,12 @@
 
   function boot(){
     ensureRoot();
+    void syncMobileBoardPreferences();
+    window.addEventListener('pageshow',()=>void syncMobileBoardPreferences());
+    window.addEventListener('storage',event=>{
+      if(event.key==='shatranj:v2:board-preferences'||event.key===null)
+        void syncMobileBoardPreferences();
+    });
     window.addEventListener('shatranj:tournament-spectator-stopped',()=>{
       const frame=document.querySelector('#mfwPanelBody .mfw-tournament-embed');
       if(frame?.contentWindow)frame.contentWindow.postMessage({type:'shatranj-tournament-spectate-stopped'},location.origin);
