@@ -90,10 +90,10 @@
     flex:0 0 auto;
     height:34px;
     padding:0 9px;
-    border:1px solid rgba(114,111,107,0.28);
+    border:1px solid #394149;
     border-radius:999px;
-    background:rgba(69,66,62,0.8);
-    color:#e2dcd3;
+    background:#292e35;
+    color:#e9edf1;
     font:800 9px/1 Arial,sans-serif;
     cursor:pointer;
   }
