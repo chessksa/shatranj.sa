@@ -177,6 +177,24 @@
   }
   .desktop-board-square.light{background:rgba(255,247,224,.43)!important}
   .desktop-board-square.dark{background:rgba(49,24,11,.36)!important}
+
+  /* Player-selected colors apply to the canonical main board and active games.
+     The original Wood 4 texture remains unchanged for the default theme. */
+  body.desktop-board-workspace #homeBoardPreview[data-board-theme]:not([data-board-theme="shatranj"])
+  .desktop-board-grid{
+    background:var(--board-light)!important;
+    background-image:none!important;
+  }
+  body.desktop-board-workspace #homeBoardPreview[data-board-theme]:not([data-board-theme="shatranj"])
+  :is(.desktop-board-square,.variant-square).light{
+    background:var(--board-light)!important;
+    border-color:var(--board-line)!important;
+  }
+  body.desktop-board-workspace #homeBoardPreview[data-board-theme]:not([data-board-theme="shatranj"])
+  :is(.desktop-board-square,.variant-square).dark{
+    background:var(--board-dark)!important;
+    border-color:var(--board-line)!important;
+  }
   /* Prevent historical CSS sprite pseudo-layers from painting on top of current images.
      Restrict to the idle preview; legal move markers in active boards stay untouched. */
   body.desktop-board-workspace #homeBoardPreview.desktop-board-preview:not(.inline-play-active):not(.inline-computer-active):not(.inline-puzzle-active):not(.inline-learn-active):not(.inline-tournament-spectator) .desktop-board-square::after,
