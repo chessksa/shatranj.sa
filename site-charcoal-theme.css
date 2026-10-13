@@ -822,9 +822,6 @@ html body.desktop-board-workspace .desktop-dashboard-home .desktop-live-stat{
 html body.desktop-board-workspace .desktop-dashboard-home .desktop-live-stat::before{
   opacity:.92;
 }
-html body.desktop-board-workspace .desktop-dashboard-home .desktop-live-stat .desktop-live-icon{
-  color:var(--live-accent)!important;
-}
 html body.desktop-board-workspace .desktop-dashboard-home .desktop-live-stat strong{
   color:#f4f8fb!important;
 }
