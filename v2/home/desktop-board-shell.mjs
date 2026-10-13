@@ -298,6 +298,8 @@ if(desktop.matches && document.querySelector('#homeHero')){
     if(local)item.type='button';
     else item.href=href;
     item.dataset.desktopNav=id;
+    item.setAttribute('aria-label',label);
+    item.title=label;
     item.innerHTML='<span class="desktop-home-nav-icon">'+sidebarIcon(icon)+'</span><span class="desktop-home-nav-label">'+label+'</span>';
     return item;
   }
@@ -313,29 +315,6 @@ if(desktop.matches && document.querySelector('#homeHero')){
     sidebar.querySelector('.desktop-member-card')?.remove();
     sidebar.querySelector('.desktop-sidebar-bottom')?.remove();
     sidebar.querySelector('.desktop-sidebar-footer')?.remove();
-
-    const brand=document.createElement('div');
-    brand.className='desktop-sidebar-brand';
-    brand.innerHTML='<span class="desktop-sidebar-brand-mark" aria-hidden="true">♚</span><strong>شطرنج العرب</strong>';
-    sidebar.insertBefore(brand,nav);
-
-    const member=document.createElement('section');
-    member.className='desktop-member-card';
-    member.innerHTML=[
-      '<a class="desktop-member-profile" href="profile.html" aria-label="عرض الملف الشخصي داخل الواجهة">',
-      '<span class="desktop-member-avatar-wrap">',
-      '<img id="desktopMemberAvatar" class="desktop-member-avatar" alt="" hidden>',
-      '<span id="desktopMemberFallback" class="desktop-member-fallback">♞</span>',
-      '<i class="desktop-member-online-dot" aria-hidden="true"></i></span>',
-      '<span class="desktop-member-identity">',
-      '<strong id="desktopMemberName" class="desktop-member-name">العضو</strong>',
-      '<small id="desktopMemberUsername" class="desktop-member-username" dir="ltr" hidden></small>',
-      '<small id="desktopMemberLocation" class="desktop-member-location">—</small>',
-      '<span class="desktop-member-score" aria-label="نقاط اللاعب"><b id="desktopMemberRating">1500</b><span class="desktop-member-score-star" aria-hidden="true">★</span></span>',
-      '</span></a>',
-      '<span class="desktop-member-status" id="desktopMemberStatus" hidden><i aria-hidden="true"></i><span>متصل الآن</span></span>'
-    ].join('');
-    sidebar.insertBefore(member,nav);
 
     // The main navigation now includes only primary sections; game modes live under Play Now.
     nav.replaceChildren(
@@ -356,6 +335,8 @@ if(desktop.matches && document.querySelector('#homeHero')){
     logout.type='button';
     logout.className='desktop-sidebar-logout';
     logout.dataset.desktopAction='logout';
+    logout.setAttribute('aria-label','تسجيل الخروج');
+    logout.title='تسجيل الخروج';
     logout.innerHTML='<span class="desktop-home-nav-icon">'+sidebarIcon('logout')+'</span><span>تسجيل الخروج</span>';
     bottom.append(settings,admin,logout);
     sidebar.append(bottom);
@@ -425,6 +406,26 @@ if(desktop.matches && document.querySelector('#homeHero')){
         <header class="desktop-dashboard-view-head"><strong id="desktopDashboardViewTitle">الترتيب</strong><button id="desktopDashboardBack" type="button">الرئيسية</button></header>
         <div id="desktopDashboardViewBody" class="desktop-dashboard-view-body"></div>
       </section>`;
+
+    // A single player identity row inside the wider center panel, above its statistics.
+    const member=document.createElement('section');
+    member.className='desktop-member-card';
+    member.innerHTML=[
+      '<a class="desktop-member-profile" href="profile.html" aria-label="عرض الملف الشخصي">',
+      '<span class="desktop-member-avatar-wrap">',
+      '<img id="desktopMemberAvatar" class="desktop-member-avatar" alt="" hidden>',
+      '<span id="desktopMemberFallback" class="desktop-member-fallback">♞</span>',
+      '<i class="desktop-member-online-dot" aria-hidden="true"></i></span>',
+      '<span class="desktop-member-identity">',
+      '<strong id="desktopMemberName" class="desktop-member-name">العضو</strong>',
+      '<small id="desktopMemberUsername" class="desktop-member-username" dir="ltr" hidden></small>',
+      '</span>',
+      '<span class="desktop-member-score" aria-label="نقاط اللاعب"><small>النقاط</small><b id="desktopMemberRating">1500</b></span>',
+      '<span id="desktopMemberFlag" class="desktop-member-flag" role="img" aria-label="الدولة">🌐</span>',
+      '</a>',
+      '<span class="desktop-member-status" id="desktopMemberStatus" hidden><i aria-hidden="true"></i><span>متصل الآن</span></span>'
+    ].join('');
+    column.prepend(member);
     document.body.appendChild(column);
     column.querySelector('#desktopDashboardBack').addEventListener('click',()=>showDashboard('home'));
   }
@@ -979,13 +980,12 @@ if(desktop.matches && document.querySelector('#homeHero')){
     member?.classList.toggle('is-guest',!signedIn);
 
     const countryRaw=document.getElementById('accountRegion')?.textContent?.trim()||'';
-    const cityRaw=document.getElementById('accountCity')?.textContent?.trim()||'';
     const country=signedIn&&countryRaw&&countryRaw!=='—'?countryRaw:'';
-    const city=signedIn&&cityRaw&&cityRaw!=='—'?cityRaw:'';
-    const location=document.getElementById('desktopMemberLocation');
-    if(location){
-      location.textContent=[city,country].filter(Boolean).join('، ')||'—';
-      location.hidden=!signedIn;
+    const flag=document.getElementById('desktopMemberFlag');
+    if(flag){
+      flag.textContent=countryFlag(country);
+      flag.title=country||'الدولة';
+      flag.setAttribute('aria-label',country||'الدولة');
     }
     setMemberPresence(signedIn,lastPresenceSeenAt);
 
