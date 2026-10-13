@@ -13,6 +13,7 @@ import {
   offerDraw,
   respondDraw,
   timeoutGame,
+  supabaseClient,
 } from '../play/api.js?v=20261010-play-connection-v1';
 import { remainingAt, formatClock, isFinalMinute } from '../play/clock.mjs';
 import { normalizeGameState } from '../play/state.mjs';
@@ -59,6 +60,11 @@ let board=null;
 let panel=null;
 let opponentName=null;
 let opponentMeta=null;
+let ownAvatar=null;
+let ownAvatarFallback=null;
+let opponentAvatar=null;
+let opponentAvatarFallback=null;
+let avatarWatcher=null;
 let searchStatus=null;
 let topClock=null;
 let bottomClock=null;
@@ -157,6 +163,10 @@ function ensurePanel(){
     panel.hidden=true;
     panel.innerHTML=`
       <section class="inline-play-player-card inline-play-opponent-card">
+        <span class="inline-play-player-avatar" aria-label="الصورة الرمزية للخصم">
+          <img id="inlinePlayOpponentAvatar" alt="صورة الخصم" hidden>
+          <span id="inlinePlayOpponentFallback" class="inline-play-avatar-fallback" aria-hidden="true">♟</span>
+        </span>
         <div class="inline-play-player-copy">
           <a id="inlinePlayOpponentName" class="inline-play-player-name">بانتظار الخصم</a>
           <span id="inlinePlayOpponentMeta" class="inline-play-player-meta">—</span>
@@ -182,6 +192,10 @@ function ensurePanel(){
       </section>
 
       <section class="inline-play-player-card inline-play-current-card">
+        <span class="inline-play-player-avatar" aria-label="الصورة الرمزية للاعب">
+          <img id="inlinePlayPlayerAvatar" alt="صورتك الشخصية" hidden>
+          <span id="inlinePlayPlayerFallback" class="inline-play-avatar-fallback" aria-hidden="true">♟</span>
+        </span>
         <div class="inline-play-player-copy">
           <a id="inlinePlayPlayerName" class="inline-play-player-name">جارٍ التحميل</a>
           <span id="inlinePlayPlayerMeta" class="inline-play-player-meta">النقاط —</span>
@@ -194,6 +208,10 @@ function ensurePanel(){
 
   opponentName=panel.querySelector('#inlinePlayOpponentName');
   opponentMeta=panel.querySelector('#inlinePlayOpponentMeta');
+  ownAvatar=panel.querySelector('#inlinePlayPlayerAvatar');
+  ownAvatarFallback=panel.querySelector('#inlinePlayPlayerFallback');
+  opponentAvatar=panel.querySelector('#inlinePlayOpponentAvatar');
+  opponentAvatarFallback=panel.querySelector('#inlinePlayOpponentFallback');
   searchStatus=panel.querySelector('#inlinePlayStatus');
   topClock=panel.querySelector('#inlinePlayClockBlack');
   bottomClock=panel.querySelector('#inlinePlayClockWhite');
@@ -236,7 +254,9 @@ function setStatus(message,{searching=false,error=false}={}){
 function setSelectedMinutes(minutes){
   selectedMinutes=validMinutes.includes(Number(minutes))?Number(minutes):10;
   quickTimeButtons.forEach(button=>{
-    button.classList.toggle('active',Number(button.dataset.inlineMinutes)===selectedMinutes);
+    const isSelected=Number(button.dataset.inlineMinutes)===selectedMinutes;
+    button.classList.toggle('active',isSelected);
+    button.setAttribute('aria-pressed',String(isSelected));
   });
   if(!currentGame&&topClock&&bottomClock){
     const value=selectedMinutes*60*1000;
@@ -274,12 +294,70 @@ function renderPosition(fen=START_FEN,color=orientation){
   updateSelectableSquares();
 }
 
+
+function playerInitial(value){
+  const first=String(value||'').trim().replace(/^@/,'').charAt(0);
+  return first ? first.toUpperCase() : '♟';
+}
+
+function avatarPublicUrl(playerId){
+  if(!playerId)return '';
+  try{
+    return supabaseClient().storage.from('avatars')
+      .getPublicUrl(`${playerId}/avatar.webp`).data.publicUrl||'';
+  }catch{return '';}
+}
+
+// A failed/missing image never leaves the broken-image glyph in the player card.
+function setPlayerAvatar(image,fallback,src,{playerId='',initial='♟'}={}){
+  if(!image||!fallback)return;
+  fallback.textContent=playerInitial(initial);
+  const resolved=String(src||'');
+  if(image.dataset.avatarPlayer===String(playerId)&&image.dataset.avatarSource===resolved)return;
+  image.dataset.avatarPlayer=String(playerId);
+  image.dataset.avatarSource=resolved;
+  image.hidden=true;
+  fallback.hidden=false;
+  image.onload=()=>{
+    if(image.dataset.avatarSource!==resolved)return;
+    image.hidden=false;
+    fallback.hidden=true;
+  };
+  image.onerror=()=>{
+    if(image.dataset.avatarSource!==resolved)return;
+    image.hidden=true;
+    fallback.hidden=false;
+  };
+  if(resolved)image.src=resolved;
+  else image.removeAttribute('src');
+}
+
+function syncOwnAvatar(){
+  if(!currentPlayer)return;
+  const header=document.getElementById('headerMemberAvatar');
+  // Reuse the account's working image URL, including legacy-avatar fallback.
+  const src=header?.getAttribute('src')||avatarPublicUrl(currentPlayer.id);
+  setPlayerAvatar(ownAvatar,ownAvatarFallback,src,{
+    playerId:currentPlayer.id,initial:currentPlayer.name
+  });
+}
+function watchOwnAvatar(){
+  avatarWatcher?.disconnect();
+  const header=document.getElementById('headerMemberAvatar');
+  if(header){
+    avatarWatcher=new MutationObserver(syncOwnAvatar);
+    avatarWatcher.observe(header,{attributes:true,attributeFilter:['src','hidden']});
+  }
+  syncOwnAvatar();
+}
+
 function updateIdentity(){
   if(!currentPlayer||!playerName||!playerMeta) return;
   playerName.textContent=currentPlayer.name||'اللاعب';
   playerName.href=`player.html?id=${encodeURIComponent(currentPlayer.id)}`;
   const city=currentPlayer.city?` · ${currentPlayer.city}`:'';
   playerMeta.textContent=`النقاط ${Number(currentPlayer.rating??1500)}${city}`;
+  syncOwnAvatar();
 }
 
 function gameColor(){
@@ -305,6 +383,7 @@ function resetOpponent(){
     opponentName.removeAttribute('href');
   }
   if(opponentMeta) opponentMeta.textContent='—';
+  setPlayerAvatar(opponentAvatar,opponentAvatarFallback,'',{initial:'♟'});
 }
 
 function updateOpponent(){
@@ -316,6 +395,7 @@ function updateOpponent(){
   opponentName.textContent=name||'الخصم';
   if(id) opponentName.href=`player.html?id=${encodeURIComponent(id)}`;
   opponentMeta.textContent=`النقاط ${Number(rating??1500)}`;
+  setPlayerAvatar(opponentAvatar,opponentAvatarFallback,avatarPublicUrl(id),{playerId:id,initial:name||'الخصم'});
 }
 
 function opponentOfferedDraw(){
@@ -693,6 +773,7 @@ async function initializeIdentity(){
   }
   identityReady=true;
   updateIdentity();
+  watchOwnAvatar();
   if(searchButton) searchButton.disabled=false;
   updateControls();
   return true;
@@ -727,6 +808,7 @@ async function enterInlinePlay({gameId=null,minutes=selectedMinutes,autoStart=fa
   setActiveNav('play');
 
   bindPanelOnce();
+  if(currentPlayer)watchOwnAvatar();
   setSelectedMinutes(minutes);
   resetOpponent();
   renderPosition(currentGame?.fen||START_FEN,currentGame?orientation:'w');
@@ -759,6 +841,8 @@ async function enterInlinePlay({gameId=null,minutes=selectedMinutes,autoStart=fa
 
 function exitInlinePlay(){
   if(!active) return;
+  avatarWatcher?.disconnect();
+  avatarWatcher=null;
   active=false;
   ++playGeneration;
   document.body.classList.remove('desktop-inline-play-active');
