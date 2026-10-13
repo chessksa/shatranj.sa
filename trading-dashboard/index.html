@@ -5,7 +5,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <meta name="theme-color" content="#101214">
   <title>MAD HUNTER X | مركز مراقبة الصفقات</title>
-  <link rel="stylesheet" href="/style.css?v=5">
+  <link rel="stylesheet" href="/style.css?v=6">
 </head>
 <body>
 <div class="monitor">
@@ -14,6 +14,11 @@
       <div class="brand" title="MAD HUNTER X — مراقبة التداول الفوري">
         <span class="brand-mark" aria-hidden="true">♞</span>
         <div class="brand-label"><strong>MAD HUNTER <span>X</span></strong><small>مراقبة الصفقات</small></div>
+      </div>
+<div class="header-meta" aria-label="معلومات التحديث والمراقبة">
+        <span class="meta-item meta-update"><span class="meta-icon" aria-hidden="true">◷</span><span id="timeStatus" aria-live="polite">آخر تحديث: —</span></span>
+        <span class="meta-item meta-version"><span class="meta-icon" aria-hidden="true">⬡</span><span id="uiVersion" title="التحديثات عبر GitHub">الواجهة: محلية</span></span>
+        <span class="meta-item meta-live" title="مراقبة محلية؛ لا تُرسل بيانات التداول إلى GitHub"><span class="meta-icon" aria-hidden="true">◉</span><span>مراقبة مباشرة</span></span>
       </div>
       <div class="system-status" aria-label="حالة الاتصالات والتداول">
         <span class="status-pill" id="engineStatus"><i class="led"></i> فحص البوت</span>
@@ -35,7 +40,7 @@
       <div class="summary-item"><span class="summary-icon" aria-hidden="true">≈</span><div class="summary-text"><span class="summary-label">الربح / الخسارة العائمة</span><strong id="unrealizedPnl">—</strong><small class="detail">تقديري · لا يشمل رسوم الخروج</small></div></div>
       <div class="summary-item performance-item"><span class="summary-icon" aria-hidden="true">◎</span><div class="summary-text"><span class="summary-label">نسبة الصفقات الرابحة</span><strong id="winRate">—</strong><small class="detail">رابحة <b id="winsCount">—</b> <span class="stat-separator">/</span> خاسرة <b id="lossesCount">—</b></small></div></div>
     </div>
-    <div class="header-meta"><span id="timeStatus" aria-live="polite">آخر تحديث: —</span><span class="meta-sep">•</span><span id="uiVersion" title="التحديثات عبر GitHub">الواجهة: محلية</span><span class="meta-safety">مراقبة مباشرة · لا تُرسل بيانات التداول إلى GitHub</span></div>
+    
     <aside id="eventsPanel" class="events-popover" aria-label="سجل تحركات البوت" hidden>
       <div class="events-popover-head"><h2>أحدث تحركات البوت</h2><button type="button" id="closeEvents" aria-label="إغلاق السجل">×</button></div>
       <div class="events" id="recentEvents"><div class="blank">بانتظار سجل البوت...</div></div>
