@@ -99,9 +99,10 @@
   }
 
   .inline-learn-filters button.active{
-    border-color:#e2dcd3;
-    background:linear-gradient(135deg,#e2dcd3,#e2dcd3);
-    color:#302e2b;
+    border:1px solid #66717d;
+    background:#353c45;
+    color:#e9edf1;
+    box-shadow:none;
   }
 
   .inline-learn-list{
