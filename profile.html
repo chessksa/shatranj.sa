@@ -4,18 +4,19 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
 <meta name="theme-color" content="#1a1d21">
-<meta name="shatranj-asset-version" content="20261013-puzzle-profile-mobile-v1">
+<meta name="shatranj-asset-version" content="20261013-profile-graphite-v1">
 <title>لوحة العضو | شطرنج العرب</title>
 <style>
 :root{
-  --profile-bg:#302e2b;--profile-panel:rgba(69,66,62,0.88);
-  --profile-panel-hi:rgba(69,66,62,0.85);--profile-line:rgba(165,162,158,0.27);
-  --profile-gold:#e2dcd3;--profile-text:#e2dcd3;--profile-muted:#b9c9c5;
+  --profile-bg:#1a1d21;
+  --profile-panel:#2d3239;--profile-panel-hi:#363b43;
+  --profile-line:#48515b;
+  --profile-gold:#e9edf1;--profile-text:#e9edf1;--profile-muted:#c3cbd4;
 }
 *{box-sizing:border-box}
 html,body{width:100%;min-width:0;margin:0;min-height:100%;font-family:Arial,sans-serif}
-html{background:#302e2b;color:var(--profile-text)}
-body{background:linear-gradient(160deg,#302e2b,#302e2b);color:var(--profile-text);overflow-x:hidden}
+html{background:#1a1d21;color:var(--profile-text)}
+body{background:#1a1d21;color:var(--profile-text);overflow-x:hidden}
 a{color:inherit;text-decoration:none}
 button,input,select{font:inherit}
 button{cursor:pointer}
@@ -175,6 +176,98 @@ button{cursor:pointer}
 </style>
 <link rel="stylesheet" href="v2/site/shell.css?v=20261013-puzzle-profile-mobile-v1" media="(max-width:900px)">
 <link rel="stylesheet" href="site-charcoal-theme.css?v=20261013-monitor-graphite-v1">
+<style>
+/* Profile palette: cohesive graphite raised surfaces and readable metrics.
+   Loaded after shared theme to avoid legacy sepia tiles. */
+html:has(body) { background:#1a1d21!important; }
+html body{
+  background:#1a1d21!important;
+  color:#e9edf1!important;
+}
+html body .shell{max-width:880px}
+html body .profile-block:not(.profile-summary-block){
+  background:linear-gradient(180deg,#363b43 0%,#292e35 100%)!important;
+  border:1px solid #48515b!important;
+  box-shadow:none!important;
+}
+html body .profile-summary-block{
+  background:transparent!important;
+  box-shadow:none!important;
+}
+html body .profile-dashboard-grid :is(.profile-stat,.profile-action){
+  background:linear-gradient(180deg,#363b43 0%,#292e35 100%)!important;
+  border:1px solid #4d5965!important;
+  box-shadow:none!important;
+  color:#e9edf1!important;
+}
+html body .profile-dashboard-grid :is(.profile-stat-label,.profile-action-label){
+  color:#c5ced8!important;
+  line-height:1.2;
+}
+html body .profile-dashboard-grid :is(.profile-stat-value,.profile-action-value){
+  color:#f5f7fa!important;
+  text-shadow:none!important;
+}
+html body .profile-dashboard-grid :is(.profile-action:hover,.profile-action:focus-visible){
+  background:linear-gradient(180deg,#414b56 0%,#303944 100%)!important;
+  border-color:#87a9c6!important;
+  outline:2px solid #87a9c6!important;
+  outline-offset:-2px;
+}
+html body .profile-dashboard-grid [data-result="wins"] .profile-stat-value{color:#7ee0ae!important}
+html body .profile-dashboard-grid [data-result="losses"] .profile-stat-value{color:#f7a6a8!important}
+html body .profile-top-action{
+  background:linear-gradient(180deg,#363b43,#292e35)!important;
+  border:1px solid #52616f!important;
+  color:#e9edf1!important;
+  box-shadow:none!important;
+}
+html body .profile-top-action .profile-tool-icon{stroke:#9cc7f0!important}
+html body .profile-top-action.danger .profile-tool-icon{stroke:#efa1a1!important}
+html body .profile-top-action:hover,html body .profile-top-action:focus-visible{
+  background:#3c4651!important;
+  border-color:#8bb4d5!important;
+  outline:2px solid #8bb4d5!important;
+  outline-offset:-2px;
+}
+html body .profile-games-title{color:#e9edf1!important}
+html body .profile-games-table{
+  border:1px solid #4c5763!important;
+}
+html body .profile-games-table thead th{
+  background:#343f4a!important;
+  color:#eaf0f6!important;
+  border:1px solid #566677!important;
+}
+html body .profile-games-table tbody tr td{
+  background:#292f37!important;
+  color:#e9edf1!important;
+  border:1px solid #434f5a!important;
+}
+html body .profile-games-table tbody tr:nth-child(even) td{background:#323b45!important}
+html body .profile-games-table tbody tr:hover td{background:#3b4854!important}
+html body .profile-game-name,html body .profile-game-kind{color:#e9edf1!important}
+html body .profile-game-date{color:#c9d2dd!important}
+html body .profile-game-result.win{background:#53d496!important}
+html body .profile-game-result.loss{background:#ec8a8e!important}
+html body .profile-game-result.draw{background:#bcc7d3!important}
+html body :is(.modal-card,.toast){
+  background:#2d3239!important;
+  border:1px solid #586675!important;
+  color:#e9edf1!important;
+}
+html body .modal-card h3{color:#e9edf1!important}
+html body .modal-card p{color:#c5ced8!important}
+html body :is(.modal-card .select,.modal-card .btn:not(.gold)){
+  background:#20262d!important;border-color:#566371!important;color:#e9edf1!important;
+}
+html body .modal-card .btn.gold{
+  background:#9bc6fd!important;
+  border-color:#9bc6fd!important;
+  color:#1b2631!important;
+}
+html body .toast.error{border-color:#ed9999!important}
+</style>
 <style>
 /* The account page uses the same fixed bottom navigation as the other mobile pages. */
 @media(max-width:900px){
