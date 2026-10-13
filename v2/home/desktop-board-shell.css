@@ -1080,16 +1080,16 @@
     background:rgba(69,66,62,0.88);
   }
   .desktop-play-online-choice h3{
-    margin:0;text-align:right;font-size:16px;line-height:1.3;color:#e2dcd3;font-weight:900;
+    margin:0;width:100%;text-align:center;font-size:16px;line-height:1.3;color:#e9edf1;font-weight:900;
   }
   .desktop-play-online-choice p{
-    margin:0;color:#c8d6d2;font-size:12px;font-weight:700;
+    margin:0;width:100%;text-align:center;color:#c8d6d2;font-size:12px;font-weight:700;
   }
   .desktop-play-time-options{
     display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:6px;min-width:0;
   }
   .desktop-play-time-options button{
-    min-width:0;min-height:42px;padding:7px 3px;
+    min-width:0;min-height:42px;padding:7px 3px;text-align:center;
     border:1px solid rgba(114,111,107,0.42);border-radius:8px;
     background:rgba(255,255,255,.075);color:#e2dcd3;
     font-size:clamp(11px,.85vw,14px);font-weight:900;white-space:nowrap;
@@ -1098,9 +1098,9 @@
   .desktop-play-time-options button:hover{background:rgba(114,111,107,0.2)}
   .desktop-play-time-options button.is-selected,
   .desktop-play-time-options button.is-selected:hover{
-    border:1px solid #66717d!important;
+    border:1px solid #aebdcc!important;
     background:#353c45!important;
-    box-shadow:none!important;
+    box-shadow:inset 0 0 0 1px rgba(174,189,204,.24)!important;
     outline:none!important;
   }
   .desktop-play-primary{
@@ -1132,9 +1132,9 @@
   }
   .desktop-play-choice-list > button.is-selected,
   .desktop-play-choice-list > button.is-selected:hover{
-    border:1px solid #66717d!important;
+    border:1px solid #aebdcc!important;
     background:#353c45!important;
-    box-shadow:none!important;
+    box-shadow:inset 0 0 0 1px rgba(174,189,204,.24)!important;
     outline:none!important;
   }
   .desktop-play-choice-list > button.is-selected .desktop-play-choice-icon{color:#e2dcd3}
