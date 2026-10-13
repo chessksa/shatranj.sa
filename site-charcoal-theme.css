@@ -1,55 +1,55 @@
-/* Shatranj Al Arab / unified charcoal palette / 2026-10-12.
+/* Shatranj Al Arab / MAD HUNTER X monitoring-center graphite palette / 2026-10-13.
    Pixel samples from approved image:
-   canvas #1b1c1a, separator #222320, rail #292a27,
-   raised surface top #363833 -> bottom #252623.
+   canvas #1a1d21, separator #202429, rail #292e35,
+   raised surface top #363b43 -> bottom #22262b.
    UI-only rules: chess boards, squares and piece assets are untouched. */
 :root {
   color-scheme:dark;
-  --coal-bg:#1b1c1a;
-  --coal-separator:#222320;
-  --coal-rail:#292a27;
-  --coal-card:#292b28;
-  --coal-top:#363833;
-  --coal-bottom:#252623;
-  --coal-border:#484a43;
-  --coal-border-soft:#40423d;
-  --coal-text:#f5f4f0;
-  --coal-muted:#cbc9c3;
-  --coal-highlight:#dcd6cd;
-  --coal-raise:linear-gradient(180deg,#363833 0%,#2f312d 48%,#252623 100%);
-  --coal-rail-gradient:linear-gradient(180deg,#292a27 0%,#2f2d2a 100%);
+  --coal-bg:#1a1d21;
+  --coal-separator:#202429;
+  --coal-rail:#292e35;
+  --coal-card:#2d3239;
+  --coal-top:#363b43;
+  --coal-bottom:#22262b;
+  --coal-border:#48515b;
+  --coal-border-soft:#3b444e;
+  --coal-text:#e9edf1;
+  --coal-muted:#bfc6cf;
+  --coal-highlight:#d5dbe2;
+  --coal-raise:linear-gradient(180deg,#363b43 0%,#2e333a 48%,#22262b 100%);
+  --coal-rail-gradient:linear-gradient(180deg,#292e35 0%,#272c32 100%);
 
   /* UI design tokens only, never --board-*, square/piece or board artwork. */
-  --hero-deep:#222320; --hero-deeper:#1b1c1a;
-  --hero-panel:#292b28; --hero-panel-2:#292a27;
-  --hero-gold:#dcd6cd; --hero-gold-2:#ebe8e2;
-  --hero-cream:#f5f4f0; --hero-muted:#cbc9c3;
-  --hero-line:#484a43; --hero-cyan-line:#40423d;
-  --shell-bg:#1b1c1a; --shell-bg-2:#222320;
-  --shell-panel:#292b28; --shell-panel-2:#292a27;
-  --shell-gold:#dcd6cd; --shell-cream:#f5f4f0;
-  --shell-muted:#cbc9c3; --shell-line:#484a43;
-  --p-bg:#1b1c1a; --p-deep:#222320;
-  --p-panel:#292b28; --p-panel2:#292a27;
-  --p-gold:#dcd6cd; --p-gold2:#ebe8e2;
-  --p-cream:#f5f4f0; --p-muted:#cbc9c3; --p-line:#484a43;
-  --bg:#1b1c1a; --bg1:#1b1c1a; --bg2:#222320; --bg3:#292a27;
-  --panel:#292b28; --panel2:#292a27;
-  --surface:#292b28; --surface-soft:#292a27;
-  --text:#f5f4f0; --muted:#cbc9c3; --line:#484a43;
-  --gold:#dcd6cd; --gold2:#ebe8e2;
-  --green-900:#1b1c1a; --green-800:#222320; --green-700:#292a27;
-  --green-600:#292b28; --green-500:#363833;
-  --gold-500:#dcd6cd; --gold-200:#ebe8e2;
-  --mobile-workspace-gold:#dcd6cd; --mobile-workspace-cream:#f5f4f0;
-  --mobile-workspace-panel:#292b28; --mobile-workspace-line:#484a43;
-  --v2-petrol-deep:#1b1c1a; --v2-petrol:#222320;
-  --v2-panel:#292b28; --v2-panel-soft:#292a27;
-  --v2-text:#f5f4f0; --v2-muted:#cbc9c3;
-  --v2-clock:#292a27; --v2-clock-text:#f5f4f0;
+  --hero-deep:#202429; --hero-deeper:#1a1d21;
+  --hero-panel:#2d3239; --hero-panel-2:#292e35;
+  --hero-gold:#d5dbe2; --hero-gold-2:#e4e8ed;
+  --hero-cream:#e9edf1; --hero-muted:#bfc6cf;
+  --hero-line:#48515b; --hero-cyan-line:#3b444e;
+  --shell-bg:#1a1d21; --shell-bg-2:#202429;
+  --shell-panel:#2d3239; --shell-panel-2:#292e35;
+  --shell-gold:#d5dbe2; --shell-cream:#e9edf1;
+  --shell-muted:#bfc6cf; --shell-line:#48515b;
+  --p-bg:#1a1d21; --p-deep:#202429;
+  --p-panel:#2d3239; --p-panel2:#292e35;
+  --p-gold:#d5dbe2; --p-gold2:#e4e8ed;
+  --p-cream:#e9edf1; --p-muted:#bfc6cf; --p-line:#48515b;
+  --bg:#1a1d21; --bg1:#1a1d21; --bg2:#202429; --bg3:#292e35;
+  --panel:#2d3239; --panel2:#292e35;
+  --surface:#2d3239; --surface-soft:#292e35;
+  --text:#e9edf1; --muted:#bfc6cf; --line:#48515b;
+  --gold:#d5dbe2; --gold2:#e4e8ed;
+  --green-900:#1a1d21; --green-800:#202429; --green-700:#292e35;
+  --green-600:#2d3239; --green-500:#363b43;
+  --gold-500:#d5dbe2; --gold-200:#e4e8ed;
+  --mobile-workspace-gold:#d5dbe2; --mobile-workspace-cream:#e9edf1;
+  --mobile-workspace-panel:#2d3239; --mobile-workspace-line:#48515b;
+  --v2-petrol-deep:#1a1d21; --v2-petrol:#202429;
+  --v2-panel:#2d3239; --v2-panel-soft:#292e35;
+  --v2-text:#e9edf1; --v2-muted:#bfc6cf;
+  --v2-clock:#292e35; --v2-clock-text:#e9edf1;
 }
 html,html:has(body.mobile-board-workspace),html:has(body.live-game){
-  background:#1b1c1a!important;color-scheme:dark!important;
+  background:#1a1d21!important;color-scheme:dark!important;
 }
 html body,
 html body.home-signed-in,
@@ -62,13 +62,13 @@ html body.pregame.reference-play-layout,
 html body.computer-game,
 html body.admin-page,
 html body.admin-embedded{
-  background:#1b1c1a!important;background-image:none!important;color:#f5f4f0!important;
+  background:#1a1d21!important;background-image:none!important;color:#e9edf1!important;
 }
 html body #gamePage,
 html body.live-game #gamePage,
 html body.pregame.reference-play-layout #gamePage,
 html body #mobileFixedWorkspace{
-  background:#1b1c1a!important;background-image:none!important;color:#f5f4f0!important;
+  background:#1a1d21!important;background-image:none!important;color:#e9edf1!important;
 }
 /* Screen frames, header, ticker and fixed navigation. */
 html body :is(.home-header,.site-header,.v2-global-sidebar,.v2-mobile-nav,
@@ -87,8 +87,8 @@ html body #mobileFixedWorkspace .mfw-header{
 }
 html body :is(.welcome-ticker,#welcomeTicker,#tournamentResultsTicker,
  .news-ticker,.chess-news-ticker){
-  background:#222320!important;background-image:none!important;
-  border-color:#40423d!important;color:#ebe8e2!important;
+  background:#202429!important;background-image:none!important;
+  border-color:#3b444e!important;color:#e4e8ed!important;
 }
 html body :is(.desktop-dashboard-column,.desktop-board-stage,
  #homeHero,.home-hero,#ranking,.platform-shell,.admin-shell,.page,
@@ -131,7 +131,7 @@ html body .platform-card,html body .desktop-move-notebook{
 html body :is(.desktop-dashboard-view-head,.mfw-panel-head,.mfw-auth-head,
  .panel-header,.table-head,.move-notebook-columns,.move-notebook-header,
  .admin-inline-header,.toolbar,.tournament-table-head){
-  background:#292a27!important;background-image:none!important;
+  background:#292e35!important;background-image:none!important;
   border-color:var(--coal-border-soft)!important;
 }
 html body.desktop-board-workspace .desktop-champion-card[data-champion="site"],
@@ -149,7 +149,7 @@ html body :is(.desktop-home-nav-link,.v2-global-link,.v2-mobile-link,
  .v2-mobile-more-link,.desktop-play-choice-list>button,.desktop-play-time-options button,
  .mfw-tab,.mobile-workspace-tab,.admin-inline-tab,.tournament-tab,
  .auth-tab,.platform-tab,.nav-item,.nav-link):hover{
-  background:#383a36!important;color:#fff!important;
+  background:#363c45!important;color:#fff!important;
 }
 html body :is(.desktop-home-nav-link.active,.v2-global-link.active,
  .v2-mobile-link.active,.v2-mobile-more-link.active,.mfw-tab.active,
@@ -157,13 +157,13 @@ html body :is(.desktop-home-nav-link.active,.v2-global-link.active,
  .desktop-play-time-options button.is-selected,.desktop-play-choice-list>button.is-selected,
  .auth-tab.active,.platform-tab.active,.nav-item.active,.nav-link.active,
  .desktop-home-nav-link[aria-current="page"]){
-  background:#393b37!important;background-image:none!important;
-  color:#fff!important;border-color:#6b6e66!important;box-shadow:none!important;
+  background:#353c45!important;background-image:none!important;
+  color:#fff!important;border-color:#66717d!important;box-shadow:none!important;
 }
 html body.desktop-board-workspace .v2-global-sidebar.desktop-sidebar-refined
  :is(.desktop-home-nav-link.active,.desktop-home-nav-link[aria-current="page"]){
-  background:#393b37!important;background-image:none!important;
-  border-color:#6b6e66!important;color:#fff!important;box-shadow:none!important;
+  background:#353c45!important;background-image:none!important;
+  border-color:#66717d!important;color:#fff!important;box-shadow:none!important;
 }
 html body.desktop-board-workspace :is(.desktop-sidebar-brand strong,
  .desktop-sidebar-brand-mark,.desktop-member-score-star,.desktop-champion-title,
@@ -172,7 +172,7 @@ html body.desktop-board-workspace :is(.desktop-sidebar-brand strong,
  .desktop-stat-icon.gold,.desktop-stat-icon.green,.desktop-stat-icon.cyan,
  .desktop-home-nav-link.active .desktop-home-nav-icon,
  .desktop-home-nav-link.active .desktop-home-nav-label){
-  color:#ebe8e2!important;text-shadow:none!important;
+  color:#e4e8ed!important;text-shadow:none!important;
 }
 /* Text hierarchy, ranking, badges and table strips. */
 html body :is(h1,h2,h3,h4,h5,h6,strong,b,legend){color:var(--coal-text)}
@@ -197,13 +197,13 @@ html body :is(.ranking-filter-control,.ranking-filters select,.table-card,
 }
 html body :is(table,thead,tbody,tr,td,th){border-color:var(--coal-border-soft)!important}
 html body :is(th,thead th,.table-head,.tournament-table-head){
-  background:#292a27!important;color:var(--coal-text)!important;
+  background:#292e35!important;color:var(--coal-text)!important;
 }
 html body :is(tbody tr:nth-child(even),.move-notebook-row:nth-child(even)){
-  background:rgba(72,70,68,.21)!important;
+  background:rgba(117,131,147,.21)!important;
 }
 html body :is(tbody tr:hover,.mfw-ranking-grid tbody tr:hover){
-  background:rgba(72,70,68,.42)!important;
+  background:rgba(117,131,147,.42)!important;
 }
 html body.desktop-board-workspace .desktop-dashboard-view-body #ranking
  :is(.head,.ranking-filter-control,.ranking-filters select,.table-card,th,td,.rank-badge),
@@ -212,7 +212,7 @@ html body #mobileFixedWorkspace .mfw-ranking-grid :is(th,td){
 }
 html body.desktop-board-workspace .desktop-dashboard-view-body #ranking :is(th,thead th),
 html body #mobileFixedWorkspace .mfw-ranking-grid thead th{
-  background:#292a27!important;
+  background:#292e35!important;
 }
 html body.desktop-board-workspace .desktop-dashboard-view-body #ranking tbody tr:not(.ranking-placeholder),
 html body #mobileFixedWorkspace .mfw-ranking-grid tbody tr{
@@ -220,7 +220,7 @@ html body #mobileFixedWorkspace .mfw-ranking-grid tbody tr{
 }
 html body.desktop-board-workspace .desktop-dashboard-view-body #ranking tbody tr:not(.ranking-placeholder):nth-child(even),
 html body #mobileFixedWorkspace .mfw-ranking-grid tbody tr:nth-child(even){
-  background:rgba(72,70,68,.24)!important;
+  background:rgba(117,131,147,.24)!important;
 }
 /* Form fields, commands and clocks; NOT the board's clickable square buttons. */
 html body :is(input:not([type="checkbox"]):not([type="radio"]),
@@ -228,10 +228,10 @@ html body :is(input:not([type="checkbox"]):not([type="radio"]),
  .ranking-filters select,.desktop-suggested-time select,
  .inline-puzzle-custom select,.v2-play-setting-grid select,
  .admin-inline-control,.mfw-auth-host input){
-  background:#292a27!important;background-image:none!important;
+  background:#292e35!important;background-image:none!important;
   color:var(--coal-text)!important;border-color:var(--coal-border)!important;
 }
-html body :is(input,select,textarea)::placeholder{color:#a8a39e!important;opacity:1}
+html body :is(input,select,textarea)::placeholder{color:#aab4c0!important;opacity:1}
 html body :is(.btn,.primary,.gold,.platform-btn,.desktop-dashboard-primary-link,
  .desktop-play-primary,.desktop-home-side-card button,.desktop-dashboard-view-head>button,
  .desktop-play-time-options button,.desktop-play-choice-list>button,
@@ -242,7 +242,7 @@ html body :is(.btn,.primary,.gold,.platform-btn,.desktop-dashboard-primary-link,
  .action-btn,.admin-inline-control,.mfw-primary,.mfw-login-btn,
  .mfw-auth-head button,.mfw-auth-host .auth-tab,.mfw-auth-host #loginBtn,
  .mfw-auth-host #signupBtn,.mfw-auth-host #recoveryBtn){
-  background:linear-gradient(180deg,#363833,#292a27)!important;
+  background:linear-gradient(180deg,#363b43,#292e35)!important;
   color:var(--coal-text)!important;border-color:var(--coal-border)!important;
   box-shadow:none!important;
 }
@@ -251,24 +251,24 @@ html body.desktop-board-workspace :is(.desktop-play-primary,.desktop-dashboard-p
 html body #mobileFixedWorkspace :is(.mfw-primary,.mfw-login-btn,
  .mfw-auth-host #loginBtn,.mfw-auth-host #signupBtn),
 html body.pregame.reference-play-layout .opponent-time-option{
-  background:linear-gradient(180deg,#363833,#292a27)!important;
+  background:linear-gradient(180deg,#363b43,#292e35)!important;
   border-color:var(--coal-border)!important;color:var(--coal-text)!important;
 }
 html body :is(.btn,.platform-btn,.desktop-play-primary,.desktop-home-side-card button,
  .inline-play-search-button,.mfw-primary,.opponent-time-option):hover{
-  background:#41433f!important;
+  background:#3c444d!important;
 }
 html body :is(.inline-play-clock,.v2-clock,.clock-box,.player-card .clock,
  .move-notebook-index,.move-notebook-review){
-  background:#222320!important;background-image:none!important;
-  color:#f5f4f0!important;border-color:var(--coal-border)!important;
+  background:#202429!important;background-image:none!important;
+  color:#e9edf1!important;border-color:var(--coal-border)!important;
 }
 html body.live-game .player-card .clock,
 html body.pregame.reference-play-layout .player-card .clock,
 html body.live-game .reference-move-strip,
 html body.live-game .reference-move-strip .move-token.is-last,
 html body .inline-play-clock{
-  background:#222320!important;color:#f5f4f0!important;
+  background:#202429!important;color:#e9edf1!important;
   border-color:var(--coal-border-soft)!important;
 }
 /* Overlays and popovers. */
@@ -282,13 +282,13 @@ html body :is(.modal-content,.modal-card,.dialog-card,.auth-dialog,.auth-card,
  .mfw-auth-dialog,.v2-settings-card,.v2-mobile-more-card,.notification-menu,
  .site-notification-menu,.dropdown-menu){background:var(--coal-raise)!important}
 html body :is(.modal,.auth-modal,.v2-settings-modal,.v2-mobile-more,.mfw-auth-overlay){
-  background:rgba(24,23,22,.78)!important;
+  background:rgba(9,12,16,.78)!important;
 }
-html body .site-notification-bell{border-color:var(--coal-border)!important;color:#f5f4f0!important}
+html body .site-notification-bell{border-color:var(--coal-border)!important;color:#e9edf1!important}
 /* Full-page admin plus middle-column embedded administration. */
 html.admin-embedded body,
 html body .admin-shell,html body .admin-wrapper{
-  background:#1b1c1a!important;color:#f5f4f0!important;
+  background:#1a1d21!important;color:#e9edf1!important;
 }
 html.admin-embedded body :is(.access-gate,.admin-inline-nav,.admin-inline-header,
  .admin-inline-tab,.admin-inline-control,.stat-card,.panel,.toolbar,.table-wrap),
@@ -300,44 +300,44 @@ html body :is(.admin-nav,.admin-sidebar,.admin-main){
   background:var(--coal-raise)!important;
 }
 html.admin-embedded body :is(.admin-inline-nav,.admin-inline-header){
-  background:#292a27!important;
+  background:#292e35!important;
 }
 html.admin-embedded body :is(.stat-card strong,.stat-card.pro-stat strong,
- .admin-inline-header>strong){color:#f5f4f0!important}
+ .admin-inline-header>strong){color:#e9edf1!important}
 /* Same charcoal tone on phone, never overlay the original board/pieces. */
 @media(max-width:900px){
   html body :is(.v2-mobile-nav,.v2-mobile-more-card),
   html body #mobileFixedWorkspace,
   html body.mobile-board-workspace .home-header{
-    background:#1b1c1a!important;border-color:var(--coal-border-soft)!important;
+    background:#1a1d21!important;border-color:var(--coal-border-soft)!important;
   }
   html body #mobileFixedWorkspace .mfw-header,
   html body .v2-mobile-nav{background:var(--coal-rail-gradient)!important}
   html body #mobileFixedWorkspace :is(.mfw-tab.active,.mfw-play-tile-primary,
    .mfw-auth-host .auth-tab.active),
   html body .v2-mobile-link.active{
-    background:#393b37!important;color:#fff!important;
-    border-color:#6b6e66!important;box-shadow:none!important;
+    background:#353c45!important;color:#fff!important;
+    border-color:#66717d!important;box-shadow:none!important;
   }
   html body #mobileFixedWorkspace .mfw-ranking-grid tbody tr.podium-1,
   html body #mobileFixedWorkspace .mfw-ranking-grid tbody tr.podium-2,
   html body #mobileFixedWorkspace .mfw-ranking-grid tbody tr.podium-3{
-    background:rgba(72,70,68,.22)!important;
+    background:rgba(117,131,147,.22)!important;
   }
   html body #mobileFixedWorkspace .mfw-ranking-grid tbody tr
-   :is(.mfw-ranking-place,.mfw-ranking-points){color:#f5f4f0!important}
+   :is(.mfw-ranking-place,.mfw-ranking-points){color:#e9edf1!important}
 }
 /* All .board*, .square*, .piece*, chessboard assets and last-move marks
    remain governed solely by their existing chess styling. */
 
 /* Additional existing standalone screens: none of these selectors are boards or pieces. */
-html body #approvedHomeBoot{background:#1b1c1a!important;color:#f5f4f0!important}
-html body #approvedHomeBoot small{color:#cbc9c3!important}
+html body #approvedHomeBoot{background:#1a1d21!important;color:#e9edf1!important}
+html body #approvedHomeBoot small{color:#bfc6cf!important}
 html body > :is(header,footer),
 html body :is(.site-footer,footer,.topbar,.sidebar,.mobile-top,.page-head,
  .detail-toolbar,.moves-title,.profile-games-title,.tournament-table-head,
  .table-head,.modal-head){
-  background:#292a27!important;background-image:none!important;
+  background:#292e35!important;background-image:none!important;
   border-color:var(--coal-border-soft)!important;color:var(--coal-text)!important;
 }
 html body :is(.hero,.header-box,.watch-box,.hero-box,.register,.form-card,
@@ -357,20 +357,20 @@ html body :is(.quick-icon,.links .play-link,.nav-btn,.back,.back-site,
  .detail-inline-back,.tournament-enter-btn,.modal-actions button,
  .profile-top-action,.settings-save,.settings-title,.select,.field,
  .link-btn,.close-btn,.menu-btn,.show-pass){
-  background:linear-gradient(180deg,#363833,#292a27)!important;
+  background:linear-gradient(180deg,#363b43,#292e35)!important;
   border-color:var(--coal-border)!important;color:var(--coal-text)!important;
   box-shadow:none!important;
 }
 html body :is(.nav-btn.active,.time-option.active,.time-option.selected,
  .tournament-enter-btn.active,.profile-top-action.active,.option.selected){
-  background:#393b37!important;color:#fff!important;
-  border-color:#6b6e66!important;
+  background:#353c45!important;color:#fff!important;
+  border-color:#66717d!important;
 }
 html body :is(.avatar,.avatar.light,.avatar-fallback,.brand-mark,
  .side-brand-mark,.mark,.brand span,.player-rank-badge,.rank-icon,
  .desktop-member-avatar-wrap,.desktop-member-fallback){
-  background-color:#292b28!important;border-color:var(--coal-border)!important;
-  color:#ebe8e2!important;
+  background-color:#2d3239!important;border-color:var(--coal-border)!important;
+  color:#e4e8ed!important;
 }
 html body :is(.sidebar,.access-card,.access-gate,.matchmaking-card,
  .report-card,.profile-block,.section-card,.match-shell,.tournament-table-shell){
@@ -389,17 +389,17 @@ html body :is(.head p,.hero p,.header-box p,.hero-box p,.account-stat small,
   color:var(--coal-muted)!important;
 }
 html body :is(.field,.select,.option select,.option input,.report-card textarea){
-  background:#292a27!important;color:var(--coal-text)!important;
+  background:#292e35!important;color:var(--coal-text)!important;
   border-color:var(--coal-border)!important;
 }
 html body :is(.profile-games-table th,.tournament-table th,
  .match-table th,.table-head,.moves-title){
-  background:#292a27!important;color:#f5f4f0!important;
+  background:#292e35!important;color:#e9edf1!important;
 }
 html body :is(.profile-games-table tbody tr:nth-child(even) td,
  .tournament-row.finished-row,.tournament-row:hover,
  .match-row:hover td,.bracket-match.mine,.player.active){
-  background:rgba(72,70,68,.28)!important;
+  background:rgba(117,131,147,.28)!important;
 }
 html body :is(.profile-games-table td,.tournament-table td,
  .match-table td,.detail-item,.bracket-match,.recent-row){
@@ -407,20 +407,20 @@ html body :is(.profile-games-table td,.tournament-table td,
 }
 html body .tournament-table-scroll::-webkit-scrollbar-track,
 html body .table-wrap::-webkit-scrollbar-track{
-  background:#222320!important;
+  background:#202429!important;
 }
 html body .tournament-table-scroll::-webkit-scrollbar-thumb,
 html body .table-wrap::-webkit-scrollbar-thumb{
-  background:#5b5d56!important;
+  background:#56616e!important;
 }
 /* Inline member profile / embedded tournaments require the same tokens. */
 html.tournament-embedded body,html.embedded-public-profile body,
 html body .profile-games-table,html body .tournament-table{
-  background:#1b1c1a!important;color:#f5f4f0!important;
+  background:#1a1d21!important;color:#e9edf1!important;
 }
 html body .tournament-table-shell .tournament-table-head,
 html body .current-tournaments .tournament-table-head{
-  background:#292a27!important;border-color:var(--coal-border-soft)!important;
+  background:#292e35!important;border-color:var(--coal-border-soft)!important;
 }
 /* Preserve red final-minute clocks and gameplay feedback as functional signals. */
 
@@ -429,20 +429,20 @@ html body .current-tournaments .tournament-table-head{
 /* 2026-10-12 UI audit: inherited gold / petrol remnants.
    Nonboard interface only. Geometry of chessboards and piece imagery unchanged. */
 :root{
-  --notebook-grid-line:rgba(142,139,134,.34);
-  --notebook-header-gold:#484a43;
+  --notebook-grid-line:rgba(113,128,143,.34);
+  --notebook-header-gold:#48515b;
 }
 html body #chessNewsTicker{
-  background:#222320!important;background-image:none!important;
-  border-bottom-color:#484a43!important;color:#f5f4f0!important;
+  background:#202429!important;background-image:none!important;
+  border-bottom-color:#48515b!important;color:#e9edf1!important;
 }
 html body #chessNewsTicker .welcome-ticker-label.chess-news-label{
-  background:linear-gradient(180deg,#363833,#292a27)!important;
-  border:0!important;border-inline-end:1px solid #64615d!important;
-  border-radius:0!important;color:#f5f4f0!important;box-shadow:none!important;
+  background:linear-gradient(180deg,#363b43,#292e35)!important;
+  border:0!important;border-inline-end:1px solid #58616b!important;
+  border-radius:0!important;color:#e9edf1!important;box-shadow:none!important;
 }
 html body #chessNewsTicker :is(.welcome-ticker-viewport,.welcome-ticker-track){
-  background:#222320!important;background-image:none!important;color:#e7e4df!important;
+  background:#202429!important;background-image:none!important;color:#dce2e8!important;
 }
 html body #chessNewsTicker :is(.chess-news-label,.chess-news-item):is(:hover,:focus-visible){
   color:#fff!important;
@@ -450,19 +450,19 @@ html body #chessNewsTicker :is(.chess-news-label,.chess-news-item):is(:hover,:fo
 /* Exactly one understated 1px frame on the outer board container. */
 @media(min-width:901px){
  html body.desktop-board-workspace #homeBoardPreview.desktop-board-preview{
-  border:1px solid #555850!important;border-radius:0!important;
+  border:1px solid #4b5560!important;border-radius:0!important;
   padding:0!important;background:transparent!important;
   outline:none!important;box-shadow:0 4px 14px rgba(0,0,0,.16)!important;
  }
 }
 @media(max-width:900px){
  html body.mobile-board-workspace #homeBoardPreview.mobile-fixed-board{
-  border:1px solid #555850!important;border-radius:0!important;
-  background:linear-gradient(145deg,#393734,#222320)!important;
+  border:1px solid #4b5560!important;border-radius:0!important;
+  background:linear-gradient(145deg,#2a3037,#202429)!important;
   box-shadow:0 4px 14px rgba(0,0,0,.15)!important;
  }
  html body #mobileFixedWorkspace .mfw-board{
-  border:0!important;outline:1px solid #555850!important;
+  border:0!important;outline:1px solid #4b5560!important;
   outline-offset:-1px!important;border-radius:0!important;
  }
 }
@@ -474,13 +474,13 @@ html body :is(.desktop-home-nav-icon,.desktop-home-nav-icon svg,.v2-global-icon,
  .rank-icon,.inline-puzzle-badge,.inline-learn-badge,.inline-computer-label,
  .mobile-workspace-tab i,.mfw-tab i,.site-notification-bell,
  .v5-time-icon,.v5-home-link-icon){
-  color:#f0eee7!important;text-shadow:none!important;
+  color:#d8dfe6!important;text-shadow:none!important;
 }
 html body.desktop-board-workspace :is(.desktop-home-nav-icon,
  .desktop-sidebar-brand strong,.desktop-sidebar-brand-mark,
  .desktop-member-score-star,.desktop-champion-icon,
  .desktop-champion-title,.desktop-stat-icon){
-  color:#f0eee7!important;text-shadow:none!important;
+  color:#d8dfe6!important;text-shadow:none!important;
 }
 html body.desktop-board-workspace .v2-global-sidebar.desktop-sidebar-refined
  .desktop-home-nav-link:is(.active,[aria-current="page"]) .desktop-home-nav-icon{
@@ -488,21 +488,21 @@ html body.desktop-board-workspace .v2-global-sidebar.desktop-sidebar-refined
 }
 html body.desktop-board-workspace .desktop-sidebar-bottom .desktop-sidebar-logout,
 html body.desktop-board-workspace .desktop-sidebar-bottom .desktop-sidebar-logout .desktop-home-nav-icon{
-  color:#d0cac2!important;
+  color:#c7cdd5!important;
 }
 html body .desktop-champion-card:is([data-champion="week"],[data-champion="month"],[data-champion="site"]){
-  --champion-accent:#c9c3b9!important;
+  --champion-accent:#d2d9e0!important;
 }
-html body .desktop-champion-card::before{background:#79746f!important}
+html body .desktop-champion-card::before{background:#687480!important}
 html body .desktop-champion-card:is(:hover,:focus-visible){
-  background:var(--coal-raise)!important;border-color:#817b74!important;
+  background:var(--coal-raise)!important;border-color:#606b75!important;
 }
-html body.desktop-board-workspace .desktop-member-fallback{background-color:#292a27!important}
+html body.desktop-board-workspace .desktop-member-fallback{background-color:#292e35!important}
 html body.desktop-board-workspace :is(.desktop-member-avatar-wrap,.desktop-member-score){
-  background-color:#292a27!important;border-color:#484a43!important;
+  background-color:#292e35!important;border-color:#48515b!important;
 }
 html body.desktop-board-workspace :is(.desktop-member-location,.desktop-member-username){
-  color:#c8c2ba!important;
+  color:#c0c8d1!important;
 }
 /* Old home/header/login backgrounds were not included in the first color pass. */
 html body :is(.hero-stat,.home-feature-card,.account-stat,
@@ -511,62 +511,62 @@ html body :is(.hero-stat,.home-feature-card,.account-stat,
  .hero-computer-btn,.hero-tournaments-btn,.desktop-guest-auth-btn,
  .desktop-guest-auth-signup,.desktop-guest-auth-card,.desktop-auth-dialog,
  .mobile-dashboard-link,.dashboard-link){
-  background:var(--coal-raise)!important;border-color:#484a43!important;
-  color:#f5f4f0!important;box-shadow:none!important;
+  background:var(--coal-raise)!important;border-color:#48515b!important;
+  color:#e9edf1!important;box-shadow:none!important;
 }
 html body .home-hero :is(.hero-play-btn,.hero-computer-btn,
  .hero-tournaments-btn,#homeInviteToggle),
 html body.desktop-board-workspace #desktopGuestAuth
  :is(.desktop-guest-auth-btn,.desktop-guest-auth-signup),
 html body.desktop-board-workspace.desktop-auth-open #register .btn{
-  background:linear-gradient(180deg,#363833,#292a27)!important;
-  border-color:#484a43!important;color:#f5f4f0!important;box-shadow:none!important;
+  background:linear-gradient(180deg,#363b43,#292e35)!important;
+  border-color:#48515b!important;color:#e9edf1!important;box-shadow:none!important;
 }
 html body .home-hero :is(.hero-play-btn::before,.home-board-actions>.btn::before,
  .home-invite-wrap>.btn::before),html body .hero-stat-icon,
 html body .hero-stat strong,html body .compact-member-nav .header-member-points b{
- color:#f0eee7!important;border-color:#484a43!important;
+ color:#d8dfe6!important;border-color:#48515b!important;
 }
 html body .header-member-avatar{
-  background-color:#292a27!important;border-color:#484a43!important;
+  background-color:#292e35!important;border-color:#48515b!important;
 }
 /* Remaining phone icon tiles, badges, filters and miniature panels. */
 html body #mobileFixedWorkspace :is(.mfw-play-tile i,.mfw-stat b,.mfw-avatar){
-  color:#f0eee7!important;background-color:#292a27!important;
-  border-color:#484a43!important;
+  color:#d8dfe6!important;background-color:#292e35!important;
+  border-color:#48515b!important;
 }
 html body #mobileFixedWorkspace .mfw-board-label{
-  background:#292a27!important;color:#f5f4f0!important;border-color:#484a43!important;
+  background:#292e35!important;color:#e9edf1!important;border-color:#48515b!important;
 }
-html body #mobileFixedWorkspace .mfw-tournament-embed{background:#1b1c1a!important}
+html body #mobileFixedWorkspace .mfw-tournament-embed{background:#1a1d21!important}
 html body :is(.mobile-home-stat strong,.v2-mobile-more-link .v2-global-icon,
  .ranking-filter-icon,.rank-badge,.inline-puzzle-badge,.inline-learn-badge){
-  color:#f0eee7!important;border-color:#484a43!important;
+  color:#d8dfe6!important;border-color:#48515b!important;
 }
 html body :is(.v2-mobile-more-link .v2-global-icon,
  .v2-mobile-more-link.active .v2-global-icon){
-  background:#403e3c!important;color:#f0eee7!important;
+  background:#343b44!important;color:#d8dfe6!important;
 }
 html body :is(.inline-puzzle-badge,.inline-learn-badge,.inline-learn-filters button,
  .inline-puzzle-custom,.inline-variant-controls,.desktop-play-choice-icon,
  .ranking-filter-icon,.rank-badge){
-  background-color:#292a27!important;border-color:#484a43!important;
+  background-color:#292e35!important;border-color:#48515b!important;
 }
 html body :is(.inline-learn-filters button.active,.inline-puzzle-modes button.active,
  .inline-play-times button.active,.mobile-workspace-tab.active){
-  background:#393b37!important;color:#fff!important;border-color:#6b6e66!important;
+  background:#353c45!important;color:#fff!important;border-color:#66717d!important;
 }
 html body :is(.inline-puzzle-stats strong,.inline-learn-badge,.inline-computer-label){
-  color:#f0eee7!important;
+  color:#d8dfe6!important;
 }
 /* Keep notebook grid lines; only recolor its ground and decorative labels. */
-html body .desktop-move-notebook .move-notebook-rows{background-color:#222320!important}
+html body .desktop-move-notebook .move-notebook-rows{background-color:#202429!important}
 html body .desktop-move-notebook :is(.move-notebook-emblem,
- .move-notebook-header small,.move-notebook-header strong){color:#f0eee7!important}
+ .move-notebook-header small,.move-notebook-header strong){color:#d8dfe6!important}
 html body :is(.tournament-tab,.tournament-list-status,.tournament-list-arrow,
  .tournament-capacity-track,.ranking-filter-control,.profile-top-action,
  .platform-tab,.v5-play-topbar .v5-home-link,.v5-time-picker-button){
-  border-color:#484a43!important;color:#f0eee7!important;
+  border-color:#48515b!important;color:#d8dfe6!important;
 }
 html body :is(.v5-play-topbar .v5-home-link,.v5-time-picker-button,
  .v5-time-option,.v2-mobile-more-link,.tournament-tab){
@@ -576,7 +576,7 @@ html body :is(.ranking-filter-icon,.rank-badge,.inline-puzzle-badge,.inline-lear
   box-shadow:none!important;text-shadow:none!important;
 }
 html.admin-embedded body :is(.stat-card strong,.stat-card.pro-stat strong,
- .admin-inline-header>strong,.admin-inline-tab.active){color:#f5f4f0!important}
+ .admin-inline-header>strong,.admin-inline-tab.active){color:#e9edf1!important}
 /* Final-minute clock, game-result indicators, error/success feedback and actual
    chessboard squares, wooden texture and pieces retain their functional colors. */
 
@@ -592,34 +592,34 @@ html body.desktop-board-workspace :is(
  .desktop-champion-card .desktop-champion-count,
  .desktop-champion-card .desktop-champion-meta
 ){
- color:#f0eee7!important;
+ color:#d8dfe6!important;
 }
 html body.desktop-board-workspace .desktop-home-side-card button,
 html body.desktop-board-workspace .desktop-suggested-time select{
- background:linear-gradient(180deg,#363833,#292a27)!important;
- border-color:#484a43!important;
- color:#f5f4f0!important;
+ background:linear-gradient(180deg,#363b43,#292e35)!important;
+ border-color:#48515b!important;
+ color:#e9edf1!important;
 }
 html body.desktop-board-workspace :is(.desktop-home-side-card button,
  .desktop-suggested-time select):is(:hover,:focus-visible){
- border-color:#6b6e66!important;
- outline-color:#6b6e66!important;
+ border-color:#66717d!important;
+ outline-color:#66717d!important;
 }
 html body :is(.inline-variant-controls select,
  .inline-learn-filters button,.inline-puzzle-custom select,
  .desktop-suggested-time select){
- background:#292a27!important;color:#f5f4f0!important;border-color:#484a43!important;
+ background:#292e35!important;color:#e9edf1!important;border-color:#48515b!important;
 }
 html body :is(.inline-learn-filters button.active,
  .inline-play-times button.active,.desktop-play-time-options button.is-selected){
- background:#393b37!important;color:#fff!important;border-color:#6b6e66!important;
+ background:#353c45!important;color:#fff!important;border-color:#66717d!important;
 }
 html body :is(.desktop-dashboard-view.profile-view .desktop-dashboard-view-body,
  .desktop-dashboard-view.embedded-view .desktop-dashboard-view-body,
  .desktop-dashboard-embed,.desktop-guest-auth-card,
  .desktop-auth-dialog,.desktop-auth-modal,.desktop-auth-panel){
- background:#292a27!important;background-image:none!important;
- color:#f5f4f0!important;
+ background:#292e35!important;background-image:none!important;
+ color:#e9edf1!important;
 }
 html body :is(.desktop-mini-puzzle-solvers strong,
  .desktop-champion-icon,.desktop-play-choice-icon,
@@ -632,29 +632,29 @@ html body :is(.desktop-mini-puzzle-solvers strong,
 /* Darker tiered surface contrast approved for the Play Now layout.
    Designed to reuse existing surfaces; no extra overlay or chessboard rules. */
 html body.desktop-board-workspace .desktop-dashboard-view.play-options-view {
-  background:linear-gradient(180deg,#30312e,#242522)!important;
-  border-color:#43463f!important;
+  background:linear-gradient(180deg,#2a3037,#1e2227)!important;
+  border-color:#424b55!important;
 }
 html body.desktop-board-workspace .desktop-dashboard-view.play-options-view .desktop-dashboard-view-body {
-  background:#242522!important;
+  background:#1e2227!important;
   background-image:none!important;
-  color:#f5f4f0!important;
+  color:#e9edf1!important;
 }
 html body.desktop-board-workspace .desktop-play-options-intro {
   background:transparent!important;
   background-image:none!important;
   border:0!important;
-  color:#f5f4f0!important;
+  color:#e9edf1!important;
   box-shadow:none!important;
 }
 html body.desktop-board-workspace .desktop-play-online-choice {
-  background:linear-gradient(180deg,#2b2d29,#252724)!important;
-  background-image:linear-gradient(180deg,#2b2d29,#252724)!important;
-  border:1px solid #454841!important;
+  background:linear-gradient(180deg,#282d33,#23282e)!important;
+  background-image:linear-gradient(180deg,#282d33,#23282e)!important;
+  border:1px solid #48505b!important;
   box-shadow:none!important;
 }
 html body.desktop-board-workspace .desktop-play-online-choice :is(h3,p){
-  color:#f5f4f0!important;
+  color:#e9edf1!important;
   text-shadow:none!important;
 }
 html body.desktop-board-workspace :is(
@@ -662,10 +662,10 @@ html body.desktop-board-workspace :is(
   .desktop-play-choice-list > button,
   .desktop-play-primary
 ){
-  background:linear-gradient(180deg,#373a35,#30322e)!important;
-  background-image:linear-gradient(180deg,#373a35,#30322e)!important;
-  color:#f5f4f0!important;
-  border:1px solid #4f524b!important;
+  background:linear-gradient(180deg,#353b43,#2d3239)!important;
+  background-image:linear-gradient(180deg,#353b43,#2d3239)!important;
+  color:#e9edf1!important;
+  border:1px solid #515c68!important;
   box-shadow:none!important;
   text-shadow:none!important;
 }
@@ -674,9 +674,9 @@ html body.desktop-board-workspace :is(
   .desktop-play-choice-list > button:hover,
   .desktop-play-primary:hover
 ){
-  background:linear-gradient(180deg,#41433e,#363934)!important;
-  background-image:linear-gradient(180deg,#41433e,#363934)!important;
-  border-color:#777b72!important;
+  background:linear-gradient(180deg,#3e464f,#343b43)!important;
+  background-image:linear-gradient(180deg,#3e464f,#343b43)!important;
+  border-color:#76818c!important;
   color:#fff!important;
 }
 html body.desktop-board-workspace :is(
@@ -685,15 +685,15 @@ html body.desktop-board-workspace :is(
   .desktop-play-time-options > button.is-selected:hover,
   .desktop-play-choice-list > button.is-selected:hover
 ){
-  background:#3f433d!important;
+  background:#39424d!important;
   background-image:none!important;
-  border:1px solid #949a90!important;
+  border:1px solid #737f8c!important;
   color:#fff!important;
   box-shadow:none!important;
 }
 html body.desktop-board-workspace .desktop-play-choice-icon {
-  background:#242723!important;
-  color:#f5f4f0!important;
+  background:#20252b!important;
+  color:#e9edf1!important;
   border-radius:6px;
 }
 html body.desktop-board-workspace .desktop-play-choice-icon svg {
@@ -712,37 +712,37 @@ html body :is(.mobile-workspace-tab,.v2-mobile-more-link,.tournament-tab,
  .admin-inline-tab,.platform-tab,.auth-tab),
 html body :is(.inline-learn-filters button,.inline-puzzle-modes button,
  .inline-play-times button,.v2-quick-times button){
-  background:linear-gradient(180deg,#353732,#2b2d29)!important;
-  background-image:linear-gradient(180deg,#353732,#2b2d29)!important;
-  color:#f5f4f0!important;
-  border-color:#494d45!important;
+  background:linear-gradient(180deg,#323941,#282d33)!important;
+  background-image:linear-gradient(180deg,#323941,#282d33)!important;
+  color:#e9edf1!important;
+  border-color:#505966!important;
   box-shadow:none!important;
 }
 html body #mobileFixedWorkspace :is(.mfw-play-tile,.mfw-action,.mfw-tab):hover,
 html body :is(.mobile-workspace-tab,.v2-mobile-more-link,.tournament-tab,
  .admin-inline-tab,.platform-tab,.auth-tab):hover{
-  background:#3c3f39!important;
-  border-color:#6b7167!important;
+  background:#343b43!important;
+  border-color:#6a7580!important;
 }
 html body #mobileFixedWorkspace :is(.mfw-play-tile,.mfw-action,.mfw-tab).active,
 html body :is(.mobile-workspace-tab,.v2-mobile-more-link,.tournament-tab,
  .admin-inline-tab,.platform-tab,.auth-tab).active{
-  background:#424640!important;
+  background:#414a55!important;
   background-image:none!important;
   color:#fff!important;
-  border-color:#91988b!important;
+  border-color:#8793a0!important;
 }
 html body :is(.desktop-play-choice-icon,.v2-mobile-more-link .v2-global-icon,
  .inline-learn-badge,.inline-puzzle-badge,.ranking-filter-icon){
-  color:#f5f4f0!important;
+  color:#e9edf1!important;
 }
 /* All non-board controls should be legible without luminous card borders. */
 html body :is(.platform-btn,.v2-search-button,.v2-action,.mfw-primary,
  .mfw-login-btn,.tournament-enter-btn,.profile-top-action,
  .report-submit,.settings-save,.modal-actions button,
  .admin-inline-control,.action-btn){
-  color:#f5f4f0!important;
-  border-color:#50534b!important;
+  color:#e9edf1!important;
+  border-color:#535e69!important;
 }
 
 
@@ -783,7 +783,7 @@ html body.desktop-board-workspace .desktop-play-choice-list > button[data-play-c
 html body.desktop-board-workspace .desktop-play-choice-list > button[data-play-choice="friend"] .desktop-play-choice-icon{color:var(--icon-friends)!important}
 html body.desktop-board-workspace .desktop-play-choice-list > button[data-play-choice="variants"] .desktop-play-choice-icon{color:var(--icon-puzzles)!important}
 html body.desktop-board-workspace .desktop-play-choice-list > button[data-play-choice] .desktop-play-choice-icon{
- background:#292c29!important;
+ background:#292e35!important;
  border-radius:7px;
  color:inherit;
 }
@@ -806,7 +806,7 @@ html body.desktop-board-workspace .desktop-champion-card[data-champion]::before{
  background:var(--medal-icon)!important;
 }
 html body.desktop-board-workspace .desktop-champion-card[data-champion] :is(.desktop-champion-title strong,.desktop-champion-name,.desktop-champion-count){
- color:#f5f4f0!important;
+ color:#e9edf1!important;
 }
 /* Live count pictograms: different colors with readable white numbers. */
 html body.desktop-board-workspace .desktop-live-stat .desktop-stat-icon.gold{color:#ffd174!important}
@@ -909,7 +909,7 @@ html body #mobileFixedWorkspace .mfw-stat-watch{
 html body .hero-stat-watch.no-live-matches,
 html body #mobileFixedWorkspace .mfw-stat-watch.no-live-matches{
   cursor:default!important;
-  border-color:#454841!important;
+  border-color:#48505b!important;
   box-shadow:none!important;
 }
 html body .hero-stat-watch.has-live-matches,
@@ -947,9 +947,48 @@ html body #mobileFixedWorkspace .mfw-stat-watch{
   align-items:center;
   justify-content:center;
   min-width:0;
-  color:#f5f4f0!important;
+  color:#e9edf1!important;
 }
 html body #mobileFixedWorkspace .mfw-stat-watch small,
 html body #mobileFixedWorkspace .mfw-stat-watch b{
   color:inherit!important;
 }
+
+
+/* Graphite monitoring-center finish — all interface chrome, never chessboard squares or pieces. */
+:root {
+  --monitor-canvas:#1a1d21;
+  --monitor-header:#252a30;
+  --monitor-panel:#2d3239;
+  --monitor-card:#343a42;
+  --monitor-table-odd:#1b1f23;
+  --monitor-table-even:#22272d;
+  --monitor-table-head:#30363e;
+  --monitor-border:#48515b;
+  --monitor-text:#e9edf1;
+  --monitor-muted:#bfc6cf;
+  --monitor-positive:#84c9a7;
+  --monitor-negative:#d29a9c;
+}
+html body :is(.table-card,.table-wrap,.tournament-table-shell,.profile-games-table,.tournament-table,.match-shell){
+  border-color:var(--monitor-border)!important;
+}
+html body :is(table,thead,tbody,tr,th,td){border-color:#394149!important}
+html body :is(th,thead th,.table-head,.tournament-table-head,.profile-games-table th,.match-table th){
+  background:var(--monitor-table-head)!important;color:#d8dfe6!important;
+}
+html body :is(table tbody tr:nth-child(odd),.profile-games-table tbody tr:nth-child(odd)){
+  background:var(--monitor-table-odd)!important;
+}
+html body :is(table tbody tr:nth-child(even),.profile-games-table tbody tr:nth-child(even)){
+  background:var(--monitor-table-even)!important;
+}
+html body :is(table tbody tr:hover,.profile-games-table tbody tr:hover){
+  background:#303842!important;
+}
+html body :is(.desktop-move-notebook,.move-notebook-rows,.tournament-table-scroll,
+ .admin-table-wrap,.profile-games-table,.match-table){scrollbar-color:#56616e #202429}
+html body :is(button,a,input,select,textarea,[role="button"]):focus-visible{
+  outline-color:#879db7!important;
+}
+/* Gameplay clocks, result indicators, board textures, squares and pieces remain governed by their existing rules. */
