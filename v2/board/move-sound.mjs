@@ -2,7 +2,7 @@
    No external audio files, autoplay, analytics or background playback. */
 const STORAGE_KEY='shatranj:sound-enabled';
 let context=null;
-let lastPlayedAt=0;
+let lastPlayedAt=-1;
 
 export function boardSoundEnabled(){
   try{return window.localStorage.getItem(STORAGE_KEY)!=='0';}
