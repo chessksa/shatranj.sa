@@ -163,8 +163,8 @@ html body :is(.desktop-home-nav-link.active,.v2-global-link.active,
 html body.desktop-board-workspace .v2-global-sidebar.desktop-sidebar-refined
  :is(.desktop-home-nav-link.active,.desktop-home-nav-link[aria-current="page"]){
   background:#353c45!important;background-image:none!important;
-  border-color:#e99a52!important;color:#fff!important;
-  box-shadow:inset 0 0 0 1px rgba(233,154,82,.16)!important;
+  border-color:#66717d!important;color:#fff!important;
+  box-shadow:none!important;
 }
 html body.desktop-board-workspace :is(.desktop-sidebar-brand strong,
  .desktop-sidebar-brand-mark,.desktop-member-score-star,.desktop-champion-title,
@@ -1045,8 +1045,8 @@ html body.desktop-board-workspace .desktop-dashboard-view-body .home-invite-empt
 :root{
   --site-choice-bg:#353c45;
   --site-choice-hover-bg:#363c45;
-  --site-choice-border:#e99a52;
-  --site-choice-normal-border:#48515b;
+  --site-choice-border:#66717d;
+  --site-choice-normal-border:#394149;
   --site-choice-text:#f5f6f8;
 }
 html body :is(
@@ -1061,7 +1061,7 @@ html body :is(
 ):where(:hover):not(:disabled){
   background:#363c45!important;
   background-image:none!important;
-  border-color:#76818c!important;
+  border-color:#48515b!important;
 }
 /* Every persistent selected state uses the same border, no filled orange tiles. */
 html body :is(
@@ -1078,7 +1078,7 @@ html body [role="tab"][aria-selected="true"]{
   background:var(--site-choice-bg)!important;
   background-image:none!important;
   border:1px solid var(--site-choice-border)!important;
-  box-shadow:inset 0 0 0 1px rgba(233,154,82,.16)!important;
+  box-shadow:none!important;
   color:var(--site-choice-text)!important;
 }
 html body :is(
@@ -1094,7 +1094,7 @@ html body :is(
   background:var(--site-choice-bg)!important;
   background-image:none!important;
   border:1px solid var(--site-choice-border)!important;
-  box-shadow:0 0 7px rgba(233,154,82,.28),inset 0 0 0 1px rgba(233,154,82,.16)!important;
+  box-shadow:none!important;
 }
 /* Explicit strong scopes beat legacy !important rules injected by play
    components and the desktop rail's own stylesheet. */
@@ -1116,7 +1116,7 @@ html body .v2-theme-option.active{
   background:var(--site-choice-bg)!important;
   background-image:none!important;
   border:1px solid var(--site-choice-border)!important;
-  box-shadow:inset 0 0 0 1px rgba(233,154,82,.16)!important;
+  box-shadow:none!important;
   color:var(--site-choice-text)!important;
 }
 html body.desktop-board-workspace .v2-global-sidebar.desktop-sidebar-refined
@@ -1132,7 +1132,7 @@ html body .v2-mobile-link.active:hover{
   background:var(--site-choice-bg)!important;
   background-image:none!important;
   border:1px solid var(--site-choice-border)!important;
-  box-shadow:0 0 7px rgba(233,154,82,.28),inset 0 0 0 1px rgba(233,154,82,.16)!important;
+  box-shadow:none!important;
 }
 html body :is(
  .desktop-home-nav-link,.v2-global-link,.v2-mobile-link,
@@ -1143,7 +1143,52 @@ html body :is(
  .platform-tab,.admin-inline-tab,.tournament-tab,.auth-tab,
  .v2-theme-option
 ):focus-visible{
-  outline:2px solid #f0b77d!important;
+  outline:2px solid #a5b4c4!important;
   outline-offset:2px!important;
 }
 /* Gameplay highlights, piece textures and clock/result states are excluded. */
+
+
+/* Keep unselected options visibly darker than the agreed 1px selected frame.
+   This fixes the confusing nearly-identical default borders in Play Now. */
+html body.desktop-board-workspace :is(
+  .desktop-play-time-options>button:not(.is-selected):not([aria-pressed="true"]),
+  .desktop-play-choice-list>button:not(.is-selected):not([aria-pressed="true"])
+),
+html body.desktop-board-workspace .inline-computer-panel .inline-computer-options>button:not(.active),
+html body.desktop-inline-play-active .desktop-inline-play-panel .inline-play-times>button:not(.active),
+html body.desktop-board-workspace .inline-puzzle-modes>button:not(.active),
+html body.desktop-board-workspace .inline-learn-filters>button:not(.active){
+  border:1px solid #394149!important;
+  box-shadow:none!important;
+}
+html body.desktop-board-workspace :is(
+  .desktop-play-time-options>button:not(.is-selected):not([aria-pressed="true"]),
+  .desktop-play-choice-list>button:not(.is-selected):not([aria-pressed="true"])
+):hover,
+html body.desktop-board-workspace .inline-computer-panel .inline-computer-options>button:not(.active):hover,
+html body.desktop-inline-play-active .desktop-inline-play-panel .inline-play-times>button:not(.active):hover{
+  border-color:#48515b!important;
+}
+/* App-wide final winning rules for game modes and sidebar: exactly one pixel,
+   no outlines layered over borders or box-shadow pretending to be a border. */
+html body.desktop-board-workspace .v2-global-sidebar.desktop-sidebar-refined
+  .desktop-home-nav-link:is(.active,[aria-current="page"]),
+html body.desktop-board-workspace :is(
+  .desktop-play-time-options>button.is-selected,
+  .desktop-play-choice-list>button.is-selected,
+  .desktop-play-time-options>button[aria-pressed="true"],
+  .desktop-play-choice-list>button[aria-pressed="true"]
+),
+html body.desktop-board-workspace .inline-computer-panel .inline-computer-options>button.active,
+html body.desktop-inline-play-active .desktop-inline-play-panel .inline-play-times>button.active,
+html body.desktop-board-workspace .inline-puzzle-modes>button.active,
+html body.desktop-board-workspace .inline-learn-filters>button.active,
+html body #mobileFixedWorkspace .mfw-tab.active,
+html body #mobileFixedWorkspace .mobile-workspace-tab.active,
+html body .v2-theme-option.active{
+  background:#353c45!important;
+  background-image:none!important;
+  border:1px solid #66717d!important;
+  box-shadow:none!important;
+}
