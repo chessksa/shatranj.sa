@@ -1084,3 +1084,46 @@ html body :is(
   outline:2px solid #a5b4c4!important;
   outline-offset:1px!important;
 }
+
+/* Higher-specificity surfaces that previously overrode the shared selection
+   treatment. Match the exact charcoal/1px grey right-rail state. */
+html body.desktop-board-workspace :is(
+ .desktop-play-choice-list>button.is-selected,
+ .desktop-play-time-options>button.is-selected,
+ .desktop-play-choice-list>button[aria-pressed="true"],
+ .desktop-play-time-options>button[aria-pressed="true"]
+),
+html body.desktop-board-workspace :is(
+ .desktop-play-choice-list>button.is-selected,
+ .desktop-play-time-options>button.is-selected
+):hover,
+html body #mobileFixedWorkspace :is(
+ .mfw-tab.active,.mobile-workspace-tab.active,
+ .mfw-auth-host .auth-tab.active
+),
+html body #mobileFixedWorkspace :is(
+ .mfw-tab.active,.mobile-workspace-tab.active,
+ .mfw-auth-host .auth-tab.active
+):hover,
+html body .v2-mobile-link.active,
+html body .v2-mobile-link.active:hover,
+html body .v2-mobile-more-link.active,
+html body .v2-mobile-more-link.active:hover{
+  background:#353c45!important;
+  background-image:none!important;
+  border:1px solid #66717d!important;
+  color:#e9edf1!important;
+  box-shadow:none!important;
+}
+/* The independently loaded computer/live panels use the same reference border.
+   Do not style board squares, last-move highlights or chess pieces. */
+html body.desktop-board-workspace .inline-computer-panel .inline-computer-options button.active,
+html body.desktop-board-workspace .inline-computer-panel .inline-computer-options button.active:hover,
+html body.desktop-inline-play-active .desktop-inline-play-panel .inline-play-times button.active,
+html body.desktop-inline-play-active .desktop-inline-play-panel .inline-play-times button.active:hover{
+  background:#353c45!important;
+  background-image:none!important;
+  border:1px solid #66717d!important;
+  color:#e9edf1!important;
+  box-shadow:none!important;
+}
