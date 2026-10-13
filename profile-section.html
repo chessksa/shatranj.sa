@@ -6,7 +6,7 @@
   <title>قسم العضو | شطرنج العرب</title>
   <meta name="theme-color" content="#1a1d21" />
   <style>
-    :root{--bg:#302e2b;--panel:#302e2b;--panel-soft:rgba(69,66,62,0.88);--gold:#e2dcd3;--cream:#e2dcd3;--muted:#adc1bc;--line:rgba(165,162,158,0.22);--danger:#d96c6c;--good:#74b38b}
+    :root{--bg:#1a1d21;--panel:#2d3239;--panel-soft:#292e35;--gold:#e9edf1;--cream:#e9edf1;--muted:#c3cbd4;--line:#48515b;--danger:#ee9698;--good:#7ee0ae}
     *{box-sizing:border-box}html,body{margin:0;min-height:100%;font-family:Arial,sans-serif;background:linear-gradient(145deg,#302e2b,#302e2b 55%,#302e2b);color:var(--cream)}
     a{color:inherit;text-decoration:none}button,select{font:inherit}button{cursor:pointer}
     .shell{width:min(920px,calc(100% - 24px));margin:auto;padding:10px 0 26px}
@@ -24,6 +24,37 @@
     @media(max-width:620px){.shell{width:calc(100% - 16px);padding-top:7px}.topbar{padding:6px 8px}.brand span:last-child{display:none}.section-card{padding:10px}.section-head h1{font-size:19px}.row{grid-template-columns:1fr}.row-actions{justify-content:flex-start}}
   </style>
 <link rel="stylesheet" href="site-charcoal-theme.css?v=20261013-monitor-graphite-v1">
+<style>
+/* Profile subpages share the main dashboard's dark graphite contrast. */
+html,html body{background:#1a1d21!important;color:#e9edf1!important}
+html body :is(.topbar,.section-card,.modal-card,.toast){
+  background:linear-gradient(180deg,#363b43,#292e35)!important;
+  border:1px solid #48515b!important;
+  box-shadow:none!important;color:#e9edf1!important;
+}
+html body .topbar .brand-mark{
+  background:#292e35!important;border-color:#586675!important;color:#9bc6fd!important;
+}
+html body .back,html body .row{
+  background:#292f37!important;border-color:#4b5966!important;color:#e9edf1!important;
+}
+html body .back:hover,html body .row:hover{background:#35404a!important}
+html body .row-title{color:#e9edf1!important}
+html body .row-meta{color:#c3cbd4!important}
+html body .count{
+  background:#292e35!important;color:#e9edf1!important;
+  border:1px solid #48515b!important;
+}
+html body .mini{background:#26303a!important;border-color:#566675!important;color:#e9edf1!important}
+html body .mini.ok{color:#7ee0ae!important;border-color:#538c75!important}
+html body .mini.no{color:#f7a6a8!important;border-color:#995b5d!important}
+html body :is(.select,.modal-actions button:not(.gold)){
+  background:#20262d!important;border-color:#536271!important;color:#e9edf1!important;
+}
+html body .modal-actions .gold{
+  background:#9bc6fd!important;border-color:#9bc6fd!important;color:#1a2733!important;
+}
+</style>
 </head>
 <body>
   <div class="shell">
