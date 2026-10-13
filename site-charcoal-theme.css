@@ -1011,3 +1011,76 @@ html body :is(button,a,input,select,textarea,[role="button"]):focus-visible{
   outline-color:#879db7!important;
 }
 /* Gameplay clocks, result indicators, board textures, squares and pieces remain governed by their existing rules. */
+
+
+/* Shared selected-control language: identical to the approved right-hand rail.
+   Use only navigation/choice controls, never chessboard squares, pieces, move
+   markers, live game statuses, form options or action/danger buttons. */
+:root{
+  --shatranj-selection-bg:#353c45;
+  --shatranj-selection-border:#66717d;
+  --shatranj-selection-hover:#363c45;
+  --shatranj-selection-hover-border:#48515b;
+}
+html body :is(
+ .desktop-home-nav-link,.v2-global-link,.v2-mobile-link,
+ .v2-mobile-more-link,.mfw-tab,.mobile-workspace-tab,
+ .desktop-play-choice-list>button,.desktop-play-time-options>button,
+ .inline-computer-options>button,.inline-play-times>button,
+ .inline-puzzle-modes>button,.inline-learn-filters>button,
+ .platform-tab,.admin-inline-tab,.nav-btn,.tournament-tab,
+ .auth-tab,.profile-top-action,.v2-theme-option,
+ .nav-item,.nav-link,.time-option,.v2-quick-times>button,
+ .v2-mobile-more-button
+):is(:hover,:focus-visible){
+  background:var(--shatranj-selection-hover)!important;
+  background-image:none!important;
+  border-color:var(--shatranj-selection-hover-border)!important;
+  box-shadow:none!important;
+}
+html body :is(
+ .desktop-home-nav-link,.v2-global-link,.v2-mobile-link,
+ .v2-mobile-more-link,.mfw-tab,.mobile-workspace-tab,
+ .desktop-play-choice-list>button,.desktop-play-time-options>button,
+ .inline-computer-options>button,.inline-play-times>button,
+ .inline-puzzle-modes>button,.inline-learn-filters>button,
+ .platform-tab,.admin-inline-tab,.nav-btn,.tournament-tab,
+ .auth-tab,.profile-top-action,.v2-theme-option,
+ .nav-item,.nav-link,.time-option,.v2-quick-times>button,
+ .v2-mobile-more-button
+):is(.active,.is-selected,.selected,.is-active,[aria-current="page"],[aria-selected="true"],[aria-pressed="true"]),
+html body .tournament-tab.is-active{
+  background:var(--shatranj-selection-bg)!important;
+  background-image:none!important;
+  border:1px solid var(--shatranj-selection-border)!important;
+  box-shadow:none!important;
+  color:#e9edf1!important;
+}
+html body :is(
+ .desktop-home-nav-link,.v2-global-link,.v2-mobile-link,
+ .v2-mobile-more-link,.mfw-tab,.mobile-workspace-tab,
+ .desktop-play-choice-list>button,.desktop-play-time-options>button,
+ .inline-computer-options>button,.inline-play-times>button,
+ .inline-puzzle-modes>button,.inline-learn-filters>button,
+ .platform-tab,.admin-inline-tab,.nav-btn,.tournament-tab,
+ .auth-tab,.profile-top-action,.v2-theme-option,
+ .nav-item,.nav-link,.time-option,.v2-quick-times>button,
+ .v2-mobile-more-button
+):is(.active,.is-selected,.selected,.is-active,[aria-current="page"],[aria-selected="true"],[aria-pressed="true"]):is(:hover,:focus-visible),
+html body .tournament-tab.is-active:hover{
+  background:var(--shatranj-selection-bg)!important;
+  background-image:none!important;
+  border-color:var(--shatranj-selection-border)!important;
+  box-shadow:none!important;
+}
+/* Preserve the approved sidebar pictogram colors and visibility of keyboard focus. */
+html body :is(
+ .desktop-home-nav-link,.v2-global-link,.v2-mobile-link,.v2-mobile-more-link,
+ .mfw-tab,.mobile-workspace-tab,.desktop-play-choice-list>button,
+ .desktop-play-time-options>button,.inline-computer-options>button,
+ .inline-play-times>button,.inline-puzzle-modes>button,.inline-learn-filters>button,
+ .platform-tab,.admin-inline-tab,.tournament-tab,.auth-tab,.v2-theme-option
+):focus-visible{
+  outline:2px solid #a5b4c4!important;
+  outline-offset:1px!important;
+}
