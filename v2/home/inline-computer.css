@@ -16,9 +16,9 @@
   html body.desktop-board-workspace .inline-computer-panel .inline-play-player-card{
     min-width:0;width:100%;height:100%;min-height:0;max-height:none;
     box-sizing:border-box;overflow:hidden;
-    display:grid;grid-template-columns:54px minmax(0,1fr) minmax(96px,113px);
+    display:grid;grid-template-columns:clamp(76px,6.8vw,90px) minmax(0,1fr) clamp(124px,11vw,148px);
     align-items:center;justify-content:stretch;gap:10px;
-    padding:11px 12px;
+    padding:8px 12px;
     direction:rtl;
     border:1px solid #48515b!important;
     border-radius:12px;
@@ -33,13 +33,13 @@
   }
   html body.desktop-board-workspace .inline-computer-panel .inline-computer-identity-icon{
     display:grid;place-items:center;
-    width:54px;height:54px;min-width:54px;max-width:54px;
+    width:100%;height:auto;aspect-ratio:1/1;min-width:0;max-width:none;
     border:1px solid #617184;border-radius:10px;
     background:#202a35;overflow:hidden;
     box-sizing:border-box;color:#98ccea;
   }
   html body.desktop-board-workspace .inline-computer-panel .inline-computer-machine-icon svg{
-    display:block;width:37px;height:37px;
+    display:block;width:72%;height:72%;
   }
   html body.desktop-board-workspace .inline-computer-panel .inline-computer-player-photo{
     background:#222a34;
@@ -55,7 +55,7 @@
   html body.desktop-board-workspace .inline-computer-panel .inline-computer-player-photo span{
     display:grid;place-items:center;
     width:100%;height:100%;
-    color:#d9e6f2;font-size:30px;line-height:1;
+    color:#d9e6f2;font-size:clamp(36px,4.2vw,54px);line-height:1;
     background:#222b34;
   }
   html body.desktop-board-workspace .inline-computer-panel .inline-play-player-copy{
@@ -90,7 +90,7 @@
     box-sizing:border-box;
     min-width:0;width:100%;max-width:none;
     display:grid;place-items:center;justify-self:stretch;
-    padding:12px 3px;
+    padding:12px 5px;
     border:1px solid #576675!important;
     border-radius:11px;
     background:#20262d!important;
@@ -120,25 +120,28 @@
   html body.desktop-board-workspace .inline-computer-panel .inline-computer-options button,
   html body.desktop-board-workspace .inline-computer-panel .inline-computer-start{
     width:100%;height:44px;min-height:44px;min-width:0;
-    display:block;box-sizing:border-box;
+    display:flex;align-items:center;justify-content:center;gap:6px;
+    white-space:nowrap;box-sizing:border-box;
     padding:5px 4px;
     border:1px solid #566574!important;border-radius:9px;
     background:#252c34!important;color:#e9edf1!important;
-    font:900 13px/1.2 Arial,sans-serif;
+    font:900 clamp(11px,.9vw,13px)/1.2 Arial,sans-serif;
     box-shadow:none!important;cursor:pointer;overflow:hidden;
     transition:background .12s ease,border-color .12s ease;
   }
   html body.desktop-board-workspace .inline-computer-panel .inline-computer-options button small{
-    display:block;margin-top:4px;
-    color:#c3cdd8!important;font-size:11px;line-height:1;font-weight:800;
+    display:inline!important;flex:0 0 auto;margin:0!important;
+    color:#c3cdd8!important;font-size:clamp(10px,.75vw,11px);line-height:1;font-weight:800;
+    white-space:nowrap;
   }
   html body.desktop-board-workspace .inline-computer-panel .inline-computer-options button:hover,
   html body.desktop-board-workspace .inline-computer-panel .inline-computer-start:hover{
     background:#3b4652!important;border-color:#85abc6!important;
   }
-  html body.desktop-board-workspace .inline-computer-panel .inline-computer-options button.active{
-    background:#374653!important;border:1px solid #9bc6fd!important;
-    color:#fff!important;box-shadow:inset 0 0 0 1px rgba(155,198,253,.28)!important;
+  html body.desktop-board-workspace .inline-computer-panel .inline-computer-options button.active,
+  html body.desktop-board-workspace .inline-computer-panel .inline-computer-options button.active:hover{
+    background:#252c34!important;border:2px solid #9bc6fd!important;
+    color:#e9edf1!important;box-shadow:none!important;
   }
   html body.desktop-board-workspace .inline-computer-panel .inline-computer-options button.active small{
     color:#dce9f8!important;
@@ -213,14 +216,14 @@
       gap:7px;padding-block:0;
     }
     html body.desktop-board-workspace .inline-computer-panel .inline-play-player-card{
-      grid-template-columns:42px minmax(0,1fr) minmax(85px,100px);
+      grid-template-columns:72px minmax(0,1fr) 126px;
       gap:7px;padding:6px 8px;
     }
     html body.desktop-board-workspace .inline-computer-panel .inline-computer-identity-icon{
-      width:42px;height:42px;min-width:42px;max-width:42px;
+      width:100%;height:auto;aspect-ratio:1/1;min-width:0;max-width:none;
     }
     html body.desktop-board-workspace .inline-computer-panel .inline-computer-machine-icon svg{
-      width:31px;height:31px;
+      width:72%;height:72%;
     }
     html body.desktop-board-workspace .inline-computer-panel .inline-play-player-copy{gap:3px}
     html body.desktop-board-workspace .inline-computer-panel .inline-play-player-name{font-size:16px}
@@ -229,7 +232,7 @@
       font-size:10px!important;line-height:1.25;
     }
     html body.desktop-board-workspace .inline-computer-panel .inline-play-clock{
-      font-size:26px;padding:8px 2px;
+      font-size:27px;padding:8px 3px;
     }
     html body.desktop-board-workspace .inline-computer-panel .inline-computer-setup{
       grid-template-rows:auto 36px auto 36px 38px;gap:5px;padding:7px 8px;
@@ -238,7 +241,7 @@
       height:36px;min-height:36px;font-size:11px;
     }
     html body.desktop-board-workspace .inline-computer-panel .inline-computer-options button small{
-      font-size:10px;margin-top:2px;
+      font-size:10px;margin:0!important;
     }
     html body.desktop-board-workspace .inline-computer-panel .inline-computer-label{font-size:12px!important}
     html body.desktop-board-workspace .inline-computer-panel .inline-computer-start{height:38px;min-height:38px}
