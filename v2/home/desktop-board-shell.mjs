@@ -2,6 +2,7 @@ import { renderApprovedPreview } from './move-notebook.mjs?v=20261012-notebook-a
 import { supabase } from '../platform/api.mjs';
 import { populateHomeSideRail } from './home-side-rail.mjs?v=20261012-large-daily-board-v3';
 import { mountPersonalStatistics } from './personal-statistics.mjs?v=20261012-home-stats-v1';
+import { loadBoardPreferences, applyBoardPreferences } from '../board/controller.mjs?v=20261013-live-home-board-v1';
 const desktopAssetVersion=encodeURIComponent(document.querySelector('meta[name="shatranj-asset-version"]')?.content||'20261009-fresh-ui-refresh-v1');
 // Game-mode modules load only when chosen. A slow chess-engine or CDN import
 // must never hold the whole desktop homepage behind its startup curtain.
@@ -69,6 +70,26 @@ if(desktop.matches && document.querySelector('#homeHero')){
   let desktopSignedIn=false;
   let desktopAdminAccess=false;
   let desktopAccessRequest=0;
+
+  function syncMainBoardPreferences(){
+    const board=document.getElementById('homeBoardPreview');
+    if(board)applyBoardPreferences(board,loadBoardPreferences());
+  }
+
+  // The settings picker is embedded in an iframe within the center column.
+  // Synchronize immediately without replacing the board, its pieces or game state.
+  function watchMainBoardPreferences(){
+    window.addEventListener('message',event=>{
+      const frame=document.querySelector('#desktopDashboardViewBody .desktop-dashboard-embed');
+      if(event.origin!==location.origin || event.source!==frame?.contentWindow ||
+         event.data?.type!=='shatranj:board-preferences-updated')return;
+      syncMainBoardPreferences();
+    });
+    window.addEventListener('storage',event=>{
+      if(event.key==='shatranj:v2:board-preferences'||event.key===null)syncMainBoardPreferences();
+    });
+    window.addEventListener('pageshow',syncMainBoardPreferences);
+  }
 
   function setDesktopActionVisibility(element,visible,display='flex'){
     if(!element)return;
@@ -1098,6 +1119,8 @@ if(desktop.matches && document.querySelector('#homeHero')){
     document.body.classList.add('desktop-board-workspace');
     captureMoveTargets();
     buildBoard();
+    syncMainBoardPreferences();
+    watchMainBoardPreferences();
     buildSidebar();
     forceSidebarSurface();
     buildDashboard();
