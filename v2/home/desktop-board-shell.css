@@ -360,14 +360,9 @@
     display:grid;grid-template-columns:repeat(2,minmax(0,1fr));
     grid-template-rows:44px repeat(4,minmax(0,1fr));
     gap:0;height:100%;min-height:0;min-width:0;
-    position:relative;
     direction:rtl;overflow:hidden;border-radius:9px;color:#f5f4f0;
   }
-  .desktop-home-statistics::after{
-    content:"";position:absolute;
-    top:49px;bottom:6px;inset-inline-start:calc(50% - .5px);
-    width:1px;background:rgba(175,191,208,.36);pointer-events:none;z-index:2;
-  }
+  /* No vertical separator between the two columns of statistic tiles. */
   .desktop-statistics-header{
     grid-column:1/-1;min-width:0;
     display:grid;grid-template-columns:minmax(0,1fr) auto minmax(0,1fr);
@@ -394,25 +389,25 @@
   .desktop-statistics-group{display:contents!important}
   .desktop-statistics-row{
     min-width:0;min-height:0;
-    display:grid;grid-template-columns:19px minmax(0,1fr) minmax(24px,auto);
-    align-items:center;gap:3px;
-    padding:5px 7px;margin:3px;
-    border:1px solid #46515e;border-radius:7px;background:rgba(26,29,33,.38);
-    color:#f5f4f0;
+    display:flex;align-items:center;justify-content:center;gap:8px;
+    padding:5px 5px;margin:3px;
+    border:1px solid #46515e;border-radius:7px;
+    background:rgba(26,29,33,.38);
+    color:#f5f4f0;direction:rtl;
   }
   .desktop-statistics-label{
-    display:contents;font-size:clamp(11px,.83vw,15px);
-    font-weight:850;
+    min-width:0;display:inline-flex;align-items:center;justify-content:center;
+    flex:0 1 auto;gap:5px;
+    font-size:clamp(10px,.81vw,13px);font-weight:850;
+    white-space:nowrap;
   }
   .desktop-statistics-label>span:last-child{
-    grid-column:2;min-width:0;
-    text-align:center;justify-self:center;
-    font-size:clamp(10px,.80vw,14px);
-    font-weight:850;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;
+    min-width:0;display:block;
+    text-align:center;font-size:inherit;font-weight:inherit;
+    white-space:nowrap;overflow:hidden;text-overflow:ellipsis;
   }
   .desktop-statistics-icon{
-    grid-column:1;justify-self:center;
-    width:19px;height:19px;
+    flex:0 0 19px;width:19px;height:19px;
     display:grid;place-items:center;color:var(--stat-color,#e9e9e5);
   }
   .desktop-statistics-icon svg{display:block;width:19px;height:19px}
@@ -425,19 +420,23 @@
   .desktop-statistics-row[data-stat-row="wins"]{--stat-color:#f5a978}
   .desktop-statistics-row[data-stat-row="achievements"]{--stat-color:#c3adf6}
   .desktop-statistics-row>[data-stat-value]{
-    grid-column:3;min-width:22px;justify-self:end;
-    font-size:clamp(15px,1.12vw,20px);font-weight:900;
-    text-align:center;line-height:1.1;
+    flex:0 0 auto;min-width:24px;
+    padding-inline-start:8px;
+    border-inline-start:1px solid rgba(175,191,208,.30);
+    font-size:clamp(16px,1.15vw,21px);font-weight:900;
+    text-align:center;line-height:1.12;
     font-variant-numeric:tabular-nums;color:#f5f4f0;
   }
   @media(max-height:720px){
     .desktop-statistics-header{padding:3px 8px}
     .desktop-statistics-header>strong{font-size:15px}
-    .desktop-statistics-row{padding:2px 5px;margin:2px}
-    .desktop-statistics-label>span:last-child{font-size:10px}
-    .desktop-statistics-icon{width:17px;height:17px}
+    .desktop-statistics-row{padding:2px 3px;margin:2px;gap:5px}
+    .desktop-statistics-label{gap:3px;font-size:10px}
+    .desktop-statistics-icon{flex-basis:17px;width:17px;height:17px}
     .desktop-statistics-icon svg{width:17px;height:17px}
-    .desktop-statistics-row>[data-stat-value]{font-size:15px}
+    .desktop-statistics-row>[data-stat-value]{
+      min-width:20px;padding-inline-start:5px;font-size:15px
+    }
   }
 
   /* Champion showcase: three portrait cards side by side, stacked content top to bottom. */
