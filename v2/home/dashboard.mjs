@@ -89,10 +89,14 @@ function ensureDesktopGuestAuth(){
   const login=node('button','desktop-guest-auth-btn','تسجيل الدخول');
   login.id='desktopGuestLogin';
   login.type='button';
+  login.title='تسجيل الدخول';
+  login.setAttribute('aria-label','تسجيل الدخول');
 
   const signup=node('button','desktop-guest-auth-btn desktop-guest-auth-signup','تسجيل');
   signup.id='desktopGuestSignup';
   signup.type='button';
+  signup.title='إنشاء حساب';
+  signup.setAttribute('aria-label','إنشاء حساب');
 
   login.addEventListener('click',()=>openHomeAuthTab('login'));
   signup.addEventListener('click',()=>openHomeAuthTab('signup'));
