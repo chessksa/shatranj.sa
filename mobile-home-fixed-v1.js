@@ -34,6 +34,10 @@
   }
   let mobileAdminAllowed=false;
   let mobileAdminRequest=0;
+  // Public champions share the verified RPC used by the desktop homepage.
+  let mobileChampionsData=null;
+  let mobileChampionsAt=0;
+  let mobileChampionsRequest=null;
   // This is the real mobile workspace. Admin access must come from the same
   // server-side permission check used by admin.html, never from profile text.
   async function refreshMobileAdminAccess(){
@@ -188,9 +192,74 @@
     document.querySelectorAll('[data-mfw]').forEach(btn=>btn.classList.toggle('active',btn.dataset.mfw===(id==='tournaments'?'more':id)));
   }
 
+  const mobileChampionTypes=[
+    {kind:'week',label:'بطل الأسبوع',unit:'فوز',icon:'<circle cx="12" cy="8" r="5"/><path d="M8.2 12 6 21l6-3 6 3-2.2-9"/><path d="m10 8 1.4 1.4 2.8-3"/>'},
+    {kind:'month',label:'بطل الشهر',unit:'فوز',icon:'<path d="M7 4h10v7a5 5 0 0 1-10 0V4Z"/><path d="M7 6H4v3a4 4 0 0 0 4 4M17 6h3v3a4 4 0 0 1-4 4"/><path d="M12 16v3M8 21h8"/>'},
+    {kind:'site',label:'بطل الموقع',unit:'نقطة',icon:'<path d="m3 8 5 4 4-7 4 7 5-4-2 11H5L3 8Z"/><path d="M5 22h14"/>'}
+  ];
+
+  function syncMobileChampionCards(){
+    const grid=document.querySelector('#mfwPanelBody .mfw-champions');
+    if(!grid)return;
+    mobileChampionTypes.forEach(({kind,label,unit})=>{
+      const card=grid.querySelector('[data-mfw-champion="'+kind+'"]');
+      const champion=mobileChampionsData?.[kind];
+      if(!card)return;
+      const name=card.querySelector('.mfw-champion-name');
+      const count=card.querySelector('.mfw-champion-count');
+      name.textContent=champion?.name||'بانتظار النتائج';
+      count.textContent=champion?String(Number(kind==='site'?champion.rating:champion.wins)):'—';
+      card.classList.toggle('has-champion',Boolean(champion?.id));
+      card.href=champion?.id?'player.html?id='+encodeURIComponent(champion.id):'#ranking';
+      card.title=kind==='site'?'بطل الموقع حسب أعلى نقاط':'الأكثر فوزًا خلال آخر '+(kind==='week'?'7':'30')+' أيام';
+      card.setAttribute('aria-label',label+': '+name.textContent+'، '+count.textContent+' '+unit);
+    });
+  }
+
+  async function refreshMobileChampions(){
+    if(mobileChampionsData && Date.now()-mobileChampionsAt<60000){
+      syncMobileChampionCards();
+      return;
+    }
+    if(!mobileChampionsRequest){
+      mobileChampionsRequest=(async()=>{
+        const {supabase}=await import('./v2/platform/api.mjs');
+        if(!supabase)throw new Error('Supabase غير متاح');
+        const {data,error}=await supabase.rpc('get_public_home_champions');
+        if(error)throw error;
+        mobileChampionsData=data||{};
+        mobileChampionsAt=Date.now();
+      })().catch(error=>{
+        console.warn('تعذر تحميل أبطال واجهة الجوال',error);
+        if(!mobileChampionsData){
+          document.querySelectorAll('#mfwPanelBody .mfw-champion-name').forEach(name=>{
+            name.textContent='غير متاح';
+          });
+        }
+      }).finally(()=>{mobileChampionsRequest=null;});
+    }
+    await mobileChampionsRequest;
+    if(mobileChampionsData)syncMobileChampionCards();
+  }
+
   function home(body){
-    body.innerHTML='<div class="mfw-stats"><div class="mfw-stat"><small>المشتركون</small><b>'+txt('headerPlayersCount')+'</b></div><div class="mfw-stat"><small>المتواجدون</small><b>'+txt('headerOnlineCount')+'</b></div><a class="mfw-stat mfw-stat-watch no-live-matches" data-live-matches-watch aria-disabled="true" tabindex="-1" title="لا توجد مباريات جارية الآن"><small>المباريات الآن</small><b>'+txt('headerMatchesCount')+'</b></a></div>';
+    const championCards=mobileChampionTypes.map(({kind,label,unit,icon})=>
+      '<a class="mfw-champion-card" data-mfw-champion="'+kind+'" href="#ranking" aria-label="'+label+'">'+
+        '<span class="mfw-champion-heading"><span class="mfw-champion-icon" aria-hidden="true">'+
+          '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">'+icon+'</svg>'+
+        '</span><strong>'+label+'</strong></span>'+
+        '<span class="mfw-champion-name">جارٍ التحديث…</span>'+
+        '<span class="mfw-champion-result"><b class="mfw-champion-count">—</b><small>'+unit+'</small></span>'+
+      '</a>'
+    ).join('');
+    body.innerHTML=
+      '<div class="mfw-home-layout">'+
+        '<div class="mfw-stats"><div class="mfw-stat"><small>المشتركون</small><b>'+txt('headerPlayersCount')+'</b></div><div class="mfw-stat"><small>المتواجدون</small><b>'+txt('headerOnlineCount')+'</b></div><a class="mfw-stat mfw-stat-watch no-live-matches" data-live-matches-watch aria-disabled="true" tabindex="-1" title="لا توجد مباريات جارية الآن"><small>المباريات الآن</small><b>'+txt('headerMatchesCount')+'</b></a></div>'+
+        '<section class="mfw-champions" aria-label="أبطال شطرنج العرب">'+championCards+'</section>'+
+      '</div>';
     window.SHATRANJ_LIVE_MATCHES?.syncLinks?.();
+    if(mobileChampionsData)syncMobileChampionCards();
+    void refreshMobileChampions();
   }
 
   function action(body,title,text,href,label){
@@ -310,6 +379,7 @@
     const workspace=document.getElementById('mobileFixedWorkspace');
     workspace?.classList.toggle('mfw-tournament-mode',id==='tournaments');
     workspace?.classList.toggle('mfw-more-mode',id==='more');
+    workspace?.classList.toggle('mfw-home-mode',id==='home');
     body.replaceChildren();
     const titles={home:'الرئيسية',play:'العب الآن',computer:'اللعب مع الكمبيوتر',ranking:'الترتيب',invite:'دعوة لاعب',more:'المزيد',tournaments:'البطولات'};
     setActive(id,titles[id]||'شطرنج العرب');
