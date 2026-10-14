@@ -5,7 +5,7 @@
   <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover" />
   <title>ملف اللاعب | شطرنج العرب</title>
   <meta name="theme-color" content="#1a1d21" />
-  <meta name="shatranj-asset-version" content="20261014-public-player-native-scroll-v2" />
+  <meta name="shatranj-asset-version" content="20261014-public-player-viewport-dock-v3" />
   <script>
     if(new URLSearchParams(location.search).get('embed')==='panel'){
       document.documentElement.classList.add('embedded-public-profile');
@@ -275,6 +275,15 @@
     touch-action:manipulation!important;
     pointer-events:auto!important;
   }
+
+  /* Safari's expanding browser chrome changes the visual viewport during scroll.
+     Keep the fixed dock aligned to that viewport; plain CSS bottom remains fallback. */
+  html:not(.embedded-public-profile) body.public-player-page > .v2-mobile-nav.public-player-viewport-pinned{
+    top:calc(var(--public-player-visual-bottom) - 70px - env(safe-area-inset-bottom))!important;
+    bottom:auto!important;
+    -webkit-backdrop-filter:none!important;
+    backdrop-filter:none!important;
+  }
   html:not(.embedded-public-profile) body.public-player-page > .v2-mobile-nav .v2-mobile-link{
     min-width:0!important;
     height:52px!important;
@@ -386,5 +395,47 @@
   </script>
   <script src="player.js?v=20261009-embedded-public-v2"></script>
 <script type="module" src="site-presence.js?v=20261012-source-palette-v5"></script>
+<script id="publicPlayerViewportDock">
+(() => {
+  if (new URLSearchParams(location.search).get('embed') === 'panel') return;
+  if (!window.matchMedia('(max-width:900px)').matches) return;
+
+  let nav = null;
+  let frame = 0;
+  const dock = () => {
+    frame = 0;
+    if (!nav || !nav.isConnected) return;
+    const vv = window.visualViewport;
+    // offsetTop + height is the visible bottom in layout-viewport coordinates.
+    const visualBottom = vv ? vv.offsetTop + vv.height : window.innerHeight;
+    if (!Number.isFinite(visualBottom) || visualBottom <= 0) return;
+    nav.style.setProperty('--public-player-visual-bottom', visualBottom + 'px');
+    nav.classList.add('public-player-viewport-pinned');
+  };
+  const schedule = () => {
+    if (!frame) frame = requestAnimationFrame(dock);
+  };
+  const attach = () => {
+    const candidate = document.querySelector('body.public-player-page > .v2-mobile-nav');
+    if (!candidate || candidate === nav) return !!candidate;
+    nav = candidate;
+    schedule();
+    return true;
+  };
+  // The shared navigation is inserted asynchronously by the site's module.
+  if (!attach()) {
+    const observer = new MutationObserver(() => {
+      if (attach()) observer.disconnect();
+    });
+    observer.observe(document.body, {childList:true});
+  }
+  window.visualViewport?.addEventListener('scroll', schedule, {passive:true});
+  window.visualViewport?.addEventListener('resize', schedule, {passive:true});
+  window.addEventListener('scroll', schedule, {passive:true});
+  window.addEventListener('resize', schedule, {passive:true});
+  window.addEventListener('orientationchange', schedule, {passive:true});
+  window.addEventListener('pageshow', schedule);
+})();
+</script>
 </body>
 </html>
