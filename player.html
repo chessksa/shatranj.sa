@@ -5,6 +5,7 @@
   <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover" />
   <title>ملف اللاعب | شطرنج العرب</title>
   <meta name="theme-color" content="#1a1d21" />
+  <meta name="shatranj-asset-version" content="20261014-public-player-mobile-layout-v1" />
   <script>
     if(new URLSearchParams(location.search).get('embed')==='panel'){
       document.documentElement.classList.add('embedded-public-profile');
@@ -72,8 +73,240 @@
 
   </style>
 <link rel="stylesheet" href="v2/site/typography-system.css?v=20261012-source-palette-v5"><link rel="stylesheet" href="site-charcoal-theme.css?v=20261014-unified-game-tiles-v1">
+
+<style id="publicPlayerMobileLayout">
+/* Public player profile only. Embeds and desktop retain their original geometry. */
+.public-page-title{display:none}
+.public-player-controls{display:flex;align-items:center;justify-content:flex-end;gap:8px;min-width:0}
+@media(max-width:900px){
+  html:not(.embedded-public-profile){
+    width:100%!important;
+    height:100%!important;
+    min-height:100%!important;
+    overflow:hidden!important;
+    overscroll-behavior:none!important;
+  }
+  html:not(.embedded-public-profile) body.public-player-page,
+  html:not(.embedded-public-profile) body.public-player-page.v2-shell-active{
+    position:fixed!important;
+    inset:0!important;
+    display:block!important;
+    width:100%!important;
+    height:100dvh!important;
+    min-height:100dvh!important;
+    max-height:100dvh!important;
+    margin:0!important;
+    padding:0!important;
+    background:#1a1d21!important;
+    overflow:hidden!important;
+    overscroll-behavior:none!important;
+  }
+  html:not(.embedded-public-profile) body.public-player-page #publicPlayerApp{
+    display:block!important;
+    width:min(100% - 20px,700px)!important;
+    max-width:100%!important;
+    height:100dvh!important;
+    min-height:0!important;
+    max-height:100dvh!important;
+    margin:0 auto!important;
+    padding:9px 0 calc(94px + env(safe-area-inset-bottom))!important;
+    overflow-x:hidden!important;
+    overflow-y:auto!important;
+    overscroll-behavior-y:contain!important;
+    -webkit-overflow-scrolling:touch;
+    scrollbar-width:none;
+  }
+  html:not(.embedded-public-profile) body.public-player-page #publicPlayerApp::-webkit-scrollbar{display:none}
+
+  /* One tidy header row: page title on the right, home and notification controls on the left. */
+  html:not(.embedded-public-profile) body.public-player-page .topbar{
+    position:sticky!important;
+    z-index:30!important;
+    top:0!important;
+    display:grid!important;
+    grid-template-columns:minmax(0,1fr) auto!important;
+    align-items:center!important;
+    gap:8px!important;
+    min-width:0!important;
+    min-height:56px!important;
+    margin:0 0 12px!important;
+    padding:6px 8px!important;
+    background:linear-gradient(180deg,#303740,#282e35)!important;
+    border:1px solid #48515b!important;
+    border-radius:14px!important;
+    box-shadow:none!important;
+  }
+  html:not(.embedded-public-profile) body.public-player-page .topbar .brand{
+    min-width:0!important;
+    display:flex!important;
+    align-items:center!important;
+    justify-content:flex-start!important;
+    gap:7px!important;
+    white-space:nowrap!important;
+    color:#e9edf1!important;
+  }
+  html:not(.embedded-public-profile) body.public-player-page .topbar .mark{
+    flex:0 0 37px!important;
+    width:37px!important;
+    height:40px!important;
+    border:1px solid #48515b!important;
+    border-radius:10px!important;
+    background:#2d3239!important;
+    color:#79c6f3!important;
+    font-size:23px!important;
+  }
+  html:not(.embedded-public-profile) body.public-player-page .topbar .brand-label{display:none!important}
+  html:not(.embedded-public-profile) body.public-player-page .topbar .public-page-title{
+    display:block!important;
+    min-width:0!important;
+    color:#e9edf1!important;
+    font-size:15px!important;
+    font-weight:900!important;
+    line-height:1.1!important;
+  }
+  html:not(.embedded-public-profile) body.public-player-page .public-player-controls{
+    display:flex!important;
+    align-items:center!important;
+    justify-content:flex-end!important;
+    flex:0 0 auto!important;
+    min-width:0!important;
+    gap:7px!important;
+    white-space:nowrap!important;
+  }
+  html:not(.embedded-public-profile) body.public-player-page #siteNotificationHost{
+    position:relative!important;
+    display:flex!important;
+    width:42px!important;
+    height:42px!important;
+    flex:0 0 42px!important;
+    align-items:center!important;
+    justify-content:center!important;
+  }
+  html:not(.embedded-public-profile) body.public-player-page #siteNotificationHost .site-notification-bell{
+    display:flex!important;
+    align-items:center!important;
+    justify-content:center!important;
+    width:42px!important;
+    min-width:42px!important;
+    max-width:42px!important;
+    height:42px!important;
+    min-height:42px!important;
+    max-height:42px!important;
+    margin:0!important;
+    padding:0!important;
+    border:1px solid #48515b!important;
+    border-radius:11px!important;
+    background:#2d3239!important;
+    color:#e9edf1!important;
+    box-shadow:none!important;
+    font-size:0!important;
+  }
+  html:not(.embedded-public-profile) body.public-player-page #siteNotificationHost .site-notification-bell .header-tile-label{
+    display:none!important;
+  }
+  html:not(.embedded-public-profile) body.public-player-page #siteNotificationHost .site-notification-bell .header-tile-icon{
+    display:grid!important;
+    place-items:center!important;
+    width:23px!important;
+    height:23px!important;
+    flex:0 0 23px!important;
+    margin:0!important;
+    font-size:22px!important;
+    line-height:1!important;
+  }
+  html:not(.embedded-public-profile) body.public-player-page #siteNotificationHost .site-notification-bell svg{
+    display:block!important;
+    width:23px!important;
+    height:23px!important;
+  }
+  html:not(.embedded-public-profile) body.public-player-page .topbar .public-home-link{
+    display:inline-flex!important;
+    align-items:center!important;
+    justify-content:center!important;
+    flex:0 0 auto!important;
+    gap:5px!important;
+    width:auto!important;
+    min-width:90px!important;
+    max-width:102px!important;
+    height:42px!important;
+    min-height:42px!important;
+    margin:0!important;
+    padding:0 8px!important;
+    border:1px solid #48515b!important;
+    border-radius:11px!important;
+    background:#2d3239!important;
+    color:#e9edf1!important;
+    box-shadow:none!important;
+    font:800 12px/1 Arial,sans-serif!important;
+    white-space:nowrap!important;
+    text-decoration:none!important;
+  }
+  html:not(.embedded-public-profile) body.public-player-page .public-home-icon{
+    color:#79c6f3!important;
+    font:900 21px/1 Arial,sans-serif!important;
+  }
+
+  /* The document never scrolls: only the content above this independent footer does. */
+  html:not(.embedded-public-profile) body.public-player-page > .v2-mobile-nav{
+    position:fixed!important;
+    top:auto!important;
+    right:8px!important;
+    bottom:calc(6px + env(safe-area-inset-bottom))!important;
+    left:8px!important;
+    width:auto!important;
+    height:64px!important;
+    min-height:64px!important;
+    max-height:64px!important;
+    margin:0!important;
+    padding:5px!important;
+    display:grid!important;
+    grid-template-columns:repeat(5,minmax(0,1fr))!important;
+    align-items:stretch!important;
+    gap:4px!important;
+    z-index:10050!important;
+    border:1px solid #48515b!important;
+    border-radius:17px!important;
+    background:linear-gradient(180deg,#292e35,#22262b)!important;
+    box-shadow:0 8px 22px rgba(0,0,0,.25)!important;
+    transform:none!important;
+    translate:none!important;
+    animation:none!important;
+    transition:none!important;
+    touch-action:manipulation!important;
+    pointer-events:auto!important;
+  }
+  html:not(.embedded-public-profile) body.public-player-page > .v2-mobile-nav .v2-mobile-link{
+    min-width:0!important;
+    height:52px!important;
+    min-height:52px!important;
+    padding:3px 2px!important;
+    flex:none!important;
+    transform:none!important;
+    translate:none!important;
+    animation:none!important;
+    transition:background-color .12s ease,border-color .12s ease!important;
+    touch-action:manipulation!important;
+    pointer-events:auto!important;
+  }
+  html:not(.embedded-public-profile) body.public-player-page > .v2-mobile-nav .v2-mobile-link:active{
+    transform:none!important;
+  }
+  html:not(.embedded-public-profile) body.public-player-page > .v2-mobile-more{
+    position:fixed!important;
+    z-index:10049!important;
+  }
+}
+@media(max-width:360px){
+  html:not(.embedded-public-profile) body.public-player-page .topbar .public-page-title{font-size:13px!important}
+  html:not(.embedded-public-profile) body.public-player-page .topbar .public-home-link{
+    min-width:75px!important;
+    padding:0 5px!important;
+  }
+  html:not(.embedded-public-profile) body.public-player-page .public-player-controls{gap:4px!important}
+}
+</style>
 </head>
-<body>
+<body class="public-player-page">
   <svg class="rank-svg-defs" aria-hidden="true" focusable="false">
     <symbol id="rank-pawn" viewBox="0 0 64 64"><circle cx="32" cy="15" r="9" fill="currentColor"/><path d="M22 27h20l5 12H17l5-12Zm-7 16h34l5 10H10l5-10Z" fill="currentColor"/></symbol>
     <symbol id="rank-knight" viewBox="0 0 64 64"><path d="M17 52h36v-8H25c1-8 8-12 16-16 5-3 7-8 5-14l-8 5-8-8-3 11-9 8 6 5-7 17Zm17-31 5-3 1 5-6-2Z" fill="currentColor"/></symbol>
@@ -84,8 +317,8 @@
   </svg>
   <div class="shell" id="publicPlayerApp">
     <header class="topbar">
-      <a class="brand" href="index.html"><span class="mark">♞</span><span>شطرنج العرب</span></a>
-      <div style="display:flex;align-items:center;gap:8px"><div id="siteNotificationHost"></div><a class="btn" href="index.html">الرئيسية</a></div>
+      <a class="brand" href="index.html" aria-label="العودة إلى شطرنج العرب"><span class="mark" aria-hidden="true">♞</span><span class="brand-label">شطرنج العرب</span><span class="public-page-title">ملف اللاعب</span></a>
+      <div class="public-player-controls"><div id="siteNotificationHost"></div><a class="btn public-home-link" href="index.html"><span class="public-home-icon" aria-hidden="true">⌂</span><span>الرئيسية</span></a></div>
     </header>
 
     <div class="message" id="pageMessage" hidden>جاري تحميل ملف اللاعب...</div>
