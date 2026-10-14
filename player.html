@@ -5,7 +5,7 @@
   <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover" />
   <title>ملف اللاعب | شطرنج العرب</title>
   <meta name="theme-color" content="#1a1d21" />
-  <meta name="shatranj-asset-version" content="20261014-public-player-instant-scroll-raised-dock-v6" />
+  <meta name="shatranj-asset-version" content="20261014-public-player-top-navigation-v7" />
   <script>
     if(new URLSearchParams(location.search).get('embed')==='panel'){
       document.documentElement.classList.add('embedded-public-profile');
@@ -75,42 +75,41 @@
 <link rel="stylesheet" href="v2/site/typography-system.css?v=20261012-source-palette-v5"><link rel="stylesheet" href="site-charcoal-theme.css?v=20261014-unified-game-tiles-v1">
 
 <style id="publicPlayerMobileLayout">
-/* Public player profile only. Embeds and desktop retain their original geometry. */
-.public-page-title{display:none}
-.public-player-controls{display:flex;align-items:center;justify-content:flex-end;gap:8px;min-width:0}
+/* Player profile on phone: navigation is the ONLY top row.
+   The player content scrolls below it; the dock never enters the scrollport.
+   Public profile embeds and the desktop layout are intentionally untouched. */
 @media(max-width:900px){
-  /* One stable mobile viewport: Safari toolbar changes MUST NOT re-layout the dock.
-     Only #publicPlayerApp scrolls; body is the fixed containing block for the dock. */
   html:not(.embedded-public-profile){
     width:100%!important;
     height:100%!important;
-    min-height:100%!important;
     overflow:hidden!important;
     overscroll-behavior:none!important;
   }
   html:not(.embedded-public-profile) body.public-player-page,
   html:not(.embedded-public-profile) body.public-player-page.v2-shell-active{
     position:fixed!important;
-    top:0!important;
-    right:0!important;
-    bottom:auto!important;
-    left:0!important;
+    inset:0 auto auto 0!important;
     display:block!important;
     width:100%!important;
-    height:100vh!important; /* fallback for older browsers */
-    height:100svh!important; /* stable SMALL viewport; not dynamic 100dvh */
+    height:100vh!important;
+    height:100svh!important;
     min-height:0!important;
     max-height:100svh!important;
     margin:0!important;
     padding:0!important;
-    background:#1a1d21!important;
     overflow:hidden!important;
-    overscroll-behavior:none!important;
+    background:#1a1d21!important;
     transform:none!important;
     contain:none!important;
+    overscroll-behavior:none!important;
   }
-  /* A definite scrollport from the FIRST touch, independent of Safari chrome.
-     Avoid the implicit 100% height + auto overflow combination on iOS. */
+
+  /* Remove the entire former 'ملف اللاعب' heading and its buttons on mobile. */
+  html:not(.embedded-public-profile) body.public-player-page #publicPlayerApp > .topbar{
+    display:none!important;
+  }
+
+  /* One scrollport; starts below the TOP navigation and responds on first swipe. */
   html:not(.embedded-public-profile) body.public-player-page #publicPlayerApp{
     position:absolute!important;
     inset:0!important;
@@ -121,171 +120,42 @@
     min-height:0!important;
     max-height:none!important;
     margin:0 auto!important;
-    padding:9px 0 calc(128px + env(safe-area-inset-bottom))!important;
+    padding:calc(86px + env(safe-area-inset-top, 0px)) 0 22px!important;
     overflow-x:hidden!important;
     overflow-y:scroll!important;
-    overscroll-behavior-y:auto!important;
+    overscroll-behavior-y:contain!important;
     -webkit-overflow-scrolling:touch!important;
-    touch-action:auto!important;
+    touch-action:pan-y!important;
     scroll-behavior:auto!important;
   }
 
-  /* One tidy header row: page title on the right, home and notification controls on the left. */
-  html:not(.embedded-public-profile) body.public-player-page .topbar{
-    position:sticky!important;
-    z-index:30!important;
-    top:0!important;
-    display:grid!important;
-    grid-template-columns:minmax(0,1fr) auto!important;
-    align-items:center!important;
-    gap:8px!important;
-    min-width:0!important;
-    min-height:56px!important;
-    margin:0 0 12px!important;
-    padding:6px 8px!important;
-    background:linear-gradient(180deg,#303740,#282e35)!important;
-    border:1px solid #48515b!important;
-    border-radius:14px!important;
-    box-shadow:none!important;
-  }
-  html:not(.embedded-public-profile) body.public-player-page .topbar .brand{
-    min-width:0!important;
-    display:flex!important;
-    align-items:center!important;
-    justify-content:flex-start!important;
-    gap:7px!important;
-    white-space:nowrap!important;
-    color:#e9edf1!important;
-  }
-  html:not(.embedded-public-profile) body.public-player-page .topbar .mark{
-    flex:0 0 37px!important;
-    width:37px!important;
-    height:40px!important;
-    border:1px solid #48515b!important;
-    border-radius:10px!important;
-    background:#2d3239!important;
-    color:#79c6f3!important;
-    font-size:23px!important;
-  }
-  html:not(.embedded-public-profile) body.public-player-page .topbar .brand-label{display:none!important}
-  html:not(.embedded-public-profile) body.public-player-page .topbar .public-page-title{
-    display:block!important;
-    min-width:0!important;
-    color:#e9edf1!important;
-    font-size:15px!important;
-    font-weight:900!important;
-    line-height:1.1!important;
-  }
-  html:not(.embedded-public-profile) body.public-player-page .public-player-controls{
-    display:flex!important;
-    align-items:center!important;
-    justify-content:flex-end!important;
-    flex:0 0 auto!important;
-    min-width:0!important;
-    gap:7px!important;
-    white-space:nowrap!important;
-  }
-  html:not(.embedded-public-profile) body.public-player-page #siteNotificationHost{
-    position:relative!important;
-    display:flex!important;
-    width:42px!important;
-    height:42px!important;
-    flex:0 0 42px!important;
-    align-items:center!important;
-    justify-content:center!important;
-  }
-  html:not(.embedded-public-profile) body.public-player-page #siteNotificationHost .site-notification-bell{
-    display:flex!important;
-    align-items:center!important;
-    justify-content:center!important;
-    width:42px!important;
-    min-width:42px!important;
-    max-width:42px!important;
-    height:42px!important;
-    min-height:42px!important;
-    max-height:42px!important;
-    margin:0!important;
-    padding:0!important;
-    border:1px solid #48515b!important;
-    border-radius:11px!important;
-    background:#2d3239!important;
-    color:#e9edf1!important;
-    box-shadow:none!important;
-    font-size:0!important;
-  }
-  html:not(.embedded-public-profile) body.public-player-page #siteNotificationHost .site-notification-bell .header-tile-label{
-    display:none!important;
-  }
-  html:not(.embedded-public-profile) body.public-player-page #siteNotificationHost .site-notification-bell .header-tile-icon{
-    display:grid!important;
-    place-items:center!important;
-    width:23px!important;
-    height:23px!important;
-    flex:0 0 23px!important;
-    margin:0!important;
-    font-size:22px!important;
-    line-height:1!important;
-  }
-  html:not(.embedded-public-profile) body.public-player-page #siteNotificationHost .site-notification-bell svg{
-    display:block!important;
-    width:23px!important;
-    height:23px!important;
-  }
-  html:not(.embedded-public-profile) body.public-player-page .topbar .public-home-link{
-    display:inline-flex!important;
-    align-items:center!important;
-    justify-content:center!important;
-    flex:0 0 auto!important;
-    gap:5px!important;
-    width:auto!important;
-    min-width:90px!important;
-    max-width:102px!important;
-    height:42px!important;
-    min-height:42px!important;
-    margin:0!important;
-    padding:0 8px!important;
-    border:1px solid #48515b!important;
-    border-radius:11px!important;
-    background:#2d3239!important;
-    color:#e9edf1!important;
-    box-shadow:none!important;
-    font:800 12px/1 Arial,sans-serif!important;
-    white-space:nowrap!important;
-    text-decoration:none!important;
-  }
-  html:not(.embedded-public-profile) body.public-player-page .public-home-icon{
-    color:#79c6f3!important;
-    font:900 21px/1 Arial,sans-serif!important;
-  }
-
-  /* True stationary dock: ABSOLUTE to the FIXED body, not fixed to Safari's
-     changing visual viewport. It never participates in the scrolling content. */
+  /* The existing FIVE navigation items replace the heading at the top. */
   html:not(.embedded-public-profile) body.public-player-page > .v2-mobile-nav{
     position:absolute!important;
-    top:auto!important;
+    top:calc(8px + env(safe-area-inset-top, 0px))!important;
     right:8px!important;
-    bottom:calc(28px + env(safe-area-inset-bottom))!important;
+    bottom:auto!important;
     left:8px!important;
+    display:grid!important;
+    grid-template-columns:repeat(5,minmax(0,1fr))!important;
+    align-items:stretch!important;
     width:auto!important;
     height:64px!important;
     min-height:64px!important;
     max-height:64px!important;
     margin:0!important;
     padding:5px!important;
-    display:grid!important;
-    grid-template-columns:repeat(5,minmax(0,1fr))!important;
-    align-items:stretch!important;
     gap:4px!important;
     z-index:10050!important;
     border:1px solid #48515b!important;
-    border-radius:17px!important;
+    border-radius:16px!important;
     background:linear-gradient(180deg,#292e35,#22262b)!important;
     box-shadow:0 8px 22px rgba(0,0,0,.25)!important;
     -webkit-backdrop-filter:none!important;
     backdrop-filter:none!important;
-    will-change:auto!important;
     transform:none!important;
     translate:none!important;
+    will-change:auto!important;
     animation:none!important;
     transition:none!important;
     touch-action:manipulation!important;
@@ -296,31 +166,31 @@
     height:52px!important;
     min-height:52px!important;
     padding:3px 2px!important;
-    flex:none!important;
     transform:none!important;
     translate:none!important;
     animation:none!important;
-    transition:background-color .12s ease,border-color .12s ease!important;
+    transition:none!important;
     touch-action:manipulation!important;
     pointer-events:auto!important;
   }
   html:not(.embedded-public-profile) body.public-player-page > .v2-mobile-nav .v2-mobile-link:active{
     transform:none!important;
   }
+
+  /* More opens below the top row instead of using the old bottom-nav spacing. */
   html:not(.embedded-public-profile) body.public-player-page > .v2-mobile-more{
     position:absolute!important;
     inset:0!important;
     z-index:10049!important;
+    display:grid!important;
+    align-items:start!important;
+    justify-items:center!important;
+    padding:calc(82px + env(safe-area-inset-top, 0px)) 10px 10px!important;
     overflow:hidden!important;
   }
-}
-@media(max-width:360px){
-  html:not(.embedded-public-profile) body.public-player-page .topbar .public-page-title{font-size:13px!important}
-  html:not(.embedded-public-profile) body.public-player-page .topbar .public-home-link{
-    min-width:75px!important;
-    padding:0 5px!important;
+  html:not(.embedded-public-profile) body.public-player-page > .v2-mobile-more[hidden]{
+    display:none!important;
   }
-  html:not(.embedded-public-profile) body.public-player-page .public-player-controls{gap:4px!important}
 }
 </style>
 </head>
