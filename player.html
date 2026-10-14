@@ -5,7 +5,7 @@
   <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover" />
   <title>ملف اللاعب | شطرنج العرب</title>
   <meta name="theme-color" content="#1a1d21" />
-  <meta name="shatranj-asset-version" content="20261014-public-player-static-dock-v4" />
+  <meta name="shatranj-asset-version" content="20261014-public-player-stable-shell-v5" />
   <script>
     if(new URLSearchParams(location.search).get('embed')==='panel'){
       document.documentElement.classList.add('embedded-public-profile');
@@ -79,43 +79,51 @@
 .public-page-title{display:none}
 .public-player-controls{display:flex;align-items:center;justify-content:flex-end;gap:8px;min-width:0}
 @media(max-width:900px){
-  /* Return scrolling to the document itself. Do not make body/app an inner scrollport. */
+  /* One stable mobile viewport: Safari toolbar changes MUST NOT re-layout the dock.
+     Only #publicPlayerApp scrolls; body is the fixed containing block for the dock. */
   html:not(.embedded-public-profile){
     width:100%!important;
-    height:auto!important;
+    height:100%!important;
     min-height:100%!important;
-    overflow-x:clip!important;
-    overflow-y:auto!important;
-    overscroll-behavior-y:auto!important;
-    -webkit-overflow-scrolling:touch;
+    overflow:hidden!important;
+    overscroll-behavior:none!important;
   }
   html:not(.embedded-public-profile) body.public-player-page,
   html:not(.embedded-public-profile) body.public-player-page.v2-shell-active{
-    position:static!important;
-    inset:auto!important;
+    position:fixed!important;
+    top:0!important;
+    right:0!important;
+    bottom:auto!important;
+    left:0!important;
     display:block!important;
     width:100%!important;
-    height:auto!important;
-    min-height:100dvh!important;
-    max-height:none!important;
+    height:100vh!important; /* fallback for older browsers */
+    height:100svh!important; /* stable SMALL viewport; not dynamic 100dvh */
+    min-height:0!important;
+    max-height:100svh!important;
     margin:0!important;
     padding:0!important;
     background:#1a1d21!important;
-    overflow-x:clip!important;
-    overflow-y:visible!important;
-    overscroll-behavior-y:auto!important;
+    overflow:hidden!important;
+    overscroll-behavior:none!important;
+    transform:none!important;
+    contain:none!important;
   }
   html:not(.embedded-public-profile) body.public-player-page #publicPlayerApp{
+    position:relative!important;
     display:block!important;
     width:min(100% - 20px,700px)!important;
     max-width:100%!important;
-    height:auto!important;
+    height:100%!important;
     min-height:0!important;
-    max-height:none!important;
+    max-height:100%!important;
     margin:0 auto!important;
-    padding:9px 0 calc(110px + env(safe-area-inset-bottom))!important;
-    overflow:visible!important;
-    overscroll-behavior-y:auto!important;
+    padding:9px 0 calc(100px + env(safe-area-inset-bottom))!important;
+    overflow-x:hidden!important;
+    overflow-y:auto!important;
+    overscroll-behavior-y:contain!important;
+    -webkit-overflow-scrolling:touch;
+    touch-action:pan-y!important;
   }
 
   /* One tidy header row: page title on the right, home and notification controls on the left. */
@@ -246,9 +254,10 @@
     font:900 21px/1 Arial,sans-serif!important;
   }
 
-  /* Footer is fixed to the viewport while the full document scrolls naturally. */
+  /* True stationary dock: ABSOLUTE to the FIXED body, not fixed to Safari's
+     changing visual viewport. It never participates in the scrolling content. */
   html:not(.embedded-public-profile) body.public-player-page > .v2-mobile-nav{
-    position:fixed!important;
+    position:absolute!important;
     top:auto!important;
     right:8px!important;
     bottom:calc(6px + env(safe-area-inset-bottom))!important;
@@ -295,8 +304,10 @@
     transform:none!important;
   }
   html:not(.embedded-public-profile) body.public-player-page > .v2-mobile-more{
-    position:fixed!important;
+    position:absolute!important;
+    inset:0!important;
     z-index:10049!important;
+    overflow:hidden!important;
   }
 }
 @media(max-width:360px){
