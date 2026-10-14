@@ -75,6 +75,10 @@
 <link rel="stylesheet" href="v2/site/typography-system.css?v=20261012-source-palette-v5"><link rel="stylesheet" href="site-charcoal-theme.css?v=20261014-unified-game-tiles-v1">
 
 <style id="publicPlayerMobileLayout">
+/* Preserve desktop header appearance; the extra page-title label is mobile-only
+   and its entire row is hidden on small screens. */
+.public-page-title{display:none}
+.public-player-controls{display:flex;align-items:center;justify-content:flex-end;gap:8px;min-width:0}
 /* Player profile on phone: navigation is the ONLY top row.
    The player content scrolls below it; the dock never enters the scrollport.
    Public profile embeds and the desktop layout are intentionally untouched. */
