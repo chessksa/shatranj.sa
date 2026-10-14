@@ -57,9 +57,9 @@
     max-height:126px!important;
     padding:6px 0!important;
     overflow:visible!important;
-    background:linear-gradient(180deg,rgba(69,66,62,0.99),rgba(69,66,62,0.99))!important;
+    background:linear-gradient(180deg,rgba(45,50,57,0.99),rgba(45,50,57,0.99))!important;
     border:0!important;
-    border-bottom:1px solid rgba(165,162,158,0.16)!important;
+    border-bottom:1px solid rgba(72,81,91,0.16)!important;
     box-shadow:none!important;
   }
 
@@ -72,9 +72,9 @@
     padding:7px!important;
     display:block!important;
     overflow:visible!important;
-    border:1px solid rgba(165,162,158,0.46)!important;
+    border:1px solid rgba(72,81,91,0.46)!important;
     border-radius:21px!important;
-    background:linear-gradient(145deg,rgba(69,66,62,0.96),rgba(69,66,62,0.96))!important;
+    background:linear-gradient(145deg,rgba(45,50,57,0.96),rgba(45,50,57,0.96))!important;
     box-shadow:0 8px 22px rgba(0,0,0,.18),inset 0 1px 0 rgba(255,255,255,.025)!important;
   }
 
@@ -123,7 +123,7 @@
     border:0!important;
     border-radius:15px!important;
     background:rgba(255,255,255,.025)!important;
-    box-shadow:inset 0 0 0 1px rgba(165,162,158,0.18)!important;
+    box-shadow:inset 0 0 0 1px rgba(72,81,91,0.18)!important;
   }
 
   html body.v2-route-home.home-signed-in .compact-member-nav .header-member-avatar-wrap,
@@ -138,7 +138,7 @@
   }
 
   html body.v2-route-home.home-signed-in .compact-member-nav .header-member-avatar{
-    border:1px solid rgba(165,162,158,0.58)!important;
+    border:1px solid rgba(72,81,91,0.58)!important;
     object-fit:cover!important;
   }
 
@@ -159,7 +159,7 @@
     flex:1 1 auto!important;
     margin:0!important;
     padding:0!important;
-    color:#e2dcd3!important;
+    color:#e9edf1!important;
     font-size:17px!important;
     font-weight:900!important;
     line-height:1.1!important;
@@ -179,14 +179,14 @@
     align-items:center!important;
     justify-content:center!important;
     gap:2px!important;
-    border-inline-start:1px solid rgba(165,162,158,0.24)!important;
+    border-inline-start:1px solid rgba(72,81,91,0.24)!important;
     line-height:1!important;
   }
 
   html body.v2-route-home.home-signed-in .compact-member-nav .header-member-points small{
     display:block!important;
     margin:0!important;
-    color:#b9c9c4!important;
+    color:#bfc6cf!important;
     font-size:8px!important;
     line-height:1!important;
   }
@@ -194,7 +194,7 @@
   html body.v2-route-home.home-signed-in .compact-member-nav .header-member-points b{
     margin:0!important;
     padding:0!important;
-    color:#e2dcd3!important;
+    color:#e9edf1!important;
     font-size:18px!important;
     font-weight:900!important;
     line-height:1!important;
@@ -214,10 +214,10 @@
     padding:0 7px!important;
     align-items:center!important;
     justify-content:center!important;
-    border:1px solid rgba(165,162,158,0.44)!important;
+    border:1px solid rgba(72,81,91,0.44)!important;
     border-radius:12px!important;
-    background:linear-gradient(145deg,rgba(69,66,62,0.84),rgba(69,66,62,0.84))!important;
-    color:#e2dcd3!important;
+    background:linear-gradient(145deg,rgba(45,50,57,0.84),rgba(45,50,57,0.84))!important;
+    color:#e9edf1!important;
     box-shadow:inset 0 1px 0 rgba(255,255,255,.02)!important;
     font:800 11px/1 Arial,sans-serif!important;
     white-space:nowrap!important;
@@ -261,7 +261,7 @@
     border-radius:12px!important;
     background:transparent!important;
     box-shadow:none!important;
-    color:#e2dcd3!important;
+    color:#e9edf1!important;
     font:800 11px/1 Arial,sans-serif!important;
   }
 
@@ -294,7 +294,7 @@
     min-height:18px!important;
     flex:0 0 18px!important;
     display:block!important;
-    background:#e2dcd3!important;
+    background:#e9edf1!important;
     -webkit-mask-repeat:no-repeat!important;
     -webkit-mask-position:center!important;
     -webkit-mask-size:contain!important;
@@ -326,7 +326,7 @@
   html body.v2-route-home.home-signed-in .compact-member-nav .site-notification-bell .header-tile-label::after{
     content:"التنبيهات"!important;
     font:800 11px/1 Arial,sans-serif!important;
-    color:#e2dcd3!important;
+    color:#e9edf1!important;
   }
 }
 
