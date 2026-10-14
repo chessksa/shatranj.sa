@@ -5,7 +5,7 @@
   <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover" />
   <title>ملف اللاعب | شطرنج العرب</title>
   <meta name="theme-color" content="#1a1d21" />
-  <meta name="shatranj-asset-version" content="20261014-public-player-mobile-layout-v1" />
+  <meta name="shatranj-asset-version" content="20261014-public-player-native-scroll-v2" />
   <script>
     if(new URLSearchParams(location.search).get('embed')==='panel'){
       document.documentElement.classList.add('embedded-public-profile');
@@ -79,44 +79,44 @@
 .public-page-title{display:none}
 .public-player-controls{display:flex;align-items:center;justify-content:flex-end;gap:8px;min-width:0}
 @media(max-width:900px){
+  /* Return scrolling to the document itself. Do not make body/app an inner scrollport. */
   html:not(.embedded-public-profile){
     width:100%!important;
-    height:100%!important;
+    height:auto!important;
     min-height:100%!important;
-    overflow:hidden!important;
-    overscroll-behavior:none!important;
+    overflow-x:clip!important;
+    overflow-y:auto!important;
+    overscroll-behavior-y:auto!important;
+    -webkit-overflow-scrolling:touch;
   }
   html:not(.embedded-public-profile) body.public-player-page,
   html:not(.embedded-public-profile) body.public-player-page.v2-shell-active{
-    position:fixed!important;
-    inset:0!important;
+    position:static!important;
+    inset:auto!important;
     display:block!important;
     width:100%!important;
-    height:100dvh!important;
+    height:auto!important;
     min-height:100dvh!important;
-    max-height:100dvh!important;
+    max-height:none!important;
     margin:0!important;
     padding:0!important;
     background:#1a1d21!important;
-    overflow:hidden!important;
-    overscroll-behavior:none!important;
+    overflow-x:clip!important;
+    overflow-y:visible!important;
+    overscroll-behavior-y:auto!important;
   }
   html:not(.embedded-public-profile) body.public-player-page #publicPlayerApp{
     display:block!important;
     width:min(100% - 20px,700px)!important;
     max-width:100%!important;
-    height:100dvh!important;
+    height:auto!important;
     min-height:0!important;
-    max-height:100dvh!important;
+    max-height:none!important;
     margin:0 auto!important;
-    padding:9px 0 calc(94px + env(safe-area-inset-bottom))!important;
-    overflow-x:hidden!important;
-    overflow-y:auto!important;
-    overscroll-behavior-y:contain!important;
-    -webkit-overflow-scrolling:touch;
-    scrollbar-width:none;
+    padding:9px 0 calc(110px + env(safe-area-inset-bottom))!important;
+    overflow:visible!important;
+    overscroll-behavior-y:auto!important;
   }
-  html:not(.embedded-public-profile) body.public-player-page #publicPlayerApp::-webkit-scrollbar{display:none}
 
   /* One tidy header row: page title on the right, home and notification controls on the left. */
   html:not(.embedded-public-profile) body.public-player-page .topbar{
@@ -246,7 +246,7 @@
     font:900 21px/1 Arial,sans-serif!important;
   }
 
-  /* The document never scrolls: only the content above this independent footer does. */
+  /* Footer is fixed to the viewport while the full document scrolls naturally. */
   html:not(.embedded-public-profile) body.public-player-page > .v2-mobile-nav{
     position:fixed!important;
     top:auto!important;
