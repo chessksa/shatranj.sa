@@ -47,6 +47,7 @@ let pollTimer=null;
 let unsubscribeGame=null;
 let refreshPromise=null;
 let clockTimer=null;
+let fallbackSyncTimer=null;
 let submittingMove=false;
 let actionInFlight=false;
 let timeoutRequested=false;
@@ -429,6 +430,13 @@ function updateControls(){
   quickTimeButtons.forEach(button=>button.disabled=polling||playable||actionInFlight);
 }
 
+function turnMessage(){
+  if(!playableGame()) return '';
+  const mine=gameColor();
+  if(!mine) return 'تعذر تحديد مقعد اللاعب — افتح المباراة مجددًا';
+  return currentGame.turn===mine?'دورك الآن — انقر القطعة ثم مربع النقل':'بانتظار نقلة الخصم';
+}
+
 function gameFinishedMessage(){
   if(!currentGame) return '';
   if(currentGame.status==='cancelled') return 'تم إنهاء المباراة بلا خصم نقاط';
@@ -523,21 +531,39 @@ async function refreshGame(){
     const latest=normalizeGameState(await getGameState(gameId));
     // Never let a late API response repaint an idle homepage after navigation.
     if(!active||generation!==playGeneration||currentGame?.id!==gameId)return null;
-    const priorFen=currentGame?.fen;
+    if(!latest) throw new Error('تعذر استعادة حالة المباراة');
+    const previous=currentGame;
+    const changed=previous?.ply!==latest.ply||previous?.fen!==latest.fen;
+    const ended=previous?.status!==latest.status;
     currentGame=latest;
     orientation=gameColor()||orientation;
     updateCurrentRatingFromGame();
     updateOpponent();
-    renderPosition(currentGame.fen,orientation);
-    playBoardMoveSound(priorFen,currentGame.fen);
+    if(changed){
+      selectedSquare=null;
+      renderPosition(currentGame.fen,orientation);
+      playBoardMoveSound(previous?.fen,currentGame.fen);
+    }else{
+      updateSelectableSquares();
+    }
     updateControls();
     renderClocks();
-    await refreshMoveNotebook();
-    const message=gameFinishedMessage();
-    if(message) setStatus(message);
+    if(changed||ended) await refreshMoveNotebook();
+    if(changed||ended){
+      const message=gameFinishedMessage()||turnMessage();
+      if(message) setStatus(message,{error:!gameColor()&&!ended});
+    }
     return currentGame;
   })().finally(()=>{refreshPromise=null;});
   return refreshPromise;
+}
+
+function startFallbackSync(){
+  if(fallbackSyncTimer) clearInterval(fallbackSyncTimer);
+  fallbackSyncTimer=setInterval(()=>{
+    if(!active||!playableGame()||document.visibilityState==='hidden') return;
+    void refreshGame().catch(()=>{});
+  },3000);
 }
 
 function beginSubscription(gameId){
@@ -568,10 +594,12 @@ async function openGame(gameId){
   updateOpponent();
   renderPosition(currentGame.fen,orientation);
   updateControls();
+  setStatus(turnMessage(),{error:!gameColor()});
   await refreshMoveNotebook();
   if(!active||generation!==playGeneration)return;
   startClockLoop();
   beginSubscription(gameId);
+  startFallbackSync();
 }
 
 function stopPolling(){
@@ -679,7 +707,7 @@ async function handleSquareClick(event){
       promotion:reachesPromotionRank?'q':null,
     });
     await refreshGame();
-    if(currentGame.status!=='finished') setStatus('المباراة جارية');
+    if(currentGame.status!=='finished') setStatus(turnMessage());
   }catch(error){
     await refreshGame().catch(()=>{});
     setStatus(error.code==='illegal_move'?'نقلة غير قانونية':(error.message||'تعذر تنفيذ النقلة'),{error:true});
@@ -851,6 +879,8 @@ function exitInlinePlay(){
     stopPolling();
   }
   stopClockLoop();
+  if(fallbackSyncTimer) clearInterval(fallbackSyncTimer);
+  fallbackSyncTimer=null;
   stopSubscription();
   closeMoveNotebook('online');
   selectedSquare=null;
