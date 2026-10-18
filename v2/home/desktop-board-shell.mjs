@@ -691,7 +691,7 @@ if(desktop.matches && document.querySelector('#homeHero')){
   }
 
   function computerView(body){
-    mountInlineComputer(body);
+    mountInlineComputer(body,{supabase});
   }
 
   // Public profiles replace only the center-column content. Keep the board,
