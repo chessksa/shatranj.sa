@@ -603,9 +603,12 @@ async function refreshGame(){
     }else{
       updateSelectableSquares();
     }
+    if(!playableGame())clearPremove();
+    renderCaptureIndicators();
     updateControls();
     renderClocks();
     if(changed||ended) void refreshMoveNotebook();
+    if(changed||ended)tryPlayQueuedPremove();
     if(changed||ended){
       const message=gameFinishedMessage()||turnMessage();
       if(message) setStatus(message,{error:!gameColor()&&!ended});
@@ -655,9 +658,12 @@ function applyLiveGameRow(row){
   }else{
     updateSelectableSquares();
   }
+  if(!playableGame())clearPremove();
+  renderCaptureIndicators();
   updateControls();
   renderClocks();
   setStatus(gameFinishedMessage()||turnMessage());
+  if(changed)tryPlayQueuedPremove();
   return true;
 }
 
@@ -682,6 +688,7 @@ async function openGame(gameId){
   if(!active||generation!==playGeneration)return;
   if(!state) throw new Error('تعذر تحميل المباراة');
   currentGame=state;
+  clearPremove();
   lastMove=null;
   orientation=gameColor()||'w';
   openMoveNotebook('online');
@@ -735,6 +742,7 @@ async function beginSearch(minutes=selectedMinutes){
   if(polling||playableGame()||!identityReady) return;
   if(currentGame&&!playableGame()){
     closeMoveNotebook('online');
+    clearPremove();
     currentGame=null;
     stopSubscription();
     stopClockLoop();
@@ -770,7 +778,8 @@ async function handleSquareClick(event){
   const square=event.target.closest('.inline-play-square');
   if(!square||submittingMove||actionInFlight||!currentGame) return;
   const myColor=gameColor();
-  if(!myColor||currentGame.turn!==myColor||!playableGame()) return;
+  if(!myColor||!playableGame()) return;
+  const preparing=currentGame.turn!==myColor;
   const target=square.dataset.square;
   const targetPiece=renderedPosition.get(target);
   if(!selectedSquare){
@@ -794,6 +803,13 @@ async function handleSquareClick(event){
   const sourcePiece=renderedPosition.get(source);
   selectedSquare=null;
   const promotion=sourcePiece?.type==='p'&&(target.endsWith('8')||target.endsWith('1'))?'q':null;
+  if(preparing){
+    queuedPremove={gameId:currentGame.id,from:source,to:target,promotion,ply:Number(currentGame.ply),color:myColor};
+    updateSelectableSquares();
+    setStatus('نقلة مسبقة مجهزة بالأحمر — ستُنفَّذ عند وصول دورك إذا بقيت قانونية.');
+    return;
+  }
+  clearPremove();
   const preview=previewMove({fen:currentGame.fen,from:source,to:target,promotion});
   if(preview?.legal===false){
     updateSelectableSquares();
@@ -1010,6 +1026,7 @@ function exitInlinePlay(){
   stopSubscription();
   closeMoveNotebook('online');
   selectedSquare=null;
+  clearPremove();
   lastMove=null;
   if(panel) panel.hidden=true;
   const home=document.getElementById('desktopDashboardHome');
@@ -1090,6 +1107,7 @@ window.addEventListener('pagehide',()=>{
   stopPolling();
   stopClockLoop();
   stopSubscription();
+  clearPremove();
   closeMoveNotebook('online');
 });
 
