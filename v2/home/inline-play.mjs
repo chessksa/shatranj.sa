@@ -17,6 +17,7 @@ import {
 } from '../play/api.js?v=20261018-live-match-v2';
 import { remainingAt, formatClock, isFinalMinute } from '../play/clock.mjs';
 import { normalizeGameState } from '../play/state.mjs';
+import { preloadChessEngine, previewMove } from '../play/instant-move.mjs?v=20261018-move-speed-v1';
 import { playBoardMoveSound } from '../board/move-sound.mjs?v=20261013-movesound-v1';
 import { decorateBoardCoordinate, renderApprovedPreview, openMoveNotebook, updateMoveNotebook, closeMoveNotebook } from './move-notebook.mjs?v=20261012-notebook-aligned-v13';
 
@@ -42,6 +43,7 @@ let currentGame=null;
 let orientation='w';
 let selectedSquare=null;
 let renderedPosition=new Map();
+let displayedFen=null;
 let polling=false;
 let pollTimer=null;
 let unsubscribeGame=null;
@@ -269,6 +271,8 @@ function setSelectedMinutes(minutes){
 function renderPosition(fen=START_FEN,color=orientation){
   if(!board) return;
   renderedPosition=parseFen(fen);
+  displayedFen=fen;
+  board.dataset.positionFen=fen;
   const fragment=document.createDocumentFragment();
   for(const [displayIndex,squareName] of orderedSquares(color).entries()){
     const file=squareName.charCodeAt(0)-97;
@@ -523,7 +527,7 @@ async function refreshMoveNotebook(){
 }
 
 async function refreshGame(){
-  if(!active||!currentGame?.id) return null;
+  if(!active||!currentGame?.id||submittingMove) return null;
   if(refreshPromise) return refreshPromise;
   const gameId=currentGame.id;
   const generation=playGeneration;
@@ -532,6 +536,7 @@ async function refreshGame(){
     // Never let a late API response repaint an idle homepage after navigation.
     if(!active||generation!==playGeneration||currentGame?.id!==gameId)return null;
     if(!latest) throw new Error('تعذر استعادة حالة المباراة');
+    if(submittingMove||latest.ply<currentGame.ply) return currentGame;
     const previous=currentGame;
     const changed=previous?.ply!==latest.ply||previous?.fen!==latest.fen;
     const ended=previous?.status!==latest.status;
@@ -539,16 +544,16 @@ async function refreshGame(){
     orientation=gameColor()||orientation;
     updateCurrentRatingFromGame();
     updateOpponent();
-    if(changed){
+    if(changed||displayedFen!==latest.fen){
       selectedSquare=null;
       renderPosition(currentGame.fen,orientation);
-      playBoardMoveSound(previous?.fen,currentGame.fen);
+      if(changed) playBoardMoveSound(previous?.fen,currentGame.fen);
     }else{
       updateSelectableSquares();
     }
     updateControls();
     renderClocks();
-    if(changed||ended) await refreshMoveNotebook();
+    if(changed||ended) void refreshMoveNotebook();
     if(changed||ended){
       const message=gameFinishedMessage()||turnMessage();
       if(message) setStatus(message,{error:!gameColor()&&!ended});
@@ -558,12 +563,25 @@ async function refreshGame(){
   return refreshPromise;
 }
 
+let fallbackSyncActive=false;
+function stopFallbackSync(){
+  fallbackSyncActive=false;
+  if(fallbackSyncTimer) clearTimeout(fallbackSyncTimer);
+  fallbackSyncTimer=null;
+}
 function startFallbackSync(){
-  if(fallbackSyncTimer) clearInterval(fallbackSyncTimer);
-  fallbackSyncTimer=setInterval(()=>{
-    if(!active||!playableGame()||document.visibilityState==='hidden') return;
-    void refreshGame().catch(()=>{});
-  },3000);
+  stopFallbackSync();
+  fallbackSyncActive=true;
+  const tick=async()=>{
+    if(!fallbackSyncActive) return;
+    if(active&&playableGame()&&document.visibilityState!=='hidden'&&!submittingMove){
+      await refreshGame().catch(()=>{});
+    }
+    if(!fallbackSyncActive) return;
+    const waiting=Boolean(currentGame&&currentGame.turn!==gameColor());
+    fallbackSyncTimer=setTimeout(tick,waiting?1200:3500);
+  };
+  fallbackSyncTimer=setTimeout(tick,1200);
 }
 
 function beginSubscription(gameId){
@@ -595,11 +613,12 @@ async function openGame(gameId){
   renderPosition(currentGame.fen,orientation);
   updateControls();
   setStatus(turnMessage(),{error:!gameColor()});
-  await refreshMoveNotebook();
+  void refreshMoveNotebook();
   if(!active||generation!==playGeneration)return;
   startClockLoop();
   beginSubscription(gameId);
   startFallbackSync();
+  void preloadChessEngine();
 }
 
 function stopPolling(){
@@ -695,20 +714,41 @@ async function handleSquareClick(event){
   const source=selectedSquare;
   const sourcePiece=renderedPosition.get(source);
   selectedSquare=null;
+  const promotion=sourcePiece?.type==='p'&&(target.endsWith('8')||target.endsWith('1'))?'q':null;
+  const preview=previewMove({fen:currentGame.fen,from:source,to:target,promotion});
+  if(preview?.legal===false){
+    updateSelectableSquares();
+    setStatus('نقلة غير قانونية',{error:true});
+    return;
+  }
+  const gameId=currentGame.id;
+  const expectedPly=currentGame.ply;
   submittingMove=true;
   updateSelectableSquares();
-  const reachesPromotionRank=sourcePiece?.type==='p'&&(target.endsWith('8')||target.endsWith('1'));
+  if(preview?.legal) renderPosition(preview.fen,orientation);
   try{
-    await submitMove({
-      gameId:currentGame.id,
-      expectedPly:currentGame.ply,
-      from:source,
-      to:target,
-      promotion:reachesPromotionRank?'q':null,
-    });
-    await refreshGame();
-    if(currentGame.status!=='finished') setStatus(turnMessage());
+    const response=await submitMove({gameId,expectedPly,from:source,to:target,promotion});
+    if(!active||currentGame?.id!==gameId)return;
+    if(response?.game?.id===gameId && Number(response.game.ply)>=expectedPly+1){
+      const previous=currentGame;
+      currentGame=normalizeGameState({...previous,...response.game});
+      orientation=gameColor()||orientation;
+      if(displayedFen!==currentGame.fen) renderPosition(currentGame.fen,orientation);
+      playBoardMoveSound(previous?.fen,currentGame.fen);
+      updateCurrentRatingFromGame();
+      updateOpponent();
+      updateControls();
+      renderClocks();
+      void refreshMoveNotebook();
+      setStatus(gameFinishedMessage()||turnMessage());
+    }else{
+      submittingMove=false;
+      await refreshGame();
+    }
   }catch(error){
+    if(!active||currentGame?.id!==gameId)return;
+    if(displayedFen!==currentGame.fen) renderPosition(currentGame.fen,orientation);
+    submittingMove=false;
     await refreshGame().catch(()=>{});
     setStatus(error.code==='illegal_move'?'نقلة غير قانونية':(error.message||'تعذر تنفيذ النقلة'),{error:true});
   }finally{
@@ -879,8 +919,7 @@ function exitInlinePlay(){
     stopPolling();
   }
   stopClockLoop();
-  if(fallbackSyncTimer) clearInterval(fallbackSyncTimer);
-  fallbackSyncTimer=null;
+  stopFallbackSync();
   stopSubscription();
   closeMoveNotebook('online');
   selectedSquare=null;
