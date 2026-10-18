@@ -22,7 +22,18 @@ main{flex:1 1 auto;min-height:0;overflow:hidden;padding:18px 0}
 .match-table{width:100%;border-collapse:collapse;table-layout:fixed}.match-table td{text-align:center;height:var(--match-row-h);padding:5px 8px;border-bottom:1px solid rgba(165,162,158,0.17);background:transparent;color:var(--hero-cream);vertical-align:middle}.match-table td+td{border-inline-start:1px solid rgba(165,162,158,0.17)}.match-table tr:last-child td{border-bottom:0}.match-row:hover td{background:rgba(255,255,255,.025)}
 .col-num{width:64px;color:var(--hero-gold-2)!important;font-weight:900;font-size:14px}.players-cell{text-align:center;overflow:hidden}.player-pair{display:flex;align-items:center;justify-content:center;gap:7px;min-width:0;white-space:nowrap;overflow:hidden}.player-pair strong{min-width:0;overflow:hidden;text-overflow:ellipsis;font-size:13px}.player-pair b{flex:0 0 auto;color:var(--hero-gold);font-size:12px}.col-watch{width:112px}.watch-btn{display:inline-flex;align-items:center;justify-content:center;min-width:72px;height:31px;padding:0 11px;border:1px solid rgba(165,162,158,0.48);border-radius:9px;background:rgba(165,162,158,0.08);color:var(--hero-gold-2);font-size:11px;font-weight:900}.watch-btn:hover{background:var(--hero-gold);color:#302e2b}.empty-row td,.loading-row td{text-align:center!important;color:var(--hero-muted)!important;padding:20px 12px!important;height:auto!important}
 @media(max-width:760px){:root{--match-row-h:42px;--match-head-h:48px}.wrap{width:min(100% - 14px,1180px)}.brand{font-size:16px}.back{min-height:42px;padding:0 13px;font-size:12px}.nav{height:58px;min-height:58px}.tables-grid{grid-template-columns:1fr;grid-template-rows:repeat(2,minmax(0,1fr));gap:8px;align-items:stretch}.match-shell{height:100%;max-height:100%}.table-head{font-size:14px}.table-head strong{font-size:17px}.match-table td{padding:5px 6px}.col-num{width:44px;font-size:13px}.col-watch{width:86px}.watch-btn{min-width:66px;height:30px;padding:0 8px;font-size:11px}.player-pair{gap:5px}.player-pair strong{font-size:12px}main{padding:8px 0}}
+/* In the desktop middle panel, the main site supplies the header and navigation. */
+html[data-embed="panel"] header{display:none}
+html[data-embed="panel"] main{padding:5px 0}
+html[data-embed="panel"] .wrap{width:calc(100% - 8px)}
+html[data-embed="panel"] .tables-grid{grid-template-columns:1fr;grid-template-rows:repeat(2,minmax(0,1fr));gap:8px}
+html[data-embed="panel"] .match-shell{height:100%;border-radius:8px}
+html[data-embed="panel"] .table-head{font-size:13px;height:36px;flex-basis:36px}
+html[data-embed="panel"] .col-watch{width:78px}
+html[data-embed="panel"] .col-num{width:33px}
+html[data-embed="panel"] .match-table td{padding:3px 4px}
 </style>
+<script>if(new URLSearchParams(location.search).get('embed')==='panel')document.documentElement.dataset.embed='panel';</script>
 <link rel="stylesheet" href="v2/site/typography-system.css?v=20261012-source-palette-v5"><link rel="stylesheet" href="site-charcoal-theme.css?v=20261014-natural-white-pieces-v2">
 </head>
 <body>
@@ -89,7 +100,7 @@ function renderRows(body,games,emptyMessage){
     return `<tr class="match-row">
       <td class="col-num">${index+1}</td>
       <td class="players-cell"><span class="player-pair"><strong>${white}</strong><b aria-hidden="true">×</b><strong>${black}</strong></span></td>
-      <td class="col-watch"><a class="watch-btn" href="${watchHref(game)}" aria-label="مشاهدة مباراة ${white} ضد ${black}">مشاهدة</a></td>
+      <td class="col-watch"><a class="watch-btn" href="${watchHref(game)}" data-game-id="${esc(game.game_id||'')}" data-game-type="${esc(game.game_type||'')}" aria-label="مشاهدة مباراة ${white} ضد ${black}">مشاهدة</a></td>
     </tr>`;
   }).join('');
   if(wrap)wrap.scrollTop=scrollTop;
@@ -127,6 +138,17 @@ async function load(){
   }finally{loading=false}
 }
 
+// The desktop visitor watches directly on the unchanged home board; no new page.
+document.addEventListener('click',event=>{
+  if(document.documentElement.dataset.embed!=='panel')return;
+  const link=event.target.closest?.('.watch-btn[data-game-id]');
+  if(!link)return;
+  const id=link.dataset.gameId||'';
+  const gameType=link.dataset.gameType||'';
+  if(!/^[a-f0-9-]{36}$/i.test(id)||!['human','human_v2','computer'].includes(gameType))return;
+  event.preventDefault();
+  window.parent.postMessage({type:'shatranj:watch-main-board',gameId:id,gameType},location.origin);
+});
 load();setInterval(()=>{if(!document.hidden)void load()},2000);
 document.addEventListener('visibilitychange',()=>{if(!document.hidden)void load()});
 </script>
