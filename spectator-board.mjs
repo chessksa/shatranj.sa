@@ -50,7 +50,7 @@ function ensureSpectatorLayout() {
   if (!document.querySelector('link[data-spectator-play-layout]')) {
     const layout = document.createElement('link');
     layout.rel = 'stylesheet';
-    layout.href = 'spectator-play-layout.css?v=20261019-premove-watch-analysis-v1';
+    layout.href = 'spectator-play-layout.css?v=20261019-watch-contrast-results-v1';
     layout.dataset.spectatorPlayLayout = '1';
     document.head.appendChild(layout);
   }
