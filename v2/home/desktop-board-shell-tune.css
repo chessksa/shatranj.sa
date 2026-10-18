@@ -157,6 +157,17 @@
   .desktop-watch-player-card .inline-play-player-name[href]:hover{
     text-decoration:underline;text-underline-offset:3px;
   }
+  .desktop-watch-player-card img[data-watch-photo]{
+    display:block;width:100%;height:100%;object-fit:cover;border-radius:9px;
+  }
+  .desktop-watch-player-card img[data-watch-photo][hidden],
+  .desktop-watch-player-card .inline-play-avatar-fallback[hidden]{display:none!important}
+  .desktop-watch-player-card a.inline-play-player-name[href]{
+    cursor:pointer;text-decoration:none;
+  }
+  .desktop-watch-player-card a.inline-play-player-name[href]:hover{
+    color:#fff;text-decoration:underline;text-underline-offset:3px;
+  }
   .desktop-watch-player-card .inline-play-avatar-fallback{
     display:grid;place-items:center;width:100%;height:100%;background:#2b3642;
     color:#dce9f5;font:900 clamp(25px,2.8vw,40px)/1 Arial,sans-serif;
