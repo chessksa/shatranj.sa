@@ -97,10 +97,12 @@ function renderRows(body,games,emptyMessage){
   body.innerHTML=games.map((game,index)=>{
     const white=esc(game.white_name||'لاعب');
     const black=esc(game.black_name||(game.game_type==='computer'?'الكمبيوتر':'لاعب'));
+    const whiteRating=game.white_rating===null||game.white_rating===undefined?'':String(Number(game.white_rating)||'');
+    const blackRating=game.black_rating===null||game.black_rating===undefined?'':String(Number(game.black_rating)||'');
     return `<tr class="match-row">
       <td class="col-num">${index+1}</td>
       <td class="players-cell"><span class="player-pair"><strong>${white}</strong><b aria-hidden="true">×</b><strong>${black}</strong></span></td>
-      <td class="col-watch"><a class="watch-btn" href="${watchHref(game)}" data-game-id="${esc(game.game_id||'')}" data-game-type="${esc(game.game_type||'')}" aria-label="مشاهدة مباراة ${white} ضد ${black}">مشاهدة</a></td>
+      <td class="col-watch"><a class="watch-btn" href="${watchHref(game)}" data-game-id="${esc(game.game_id||'')}" data-game-type="${esc(game.game_type||'')}" data-white-rating="${esc(whiteRating)}" data-black-rating="${esc(blackRating)}" aria-label="مشاهدة مباراة ${white} ضد ${black}">مشاهدة</a></td>
     </tr>`;
   }).join('');
   if(wrap)wrap.scrollTop=scrollTop;
@@ -147,7 +149,14 @@ document.addEventListener('click',event=>{
   const gameType=link.dataset.gameType||'';
   if(!/^[a-f0-9-]{36}$/i.test(id)||!['human','human_v2','computer'].includes(gameType))return;
   event.preventDefault();
-  window.parent.postMessage({type:'shatranj:watch-main-board',gameId:id,gameType},location.origin);
+  const whiteRating=link.dataset.whiteRating||'';
+  const blackRating=link.dataset.blackRating||'';
+  window.parent.postMessage({type:'shatranj:watch-main-board',gameId:id,gameType,whiteRating,blackRating},location.origin);
+  document.querySelectorAll('.watch-btn[aria-current="true"]').forEach(item=>{
+    item.removeAttribute('aria-current');item.textContent='مشاهدة';
+  });
+  link.setAttribute('aria-current','true');
+  link.textContent='تشاهد الآن';
 });
 load();setInterval(()=>{if(!document.hidden)void load()},2000);
 document.addEventListener('visibilitychange',()=>{if(!document.hidden)void load()});
