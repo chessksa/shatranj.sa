@@ -292,7 +292,8 @@ function renderBoard(){
     square.type='button';
     square.className=`desktop-board-square inline-play-square ${(file+rank)%2===1?'light':'dark'}`;
     square.dataset.square=squareName;
-    if(lastMove&&(squareName===lastMove.from||squareName===lastMove.to)) square.classList.add('last-move');
+    if(lastMove?.from===squareName) square.classList.add('last-move','last-move-from');
+    if(lastMove?.to===squareName) square.classList.add('last-move','last-move-to');
     if(squareName===selectedSquare) square.classList.add('selected');
     const legalTarget=legalMap.get(squareName);
     if(legalTarget){
