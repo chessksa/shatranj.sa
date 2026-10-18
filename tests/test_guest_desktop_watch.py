@@ -7,12 +7,17 @@ shell = (ROOT / "v2/home/desktop-board-shell.mjs").read_text(encoding="utf-8")
 viewer = (ROOT / "v2/home/inline-tournament-spectator.mjs").read_text(encoding="utf-8")
 inline_play = (ROOT / "v2/home/inline-play.mjs").read_text(encoding="utf-8")
 listing = (ROOT / "watch.html").read_text(encoding="utf-8")
+tune = (ROOT / "v2/home/desktop-board-shell-tune.mjs").read_text(encoding="utf-8")
+tune_css = (ROOT / "v2/home/desktop-board-shell-tune.css").read_text(encoding="utf-8")
 
 def test_guest_watch_can_open_with_zero_matches():
     assert 'data-live-matches-watch href="watch.html#current"' in home
     assert "link.setAttribute('href',watchHref);" in home
     assert "link.removeAttribute('href')" not in home
     assert "link.setAttribute('aria-disabled','true')" not in home
+    assert 'class="desktop-live-stat desktop-live-stat-watch"' in tune
+    assert 'data-desktop-nav="watch"' in tune
+    assert 'button.desktop-live-stat-watch' in tune_css
 
 def test_embed_sends_safe_game_selection_to_canonical_board():
     assert "data-game-id=" in listing and "data-game-type=" in listing
