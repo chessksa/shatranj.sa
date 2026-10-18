@@ -8,6 +8,14 @@ export function boardSoundEnabled(){
   try{return window.localStorage.getItem(STORAGE_KEY)!=='0';}
   catch{return true;}
 }
+// Called by the spectator sound button in a user gesture.
+export async function enableBoardSound(){
+  try{window.localStorage.setItem(STORAGE_KEY,'1');}catch{}
+  const ctx=audioContext();
+  if(!ctx)return false;
+  try{if(ctx.state==='suspended')await ctx.resume();}catch{return false;}
+  return ctx.state==='running';
+}
 function audioContext(){
   if(context)return context;
   const AudioClass=window.AudioContext||window.webkitAudioContext;
