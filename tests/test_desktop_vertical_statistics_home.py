@@ -15,9 +15,10 @@ def test_desktop_layout_columns_and_vertical_stat_rows():
         assert f'.desktop-statistics-row[data-stat-row="{key}"]{{grid-row:{n}!important}}' in css
     assert "grid-column:2!important;grid-row:1!important" in css # platform counters
     assert "grid-column:2!important;grid-row:2!important" in css # champions
-    assert "grid-template-rows:repeat(3,minmax(0,1fr))!important" in css
+    assert "grid-template-rows:repeat(3,max-content)!important" in css
+    assert "height:auto!important;min-height:62px!important" in css
     assert ".desktop-champion-card" in css
-    assert "grid-template-rows:clamp(70px,12dvh,86px) minmax(0,1fr)!important" in css
+    assert "grid-template-rows:clamp(86px,16dvh,105px) minmax(0,1fr)!important" in css
 
 def test_points_card_is_authenticated_player_name_and_number_only():
     shell=read("v2/home/desktop-board-shell.mjs")
@@ -31,14 +32,28 @@ def test_points_card_is_authenticated_player_name_and_number_only():
     assert '<span>نقاط اللعب</span>' not in card
     assert "headerName?.dataset.playerId===lastUserId" in stats
     assert "new MutationObserver(syncPlayerName)" in stats
-    assert "lastUserId=null;\n    syncPlayerName();" in stats
+    assert "lastUserId=null;\n    verifiedName='';\n    syncPlayerName();" in stats
+    assert "supabase.rpc('get_my_player_profile')" in stats
+    assert "verifiedName=name.slice(0,80)" in stats
     assert "stats?.[key]" in stats # retains real numbers rather than hardcoded points
     assert "mountPersonalStatistics(supabase)" in shell
 
 def test_updated_desktop_assets_and_unmodified_board():
     home=read("index.html")
     shell=read("v2/home/desktop-board-shell.mjs")
-    assert 'content="20261019-desktop-right-stats-column-v1"' in home
-    assert 'desktop-board-shell-tune.css?v=20261019-desktop-right-stats-column-v1' in home
-    assert "personal-statistics.mjs?v=20261019-desktop-right-stats-column-v1" in shell
+    assert 'content="20261019-centered-home-stats-v2"' in home
+    assert 'desktop-board-shell-tune.css?v=20261019-centered-home-stats-v2' in home
+    assert "personal-statistics.mjs?v=20261019-centered-home-stats-v2" in shell
     assert 'id="homeBoardPreview"' in home
+
+def test_stat_rows_are_centered_larger_and_delimited_without_tiles():
+    css=read("v2/home/desktop-board-shell-tune.css")
+    assert "justify-content:center!important" in css
+    assert "border:0!important;" in css
+    assert "border-bottom:1px solid #66717D!important" in css
+    assert '.desktop-statistics-row[data-stat-row="achievements"]' in css
+    assert "width:24px!important;height:24px!important" in css
+    assert "font-size:clamp(13px,1.05vw,17px)!important" in css
+    assert "font-size:clamp(17px,1.32vw,22px)!important" in css
+    assert "grid-template-rows:clamp(105px,15dvh,128px) minmax(0,1fr)!important" in css
+    assert "justify-content:center!important" in css
