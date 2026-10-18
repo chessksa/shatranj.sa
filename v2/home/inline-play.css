@@ -282,3 +282,16 @@
     overflow:hidden!important;
   }
 }
+
+/* Last confirmed move: origin is softly outlined, destination is stronger.
+   Overlays retain the approved Wood 4 square colors, texture and artwork. */
+@media(min-width:901px){
+  #homeBoardPreview.inline-play-active .inline-play-square.last-move-from{
+    box-shadow:inset 0 0 0 2px rgba(102,135,166,.95),
+               inset 0 0 0 999px rgba(130,171,209,.13)!important;
+  }
+  #homeBoardPreview.inline-play-active .inline-play-square.last-move-to{
+    box-shadow:inset 0 0 0 4px rgba(93,136,175,.98),
+               inset 0 0 0 999px rgba(130,171,209,.26)!important;
+  }
+}
