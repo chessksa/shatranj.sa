@@ -39,7 +39,7 @@
     display:grid!important;
     /* Statistics run from top to bottom at the right; remaining cards are left. */
     grid-template-columns:minmax(175px,38%) minmax(0,1fr)!important;
-    grid-template-rows:clamp(82px,12dvh,110px) minmax(0,1fr)!important;
+    grid-template-rows:clamp(105px,15dvh,128px) minmax(0,1fr)!important;
     gap:6px!important;
     padding:0!important;box-sizing:border-box!important;
     align-content:stretch!important;
@@ -54,12 +54,12 @@
 
   .desktop-live-stat{
     min-height:0!important;
-    padding:12px 4px 6px!important;
+    padding:10px 4px 9px!important;
     display:flex!important;
     flex-direction:column!important;
     align-items:center!important;
-    justify-content:flex-start!important;
-    gap:8px!important;
+    justify-content:center!important;
+    gap:9px!important;
     border-radius:9px!important;
   }
 
@@ -88,10 +88,15 @@
   .desktop-home-statistics .desktop-statistics-group{display:contents!important}
   .desktop-home-statistics .desktop-statistics-row{
     grid-column:1!important;
-    display:flex!important;align-items:center!important;justify-content:space-between!important;
-    gap:5px!important;min-width:0!important;min-height:0!important;
-    padding:3px 5px!important;margin:2px 1px!important;border-radius:5px!important;
+    display:flex!important;align-items:center!important;justify-content:center!important;
+    gap:9px!important;min-width:0!important;min-height:0!important;
+    padding:4px 6px!important;margin:0!important;border:0!important;
+    border-bottom:1px solid #66717D!important;border-radius:0!important;
+    box-shadow:none!important;background:transparent!important;
     box-sizing:border-box!important;
+  }
+  .desktop-home-statistics .desktop-statistics-row:last-child{
+    border-bottom:0!important;
   }
   .desktop-home-statistics .desktop-statistics-row[data-stat-row="points"]{grid-row:1!important}
   .desktop-home-statistics .desktop-statistics-row[data-stat-row="bullet"]{grid-row:2!important}
@@ -103,32 +108,37 @@
   .desktop-home-statistics .desktop-statistics-row[data-stat-row="lessons"]{grid-row:8!important}
   .desktop-home-statistics .desktop-statistics-row[data-stat-row="achievements"]{grid-row:9!important}
   .desktop-home-statistics .desktop-statistics-label{
-    flex:0 1 auto!important;min-width:0!important;max-width:calc(100% - 31px)!important;
-    gap:3px!important;font-size:clamp(10px,.8vw,12px)!important;
-    justify-content:flex-start!important;
+    flex:0 1 auto!important;min-width:0!important;max-width:calc(100% - 38px)!important;
+    gap:6px!important;font-size:clamp(13px,1.05vw,17px)!important;
+    justify-content:center!important;text-align:center!important;
+  }
+  .desktop-home-statistics .desktop-statistics-label>span:last-child{
+    text-align:center!important;
   }
   .desktop-home-statistics .desktop-statistics-icon{
-    flex:0 0 17px!important;width:17px!important;height:17px!important;
+    flex:0 0 24px!important;width:24px!important;height:24px!important;
   }
-  .desktop-home-statistics .desktop-statistics-icon svg{width:17px!important;height:17px!important}
+  .desktop-home-statistics .desktop-statistics-icon svg{width:24px!important;height:24px!important}
   .desktop-home-statistics .desktop-statistics-row>[data-stat-value]{
-    flex:0 0 auto!important;min-width:20px!important;
-    font-size:clamp(14px,1.05vw,19px)!important;
-    padding-inline-end:5px!important;white-space:nowrap!important;
+    flex:0 0 auto!important;min-width:22px!important;
+    font-size:clamp(17px,1.32vw,22px)!important;
+    padding-inline-end:7px!important;white-space:nowrap!important;
+    border-inline-end:1px solid #66717D!important;
   }
   .desktop-home-statistics .desktop-statistics-row[data-stat-row="points"]{
-    border-color:#66717D!important;background:#343d47!important;
+    background:rgba(86,102,119,.12)!important;
   }
   .desktop-home-statistics .desktop-statistics-row[data-stat-row="points"] .desktop-statistics-label{
-    flex:1 1 auto!important;max-width:none!important;
-    font-size:clamp(12px,.98vw,16px)!important;overflow:hidden!important;
+    flex:0 1 auto!important;max-width:calc(100% - 42px)!important;
+    font-size:clamp(14px,1.12vw,18px)!important;overflow:hidden!important;
+    justify-content:center!important;text-align:center!important;
   }
   .desktop-home-statistics [data-stats-player-name]{
     display:block;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;
   }
   .desktop-home-statistics .desktop-statistics-row[data-stat-row="points"]>[data-stat-value]{
-    border:0!important;padding-inline:0!important;color:#f1d38d!important;
-    font-size:clamp(16px,1.23vw,21px)!important;
+    border-inline-end:0!important;padding-inline:0!important;color:#f1d38d!important;
+    font-size:clamp(19px,1.42vw,24px)!important;
   }
   /* Left-hand cards are slightly narrower and stack without blank space. */
   .desktop-live-stats{
@@ -137,15 +147,17 @@
   .desktop-champions-grid{
     grid-column:2!important;grid-row:2!important;min-width:0!important;min-height:0!important;
     grid-template-columns:minmax(0,1fr)!important;
-    grid-template-rows:repeat(3,minmax(0,1fr))!important;
+    grid-template-rows:repeat(3,max-content)!important;
+    align-content:start!important;
     gap:6px!important;
   }
   .desktop-champions-grid .desktop-champion-card{
     display:grid!important;
     grid-template-columns:minmax(58px,.75fr) minmax(0,1.45fr) minmax(43px,.65fr)!important;
-    grid-template-rows:minmax(0,1fr)!important;
+    grid-template-rows:auto!important;
     align-items:center!important;justify-items:center!important;
-    gap:4px!important;padding:7px 5px!important;min-height:0!important;
+    gap:4px!important;padding:8px 5px!important;
+    height:auto!important;min-height:62px!important;
     border-radius:7px!important;
   }
   .desktop-champions-grid .desktop-champion-title{
@@ -186,12 +198,12 @@
 /* Short desktop windows: preserve the statistics and the full champion list. */
 @media(min-width:901px) and (max-height:670px){
   body.desktop-board-workspace .desktop-dashboard-home{
-    grid-template-rows:clamp(70px,12dvh,86px) minmax(0,1fr)!important;
+    grid-template-rows:clamp(86px,16dvh,105px) minmax(0,1fr)!important;
     gap:5px!important;
     padding:0!important;
   }
   body.desktop-board-workspace .desktop-dashboard-column{gap:4px!important}
-  body.desktop-board-workspace .desktop-live-stat{padding:7px 3px 3px!important;gap:5px!important}
+  body.desktop-board-workspace .desktop-live-stat{padding:6px 3px!important;gap:5px!important;justify-content:center!important}
   body.desktop-board-workspace .desktop-live-stat strong{font-size:20px!important}
   body.desktop-board-workspace .desktop-live-stat small{font-size:10px!important}
 }
