@@ -377,13 +377,21 @@ function syncPlayer(){
   const photo=host.querySelector('#inlineComputerPlayerAvatar');
   const fallback=host.querySelector('#inlineComputerPlayerFallback');
   const src=signedIn&&!source?.hidden?source?.getAttribute('src')||'':'';
-  if(photo&&src){
-    if(photo.getAttribute('src')!==src)photo.setAttribute('src',src);
-    photo.hidden=false;
-    if(fallback)fallback.hidden=true;
-  }else{
-    if(photo){photo.hidden=true;photo.removeAttribute('src');}
-    if(fallback)fallback.hidden=false;
+  if(photo&&fallback){
+    if(photo.dataset.identitySource===src)return;
+    photo.dataset.identitySource=src;
+    photo.hidden=true;
+    fallback.hidden=false;
+    photo.onload=()=>{
+      if(photo.dataset.identitySource!==src)return;
+      photo.hidden=false;fallback.hidden=true;
+    };
+    photo.onerror=()=>{
+      if(photo.dataset.identitySource!==src)return;
+      photo.hidden=true;fallback.hidden=false;
+    };
+    if(src)photo.src=src;
+    else photo.removeAttribute('src');
   }
 }
 
