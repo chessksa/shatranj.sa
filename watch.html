@@ -167,6 +167,9 @@ async function load({manual=false}={}){
     succeeded=true;
   }catch(error){
     console.warn('تعذر تحميل قائمة المباريات',error);
+    // Invalidate previous DOM signatures so the next successful retry restores both lists.
+    currentSignature='';
+    finishedSignature='';
     currentTableBody.innerHTML='<tr class="empty-row"><td colspan="3">تعذر تحميل المباريات.</td></tr>';
     finishedTableBody.innerHTML='<tr class="empty-row"><td colspan="3">تعذر تحميل المباريات.</td></tr>';
   }finally{
