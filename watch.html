@@ -42,9 +42,25 @@ html[data-embed="panel"] header{display:none}
 html[data-embed="panel"] main{padding:0}
 html[data-embed="panel"] .wrap{width:100%}
 html[data-embed="panel"] .tables-grid{grid-template-columns:1fr;grid-template-rows:repeat(2,minmax(0,1fr));gap:5px}
+/* The current list grows with its visible match rows, up to 72% of the
+   available vertical panel. The finished list retains at least 28%.
+   No parent scrolling or movement of the spectator player cards. */
+html[data-embed="panel"] .tables-grid:not(.current-empty):not(.finished-empty){
+  grid-template-rows:minmax(0,min(var(--watch-current-needed,50%),72%)) minmax(0,1fr);
+}
 html[data-embed="panel"] .tables-grid.current-empty:not(.finished-empty){grid-template-rows:auto minmax(0,1fr)}
 html[data-embed="panel"] .tables-grid.finished-empty:not(.current-empty){grid-template-rows:minmax(0,1fr) auto}
 html[data-embed="panel"] .tables-grid.current-empty.finished-empty{grid-template-rows:auto auto;align-content:start}
+@media(max-width:760px){
+  html:not([data-embed="panel"]) .tables-grid:not(.current-empty):not(.finished-empty){
+    grid-template-rows:minmax(0,min(var(--watch-current-needed,50%),72%)) minmax(0,1fr);
+  }
+  html:not([data-embed="panel"]) .tables-grid.current-empty:not(.finished-empty){grid-template-rows:auto minmax(0,1fr)}
+  html:not([data-embed="panel"]) .tables-grid.finished-empty:not(.current-empty){grid-template-rows:minmax(0,1fr) auto}
+  html:not([data-embed="panel"]) .tables-grid.current-empty.finished-empty{grid-template-rows:auto auto;align-content:start}
+  html:not([data-embed="panel"]) .tables-grid.current-empty .current-shell,
+  html:not([data-embed="panel"]) .tables-grid.finished-empty .finished-shell{height:auto}
+}
 html[data-embed="panel"] .tables-grid.current-empty .current-shell,
 html[data-embed="panel"] .tables-grid.finished-empty .finished-shell{height:auto}
 html[data-embed="panel"] .empty-row td{padding:5px 4px!important;line-height:18px!important}
@@ -78,6 +94,17 @@ html body .tables-grid .match-table tr.match-row[aria-current="true"] td{backgro
 html body .tables-grid .match-table .player-pair strong,
 html body .tables-grid .match-table .player-pair .player-profile-action{color:#f7f9fb!important}
 html body .tables-grid .match-table .player-pair b{color:#b9c5ce!important}
+/* First data row only: restrained gold without losing white player names. */
+html body .tables-grid .match-table tr.match-row:first-child td{
+  background:#65543b!important;border-bottom-color:#ae915a!important;
+}
+html body .tables-grid .match-table tr.match-row:first-child:hover td,
+html body .tables-grid .match-table tr.match-row:first-child:focus-visible td{
+  background:#756247!important;
+}
+html body .tables-grid .match-table tr.match-row:first-child[aria-current="true"] td{
+  background:#806a49!important;
+}
 @media(max-width:760px){
   html body .tables-grid .match-shell .table-head{font-size:13px!important}
 }
@@ -207,6 +234,13 @@ async function load({manual=false}={}){
     // A list with zero games should not consume half the available height.
     tablesGrid.classList.toggle('current-empty',currentGames.length===0);
     tablesGrid.classList.toggle('finished-empty',finishedGames.length===0);
+    // The current section requests exactly its rows' height. CSS caps it at
+    // 72%, preserving a useful scrollable finished-results section.
+    const rootStyle=getComputedStyle(document.documentElement);
+    const currentRowPx=parseFloat(rootStyle.getPropertyValue('--match-row-h'))||21;
+    const headerPx=parseFloat(rootStyle.getPropertyValue('--match-head-h'))||30;
+    const currentNeeded=headerPx+Math.max(1,currentGames.length)*currentRowPx+4;
+    tablesGrid.style.setProperty('--watch-current-needed',currentNeeded+'px');
     const currentKey=gamesSignature(currentGames);
     const finishedKey=gamesSignature(finishedGames);
     if(currentKey!==currentSignature){
