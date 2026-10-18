@@ -134,9 +134,9 @@ const tablesGrid=document.querySelector('.tables-grid');
 
 function watchHref(game){
   const id=encodeURIComponent(game.game_id||'');
-  if(game.game_type==='computer')return `computer-watch.html?v=20261019-watch-contrast-results-v1&game=${id}`;
-  if(game.game_type==='human_v2')return `human-watch.html?v=20261019-watch-contrast-results-v1&game=${id}&source=v2`;
-  return `human-watch.html?v=20261019-watch-contrast-results-v1&game=${id}`;
+  if(game.game_type==='computer')return `computer-watch.html?v=20261019-watch-contrast-results-v2&game=${id}`;
+  if(game.game_type==='human_v2')return `human-watch.html?v=20261019-watch-contrast-results-v2&game=${id}&source=v2`;
+  return `human-watch.html?v=20261019-watch-contrast-results-v2&game=${id}`;
 }
 
 function gamesSignature(games){
