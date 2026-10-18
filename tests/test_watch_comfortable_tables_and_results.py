@@ -45,3 +45,22 @@ def test_play_and_standalone_watch_names_stay_gold():
 def test_watch_build_assets_have_new_version():
     for module in ["index.html","play-v2.html","watch.html","spectator-board.mjs","human-watch.html","computer-watch.html"]:
         assert "20261019-adaptive-live-gold-row-v1" in get(module)
+
+
+def test_adaptive_vertical_allocation_and_gold_first_game_row():
+    watch=get("watch.html")
+    # No fixed 50:50 vertical split when both lists contain matches.
+    assert 'html[data-embed="panel"] .tables-grid:not(.current-empty):not(.finished-empty)' in watch
+    assert 'html:not([data-embed="panel"]) .tables-grid:not(.current-empty):not(.finished-empty)' in watch
+    assert 'min(var(--watch-current-needed,50%),72%)' in watch
+    assert "tablesGrid.style.setProperty('--watch-current-needed',currentNeeded+'px')" in watch
+    assert 'Math.max(1,currentGames.length)*currentRowPx+4' in watch
+    # Empty current list still shrinks; finished list owns the remaining space.
+    assert 'tables-grid.current-empty:not(.finished-empty){grid-template-rows:auto minmax(0,1fr)}' in watch
+    assert 'tables-grid.finished-empty:not(.current-empty){grid-template-rows:minmax(0,1fr) auto}' in watch
+    # The first actual match row of both tables is gold, but the names are white.
+    assert 'tr.match-row:first-child td' in watch
+    assert 'background:#65543b!important' in watch
+    assert 'tr.match-row:first-child[aria-current="true"] td' in watch
+    assert '.match-table .player-pair .player-profile-action{color:#f7f9fb!important}' in watch
+    assert "20261019-adaptive-live-gold-row-v1" in get("index.html")
