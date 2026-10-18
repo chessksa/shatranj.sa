@@ -17,7 +17,7 @@ header{flex:0 0 58px;overflow:hidden;background:rgba(69,66,62,0.94);color:var(--
 main{flex:1 1 auto;min-height:0;overflow:hidden;padding:18px 0}
 .tables-grid{height:100%;min-height:0;display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:8px;align-items:stretch}
 .match-shell{height:100%;max-height:100%;overflow:hidden;display:flex;flex-direction:column;border:1px solid #66717D;border-radius:0;background:#303943;box-shadow:none}
-.table-head{height:var(--match-head-h);flex:0 0 var(--match-head-h);display:flex;align-items:center;justify-content:center;gap:8px;border:1px solid #968565;background:#303943;color:#edf1f4;font-weight:800;font-size:14px;line-height:1.1}.table-head strong{min-width:23px;color:#e4c99a;font-size:16px;line-height:1;text-align:center}.current-shell .table-head,.finished-shell .table-head{background:#303943}
+.table-head{height:var(--match-head-h);flex:0 0 var(--match-head-h);display:flex;align-items:center;justify-content:center;gap:8px;border:1px solid #66717D;background:#303943;color:#edf1f4;font-weight:800;font-size:14px;line-height:1.1}.table-head strong{min-width:23px;color:#edf1f4;font-size:16px;line-height:1;text-align:center}.current-shell .table-head,.finished-shell .table-head{background:#303943}
 .table-wrap{width:100%;flex:1 1 auto;min-height:0;height:auto;overflow-y:auto;overflow-x:hidden;overscroll-behavior:contain;scrollbar-width:thin;scrollbar-color:rgba(165,162,158,0.55) rgba(69,66,62,0.45)}.table-wrap::-webkit-scrollbar{width:7px}.table-wrap::-webkit-scrollbar-track{background:rgba(69,66,62,0.45)}.table-wrap::-webkit-scrollbar-thumb{background:rgba(165,162,158,0.48);border-radius:999px}
 .match-table{width:100%;border-collapse:collapse;table-layout:fixed}.match-table td{text-align:center;height:var(--match-row-h);padding:1px 5px;line-height:18px;border-bottom:1px solid rgba(165,162,158,0.17);background:#303943;color:#edf1f4;vertical-align:middle}.match-table td+td{border-inline-start:1px solid rgba(165,162,158,0.17)}.match-table tr:last-child td{border-bottom:0}.match-row{cursor:pointer;height:var(--match-row-h)}.match-row:nth-child(even) td{background:#36414c}.match-row:hover td{background:#465461}.match-row:focus-visible{outline:1px solid #c2d0da;outline-offset:-2px}.match-row:focus-visible td{background:#465461}.match-row[aria-current="true"] td{background:#4c5c69}
 .col-num{width:64px;color:#dce4eb!important;font-weight:800;font-size:13px}.players-cell{text-align:center;overflow:hidden}.player-pair{display:flex;align-items:center;justify-content:center;gap:7px;min-width:0;white-space:nowrap;overflow:hidden}.player-pair strong,.player-pair .player-profile-action{min-width:0;max-width:50%;overflow:hidden;text-overflow:ellipsis;font-size:13px}
@@ -44,7 +44,7 @@ html[data-embed="panel"] .wrap{width:100%}
 /* PC center column: side-by-side lists, one independent scrollbar per list.
    Width automatically favors the busy section without collapsing the other. */
 html[data-embed="panel"] .tables-grid{
-  grid-template-columns:minmax(0,var(--watch-current-share,45%)) minmax(0,1fr);
+  grid-template-columns:repeat(2,minmax(0,1fr));
   grid-template-rows:minmax(0,1fr);gap:0;align-items:stretch;
 }
 html[data-embed="panel"] .tables-grid .match-shell{
@@ -99,12 +99,12 @@ html[data-embed="panel"] body .tables-grid .finished-shell{border-block-start:0!
 }
 html body .tables-grid .match-shell .table-head{
   background:#303943!important;color:#edf1f4!important;
-  border:1px solid #968565!important;font-size:14px!important;
+  border:1px solid #66717D!important;font-size:14px!important;
   height:var(--match-head-h)!important;
 }
 html body .tables-grid .current-shell .table-head,
 html body .tables-grid .finished-shell .table-head{background:#303943!important}
-html body .tables-grid .match-shell .table-head strong{color:#e4c99a!important}
+html body .tables-grid .match-shell .table-head strong{color:#edf1f4!important}
 html body .tables-grid .match-table tr td{background:#303943!important;border-color:#55616d!important}
 html body .tables-grid .match-table tr:nth-child(even) td{background:#36414c!important}
 html body .tables-grid .match-table tr.match-row:hover td,
@@ -249,11 +249,7 @@ async function load({manual=false}={}){
     const headerPx=parseFloat(rootStyle.getPropertyValue('--match-head-h'))||30;
     const currentNeeded=headerPx+Math.max(1,currentGames.length)*currentRowPx+4;
     tablesGrid.style.setProperty('--watch-current-needed',currentNeeded+'px');
-    // Desktop side-by-side columns share width (not height). When the current
-    // list is sparse, give extra room to finished games; when busy, expand it.
-    const currentShare=currentGames.length===0?34:finishedGames.length===0?66:
-      Math.max(40,Math.min(66,50+1.7*(Math.min(16,currentGames.length)-Math.min(16,finishedGames.length))));
-    tablesGrid.style.setProperty('--watch-current-share',currentShare+'%');
+    // The two desktop lists remain exactly equal width regardless of volume.
     const currentKey=gamesSignature(currentGames);
     const finishedKey=gamesSignature(finishedGames);
     if(currentKey!==currentSignature){
