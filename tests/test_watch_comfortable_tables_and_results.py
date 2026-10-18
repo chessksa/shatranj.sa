@@ -8,8 +8,11 @@ def test_watch_list_uses_white_names_and_distinct_small_headers():
     assert "--match-row-h:21px;--match-head-h:30px" in watch
     assert '--match-row-h:20px;--match-head-h:27px' in watch
     assert "--match-row-h:25px;--match-head-h:34px" in watch
-    assert '.current-shell{border-block-end:2px solid #718091}' in watch
-    assert '.finished-shell{border-block-start:2px solid #718091}' in watch
+    assert 'html[data-embed="panel"] body .tables-grid .current-shell{border-block-end:0!important}' in watch
+    assert 'html[data-embed="panel"] body .tables-grid .finished-shell{border-block-start:0!important}' in watch
+    assert 'grid-template-rows:repeat(2,minmax(0,1fr));gap:0' in watch
+    assert 'background:#685c49!important' in watch
+    assert 'color:#f3dfb4!important' in watch
     assert '.match-row:nth-child(even) td{background:#36414c}' in watch
     assert 'background:#4c5c69!important' in watch
     assert '.player-pair .player-profile-action{color:#f7f9fb!important}' in watch
@@ -43,11 +46,14 @@ def test_play_and_standalone_watch_names_stay_gold():
         assert "#D8B665" in css
 
 def test_watch_build_assets_have_new_version():
-    for module in ["index.html","play-v2.html","watch.html","spectator-board.mjs","human-watch.html","computer-watch.html"]:
+    home=get("index.html")
+    assert 'content="20261019-soft-gold-titles-no-divider-v1"' in home
+    assert 'watch.html?v=20261019-soft-gold-titles-no-divider-v1#current' in home
+    for module in ["play-v2.html","watch.html","spectator-board.mjs","human-watch.html","computer-watch.html"]:
         assert "20261019-adaptive-live-gold-row-v1" in get(module)
 
 
-def test_adaptive_vertical_allocation_and_gold_first_game_row():
+def test_adaptive_vertical_allocation_and_gold_title_rows():
     watch=get("watch.html")
     # No fixed 50:50 vertical split when both lists contain matches.
     assert 'html[data-embed="panel"] .tables-grid:not(.current-empty):not(.finished-empty)' in watch
@@ -58,9 +64,11 @@ def test_adaptive_vertical_allocation_and_gold_first_game_row():
     # Empty current list still shrinks; finished list owns the remaining space.
     assert 'tables-grid.current-empty:not(.finished-empty){grid-template-rows:auto minmax(0,1fr)}' in watch
     assert 'tables-grid.finished-empty:not(.current-empty){grid-template-rows:minmax(0,1fr) auto}' in watch
-    # The first actual match row of both tables is gold, but the names are white.
-    assert 'tr.match-row:first-child td' in watch
-    assert 'background:#65543b!important' in watch
-    assert 'tr.match-row:first-child[aria-current="true"] td' in watch
+    # The gold applies to header bars only, never the first match data row.
+    assert 'tr.match-row:first-child td' not in watch
+    assert 'background:#65543b!important' not in watch
+    assert 'html body .tables-grid .current-shell .table-head' in watch
+    assert 'html body .tables-grid .finished-shell .table-head' in watch
+    assert 'background:#685c49!important' in watch
     assert '.match-table .player-pair .player-profile-action{color:#f7f9fb!important}' in watch
-    assert "20261019-adaptive-live-gold-row-v1" in get("index.html")
+    assert "20261019-soft-gold-titles-no-divider-v1" in get("index.html")
