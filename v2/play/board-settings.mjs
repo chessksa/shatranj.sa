@@ -1,5 +1,5 @@
 import { loadBoardPreferences, saveBoardPreferences, applyBoardPreferences, renderThemePicker } from '../board/controller.mjs?v=20261011-lichess-wood4-original-v1';
-import { getGameState } from './api.js?v=20261018-live-match-v2';
+import { preloadChessEngine, legalDestinations } from './instant-move.mjs?v=20261018-move-speed-v1';
 
 const board = document.getElementById('v2-board');
 const boardColumn = board?.closest('.v2-board-column');
@@ -20,18 +20,9 @@ let dragSource = null;
 let allowSyntheticClick = false;
 let suppressNativeDragClickUntil = 0;
 let legalGeneration = 0;
-let ChessClass = null;
 let appOrientation = 'w';
 let ignoreInternalMutation = false;
 
-async function loadChess(){
-  if (ChessClass) return ChessClass;
-  const module = await import('https://cdn.jsdelivr.net/npm/chess.js@1.4.0/+esm');
-  ChessClass = module.Chess;
-  return ChessClass;
-}
-
-function gameId(){ return new URLSearchParams(location.search).get('game'); }
 function visualOrientation(){ return board?.firstElementChild?.dataset.square === 'h1' ? 'b' : 'w'; }
 function orderedSquares(color){
   const files=color==='b'?['h','g','f','e','d','c','b','a']:['a','b','c','d','e','f','g','h'];
@@ -79,14 +70,13 @@ async function refreshLegalTargets(){
   clearLegalTargets();
   if (!prefs.showLegalMoves || !board) return;
   const selected=board.querySelector('.v2-square.selected')?.dataset.square;
-  const id=gameId();
-  if (!selected || !id) return;
+  const fen=board.dataset.positionFen;
+  if (!selected || !fen) return;
   try {
-    const [game, Chess] = await Promise.all([getGameState(id), loadChess()]);
-    if (generation!==legalGeneration || !game?.fen) return;
-    const chess=new Chess(game.fen);
-    for (const move of chess.moves({square:selected,verbose:true})) {
-      board.querySelector(`.v2-square[data-square="${move.to}"]`)?.classList.add('legal-target');
+    await preloadChessEngine();
+    if (generation!==legalGeneration || board.dataset.positionFen!==fen) return;
+    for (const to of legalDestinations(fen,selected)) {
+      board.querySelector(`.v2-square[data-square="${to}"]`)?.classList.add('legal-target');
     }
   } catch { clearLegalTargets(); }
 }
