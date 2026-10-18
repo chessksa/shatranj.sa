@@ -15,6 +15,8 @@ function installStyle(){
   css.textContent=[
     '.inline-tournament-spectator{cursor:default!important;}',
     '.inline-tournament-spectator.inline-public-watch .inline-spectator-hud{display:none!important;}',
+    '.inline-tournament-spectator.inline-public-watch .desktop-board-square::before,.inline-tournament-spectator.inline-public-watch .desktop-board-square::after{content:none!important;display:none!important;background-image:none!important;}',
+    '.inline-tournament-spectator.inline-public-watch .inline-spectator-last{box-shadow:inset 0 0 0 2px rgba(102,113,125,.65)!important;}',
     '.inline-tournament-spectator .desktop-board-grid{direction:ltr!important;display:grid!important;grid-template-columns:repeat(8,minmax(0,1fr))!important;grid-template-rows:repeat(8,minmax(0,1fr))!important;}',
     '.inline-tournament-spectator .desktop-board-square,.inline-tournament-spectator .mfw-square{display:grid!important;place-items:center!important;min-width:0!important;min-height:0!important;overflow:hidden!important;}',
     '.inline-tournament-spectator .inline-spectator-piece{display:block;width:92%;height:92%;max-width:100%;max-height:100%;object-fit:contain;pointer-events:none;user-select:none;}',
