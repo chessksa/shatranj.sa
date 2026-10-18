@@ -21,7 +21,16 @@ main{flex:1 1 auto;min-height:0;overflow:hidden;padding:18px 0}
 .table-wrap{width:100%;flex:1 1 auto;min-height:0;height:auto;overflow-y:auto;overflow-x:hidden;overscroll-behavior:contain;scrollbar-width:thin;scrollbar-color:rgba(165,162,158,0.55) rgba(69,66,62,0.45)}.table-wrap::-webkit-scrollbar{width:7px}.table-wrap::-webkit-scrollbar-track{background:rgba(69,66,62,0.45)}.table-wrap::-webkit-scrollbar-thumb{background:rgba(165,162,158,0.48);border-radius:999px}
 .match-table{width:100%;border-collapse:collapse;table-layout:fixed}.match-table td{text-align:center;height:var(--match-row-h);padding:5px 8px;border-bottom:1px solid rgba(165,162,158,0.17);background:transparent;color:var(--hero-cream);vertical-align:middle}.match-table td+td{border-inline-start:1px solid rgba(165,162,158,0.17)}.match-table tr:last-child td{border-bottom:0}.match-row:hover td{background:rgba(255,255,255,.025)}
 .col-num{width:64px;color:var(--hero-gold-2)!important;font-weight:900;font-size:14px}.players-cell{text-align:center;overflow:hidden}.player-pair{display:flex;align-items:center;justify-content:center;gap:7px;min-width:0;white-space:nowrap;overflow:hidden}.player-pair strong{min-width:0;overflow:hidden;text-overflow:ellipsis;font-size:13px}.player-pair b{flex:0 0 auto;color:var(--hero-gold);font-size:12px}.col-watch{width:112px}.watch-btn{display:inline-flex;align-items:center;justify-content:center;min-width:72px;height:31px;padding:0 11px;border:1px solid rgba(165,162,158,0.48);border-radius:9px;background:rgba(165,162,158,0.08);color:var(--hero-gold-2);font-size:11px;font-weight:900}.watch-btn:hover{background:var(--hero-gold);color:#302e2b}.empty-row td,.loading-row td{text-align:center!important;color:var(--hero-muted)!important;padding:20px 12px!important;height:auto!important}
-@media(max-width:760px){:root{--match-row-h:42px;--match-head-h:48px}.wrap{width:min(100% - 14px,1180px)}.brand{font-size:16px}.back{min-height:42px;padding:0 13px;font-size:12px}.nav{height:58px;min-height:58px}.tables-grid{grid-template-columns:1fr;grid-template-rows:repeat(2,minmax(0,1fr));gap:8px;align-items:stretch}.match-shell{height:100%;max-height:100%}.table-head{font-size:14px}.table-head strong{font-size:17px}.match-table td{padding:5px 6px}.col-num{width:44px;font-size:13px}.col-watch{width:86px}.watch-btn{min-width:66px;height:30px;padding:0 8px;font-size:11px}.player-pair{gap:5px}.player-pair strong{font-size:12px}main{padding:8px 0}}
+.refresh-btn{position:absolute;left:10px;top:50%;transform:translateY(-50%);display:inline-flex;align-items:center;justify-content:center;gap:5px;min-height:32px;padding:0 10px;border-radius:8px;border:1px solid #66717D;background:#353C45;color:#e2dcd3;font:700 12px Arial,sans-serif;cursor:pointer;touch-action:manipulation}
+.table-head{position:relative}
+.refresh-btn:disabled{cursor:progress;opacity:.8}
+.refresh-btn:disabled .refresh-glyph{animation:watch-refresh-spin .8s linear infinite}
+@keyframes watch-refresh-spin{to{transform:rotate(-360deg)}}
+.watch-pull-hint{position:fixed;top:64px;left:50%;transform:translateX(-50%);z-index:30;pointer-events:none;border:1px solid #66717D;border-radius:20px;padding:8px 15px;background:#353C45;color:#e2dcd3;font:700 12px Arial,sans-serif;box-shadow:0 5px 15px rgba(0,0,0,.25)}
+html[data-embed="panel"] .watch-pull-hint{top:8px}
+html[data-embed="panel"] .refresh-btn{left:5px;padding:0 7px;min-height:27px}
+html[data-embed="panel"] .refresh-label{display:none}
+@media(max-width:760px){.refresh-btn{left:6px;min-height:30px;padding:0 8px}:root{--match-row-h:42px;--match-head-h:48px}.wrap{width:min(100% - 14px,1180px)}.brand{font-size:16px}.back{min-height:42px;padding:0 13px;font-size:12px}.nav{height:58px;min-height:58px}.tables-grid{grid-template-columns:1fr;grid-template-rows:repeat(2,minmax(0,1fr));gap:8px;align-items:stretch}.match-shell{height:100%;max-height:100%}.table-head{font-size:14px}.table-head strong{font-size:17px}.match-table td{padding:5px 6px}.col-num{width:44px;font-size:13px}.col-watch{width:86px}.watch-btn{min-width:66px;height:30px;padding:0 8px;font-size:11px}.player-pair{gap:5px}.player-pair strong{font-size:12px}main{padding:8px 0}}
 /* In the desktop middle panel, the main site supplies the header and navigation. */
 html[data-embed="panel"] header{display:none}
 html[data-embed="panel"] main{padding:5px 0}
@@ -39,10 +48,11 @@ html[data-embed="panel"] .match-table td{padding:3px 4px}
 </head>
 <body>
 <header><div class="wrap nav"><div class="brand">♟ شطرنج العرب</div><a class="back" href="index.html">العودة للصفحة الرئيسية</a></div></header>
+<div id="watchPullHint" class="watch-pull-hint" hidden aria-hidden="true">↓ اسحب للتحديث</div>
 <main class="wrap">
   <div class="tables-grid">
     <section id="current" class="match-shell current-shell" aria-label="المباريات الحالية">
-      <div class="table-head">المباريات الحالية <strong id="currentCount">0</strong></div>
+      <div class="table-head">المباريات الحالية <strong id="currentCount">0</strong><button type="button" id="refreshMatches" class="refresh-btn" title="تحديث المباريات" aria-label="تحديث قوائم المباريات"><span class="refresh-glyph" aria-hidden="true">⟳</span><span id="refreshLabel" class="refresh-label">تحديث</span></button></div>
       <div class="table-wrap" data-no-pull-refresh>
         <table class="match-table" aria-live="polite">
           <tbody id="currentTableBody"><tr class="loading-row"><td colspan="3">جاري تحميل المباريات...</td></tr></tbody>
@@ -70,6 +80,11 @@ const currentCount=document.getElementById('currentCount');
 const finishedCount=document.getElementById('finishedCount');
 const currentTableBody=document.getElementById('currentTableBody');
 const finishedTableBody=document.getElementById('finishedTableBody');
+const refreshBtn=document.getElementById('refreshMatches');
+const refreshLabel=document.getElementById('refreshLabel');
+const pullHint=document.getElementById('watchPullHint');
+let pendingManualRefresh=false;
+let feedbackTimer=0;
 let loading=false;
 let currentSignature='';
 let finishedSignature='';
@@ -109,9 +124,24 @@ function renderRows(body,games,emptyMessage){
   if(wrap)wrap.scrollTop=scrollTop;
 }
 
-async function load(){
-  if(!supabase||loading)return;
+async function load({manual=false}={}){
+  if(!supabase){
+    currentTableBody.innerHTML='<tr class="empty-row"><td colspan="3">تعذر الاتصال بقائمة المباريات.</td></tr>';
+    finishedTableBody.innerHTML='<tr class="empty-row"><td colspan="3">تعذر الاتصال بقائمة المباريات.</td></tr>';
+    return;
+  }
+  if(loading){
+    if(manual)pendingManualRefresh=true;
+    return;
+  }
   loading=true;
+  if(manual){
+    clearTimeout(feedbackTimer);
+    refreshBtn.disabled=true;
+    refreshBtn.setAttribute('aria-busy','true');
+    refreshLabel.textContent='جارٍ التحديث';
+  }
+  let succeeded=false;
   try{
     const [currentResult,finishedResult]=await Promise.all([
       supabase.rpc('list_public_current_games'),
@@ -134,12 +164,68 @@ async function load(){
       finishedSignature=finishedKey;
       renderRows(finishedTableBody,finishedGames,'لا توجد مباريات منتهية.');
     }
+    succeeded=true;
   }catch(error){
     console.warn('تعذر تحميل قائمة المباريات',error);
     currentTableBody.innerHTML='<tr class="empty-row"><td colspan="3">تعذر تحميل المباريات.</td></tr>';
     finishedTableBody.innerHTML='<tr class="empty-row"><td colspan="3">تعذر تحميل المباريات.</td></tr>';
-  }finally{loading=false}
+  }finally{
+    loading=false;
+    if(manual){
+      refreshBtn.disabled=false;
+      refreshBtn.removeAttribute('aria-busy');
+      refreshLabel.textContent=succeeded?'تم التحديث':'تعذر التحديث';
+      feedbackTimer=setTimeout(()=>{refreshLabel.textContent='تحديث'},1800);
+    }
+    if(pendingManualRefresh){
+      pendingManualRefresh=false;
+      void load({manual:true});
+    }
+  }
 }
+
+refreshBtn.addEventListener('click',()=>{void load({manual:true})});
+
+// The page has a fixed viewport and two independently scrolling lists; refresh the
+// data (rather than reloading the page) when pulling down at the top of either list.
+let watchPull=null;
+const watchMain=document.querySelector('main');
+const hideWatchPull=()=>{pullHint.hidden=true;pullHint.textContent='↓ اسحب للتحديث'};
+watchMain.addEventListener('touchstart',event=>{
+  if(!window.matchMedia('(max-width:760px)').matches||event.touches.length!==1)return;
+  if(event.target.closest('a,button,input,select,textarea'))return;
+  const shell=event.target.closest('.match-shell');
+  if(!shell)return;
+  const list=shell.querySelector('.table-wrap');
+  if(list.scrollTop>1)return;
+  watchPull={x:event.touches[0].clientX,y:event.touches[0].clientY,list,distance:0};
+},{passive:true});
+watchMain.addEventListener('touchmove',event=>{
+  if(!watchPull||event.touches.length!==1)return;
+  const dx=event.touches[0].clientX-watchPull.x;
+  const dy=event.touches[0].clientY-watchPull.y;
+  if(dy<=0||Math.abs(dx)>dy*.75||watchPull.list.scrollTop>1){
+    watchPull=null;
+    hideWatchPull();
+    return;
+  }
+  if(dy<12)return;
+  event.preventDefault();
+  watchPull.distance=dy;
+  pullHint.hidden=false;
+  pullHint.textContent=dy>=85?'↑ أفلت لتحديث المباريات':'↓ اسحب للتحديث';
+},{passive:false});
+watchMain.addEventListener('touchend',()=>{
+  if(!watchPull)return;
+  const shouldRefresh=watchPull.distance>=85;
+  watchPull=null;
+  hideWatchPull();
+  if(shouldRefresh)void load({manual:true});
+},{passive:true});
+watchMain.addEventListener('touchcancel',()=>{
+  watchPull=null;
+  hideWatchPull();
+},{passive:true});
 
 // The desktop visitor watches directly on the unchanged home board; no new page.
 document.addEventListener('click',event=>{
