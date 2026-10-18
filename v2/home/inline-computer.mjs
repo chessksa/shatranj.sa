@@ -1,5 +1,6 @@
 import { decorateBoardCoordinate, renderApprovedPreview, openMoveNotebook, updateMoveNotebook, closeMoveNotebook } from './move-notebook.mjs?v=20261012-notebook-aligned-v13';
 import { playBoardMoveSound } from '../board/move-sound.mjs?v=20261013-movesound-v1';
+import { renderCapturedPieces } from '../play/captured-pieces.mjs?v=20261018-premove-review-v1';
 const desktop=window.matchMedia('(min-width:901px)');
 const START_FEN='rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1';
 const PIECE_ROOT='assets/pieces/';
@@ -188,9 +189,16 @@ function applyUciMove(uci){
   updateMoveNotebook('computer',moveHistory.map(uci=>({uci})));
   currentTurn=currentTurn==='w'?'b':'w';
   playBoardMoveSound(beforeFen,currentPositionFen());
+  updateComputerCapturedPieces();
   return true;
 }
 
+function updateComputerCapturedPieces(){
+  if(!host)return;
+  const fen=currentPositionFen();
+  renderCapturedPieces(host.querySelector('#inlineComputerPlayerCaptured'),fen,'w');
+  renderCapturedPieces(host.querySelector('#inlineComputerOpponentCaptured'),fen,'b');
+}
 function currentPositionFen(){
   const rows=[];
   for(let rank=8;rank>=1;rank-=1){
@@ -421,6 +429,7 @@ function buildPanel(body){
         <div class="inline-play-player-copy">
           <strong class="inline-play-player-name">الكمبيوتر</strong>
           <span id="inlineComputerOpponentMeta" class="inline-play-player-meta">مستوى متوسط — ±10 نقاط</span>
+          <span id="inlineComputerOpponentCaptured" class="inline-play-captured">—</span>
           <span id="inlineComputerStatus" class="inline-play-status">اختر المستوى والزمن ثم ابدأ</span>
         </div>
         <time class="inline-play-clock" data-computer-clock="black">05:00</time>
@@ -455,6 +464,7 @@ function buildPanel(body){
         <div class="inline-play-player-copy">
           <a id="inlineComputerPlayerName" class="inline-play-player-name">أنت</a>
           <span id="inlineComputerPlayerMeta" class="inline-play-player-meta">النقاط 1500</span>
+          <span id="inlineComputerPlayerCaptured" class="inline-play-captured">—</span>
           <span class="inline-play-status">أنت تلعب بالأبيض</span>
         </div>
         <time class="inline-play-clock" data-computer-clock="white">05:00</time>
@@ -462,6 +472,7 @@ function buildPanel(body){
     </div>`;
 
   host=body.querySelector('.inline-computer-panel');
+  updateComputerCapturedPieces();
   watchPlayerIdentity();
   bindPanel();
 }
