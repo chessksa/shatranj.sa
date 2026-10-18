@@ -8,7 +8,7 @@ if (location.protocol === 'http:' && /^(?:www\.)?arabchees\.com$/i.test(location
   location.replace('https://arabchees.com' + location.pathname + location.search + location.hash);
 }
 </script>
-<meta name="shatranj-asset-version" content="20261018-watch-live-v1">
+<meta name="shatranj-asset-version" content="20261018-guest-inline-watch-v2">
 <style id="approvedHomeGate">
 html:not(.approved-home-ready) body > :not(#approvedHomeBoot){opacity:0!important;pointer-events:none!important}
 html:not(.approved-home-ready) body::before,html:not(.approved-home-ready) body::after{visibility:hidden!important}
@@ -1187,7 +1187,7 @@ footer{
         <div class="hero-stat">
           <div><small>المتواجدين</small><strong id="headerOnlineCount">0</strong></div>
         </div>
-        <a class="hero-stat hero-stat-watch no-live-matches" data-live-matches-watch aria-disabled="true" tabindex="-1" title="لا توجد مباريات جارية الآن">
+        <a class="hero-stat hero-stat-watch" data-live-matches-watch href="watch.html#current" title="مشاهدة المباريات الحالية والمنتهية">
           <div><small>المباريات الآن</small><strong id="headerMatchesCount">0</strong></div>
         </a>
       </div>
@@ -1516,26 +1516,20 @@ footer{
   const nonnegative=n=>Number.isSafeInteger(n)&&n>=0?n:0;
   // The same live count drives the desktop and mobile "المباريات الآن" links.
   // Zero means no link; a positive count opens the *current* watch list.
-  const watchHref='watch.html?v=20261018-watch-live-v1#current';
+  const watchHref='watch.html?v=20261018-guest-inline-watch-v2#current';
   const syncLinks=()=>{
     const total=persisted+guest;
     document.querySelectorAll('[data-live-matches-watch]').forEach(link=>{
       const active=total>0;
       link.classList.toggle('has-live-matches',active);
-      link.classList.toggle('no-live-matches',!active);
-      if(active){
-        link.setAttribute('href',watchHref);
-        link.removeAttribute('aria-disabled');
-        link.removeAttribute('tabindex');
-        link.title='مشاهدة المباريات الجارية ('+total+')';
-        link.setAttribute('aria-label','مشاهدة المباريات الجارية: '+total);
-      }else{
-        link.removeAttribute('href');
-        link.setAttribute('aria-disabled','true');
-        link.setAttribute('tabindex','-1');
-        link.title='لا توجد مباريات جارية الآن';
-        link.setAttribute('aria-label','المباريات الآن: 0، لا توجد مباريات جارية');
-      }
+      link.classList.remove('no-live-matches');
+      // The watch section is public and must remain accessible with zero games.
+      link.setAttribute('href',watchHref);
+      link.removeAttribute('aria-disabled');
+      link.removeAttribute('tabindex');
+      link.title=active?'مشاهدة المباريات الجارية ('+total+')':'عرض المباريات الحالية والمنتهية';
+      link.setAttribute('aria-label',active?'مشاهدة المباريات الجارية: '+total:'عرض المباريات الحالية والمنتهية');
+
     });
   };
   const render=()=>{
@@ -2642,7 +2636,7 @@ setInterval(loadCurrentMatchesCount,3000);
 <script src="site-notifications.js?v=20261012-source-palette-v5"></script>
 <script src="home-invite.js?v=20261014-compact-stat-tiles-v1"></script>
 <script type="module" src="site-presence.js?v=20261012-source-palette-v5"></script>
-<script src="config-base.js?v=20261009-tiles58-gridtable-v1"></script><script src="home-tickers-bootstrap.js?v=20261012-source-palette-v5"></script><script type="module" src="v2/home/dashboard.mjs?v=20261018-watch-live-v1"></script><script type="module" src="v2/site/shell.mjs?v=20261012-source-palette-v5"></script><script src="mobile-home-fixed-v1.js?v=20261014-mobile-champions-v1"></script><script type="module" src="v2/home/chess-news-ticker.mjs?v=20261009-tiles58-gridtable-v1"></script><script id="approvedHomeReadyScript">
+<script src="config-base.js?v=20261009-tiles58-gridtable-v1"></script><script src="home-tickers-bootstrap.js?v=20261012-source-palette-v5"></script><script type="module" src="v2/home/dashboard.mjs?v=20261018-guest-inline-watch-v2"></script><script type="module" src="v2/site/shell.mjs?v=20261012-source-palette-v5"></script><script src="mobile-home-fixed-v1.js?v=20261014-mobile-champions-v1"></script><script type="module" src="v2/home/chess-news-ticker.mjs?v=20261009-tiles58-gridtable-v1"></script><script id="approvedHomeReadyScript">
 (()=>{
   const root=document.documentElement,started=Date.now();
   const ready=()=>{
