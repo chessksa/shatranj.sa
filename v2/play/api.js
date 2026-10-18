@@ -41,20 +41,26 @@ export async function getCurrentPlayer() {
   return data ?? null;
 }
 
+// All standard live matchmaking entry points must use the same V5 queue.
+// Otherwise desktop inline play and the mobile time picker cannot pair.
 export async function startMatchmaking(minutes) {
-  const { data, error } = await supabaseClient().rpc('start_v2_matchmaking', { p_minutes: Number(minutes) });
+  const baseSeconds = Number(minutes) * 60;
+  if (![5, 10, 15].includes(Number(minutes))) throw new Error('وقت المباراة غير متاح');
+  const { data, error } = await supabaseClient().rpc('start_v5_matchmaking', {
+    p_base_seconds: baseSeconds, p_increment_seconds: 0, p_rated: true,
+  });
   throwIfError(error, 'تعذر بدء البحث');
   return firstRow(data);
 }
 
 export async function pollMatchmaking() {
-  const { data, error } = await supabaseClient().rpc('poll_v2_matchmaking');
+  const { data, error } = await supabaseClient().rpc('poll_v5_matchmaking');
   throwIfError(error, 'تعذر متابعة البحث');
   return firstRow(data);
 }
 
 export async function cancelMatchmaking() {
-  const { data, error } = await supabaseClient().rpc('cancel_v2_matchmaking');
+  const { data, error } = await supabaseClient().rpc('cancel_v5_matchmaking');
   throwIfError(error, 'تعذر إلغاء البحث');
   return Boolean(data);
 }
