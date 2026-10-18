@@ -18,6 +18,7 @@ import {
 import { remainingAt, formatClock, isFinalMinute } from '../play/clock.mjs';
 import { normalizeGameState } from '../play/state.mjs';
 import { preloadChessEngine, previewMove } from '../play/instant-move.mjs?v=20261018-move-speed-v1';
+import { moveFromRecord, moveFromPositions, setLastMoveClass } from '../play/last-move.mjs?v=20261018-last-move-v1';
 import { playBoardMoveSound } from '../board/move-sound.mjs?v=20261013-movesound-v1';
 import { decorateBoardCoordinate, renderApprovedPreview, openMoveNotebook, updateMoveNotebook, closeMoveNotebook } from './move-notebook.mjs?v=20261012-notebook-aligned-v13';
 
@@ -44,6 +45,7 @@ let orientation='w';
 let selectedSquare=null;
 let renderedPosition=new Map();
 let displayedFen=null;
+let lastMove=null;
 let polling=false;
 let pollTimer=null;
 let unsubscribeGame=null;
@@ -297,6 +299,7 @@ function renderPosition(fen=START_FEN,color=orientation){
   }
   board.replaceChildren(fragment);
   updateSelectableSquares();
+  setLastMoveClass(board,lastMove);
 }
 
 
@@ -520,6 +523,10 @@ async function refreshMoveNotebook(){
     const moves=await getGameMoves(gameId);
     if(currentGame?.id===gameId){
       updateMoveNotebook('online',moves,{finished:!playableGame()});
+      if(Number(currentGame.ply)===moves.length){
+        lastMove=moveFromRecord(moves[moves.length-1])||lastMove;
+        setLastMoveClass(board,lastMove);
+      }
     }
   }catch(error){
     console.warn('تعذر تحميل سجل النقلات',error);
@@ -541,6 +548,8 @@ async function refreshGame(){
     const previous=currentGame;
     const changed=previous?.ply!==latest.ply||previous?.fen!==latest.fen;
     const ended=previous?.status!==latest.status;
+    if(changed)lastMove=Number(latest.ply)===Number(previous?.ply)+1
+      ?moveFromPositions(previous?.fen,latest.fen):null;
     currentGame=latest;
     orientation=gameColor()||orientation;
     updateCurrentRatingFromGame();
@@ -594,6 +603,8 @@ function applyLiveGameRow(row){
   currentGame=normalizeGameState({...previous,...row});
   orientation=gameColor()||orientation;
   const changed=previous.ply!==currentGame.ply||previous.fen!==currentGame.fen;
+  if(changed)lastMove=Number(currentGame.ply)===Number(previous.ply)+1
+    ?moveFromPositions(previous.fen,currentGame.fen):null;
   if(changed||displayedFen!==currentGame.fen){
     selectedSquare=null;
     renderPosition(currentGame.fen,orientation);
@@ -629,6 +640,7 @@ async function openGame(gameId){
   if(!active||generation!==playGeneration)return;
   if(!state) throw new Error('تعذر تحميل المباراة');
   currentGame=state;
+  lastMove=null;
   orientation=gameColor()||'w';
   openMoveNotebook('online');
   updateHistoryGame(gameId);
@@ -748,9 +760,13 @@ async function handleSquareClick(event){
   }
   const gameId=currentGame.id;
   const expectedPly=currentGame.ply;
+  const previousLastMove=lastMove;
   submittingMove=true;
   updateSelectableSquares();
-  if(preview?.legal) renderPosition(preview.fen,orientation);
+  if(preview?.legal){
+    lastMove={from:source,to:target};
+    renderPosition(preview.fen,orientation);
+  }
   try{
     const response=await submitMove({gameId,expectedPly,from:source,to:target,promotion});
     if(!active||currentGame?.id!==gameId)return;
@@ -758,7 +774,9 @@ async function handleSquareClick(event){
       const previous=currentGame;
       currentGame=normalizeGameState({...previous,...response.game});
       orientation=gameColor()||orientation;
+      lastMove={from:source,to:target};
       if(displayedFen!==currentGame.fen) renderPosition(currentGame.fen,orientation);
+      else setLastMoveClass(board,lastMove);
       playBoardMoveSound(previous?.fen,currentGame.fen);
       updateCurrentRatingFromGame();
       updateOpponent();
@@ -772,7 +790,9 @@ async function handleSquareClick(event){
     }
   }catch(error){
     if(!active||currentGame?.id!==gameId)return;
+    lastMove=previousLastMove;
     if(displayedFen!==currentGame.fen) renderPosition(currentGame.fen,orientation);
+    else setLastMoveClass(board,lastMove);
     submittingMove=false;
     await refreshGame().catch(()=>{});
     setStatus(error.code==='illegal_move'?'نقلة غير قانونية':(error.message||'تعذر تنفيذ النقلة'),{error:true});
@@ -948,6 +968,7 @@ function exitInlinePlay(){
   stopSubscription();
   closeMoveNotebook('online');
   selectedSquare=null;
+  lastMove=null;
   if(panel) panel.hidden=true;
   const home=document.getElementById('desktopDashboardHome');
   if(home) home.hidden=false;
