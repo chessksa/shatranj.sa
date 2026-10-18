@@ -8,7 +8,7 @@ if (location.protocol === 'http:' && /^(?:www\.)?arabchees\.com$/i.test(location
   location.replace('https://arabchees.com' + location.pathname + location.search + location.hash);
 }
 </script>
-<meta name="shatranj-asset-version" content="20261018-watch-mainboard-cards-v2">
+<meta name="shatranj-asset-version" content="20261018-last-move-v1">
 <style id="approvedHomeGate">
 html:not(.approved-home-ready) body > :not(#approvedHomeBoot){opacity:0!important;pointer-events:none!important}
 html:not(.approved-home-ready) body::before,html:not(.approved-home-ready) body::after{visibility:hidden!important}
@@ -1105,7 +1105,7 @@ footer{
 <link rel="stylesheet" data-desktop-board-shell href="v2/home/desktop-board-shell.css?v=20261014-personal-stats-layout-v2" media="(min-width:901px)">
 <link rel="stylesheet" data-desktop-shell-tune href="v2/home/desktop-board-shell-tune.css?v=20261018-watch-mainboard-cards-v2" media="(min-width:901px)">
 <link rel="stylesheet" data-desktop-sidebar-cleanup href="v2/home/desktop-sidebar-cleanup.css?v=20261014-compact-stat-tiles-v1" media="(min-width:901px)">
-<link rel="stylesheet" data-inline-play href="v2/home/inline-play.css?v=20261014-compact-stat-tiles-v1" media="(min-width:901px)">
+<link rel="stylesheet" data-inline-play href="v2/home/inline-play.css?v=20261018-last-move-v1" media="(min-width:901px)">
 <link rel="stylesheet" data-move-notebook href="v2/home/move-notebook.css?v=20261012-source-palette-v5" media="(min-width:901px)">
 <!-- Stable source order: shared desktop CSS and mobile CSS are present before the first paint, never injected over the visible page. -->
 <link rel="stylesheet" data-v2-typography href="v2/site/typography-system.css?v=20261012-desktop-clean-bootstrap-v10">
@@ -2636,7 +2636,7 @@ setInterval(loadCurrentMatchesCount,3000);
 <script src="site-notifications.js?v=20261012-source-palette-v5"></script>
 <script src="home-invite.js?v=20261014-compact-stat-tiles-v1"></script>
 <script type="module" src="site-presence.js?v=20261012-source-palette-v5"></script>
-<script src="config-base.js?v=20261009-tiles58-gridtable-v1"></script><script src="home-tickers-bootstrap.js?v=20261012-source-palette-v5"></script><script type="module" src="v2/home/dashboard.mjs?v=20261018-watch-mainboard-cards-v2"></script><script type="module" src="v2/site/shell.mjs?v=20261012-source-palette-v5"></script><script src="mobile-home-fixed-v1.js?v=20261014-mobile-champions-v1"></script><script type="module" src="v2/home/chess-news-ticker.mjs?v=20261009-tiles58-gridtable-v1"></script><script id="approvedHomeReadyScript">
+<script src="config-base.js?v=20261009-tiles58-gridtable-v1"></script><script src="home-tickers-bootstrap.js?v=20261012-source-palette-v5"></script><script type="module" src="v2/home/dashboard.mjs?v=20261018-last-move-v1"></script><script type="module" src="v2/site/shell.mjs?v=20261012-source-palette-v5"></script><script src="mobile-home-fixed-v1.js?v=20261014-mobile-champions-v1"></script><script type="module" src="v2/home/chess-news-ticker.mjs?v=20261009-tiles58-gridtable-v1"></script><script id="approvedHomeReadyScript">
 (()=>{
   const root=document.documentElement,started=Date.now();
   const ready=()=>{
