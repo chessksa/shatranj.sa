@@ -646,11 +646,38 @@ function finish(message,outcome=null){
   if(snapshot)void archiveFinishedGame(snapshot,message);
 }
 
+// No legal moves can mean checkmate or stalemate. Reconstruct the complete
+// move history with the same pinned chess.js engine as the move notebook,
+// instead of guessing a winner from whoever made the last move.
+async function finishOnNoLegalMoves(){
+  try{
+    const {Chess}=await import('https://cdn.jsdelivr.net/npm/chess.js@1.4.0/+esm');
+    const chess=new Chess();
+    for(const uci of moveHistory){
+      const move=chess.move({
+        from:uci.slice(0,2),to:uci.slice(2,4),
+        ...(uci[4]?{promotion:uci[4]}:{})
+      });
+      if(!move)throw new Error('Illegal historical move');
+    }
+    if(chess.isCheckmate()){
+      finish(chess.turn()==='w'?'كش مات — فاز الكمبيوتر':'كش مات — فزت',
+        chess.turn()==='w'?'computer':'player');
+      return true;
+    }
+    if(chess.isDraw()||chess.isStalemate()){
+      finish('انتهت المباراة بالتعادل','draw');
+      return true;
+    }
+    return false; // Engine error, not an actual finished game.
+  }catch(error){
+    console.warn('تعذر التحقق من انتهاء مباراة الكمبيوتر',error);
+    return false;
+  }
+}
 async function checkGameEnd(){
   const moves=await requestLegalMoves();
-  if(moves.length) return false;
-  finish('انتهت المباراة',lastMove?.color==='w'?'player':lastMove?.color==='b'?'computer':null);
-  return true;
+  return !moves.length?finishOnNoLegalMoves():false;
 }
 
 function chooseFallbackMove(moves){
@@ -689,7 +716,8 @@ async function computerTurn(){
     moveText=chooseFallbackMove(legal);
   }
   if(!moveText){
-    finish('انتهت المباراة',lastMove?.color==='w'?'player':lastMove?.color==='b'?'computer':null);
+    const gameOver=await finishOnNoLegalMoves();
+    if(!gameOver)setStatus('تعذر تحديد نقلة قانونية، يمكنك إعادة بدء المباراة',true);
     return;
   }
 
@@ -701,7 +729,8 @@ async function computerTurn(){
 
   const legal=await requestLegalMoves();
   if(!legal.length){
-    finish('انتهت المباراة',lastMove?.color==='w'?'player':lastMove?.color==='b'?'computer':null);
+    const gameOver=await finishOnNoLegalMoves();
+    if(!gameOver)setStatus('تعذر تحديد نقلة قانونية، يمكنك إعادة بدء المباراة',true);
     return;
   }
   setStatus('دورك');
