@@ -707,6 +707,9 @@ if(desktop.matches && document.querySelector('#homeHero')){
     panel.hidden=true;
     panel.innerHTML='<header class="desktop-public-player-toolbar"><strong>بيانات اللاعب</strong><button type="button" id="desktopPublicPlayerBack">العودة</button></header><iframe class="desktop-public-player-frame" title="بيانات اللاعب" referrerpolicy="same-origin"></iframe>';
     panel.querySelector('#desktopPublicPlayerBack').addEventListener('click',()=>{panel.hidden=true;});
+    panel.addEventListener('keydown',event=>{
+      if(event.key==='Escape'){panel.hidden=true;event.preventDefault();}
+    });
     column.appendChild(panel);
     return panel;
   }
@@ -732,6 +735,23 @@ if(desktop.matches && document.querySelector('#homeHero')){
     frame.title=title;
     frame.loading='eager';
     frame.src=`${page}?embed=panel&v=${desktopAssetVersion}`;
+    // Named players inside other same-origin panels (such as tournament tables)
+    // use the same desktop profile surface, not a nested navigation.
+    frame.addEventListener('load',()=>{
+      try{
+        frame.contentDocument?.addEventListener('click',event=>{
+          const link=event.target.closest?.('a[href*="player.html?id="]');
+          if(!link)return;
+          const target=new URL(link.getAttribute('href'),frame.contentWindow.location.href);
+          const id=target.searchParams.get('id')||'';
+          if(target.origin!==location.origin||!target.pathname.endsWith('/player.html')
+            ||!playerIdPattern.test(id))return;
+          event.preventDefault();
+          event.stopImmediatePropagation();
+          openPublicPlayerPanel(id);
+        },true);
+      }catch(error){console.warn('تعذر ربط ملفات اللاعبين بالعمود الأوسط',error)}
+    });
     body.appendChild(frame);
   }
 
