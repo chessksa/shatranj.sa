@@ -41,8 +41,8 @@ def test_points_card_is_authenticated_player_name_and_number_only():
 def test_updated_desktop_assets_and_unmodified_board():
     home=read("index.html")
     shell=read("v2/home/desktop-board-shell.mjs")
-    assert 'content="20261019-gold-champions-stack-points-v1"' in home
-    assert 'desktop-board-shell-tune.css?v=20261019-gold-champions-stack-points-v1' in home
+    assert 'content="20261019-saved-desktop-computer-games-v1"' in home
+    assert 'desktop-board-shell-tune.css?v=20261019-saved-desktop-computer-games-v1' in home
     assert "personal-statistics.mjs?v=20261019-centered-home-stats-v2" in shell
     assert 'id="homeBoardPreview"' in home
 
