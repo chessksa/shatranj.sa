@@ -510,15 +510,52 @@ function stopClockLoop(){
   clockTimer=null;
 }
 
+function renderCaptureIndicators(){
+  const mine=gameColor(),fen=currentGame?.fen||START_FEN;
+  if(!panel)return;
+  renderCapturedPieces(panel.querySelector('#inlinePlayPlayerCaptured'),fen,mine||'w');
+  renderCapturedPieces(panel.querySelector('#inlinePlayOpponentCaptured'),fen,mine==='b'?'w':'b');
+}
+function clearPremove(){
+  queuedPremove=null;
+  updateSelectableSquares();
+}
 function updateSelectableSquares(){
-  if(!board) return;
+  if(!board)return;
   const myColor=gameColor();
-  const canMove=Boolean(playableGame()&&myColor&&currentGame.turn===myColor&&!submittingMove&&!actionInFlight);
+  const canSelect=Boolean(playableGame()&&myColor&&!submittingMove&&!actionInFlight);
   board.querySelectorAll('.inline-play-square').forEach(square=>{
-    const piece=renderedPosition.get(square.dataset.square);
-    square.classList.toggle('selected',square.dataset.square===selectedSquare);
-    square.classList.toggle('movable',canMove&&Boolean(selectedSquare||piece?.color===myColor));
+    const name=square.dataset.square,piece=renderedPosition.get(name);
+    square.classList.toggle('selected',name===selectedSquare);
+    square.classList.toggle('movable',canSelect&&Boolean(selectedSquare||piece?.color===myColor));
+    square.classList.toggle('premove-from',name===queuedPremove?.from);
+    square.classList.toggle('premove-to',name===queuedPremove?.to);
   });
+}
+// A premove is never sent before the player's turn. The authoritative server
+// validates the actual move after the opponent changes the position.
+function tryPlayQueuedPremove(){
+  const queued=queuedPremove;
+  if(!queued||!active||submittingMove||actionInFlight||!currentGame)return;
+  if(currentGame.id!==queued.gameId||!playableGame()){clearPremove();return;}
+  if(currentGame.turn!==queued.color||Number(currentGame.ply)<=queued.ply)return;
+  queuedPremove=null;
+  const piece=renderedPosition.get(queued.from),target=renderedPosition.get(queued.to);
+  if(piece?.color!==queued.color||target?.color===queued.color){
+    selectedSquare=null;updateSelectableSquares();
+    setStatus('أُلغيت النقلة المسبقة: لم تعد ممكنة',{error:true});
+    return;
+  }
+  const preview=previewMove({fen:currentGame.fen,from:queued.from,to:queued.to,promotion:queued.promotion});
+  if(preview?.legal===false){
+    selectedSquare=null;updateSelectableSquares();
+    setStatus('النقلة المسبقة غير قانونية بعد نقلة الخصم',{error:true});
+    return;
+  }
+  selectedSquare=queued.from;
+  updateSelectableSquares();
+  const square=board?.querySelector('.inline-play-square[data-square="'+queued.to+'"]');
+  if(square)void handleSquareClick({target:square});
 }
 
 async function refreshMoveNotebook(){
