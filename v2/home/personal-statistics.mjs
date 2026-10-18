@@ -88,7 +88,9 @@ export function mountPersonalStatistics(supabase){
       const {data,error}=statsResult;
       if(!profileResult.error){
         const profile=Array.isArray(profileResult.data)?profileResult.data[0]:profileResult.data;
-        if(profile?.id===session.user.id&&typeof profile.name==='string'){
+        // get_my_player_profile is scoped to the authenticated session by
+        // the backend; its player UUID need not equal the auth identity UUID.
+        if(profile&&typeof profile.name==='string'){
           const name=profile.name.trim();
           if(name&&name!=='العضو')verifiedName=name.slice(0,80);
         }
