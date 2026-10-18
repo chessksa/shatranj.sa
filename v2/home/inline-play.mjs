@@ -14,7 +14,7 @@ import {
   respondDraw,
   timeoutGame,
   supabaseClient,
-} from '../play/api.js?v=20261010-play-connection-v1';
+} from '../play/api.js?v=20261018-live-match-v2';
 import { remainingAt, formatClock, isFinalMinute } from '../play/clock.mjs';
 import { normalizeGameState } from '../play/state.mjs';
 import { playBoardMoveSound } from '../board/move-sound.mjs?v=20261013-movesound-v1';
