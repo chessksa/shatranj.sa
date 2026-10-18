@@ -41,13 +41,13 @@ assert "inline-play-danger" not in shell.split("function createWatchPlayerCard("
 # Fit both cards and the embedded match list into the center column.
 assert ".desktop-watch-match-list" in styles
 assert ".desktop-watch-player-card[hidden]{display:none!important}" in styles
-assert "--live-card-height:clamp(124px,17dvh,160px)" in styles
+assert "--live-card-height:clamp(124px,17dvh,160px)" in styles\nassert "gap:6px!important;padding:6px!important" in styles
 assert "font-size:clamp(20px,1.5vw,25px)!important" in styles
 assert "font-size:clamp(15px,1.1vw,18px)!important" in styles
 assert "min-height:clamp(74px,10dvh,100px)!important" in styles
 assert "font-size:clamp(34px,2.7vw,43px)!important" in styles
 assert "min-height:64px!important" in styles  # short desktop windows
-assert "20261018-profile-portraits-v1" in home
+assert "20261018-compact-watch-rows-v1" in home
 
-assert "20261018-player-profile-links-v2" in home
+assert "data-watch-photo=" in shell
 print("spectator canonical board + read-only player cards: PASS")
