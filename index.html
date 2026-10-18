@@ -2234,6 +2234,7 @@ function renderAccount(){
     showAccountAvatar();
     showHeaderMemberAvatar();
     $('#headerMemberName').textContent=currentProfile.name;
+    $('#headerMemberName').dataset.playerId=currentProfile.id;
     $('#headerMemberRating').textContent=currentProfile.rating??1500;
     $('#accountWelcome').textContent='مرحبًا، '+currentProfile.name;
     renderAccountRank(currentProfile.rating);
@@ -2255,6 +2256,7 @@ function renderAccount(){
     if(dashboardNav) dashboardNav.href='profile.html';
   }else{
     $('#headerMember').hidden=true;
+    delete $('#headerMemberName').dataset.playerId;
     $('#navAccount').textContent='تسجيل الدخول';
     $('#navAccount').href='#register';
     $('#navAccount').hidden=false;
