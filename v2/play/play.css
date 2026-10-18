@@ -55,3 +55,18 @@
   .v2-missing-pieces.captured-pieces{max-height:15px;min-height:12px}
   .v2-missing-pieces.captured-pieces img{width:13px;height:13px;flex-basis:13px}
 }
+
+/* Finished mobile games use the same subdued outcome colors as desktop. */
+.v2-player-card.result-winner{
+  background:linear-gradient(180deg,#334a42,#2b3e38)!important;
+  border:1px solid #729b89!important;
+}
+.v2-player-card.result-loser{
+  background:linear-gradient(180deg,#4b393f,#403338)!important;
+  border:1px solid #b38389!important;
+}
+.v2-player-card.result-draw{
+  background:linear-gradient(180deg,#414b57,#353f4a)!important;
+  border:1px solid #8897a4!important;
+}
+.v2-player-card .v2-player-name{color:#D8B665!important}
