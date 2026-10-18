@@ -12,7 +12,7 @@ import {
   offerDraw,
   respondDraw,
   timeoutGame,
-} from './api.js';
+} from './api.js?v=20261018-live-match-v2';
 import { remainingAt, formatClock, isFinalMinute } from './clock.mjs';
 import { normalizeGameState } from './state.mjs';
 
