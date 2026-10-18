@@ -39,8 +39,10 @@ import { createSpectatorClock } from './spectator-clock.mjs?v=20260910-clockfix1
 const cfg=window.SHATRANJ_CONFIG?.supabase||{};
 const supabase=cfg.enabled&&cfg.url&&cfg.anonKey?createClient(cfg.url,cfg.anonKey):null;
 const $=id=>document.getElementById(id);
-const gameId=new URLSearchParams(location.search).get('game');
-const statusLabel={playing:'جارية',active:'جارية',in_progress:'جارية',started:'جارية',finished:'منتهية',abandoned:'ملغاة'};
+const params=new URLSearchParams(location.search);
+const gameId=params.get('game');
+const isV2=params.get('source')==='v2';
+const statusLabel={matched:'بانتظار النقلة الأولى',playing:'جارية',active:'جارية',in_progress:'جارية',started:'جارية',finished:'منتهية',cancelled:'ملغاة',abandoned:'ملغاة'};
 const resultLabel={'1-0':'فوز الأبيض','0-1':'فوز الأسود','1/2-1/2':'تعادل'};
 const clockAnchor=createSpectatorClock();
 let current=null;
@@ -52,7 +54,7 @@ function showLoading(){ $('loading').hidden=false;$('viewer').hidden=true;$('den
 function showDenied(){ $('loading').hidden=true;$('viewer').hidden=true;$('denied').hidden=false; }
 function showViewer(){ $('loading').hidden=true;$('denied').hidden=true;$('viewer').hidden=false; }
 function msText(ms){const total=Math.max(0,Math.ceil(Number(ms||0)/1000));const m=Math.floor(total/60);const s=total%60;return `${String(m).padStart(2,'0')}:${String(s).padStart(2,'0')}`;}
-function isActive(){return ['playing','active','in_progress','started'].includes(String(current?.status||''));}
+function isActive(){return ['matched','playing','active','in_progress','started'].includes(String(current?.status||''));}
 function effectiveClocks(){return clockAnchor.read();}
 function renderClocks(){
   if(!current)return;
@@ -61,7 +63,20 @@ function renderClocks(){
 }
 function latestMove(){const moves=Array.isArray(current?.moves)?current.moves:[];const last=moves[moves.length-1];return last?.from&&last?.to?{from:last.from,to:last.to}:null;}
 function syncBoard(){if(!current?.fen)return;if(!spectatorBoard)spectatorBoard=new SpectatorBoard($('board'),current.fen);spectatorBoard.setPosition(current.fen,latestMove());}
-function renderMoves(){const moves=Array.isArray(current?.moves)?current.moves:[];$('movesCount').textContent=String(moves.length);$('moves').innerHTML=moves.map((m,i)=>`<span class="move">${i+1}. ${String(m?.san||m?.to||'—')}</span>`).join('')||'<span class="meta">لم تبدأ النقلات بعد.</span>';}
+function renderMoves(){
+  const moves=Array.isArray(current?.moves)?current.moves:[];
+  $('movesCount').textContent=String(moves.length);
+  const host=$('moves');
+  if(!moves.length){host.textContent='لم تبدأ النقلات بعد.';return;}
+  const fragment=document.createDocumentFragment();
+  for(const [index,move] of moves.entries()){
+    const span=document.createElement('span');
+    span.className='move';
+    span.textContent=`${Math.floor(index/2)+1}${index%2?'...':'.'} ${String(move?.san||move?.to||'—')}`;
+    fragment.appendChild(span);
+  }
+  host.replaceChildren(fragment);
+}
 function render(){
   if(!current)return;syncBoard();renderClocks();renderMoves();
   $('whiteName').textContent=`♙ ${current.white_name||'الأبيض'}`;$('blackName').textContent=`♟ ${current.black_name||'الأسود'}`;
@@ -73,8 +88,19 @@ async function fetchGame(){
   if(refreshInFlight)return true;
   refreshInFlight=true;
   try{
-    const {data,error}=await supabase.from('live_games').select('id,white_name,black_name,fen,moves,status,result,white_time_ms,black_time_ms,turn_started_at,time_control_minutes,updated_at').eq('id',gameId).maybeSingle();
+    let data,error;
+    if(isV2){
+      const response=await supabase.rpc('get_public_v2_spectator_game_state',{p_game_id:gameId});
+      error=response.error;
+      data=Array.isArray(response.data)?response.data[0]:response.data;
+    }else{
+      const response=await supabase.from('live_games')
+        .select('id,white_name,black_name,fen,moves,status,result,white_time_ms,black_time_ms,turn_started_at,time_control_minutes,updated_at')
+        .eq('id',gameId).maybeSingle();
+      error=response.error;data=response.data;
+    }
     if(error||!data){if(!current)showDenied();return false;}
+    // Only committed, read-only state may be painted; spectators never submit moves.
     current=data;clockAnchor.sync(current);render();return true;
   }catch(error){console.warn('تعذر فتح مباراة المشاهدة',error);if(!current)showDenied();return false;}
   finally{refreshInFlight=false;}
@@ -88,12 +114,12 @@ function scheduleRefresh(delay=700){
   clearTimeout(refreshTimer);
   refreshTimer=setTimeout(async()=>{
     await fetchGame();
-    scheduleRefresh(document.hidden?2500:(isActive()?700:2500));
+    scheduleRefresh(document.hidden?3000:(isActive()?(isV2?1200:700):2500));
   },delay);
 }
 async function init(){
   showLoading();if(!await fetchGame())return;
-  startClockLoop();scheduleRefresh(500);
+  startClockLoop();scheduleRefresh(isV2?1000:500);
   document.addEventListener('visibilitychange',()=>{if(!document.hidden)fetchGame();});
   window.addEventListener('beforeunload',()=>{clearTimeout(refreshTimer);if(clockFrame!==null)cancelAnimationFrame(clockFrame);},{once:true});
 }
