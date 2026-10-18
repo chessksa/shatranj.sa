@@ -347,7 +347,17 @@
     color:#e2dcd3;
     direction:rtl;
   }
-  .desktop-dashboard-home{height:100%;display:grid;grid-template-rows:100px minmax(180px,.72fr) minmax(210px,1.28fr);gap:6px}
+  .desktop-public-player-panel{
+    position:absolute;inset:0;z-index:95;
+    display:flex;flex-direction:column;overflow:hidden;
+    background:#353C45;border:1px solid #66717D;border-radius:10px;
+  }
+  .desktop-public-player-panel[hidden]{display:none!important}
+  .desktop-public-player-toolbar{height:42px;flex:0 0 42px;padding:0 10px;display:flex;align-items:center;justify-content:space-between;gap:6px;border-bottom:1px solid #66717D;background:#292f37}
+  .desktop-public-player-toolbar strong{font:800 14px Arial,sans-serif;color:#e2dcd3}
+  .desktop-public-player-toolbar button{cursor:pointer;background:#353C45;border:1px solid #66717D;border-radius:7px;color:#e2dcd3;padding:6px 10px;font:800 12px Arial,sans-serif}
+  .desktop-public-player-frame{display:block;flex:1;min-height:0;width:100%;border:0;background:#353C45}
+    .desktop-dashboard-home{height:100%;display:grid;grid-template-rows:100px minmax(180px,.72fr) minmax(210px,1.28fr);gap:6px}
   .desktop-dashboard-home[hidden]{display:none!important}
 
   .desktop-home-statistics,.desktop-live-stat,.desktop-dashboard-view{
