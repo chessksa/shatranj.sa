@@ -751,6 +751,7 @@ if(desktop.matches && document.querySelector('#homeHero')){
     }
   }
   const DASHBOARD_ROUTES=new Set(['home','play-options','variants','ranking','tournaments','watch','settings','invite','computer','puzzles','learn','profile','admin']);
+  let lastDashboardView='home';
   function showDashboard(id='home',{preserveRoute=false,initialPuzzleMode='rated'}={}){
     // Navigation always ends active online play before touching the home chessboard.
     window.dispatchEvent(new CustomEvent('desktop:inline-play-stop'));
@@ -765,7 +766,12 @@ if(desktop.matches && document.querySelector('#homeHero')){
     if(id!=='computer') stopInlineComputer();
     if(id!=='puzzles') stopInlinePuzzles();
     if(id!=='learn') stopInlineLearn();
-    if(id!=='tournaments') stopSpectatingTournament();
+    // Spectator stays on the main board while the guest selects another match
+    // in the watch panel. Restore the approved board on any other route.
+    if(!['tournaments','watch'].includes(id)
+      ||(id==='tournaments'&&lastDashboardView==='watch')
+      ||(id==='watch'&&lastDashboardView==='tournaments')) stopSpectatingTournament();
+    lastDashboardView=id;
     const home=document.getElementById('desktopDashboardHome');
     const view=document.getElementById('desktopDashboardView');
     const body=document.getElementById('desktopDashboardViewBody');
@@ -1081,6 +1087,28 @@ if(desktop.matches && document.querySelector('#homeHero')){
         const activeFrame=document.querySelector('.desktop-dashboard-view.embedded-view .desktop-dashboard-embed');
         if(activeFrame===frame) return module.mountInlineTournamentSpectator(gameId);
       }).catch(error=>console.warn('تعذر عرض مباراة البطولة',error));
+    });
+    // Public match listings live in the middle column; selection only paints
+    // read-only positions onto the already mounted homepage chessboard.
+    window.addEventListener('message',event=>{
+      if(event.origin!==location.origin||event.data?.type!=='shatranj:watch-main-board')return;
+      const frame=document.querySelector('#desktopDashboardViewBody .desktop-dashboard-embed');
+      if(!frame||event.source!==frame.contentWindow
+        ||!frame.getAttribute('src')?.startsWith('watch.html?')
+        ||document.getElementById('desktopDashboardView')?.hidden)return;
+      const gameId=String(event.data.gameId||'').trim();
+      const gameType=String(event.data.gameType||'');
+      if(!/^[a-f0-9-]{36}$/i.test(gameId)
+        ||!['human','human_v2','computer'].includes(gameType))return;
+      void spectatorModule().then(async module=>{
+        if(frame!==document.querySelector('#desktopDashboardViewBody .desktop-dashboard-embed'))return;
+        const mounted=await module.mountInlineTournamentSpectator(gameId,{gameType});
+        if(!mounted)throw new Error('Spectator board unavailable');
+      }).catch(error=>{
+        console.warn('تعذر عرض المباراة على الرقعة الرئيسية',error);
+        if(frame===document.querySelector('#desktopDashboardViewBody .desktop-dashboard-embed'))
+          frame.contentWindow?.postMessage({type:'shatranj:watch-main-board-error'},location.origin);
+      });
     });
     window.addEventListener('message',event=>{
       if(event.origin!==location.origin||event.data?.type!=='shatranj-profile-avatar-updated')return;
