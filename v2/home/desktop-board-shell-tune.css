@@ -198,6 +198,27 @@
     color:#cbd5d1;font-weight:800;text-align:center;
   }
   .desktop-watch-player-card.turn{border-color:#8b98a5!important}
+  /* Only after a verified final result: calm winner/loser backgrounds.
+     The player's name retains its approved gold color. */
+  html body.desktop-board-workspace .desktop-dashboard-view.watch-view .desktop-watch-player-card.result-winner{
+    background:linear-gradient(180deg,#334a42,#2b3e38)!important;
+    border-color:#729b89!important;
+  }
+  html body.desktop-board-workspace .desktop-dashboard-view.watch-view .desktop-watch-player-card.result-loser{
+    background:linear-gradient(180deg,#4b393f,#403338)!important;
+    border-color:#b38389!important;
+  }
+  html body.desktop-board-workspace .desktop-dashboard-view.watch-view .desktop-watch-player-card.result-draw{
+    background:linear-gradient(180deg,#414b57,#353f4a)!important;
+    border-color:#8897a4!important;
+  }
+  html body.desktop-board-workspace .desktop-dashboard-view.watch-view .desktop-watch-player-card.result-winner .inline-play-status{color:#b7dccc!important}
+  html body.desktop-board-workspace .desktop-dashboard-view.watch-view .desktop-watch-player-card.result-loser .inline-play-status{color:#f0c3c4!important}
+  html body.desktop-board-workspace .desktop-dashboard-view.watch-view .desktop-watch-player-card.result-draw .inline-play-status{color:#d3dde4!important}
+  html body.desktop-board-workspace .desktop-dashboard-view.watch-view .desktop-watch-player-card.result-winner .inline-play-player-name,
+  html body.desktop-board-workspace .desktop-dashboard-view.watch-view .desktop-watch-player-card.result-loser .inline-play-player-name,
+  html body.desktop-board-workspace .desktop-dashboard-view.watch-view .desktop-watch-player-card.result-draw .inline-play-player-name{color:#D8B665!important}
+
   html body.desktop-board-workspace .desktop-watch-player-card .inline-play-clock{
     display:grid!important;place-items:center!important;
     width:100%;min-width:0;min-height:clamp(74px,10dvh,100px)!important;
