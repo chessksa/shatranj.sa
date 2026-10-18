@@ -536,7 +536,8 @@ async function refreshGame(){
     // Never let a late API response repaint an idle homepage after navigation.
     if(!active||generation!==playGeneration||currentGame?.id!==gameId)return null;
     if(!latest) throw new Error('تعذر استعادة حالة المباراة');
-    if(submittingMove||latest.ply<currentGame.ply) return currentGame;
+    if(submittingMove||latest.ply<currentGame.ply||
+       (['finished','cancelled'].includes(currentGame.status)&&!['finished','cancelled'].includes(latest.status))) return currentGame;
     const previous=currentGame;
     const changed=previous?.ply!==latest.ply||previous?.fen!==latest.fen;
     const ended=previous?.status!==latest.status;
@@ -584,10 +585,34 @@ function startFallbackSync(){
   fallbackSyncTimer=setTimeout(tick,1200);
 }
 
+function applyLiveGameRow(row){
+  if(!active||submittingMove||!currentGame||!row||row.id!==currentGame.id||
+     typeof row.fen!=='string'||!Number.isInteger(Number(row.ply))||
+     Number(row.ply)<currentGame.ply||
+     (['finished','cancelled'].includes(currentGame.status)&&!['finished','cancelled'].includes(row.status))) return false;
+  const previous=currentGame;
+  currentGame=normalizeGameState({...previous,...row});
+  orientation=gameColor()||orientation;
+  const changed=previous.ply!==currentGame.ply||previous.fen!==currentGame.fen;
+  if(changed||displayedFen!==currentGame.fen){
+    selectedSquare=null;
+    renderPosition(currentGame.fen,orientation);
+    if(changed) playBoardMoveSound(previous.fen,currentGame.fen);
+    void refreshMoveNotebook();
+  }else{
+    updateSelectableSquares();
+  }
+  updateControls();
+  renderClocks();
+  setStatus(gameFinishedMessage()||turnMessage());
+  return true;
+}
+
 function beginSubscription(gameId){
   if(unsubscribeGame) unsubscribeGame();
-  unsubscribeGame=subscribeGame(gameId,()=>{
-    refreshGame().catch(()=>setStatus('تعذر تحديث المباراة',{error:true}));
+  unsubscribeGame=subscribeGame(gameId,(type,row)=>{
+    if(type==='game'&&applyLiveGameRow(row))return;
+    if(!submittingMove) void refreshGame().catch(()=>{});
   });
 }
 
