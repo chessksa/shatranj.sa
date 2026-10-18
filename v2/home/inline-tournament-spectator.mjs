@@ -198,7 +198,7 @@ export function stopInlineTournamentSpectator({notify=true}={}){
 }
 export async function mountInlineTournamentSpectator(gameId,{gameType='human'}={}){
   const id=String(gameId||'').trim();
-  if(!/^[a-f0-9-]{36}$/i.test(id))return false;
+  if(!/^[a-zA-Z0-9_-]{1,100}$/.test(id))return false;
   const type=['human','human_v2','computer'].includes(gameType)?gameType:'human';
   const host=window.matchMedia('(min-width:901px)').matches
     ?document.getElementById('homeBoardPreview')
