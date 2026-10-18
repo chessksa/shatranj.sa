@@ -18,16 +18,16 @@
   <div id="viewer" class="layout" hidden>
     <section class="board-card"><div id="board" class="board" aria-label="رقعة المباراة"></div></section>
     <aside class="side">
-      <div class="watch-badge">مشاهدة فقط · لا يمكن التدخل</div>
-      <div id="blackCard" class="player"><div class="player-head"><div><strong id="blackName">♟ الأسود</strong><div class="meta">الأسود</div></div><div id="blackClock" class="clock">00:00</div></div></div>
-      <div id="whiteCard" class="player"><div class="player-head"><div><strong id="whiteName">♙ الأبيض</strong><div class="meta">الأبيض</div></div><div id="whiteClock" class="clock">00:00</div></div></div>
+      <div class="watch-badge">مشاهدة فقط · لا يمكن التدخل <button id="enableWatchSound" type="button" class="watch-sound-button">🔊 تفعيل الصوت</button></div>
+      <div id="blackCard" class="player"><div class="player-head"><div><strong id="blackName">♟ الأسود</strong><div class="meta">الأسود</div><span id="blackCaptured" class="spectator-missing">—</span></div><div id="blackClock" class="clock">00:00</div></div></div>
+      <div id="whiteCard" class="player"><div class="player-head"><div><strong id="whiteName">♙ الأبيض</strong><div class="meta">الأبيض</div><span id="whiteCaptured" class="spectator-missing">—</span></div><div id="whiteClock" class="clock">00:00</div></div></div>
       <div class="info">
         <div class="tile"><small>الحالة</small><strong id="gameStatus">—</strong></div>
         <div class="tile"><small>النتيجة</small><strong id="gameResult">—</strong></div>
         <div class="tile"><small>زمن المباراة</small><strong id="gameTimeControl">—</strong></div>
         <div class="tile"><small>عدد النقلات</small><strong id="movesCount">0</strong></div>
       </div>
-      <h2 class="moves-title">النقلات</h2><div id="moves" class="moves"></div>
+      <h2 class="moves-title">النقلات</h2><div id="moves" class="moves"></div><section id="postGameAnalysis" class="spectator-review" hidden aria-live="polite"></section>
     </aside>
   </div>
 </main>
@@ -36,6 +36,9 @@
 import { createClient } from 'https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/+esm';
 import { SpectatorBoard } from './spectator-board.mjs?v=20261012-notebook-grid-pieces95-v7';
 import { createSpectatorClock } from './spectator-clock.mjs?v=20261018-v2-watch-clock-v1';
+import { renderCapturedPieces } from './v2/play/captured-pieces.mjs?v=20261018-premove-review-v1';
+import { playBoardMoveSound,enableBoardSound } from './v2/board/move-sound.mjs?v=20261018-premove-review-v1';
+import { analyzeFinishedSpectator } from './v2/analysis/spectator-review.mjs?v=20261018-premove-review-v1';
 const cfg=window.SHATRANJ_CONFIG?.supabase||{};
 const supabase=cfg.enabled&&cfg.url&&cfg.anonKey?createClient(cfg.url,cfg.anonKey):null;
 const $=id=>document.getElementById(id);
@@ -81,6 +84,9 @@ function render(){
   if(!current)return;syncBoard();renderClocks();renderMoves();
   $('whiteName').textContent=`♙ ${current.white_name||'الأبيض'}`;$('blackName').textContent=`♟ ${current.black_name||'الأسود'}`;
   $('gameStatus').textContent=statusLabel[current.status]||current.status||'—';$('gameResult').textContent=resultLabel[current.result]||current.result||'—';$('gameTimeControl').textContent=current.time_control_minutes?`${current.time_control_minutes} دقيقة`:'—';
+  renderCapturedPieces($('whiteCaptured'),current.fen,'w');
+  renderCapturedPieces($('blackCaptured'),current.fen,'b');
+  analyzeFinishedSpectator({host:$('postGameAnalysis'),gameId,moves:current.moves,status:current.status});
   showViewer();
 }
 async function fetchGame(){
@@ -101,10 +107,18 @@ async function fetchGame(){
     }
     if(error||!data){if(!current)showDenied();return false;}
     // Only committed, read-only state may be painted; spectators never submit moves.
-    current=data;clockAnchor.sync(current);render();return true;
+    const previous=current;
+    current=data;clockAnchor.sync(current);render();
+    if(previous?.fen&&previous.fen!==data.fen&&(data.moves?.length||0)>(previous.moves?.length||0))playBoardMoveSound(previous.fen,data.fen);
+    return true;
   }catch(error){console.warn('تعذر فتح مباراة المشاهدة',error);if(!current)showDenied();return false;}
   finally{refreshInFlight=false;}
 }
+$('enableWatchSound')?.addEventListener('click',async event=>{
+  const button=event.currentTarget;
+  const unlocked=await enableBoardSound();
+  button.textContent=unlocked?'🔊 الصوت مفعل':'تعذر تشغيل الصوت';
+});
 function startClockLoop(){
   const tick=()=>{renderClocks();clockFrame=requestAnimationFrame(tick);};
   if(clockFrame!==null)cancelAnimationFrame(clockFrame);
