@@ -1,10 +1,11 @@
 /* Live tournament spectator on the persistent home board, desktop and mobile. */
 import { supabase } from '../platform/api.mjs';
 import { decorateBoardCoordinate } from './move-notebook.mjs?v=20261012-notebook-aligned-v13';
+import { moveFromRecord, moveFromPositions, setLastMoveClass } from '../play/last-move.mjs?v=20261018-last-move-v1';
 
 const EMPTY='8/8/8/8/8/8/8/8';
 const FILES=['a','b','c','d','e','f','g','h'];
-const live={id:'',type:'human',presentation:'tournament',host:null,saved:null,poll:null,clock:null,generation:0,state:null,fetching:false,fen:'',errorShown:false};
+const live={id:'',type:'human',presentation:'tournament',host:null,saved:null,poll:null,clock:null,generation:0,state:null,fetching:false,fen:'',lastMove:null,errorShown:false};
 let cssInstalled=false;
 
 function installStyle(){
@@ -16,7 +17,8 @@ function installStyle(){
     '.inline-tournament-spectator{cursor:default!important;}',
     '.inline-tournament-spectator.inline-public-watch .inline-spectator-hud{display:none!important;}',
     '.inline-tournament-spectator.inline-public-watch .desktop-board-square::before,.inline-tournament-spectator.inline-public-watch .desktop-board-square::after{content:none!important;display:none!important;background-image:none!important;}',
-    '.inline-tournament-spectator.inline-public-watch .inline-spectator-last{box-shadow:inset 0 0 0 2px rgba(102,113,125,.65)!important;}',
+    '.inline-tournament-spectator .last-move-from{box-shadow:inset 0 0 0 2px rgba(217,233,247,.92),inset 0 0 0 999px rgba(180,200,224,.11)!important;}',
+    '.inline-tournament-spectator .last-move-to{box-shadow:inset 0 0 0 4px rgba(225,238,250,.98),inset 0 0 0 999px rgba(180,200,224,.23)!important;}',
     '.inline-tournament-spectator .desktop-board-grid{direction:ltr!important;display:grid!important;grid-template-columns:repeat(8,minmax(0,1fr))!important;grid-template-rows:repeat(8,minmax(0,1fr))!important;}',
     '.inline-tournament-spectator .desktop-board-square,.inline-tournament-spectator .mfw-square{display:grid!important;place-items:center!important;min-width:0!important;min-height:0!important;overflow:hidden!important;}',
     '.inline-tournament-spectator .inline-spectator-piece{display:block;width:92%;height:92%;max-width:100%;max-height:100%;object-fit:contain;pointer-events:none;user-select:none;}',
@@ -90,22 +92,19 @@ function setStatus(message){
   const el=live.host?.querySelector('[data-spectator-state]');
   if(el)el.textContent=message;
 }
-function renderFen(fen){
+function renderFen(fen,move=null){
   const parsed=squarePieces(fen);if(!parsed)return false;
   const grid=live.host?.querySelector('[data-inline-spectator-grid]');
   if(!grid)return false;
   // Never repaint 64 squares just because a spectator clock was refreshed.
-  if(live.fen===fen&&grid.children.length===64)return true;
+  if(live.fen===fen&&grid.children.length===64){
+    setLastMoveClass(grid,move);
+    return true;
+  }
   const mobile=live.host.id==='mfwBoard';
   const fragment=document.createDocumentFragment();
-  let prev=squarePieces(live.fen);
-  const changes=new Set();
-  if(prev&&live.fen&&live.fen!==fen){
-    for(const square of Array.from(new Set([...prev.keys(),...parsed.keys()]))){
-      const a=prev.get(square),b=parsed.get(square);
-      if(a?.kind!==b?.kind||a?.color!==b?.color)changes.add(square);
-    }
-  }
+  // The canonical colors and PNGs are preserved; highlight only the actual
+  // start and end squares of the latest recorded chess move.
   for(let rank=8;rank>=1;rank--){
     for(let col=0;col<8;col++){
       const name=FILES[col]+rank;
@@ -113,7 +112,6 @@ function renderFen(fen){
       const light=(col+rank)%2===0;
       const el=document.createElement('span');
       el.className=mobile?'mfw-square '+(light?'light':'dark'):'desktop-board-square '+(light?'light':'dark');
-      if(changes.size===2&&changes.has(name))el.classList.add('inline-spectator-last');
       el.dataset.square=name;
       const p=parsed.get(name);
       if(p){
@@ -129,12 +127,18 @@ function renderFen(fen){
     }
   }
   grid.replaceChildren(fragment);
+  setLastMoveClass(grid,move);
   live.fen=fen;
   return true;
 }
 function paintState(row){
   if(!live.host)return;
-  if(!renderFen(row.fen))throw new Error('invalid fen');
+  const moves=Array.isArray(row.moves)?row.moves:[];
+  const recorded=moveFromRecord(moves[moves.length-1]);
+  const changed=row.fen!==live.fen;
+  const latest=recorded || (changed?moveFromPositions(live.state?.fen,row.fen):live.lastMove);
+  if(!renderFen(row.fen,latest))throw new Error('invalid fen');
+  live.lastMove=latest;
   live.state=row;
   const bn=live.host.querySelector('[data-spectator-name="b"]');
   const wn=live.host.querySelector('[data-spectator-name="w"]');
@@ -225,7 +229,7 @@ export function stopInlineTournamentSpectator({notify=true}={}){
     host.classList.remove('inline-tournament-spectator','inline-public-watch');
     host.removeAttribute('data-tournament-spectating');
   }
-  live.id='';live.type='human';live.presentation='tournament';live.host=null;live.saved=null;live.state=null;live.fen='';live.fetching=false;live.errorShown=false;
+  live.id='';live.type='human';live.presentation='tournament';live.host=null;live.saved=null;live.state=null;live.fen='';live.lastMove=null;live.fetching=false;live.errorShown=false;
   if(previousGameId&&wasPublicWatch)window.dispatchEvent(new CustomEvent('shatranj:public-watch-stopped',{detail:{gameId:previousGameId}}));
   if(notify&&previousGameId&&!wasPublicWatch)window.dispatchEvent(new Event('shatranj:tournament-spectator-stopped'));
 }
