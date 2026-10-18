@@ -12,7 +12,7 @@ import {
   offerDraw,
   respondDraw,
   timeoutGame,
-} from './api.js?v=20261018-live-match-v2';
+} from './api.js?v=20261018-live-speed-v3';
 import { remainingAt, formatClock, isFinalMinute } from './clock.mjs';
 import { normalizeGameState } from './state.mjs';
 import { preloadChessEngine, previewMove } from './instant-move.mjs?v=20261018-move-speed-v1';
