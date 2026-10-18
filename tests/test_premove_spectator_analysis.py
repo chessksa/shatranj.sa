@@ -82,8 +82,8 @@ def test_new_features_are_freshly_versioned():
     home = source("index.html")
     mobile = source("play-v2.html")
     watch = source("watch.html")
-    assert 'content="20261019-watch-contrast-results-v2"' in home
-    assert "play.css?v=20261019-watch-contrast-results-v2" in mobile
-    assert "app.js?v=20261019-watch-contrast-results-v2" in mobile
-    assert "human-watch.html?v=20261019-watch-contrast-results-v2" in watch
-    assert "computer-watch.html?v=20261019-watch-contrast-results-v2" in watch
+    assert 'content="20261019-adaptive-live-gold-row-v1"' in home
+    assert "play.css?v=20261019-adaptive-live-gold-row-v1" in mobile
+    assert "app.js?v=20261019-adaptive-live-gold-row-v1" in mobile
+    assert "human-watch.html?v=20261019-adaptive-live-gold-row-v1" in watch
+    assert "computer-watch.html?v=20261019-adaptive-live-gold-row-v1" in watch
