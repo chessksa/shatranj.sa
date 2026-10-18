@@ -693,6 +693,39 @@ if(desktop.matches && document.querySelector('#homeHero')){
     mountInlineComputer(body);
   }
 
+  // Public profiles replace only the center-column content. Keep the board,
+  // live-match clocks and subscriptions intact while inspecting an opponent.
+  const playerIdPattern=/^[0-9a-f]{8}-[0-9a-f]{4}-[1-5][0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/i;
+  function playerProfilePanel(){
+    const column=document.getElementById('desktopDashboardColumn');
+    if(!column)return null;
+    let panel=document.getElementById('desktopPublicPlayerPanel');
+    if(panel)return panel;
+    panel=document.createElement('section');
+    panel.id='desktopPublicPlayerPanel';
+    panel.className='desktop-public-player-panel';
+    panel.hidden=true;
+    panel.innerHTML='<header class="desktop-public-player-toolbar"><strong>بيانات اللاعب</strong><button type="button" id="desktopPublicPlayerBack">العودة</button></header><iframe class="desktop-public-player-frame" title="بيانات اللاعب" referrerpolicy="same-origin"></iframe>';
+    panel.querySelector('#desktopPublicPlayerBack').addEventListener('click',()=>{panel.hidden=true;});
+    column.appendChild(panel);
+    return panel;
+  }
+  function closePublicPlayerPanel(){
+    const panel=document.getElementById('desktopPublicPlayerPanel');
+    if(panel)panel.hidden=true;
+  }
+  function openPublicPlayerPanel(playerId){
+    if(!desktop.matches||!playerIdPattern.test(String(playerId||'')))return false;
+    const panel=playerProfilePanel();
+    if(!panel)return false;
+    const frame=panel.querySelector('iframe');
+    const src='player.html?id='+encodeURIComponent(playerId)+'&embed=panel';
+    if(frame.getAttribute('src')!==src)frame.src=src;
+    panel.hidden=false;
+    panel.querySelector('#desktopPublicPlayerBack')?.focus({preventScroll:true});
+    return true;
+  }
+
   function embeddedPageView(body,page,title){
     const frame=document.createElement('iframe');
     frame.className='desktop-dashboard-embed';
@@ -806,6 +839,7 @@ if(desktop.matches && document.querySelector('#homeHero')){
   const DASHBOARD_ROUTES=new Set(['home','play-options','variants','ranking','tournaments','watch','settings','invite','computer','puzzles','learn','profile','admin']);
   let lastDashboardView='home';
   function showDashboard(id='home',{preserveRoute=false,initialPuzzleMode='rated'}={}){
+    closePublicPlayerPanel();
     // Navigation always ends active online play before touching the home chessboard.
     window.dispatchEvent(new CustomEvent('desktop:inline-play-stop'));
     stopVariants();
@@ -1050,6 +1084,19 @@ if(desktop.matches && document.querySelector('#homeHero')){
 
   function bindDesktopActions(){
     document.addEventListener('click',event=>{
+      if(!desktop.matches)return;
+      const publicPlayerLink=event.target.closest('a[href*="player.html?id="]');
+      if(publicPlayerLink){
+        let target;
+        try{target=new URL(publicPlayerLink.getAttribute('href'),location.href)}catch{return}
+        const playerId=target.searchParams.get('id');
+        if(target.origin===location.origin&&target.pathname.endsWith('/player.html')&&playerIdPattern.test(playerId||'')){
+          event.preventDefault();
+          event.stopImmediatePropagation();
+          openPublicPlayerPanel(playerId);
+          return;
+        }
+      }
       const memberProfile=event.target.closest('.desktop-member-profile');
       if(memberProfile){
         event.preventDefault();
@@ -1202,6 +1249,14 @@ if(desktop.matches && document.querySelector('#homeHero')){
       }
       document.getElementById('desktopMemberFallback')?.setAttribute('hidden','');
       document.getElementById('headerMemberFallback')?.setAttribute('hidden','');
+    });
+    window.addEventListener('message',event=>{
+      if(event.origin!==location.origin||event.data?.type!=='shatranj:open-player-profile')return;
+      const frame=[...document.querySelectorAll('#desktopDashboardViewBody iframe.desktop-dashboard-embed')]
+        .find(node=>node.contentWindow===event.source);
+      if(!frame||!frame.getAttribute('src')?.startsWith('watch.html?'))return;
+      const playerId=String(event.data.playerId||'');
+      if(playerIdPattern.test(playerId))openPublicPlayerPanel(playerId);
     });
     bindDesktopActions();
     watchLiveData();
