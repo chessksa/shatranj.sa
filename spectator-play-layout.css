@@ -44,3 +44,32 @@ html.spectator-play-layout-root,html.spectator-play-layout-root body.spectator-p
   .spectator-play-layout .moves{flex:1 1 auto;min-height:0;max-height:none;overflow-y:auto;overflow-x:hidden;gap:4px}
   .spectator-play-layout .move{padding:3px 5px;font-size:10px}
 }
+
+/* Passive missing material and opt-in spectator audio, without changing board size. */
+.spectator-play-layout .spectator-missing.captured-pieces{
+  display:flex;align-items:center;gap:0;direction:ltr;min-height:18px;
+  color:#a8b4bf;font-size:11px;overflow:hidden;max-width:100%;margin-top:3px;
+}
+.spectator-play-layout .spectator-missing img{
+  display:block;width:17px;height:17px;object-fit:contain;flex:0 0 17px;margin-inline:-1px;
+}
+.spectator-play-layout .watch-badge{gap:6px}
+.spectator-play-layout .watch-sound-button{
+  flex:0 0 auto;cursor:pointer;background:#353C45;border:1px solid #66717D;
+  color:#D8B665;font:800 11px Arial,sans-serif;padding:5px 7px;border-radius:0;
+}
+.spectator-play-layout .spectator-review{
+  flex:0 1 auto;min-height:54px;max-height:27%;overflow:auto;overscroll-behavior:contain;
+  padding:8px;border:1px solid #66717D;background:#353C45;color:#d5dce3;
+  font-size:11px;line-height:1.6;direction:rtl;
+}
+.spectator-play-layout .spectator-review[hidden]{display:none!important}
+.spectator-play-layout .spectator-review strong{display:block;color:#D8B665;font-size:12px}
+.spectator-play-layout .spectator-review p{margin:4px 0}
+.spectator-play-layout .spectator-review small{color:#acbac4}
+.spectator-play-layout .spectator-review-highlight{border-top:1px solid #66717D;margin-top:3px;padding-top:2px}
+@media(max-width:900px){
+  .spectator-play-layout .spectator-review{max-height:23%;padding:4px 6px;font-size:9px;line-height:1.4}
+  .spectator-play-layout .watch-sound-button{padding:2px 4px;font-size:9px}
+  .spectator-play-layout .spectator-missing img{width:13px;height:13px;flex-basis:13px}
+}
