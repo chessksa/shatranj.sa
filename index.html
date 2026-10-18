@@ -1187,7 +1187,7 @@ footer{
         <div class="hero-stat">
           <div><small>المتواجدين</small><strong id="headerOnlineCount">0</strong></div>
         </div>
-        <a class="hero-stat hero-stat-watch" data-live-matches-watch href="watch.html?v=20261018-mobile-list-refresh-v1#current" title="مشاهدة المباريات الحالية والمنتهية">
+        <a class="hero-stat hero-stat-watch" data-live-matches-watch href="watch.html?v=20261018-player-profile-links-v2#current" title="مشاهدة المباريات الحالية والمنتهية">
           <div><small>المباريات الآن</small><strong id="headerMatchesCount">0</strong></div>
         </a>
       </div>
@@ -1516,7 +1516,7 @@ footer{
   const nonnegative=n=>Number.isSafeInteger(n)&&n>=0?n:0;
   // The same live count drives the desktop and mobile "المباريات الآن" links.
   // Zero means no link; a positive count opens the *current* watch list.
-  const watchHref='watch.html?v=20261018-mobile-list-refresh-v1#current';
+  const watchHref='watch.html?v=20261018-player-profile-links-v2#current';
   const syncLinks=()=>{
     const total=persisted+guest;
     document.querySelectorAll('[data-live-matches-watch]').forEach(link=>{
