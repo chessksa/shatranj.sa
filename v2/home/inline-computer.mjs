@@ -148,6 +148,7 @@ function resetLocalGame(){
   moveHistory=[];
   currentTurn='w';
   lastMove=null;
+  updateComputerCapturedPieces();
 }
 
 function applyUciMove(uci){
