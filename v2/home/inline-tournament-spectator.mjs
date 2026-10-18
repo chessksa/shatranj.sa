@@ -3,7 +3,7 @@ import { supabase } from '../platform/api.mjs';
 
 const EMPTY='8/8/8/8/8/8/8/8';
 const FILES=['a','b','c','d','e','f','g','h'];
-const live={id:'',host:null,saved:null,poll:null,clock:null,generation:0,state:null,fetching:false,fen:'',errorShown:false};
+const live={id:'',type:'human',host:null,saved:null,poll:null,clock:null,generation:0,state:null,fetching:false,fen:'',errorShown:false};
 let cssInstalled=false;
 
 function installStyle(){
@@ -121,7 +121,7 @@ function paintState(row){
   const wn=live.host.querySelector('[data-spectator-name="w"]');
   if(bn)bn.textContent=row.black_name||'الأسود';
   if(wn)wn.textContent=row.white_name||'الأبيض';
-  setStatus(row.status==='finished'?'انتهت المباراة':row.status==='cancelled'?'أُلغيت المباراة':row.status==='active'?'مشاهدة مباشرة':'متابعة البطولة');
+  setStatus(row.status==='finished'?'انتهت المباراة':row.status==='cancelled'?'أُلغيت المباراة':row.status==='matched'?'بانتظار النقلة الأولى':row.status==='active'?'مشاهدة مباشرة':'متابعة المباراة');
   showClocks();
 }
 async function fetchState(generation){
@@ -129,11 +129,18 @@ async function fetchState(generation){
   live.fetching=true;
   const id=live.id;
   try{
-    const {data,error}=await supabase.rpc('get_spectator_live_game_state',{p_game_id:id});
+    const type=live.type;
+    const rpcName=type==='human_v2'?'get_public_v2_spectator_game_state'
+      :type==='computer'?'get_public_computer_game':'get_spectator_live_game_state';
+    const {data,error}=await supabase.rpc(rpcName,{p_game_id:id});
     if(error)throw error;
-    if(generation!==live.generation||id!==live.id)return;
-    const row=Array.isArray(data)?data[0]:data;
-    if(!row?.fen)throw new Error('No spectator state');
+    if(generation!==live.generation||id!==live.id||type!==live.type)return;
+    const result=Array.isArray(data)?data[0]:data;
+    if(!result?.fen)throw new Error('No spectator state');
+    const row=type==='computer'
+      ? {...result,white_name:result.player_name||'اللاعب',black_name:'الكمبيوتر',
+         white_time_ms:result.player_time_ms,black_time_ms:result.computer_time_ms}
+      :result;
     paintState(row);
     live.errorShown=false;
     if(['finished','cancelled'].includes(row.status)&&live.poll){clearInterval(live.poll);live.poll=null;}
@@ -186,22 +193,23 @@ export function stopInlineTournamentSpectator({notify=true}={}){
     host.classList.remove('inline-tournament-spectator');
     host.removeAttribute('data-tournament-spectating');
   }
-  live.id='';live.host=null;live.saved=null;live.state=null;live.fen='';live.fetching=false;live.errorShown=false;
+  live.id='';live.type='human';live.host=null;live.saved=null;live.state=null;live.fen='';live.fetching=false;live.errorShown=false;
   if(notify&&previousGameId)window.dispatchEvent(new Event('shatranj:tournament-spectator-stopped'));
 }
-export async function mountInlineTournamentSpectator(gameId){
+export async function mountInlineTournamentSpectator(gameId,{gameType='human'}={}){
   const id=String(gameId||'').trim();
-  if(!/^[a-zA-Z0-9_-]{1,100}$/.test(id))return false;
+  if(!/^[a-f0-9-]{36}$/i.test(id))return false;
+  const type=['human','human_v2','computer'].includes(gameType)?gameType:'human';
   const host=window.matchMedia('(min-width:901px)').matches
     ?document.getElementById('homeBoardPreview')
     :document.getElementById('mfwBoard');
   if(!host||!supabase)return false;
   installStyle();
-  if(live.host===host&&live.id===id){void fetchState(live.generation);return true;}
+  if(live.host===host&&live.id===id&&live.type===type){void fetchState(live.generation);return true;}
   stopInlineTournamentSpectator({notify:false});
   const saved=document.createDocumentFragment();
   while(host.firstChild)saved.appendChild(host.firstChild);
-  live.host=host;live.saved=saved;live.id=id;
+  live.host=host;live.saved=saved;live.id=id;live.type=type;
   host.classList.add('inline-tournament-spectator');
   host.setAttribute('data-tournament-spectating',id);
   const grid=document.createElement('div');
