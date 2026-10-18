@@ -1,4 +1,5 @@
 import { renderApprovedPreview } from './move-notebook.mjs?v=20261012-notebook-aligned-v13';
+import { renderCapturedPieces } from '../play/captured-pieces.mjs?v=20261018-premove-review-v1';
 import { supabase } from '../platform/api.mjs';
 import { populateHomeSideRail } from './home-side-rail.mjs?v=20261012-large-daily-board-v3';
 import { mountPersonalStatistics } from './personal-statistics.mjs?v=20261014-home-stats-points-v2';
@@ -770,6 +771,7 @@ if(desktop.matches && document.querySelector('#homeHero')){
       <div class="inline-play-player-copy">
         <a class="inline-play-player-name" data-watch-name="${color}">—</a>
         <span class="inline-play-player-meta" data-watch-rating="${color}">—</span>
+        <span class="inline-play-captured" data-watch-captured="${color}" aria-label="القطع المفقودة">—</span>
         <span class="inline-play-status" data-watch-status="${color}">مشاهدة فقط</span>
       </div>
       <time class="inline-play-clock" data-watch-clock="${color}">--:--</time>`;
@@ -845,6 +847,7 @@ if(desktop.matches && document.querySelector('#homeHero')){
       if(meta)meta.textContent=Number.isFinite(Number(rating))&&rating!==null?
         'النقاط '+Math.round(Number(rating)):(color==='w'?'الأبيض':'الأسود');
       if(fallback)fallback.textContent=name.trim().charAt(0).toUpperCase()||'♟';
+      renderCapturedPieces(card.querySelector('[data-watch-captured]'),detail.fen||'',color);
       const status=card.querySelector('[data-watch-status]');
       const active=detail.status==='مشاهدة مباشرة'&&detail.turn===color;
       card.classList.toggle('turn',active);
