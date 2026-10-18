@@ -15,6 +15,7 @@ import {
 } from './api.js?v=20261018-live-match-v2';
 import { remainingAt, formatClock, isFinalMinute } from './clock.mjs';
 import { normalizeGameState } from './state.mjs';
+import { preloadChessEngine, previewMove } from './instant-move.mjs?v=20261018-move-speed-v1';
 
 const PIECE_ROOT = 'assets/pieces/';
 const START_FEN = 'rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1';
@@ -44,6 +45,7 @@ let currentGame = null;
 let orientation = 'w';
 let selectedSquare = null;
 let renderedPosition = new Map();
+let displayedFen = null;
 let polling = false;
 let pollTimer = null;
 let unsubscribeGame = null;
@@ -89,6 +91,8 @@ function orderedSquares(color) {
 
 export function renderPosition(fen = START_FEN, color = orientation) {
   renderedPosition = parseFen(fen);
+  displayedFen = fen;
+  board.dataset.positionFen = fen;
   const fragment = document.createDocumentFragment();
   for (const squareName of orderedSquares(color)) {
     const file = squareName.charCodeAt(0) - 97;
@@ -256,17 +260,19 @@ function updateSelectableSquares() {
 }
 
 async function refreshGame() {
-  if (!currentGame?.id) return null;
+  if (!currentGame?.id || submittingMove) return null;
   if (refreshPromise) return refreshPromise;
   refreshPromise = (async () => {
     const previous = currentGame;
     const latest = normalizeGameState(await getGameState(currentGame.id));
     if (!latest) throw new Error('تعذر استعادة حالة المباراة');
+    // A response started before a move must never undo a preview or a newer ply.
+    if (submittingMove || latest.id !== currentGame?.id || latest.ply < currentGame.ply) return currentGame;
     currentGame = latest;
     orientation = gameColor() || orientation;
     updateCurrentRatingFromGame();
     updateOpponent();
-    if (previous?.fen !== latest.fen || previous?.ply !== latest.ply) {
+    if (displayedFen !== latest.fen || previous?.ply !== latest.ply) {
       selectedSquare = null;
       renderPosition(latest.fen, orientation);
     } else {
@@ -281,14 +287,27 @@ async function refreshGame() {
   return refreshPromise;
 }
 
+let fallbackSyncActive = false;
+function stopFallbackSync() {
+  fallbackSyncActive = false;
+  if (fallbackSyncTimer) clearTimeout(fallbackSyncTimer);
+  fallbackSyncTimer = null;
+}
 function startFallbackSync() {
-  if (fallbackSyncTimer) clearInterval(fallbackSyncTimer);
-  fallbackSyncTimer = setInterval(() => {
-    if (document.visibilityState === 'hidden' || !currentGame ||
-        !['matched', 'active'].includes(currentGame.status)) return;
-    // Realtime is a hint, not the sole source of board updates on mobile.
-    void refreshGame().catch(() => {});
-  }, 3000);
+  stopFallbackSync();
+  fallbackSyncActive = true;
+  const tick = async () => {
+    if (!fallbackSyncActive) return;
+    if (document.visibilityState !== 'hidden' && currentGame &&
+        ['matched', 'active'].includes(currentGame.status) && !submittingMove) {
+      await refreshGame().catch(() => {});
+    }
+    if (!fallbackSyncActive) return;
+    const waiting = Boolean(currentGame && currentGame.turn !== gameColor());
+    // Realtime is primary; poll more often only when waiting for an opponent.
+    fallbackSyncTimer = setTimeout(tick, waiting ? 1200 : 3500);
+  };
+  fallbackSyncTimer = setTimeout(tick, 1200);
 }
 
 function beginSubscription(gameId) {
@@ -312,6 +331,7 @@ async function openGame(gameId) {
   startClockLoop();
   beginSubscription(gameId);
   startFallbackSync();
+  void preloadChessEngine();
 }
 
 function stopPolling() {
@@ -392,21 +412,40 @@ async function handleSquareClick(event) {
   const source = selectedSquare;
   const sourcePiece = renderedPosition.get(source);
   selectedSquare = null;
+  const promotion = sourcePiece?.type === 'p' && (target.endsWith('8') || target.endsWith('1')) ? 'q' : null;
+  const preview = previewMove({ fen: currentGame.fen, from: source, to: target, promotion });
+  if (preview?.legal === false) {
+    updateSelectableSquares();
+    setStatus('نقلة غير قانونية', { error: true });
+    return;
+  }
+  const gameId = currentGame.id;
+  const expectedPly = currentGame.ply;
   submittingMove = true;
   board.classList.add('busy');
   updateSelectableSquares();
-  const reachesPromotionRank = sourcePiece?.type === 'p' && (target.endsWith('8') || target.endsWith('1'));
+  // Show only locally validated moves immediately; the server still confirms each move.
+  if (preview?.legal) renderPosition(preview.fen, orientation);
   try {
-    await submitMove({
-      gameId: currentGame.id,
-      expectedPly: currentGame.ply,
-      from: source,
-      to: target,
-      promotion: reachesPromotionRank ? 'q' : null,
-    });
-    await refreshGame();
-    if (currentGame.status !== 'finished') setStatus(turnMessage());
+    const response = await submitMove({ gameId, expectedPly, from: source, to: target, promotion });
+    if (response?.game?.id === gameId && Number(response.game.ply) >= expectedPly + 1) {
+      currentGame = normalizeGameState({ ...currentGame, ...response.game });
+      orientation = gameColor() || orientation;
+      if (displayedFen !== currentGame.fen) renderPosition(currentGame.fen, orientation);
+      updateCurrentRatingFromGame();
+      updateOpponent();
+      updateControls();
+      renderClocks();
+      setStatus(gameFinishedMessage() || turnMessage());
+    } else {
+      // Some server actions may return only an acknowledgement.
+      submittingMove = false;
+      await refreshGame();
+    }
   } catch (error) {
+    // Revert a speculative position on rejection or transport errors.
+    if (displayedFen !== currentGame.fen) renderPosition(currentGame.fen, orientation);
+    submittingMove = false;
     await refreshGame().catch(() => {});
     setStatus(error.code === 'illegal_move' ? 'نقلة غير قانونية' : (error.message || 'تعذر تنفيذ النقلة'), { error: true });
   } finally {
@@ -519,7 +558,7 @@ async function initialize() {
 window.addEventListener('pagehide', () => {
   if (unsubscribeGame) unsubscribeGame();
   if (clockTimer) clearInterval(clockTimer);
-  if (fallbackSyncTimer) clearInterval(fallbackSyncTimer);
+  stopFallbackSync();
 });
 
 initialize();
