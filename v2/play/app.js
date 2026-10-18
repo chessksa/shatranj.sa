@@ -267,7 +267,8 @@ async function refreshGame() {
     const latest = normalizeGameState(await getGameState(currentGame.id));
     if (!latest) throw new Error('تعذر استعادة حالة المباراة');
     // A response started before a move must never undo a preview or a newer ply.
-    if (submittingMove || latest.id !== currentGame?.id || latest.ply < currentGame.ply) return currentGame;
+    if (submittingMove || latest.id !== currentGame?.id || latest.ply < currentGame.ply ||
+        (['finished','cancelled'].includes(currentGame.status) && !['finished','cancelled'].includes(latest.status))) return currentGame;
     currentGame = latest;
     orientation = gameColor() || orientation;
     updateCurrentRatingFromGame();
@@ -310,10 +311,32 @@ function startFallbackSync() {
   fallbackSyncTimer = setTimeout(tick, 1200);
 }
 
+function applyLiveGameRow(row) {
+  if (submittingMove || !currentGame || !row || row.id !== currentGame.id ||
+      typeof row.fen !== 'string' || !Number.isInteger(Number(row.ply)) ||
+      Number(row.ply) < currentGame.ply ||
+      (['finished','cancelled'].includes(currentGame.status) && !['finished','cancelled'].includes(row.status))) return false;
+  const previous = currentGame;
+  currentGame = normalizeGameState({ ...previous, ...row });
+  orientation = gameColor() || orientation;
+  if (displayedFen !== currentGame.fen || previous.ply !== currentGame.ply) {
+    selectedSquare = null;
+    renderPosition(currentGame.fen, orientation);
+  } else {
+    updateSelectableSquares();
+  }
+  updateControls();
+  renderClocks();
+  setStatus(gameFinishedMessage() || turnMessage());
+  return true;
+}
+
 function beginSubscription(gameId) {
   if (unsubscribeGame) unsubscribeGame();
-  unsubscribeGame = subscribeGame(gameId, () => {
-    refreshGame().catch(() => setStatus('تعذر تحديث المباراة', { error: true }));
+  unsubscribeGame = subscribeGame(gameId, (type, row) => {
+    // Postgres changes contain the committed position: no extra HTTP roundtrip.
+    if (type === 'game' && applyLiveGameRow(row)) return;
+    if (!submittingMove) refreshGame().catch(() => {});
   });
 }
 
