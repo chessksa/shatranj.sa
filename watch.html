@@ -20,7 +20,10 @@ main{flex:1 1 auto;min-height:0;overflow:hidden;padding:18px 0}
 .table-head{height:var(--match-head-h);flex:0 0 var(--match-head-h);display:flex;align-items:center;justify-content:center;gap:10px;border-bottom:1px solid rgba(165,162,158,0.22);background:rgba(69,66,62,0.72);color:var(--hero-cream);font-weight:900;font-size:16px}.table-head strong{min-width:30px;color:var(--hero-gold-2);font-size:19px;line-height:1;text-align:center}.current-shell .table-head{background:linear-gradient(135deg,rgba(165,162,158,0.15),rgba(69,66,62,0.78))}.finished-shell .table-head{background:rgba(69,66,62,0.78)}
 .table-wrap{width:100%;flex:1 1 auto;min-height:0;height:auto;overflow-y:auto;overflow-x:hidden;overscroll-behavior:contain;scrollbar-width:thin;scrollbar-color:rgba(165,162,158,0.55) rgba(69,66,62,0.45)}.table-wrap::-webkit-scrollbar{width:7px}.table-wrap::-webkit-scrollbar-track{background:rgba(69,66,62,0.45)}.table-wrap::-webkit-scrollbar-thumb{background:rgba(165,162,158,0.48);border-radius:999px}
 .match-table{width:100%;border-collapse:collapse;table-layout:fixed}.match-table td{text-align:center;height:var(--match-row-h);padding:5px 8px;border-bottom:1px solid rgba(165,162,158,0.17);background:transparent;color:var(--hero-cream);vertical-align:middle}.match-table td+td{border-inline-start:1px solid rgba(165,162,158,0.17)}.match-table tr:last-child td{border-bottom:0}.match-row:hover td{background:rgba(255,255,255,.025)}
-.col-num{width:64px;color:var(--hero-gold-2)!important;font-weight:900;font-size:14px}.players-cell{text-align:center;overflow:hidden}.player-pair{display:flex;align-items:center;justify-content:center;gap:7px;min-width:0;white-space:nowrap;overflow:hidden}.player-pair strong{min-width:0;overflow:hidden;text-overflow:ellipsis;font-size:13px}.player-pair b{flex:0 0 auto;color:var(--hero-gold);font-size:12px}.col-watch{width:112px}.watch-btn{display:inline-flex;align-items:center;justify-content:center;min-width:72px;height:31px;padding:0 11px;border:1px solid rgba(165,162,158,0.48);border-radius:9px;background:rgba(165,162,158,0.08);color:var(--hero-gold-2);font-size:11px;font-weight:900}.watch-btn:hover{background:var(--hero-gold);color:#302e2b}.empty-row td,.loading-row td{text-align:center!important;color:var(--hero-muted)!important;padding:20px 12px!important;height:auto!important}
+.col-num{width:64px;color:var(--hero-gold-2)!important;font-weight:900;font-size:14px}.players-cell{text-align:center;overflow:hidden}.player-pair{display:flex;align-items:center;justify-content:center;gap:7px;min-width:0;white-space:nowrap;overflow:hidden}.player-pair strong,.player-pair .player-profile-action{min-width:0;max-width:50%;overflow:hidden;text-overflow:ellipsis;font-size:13px}
+.player-profile-action{display:inline-block;border:0;background:transparent;color:inherit;padding:2px 1px;font-family:inherit;font-weight:800;white-space:nowrap;cursor:pointer;touch-action:manipulation}
+.player-profile-action:hover,.player-profile-action:focus-visible{text-decoration:underline;text-underline-offset:3px;color:#fff;outline-offset:2px}
+.player-profile-action:disabled{cursor:default;opacity:.65}.player-pair b{flex:0 0 auto;color:var(--hero-gold);font-size:12px}.col-watch{width:112px}.watch-btn{display:inline-flex;align-items:center;justify-content:center;min-width:72px;height:31px;padding:0 11px;border:1px solid rgba(165,162,158,0.48);border-radius:9px;background:rgba(165,162,158,0.08);color:var(--hero-gold-2);font-size:11px;font-weight:900}.watch-btn:hover{background:var(--hero-gold);color:#302e2b}.empty-row td,.loading-row td{text-align:center!important;color:var(--hero-muted)!important;padding:20px 12px!important;height:auto!important}
 .refresh-btn{position:absolute;left:10px;top:50%;transform:translateY(-50%);display:inline-flex;align-items:center;justify-content:center;gap:5px;min-height:32px;padding:0 10px;border-radius:8px;border:1px solid #66717D;background:#353C45;color:#e2dcd3;font:700 12px Arial,sans-serif;cursor:pointer;touch-action:manipulation}
 .table-head{position:relative}
 .refresh-btn:disabled{cursor:progress;opacity:.8}
@@ -30,7 +33,7 @@ main{flex:1 1 auto;min-height:0;overflow:hidden;padding:18px 0}
 html[data-embed="panel"] .watch-pull-hint{top:8px}
 html[data-embed="panel"] .refresh-btn{left:5px;padding:0 7px;min-height:27px}
 html[data-embed="panel"] .refresh-label{display:none}
-@media(max-width:760px){.refresh-btn{left:6px;min-height:30px;padding:0 8px}:root{--match-row-h:42px;--match-head-h:48px}.wrap{width:min(100% - 14px,1180px)}.brand{font-size:16px}.back{min-height:42px;padding:0 13px;font-size:12px}.nav{height:58px;min-height:58px}.tables-grid{grid-template-columns:1fr;grid-template-rows:repeat(2,minmax(0,1fr));gap:8px;align-items:stretch}.match-shell{height:100%;max-height:100%}.table-head{font-size:14px}.table-head strong{font-size:17px}.match-table td{padding:5px 6px}.col-num{width:44px;font-size:13px}.col-watch{width:86px}.watch-btn{min-width:66px;height:30px;padding:0 8px;font-size:11px}.player-pair{gap:5px}.player-pair strong{font-size:12px}main{padding:8px 0}}
+@media(max-width:760px){.refresh-btn{left:6px;min-height:30px;padding:0 8px}:root{--match-row-h:42px;--match-head-h:48px}.wrap{width:min(100% - 14px,1180px)}.brand{font-size:16px}.back{min-height:42px;padding:0 13px;font-size:12px}.nav{height:58px;min-height:58px}.tables-grid{grid-template-columns:1fr;grid-template-rows:repeat(2,minmax(0,1fr));gap:8px;align-items:stretch}.match-shell{height:100%;max-height:100%}.table-head{font-size:14px}.table-head strong{font-size:17px}.match-table td{padding:5px 6px}.col-num{width:44px;font-size:13px}.col-watch{width:86px}.watch-btn{min-width:66px;height:30px;padding:0 8px;font-size:11px}.player-pair{gap:5px}.player-pair strong,.player-pair .player-profile-action{font-size:12px}main{padding:8px 0}}
 /* In the desktop middle panel, the main site supplies the header and navigation. */
 html[data-embed="panel"] header{display:none}
 html[data-embed="panel"] main{padding:5px 0}
@@ -113,11 +116,17 @@ function renderRows(body,games,emptyMessage){
   body.innerHTML=games.map((game,index)=>{
     const white=esc(game.white_name||'لاعب');
     const black=esc(game.black_name||(game.game_type==='computer'?'الكمبيوتر':'لاعب'));
+    const gameId=esc(game.game_id||'');
+    const gameType=esc(game.game_type||'');
+    const allowWhite=game.game_type==='human_v2'||game.game_type==='computer';
+    const allowBlack=game.game_type==='human_v2';
+    const whiteLabel=allowWhite?`<button type="button" class="player-profile-action" data-profile-game="${gameId}" data-profile-type="${gameType}" data-profile-color="white" aria-label="بيانات اللاعب ${white}">${white}</button>`:`<strong>${white}</strong>`;
+    const blackLabel=allowBlack?`<button type="button" class="player-profile-action" data-profile-game="${gameId}" data-profile-type="${gameType}" data-profile-color="black" aria-label="بيانات اللاعب ${black}">${black}</button>`:`<strong>${black}</strong>`;
     const whiteRating=game.white_rating===null||game.white_rating===undefined?'':String(Number(game.white_rating)||'');
     const blackRating=game.black_rating===null||game.black_rating===undefined?'':String(Number(game.black_rating)||'');
     return `<tr class="match-row">
       <td class="col-num">${index+1}</td>
-      <td class="players-cell"><span class="player-pair"><strong>${white}</strong><b aria-hidden="true">×</b><strong>${black}</strong></span></td>
+      <td class="players-cell"><span class="player-pair">${whiteLabel}<b aria-hidden="true">×</b>${blackLabel}</span></td>
       <td class="col-watch"><a class="watch-btn" href="${watchHref(game)}" data-game-id="${esc(game.game_id||'')}" data-game-type="${esc(game.game_type||'')}" data-white-rating="${esc(whiteRating)}" data-black-rating="${esc(blackRating)}" aria-label="مشاهدة مباراة ${white} ضد ${black}">مشاهدة</a></td>
     </tr>`;
   }).join('');
@@ -229,6 +238,35 @@ watchMain.addEventListener('touchcancel',()=>{
   watchPull=null;
   hideWatchPull();
 },{passive:true});
+
+// Public match names resolve through the verified match ID, never a nonunique name.
+document.addEventListener('click',async event=>{
+  const button=event.target.closest?.('.player-profile-action[data-profile-game]');
+  if(!button||button.disabled||!supabase)return;
+  const gameId=String(button.dataset.profileGame||'');
+  const gameType=String(button.dataset.profileType||'');
+  const color=String(button.dataset.profileColor||'');
+  if(!/^[0-9a-f-]{36}$/i.test(gameId)||!['human_v2','computer'].includes(gameType)
+    ||!['white','black'].includes(color))return;
+  button.disabled=true;
+  try{
+    const {data,error}=await supabase.rpc('get_public_match_player_ids',{
+      p_game_id:gameId,p_game_type:gameType
+    });
+    if(error)throw error;
+    const playerId=(Array.isArray(data)?data[0]:data)?.[color+'_player_id'];
+    if(!/^[0-9a-f-]{36}$/i.test(String(playerId||'')))return;
+    if(document.documentElement.dataset.embed==='panel'&&window.parent!==window){
+      window.parent.postMessage({type:'shatranj:open-player-profile',playerId},location.origin);
+    }else{
+      location.href='player.html?id='+encodeURIComponent(playerId);
+    }
+  }catch(error){
+    console.warn('تعذر فتح ملف اللاعب من قائمة المباريات',error);
+  }finally{
+    button.disabled=false;
+  }
+});
 
 // The desktop visitor watches directly on the unchanged home board; no new page.
 document.addEventListener('click',event=>{
