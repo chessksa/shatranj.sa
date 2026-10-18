@@ -1261,7 +1261,27 @@ if(desktop.matches && document.querySelector('#homeHero')){
         const panel=document.querySelector('#desktopDashboardView.watch-view .desktop-dashboard-view-body');
         if(!panel||!panel.contains(frame))return;
         panel.dataset.watchGameId=gameId;
-        // Reusing the row identifiers preserves live games and their active board.
+        // A new match must not retain the previous players' profile links or images.
+        // Use the local robot portrait immediately, even if the lookup is slow.
+        for(const card of panel.querySelectorAll('.desktop-watch-player-card')){
+          const color=card.dataset.watchCard;
+          const name=card.querySelector('[data-watch-name]');
+          const photo=card.querySelector('[data-watch-photo]');
+          const fallback=card.querySelector('[data-watch-avatar]');
+          name?.removeAttribute('href');
+          if(photo&&fallback){
+            const robot=gameType==='computer'&&color==='b';
+            const src=robot?'assets/computer-avatar.svg?v=20261018-profile-portraits-v1':'';
+            photo.dataset.watchImageSource=src;
+            photo.onload=robot?()=>{if(photo.dataset.watchImageSource===src){photo.hidden=false;fallback.hidden=true;}}:null;
+            photo.onerror=()=>{photo.hidden=true;fallback.hidden=false;};
+            photo.hidden=!robot;
+            fallback.hidden=robot;
+            if(src)photo.src=src;
+            else photo.removeAttribute('src');
+          }
+        }
+        // Reusing row identifiers preserves live games and their active board.
         void hydrateWatchCardProfiles(panel,gameId,gameType);
         for(const [key,value] of [['watchWhiteRating',event.data.whiteRating],['watchBlackRating',event.data.blackRating]]){
           if(value!==''&&value!==undefined&&Number.isFinite(Number(value)))
