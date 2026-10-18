@@ -93,3 +93,19 @@
   body.desktop-board-workspace .desktop-live-stat strong{font-size:20px!important}
   body.desktop-board-workspace .desktop-live-stat small{font-size:10px!important}
 }
+
+/* Public watch is always available from the desktop match counter. */
+@media(min-width:901px){
+  body.desktop-board-workspace button.desktop-live-stat-watch{
+    appearance:none!important;-webkit-appearance:none!important;
+    border:0!important;background:transparent!important;
+    font-family:inherit!important;cursor:pointer!important;
+    color:inherit!important;width:100%!important;
+  }
+  body.desktop-board-workspace button.desktop-live-stat-watch:hover{
+    background:rgba(255,255,255,.045)!important;
+  }
+  body.desktop-board-workspace button.desktop-live-stat-watch:focus-visible{
+    outline:1px solid #66717D!important;outline-offset:-2px!important;
+  }
+}
