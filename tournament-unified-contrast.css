@@ -1,0 +1,340 @@
+/* Shatranj Al Arab — one tournament surface palette for list and detail.
+   Deliberately scoped: never styles any board, square or chess piece. */
+:root{
+  --tourney-bg:#353C45;
+  --tourney-panel:#303943;
+  --tourney-panel-soft:#3c4652;
+  --tourney-title:#46515e;
+  --tourney-border:#66717D;
+  --tourney-line:rgba(134,151,167,.30);
+  --tourney-text:#e9eef3;
+  --tourney-muted:#c0ccd6;
+  --tourney-gold:#D8B665;
+  --tourney-win:#a6d8bd;
+  --tourney-error:#efb6b6;
+}
+html body:has(#tournamentDetailView){
+  background:var(--tourney-bg)!important;
+  background-image:none!important;
+  color:var(--tourney-text)!important;
+}
+html.tournament-embedded,
+html.tournament-embedded body{
+  background:var(--tourney-bg)!important;
+}
+html.tournament-embedded body main{background:var(--tourney-bg)!important}
+html body .page-head,
+html body .tournament-table-shell,
+html body #tournamentDetailView.detail-shell{
+  background:var(--tourney-panel)!important;
+  background-image:none!important;
+  border:1px solid var(--tourney-border)!important;
+  border-radius:0!important;
+  box-shadow:none!important;
+  color:var(--tourney-text)!important;
+}
+html body .page-head h1{color:var(--tourney-text)!important}
+html body .page-head .count{color:var(--tourney-gold)!important}
+
+/* Tournament discovery: charcoal tab surfaces and readable rows. */
+html body #tournamentListView .tournament-tab{
+  background:var(--tourney-panel)!important;
+  border:1px solid var(--tourney-border)!important;
+  color:var(--tourney-text)!important;
+  border-radius:6px!important;
+  box-shadow:none!important;
+}
+html body #tournamentListView .tournament-tab:hover,
+html body #tournamentListView .tournament-tab:focus-visible{
+  background:var(--tourney-panel-soft)!important;
+  outline:1px solid var(--tourney-border);
+  outline-offset:-1px;
+}
+html body #tournamentListView .tournament-tab.is-active{
+  background:#465360!important;
+  border-color:#94a6b5!important;
+  box-shadow:inset 0 0 0 1px rgba(216,182,101,.12)!important;
+}
+html body #tournamentListView .tournament-tab strong{color:var(--tourney-gold)!important}
+html body #tournamentListView .tournament-cards,
+html body #tournamentListView .tournament-table-shell,
+html body #tournamentListView .tournament-table-scroll{
+  background:var(--tourney-panel)!important;
+  background-image:none!important;
+  border-color:var(--tourney-border)!important;
+  box-shadow:none!important;
+}
+html body #tournamentListView .tournament-table-head,
+html body #tournamentListView .tournament-table thead th{
+  background:var(--tourney-title)!important;
+  color:var(--tourney-text)!important;
+  border-color:var(--tourney-border)!important;
+}
+html body #tournamentListView .tournament-table-head strong{color:var(--tourney-gold)!important}
+html body #tournamentListView .tournament-table tbody tr,
+html body #tournamentListView .tournament-list-item{
+  background:#303943!important;
+  color:var(--tourney-text)!important;
+}
+html body #tournamentListView .tournament-table tbody tr:nth-child(even),
+html body #tournamentListView .tournament-list-item:nth-child(even){
+  background:#38434f!important;
+}
+html body #tournamentListView .tournament-table tbody tr:hover,
+html body #tournamentListView .tournament-list-item:hover{
+  background:#4a5663!important;
+}
+html body #tournamentListView .tournament-table td,
+html body #tournamentListView .tournament-table th,
+html body #tournamentListView .tournament-list-item{
+  border-color:var(--tourney-line)!important;
+}
+html body #tournamentListView .tournament-name,
+html body #tournamentListView .tournament-list-name{
+  color:var(--tourney-text)!important;
+}
+html body #tournamentListView .tournament-date,
+html body #tournamentListView .tournament-list-meta{
+  color:var(--tourney-muted)!important;
+}
+html body #tournamentListView .champion-name{color:var(--tourney-gold)!important}
+html body #tournamentListView .status,
+html body #tournamentListView .tournament-list-status{
+  background:#3e4a56!important;
+  color:#e5edf3!important;
+  border:1px solid var(--tourney-border)!important;
+}
+html body #tournamentListView .status-open,
+html body #tournamentListView .tournament-list-status.status-open{
+  color:var(--tourney-win)!important;border-color:#718f82!important;
+}
+html body #tournamentListView .tournament-capacity-track{background:#46515e!important}
+html body #tournamentListView .tournament-capacity-track i{background:#a2b2c1!important}
+
+/* Opening a tournament: same background in the entire center section. */
+html body #tournamentDetailView,
+html body #tournamentDetailView .detail-card{
+  background:var(--tourney-panel)!important;
+  background-image:none!important;
+  color:var(--tourney-text)!important;
+  box-shadow:none!important;
+}
+html body #tournamentDetailView .detail-toolbar{
+  background:var(--tourney-title)!important;
+  background-image:none!important;
+  border:0!important;
+  border-bottom:1px solid var(--tourney-border)!important;
+  color:var(--tourney-text)!important;
+  box-shadow:none!important;
+}
+html body #tournamentDetailView .detail-toolbar-title,
+html body #tournamentDetailView .detail-title{
+  color:var(--tourney-text)!important;
+  font-weight:900!important;
+}
+html body #tournamentDetailView .detail-inline-back,
+html body #tournamentDetailView .detail-back{
+  color:var(--tourney-text)!important;
+  background:#353C45!important;
+  background-image:none!important;
+  border:1px solid var(--tourney-border)!important;
+  border-radius:4px!important;
+  box-shadow:none!important;
+}
+html body #tournamentDetailView .detail-inline-back:hover,
+html body #tournamentDetailView .detail-back:hover{
+  background:#4a5663!important;
+}
+html body #tournamentDetailView .status{
+  color:#e7edf3!important;
+  background:#404c57!important;
+  border:1px solid var(--tourney-border)!important;
+}
+html body #tournamentDetailView .status-open{color:var(--tourney-win)!important}
+html body #tournamentDetailView .detail-grid,
+html body #tournamentDetailView .tournament-detail-classic,
+html body #tournamentDetailView .tournament-detail-table{
+  background:var(--tourney-panel)!important;
+  background-image:none!important;
+  border-color:var(--tourney-border)!important;
+  box-shadow:none!important;
+}
+/* Classic details are converted by tournament-detail-classic.js after load.
+   Use higher specificity than its injected !important styles. */
+html body #tournamentDetailCard .tournament-detail-classic thead th,
+html body #tournamentDetailCard .tournament-detail-table thead th{
+  background:var(--tourney-title)!important;
+  color:var(--tourney-text)!important;
+  border-color:var(--tourney-border)!important;
+  font-weight:900!important;
+}
+html body #tournamentDetailCard .tournament-detail-classic tbody th,
+html body #tournamentDetailCard .tournament-detail-table tbody th{
+  background:#35414c!important;
+  color:#c8d7e2!important;
+  border-color:var(--tourney-line)!important;
+  font-weight:800!important;
+}
+html body #tournamentDetailCard .tournament-detail-classic tbody td,
+html body #tournamentDetailCard .tournament-detail-table tbody td,
+html body #tournamentDetailCard .tournament-detail-classic tbody td .detail-value{
+  background:#303943!important;
+  color:var(--tourney-text)!important;
+  border-color:var(--tourney-line)!important;
+  font-weight:700!important;
+}
+html body #tournamentDetailCard .tournament-detail-classic tbody tr:nth-child(even) th,
+html body #tournamentDetailCard .tournament-detail-classic tbody tr:nth-child(even) td,
+html body #tournamentDetailCard .tournament-detail-table tbody tr:nth-child(even) th,
+html body #tournamentDetailCard .tournament-detail-table tbody tr:nth-child(even) td{
+  background:#3c4753!important;
+}
+/* Fallback two-column detail grid on mobile before conversion. */
+html body #tournamentDetailCard .detail-item{background:#303943!important;border-color:var(--tourney-border)!important}
+html body #tournamentDetailCard .detail-grid .detail-item .detail-label{
+  background:#35414c!important;color:#c8d7e2!important;
+  border-color:var(--tourney-line)!important;
+}
+html body #tournamentDetailCard .detail-grid .detail-item .detail-value{
+  background:#303943!important;color:var(--tourney-text)!important;
+}
+
+/* Registration controls remain actionable and legible even if disabled. */
+html body #tournamentDetailCard .register-btn,
+html body #tournamentDetailCard .tournament-enter-btn,
+html body #v3TournamentFormatPanel .v3-arena-btn{
+  background:#475663!important;background-image:none!important;
+  border:1px solid #8799a8!important;
+  color:#f0f4f6!important;
+  border-radius:5px!important;
+  box-shadow:none!important;
+  opacity:1!important;
+}
+html body #tournamentDetailCard .register-btn:hover:not(:disabled),
+html body #tournamentDetailCard .tournament-enter-btn:hover:not(:disabled),
+html body #v3TournamentFormatPanel .v3-arena-btn:hover:not(:disabled){
+  background:#536574!important;
+}
+html body #tournamentDetailCard .register-btn:disabled,
+html body #tournamentDetailCard .tournament-enter-btn:disabled{
+  background:#37424d!important;
+  color:#b5c2cc!important;
+  border-color:#66717D!important;
+  opacity:.8!important;
+}
+
+/* Brackets, rounds and the game list: one grey grid, clear headings. */
+html body #tournamentDetailCard .bracket-shell{
+  border-color:var(--tourney-line)!important;
+}
+html body #tournamentDetailCard .bracket-title{
+  color:var(--tourney-gold)!important;
+}
+html body #tournamentDetailCard .bracket-round-title{
+  color:#d0dce5!important;
+}
+html body #tournamentDetailCard .bracket-match{
+  background:#36414c!important;
+  background-image:none!important;
+  border:1px solid var(--tourney-border)!important;
+  color:var(--tourney-text)!important;
+  box-shadow:none!important;
+}
+html body #tournamentDetailCard .bracket-match.mine{
+  background:#435260!important;
+  border-color:#91a5b5!important;
+}
+html body #tournamentDetailCard .bracket-player{
+  color:var(--tourney-text)!important;
+  border-color:var(--tourney-line)!important;
+}
+html body #tournamentDetailCard .bracket-player.winner,
+html body #tournamentDetailCard .classic-players .winner{
+  color:var(--tourney-win)!important;
+}
+html body #tournamentDetailCard .bracket-meta{color:var(--tourney-muted)!important}
+html body #tournamentDetailCard .tournament-matches-classic{
+  background:var(--tourney-panel)!important;
+  color:var(--tourney-text)!important;
+  border-color:var(--tourney-border)!important;
+}
+html body #tournamentDetailCard .tournament-matches-classic thead th{
+  background:var(--tourney-title)!important;
+  color:#e6edf3!important;
+  border-color:var(--tourney-border)!important;
+}
+html body #tournamentDetailCard .tournament-matches-classic tbody tr{
+  background:#303943!important;
+}
+html body #tournamentDetailCard .tournament-matches-classic tbody tr:nth-child(even){
+  background:#3c4753!important;
+}
+html body #tournamentDetailCard .tournament-matches-classic tbody tr[data-tournament-spectate]:hover{
+  background:#4a5967!important;
+}
+html body #tournamentDetailCard .tournament-matches-classic tbody tr.tournament-watching{
+  background:#4a5967!important;
+  box-shadow:inset 2px 0 0 var(--tourney-gold)!important;
+}
+html body #tournamentDetailCard .tournament-matches-classic tbody tr.tournament-watching .classic-players{
+  color:#f0e2bb!important;
+}
+html body #tournamentDetailCard .tournament-matches-classic td{
+  color:var(--tourney-text)!important;
+  border-color:var(--tourney-line)!important;
+}
+html body #tournamentDetailCard .tournament-watch-indicator,
+html body #tournamentDetailCard .classic-vs{
+  color:var(--tourney-gold)!important;
+}
+html body #tournamentDetailCard .tournament-matches-classic tr:focus-visible,
+html body #tournamentDetailCard .register-btn:focus-visible,
+html body #tournamentDetailCard .tournament-enter-btn:focus-visible{
+  outline:2px solid #c4d3de!important;outline-offset:-2px;
+}
+
+/* Swiss / Arena result tables rendered after this stylesheet loads. */
+html body #v3TournamentFormatPanel{
+  background:#303943!important;background-image:none!important;
+  border:1px solid var(--tourney-border)!important;
+  border-radius:0!important;box-shadow:none!important;
+}
+html body #v3TournamentFormatPanel .v3-format-head strong{
+  color:var(--tourney-gold)!important;
+}
+html body #v3TournamentFormatPanel .v3-format-badge{
+  background:#43515e!important;
+  color:var(--tourney-text)!important;
+  border:1px solid var(--tourney-border)!important;
+}
+html body #v3TournamentFormatPanel .v3-standing{
+  background:#303943!important;
+  border-color:var(--tourney-line)!important;
+  color:var(--tourney-text)!important;
+}
+html body #v3TournamentFormatPanel .v3-standing:nth-child(even){
+  background:#3c4753!important;
+}
+html body #v3TournamentFormatPanel .v3-standing.head{
+  background:var(--tourney-title)!important;
+  color:#e6edf3!important;
+}
+html body #v3TournamentFormatPanel .v3-arena-note{color:var(--tourney-muted)!important}
+html body #tournamentDetailCard .bracket-empty,
+html body #tournamentDetailCard .empty{color:var(--tourney-muted)!important}
+
+/* Desktop iframe shares outer shell's 1px border; do not draw a second
+   colorful frame around its entire detail panel. */
+html.tournament-embedded body #tournamentDetailView.detail-shell{
+  border:0!important;border-radius:0!important;box-shadow:none!important;
+}
+html.tournament-embedded body #tournamentDetailCard{
+  scrollbar-color:#66717D #303943!important;
+}
+@media(max-width:700px){
+  html body #tournamentDetailCard .tournament-detail-classic tbody th,
+  html body #tournamentDetailCard .tournament-detail-classic tbody td{
+    line-height:1.45!important;
+  }
+  html body #tournamentDetailCard .tournament-matches-classic td{line-height:1.4!important}
+}
