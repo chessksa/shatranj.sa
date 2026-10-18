@@ -18,6 +18,7 @@ import { remainingAt, formatClock, isFinalMinute } from './clock.mjs';
 import { normalizeGameState } from './state.mjs';
 import { preloadChessEngine, previewMove } from './instant-move.mjs?v=20261018-move-speed-v1';
 import { moveFromRecord, moveFromPositions, setLastMoveClass } from './last-move.mjs?v=20261018-last-move-v1';
+import { renderCapturedPieces } from './captured-pieces.mjs?v=20261018-premove-review-v1';
 
 const PIECE_ROOT = 'assets/pieces/';
 const START_FEN = 'rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1';
@@ -46,6 +47,7 @@ let currentPlayer = null;
 let currentGame = null;
 let orientation = 'w';
 let selectedSquare = null;
+let queuedPremove = null;
 let renderedPosition = new Map();
 let displayedFen = null;
 let lastMove = null;
@@ -120,6 +122,7 @@ export function renderPosition(fen = START_FEN, color = orientation) {
   board.replaceChildren(fragment);
   updateSelectableSquares();
   setLastMoveClass(board,lastMove);
+  updateCapturedPieces();
 }
 
 function setStatus(message, { searching = false, error = false } = {}) {
@@ -253,14 +256,38 @@ function startClockLoop() {
   clockTimer = setInterval(renderClocks, 200);
 }
 
-function updateSelectableSquares() {
-  const myColor = gameColor();
-  const canMove = Boolean(currentGame && myColor && currentGame.turn === myColor && ['matched','active'].includes(currentGame.status) && !submittingMove && !actionInFlight);
-  board.querySelectorAll('.v2-square').forEach((square) => {
-    const piece = renderedPosition.get(square.dataset.square);
-    square.classList.toggle('selected', square.dataset.square === selectedSquare);
-    square.classList.toggle('movable', canMove && Boolean(selectedSquare || piece?.color === myColor));
+function updateCapturedPieces(){
+  const color=gameColor(),fen=currentGame?.fen||START_FEN;
+  renderCapturedPieces(document.getElementById('v2-player-captured'),fen,color||'w');
+  renderCapturedPieces(document.getElementById('v2-opponent-captured'),fen,color==='b'?'w':'b');
+}
+function clearPremove(){queuedPremove=null;updateSelectableSquares();}
+function updateSelectableSquares(){
+  const color=gameColor();
+  const allowed=Boolean(currentGame&&color&&['matched','active'].includes(currentGame.status)&&!submittingMove&&!actionInFlight);
+  board.querySelectorAll('.v2-square').forEach(square=>{
+    const name=square.dataset.square,piece=renderedPosition.get(name);
+    square.classList.toggle('selected',name===selectedSquare);
+    square.classList.toggle('movable',allowed&&Boolean(selectedSquare||piece?.color===color));
+    square.classList.toggle('premove-from',name===queuedPremove?.from);
+    square.classList.toggle('premove-to',name===queuedPremove?.to);
   });
+}
+function tryPlayQueuedPremove(){
+  const queued=queuedPremove;
+  if(!queued||!currentGame||submittingMove||actionInFlight)return;
+  if(currentGame.id!==queued.gameId||!['matched','active'].includes(currentGame.status)){clearPremove();return;}
+  if(currentGame.turn!==queued.color||Number(currentGame.ply)<=queued.ply)return;
+  queuedPremove=null;
+  const piece=renderedPosition.get(queued.from),target=renderedPosition.get(queued.to);
+  const preview=previewMove({fen:currentGame.fen,from:queued.from,to:queued.to,promotion:queued.promotion});
+  if(piece?.color!==queued.color||target?.color===queued.color||preview?.legal===false){
+    selectedSquare=null;updateSelectableSquares();
+    setStatus('أُلغيت النقلة المسبقة: لم تعد قانونية',{error:true});return;
+  }
+  selectedSquare=queued.from;updateSelectableSquares();
+  const square=board.querySelector('.v2-square[data-square="'+queued.to+'"]');
+  if(square)void handleSquareClick({target:square});
 }
 
 async function refreshGame() {
@@ -287,8 +314,11 @@ async function refreshGame() {
     } else {
       updateSelectableSquares();
     }
+    if(!['matched','active'].includes(currentGame.status))clearPremove();
+    updateCapturedPieces();
     updateControls();
     renderClocks();
+    if(latest.ply!==previous?.ply||latest.fen!==previous?.fen)tryPlayQueuedPremove();
     const message = gameFinishedMessage() || turnMessage();
     if (message) setStatus(message, { error: !gameColor() && latest.status !== 'finished' });
     return currentGame;
@@ -338,9 +368,12 @@ function applyLiveGameRow(row) {
   } else {
     updateSelectableSquares();
   }
+  if(!['matched','active'].includes(currentGame.status))clearPremove();
+  updateCapturedPieces();
   updateControls();
   renderClocks();
   setStatus(gameFinishedMessage() || turnMessage());
+  if(latest.ply!==previous.ply||latest.fen!==previous.fen)tryPlayQueuedPremove();
   return true;
 }
 
@@ -356,6 +389,7 @@ function beginSubscription(gameId) {
 async function openGame(gameId) {
   stopPolling();
   currentGame = normalizeGameState(await getGameState(gameId));
+  clearPremove();
   lastMove = null;
   orientation = gameColor() || 'w';
   history.replaceState({}, '', `play-v2.html?game=${encodeURIComponent(gameId)}`);
@@ -431,7 +465,8 @@ async function handleSquareClick(event) {
   const square = event.target.closest('.v2-square');
   if (!square || submittingMove || actionInFlight || !currentGame) return;
   const myColor = gameColor();
-  if (!myColor || currentGame.turn !== myColor || !['matched','active'].includes(currentGame.status)) return;
+  if (!myColor || !['matched','active'].includes(currentGame.status)) return;
+  const preparing=currentGame.turn!==myColor;
   const target = square.dataset.square;
   const targetPiece = renderedPosition.get(target);
   if (!selectedSquare) {
@@ -455,6 +490,12 @@ async function handleSquareClick(event) {
   const sourcePiece = renderedPosition.get(source);
   selectedSquare = null;
   const promotion = sourcePiece?.type === 'p' && (target.endsWith('8') || target.endsWith('1')) ? 'q' : null;
+  if(preparing){
+    queuedPremove={gameId:currentGame.id,from:source,to:target,promotion,ply:Number(currentGame.ply),color:myColor};
+    updateSelectableSquares();
+    setStatus('نقلة مسبقة بالأحمر — تنفذ عندما يأتي دورك إذا بقيت قانونية.');return;
+  }
+  clearPremove();
   const preview = previewMove({ fen: currentGame.fen, from: source, to: target, promotion });
   if (preview?.legal === false) {
     updateSelectableSquares();
@@ -609,6 +650,7 @@ window.addEventListener('pagehide', () => {
   if (unsubscribeGame) unsubscribeGame();
   if (clockTimer) clearInterval(clockTimer);
   stopFallbackSync();
+  clearPremove();
 });
 
 initialize();
