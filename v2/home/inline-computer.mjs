@@ -39,7 +39,7 @@ function ensureCss(){
   const link=document.createElement('link');
   link.id='inlineComputerCss';
   link.rel='stylesheet';
-  link.href=new URL('./inline-computer.css?v=20261018-last-move-v1',import.meta.url).href;
+  link.href=new URL('./inline-computer.css?v=20261018-profile-portraits-v1',import.meta.url).href;
   document.head.insertBefore(link,document.querySelector('link[href*="site-charcoal-theme.css"]'));
   // Avoid loading an outdated duplicate of inline-play.css after the current
   // stylesheet: the later copy used to override the pawn-size correction.
@@ -365,7 +365,12 @@ function syncPlayer(){
   const rating=document.getElementById('headerMemberRating')?.textContent?.trim()||'1500';
   const n=host.querySelector('#inlineComputerPlayerName');
   const m=host.querySelector('#inlineComputerPlayerMeta');
-  if(n&&n.textContent!==name)n.textContent=name;
+  const ownId=document.getElementById('headerMemberName')?.dataset.playerId||'';
+  if(n){
+    if(n.textContent!==name)n.textContent=name;
+    if(signedIn&&/^[0-9a-f-]{36}$/i.test(ownId))n.href='player.html?id='+encodeURIComponent(ownId);
+    else n.removeAttribute('href');
+  }
   if(m)m.textContent=`النقاط ${rating}`;
 
   const source=document.getElementById('headerMemberAvatar');
@@ -388,8 +393,8 @@ function watchPlayerIdentity(){
   for(const id of ['headerMemberName','headerMemberRating','headerMemberAvatar']){
     const source=document.getElementById(id);
     if(source)playerIdentityObserver.observe(source,{
-      attributes:id==='headerMemberAvatar',
-      attributeFilter:id==='headerMemberAvatar'?['src','hidden']:undefined,
+      attributes:id==='headerMemberAvatar'||id==='headerMemberName',
+      attributeFilter:id==='headerMemberAvatar'?['src','hidden']:id==='headerMemberName'?['data-player-id']:undefined,
       childList:id!=='headerMemberAvatar',
       characterData:id!=='headerMemberAvatar',
       subtree:id!=='headerMemberAvatar'
@@ -403,13 +408,7 @@ function buildPanel(body){
     <div class="inline-computer-panel">
       <section class="inline-play-player-card inline-computer-opponent">
         <span class="inline-computer-identity-icon inline-computer-machine-icon" aria-hidden="true">
-          <svg viewBox="0 0 48 48" fill="none" xmlns="http://www.w3.org/2000/svg">
-            <rect x="7" y="10" width="34" height="26" rx="5" stroke="currentColor" stroke-width="2.5"/>
-            <rect x="12" y="15" width="24" height="16" rx="2.5" stroke="currentColor" stroke-width="1.5"/>
-            <circle cx="19" cy="22" r="2" fill="currentColor"/>
-            <circle cx="29" cy="22" r="2" fill="currentColor"/>
-            <path d="M21 27h6M24 6v4M18 40h12M24 36v4" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"/>
-          </svg>
+          <img src="assets/computer-avatar.svg?v=20261018-profile-portraits-v1" alt="صورة الكمبيوتر" width="160" height="160" decoding="async">
         </span>
         <div class="inline-play-player-copy">
           <strong class="inline-play-player-name">الكمبيوتر</strong>
@@ -446,7 +445,7 @@ function buildPanel(body){
           <span id="inlineComputerPlayerFallback" aria-hidden="true">♞</span>
         </span>
         <div class="inline-play-player-copy">
-          <strong id="inlineComputerPlayerName" class="inline-play-player-name">أنت</strong>
+          <a id="inlineComputerPlayerName" class="inline-play-player-name">أنت</a>
           <span id="inlineComputerPlayerMeta" class="inline-play-player-meta">النقاط 1500</span>
           <span class="inline-play-status">أنت تلعب بالأبيض</span>
         </div>
