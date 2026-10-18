@@ -405,7 +405,7 @@ async function handleSquareClick(event) {
       promotion: reachesPromotionRank ? 'q' : null,
     });
     await refreshGame();
-    if (currentGame.status !== 'finished') setStatus('المباراة جارية');
+    if (currentGame.status !== 'finished') setStatus(turnMessage());
   } catch (error) {
     await refreshGame().catch(() => {});
     setStatus(error.code === 'illegal_move' ? 'نقلة غير قانونية' : (error.message || 'تعذر تنفيذ النقلة'), { error: true });
