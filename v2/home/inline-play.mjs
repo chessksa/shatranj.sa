@@ -959,6 +959,9 @@ function handleEntryClick(event){
   if(!desktop.matches) return;
   const quickPlay=event.target.closest('[data-tune-action="play"]');
   const previewClick=event.target.closest('#homeBoardPreview');
+  // Spectator owns this exact board; neither the visitor nor its closing
+  // controls may start matchmaking by clicking its squares.
+  if(previewClick?.classList.contains('inline-tournament-spectator'))return;
   const computerBoardClick=event.target.closest('#inlineComputerBoardGrid')
     || document.getElementById('homeBoardPreview')?.classList.contains('inline-computer-active')
     || location.hash==='#computer';
