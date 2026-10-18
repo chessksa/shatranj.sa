@@ -1,4 +1,4 @@
-import { renderApprovedPreview } from './move-notebook.mjs?v=20261012-notebook-aligned-v13';
+import { renderApprovedPreview } from './move-notebook.mjs?v=20261019-premove-watch-analysis-v1';
 import { renderCapturedPieces } from '../play/captured-pieces.mjs?v=20261018-premove-review-v1';
 import { supabase } from '../platform/api.mjs';
 import { populateHomeSideRail } from './home-side-rail.mjs?v=20261012-large-daily-board-v3';
