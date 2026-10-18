@@ -469,6 +469,11 @@ async function handleSquareClick(event) {
   const preparing=currentGame.turn!==myColor;
   const target = square.dataset.square;
   const targetPiece = renderedPosition.get(target);
+  if(preparing&&queuedPremove&&!selectedSquare&&target===queuedPremove.to){
+    clearPremove();
+    setStatus('أُلغيت النقلة المسبقة.');
+    return;
+  }
   if (!selectedSquare) {
     if (targetPiece?.color !== myColor) return;
     selectedSquare = target;
