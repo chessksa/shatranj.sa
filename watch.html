@@ -58,6 +58,30 @@ html[data-embed="panel"] .player-pair strong,
 html[data-embed="panel"] .player-profile-action{font-size:12px;line-height:18px}
 html[data-embed="panel"] .refresh-btn{min-height:23px;border-radius:0}
 .tables-grid .match-shell .table-head{border-radius:0}
+/* The site-wide charcoal stylesheet loads after this document's styles and
+   uses !important. Restrict these stronger rules to the watch lists only. */
+html body .tables-grid .match-shell{background:#303943!important;border-color:#66717D!important}
+html body .tables-grid .current-shell{border-block-end:2px solid #718091!important}
+html body .tables-grid .finished-shell{border-block-start:2px solid #718091!important}
+html body .tables-grid .match-shell .table-head{
+  background:#414c58!important;color:#edf2f5!important;
+  border-color:#66717D!important;font-size:14px!important;
+  height:var(--match-head-h)!important;
+}
+html body .tables-grid .current-shell .table-head{background:#465360!important}
+html body .tables-grid .match-shell .table-head strong{color:#e8edf0!important}
+html body .tables-grid .match-table tr td{background:#303943!important;border-color:#55616d!important}
+html body .tables-grid .match-table tr:nth-child(even) td{background:#36414c!important}
+html body .tables-grid .match-table tr.match-row:hover td,
+html body .tables-grid .match-table tr.match-row:focus-visible td{background:#465461!important}
+html body .tables-grid .match-table tr.match-row[aria-current="true"] td{background:#4c5c69!important}
+html body .tables-grid .match-table .player-pair strong,
+html body .tables-grid .match-table .player-pair .player-profile-action{color:#f7f9fb!important}
+html body .tables-grid .match-table .player-pair b{color:#b9c5ce!important}
+@media(max-width:760px){
+  html body .tables-grid .match-shell .table-head{font-size:13px!important}
+}
+html[data-embed="panel"] body .tables-grid .match-shell .table-head{font-size:12.5px!important}
 </style>
 <script>if(new URLSearchParams(location.search).get('embed')==='panel')document.documentElement.dataset.embed='panel';</script>
 <link rel="stylesheet" href="v2/site/typography-system.css?v=20261012-source-palette-v5"><link rel="stylesheet" href="site-charcoal-theme.css?v=20261014-natural-white-pieces-v2">
