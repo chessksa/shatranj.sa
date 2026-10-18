@@ -42,7 +42,9 @@ assert "inline-play-danger" not in shell.split("function createWatchPlayerCard("
 assert ".desktop-watch-match-list" in styles
 assert ".desktop-watch-player-card[hidden]{display:none!important}" in styles
 assert "--live-card-height:clamp(124px,17dvh,160px)" in styles
-assert "gap:6px!important;padding:6px!important" in styles
+assert "gap:6px!important;padding:6px 0!important" in styles
+assert "margin-inline:6px!important" in styles
+assert "width:100%!important;margin:0!important" in styles
 assert "--watch-avatar-size:" in styles
 assert "color:#D8B665!important" in styles
 assert "font-size:clamp(20px,1.5vw,25px)!important" in styles
@@ -50,7 +52,7 @@ assert "font-size:clamp(15px,1.1vw,18px)!important" in styles
 assert "min-height:clamp(74px,10dvh,100px)!important" in styles
 assert "font-size:clamp(34px,2.7vw,43px)!important" in styles
 assert "min-height:64px!important" in styles  # short desktop windows
-assert "20261019-soft-gold-titles-no-divider-v1" in home
+assert "20261019-two-watch-columns-gold-outline-v1" in home
 
 assert "data-watch-photo=" in shell
 print("spectator canonical board + read-only player cards: PASS")
