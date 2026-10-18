@@ -1,4 +1,4 @@
-const ACTIVE_STATUSES = new Set(['playing','active','in_progress','started']);
+const ACTIVE_STATUSES = new Set(['matched','playing','active','in_progress','started']);
 
 function defaultMonoNow(){
   return globalThis.performance?.now?.() ?? Date.now();
