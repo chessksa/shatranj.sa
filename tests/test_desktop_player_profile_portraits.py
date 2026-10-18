@@ -36,3 +36,25 @@ def test_match_names_resolve_verified_player_ids():
     assert "g.status in ('matched', 'active', 'finished')" in sql
     assert 'security definer' in sql
     assert 'grant execute on function public.get_public_match_player_ids(uuid,text) to anon,authenticated;' in sql
+
+def test_all_desktop_game_cards_show_square_avatars_and_gold_names():
+    watch = (ROOT / 'v2/home/desktop-board-shell-tune.css').read_text(encoding='utf-8')
+    computer = (ROOT / 'v2/home/inline-computer.css').read_text(encoding='utf-8')
+    computer_js = (ROOT / 'v2/home/inline-computer.mjs').read_text(encoding='utf-8')
+    online = (ROOT / 'v2/home/inline-play.css').read_text(encoding='utf-8')
+    matches = (ROOT / 'watch.html').read_text(encoding='utf-8')
+    home = (ROOT / 'index.html').read_text(encoding='utf-8')
+
+    assert '--watch-avatar-size:' in watch
+    assert 'width:var(--watch-avatar-size);height:var(--watch-avatar-size)' in watch
+    assert 'grid-template-columns:var(--watch-avatar-size)' in watch
+    assert 'color:#D8B665!important' in watch
+    assert '--computer-avatar-size:' in computer
+    assert 'width:var(--computer-avatar-size);height:var(--computer-avatar-size)' in computer
+    assert 'grid-template-columns:var(--computer-avatar-size)' in computer
+    assert 'color:#D8B665!important' in computer
+    assert 'inline-computer.css?v=20261018-gold-square-portraits-v1' in computer_js
+    assert 'aspect-ratio:1/1;border-radius:0' in online
+    assert 'color:#D8B665!important' in online
+    assert '.match-table .player-pair strong,.match-table .player-pair .player-profile-action{color:#D8B665!important}' in matches
+    assert 'content="20261018-gold-square-portraits-v1"' in home
