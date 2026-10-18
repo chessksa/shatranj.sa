@@ -103,12 +103,12 @@
   .inline-play-player-avatar{
     display:grid;place-items:center;align-self:stretch;justify-self:stretch;
     width:100%;height:100%;aspect-ratio:1/1;min-width:0;min-height:0;
-    border:1px solid #61758a;border-radius:10px;
+    border:1px solid #61758a;border-radius:0;
     background:#242e39;overflow:hidden;box-sizing:border-box;
   }
   .inline-play-player-avatar img{
     display:block;width:100%;height:100%;
-    object-fit:cover;border-radius:9px;
+    object-fit:cover;aspect-ratio:1/1;border-radius:0;
   }
   .inline-play-player-avatar .inline-play-avatar-fallback{
     display:grid;place-items:center;
@@ -126,7 +126,7 @@
   }
 
   .inline-play-player-name{
-    color:#e2dcd3;
+    color:#D8B665!important;
     font-size:17px;
     line-height:1.2;
     font-weight:900;
