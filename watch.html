@@ -27,6 +27,8 @@ main{flex:1 1 auto;min-height:0;overflow:hidden;padding:18px 0}
 .player-profile-action:disabled{cursor:default;opacity:.65}.player-pair b{flex:0 0 auto;color:var(--hero-gold);font-size:12px}.match-row .players-cell{width:auto}.empty-row td,.loading-row td{text-align:center!important;color:var(--hero-muted)!important;padding:20px 12px!important;height:auto!important}
 .refresh-btn{position:absolute;left:10px;top:50%;transform:translateY(-50%);display:inline-flex;align-items:center;justify-content:center;gap:5px;min-height:32px;padding:0 10px;border-radius:8px;border:1px solid #66717D;background:#353C45;color:#e2dcd3;font:700 12px Arial,sans-serif;cursor:pointer;touch-action:manipulation}
 .table-head{position:relative}
+.watch-sound-btn{position:absolute;right:5px;top:50%;transform:translateY(-50%);background:#353C45;border:1px solid #66717D;color:#D8B665;padding:0 6px;height:25px;min-width:32px;border-radius:0;cursor:pointer}
+.watch-sound-btn[aria-pressed="true"]{border-color:#D8B665}
 .refresh-btn:disabled{cursor:progress;opacity:.8}
 .refresh-btn:disabled .refresh-glyph{animation:watch-refresh-spin .8s linear infinite}
 @keyframes watch-refresh-spin{to{transform:rotate(-360deg)}}
@@ -66,7 +68,7 @@ html[data-embed="panel"] .refresh-btn{min-height:25px;border-radius:0}
 <main class="wrap">
   <div class="tables-grid">
     <section id="current" class="match-shell current-shell" aria-label="المباريات الحالية">
-      <div class="table-head">المباريات الحالية <strong id="currentCount">0</strong><button type="button" id="refreshMatches" class="refresh-btn" title="تحديث المباريات" aria-label="تحديث قوائم المباريات"><span class="refresh-glyph" aria-hidden="true">⟳</span><span id="refreshLabel" class="refresh-label">تحديث</span></button></div>
+      <div class="table-head">المباريات الحالية <strong id="currentCount">0</strong><button type="button" id="enableWatchSound" class="watch-sound-btn" title="تفعيل صوت مشاهدة المباريات" aria-label="تفعيل صوت مشاهدة المباريات" aria-pressed="false">🔊</button><button type="button" id="refreshMatches" class="refresh-btn" title="تحديث المباريات" aria-label="تحديث قوائم المباريات"><span class="refresh-glyph" aria-hidden="true">⟳</span><span id="refreshLabel" class="refresh-label">تحديث</span></button></div>
       <div class="table-wrap" data-no-pull-refresh>
         <table class="match-table" aria-live="polite">
           <tbody id="currentTableBody"><tr class="loading-row"><td colspan="2">جاري تحميل المباريات...</td></tr></tbody>
@@ -86,6 +88,7 @@ html[data-embed="panel"] .refresh-btn{min-height:25px;border-radius:0}
 </main>
 <script src="config.js"></script>
 <script type="module">
+import { playBoardMoveSound,enableBoardSound } from "./v2/board/move-sound.mjs?v=20261019-watch-audio-v1";
 import { createClient } from 'https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/+esm';
 const cfg=window.SHATRANJ_CONFIG?.supabase||{};
 const supabase=cfg.enabled&&cfg.url&&cfg.anonKey?createClient(cfg.url,cfg.anonKey):null;
@@ -214,6 +217,17 @@ async function load({manual=false}={}){
 }
 
 refreshBtn.addEventListener('click',()=>{void load({manual:true})});
+document.getElementById('enableWatchSound')?.addEventListener('click',async event=>{
+  const button=event.currentTarget;
+  const enabled=await enableBoardSound();
+  button.setAttribute('aria-pressed',String(enabled));
+  button.title=enabled?'صوت المشاهدة مفعل':'تعذر تشغيل الصوت';
+});
+window.addEventListener('message',event=>{
+  if(event.origin!==location.origin||event.source!==window.parent
+    ||event.data?.type!=='shatranj:watch-move-audio')return;
+  playBoardMoveSound(event.data.fromFen,event.data.toFen);
+});
 
 // The page has a fixed viewport and two independently scrolling lists; refresh the
 // data (rather than reloading the page) when pulling down at the top of either list.
