@@ -1,9 +1,10 @@
 /* Live tournament spectator on the persistent home board, desktop and mobile. */
 import { supabase } from '../platform/api.mjs';
+import { decorateBoardCoordinate } from './move-notebook.mjs?v=20261012-notebook-aligned-v13';
 
 const EMPTY='8/8/8/8/8/8/8/8';
 const FILES=['a','b','c','d','e','f','g','h'];
-const live={id:'',type:'human',host:null,saved:null,poll:null,clock:null,generation:0,state:null,fetching:false,fen:'',errorShown:false};
+const live={id:'',type:'human',presentation:'tournament',host:null,saved:null,poll:null,clock:null,generation:0,state:null,fetching:false,fen:'',errorShown:false};
 let cssInstalled=false;
 
 function installStyle(){
@@ -13,6 +14,7 @@ function installStyle(){
   css.id='inlineTournamentSpectatorStyles';
   css.textContent=[
     '.inline-tournament-spectator{cursor:default!important;}',
+    '.inline-tournament-spectator.inline-public-watch .inline-spectator-hud{display:none!important;}',
     '.inline-tournament-spectator .desktop-board-grid{direction:ltr!important;display:grid!important;grid-template-columns:repeat(8,minmax(0,1fr))!important;grid-template-rows:repeat(8,minmax(0,1fr))!important;}',
     '.inline-tournament-spectator .desktop-board-square,.inline-tournament-spectator .mfw-square{display:grid!important;place-items:center!important;min-width:0!important;min-height:0!important;overflow:hidden!important;}',
     '.inline-tournament-spectator .inline-spectator-piece{display:block;width:92%;height:92%;max-width:100%;max-height:100%;object-fit:contain;pointer-events:none;user-select:none;}',
@@ -71,6 +73,16 @@ function showClocks(){
   const white=live.host?.querySelector('[data-spectator-clock="w"]');
   if(black){black.textContent=c.b;black.classList.toggle('danger',c.dangerB);}
   if(white){white.textContent=c.w;white.classList.toggle('danger',c.dangerW);}
+  // Share the exact same clock source with the two read-only player cards.
+  if(live.presentation==='watch'){
+    const panel=document.querySelector('.desktop-watch-spectator-panel');
+    if(panel?.dataset.watchGameId===live.id){
+      const w=panel.querySelector('[data-watch-clock="w"]');
+      const b=panel.querySelector('[data-watch-clock="b"]');
+      if(w){w.textContent=c.w;w.classList.toggle('final-minute',c.dangerW);}
+      if(b){b.textContent=c.b;b.classList.toggle('final-minute',c.dangerB);}
+    }
+  }
 }
 function setStatus(message){
   const el=live.host?.querySelector('[data-spectator-state]');
@@ -80,6 +92,8 @@ function renderFen(fen){
   const parsed=squarePieces(fen);if(!parsed)return false;
   const grid=live.host?.querySelector('[data-inline-spectator-grid]');
   if(!grid)return false;
+  // Never repaint 64 squares just because a spectator clock was refreshed.
+  if(live.fen===fen&&grid.children.length===64)return true;
   const mobile=live.host.id==='mfwBoard';
   const fragment=document.createDocumentFragment();
   let prev=squarePieces(live.fen);
@@ -93,19 +107,22 @@ function renderFen(fen){
   for(let rank=8;rank>=1;rank--){
     for(let col=0;col<8;col++){
       const name=FILES[col]+rank;
-      const dark=(col+rank)%2===0;
+      // The idle homepage uses a LIGHT a8 square. Keep the same 64-square colors.
+      const light=(col+rank)%2===0;
       const el=document.createElement('span');
-      el.className=mobile?'mfw-square '+(dark?'dark':'light'):'desktop-board-square '+(dark?'dark':'light');
+      el.className=mobile?'mfw-square '+(light?'light':'dark'):'desktop-board-square '+(light?'light':'dark');
       if(changes.size===2&&changes.has(name))el.classList.add('inline-spectator-last');
       el.dataset.square=name;
       const p=parsed.get(name);
       if(p){
         const img=document.createElement('img');
-        img.className='inline-spectator-piece'+(mobile?' mfw-piece':'');
+        // Original homepage piece artwork/sizing, not a second spectator set.
+        img.className=mobile?'inline-spectator-piece mfw-piece':'desktop-board-preview-piece';
         img.src='assets/pieces/'+p.color+p.kind+'.png';
         img.alt='';img.draggable=false;
         el.appendChild(img);
       }
+      if(!mobile)decorateBoardCoordinate(el,(8-rank)*8+col,name);
       fragment.appendChild(el);
     }
   }
@@ -121,7 +138,19 @@ function paintState(row){
   const wn=live.host.querySelector('[data-spectator-name="w"]');
   if(bn)bn.textContent=row.black_name||'الأسود';
   if(wn)wn.textContent=row.white_name||'الأبيض';
-  setStatus(row.status==='finished'?'انتهت المباراة':row.status==='cancelled'?'أُلغيت المباراة':row.status==='matched'?'بانتظار النقلة الأولى':row.status==='active'?'مشاهدة مباشرة':'متابعة المباراة');
+  const status=row.status==='finished'?'انتهت المباراة':row.status==='cancelled'?'أُلغيت المباراة':row.status==='matched'?'بانتظار النقلة الأولى':row.status==='active'?'مشاهدة مباشرة':'متابعة المباراة';
+  setStatus(status);
+  if(live.presentation==='watch'){
+    const detail={
+      gameId:live.id,whiteName:row.white_name||'الأبيض',blackName:row.black_name||'الأسود',
+      whiteRating:row.white_rating??row.player_rating??null,
+      blackRating:row.black_rating??null,
+      status,turn:String(row.fen||'').split(/\s+/)[1]||'',
+      moveCount:Array.isArray(row.moves)?row.moves.length:Math.max(0,Number(row.ply)||0),
+      result:row.result||null
+    };
+    window.dispatchEvent(new CustomEvent('shatranj:public-watch-updated',{detail}));
+  }
   showClocks();
 }
 async function fetchState(generation){
@@ -184,19 +213,21 @@ function createHud(color,loc){
 }
 export function stopInlineTournamentSpectator({notify=true}={}){
   const previousGameId=live.id;
+  const wasPublicWatch=live.presentation==='watch';
   ++live.generation;
   if(live.poll){clearInterval(live.poll);live.poll=null;}
   if(live.clock){clearInterval(live.clock);live.clock=null;}
   const host=live.host;
   if(host&&live.saved){
     host.replaceChildren(live.saved);
-    host.classList.remove('inline-tournament-spectator');
+    host.classList.remove('inline-tournament-spectator','inline-public-watch');
     host.removeAttribute('data-tournament-spectating');
   }
-  live.id='';live.type='human';live.host=null;live.saved=null;live.state=null;live.fen='';live.fetching=false;live.errorShown=false;
-  if(notify&&previousGameId)window.dispatchEvent(new Event('shatranj:tournament-spectator-stopped'));
+  live.id='';live.type='human';live.presentation='tournament';live.host=null;live.saved=null;live.state=null;live.fen='';live.fetching=false;live.errorShown=false;
+  if(previousGameId&&wasPublicWatch)window.dispatchEvent(new CustomEvent('shatranj:public-watch-stopped',{detail:{gameId:previousGameId}}));
+  if(notify&&previousGameId&&!wasPublicWatch)window.dispatchEvent(new Event('shatranj:tournament-spectator-stopped'));
 }
-export async function mountInlineTournamentSpectator(gameId,{gameType='human'}={}){
+export async function mountInlineTournamentSpectator(gameId,{gameType='human',presentation='tournament'}={}){
   const id=String(gameId||'').trim();
   if(!/^[a-zA-Z0-9_-]{1,100}$/.test(id))return false;
   const type=['human','human_v2','computer'].includes(gameType)?gameType:'human';
@@ -205,12 +236,14 @@ export async function mountInlineTournamentSpectator(gameId,{gameType='human'}={
     :document.getElementById('mfwBoard');
   if(!host||!supabase)return false;
   installStyle();
-  if(live.host===host&&live.id===id&&live.type===type){void fetchState(live.generation);return true;}
+  const displayMode=presentation==='watch'?'watch':'tournament';
+  if(live.host===host&&live.id===id&&live.type===type&&live.presentation===displayMode){void fetchState(live.generation);return true;}
   stopInlineTournamentSpectator({notify:false});
   const saved=document.createDocumentFragment();
   while(host.firstChild)saved.appendChild(host.firstChild);
-  live.host=host;live.saved=saved;live.id=id;live.type=type;
+  live.host=host;live.saved=saved;live.id=id;live.type=type;live.presentation=displayMode;
   host.classList.add('inline-tournament-spectator');
+  host.classList.toggle('inline-public-watch',displayMode==='watch');
   host.setAttribute('data-tournament-spectating',id);
   const grid=document.createElement('div');
   grid.className=host.id==='mfwBoard'?'mfw-board-grid':'desktop-board-grid';
