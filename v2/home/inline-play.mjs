@@ -14,7 +14,7 @@ import {
   respondDraw,
   timeoutGame,
   supabaseClient,
-} from '../play/api.js?v=20261018-live-match-v2';
+} from '../play/api.js?v=20261018-live-speed-v3';
 import { remainingAt, formatClock, isFinalMinute } from '../play/clock.mjs';
 import { normalizeGameState } from '../play/state.mjs';
 import { preloadChessEngine, previewMove } from '../play/instant-move.mjs?v=20261018-move-speed-v1';
