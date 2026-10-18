@@ -118,6 +118,23 @@
   }
   .inline-play-player-avatar [hidden]{display:none!important;}
 
+
+  /* A queued premove is an intention, never a confirmed last move. */
+  #homeBoardPreview.inline-play-active .inline-play-square.premove-from{
+    box-shadow:inset 0 0 0 3px #e54c50,inset 0 0 0 999px rgba(210,40,48,.13)!important;
+  }
+  #homeBoardPreview.inline-play-active .inline-play-square.premove-to{
+    box-shadow:inset 0 0 0 4px #f15d60,inset 0 0 0 999px rgba(225,38,45,.26)!important;
+  }
+  .inline-play-captured,.desktop-watch-player-card .inline-play-captured{
+    display:flex;justify-content:center;align-items:center;
+    min-height:17px;max-height:23px;gap:0;direction:ltr;
+    overflow:hidden;color:#a9b7c3;font-size:11px;line-height:1;
+  }
+  .inline-play-captured img,.desktop-watch-player-card .inline-play-captured img{
+    display:block;width:19px;height:19px;object-fit:contain;
+    flex:0 0 19px;margin-inline:-1px;
+  }
   .inline-play-player-copy{
     min-width:0;max-width:100%;
     display:flex;flex-direction:column;
