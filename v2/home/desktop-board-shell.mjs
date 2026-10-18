@@ -1305,7 +1305,7 @@ if(desktop.matches && document.querySelector('#homeHero')){
       if(event.origin!==location.origin||event.data?.type!=='shatranj:open-player-profile')return;
       const frame=[...document.querySelectorAll('#desktopDashboardViewBody iframe.desktop-dashboard-embed')]
         .find(node=>node.contentWindow===event.source);
-      if(!frame||!frame.getAttribute('src')?.startsWith('watch.html?'))return;
+      if(!frame||!frame.isConnected||document.getElementById('desktopDashboardView')?.hidden)return;
       const playerId=String(event.data.playerId||'');
       if(playerIdPattern.test(playerId))openPublicPlayerPanel(playerId);
     });
