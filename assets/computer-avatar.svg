@@ -1,0 +1,20 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 160 160" role="img" aria-labelledby="title desc">
+<title id="title">الكمبيوتر</title><desc id="desc">صورة رمزية لروبوت شطرنج بملامح هادئة</desc>
+<defs>
+  <linearGradient id="bg" x1="0" y1="0" x2="1" y2="1"><stop stop-color="#34434f"/><stop offset="1" stop-color="#1d2730"/></linearGradient>
+  <linearGradient id="face" x1="0" y1="0" x2="0" y2="1"><stop stop-color="#a8b9c6"/><stop offset="1" stop-color="#677c8b"/></linearGradient>
+</defs>
+<rect width="160" height="160" rx="22" fill="url(#bg)"/>
+<path d="M80 19v16" stroke="#8bc8df" stroke-width="5" stroke-linecap="round"/>
+<circle cx="80" cy="18" r="7" fill="#9bd9ee"/>
+<rect x="24" y="39" width="112" height="92" rx="25" fill="#637886" stroke="#b5c5cf" stroke-width="3"/>
+<rect x="35" y="50" width="90" height="65" rx="17" fill="#1e303c" stroke="#93a8b8" stroke-width="2"/>
+<rect x="41" y="64" width="29" height="19" rx="9.5" fill="#81cae4"/>
+<rect x="90" y="64" width="29" height="19" rx="9.5" fill="#81cae4"/>
+<circle cx="55" cy="73" r="4" fill="#e2f7ff"/>
+<circle cx="104" cy="73" r="4" fill="#e2f7ff"/>
+<path d="M60 96h40" stroke="#95c5d7" stroke-width="5" stroke-linecap="round"/>
+<path d="M24 79H15M136 79h9" stroke="#9eafba" stroke-width="7" stroke-linecap="round"/>
+<path d="M50 132v8h60v-8" fill="none" stroke="#9fb1be" stroke-width="6" stroke-linecap="round"/>
+<path d="M69 110c0-5 3-8 9-9v-8h5v8c6 1 9 4 9 9H69Z" fill="#d5e7ee" opacity=".9"/>
+</svg>
