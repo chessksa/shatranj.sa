@@ -736,7 +736,10 @@ if(desktop.matches && document.querySelector('#homeHero')){
       const card=panel.querySelector('[data-watch-card="'+color+'"]');
       if(!card)continue;
       const name=String(color==='w'?detail.whiteName:detail.blackName)||'لاعب';
-      const rating=color==='w'?detail.whiteRating:detail.blackRating;
+      const freshRating=color==='w'?detail.whiteRating:detail.blackRating;
+      const listedRating=color==='w'?panel.dataset.watchWhiteRating:panel.dataset.watchBlackRating;
+      const rating=freshRating!==null&&freshRating!==undefined?freshRating:
+        (listedRating&&Number.isFinite(Number(listedRating))?Number(listedRating):null);
       const nameEl=card.querySelector('[data-watch-name]');
       const meta=card.querySelector('[data-watch-rating]');
       const fallback=card.querySelector('[data-watch-avatar]');
@@ -1166,6 +1169,11 @@ if(desktop.matches && document.querySelector('#homeHero')){
         const panel=document.querySelector('#desktopDashboardView.watch-view .desktop-dashboard-view-body');
         if(!panel||!panel.contains(frame))return;
         panel.dataset.watchGameId=gameId;
+        for(const [key,value] of [['watchWhiteRating',event.data.whiteRating],['watchBlackRating',event.data.blackRating]]){
+          if(value!==''&&value!==undefined&&Number.isFinite(Number(value)))
+            panel.dataset[key]=String(Math.max(0,Math.round(Number(value))));
+          else delete panel.dataset[key];
+        }
         panel.querySelectorAll('.desktop-watch-player-card').forEach(card=>{
           card.hidden=false;
           const name=card.querySelector('[data-watch-name]');
