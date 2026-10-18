@@ -1,5 +1,5 @@
 import { loadBoardPreferences, saveBoardPreferences, applyBoardPreferences, renderThemePicker } from '../board/controller.mjs?v=20261011-lichess-wood4-original-v1';
-import { getGameState } from './api.js';
+import { getGameState } from './api.js?v=20261018-live-match-v2';
 
 const board = document.getElementById('v2-board');
 const boardColumn = board?.closest('.v2-board-column');
