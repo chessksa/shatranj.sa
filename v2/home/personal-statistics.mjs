@@ -14,12 +14,18 @@ export function mountPersonalStatistics(supabase){
   let request=0;
   let lastLoadedAt=0;
   let lastUserId=null;
+  let verifiedName='';
   const syncPlayerName=()=>{
-    // The header's name and player UUID are already validated by the site's
-    // authenticated profile loader. Do not borrow a stale previous login.
-    const sameAccount=lastUserId&&headerName?.dataset.playerId===lastUserId;
-    const name=sameAccount?String(headerName.textContent||'').trim():'';
-    if(playerName)playerName.textContent=name&&name!=='العضو'?name:'اللاعب';
+    // Always use the authenticated RPC result or the same-account header.
+    // Never retain the previous player's name after switching accounts.
+    const sameAccount=Boolean(lastUserId&&headerName?.dataset.playerId===lastUserId);
+    const headerValue=sameAccount?String(headerName.textContent||'').trim():'';
+    const cleanHeader=headerValue&&headerValue!=='العضو'?headerValue:'';
+    const name=verifiedName||cleanHeader;
+    if(playerName){
+      playerName.textContent=name||'اللاعب';
+      playerName.title=name||'';
+    }
   };
   if(headerName&&typeof MutationObserver!=='undefined'){
     const observer=new MutationObserver(syncPlayerName);
@@ -43,6 +49,7 @@ export function mountPersonalStatistics(supabase){
     if(login)login.hidden=false;
     setStatus('سجّل الدخول لعرض إنجازاتك');
     lastUserId=null;
+    verifiedName='';
     syncPlayerName();
   };
   const refresh=async(force=false)=>{
@@ -66,12 +73,27 @@ export function mountPersonalStatistics(supabase){
       if(login)login.hidden=true;
       if(lastUserId!==session.user.id){
         blank();
+        verifiedName='';
         lastUserId=session.user.id;
       }
       syncPlayerName();
       setStatus('جارٍ تحديث إحصاءاتك…');
-      const {data,error}=await supabase.rpc('get_my_home_statistics');
-      if(current!==request)return;
+      // The home header can load later than this sidebar. Query the same
+      // authenticated player-profile RPC directly so the name always appears.
+      const [statsResult,profileResult]=await Promise.all([
+        supabase.rpc('get_my_home_statistics'),
+        supabase.rpc('get_my_player_profile')
+      ]);
+      if(current!==request||lastUserId!==session.user.id)return;
+      const {data,error}=statsResult;
+      if(!profileResult.error){
+        const profile=Array.isArray(profileResult.data)?profileResult.data[0]:profileResult.data;
+        if(profile?.id===session.user.id&&typeof profile.name==='string'){
+          const name=profile.name.trim();
+          if(name&&name!=='العضو')verifiedName=name.slice(0,80);
+        }
+      }
+      syncPlayerName();
       if(error)throw error;
       if(!data||typeof data!=='object'){
         blank();
