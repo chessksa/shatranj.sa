@@ -34,6 +34,8 @@ let engineReadyPromise=null;
 let bestMoveResolve=null;
 let legalMoveResolve=null;
 let legalMoveBuffer=[];
+let archiveClient=null;
+let archiveGameId=null;
 
 function ensureCss(){
   if(document.getElementById('inlineComputerCss')) return;
@@ -503,8 +505,7 @@ function bindPanel(){
   host.querySelector('#inlineComputerResign')?.addEventListener('click',()=>finish('استسلمت — فاز الكمبيوتر','computer'));
 }
 
-// Desktop inline computer matches are local (no computer_games DB row).
-// Advertise their active lifecycle through the existing visitor presence.
+// Visitor presence stays separate from saving finished signed-in computer matches.
 function setInlineComputerMatchPresence(active){
   const on = active === true;
   if(window.SHATRANJ_GUEST_COMPUTER_ACTIVE === on)return;
@@ -516,6 +517,7 @@ function setInlineComputerMatchPresence(active){
 
 function startGame(){
   if(started) return;
+  archiveGameId=globalThis.crypto?.randomUUID?.()||null;
   started=true;
   setInlineComputerMatchPresence(true);
   openMoveNotebook('computer');
@@ -570,6 +572,7 @@ function applyResultColors(outcome){
 }
 
 function resetToSetup(){
+  archiveGameId=null;
   closeMoveNotebook('computer');
   started=false;
   setInlineComputerMatchPresence(false);
@@ -706,8 +709,9 @@ async function handleBoardClick(event){
   renderBoard();
 }
 
-export function mountInlineComputer(body){
+export function mountInlineComputer(body,options={}){
   if(!desktop.matches||!body) return;
+  archiveClient=options?.supabase||null;
   ensureCss();
   window.dispatchEvent(new CustomEvent('desktop:inline-play-stop'));
   active=true;
