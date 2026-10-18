@@ -48,9 +48,9 @@ def test_play_and_standalone_watch_names_stay_gold():
 
 def test_watch_build_assets_have_new_version():
     home=get("index.html")
-    assert 'content="20261019-equal-watch-columns-no-top-gap-v1"' in home
+    assert 'content="20261019-desktop-right-stats-column-v1"' in home
     assert 'watch.html?v=20261019-equal-watch-columns-no-top-gap-v1#current' in home
-    assert 'desktop-board-shell-tune.css?v=20261019-equal-watch-columns-no-top-gap-v1' in home
+    assert 'desktop-board-shell-tune.css?v=20261019-desktop-right-stats-column-v1' in home
     for module in ["play-v2.html","watch.html","spectator-board.mjs","human-watch.html","computer-watch.html"]:
         assert "20261019-adaptive-live-gold-row-v1" in get(module)
 
