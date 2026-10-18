@@ -18,7 +18,7 @@ let prefs = loadBoardPreferences();
 let observer = null;
 let dragSource = null;
 let allowSyntheticClick = false;
-let suppressNativeDragClick = false;
+let suppressNativeDragClickUntil = 0;
 let legalGeneration = 0;
 let ChessClass = null;
 let appOrientation = 'w';
@@ -121,8 +121,8 @@ whiteBottom?.addEventListener('change',()=>persist({whiteAlwaysBottom:whiteBotto
 // Taps must always work, including when an old saved preference is "drag".
 // A touch device may implicitly capture pointerup on the original square.
 board?.addEventListener('click',event=>{
-  if(suppressNativeDragClick && event.isTrusted){
-    suppressNativeDragClick=false;
+  if(event.isTrusted && Date.now() < suppressNativeDragClickUntil){
+    suppressNativeDragClickUntil=0;
     event.preventDefault();
     event.stopImmediatePropagation();
     return;
@@ -146,7 +146,7 @@ board?.addEventListener('pointerup',event=>{
   const targetEl=board.querySelector(`.v2-square[data-square="${target}"]`);
   if(!sourceEl||!targetEl) return;
   // Suppress only the browser's follow-up click from the completed drag.
-  suppressNativeDragClick=true;
+  suppressNativeDragClickUntil=Date.now()+450;
   allowSyntheticClick=true;
   sourceEl.click();
   targetEl.click();
