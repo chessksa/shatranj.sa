@@ -181,14 +181,32 @@ async function enrichComputerMoves(expected){
     if(expected===token&&owner==='computer'&&records.length===originalLength){records=next;showRecords();}
   }catch{/* Keep readable coordinate notation when the chess library is offline. */}
 }
+// Build a legal sequence from public from/to or SAN records. Server-provided
+// positions are used only when complete; partial/inconsistent history is not scored.
+async function completeReviewMoves(moves){
+  if(moves.every(m=>m.fen_after&&uciFor(m)))return moves;
+  const {Chess}=await chessModule();
+  const chess=new Chess();
+  return moves.map(record=>{
+    const uci=uciFor(record);
+    try{
+      const input=uci?{from:uci.slice(0,2),to:uci.slice(2,4),...(uci[4]?{promotion:uci[4]}:{})}:String(record.san||'');
+      const move=chess.move(input);
+      if(!move)return {...record,fen_after:null};
+      return {...record,uci:move.from+move.to+(move.promotion||''),san:move.san,fen_after:chess.fen()};
+    }catch{return {...record,fen_after:null};}
+  });
+}
 async function runReview(expected,sourceMoves){
   const review=document.getElementById('moveNotebookReview');
   if(!review)return;
   // Small capped analysis so a long game never locks up the browser.
-  const moves=sourceMoves.slice(0,60);
+  let moves=sourceMoves.slice(0,60);
   if(!moves.length){text('moveNotebookReviewStatus','انتهت المباراة دون نقلات قابلة للتحليل.');return;}
   let engine;
   try{
+    moves=await completeReviewMoves(moves);
+    if(expected!==token||!ended)return;
     const valid=moves.every(m=>m.fen_after&&m.uci);
     if(!valid){
       text('moveNotebookReviewStatus','يُعرض سجل النقلات؛ تعذّر تكوين أوضاع صالحة للتحليل.');
@@ -287,7 +305,7 @@ export function openMoveNotebook(source){
   syncNotebookDock();
   requestAnimationFrame(syncNotebookDock);
   text('moveNotebookTitle','سجل النقلات');
-  text('moveNotebookSub',source==='computer'?'مباراة ضد الكمبيوتر':'مباراة مباشرة');
+  text('moveNotebookSub',source==='computer'?'مباراة ضد الكمبيوتر':source==='spectator'?'مشاهدة المباراة':'مباراة مباشرة');
   const review=document.getElementById('moveNotebookReview');
   if(review)review.innerHTML='<span id="moveNotebookReviewStatus">يظهر التحليل بعد انتهاء المباراة.</span>';
   showRecords();
@@ -295,12 +313,13 @@ export function openMoveNotebook(source){
 export function updateMoveNotebook(source,moves,{finished=false}={}){
   if(owner!==source)return;
   const wasFinished=ended;
-  records=(Array.isArray(moves)?moves:[]).map((move,i)=>{
+  records=(Array.isArray(moves)?moves:[]).map((value,i)=>{
+    const move=typeof value==='string'?{uci:value}:value||{};
     const uci=uciFor(move);
     return {...move,uci,display:uci?`${uci.slice(0,2)}–${uci.slice(2,4)}${uci[4]?'='+uci[4].toUpperCase():''}`:String(move.san||'—'),ply:i+1};
   });
   showRecords();
-  text('moveNotebookSub',`${source==='computer'?'ضد الكمبيوتر':'مباراة مباشرة'} · ${records.length} نقلة`);
+  text('moveNotebookSub',`${source==='computer'?'ضد الكمبيوتر':source==='spectator'?'مشاهدة المباراة':'مباراة مباشرة'} · ${records.length} نقلة`);
   if(source==='computer'&&!finished)void enrichComputerMoves(token);
   if(finished&&!wasFinished){
     ended=true;
