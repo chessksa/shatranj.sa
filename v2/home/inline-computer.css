@@ -247,3 +247,15 @@
     html body.desktop-board-workspace .inline-computer-panel .inline-computer-start{height:38px;min-height:38px}
   }
 }
+
+/* Match the online game's visible from/to markers without changing piece art. */
+@media(min-width:901px){
+  #homeBoardPreview.inline-computer-active .inline-play-square.last-move-from{
+    box-shadow:inset 0 0 0 2px rgba(102,135,166,.95),
+               inset 0 0 0 999px rgba(130,171,209,.13)!important;
+  }
+  #homeBoardPreview.inline-computer-active .inline-play-square.last-move-to{
+    box-shadow:inset 0 0 0 4px rgba(93,136,175,.98),
+               inset 0 0 0 999px rgba(130,171,209,.26)!important;
+  }
+}
