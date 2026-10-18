@@ -1271,7 +1271,11 @@ if(desktop.matches && document.querySelector('#homeHero')){
         panel.querySelectorAll('.desktop-watch-player-card').forEach(card=>{
           card.hidden=false;
           const name=card.querySelector('[data-watch-name]');
-          if(name)name.textContent='جارٍ تحميل المباراة…';
+          if(name){name.textContent='جارٍ تحميل المباراة…';name.removeAttribute('href');}
+          const photo=card.querySelector('[data-watch-photo]');
+          const fallback=card.querySelector('[data-watch-avatar]');
+          if(photo){photo.hidden=true;photo.removeAttribute('src');delete photo.dataset.watchImageSource;}
+          if(fallback){fallback.hidden=false;fallback.textContent='♟';}
         });
         const mounted=await module.mountInlineTournamentSpectator(gameId,{gameType,presentation:'watch'});
         if(!mounted)throw new Error('Spectator board unavailable');
