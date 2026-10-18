@@ -52,7 +52,7 @@ assert "font-size:clamp(15px,1.1vw,18px)!important" in styles
 assert "min-height:clamp(74px,10dvh,100px)!important" in styles
 assert "font-size:clamp(34px,2.7vw,43px)!important" in styles
 assert "min-height:64px!important" in styles  # short desktop windows
-assert "20261019-equal-watch-columns-no-top-gap-v1" in home
+assert "20261019-desktop-right-stats-column-v1" in home
 
 assert "data-watch-photo=" in shell
 print("spectator canonical board + read-only player cards: PASS")
