@@ -744,10 +744,11 @@ if(desktop.matches && document.querySelector('#homeHero')){
     card.hidden=true;
     card.innerHTML=`
       <span class="inline-play-player-avatar" aria-label="صورة اللاعب">
+        <img data-watch-photo="${color}" alt="صورة اللاعب" hidden>
         <span class="inline-play-avatar-fallback" data-watch-avatar="${color}" aria-hidden="true">♟</span>
       </span>
       <div class="inline-play-player-copy">
-        <strong class="inline-play-player-name" data-watch-name="${color}">—</strong>
+        <a class="inline-play-player-name" data-watch-name="${color}">—</a>
         <span class="inline-play-player-meta" data-watch-rating="${color}">—</span>
         <span class="inline-play-status" data-watch-status="${color}">مشاهدة فقط</span>
       </div>
@@ -762,6 +763,50 @@ if(desktop.matches && document.querySelector('#homeHero')){
     embeddedPageView(list,'watch.html','المباريات الحالية والمنتهية');
     body.append(top,list,bottom);
   }
+  // Resolve verified people behind spectator cards; names are not unique IDs.
+  async function hydrateWatchCardProfiles(panel,gameId,gameType){
+    if(!supabase||!['human_v2','computer'].includes(gameType))return;
+    try{
+      const {data,error}=await supabase.rpc('get_public_match_player_ids',{
+        p_game_id:gameId,p_game_type:gameType
+      });
+      if(error)throw error;
+      if(panel.dataset.watchGameId!==gameId||!panel.isConnected)return;
+      const ids=Array.isArray(data)?data[0]:data;
+      for(const color of ['w','b']){
+        const card=panel.querySelector('[data-watch-card="'+color+'"]');
+        if(!card)continue;
+        const isComputer=gameType==='computer'&&color==='b';
+        const id=String(color==='w'?ids?.white_player_id||'':ids?.black_player_id||'');
+        const name=card.querySelector('[data-watch-name]');
+        const picture=card.querySelector('[data-watch-photo]');
+        const fallback=card.querySelector('[data-watch-avatar]');
+        if(name){
+          if(playerIdPattern.test(id))name.href='player.html?id='+encodeURIComponent(id);
+          else name.removeAttribute('href');
+        }
+        if(!picture||!fallback)continue;
+        const src=isComputer?'assets/computer-avatar.svg?v=20261018-profile-portraits-v1':
+          playerIdPattern.test(id)?supabase.storage.from('avatars').getPublicUrl(id+'/avatar.webp').data.publicUrl:'';
+        if(picture.dataset.watchImageSource===src)continue;
+        picture.dataset.watchImageSource=src;
+        picture.hidden=true;
+        fallback.hidden=false;
+        picture.onload=()=>{
+          if(picture.dataset.watchImageSource!==src)return;
+          picture.hidden=false;fallback.hidden=true;
+        };
+        picture.onerror=()=>{
+          if(picture.dataset.watchImageSource!==src)return;
+          picture.hidden=true;fallback.hidden=false;
+        };
+        if(src)picture.src=src;else picture.removeAttribute('src');
+      }
+    }catch(error){
+      console.warn('تعذر تحديث صور لاعبي المشاهدة',error);
+    }
+  }
+
   function updateWatchPlayerCards(detail){
     const panel=document.querySelector('#desktopDashboardView.watch-view .desktop-dashboard-view-body');
     if(!panel||!detail||panel.dataset.watchGameId!==detail.gameId)return;
@@ -1216,6 +1261,8 @@ if(desktop.matches && document.querySelector('#homeHero')){
         const panel=document.querySelector('#desktopDashboardView.watch-view .desktop-dashboard-view-body');
         if(!panel||!panel.contains(frame))return;
         panel.dataset.watchGameId=gameId;
+        // Reusing the row identifiers preserves live games and their active board.
+        void hydrateWatchCardProfiles(panel,gameId,gameType);
         for(const [key,value] of [['watchWhiteRating',event.data.whiteRating],['watchBlackRating',event.data.blackRating]]){
           if(value!==''&&value!==undefined&&Number.isFinite(Number(value)))
             panel.dataset[key]=String(Math.max(0,Math.round(Number(value))));
