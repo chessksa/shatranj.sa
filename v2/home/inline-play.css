@@ -83,6 +83,22 @@
     box-shadow:0 12px 28px rgba(0,0,0,.14),inset 0 1px 0 rgba(255,255,255,.03);
   }
 
+  /* Result colors appear only when the authenticated game is finished. */
+  .desktop-inline-play-panel .inline-play-player-card.result-winner{
+    background:linear-gradient(180deg,#334a42,#2b3e38)!important;
+    border-color:#729b89!important;box-shadow:none!important;
+  }
+  .desktop-inline-play-panel .inline-play-player-card.result-loser{
+    background:linear-gradient(180deg,#4b393f,#403338)!important;
+    border-color:#b38389!important;box-shadow:none!important;
+  }
+  .desktop-inline-play-panel .inline-play-player-card.result-draw{
+    background:linear-gradient(180deg,#414b57,#353f4a)!important;
+    border-color:#8897a4!important;box-shadow:none!important;
+  }
+  .desktop-inline-play-panel .inline-play-player-card:is(.result-winner,.result-loser,.result-draw) .inline-play-player-name{
+    color:#D8B665!important;
+  }
   .inline-play-player-card{
     /* One 1px border + 5px inner padding leaves exactly 6px around the portrait. */
     --live-card-height:clamp(116px,16dvh,150px);
