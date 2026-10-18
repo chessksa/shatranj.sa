@@ -2,7 +2,7 @@ import { renderApprovedPreview } from './move-notebook.mjs?v=20261019-premove-wa
 import { renderCapturedPieces } from '../play/captured-pieces.mjs?v=20261018-premove-review-v1';
 import { supabase } from '../platform/api.mjs';
 import { populateHomeSideRail } from './home-side-rail.mjs?v=20261012-large-daily-board-v3';
-import { mountPersonalStatistics } from './personal-statistics.mjs?v=20261019-desktop-right-stats-column-v1';
+import { mountPersonalStatistics } from './personal-statistics.mjs?v=20261019-centered-home-stats-v2';
 import { loadBoardPreferences, applyBoardPreferences } from '../board/controller.mjs?v=20261013-live-home-board-v1';
 const desktopAssetVersion=encodeURIComponent(document.querySelector('meta[name="shatranj-asset-version"]')?.content||'20261009-fresh-ui-refresh-v1');
 // Game-mode modules load only when chosen. A slow chess-engine or CDN import
