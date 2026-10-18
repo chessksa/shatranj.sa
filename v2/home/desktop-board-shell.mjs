@@ -702,6 +702,56 @@ if(desktop.matches && document.querySelector('#homeHero')){
     body.appendChild(frame);
   }
 
+  // Spectators see the same two player cards as online play, but never receive
+  // search, draw, resign, or move buttons. The match selector remains between them.
+  function createWatchPlayerCard(color){
+    const card=document.createElement('section');
+    card.className='inline-play-player-card desktop-watch-player-card';
+    card.dataset.watchCard=color;
+    card.hidden=true;
+    card.innerHTML=`
+      <span class="inline-play-player-avatar" aria-label="صورة اللاعب">
+        <span class="inline-play-avatar-fallback" data-watch-avatar="${color}" aria-hidden="true">♟</span>
+      </span>
+      <div class="inline-play-player-copy">
+        <strong class="inline-play-player-name" data-watch-name="${color}">—</strong>
+        <span class="inline-play-player-meta" data-watch-rating="${color}">—</span>
+        <span class="inline-play-status" data-watch-status="${color}">مشاهدة فقط</span>
+      </div>
+      <time class="inline-play-clock" data-watch-clock="${color}">--:--</time>`;
+    return card;
+  }
+  function watchView(body){
+    const top=createWatchPlayerCard('b');
+    const bottom=createWatchPlayerCard('w');
+    const list=document.createElement('div');
+    list.className='desktop-watch-match-list';
+    embeddedPageView(list,'watch.html','المباريات الحالية والمنتهية');
+    body.append(top,list,bottom);
+  }
+  function updateWatchPlayerCards(detail){
+    const panel=document.querySelector('#desktopDashboardView.watch-view .desktop-dashboard-view-body');
+    if(!panel||!detail||panel.dataset.watchGameId!==detail.gameId)return;
+    for(const color of ['b','w']){
+      const card=panel.querySelector('[data-watch-card="'+color+'"]');
+      if(!card)continue;
+      const name=String(color==='w'?detail.whiteName:detail.blackName)||'لاعب';
+      const rating=color==='w'?detail.whiteRating:detail.blackRating;
+      const nameEl=card.querySelector('[data-watch-name]');
+      const meta=card.querySelector('[data-watch-rating]');
+      const fallback=card.querySelector('[data-watch-avatar]');
+      if(nameEl)nameEl.textContent=name;
+      if(meta)meta.textContent=Number.isFinite(Number(rating))&&rating!==null?
+        'النقاط '+Math.round(Number(rating)):(color==='w'?'الأبيض':'الأسود');
+      if(fallback)fallback.textContent=name.trim().charAt(0).toUpperCase()||'♟';
+      const status=card.querySelector('[data-watch-status]');
+      const active=detail.status==='مشاهدة مباشرة'&&detail.turn===color;
+      card.classList.toggle('turn',active);
+      if(status)status.textContent=active?'دوره الآن':detail.status||'مشاهدة فقط';
+    }
+    panel.querySelectorAll('.desktop-watch-player-card').forEach(card=>{card.hidden=false;});
+  }
+
   /* Keep ranking row height matched to the live column, without scrolling. */
   let rankingFitQueued=false;
   function fitRankingToPanel(){
@@ -785,6 +835,7 @@ if(desktop.matches && document.querySelector('#homeHero')){
     view.classList.toggle('learn-view',id==='learn');
     view.classList.toggle('profile-view',id==='profile');
     view.classList.toggle('embedded-view',['tournaments','watch','settings','admin'].includes(id));
+    view.classList.toggle('watch-view',id==='watch');
     view.classList.toggle('admin-view',id==='admin');
     restoreMovedContent();
     body.replaceChildren();
@@ -845,7 +896,7 @@ if(desktop.matches && document.querySelector('#homeHero')){
     }
     if(id==='watch'){
       showViewTitle('شاهد');
-      embeddedPageView(body,'watch.html','شاهد المباريات');
+      watchView(body);
       return;
     }
     if(id==='admin'){
@@ -1088,6 +1139,16 @@ if(desktop.matches && document.querySelector('#homeHero')){
         if(activeFrame===frame) return module.mountInlineTournamentSpectator(gameId);
       }).catch(error=>console.warn('تعذر عرض مباراة البطولة',error));
     });
+    window.addEventListener('shatranj:public-watch-updated',event=>{
+      updateWatchPlayerCards(event.detail);
+    });
+    window.addEventListener('shatranj:public-watch-stopped',event=>{
+      const panel=document.querySelector('#desktopDashboardView.watch-view .desktop-dashboard-view-body');
+      if(panel?.dataset.watchGameId===event.detail?.gameId){
+        delete panel.dataset.watchGameId;
+        panel.querySelectorAll('.desktop-watch-player-card').forEach(card=>{card.hidden=true;});
+      }
+    });
     // Public match listings live in the middle column; selection only paints
     // read-only positions onto the already mounted homepage chessboard.
     window.addEventListener('message',event=>{
@@ -1102,7 +1163,15 @@ if(desktop.matches && document.querySelector('#homeHero')){
         ||!['human','human_v2','computer'].includes(gameType))return;
       void spectatorModule().then(async module=>{
         if(frame!==document.querySelector('#desktopDashboardViewBody .desktop-dashboard-embed'))return;
-        const mounted=await module.mountInlineTournamentSpectator(gameId,{gameType});
+        const panel=document.querySelector('#desktopDashboardView.watch-view .desktop-dashboard-view-body');
+        if(!panel||!panel.contains(frame))return;
+        panel.dataset.watchGameId=gameId;
+        panel.querySelectorAll('.desktop-watch-player-card').forEach(card=>{
+          card.hidden=false;
+          const name=card.querySelector('[data-watch-name]');
+          if(name)name.textContent='جارٍ تحميل المباراة…';
+        });
+        const mounted=await module.mountInlineTournamentSpectator(gameId,{gameType,presentation:'watch'});
         if(!mounted)throw new Error('Spectator board unavailable');
       }).catch(error=>{
         console.warn('تعذر عرض المباراة على الرقعة الرئيسية',error);
