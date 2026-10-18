@@ -18,6 +18,7 @@ let prefs = loadBoardPreferences();
 let observer = null;
 let dragSource = null;
 let allowSyntheticClick = false;
+let suppressNativeDragClick = false;
 let legalGeneration = 0;
 let ChessClass = null;
 let appOrientation = 'w';
@@ -117,25 +118,38 @@ moveMethod?.addEventListener('change',()=>persist({moveMethod:moveMethod.value})
 legal?.addEventListener('change',()=>persist({showLegalMoves:legal.checked}));
 whiteBottom?.addEventListener('change',()=>persist({whiteAlwaysBottom:whiteBottom.checked}));
 
+// Taps must always work, including when an old saved preference is "drag".
+// A touch device may implicitly capture pointerup on the original square.
 board?.addEventListener('click',event=>{
-  if(prefs.moveMethod==='drag' && !allowSyntheticClick){event.preventDefault();event.stopImmediatePropagation();return;}
+  if(suppressNativeDragClick && event.isTrusted){
+    suppressNativeDragClick=false;
+    event.preventDefault();
+    event.stopImmediatePropagation();
+    return;
+  }
   queueMicrotask(()=>void refreshLegalTargets());
 },true);
 board?.addEventListener('pointerdown',event=>{
   if(prefs.moveMethod==='click') return;
   const square=event.target.closest('.v2-square');
-  if(square) dragSource=square.dataset.square;
+  dragSource=square?.dataset.square||null;
 });
+board?.addEventListener('pointercancel',()=>{dragSource=null;});
 board?.addEventListener('pointerup',event=>{
   if(prefs.moveMethod==='click' || !dragSource) return;
-  const target=event.target.closest('.v2-square')?.dataset.square;
-  const source=dragSource;dragSource=null;
+  const source=dragSource;
+  dragSource=null;
+  const hit=document.elementFromPoint?.(event.clientX,event.clientY);
+  const target=(hit?.closest('.v2-square')||event.target.closest('.v2-square'))?.dataset.square;
   if(!target || target===source) return;
   const sourceEl=board.querySelector(`.v2-square[data-square="${source}"]`);
   const targetEl=board.querySelector(`.v2-square[data-square="${target}"]`);
   if(!sourceEl||!targetEl) return;
+  // Suppress only the browser's follow-up click from the completed drag.
+  suppressNativeDragClick=true;
   allowSyntheticClick=true;
-  sourceEl.click();targetEl.click();
+  sourceEl.click();
+  targetEl.click();
   queueMicrotask(()=>{allowSyntheticClick=false;void refreshLegalTargets()});
 });
 
