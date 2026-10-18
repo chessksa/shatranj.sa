@@ -20,6 +20,7 @@ import { normalizeGameState } from '../play/state.mjs';
 import { preloadChessEngine, previewMove } from '../play/instant-move.mjs?v=20261018-move-speed-v1';
 import { moveFromRecord, moveFromPositions, setLastMoveClass } from '../play/last-move.mjs?v=20261018-last-move-v1';
 import { playBoardMoveSound } from '../board/move-sound.mjs?v=20261013-movesound-v1';
+import { renderCapturedPieces } from '../play/captured-pieces.mjs?v=20261018-premove-review-v1';
 import { decorateBoardCoordinate, renderApprovedPreview, openMoveNotebook, updateMoveNotebook, closeMoveNotebook } from './move-notebook.mjs?v=20261012-notebook-aligned-v13';
 
 // index.html preloads the canonical desktop stylesheet. Keep one fallback for
@@ -43,6 +44,7 @@ let currentPlayer=null;
 let currentGame=null;
 let orientation='w';
 let selectedSquare=null;
+let queuedPremove=null;
 let renderedPosition=new Map();
 let displayedFen=null;
 let lastMove=null;
@@ -175,6 +177,7 @@ function ensurePanel(){
         <div class="inline-play-player-copy">
           <a id="inlinePlayOpponentName" class="inline-play-player-name">بانتظار الخصم</a>
           <span id="inlinePlayOpponentMeta" class="inline-play-player-meta">—</span>
+          <span id="inlinePlayOpponentCaptured" class="inline-play-captured">—</span>
           <span id="inlinePlayStatus" class="inline-play-status" aria-live="polite">اختر وقت المباراة ثم ابدأ البحث</span>
         </div>
         <time id="inlinePlayClockBlack" class="inline-play-clock" datetime="PT10M">10:00</time>
@@ -204,6 +207,7 @@ function ensurePanel(){
         <div class="inline-play-player-copy">
           <a id="inlinePlayPlayerName" class="inline-play-player-name">جارٍ التحميل</a>
           <span id="inlinePlayPlayerMeta" class="inline-play-player-meta">النقاط —</span>
+          <span id="inlinePlayPlayerCaptured" class="inline-play-captured">—</span>
         </div>
         <time id="inlinePlayClockWhite" class="inline-play-clock" datetime="PT10M">10:00</time>
       </section>
@@ -300,6 +304,7 @@ function renderPosition(fen=START_FEN,color=orientation){
   board.replaceChildren(fragment);
   updateSelectableSquares();
   setLastMoveClass(board,lastMove);
+  renderCaptureIndicators();
 }
 
 
