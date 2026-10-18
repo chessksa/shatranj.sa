@@ -5,6 +5,7 @@ import {
   pollMatchmaking,
   cancelMatchmaking,
   getGameState,
+  getGameMoves,
   submitMove,
   subscribeGame,
   graceEnd,
@@ -16,6 +17,7 @@ import {
 import { remainingAt, formatClock, isFinalMinute } from './clock.mjs';
 import { normalizeGameState } from './state.mjs';
 import { preloadChessEngine, previewMove } from './instant-move.mjs?v=20261018-move-speed-v1';
+import { moveFromRecord, moveFromPositions, setLastMoveClass } from './last-move.mjs?v=20261018-last-move-v1';
 
 const PIECE_ROOT = 'assets/pieces/';
 const START_FEN = 'rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1';
@@ -46,6 +48,7 @@ let orientation = 'w';
 let selectedSquare = null;
 let renderedPosition = new Map();
 let displayedFen = null;
+let lastMove = null;
 let polling = false;
 let pollTimer = null;
 let unsubscribeGame = null;
@@ -116,6 +119,7 @@ export function renderPosition(fen = START_FEN, color = orientation) {
   }
   board.replaceChildren(fragment);
   updateSelectableSquares();
+  setLastMoveClass(board,lastMove);
 }
 
 function setStatus(message, { searching = false, error = false } = {}) {
@@ -269,6 +273,10 @@ async function refreshGame() {
     // A response started before a move must never undo a preview or a newer ply.
     if (submittingMove || latest.id !== currentGame?.id || latest.ply < currentGame.ply ||
         (['finished','cancelled'].includes(currentGame.status) && !['finished','cancelled'].includes(latest.status))) return currentGame;
+    if (latest.ply !== previous?.ply || latest.fen !== previous?.fen) {
+      lastMove = Number(latest.ply) === Number(previous?.ply) + 1
+        ? moveFromPositions(previous?.fen, latest.fen) : null;
+    }
     currentGame = latest;
     orientation = gameColor() || orientation;
     updateCurrentRatingFromGame();
@@ -317,7 +325,12 @@ function applyLiveGameRow(row) {
       Number(row.ply) < currentGame.ply ||
       (['finished','cancelled'].includes(currentGame.status) && !['finished','cancelled'].includes(row.status))) return false;
   const previous = currentGame;
-  currentGame = normalizeGameState({ ...previous, ...row });
+  const latest = normalizeGameState({ ...previous, ...row });
+  if (latest.ply !== previous.ply || latest.fen !== previous.fen) {
+    lastMove = Number(latest.ply) === Number(previous.ply) + 1
+      ? moveFromPositions(previous.fen,latest.fen) : null;
+  }
+  currentGame = latest;
   orientation = gameColor() || orientation;
   if (displayedFen !== currentGame.fen || previous.ply !== currentGame.ply) {
     selectedSquare = null;
@@ -343,12 +356,18 @@ function beginSubscription(gameId) {
 async function openGame(gameId) {
   stopPolling();
   currentGame = normalizeGameState(await getGameState(gameId));
+  lastMove = null;
   orientation = gameColor() || 'w';
   history.replaceState({}, '', `play-v2.html?game=${encodeURIComponent(gameId)}`);
   setStatus('تم العثور على الخصم');
   updateCurrentRatingFromGame();
   updateOpponent();
   renderPosition(currentGame.fen, orientation);
+  void getGameMoves(gameId).then(moves => {
+    if (currentGame?.id !== gameId || moves.length !== Number(currentGame.ply)) return;
+    lastMove = moveFromRecord(moves[moves.length-1]) || lastMove;
+    setLastMoveClass(board,lastMove);
+  }).catch(() => {});
   updateControls();
   setStatus(turnMessage(), { error: !gameColor() });
   startClockLoop();
@@ -444,17 +463,23 @@ async function handleSquareClick(event) {
   }
   const gameId = currentGame.id;
   const expectedPly = currentGame.ply;
+  const previousLastMove = lastMove;
   submittingMove = true;
   board.classList.add('busy');
   updateSelectableSquares();
   // Show only locally validated moves immediately; the server still confirms each move.
-  if (preview?.legal) renderPosition(preview.fen, orientation);
+  if (preview?.legal) {
+    lastMove = {from:source,to:target};
+    renderPosition(preview.fen, orientation);
+  }
   try {
     const response = await submitMove({ gameId, expectedPly, from: source, to: target, promotion });
     if (response?.game?.id === gameId && Number(response.game.ply) >= expectedPly + 1) {
       currentGame = normalizeGameState({ ...currentGame, ...response.game });
       orientation = gameColor() || orientation;
+      lastMove = {from:source,to:target};
       if (displayedFen !== currentGame.fen) renderPosition(currentGame.fen, orientation);
+      else setLastMoveClass(board,lastMove);
       updateCurrentRatingFromGame();
       updateOpponent();
       updateControls();
@@ -466,8 +491,10 @@ async function handleSquareClick(event) {
       await refreshGame();
     }
   } catch (error) {
-    // Revert a speculative position on rejection or transport errors.
+    // Revert both position and last-move indicators on server rejection.
+    lastMove = previousLastMove;
     if (displayedFen !== currentGame.fen) renderPosition(currentGame.fen, orientation);
+    else setLastMoveClass(board,lastMove);
     submittingMove = false;
     await refreshGame().catch(() => {});
     setStatus(error.code === 'illegal_move' ? 'نقلة غير قانونية' : (error.message || 'تعذر تنفيذ النقلة'), { error: true });
