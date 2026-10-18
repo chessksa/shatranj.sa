@@ -1,6 +1,7 @@
 /* Live tournament spectator on the persistent home board, desktop and mobile. */
 import { supabase } from '../platform/api.mjs';
-import { decorateBoardCoordinate } from './move-notebook.mjs?v=20261012-notebook-aligned-v13';
+import { decorateBoardCoordinate,openMoveNotebook,updateMoveNotebook,closeMoveNotebook } from './move-notebook.mjs?v=20261012-notebook-aligned-v13';
+import { playBoardMoveSound } from '../board/move-sound.mjs?v=20261013-movesound-v1';
 import { moveFromRecord, moveFromPositions, setLastMoveClass } from '../play/last-move.mjs?v=20261018-last-move-v1';
 
 const EMPTY='8/8/8/8/8/8/8/8';
@@ -134,12 +135,20 @@ function renderFen(fen,move=null){
 function paintState(row){
   if(!live.host)return;
   const moves=Array.isArray(row.moves)?row.moves:[];
+  const previousFen=live.state?.fen||'';
+  const previousMoves=Array.isArray(live.state?.moves)?live.state.moves.length:null;
   const recorded=moveFromRecord(moves[moves.length-1]);
   const changed=row.fen!==live.fen;
   const latest=recorded || (changed?moveFromPositions(live.state?.fen,row.fen):live.lastMove);
   if(!renderFen(row.fen,latest))throw new Error('invalid fen');
   live.lastMove=latest;
   live.state=row;
+  // Only confirmed new moves are audible: never replay history on first view.
+  if(previousFen&&previousFen!==row.fen&&previousMoves!==null&&moves.length>previousMoves)
+    playBoardMoveSound(previousFen,row.fen);
+  if(live.presentation==='watch'&&window.matchMedia('(min-width:901px)').matches
+    &&(previousMoves!==moves.length||row.status==='finished'))
+    updateMoveNotebook('spectator',moves,{finished:row.status==='finished'});
   const bn=live.host.querySelector('[data-spectator-name="b"]');
   const wn=live.host.querySelector('[data-spectator-name="w"]');
   if(bn)bn.textContent=row.black_name||'الأسود';
@@ -153,7 +162,7 @@ function paintState(row){
       blackRating:row.black_rating??null,
       status,turn:String(row.fen||'').split(/\s+/)[1]||'',
       moveCount:Array.isArray(row.moves)?row.moves.length:Math.max(0,Number(row.ply)||0),
-      result:row.result||null
+      result:row.result||null,fen:row.fen
     };
     window.dispatchEvent(new CustomEvent('shatranj:public-watch-updated',{detail}));
   }
@@ -230,7 +239,10 @@ export function stopInlineTournamentSpectator({notify=true}={}){
     host.removeAttribute('data-tournament-spectating');
   }
   live.id='';live.type='human';live.presentation='tournament';live.host=null;live.saved=null;live.state=null;live.fen='';live.lastMove=null;live.fetching=false;live.errorShown=false;
-  if(previousGameId&&wasPublicWatch)window.dispatchEvent(new CustomEvent('shatranj:public-watch-stopped',{detail:{gameId:previousGameId}}));
+  if(previousGameId&&wasPublicWatch){
+    closeMoveNotebook('spectator');
+    window.dispatchEvent(new CustomEvent('shatranj:public-watch-stopped',{detail:{gameId:previousGameId}}));
+  }
   if(notify&&previousGameId&&!wasPublicWatch)window.dispatchEvent(new Event('shatranj:tournament-spectator-stopped'));
 }
 export async function mountInlineTournamentSpectator(gameId,{gameType='human',presentation='tournament'}={}){
@@ -248,6 +260,7 @@ export async function mountInlineTournamentSpectator(gameId,{gameType='human',pr
   const saved=document.createDocumentFragment();
   while(host.firstChild)saved.appendChild(host.firstChild);
   live.host=host;live.saved=saved;live.id=id;live.type=type;live.presentation=displayMode;
+  if(displayMode==='watch'&&window.matchMedia('(min-width:901px)').matches)openMoveNotebook('spectator');
   host.classList.add('inline-tournament-spectator');
   host.classList.toggle('inline-public-watch',displayMode==='watch');
   host.setAttribute('data-tournament-spectating',id);
