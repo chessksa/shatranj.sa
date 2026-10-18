@@ -144,8 +144,15 @@ function paintState(row){
   live.lastMove=latest;
   live.state=row;
   // Only confirmed new moves are audible: never replay history on first view.
-  if(previousFen&&previousFen!==row.fen&&previousMoves!==null&&moves.length>previousMoves)
-    playBoardMoveSound(previousFen,row.fen);
+  if(previousFen&&previousFen!==row.fen&&previousMoves!==null&&moves.length>previousMoves){
+    // A match row is clicked inside the embedded watch iframe. Its audio
+    // context can be unlocked by that gesture; the parent context might not.
+    const listing=live.presentation==='watch'
+      ?document.querySelector('#desktopDashboardView.watch-view .desktop-watch-match-list iframe'):null;
+    if(listing?.contentWindow)
+      listing.contentWindow.postMessage({type:'shatranj:watch-move-audio',fromFen:previousFen,toFen:row.fen},location.origin);
+    else playBoardMoveSound(previousFen,row.fen);
+  }
   if(live.presentation==='watch'&&window.matchMedia('(min-width:901px)').matches
     &&(previousMoves!==moves.length||row.status==='finished'))
     updateMoveNotebook('spectator',moves,{finished:row.status==='finished'});
