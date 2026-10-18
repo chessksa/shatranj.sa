@@ -155,13 +155,13 @@ export function subscribeGame(gameId, onHint) {
       schema: 'public',
       table: 'v2_games',
       filter: `id=eq.${gameId}`,
-    }, () => onHint?.('game'))
+    }, (payload) => onHint?.('game', payload?.new || null))
     .on('postgres_changes', {
       event: 'INSERT',
       schema: 'public',
       table: 'v2_game_moves',
       filter: `game_id=eq.${gameId}`,
-    }, () => onHint?.('move'))
+    }, (payload) => onHint?.('move', payload?.new || null))
     .subscribe();
 
   return () => client.removeChannel(channel);
