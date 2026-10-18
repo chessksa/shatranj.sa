@@ -4,6 +4,21 @@
   const refreshSrc = `pull-to-refresh.js?v=${version}`;
 
   if (typeof document === 'undefined') return;
+  // Embedded player links remain inside the fixed desktop middle column.
+  if(window.parent!==window&&new URLSearchParams(location.search).get('embed')==='panel'){
+    document.addEventListener('click',event=>{
+      const link=event.target.closest?.('a[href*="player.html?id="]');
+      if(!link)return;
+      let target;
+      try{target=new URL(link.getAttribute('href'),location.href)}catch{return;}
+      const playerId=target.searchParams.get('id')||'';
+      if(target.origin!==location.origin||!target.pathname.endsWith('/player.html')
+        ||!/^[0-9a-f-]{36}$/i.test(playerId))return;
+      event.preventDefault();
+      event.stopImmediatePropagation();
+      window.parent.postMessage({type:'shatranj:open-player-profile',playerId},location.origin);
+    },true);
+  }
 
   if (!document.querySelector('link[data-v2-shell]')) {
     const shellStyle = document.createElement('link');
