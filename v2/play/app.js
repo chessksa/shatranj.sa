@@ -186,6 +186,20 @@ function ownDrawOfferPending() {
 }
 
 function updateControls() {
+  const completed=currentGame?.status==='finished';
+  const result=String(currentGame?.result||'');
+  const mine=gameColor();
+  const winner=result==='1-0'?'w':result==='0-1'?'b':null;
+  for(const [selector,color] of [
+    ['#v2-player',mine],
+    ['#v2-opponent',mine==='w'?'b':mine==='b'?'w':null]
+  ]){
+    const card=document.querySelector(selector);
+    if(!card)continue;
+    card.classList.toggle('result-winner',completed&&winner!==null&&color===winner);
+    card.classList.toggle('result-loser',completed&&winner!==null&&color!==winner);
+    card.classList.toggle('result-draw',completed&&result==='1/2-1/2');
+  }
   const playable = Boolean(currentGame && ['matched', 'active'].includes(currentGame.status));
   document.body.classList.toggle('v2-game-active', playable);
   resignButton.disabled = !playable || actionInFlight;
