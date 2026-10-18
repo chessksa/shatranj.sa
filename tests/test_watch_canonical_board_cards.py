@@ -33,11 +33,13 @@ assert "shatranj:public-watch-updated" in shell
 assert "module.mountInlineTournamentSpectator(gameId,{gameType,presentation:'watch'})" in shell
 assert "shatranj:watch-main-board" in watch
 assert "data-watch-clock=" in board
+assert "querySelector('#desktopDashboardView.watch-view .desktop-dashboard-view-body')" in board
+assert "watchWhiteRating" in shell and "watchBlackRating" in shell
 assert "inline-play-search-button" not in shell.split("function createWatchPlayerCard(",1)[1].split("function watchView(",1)[0]
 assert "inline-play-danger" not in shell.split("function createWatchPlayerCard(",1)[1].split("function watchView(",1)[0]
 
 # Fit both cards and the embedded match list into the center column.
 assert ".desktop-watch-match-list" in styles
 assert ".desktop-watch-player-card[hidden]{display:none!important}" in styles
-assert "20261018-watch-mainboard-cards-v1" in home
+assert "20261018-watch-mainboard-cards-v2" in home
 print("spectator canonical board + read-only player cards: PASS")
