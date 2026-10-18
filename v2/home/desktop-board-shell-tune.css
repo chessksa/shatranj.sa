@@ -95,7 +95,7 @@
     box-shadow:none!important;background:transparent!important;
     box-sizing:border-box!important;
   }
-  .desktop-home-statistics .desktop-statistics-row:last-child{
+  .desktop-home-statistics .desktop-statistics-row[data-stat-row="achievements"]{
     border-bottom:0!important;
   }
   .desktop-home-statistics .desktop-statistics-row[data-stat-row="points"]{grid-row:1!important}
