@@ -16,8 +16,8 @@ header{flex:0 0 58px;overflow:hidden;background:rgba(69,66,62,0.94);color:var(--
 .nav{height:58px;min-height:58px;display:flex;align-items:center;justify-content:space-between;gap:10px}.brand{font-weight:900;font-size:19px;color:var(--hero-cream)}.back{min-height:44px;display:inline-flex;align-items:center;justify-content:center;background:rgba(255,255,255,.035);border:1px solid var(--hero-line);color:var(--hero-gold);padding:0 18px;border-radius:12px;font-size:14px;font-weight:900}.back:hover{background:rgba(165,162,158,0.08)}
 main{flex:1 1 auto;min-height:0;overflow:hidden;padding:18px 0}
 .tables-grid{height:100%;min-height:0;display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:8px;align-items:stretch}
-.match-shell{height:100%;max-height:100%;overflow:hidden;display:flex;flex-direction:column;border:1px solid #66717D;border-radius:0;background:#303943;box-shadow:none}.current-shell{border-block-end:2px solid #718091}.finished-shell{border-block-start:2px solid #718091}
-.table-head{height:var(--match-head-h);flex:0 0 var(--match-head-h);display:flex;align-items:center;justify-content:center;gap:8px;border-bottom:1px solid #66717D;background:#424e59;color:#eef3f6;font-weight:800;font-size:14px;line-height:1.1}.table-head strong{min-width:23px;color:#e8edf0;font-size:16px;line-height:1;text-align:center}.current-shell .table-head{background:#465360}.finished-shell .table-head{background:#414c58}
+.match-shell{height:100%;max-height:100%;overflow:hidden;display:flex;flex-direction:column;border:1px solid #66717D;border-radius:0;background:#303943;box-shadow:none}
+.table-head{height:var(--match-head-h);flex:0 0 var(--match-head-h);display:flex;align-items:center;justify-content:center;gap:8px;border-bottom:1px solid #86765b;background:#685c49;color:#f7f1e7;font-weight:800;font-size:14px;line-height:1.1}.table-head strong{min-width:23px;color:#f3dfb4;font-size:16px;line-height:1;text-align:center}.current-shell .table-head,.finished-shell .table-head{background:#685c49}
 .table-wrap{width:100%;flex:1 1 auto;min-height:0;height:auto;overflow-y:auto;overflow-x:hidden;overscroll-behavior:contain;scrollbar-width:thin;scrollbar-color:rgba(165,162,158,0.55) rgba(69,66,62,0.45)}.table-wrap::-webkit-scrollbar{width:7px}.table-wrap::-webkit-scrollbar-track{background:rgba(69,66,62,0.45)}.table-wrap::-webkit-scrollbar-thumb{background:rgba(165,162,158,0.48);border-radius:999px}
 .match-table{width:100%;border-collapse:collapse;table-layout:fixed}.match-table td{text-align:center;height:var(--match-row-h);padding:1px 5px;line-height:18px;border-bottom:1px solid rgba(165,162,158,0.17);background:#303943;color:#edf1f4;vertical-align:middle}.match-table td+td{border-inline-start:1px solid rgba(165,162,158,0.17)}.match-table tr:last-child td{border-bottom:0}.match-row{cursor:pointer;height:var(--match-row-h)}.match-row:nth-child(even) td{background:#36414c}.match-row:hover td{background:#465461}.match-row:focus-visible{outline:1px solid #c2d0da;outline-offset:-2px}.match-row:focus-visible td{background:#465461}.match-row[aria-current="true"] td{background:#4c5c69}
 .col-num{width:64px;color:#dce4eb!important;font-weight:800;font-size:13px}.players-cell{text-align:center;overflow:hidden}.player-pair{display:flex;align-items:center;justify-content:center;gap:7px;min-width:0;white-space:nowrap;overflow:hidden}.player-pair strong,.player-pair .player-profile-action{min-width:0;max-width:50%;overflow:hidden;text-overflow:ellipsis;font-size:13px}
@@ -36,12 +36,12 @@ main{flex:1 1 auto;min-height:0;overflow:hidden;padding:18px 0}
 html[data-embed="panel"] .watch-pull-hint{top:8px}
 html[data-embed="panel"] .refresh-btn{left:5px;padding:0 7px;min-height:27px}
 html[data-embed="panel"] .refresh-label{display:none}
-@media(max-width:760px){.refresh-btn{left:6px;min-height:29px;padding:0 8px}:root{--match-row-h:25px;--match-head-h:34px}.wrap{width:min(100% - 14px,1180px)}.brand{font-size:16px}.back{min-height:42px;padding:0 13px;font-size:12px}.nav{height:58px;min-height:58px}.tables-grid{grid-template-columns:1fr;grid-template-rows:repeat(2,minmax(0,1fr));gap:8px;align-items:stretch}.match-shell{height:100%;max-height:100%}.table-head{font-size:14px}.table-head strong{font-size:17px}.match-table td{padding:2px 5px}.col-num{width:40px;font-size:13px}.player-pair{gap:5px}.player-pair strong,.player-pair .player-profile-action{font-size:12px}main{padding:8px 0}}
+@media(max-width:760px){.refresh-btn{left:6px;min-height:29px;padding:0 8px}:root{--match-row-h:25px;--match-head-h:34px}.wrap{width:min(100% - 14px,1180px)}.brand{font-size:16px}.back{min-height:42px;padding:0 13px;font-size:12px}.nav{height:58px;min-height:58px}.tables-grid{grid-template-columns:1fr;grid-template-rows:repeat(2,minmax(0,1fr));gap:0;align-items:stretch}.match-shell{height:100%;max-height:100%}.table-head{font-size:14px}.table-head strong{font-size:17px}.match-table td{padding:2px 5px}.col-num{width:40px;font-size:13px}.player-pair{gap:5px}.player-pair strong,.player-pair .player-profile-action{font-size:12px}main{padding:8px 0}}
 /* In the desktop middle panel, the main site supplies the header and navigation. */
 html[data-embed="panel"] header{display:none}
 html[data-embed="panel"] main{padding:0}
 html[data-embed="panel"] .wrap{width:100%}
-html[data-embed="panel"] .tables-grid{grid-template-columns:1fr;grid-template-rows:repeat(2,minmax(0,1fr));gap:5px}
+html[data-embed="panel"] .tables-grid{grid-template-columns:1fr;grid-template-rows:repeat(2,minmax(0,1fr));gap:0}
 /* The current list grows with its visible match rows, up to 72% of the
    available vertical panel. The finished list retains at least 28%.
    No parent scrolling or movement of the spectator player cards. */
@@ -77,15 +77,21 @@ html[data-embed="panel"] .refresh-btn{min-height:23px;border-radius:0}
 /* The site-wide charcoal stylesheet loads after this document's styles and
    uses !important. Restrict these stronger rules to the watch lists only. */
 html body .tables-grid .match-shell{background:#303943!important;border-color:#66717D!important}
-html body .tables-grid .current-shell{border-block-end:2px solid #718091!important}
-html body .tables-grid .finished-shell{border-block-start:2px solid #718091!important}
+/* Adjacent stacked lists form a continuous surface without a separator. */
+html[data-embed="panel"] body .tables-grid .current-shell{border-block-end:0!important}
+html[data-embed="panel"] body .tables-grid .finished-shell{border-block-start:0!important}
+@media(max-width:760px){
+  html:not([data-embed="panel"]) body .tables-grid .current-shell{border-block-end:0!important}
+  html:not([data-embed="panel"]) body .tables-grid .finished-shell{border-block-start:0!important}
+}
 html body .tables-grid .match-shell .table-head{
-  background:#414c58!important;color:#edf2f5!important;
-  border-color:#66717D!important;font-size:14px!important;
+  background:#685c49!important;color:#f7f1e7!important;
+  border-color:#86765b!important;font-size:14px!important;
   height:var(--match-head-h)!important;
 }
-html body .tables-grid .current-shell .table-head{background:#465360!important}
-html body .tables-grid .match-shell .table-head strong{color:#e8edf0!important}
+html body .tables-grid .current-shell .table-head,
+html body .tables-grid .finished-shell .table-head{background:#685c49!important}
+html body .tables-grid .match-shell .table-head strong{color:#f3dfb4!important}
 html body .tables-grid .match-table tr td{background:#303943!important;border-color:#55616d!important}
 html body .tables-grid .match-table tr:nth-child(even) td{background:#36414c!important}
 html body .tables-grid .match-table tr.match-row:hover td,
@@ -94,17 +100,6 @@ html body .tables-grid .match-table tr.match-row[aria-current="true"] td{backgro
 html body .tables-grid .match-table .player-pair strong,
 html body .tables-grid .match-table .player-pair .player-profile-action{color:#f7f9fb!important}
 html body .tables-grid .match-table .player-pair b{color:#b9c5ce!important}
-/* First data row only: restrained gold without losing white player names. */
-html body .tables-grid .match-table tr.match-row:first-child td{
-  background:#65543b!important;border-bottom-color:#ae915a!important;
-}
-html body .tables-grid .match-table tr.match-row:first-child:hover td,
-html body .tables-grid .match-table tr.match-row:first-child:focus-visible td{
-  background:#756247!important;
-}
-html body .tables-grid .match-table tr.match-row:first-child[aria-current="true"] td{
-  background:#806a49!important;
-}
 @media(max-width:760px){
   html body .tables-grid .match-shell .table-head{font-size:13px!important}
 }
