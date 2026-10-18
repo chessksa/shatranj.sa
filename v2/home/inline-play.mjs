@@ -21,7 +21,7 @@ import { preloadChessEngine, previewMove } from '../play/instant-move.mjs?v=2026
 import { moveFromRecord, moveFromPositions, setLastMoveClass } from '../play/last-move.mjs?v=20261018-last-move-v1';
 import { playBoardMoveSound } from '../board/move-sound.mjs?v=20261013-movesound-v1';
 import { renderCapturedPieces } from '../play/captured-pieces.mjs?v=20261018-premove-review-v1';
-import { decorateBoardCoordinate, renderApprovedPreview, openMoveNotebook, updateMoveNotebook, closeMoveNotebook } from './move-notebook.mjs?v=20261012-notebook-aligned-v13';
+import { decorateBoardCoordinate, renderApprovedPreview, openMoveNotebook, updateMoveNotebook, closeMoveNotebook } from './move-notebook.mjs?v=20261019-premove-watch-analysis-v1';
 
 // index.html preloads the canonical desktop stylesheet. Keep one fallback for
 // standalone imports, never add another copy during a normal homepage refresh.
