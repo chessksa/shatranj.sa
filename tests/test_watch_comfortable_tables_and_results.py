@@ -8,11 +8,12 @@ def test_watch_list_uses_white_names_and_distinct_small_headers():
     assert "--match-row-h:21px;--match-head-h:30px" in watch
     assert '--match-row-h:20px;--match-head-h:27px' in watch
     assert "--match-row-h:25px;--match-head-h:34px" in watch
-    assert 'html[data-embed="panel"] body .tables-grid .current-shell{border-block-end:0!important}' in watch
-    assert 'html[data-embed="panel"] body .tables-grid .finished-shell{border-block-start:0!important}' in watch
-    assert 'grid-template-rows:repeat(2,minmax(0,1fr));gap:0' in watch
-    assert 'background:#685c49!important' in watch
-    assert 'color:#f3dfb4!important' in watch
+    assert 'html[data-embed="panel"] .tables-grid{' in watch
+    assert 'grid-template-columns:minmax(0,var(--watch-current-share,45%)) minmax(0,1fr)' in watch
+    assert 'grid-template-rows:minmax(0,1fr);gap:0;align-items:stretch' in watch
+    assert 'border:1px solid #968565!important' in watch
+    assert 'background:#303943!important;color:#edf1f4!important' in watch
+    assert 'background:#685c49!important' not in watch
     assert '.match-row:nth-child(even) td{background:#36414c}' in watch
     assert 'background:#4c5c69!important' in watch
     assert '.player-pair .player-profile-action{color:#f7f9fb!important}' in watch
@@ -47,28 +48,39 @@ def test_play_and_standalone_watch_names_stay_gold():
 
 def test_watch_build_assets_have_new_version():
     home=get("index.html")
-    assert 'content="20261019-soft-gold-titles-no-divider-v1"' in home
-    assert 'watch.html?v=20261019-soft-gold-titles-no-divider-v1#current' in home
+    assert 'content="20261019-two-watch-columns-gold-outline-v1"' in home
+    assert 'watch.html?v=20261019-two-watch-columns-gold-outline-v1#current' in home
+    assert 'desktop-board-shell-tune.css?v=20261019-two-watch-columns-gold-outline-v1' in home
     for module in ["play-v2.html","watch.html","spectator-board.mjs","human-watch.html","computer-watch.html"]:
         assert "20261019-adaptive-live-gold-row-v1" in get(module)
 
 
-def test_adaptive_vertical_allocation_and_gold_title_rows():
+def test_side_by_side_desktop_lists_and_gold_outline_only():
     watch=get("watch.html")
-    # No fixed 50:50 vertical split when both lists contain matches.
-    assert 'html[data-embed="panel"] .tables-grid:not(.current-empty):not(.finished-empty)' in watch
-    assert 'html:not([data-embed="panel"]) .tables-grid:not(.current-empty):not(.finished-empty)' in watch
-    assert 'min(var(--watch-current-needed,50%),72%)' in watch
-    assert "tablesGrid.style.setProperty('--watch-current-needed',currentNeeded+'px')" in watch
-    assert 'Math.max(1,currentGames.length)*currentRowPx+4' in watch
-    # Empty current list still shrinks; finished list owns the remaining space.
-    assert 'tables-grid.current-empty:not(.finished-empty){grid-template-rows:auto minmax(0,1fr)}' in watch
-    assert 'tables-grid.finished-empty:not(.current-empty){grid-template-rows:minmax(0,1fr) auto}' in watch
-    # The gold applies to header bars only, never the first match data row.
+    css=get("v2/home/desktop-board-shell-tune.css")
+    # Desktop embedded lists are truly adjacent, never stacked vertically.
+    assert 'html[data-embed="panel"] .tables-grid{' in watch
+    assert 'grid-template-columns:minmax(0,var(--watch-current-share,45%)) minmax(0,1fr)' in watch
+    assert 'grid-template-rows:minmax(0,1fr);gap:0' in watch
+    assert "tablesGrid.style.setProperty('--watch-current-share',currentShare+'%')" in watch
+    assert 'Math.max(40,Math.min(66,50+1.7*' in watch
+    assert '.finished-shell{border-inline-start:1px solid #66717D!important}' in watch
+    assert 'border:1px solid #968565!important' in watch
+    assert 'background:#685c49!important' not in watch
     assert 'tr.match-row:first-child td' not in watch
-    assert 'background:#65543b!important' not in watch
-    assert 'html body .tables-grid .current-shell .table-head' in watch
-    assert 'html body .tables-grid .finished-shell .table-head' in watch
-    assert 'background:#685c49!important' in watch
+    # The middle-column frame is the only external border.
+    assert 'gap:6px!important;padding:6px 0!important' in css
+    assert 'margin-inline:6px!important' in css
+    assert 'border:0!important;border-radius:0;overflow:hidden' in css
+    assert 'border:0!important' in watch
+    # Separate internal scrollbars and intact player names.
+    assert 'overflow-y:auto;overflow-x:hidden' in watch
     assert '.match-table .player-pair .player-profile-action{color:#f7f9fb!important}' in watch
-    assert "20261019-soft-gold-titles-no-divider-v1" in get("index.html")
+
+
+def test_mobile_independent_rows_still_work():
+    watch=get("watch.html")
+    assert '@media(max-width:760px)' in watch
+    assert '.tables-grid{grid-template-columns:1fr;grid-template-rows:repeat(2,minmax(0,1fr))' in watch
+    assert 'min(var(--watch-current-needed,50%),72%)' in watch
+    assert 'tables-grid.current-empty:not(.finished-empty){grid-template-rows:auto minmax(0,1fr)}' in watch
