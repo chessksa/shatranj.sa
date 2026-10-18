@@ -67,7 +67,7 @@ function restoreDashboardBlocks(){
     stats.className='desktop-live-stats';
     stats.setAttribute('aria-label','إحصاءات المنصة');
     stats.innerHTML=`
-      <div class="desktop-live-stat" data-live-stat="matches"><small>المباريات الآن</small><strong id="desktopMatchesCount">0</strong></div>
+      <button type="button" class="desktop-live-stat desktop-live-stat-watch" data-live-stat="matches" data-desktop-nav="watch" aria-label="شاهد المباريات الحالية" title="مشاهدة المباريات"><small>المباريات الآن</small><strong id="desktopMatchesCount">0</strong></button>
       <div class="desktop-live-stat" data-live-stat="online"><small>المتواجدون</small><strong id="desktopOnlineCount">0</strong></div>
       <div class="desktop-live-stat" data-live-stat="players"><small>المشتركون</small><strong id="desktopPlayersCount">0</strong></div>`;
     // Platform counters lead the dashboard, before the portrait champion cards.
