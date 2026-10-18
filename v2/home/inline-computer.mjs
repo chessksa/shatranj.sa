@@ -1,4 +1,4 @@
-import { decorateBoardCoordinate, renderApprovedPreview, openMoveNotebook, updateMoveNotebook, closeMoveNotebook } from './move-notebook.mjs?v=20261012-notebook-aligned-v13';
+import { decorateBoardCoordinate, renderApprovedPreview, openMoveNotebook, updateMoveNotebook, closeMoveNotebook } from './move-notebook.mjs?v=20261019-premove-watch-analysis-v1';
 import { playBoardMoveSound } from '../board/move-sound.mjs?v=20261013-movesound-v1';
 import { renderCapturedPieces } from '../play/captured-pieces.mjs?v=20261018-premove-review-v1';
 const desktop=window.matchMedia('(min-width:901px)');
