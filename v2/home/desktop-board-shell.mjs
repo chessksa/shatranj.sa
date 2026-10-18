@@ -850,8 +850,21 @@ if(desktop.matches && document.querySelector('#homeHero')){
       renderCapturedPieces(card.querySelector('[data-watch-captured]'),detail.fen||'',color);
       const status=card.querySelector('[data-watch-status]');
       const active=detail.status==='مشاهدة مباشرة'&&detail.turn===color;
-      card.classList.toggle('turn',active);
-      if(status)status.textContent=active?'دوره الآن':detail.status||'مشاهدة فقط';
+      const finished=detail.status==='انتهت المباراة'||detail.status==='finished';
+      const result=String(detail.result||'').trim().toLowerCase();
+      // The computer is black in public computer games. For all games,
+      // leave both cards neutral when the result cannot be verified.
+      const winnerColor=['1-0','win'].includes(result)?'w':
+        ['0-1','loss'].includes(result)?'b':null;
+      const draw=finished&&['1/2-1/2','draw'].includes(result);
+      const winner=finished&&winnerColor===color;
+      const loser=finished&&winnerColor!==null&&winnerColor!==color;
+      card.classList.toggle('turn',active&&!finished);
+      card.classList.toggle('result-winner',winner);
+      card.classList.toggle('result-loser',loser);
+      card.classList.toggle('result-draw',draw);
+      if(status)status.textContent=winner?'الفائز':loser?'الخاسر':draw?'تعادل':
+        active?'دوره الآن':detail.status||'مشاهدة فقط';
     }
     panel.querySelectorAll('.desktop-watch-player-card').forEach(card=>{card.hidden=false;});
   }
@@ -1264,7 +1277,10 @@ if(desktop.matches && document.querySelector('#homeHero')){
       const panel=document.querySelector('#desktopDashboardView.watch-view .desktop-dashboard-view-body');
       if(panel?.dataset.watchGameId===event.detail?.gameId){
         delete panel.dataset.watchGameId;
-        panel.querySelectorAll('.desktop-watch-player-card').forEach(card=>{card.hidden=true;});
+        panel.querySelectorAll('.desktop-watch-player-card').forEach(card=>{
+          card.hidden=true;
+          card.classList.remove('turn','result-winner','result-loser','result-draw');
+        });
       }
     });
     // Public match listings live in the middle column; selection only paints
@@ -1293,6 +1309,7 @@ if(desktop.matches && document.querySelector('#homeHero')){
         // or names if an RPC responds while another match is being selected.
         for(const card of panel.querySelectorAll('.desktop-watch-player-card')){
           card.hidden=false;
+          card.classList.remove('turn','result-winner','result-loser','result-draw');
           const color=card.dataset.watchCard;
           const name=card.querySelector('[data-watch-name]');
           const photo=card.querySelector('[data-watch-photo]');
