@@ -17,7 +17,7 @@ export function createSpectatorClock({whiteField='white_time_ms',blackField='bla
     let white=anchor.white;
     let black=anchor.black;
     if(anchor.active){
-      const elapsed=Math.max(0,Number(monoNow)-anchor.monoAt);
+      const elapsed=Math.max(0,Number(monoNow)-anchor.monoAt-(anchor.startDelayMs||0));
       if(anchor.turn==='w')white=Math.max(0,white-elapsed);
       else black=Math.max(0,black-elapsed);
     }
@@ -33,10 +33,12 @@ export function createSpectatorClock({whiteField='white_time_ms',blackField='bla
     const turnStartedAt=snapshot.turn_started_at?String(snapshot.turn_started_at):'';
     let white=Math.max(0,Number(snapshot[whiteField]||0));
     let black=Math.max(0,Number(snapshot[blackField]||0));
+    let startDelayMs=0;
 
     if(active&&turnStartedAt){
       const started=Date.parse(turnStartedAt);
       if(Number.isFinite(started)){
+        startDelayMs=Math.max(0,started-Number(wallNow));
         const elapsed=Math.max(0,Number(wallNow)-started);
         if(turn==='w')white=Math.max(0,white-elapsed);
         else black=Math.max(0,black-elapsed);
@@ -49,7 +51,7 @@ export function createSpectatorClock({whiteField='white_time_ms',blackField='bla
       black=Math.min(black,previous.black);
     }
 
-    anchor={white,black,turn,active,turnStartedAt,monoAt:Number(monoNow)};
+    anchor={white,black,turn,active,turnStartedAt,startDelayMs,monoAt:Number(monoNow)};
     return {white,black};
   }
 
