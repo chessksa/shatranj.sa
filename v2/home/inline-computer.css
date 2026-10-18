@@ -38,8 +38,14 @@
     background:#202a35;overflow:hidden;
     box-sizing:border-box;color:#98ccea;
   }
-  html body.desktop-board-workspace .inline-computer-panel .inline-computer-machine-icon svg{
-    display:block;width:72%;height:72%;
+  html body.desktop-board-workspace .inline-computer-panel .inline-computer-machine-icon img{
+    display:block;width:100%;height:100%;object-fit:cover;border-radius:9px;
+  }
+  html body.desktop-board-workspace .inline-computer-panel .inline-play-player-name[href]{
+    cursor:pointer;text-decoration:none;
+  }
+  html body.desktop-board-workspace .inline-computer-panel .inline-play-player-name[href]:hover{
+    text-decoration:underline;text-underline-offset:3px;
   }
   html body.desktop-board-workspace .inline-computer-panel .inline-computer-player-photo{
     background:#222a34;
@@ -222,7 +228,7 @@
     html body.desktop-board-workspace .inline-computer-panel .inline-computer-identity-icon{
       width:100%;height:auto;aspect-ratio:1/1;min-width:0;max-width:none;
     }
-    html body.desktop-board-workspace .inline-computer-panel .inline-computer-machine-icon svg{
+    html body.desktop-board-workspace .inline-computer-panel .inline-computer-machine-icon img{
       width:72%;height:72%;
     }
     html body.desktop-board-workspace .inline-computer-panel .inline-play-player-copy{gap:3px}
