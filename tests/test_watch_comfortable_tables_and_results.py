@@ -44,4 +44,4 @@ def test_play_and_standalone_watch_names_stay_gold():
 
 def test_watch_build_assets_have_new_version():
     for module in ["index.html","play-v2.html","watch.html","spectator-board.mjs","human-watch.html","computer-watch.html"]:
-        assert "20261019-watch-contrast-results-v2" in get(module)
+        assert "20261019-adaptive-live-gold-row-v1" in get(module)
