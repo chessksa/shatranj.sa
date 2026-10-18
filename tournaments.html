@@ -3,12 +3,12 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
-<meta name="theme-color" content="#1a1d21">
+<meta name="theme-color" content="#353C45">
 <title>البطولات | شطرنج العرب</title>
 <style>
-html,body{margin:0;min-height:100%;background:#302e2b;color:#e2dcd3;font-family:Arial,sans-serif}
+html,body{margin:0;min-height:100%;background:#353C45;color:#e9eef3;font-family:Arial,sans-serif}
 .loader{min-height:100dvh;display:grid;place-items:center;text-align:center;padding:24px}
-.loader strong{font-size:18px;color:#e2dcd3}.loader small{display:block;margin-top:8px;color:#b7c7c2}
+.loader strong{font-size:18px;color:#e9eef3}.loader small{display:block;margin-top:8px;color:#c0ccd6}
 </style>
 <link rel="stylesheet" href="site-charcoal-theme.css?v=20261014-unified-game-tiles-v1">
 </head>
@@ -16,7 +16,7 @@ html,body{margin:0;min-height:100%;background:#302e2b;color:#e2dcd3;font-family:
 <div class="loader"><div><strong>جاري فتح البطولات</strong><small>تحديث بيانات البطولة…</small></div></div>
 <script>
 (async()=>{
-  const stamp='20261009-match-row-switch-v1';
+  const stamp='20261019-tournament-graphite-v1';
   const runtimeVersion=stamp+'-'+Date.now();
   const response=await fetch('./tournaments-app.html?v='+runtimeVersion,{cache:'no-store'});
   if(!response.ok)throw new Error('tournaments source '+response.status);
