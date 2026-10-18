@@ -590,8 +590,50 @@ function resetToSetup(){
   updateClockUi();
 }
 
+// Browser-engine results are unranked. The server authenticates the owner,
+// validates metadata and never awards points from a client-reported outcome.
+async function archiveFinishedGame(snapshot,message){
+  const {client,id}=snapshot;
+  if(!client||!id){
+    if(host&&archiveGameId===id)setStatus(message+' · سجّل الدخول لحفظ المباريات');
+    return;
+  }
+  try{
+    const {data:{user}={},error:authError}=await client.auth.getUser();
+    if(authError||!user){
+      if(host&&archiveGameId===id)setStatus(message+' · سجّل الدخول لحفظ المباريات');
+      return;
+    }
+    const {data,error}=await client.rpc('archive_local_computer_game',{
+      p_game_id:id,p_level:snapshot.level,p_moves:snapshot.moves,
+      p_result:snapshot.result,p_fen:snapshot.fen,
+      p_minutes:snapshot.minutes,p_player_ms:snapshot.whiteMs,
+      p_computer_ms:snapshot.blackMs
+    });
+    if(error)throw error;
+    if(!data)throw new Error('لم تؤكد قاعدة البيانات حفظ المباراة');
+    if(host&&archiveGameId===id){
+      setStatus(message+' · حُفظت في المباريات المنتهية');
+      window.dispatchEvent(new CustomEvent('shatranj:computer-match-archived',{detail:{gameId:id}}));
+    }
+  }catch(error){
+    console.warn('تعذر حفظ مباراة الكمبيوتر في المباريات المنتهية',error);
+    if(host&&archiveGameId===id)setStatus(message+' · تعذر حفظ المباراة',{error:true});
+  }
+}
 function finish(message,outcome=null){
   if(!started) return;
+  const archiveResult=outcome==='player'?'win':outcome==='computer'?'loss':outcome==='draw'?'draw':null;
+  const snapshot=archiveResult?{
+    client:archiveClient,id:archiveGameId,level:selectedLevel,
+    moves:moveHistory.map((uci,ply)=>({
+      from:uci.slice(0,2),to:uci.slice(2,4),
+      promotion:uci[4]||null,side:ply%2?'computer':'player'
+    })),
+    result:archiveResult,fen:currentPositionFen(),minutes:selectedMinutes,
+    whiteMs:Math.max(0,Math.floor(whiteMs)),
+    blackMs:Math.max(0,Math.floor(blackMs))
+  }:null;
   started=false;
   setInlineComputerMatchPresence(false);
   updateMoveNotebook('computer',moveHistory.map(uci=>({uci})),{finished:true});
@@ -601,6 +643,7 @@ function finish(message,outcome=null){
   setStatus(message);
   applyResultColors(outcome);
   renderBoard();
+  if(snapshot)void archiveFinishedGame(snapshot,message);
 }
 
 async function checkGameEnd(){
