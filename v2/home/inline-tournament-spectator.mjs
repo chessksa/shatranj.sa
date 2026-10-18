@@ -77,7 +77,7 @@ function showClocks(){
   if(white){white.textContent=c.w;white.classList.toggle('danger',c.dangerW);}
   // Share the exact same clock source with the two read-only player cards.
   if(live.presentation==='watch'){
-    const panel=document.querySelector('.desktop-watch-spectator-panel');
+    const panel=document.querySelector('#desktopDashboardView.watch-view .desktop-dashboard-view-body');
     if(panel?.dataset.watchGameId===live.id){
       const w=panel.querySelector('[data-watch-clock="w"]');
       const b=panel.querySelector('[data-watch-clock="b"]');
