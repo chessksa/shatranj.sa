@@ -425,6 +425,21 @@ function playableGame(){
 
 function updateControls(){
   if(!panel) return;
+  const completed=currentGame?.status==='finished';
+  const result=String(currentGame?.result||'');
+  const mine=gameColor();
+  const winnerColor=result==='1-0'?'w':result==='0-1'?'b':null;
+  const tied=completed&&result==='1/2-1/2';
+  for(const [selector,color] of [
+    ['.inline-play-current-card',mine],
+    ['.inline-play-opponent-card',mine==='w'?'b':mine==='b'?'w':null]
+  ]){
+    const card=panel.querySelector(selector);
+    if(!card)continue;
+    card.classList.toggle('result-winner',completed&&winnerColor!==null&&winnerColor===color);
+    card.classList.toggle('result-loser',completed&&winnerColor!==null&&winnerColor!==color);
+    card.classList.toggle('result-draw',tied);
+  }
   const playable=playableGame();
   const finished=Boolean(currentGame&&!playable);
   panel.classList.toggle('has-game',playable);
