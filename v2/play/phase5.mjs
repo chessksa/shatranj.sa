@@ -6,7 +6,7 @@ import {
   cancelCustomMatchmaking,
   requestRematch,
   getRematchState,
-} from './api.js?v=20261018-live-match-v2';
+} from './api.js?v=20261018-live-speed-v3';
 
 const $ = (id) => document.getElementById(id);
 const timePickerButton = $('v5-time-picker-button');
