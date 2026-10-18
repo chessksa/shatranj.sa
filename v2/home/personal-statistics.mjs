@@ -8,10 +8,23 @@ export function mountPersonalStatistics(supabase){
   panel.dataset.statisticsMounted='1';
   const status=panel.querySelector('#desktopStatisticsStatus');
   const login=panel.querySelector('[data-stats-login]');
+  const playerName=panel.querySelector('[data-stats-player-name]');
+  const headerName=document.getElementById('headerMemberName');
   const values=new Map(KEYS.map(key=>[key,panel.querySelector('[data-stat-value="'+key+'"]')]));
   let request=0;
   let lastLoadedAt=0;
   let lastUserId=null;
+  const syncPlayerName=()=>{
+    // The header's name and player UUID are already validated by the site's
+    // authenticated profile loader. Do not borrow a stale previous login.
+    const sameAccount=lastUserId&&headerName?.dataset.playerId===lastUserId;
+    const name=sameAccount?String(headerName.textContent||'').trim():'';
+    if(playerName)playerName.textContent=name&&name!=='العضو'?name:'اللاعب';
+  };
+  if(headerName&&typeof MutationObserver!=='undefined'){
+    const observer=new MutationObserver(syncPlayerName);
+    observer.observe(headerName,{subtree:true,childList:true,characterData:true,attributes:true,attributeFilter:['data-player-id']});
+  }
   const blank=()=>{
     for(const node of values.values())if(node)node.textContent='—';
   };
@@ -30,6 +43,7 @@ export function mountPersonalStatistics(supabase){
     if(login)login.hidden=false;
     setStatus('سجّل الدخول لعرض إنجازاتك');
     lastUserId=null;
+    syncPlayerName();
   };
   const refresh=async(force=false)=>{
     if(!supabase){
@@ -54,6 +68,7 @@ export function mountPersonalStatistics(supabase){
         blank();
         lastUserId=session.user.id;
       }
+      syncPlayerName();
       setStatus('جارٍ تحديث إحصاءاتك…');
       const {data,error}=await supabase.rpc('get_my_home_statistics');
       if(current!==request)return;
@@ -64,6 +79,7 @@ export function mountPersonalStatistics(supabase){
         return;
       }
       update(data);
+      syncPlayerName();
       lastLoadedAt=Date.now();
       setStatus('إنجازاتك المسجلة في الموقع');
     }catch(error){
