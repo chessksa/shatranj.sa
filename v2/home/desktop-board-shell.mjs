@@ -875,6 +875,14 @@ if(desktop.matches && document.querySelector('#homeHero')){
     showDashboard('home');
   }
 
+  // Keep the existing watch listing in the middle column on desktop.
+  document.addEventListener('click',event=>{
+    const link=event.target.closest?.('[data-live-matches-watch]');
+    if(!link||!link.hasAttribute('href')||!window.matchMedia('(min-width:901px)').matches)return;
+    event.preventDefault();
+    showDashboard('watch');
+  });
+
   function copyText(sourceId,targetId,fallback='0'){
     const source=document.getElementById(sourceId);
     const target=document.getElementById(targetId);
