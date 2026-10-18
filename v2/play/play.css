@@ -1,3 +1,5 @@
+/* Touch on pieces belongs to the chessboard; never scroll the page mid-drag. */
+.v2-board .v2-square {touch-action:none;-webkit-tap-highlight-color:transparent;}
 :root {
   --v2-petrol: #302e2b;
   --v2-petrol-deep: #302e2b;
