@@ -49,6 +49,7 @@ let pollTimer = null;
 let unsubscribeGame = null;
 let refreshPromise = null;
 let clockTimer = null;
+let fallbackSyncTimer = null;
 let submittingMove = false;
 let actionInFlight = false;
 let timeoutRequested = false;
@@ -175,11 +176,19 @@ function ownDrawOfferPending() {
 
 function updateControls() {
   const playable = Boolean(currentGame && ['matched', 'active'].includes(currentGame.status));
+  document.body.classList.toggle('v2-game-active', playable);
   resignButton.disabled = !playable || actionInFlight;
   drawButton.disabled = !playable || actionInFlight || ownDrawOfferPending();
   drawButton.textContent = opponentOfferedDraw() ? 'رد على التعادل' : ownDrawOfferPending() ? 'تم عرض التعادل' : 'تعادل';
   searchButton.disabled = Boolean(currentGame) || actionInFlight;
   if (currentGame) searchButton.hidden = true;
+}
+
+function turnMessage() {
+  if (!currentGame || !['matched', 'active'].includes(currentGame.status)) return '';
+  const color = gameColor();
+  if (!color) return 'تعذر تحديد مقعد اللاعب — أعد فتح المباراة';
+  return currentGame.turn === color ? 'دورك الآن — انقر القطعة ثم مربع النقل' : 'بانتظار نقلة الخصم';
 }
 
 function gameFinishedMessage() {
@@ -250,18 +259,36 @@ async function refreshGame() {
   if (!currentGame?.id) return null;
   if (refreshPromise) return refreshPromise;
   refreshPromise = (async () => {
-    currentGame = normalizeGameState(await getGameState(currentGame.id));
+    const previous = currentGame;
+    const latest = normalizeGameState(await getGameState(currentGame.id));
+    if (!latest) throw new Error('تعذر استعادة حالة المباراة');
+    currentGame = latest;
     orientation = gameColor() || orientation;
     updateCurrentRatingFromGame();
     updateOpponent();
-    renderPosition(currentGame.fen, orientation);
+    if (previous?.fen !== latest.fen || previous?.ply !== latest.ply) {
+      selectedSquare = null;
+      renderPosition(latest.fen, orientation);
+    } else {
+      updateSelectableSquares();
+    }
     updateControls();
     renderClocks();
-    const message = gameFinishedMessage();
-    if (message) setStatus(message);
+    const message = gameFinishedMessage() || turnMessage();
+    if (message) setStatus(message, { error: !gameColor() && latest.status !== 'finished' });
     return currentGame;
   })().finally(() => { refreshPromise = null; });
   return refreshPromise;
+}
+
+function startFallbackSync() {
+  if (fallbackSyncTimer) clearInterval(fallbackSyncTimer);
+  fallbackSyncTimer = setInterval(() => {
+    if (document.visibilityState === 'hidden' || !currentGame ||
+        !['matched', 'active'].includes(currentGame.status)) return;
+    // Realtime is a hint, not the sole source of board updates on mobile.
+    void refreshGame().catch(() => {});
+  }, 3000);
 }
 
 function beginSubscription(gameId) {
@@ -281,8 +308,10 @@ async function openGame(gameId) {
   updateOpponent();
   renderPosition(currentGame.fen, orientation);
   updateControls();
+  setStatus(turnMessage(), { error: !gameColor() });
   startClockLoop();
   beginSubscription(gameId);
+  startFallbackSync();
 }
 
 function stopPolling() {
@@ -490,6 +519,7 @@ async function initialize() {
 window.addEventListener('pagehide', () => {
   if (unsubscribeGame) unsubscribeGame();
   if (clockTimer) clearInterval(clockTimer);
+  if (fallbackSyncTimer) clearInterval(fallbackSyncTimer);
 });
 
 initialize();
